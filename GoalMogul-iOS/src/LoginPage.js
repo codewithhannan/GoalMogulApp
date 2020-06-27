@@ -27,6 +27,7 @@ import { registerUser, loginUser } from './actions'
 
 import { RESET_PASSWORD_URL } from './Utils/Constants'
 import Recaptcha from './Main/Common/Recaptcha'
+import { SCREENS, wrapAnalytics } from './monitoring/segment'
 
 const validate = (values) => {
     const errors = {}
@@ -390,4 +391,4 @@ LoginPage = reduxForm({
 export default connect(mapStateToProps, {
     registerUser,
     loginUser,
-})(LoginPage)
+})(wrapAnalytics(LoginPage, SCREENS.LOGIN_PAGE))

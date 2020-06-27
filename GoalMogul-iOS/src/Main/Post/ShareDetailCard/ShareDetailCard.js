@@ -38,6 +38,7 @@ import LikeListModal from '../../Common/Modal/LikeListModal'
 import CommentBox from '../../Goal/Common/CommentBoxV2'
 import CommentCard from '../../Goal/GoalDetailCard/Comment/CommentCard'
 import ShareDetailSection from './ShareDetailSection'
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 const DEBUG_KEY = '[ UI ShareDetailCard ]'
 const TABBAR_HEIGHT = 48.5
@@ -445,4 +446,4 @@ export default connect(makeMapStateToProps, {
     refreshComments,
     fetchPostDetail,
     markUserViewPost,
-})(ShareDetailCard)
+})(wrapAnalytics(ShareDetailCard, SCREENS.SHARE_DETAIL))

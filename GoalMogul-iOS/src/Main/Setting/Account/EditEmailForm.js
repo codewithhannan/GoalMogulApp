@@ -25,6 +25,7 @@ import { onUpdateEmailSubmit } from '../../../actions'
 
 // Selector
 import { getUserData } from '../../../redux/modules/User/Selector'
+import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 const validateEmail = (value) =>
     value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
@@ -156,4 +157,6 @@ EditEmailForm = reduxForm({
     enableReinitialize: true,
 })(EditEmailForm)
 
-export default connect(mapStateToProps, { onUpdateEmailSubmit })(EditEmailForm)
+export default connect(mapStateToProps, { onUpdateEmailSubmit })(
+    wrapAnalytics(EditEmailForm, SCREENS.EDIT_EMAIL_FORM)
+)

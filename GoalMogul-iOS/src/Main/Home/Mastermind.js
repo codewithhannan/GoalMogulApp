@@ -32,6 +32,7 @@ import {
 import { GM_BLUE } from '../../styles'
 import { Logger } from '../../redux/middleware/utils/Logger'
 import DelayedButton from '../Common/Button/DelayedButton'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 const TAB_KEY = 'mastermind'
 const DEBUG_KEY = '[ UI Mastermind ]'
@@ -363,4 +364,4 @@ export default connect(
     },
     null,
     { withRef: true }
-)(Mastermind)
+)(wrapAnalytics(Mastermind, SCREENS.HOME_GOAL))

@@ -16,6 +16,7 @@ import SearchBarHeader from '../Common/Header/SearchBarHeader'
 
 import Mastermind from './Mastermind'
 import ActivityFeed from './ActivityFeed'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 // Actions
 import {
@@ -499,4 +500,4 @@ export default connect(
     },
     null,
     { withRef: true }
-)(HomeExplained)
+)(wrapAnalytics(HomeExplained, SCREENS.HOME))

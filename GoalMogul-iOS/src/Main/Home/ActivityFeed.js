@@ -27,11 +27,14 @@ import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
 
 import { GM_BLUE } from '../../styles'
 import DelayedButton from '../Common/Button/DelayedButton'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
 
-class ActivityFeed extends Component {
+const wrapper = (c) => wrapAnalytics(c, SCREENS.HOME_FEED)
+
+class ActivityFeed extends wrapper() {
     constructor(props) {
         super(props)
 

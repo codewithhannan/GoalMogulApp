@@ -23,6 +23,7 @@ import Styles from '../Styles'
 
 /* Actions */
 import { handleUpdatePassword } from '../../../actions'
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 /* TODO: abstract this validation fuction */
 const DEBUG_KEY = '[ UI EditPasswordForm ]'
@@ -48,7 +49,7 @@ const validate = (values) => {
     return errors
 }
 
-class EidtPasswordForm extends Component {
+class EditPasswordForm extends Component {
     handleOnSendPress = (values) => {
         Keyboard.dismiss()
         const errors = validate(values)
@@ -182,10 +183,10 @@ const mapStateToProps = (state) => {
     }
 }
 
-EidtPasswordForm = reduxForm({
+EditPasswordForm = reduxForm({
     form: 'passwordEditForm',
-})(EidtPasswordForm)
+})(EditPasswordForm)
 
 export default connect(mapStateToProps, {
     handleUpdatePassword,
-})(EidtPasswordForm)
+})(wrapAnalytics(EditPasswordForm, SCREENS.EDIT_PWD_FORM))

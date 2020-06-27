@@ -17,6 +17,7 @@ import {
     updateFriendsSetting,
 } from '../../../actions'
 import { Actions } from 'react-native-router-flux'
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 /*
   TODO: export this const file
@@ -144,4 +145,4 @@ const styles = {
 export default connect(mapStateToProps, {
     onFriendsSettingSelection,
     updateFriendsSetting,
-})(FriendsSetting)
+})(wrapAnalytics(FriendsSetting, SCREENS.FRIENDS_SETTING))

@@ -2,6 +2,7 @@
 
 import * as Segment from 'expo-analytics-segment'
 import getEnvVars from '../../../environment'
+import React, { Component } from 'react'
 
 /**
  * All names of events tracked using Segment. Please only use the names here.
@@ -138,8 +139,11 @@ const EVENT = {
 }
 
 const SCREENS = {
+    SPLASH_SCREEN: 'SplashScreen',
     LOGIN_PAGE: 'LoginPage',
     HOME: 'Home',
+    HOME_GOAL: 'HomeGoal',
+    HOME_FEED: 'HomeFeed',
     GOAL_DETAIL: 'GoalDetail',
     POST_DETAIL: 'PostDetail',
     SHARE_DETAIL: 'ShareDetail',
@@ -147,6 +151,7 @@ const SCREENS = {
     PROFILE_DETAIL: 'ProfileDetail',
     EVENT_TAB: 'EventTab',
     EVENT_DETAIL: 'EventDetail',
+    MY_EVENT_DETAIL: 'MyEventDetail',
     TRIBE_TAB: 'TribeTab',
     TRIBE_DETAIL: 'TribeDetail',
     SETTING: 'Setting',
@@ -164,10 +169,20 @@ const SCREENS = {
     SEARCH_OVERLAY: 'SearchOverlay',
     MEET_TAB: 'MeetTab',
     SHARE_MEET_TAB: 'ShareMeetTab',
+    SHARE_EXPLORE_TAB: 'ShareExploreTab',
     FRIEND_TAB_VIEW: 'FriendTabView',
     REQUEST_TAB_VIEW: 'RequestTabView',
     DISCOVER_TAB_VIEW: 'DiscoverTabView',
     FRIEND_INVITATION_VIEW: 'FriendInvitationView',
+    PROFILE_ABOUT_TAB: 'ProfileAboutTab',
+    PROFILE_GOAL_TAB: 'ProfileGoalTab',
+    PROFILE_POST_TAB: 'ProfilePostTab',
+    PROFILE_NEED_TAB: 'ProfileNeedTab',
+    EXPLORE_PAGE: 'ExplorePage',
+    EXPLORE_CHAT_TAB: 'ExploreChatTab',
+    EXPLORE_EVENT_TAB: 'ExploreEventTab',
+    EXPLORE_TRIBE_TAB: 'ExploreTribeTab',
+    EXPLORE_PEOPLE_TAB: 'ExplorePeopleTab',
 }
 
 const allEventNames = new Set()
@@ -219,22 +234,51 @@ const trackViewScreen = (screenName) => {
     if (!allScreenNames.has(screenName)) {
         throw `Don't use customized screen name '${screenName}'. Define it first in src/monitoring/segment`
     }
-    // console.log(`>>>>>> trackViewScreen: ${event}`)
-    // Segment.screen(screenName);
-    Segment.track(`Screen ${screenName}`)
+    //console.log(`>>>>>> trackViewScreen: ${screenName}`)
+    Segment.track(`ScreenView ${screenName}`)
 }
 
 const trackScreenWithProps = (screenName, properties) => {
     if (!allScreenNames.has(screenName)) {
         throw `Don't use customized screen name '${screenName}'. Define it first in src/monitoring/segment`
     }
-    // console.log(`>>>>>> trackScreenWithProps: ${screenName}\n${JSON.stringify(properties)}`)
+    //console.log(`>>>>>> trackScreenWithProps: ${screenName}\n${JSON.stringify(properties)}`)
     // Segment.screenWithProperties does not seem to work properly
     Segment.trackWithProperties(`ScreenView ${screenName}`, properties)
 }
 
+const trackScreenCloseWithProps = (screenName, properties) => {
+    if (!allScreenNames.has(screenName)) {
+        throw `Don't use customized screen name '${screenName}'. Define it first in src/monitoring/segment`
+    }
+    //console.log(`>>>>>> trackScreenCloseWithProps: ${screenName}\n${JSON.stringify(properties)}`)
+    // Segment.screenWithProperties does not seem to work properly
+    Segment.trackWithProperties(`ScreenClose ${screenName}`, properties)
+}
+
 const resetUser = () => {
     Segment.reset()
+}
+
+function wrapAnalytics(Comp, screenName) {
+    return class extends Component {
+        componentDidMount() {
+            this.startTime = new Date()
+            trackViewScreen(screenName)
+        }
+
+        componentWillUnmount() {
+            const duration =
+                (new Date().getTime() - this.startTime.getTime()) / 1000
+            trackScreenCloseWithProps(screenName, {
+                DurationSec: duration,
+            })
+        }
+
+        render() {
+            return <Comp {...this.props} {...this.state} />
+        }
+    }
 }
 
 export {
@@ -246,6 +290,7 @@ export {
     identify,
     initSegment,
     identifyWithTraits,
+    wrapAnalytics,
     EVENT,
     SCREENS,
 }

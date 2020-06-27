@@ -26,6 +26,7 @@ import { Logger } from '../../../redux/middleware/utils/Logger'
 
 /* Styles */
 import Styles from '../Styles'
+import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 const DEBUG_KEY = '[ UI NotificationSetting ]'
 class NotificationSetting extends React.PureComponent {
@@ -160,4 +161,4 @@ NotificationSetting = reduxForm({
 
 export default connect(mapStateToProps, {
     saveNotificationSetting,
-})(NotificationSetting)
+})(wrapAnalytics(NotificationSetting, SCREENS.NOTIFICATION_SETTING))

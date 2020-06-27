@@ -46,6 +46,7 @@ import ProfileNeedCard from '../Goal/NeedCard/ProfileNeedCard'
 import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard'
 import About from './About'
 import ProfileDetailCard from './ProfileCard/ProfileDetailCard'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
@@ -588,4 +589,4 @@ export default connect(makeMapStateToProps, {
     handleTabRefresh,
     handleProfileTabOnLoadMore,
     changeFilter,
-})(ProfileV2)
+})(wrapAnalytics(ProfileV2, SCREENS.PROFILE))

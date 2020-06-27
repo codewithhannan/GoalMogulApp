@@ -27,6 +27,7 @@ import {
     onAddVerifyPhone,
     verifyPhoneNumberSuccess,
 } from '../../../actions'
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 const validatePhone = (value) =>
     value && /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(value)
@@ -172,4 +173,4 @@ export default connect(null, {
     onUpdatePhoneNumberSubmit,
     onAddVerifyPhone,
     verifyPhoneNumberSuccess,
-})(EditPhoneNumberForm)
+})(wrapAnalytics(EditPhoneNumberForm, SCREENS.EDIT_PHONE_NUMBER))

@@ -15,6 +15,7 @@ import { closeProfileDetail } from '../../actions/ProfileActions'
 
 // Selector
 import { getUserData } from '../../redux/modules/User/Selector'
+import { SCREENS, wrapAnalytics } from '../../monitoring/segment'
 
 class ProfileDetail extends Component {
     constructor(props) {
@@ -78,4 +79,4 @@ const mapStateToProps = (state, props) => {
 
 export default connect(mapStateToProps, {
     closeProfileDetail,
-})(ProfileDetail)
+})(wrapAnalytics(ProfileDetail, SCREENS.PROFILE_DETAIL))

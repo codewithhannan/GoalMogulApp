@@ -30,6 +30,7 @@ import {
 
 // Selector
 import { getUserData } from '../../../redux/modules/User/Selector'
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 class AddPhoneNumberForm extends Component {
     handleOnAddPress = (values) => {
@@ -180,4 +181,4 @@ export default connect(mapStateToProps, {
     onUpdatePhoneNumberSubmit,
     verifyPhoneNumberSuccess,
     onAddVerifyPhone,
-})(AddPhoneNumberForm)
+})(wrapAnalytics(AddPhoneNumberForm, SCREENS.ADD_PHONE_NUMBER))

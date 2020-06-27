@@ -82,7 +82,7 @@ import GoalDetailSection from './GoalDetailSection';
 import SuggestionModal from './SuggestionModal3';
 import CentralTab from './V3/CentralTab';
 import FocusTab from './V3/FocusTab';
-
+import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 const initialLayout = {
     height: 0,
@@ -1147,4 +1147,4 @@ export default connect(makeMapStateToProps, {
     updateNextStepNumber,
     pauseTutorial,
     saveTutorialState,
-})(GoalDetailCardV3Explained)
+})(wrapAnalytics(GoalDetailCardV3Explained, SCREENS.GOAL_DETAIL))
