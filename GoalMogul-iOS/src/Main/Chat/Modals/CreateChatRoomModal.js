@@ -761,14 +761,14 @@ class CreateChatroomModal extends React.Component {
                             </View>
                         )}
                     </ScrollView>
-                    <Button
-                        size="large"
-                        style={styles.actionButtonStyle}
-                        onPress={this.handleNext}
-                    >
-                        {actionText}
-                    </Button>
                 </KeyboardAvoidingView>
+                <Button
+                    size="large"
+                    style={styles.actionButtonStyle}
+                    onPress={this.handleNext}
+                >
+                    {actionText}
+                </Button>
             </MenuProvider>
         )
     }
