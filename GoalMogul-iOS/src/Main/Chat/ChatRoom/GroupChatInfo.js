@@ -30,7 +30,6 @@ import { ScrollView, StyleSheet } from 'react-native'
 
 import ModalHeader from '../../Common/Header/ModalHeader'
 import ToggleField from '../../Common/ToggleField'
-import { add } from 'lodash'
 
 // Icons
 function ForwardIcon(props) {
