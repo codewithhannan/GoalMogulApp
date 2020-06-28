@@ -34,7 +34,7 @@ function ToggleField(props) {
                 {label}
                 {children}
             </Layout>
-            <Toggle checked={checked} onCheckedChange={onCheckedChange} />
+            <Toggle checked={checked} onChange={onCheckedChange} />
         </Layout>
     )
 }
