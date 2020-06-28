@@ -276,7 +276,7 @@ function wrapAnalytics(Comp, screenName) {
         }
 
         render() {
-            return <Comp {...this.props} {...this.state} />
+            return <Comp {...this.props} />
         }
     }
 }

@@ -154,11 +154,17 @@ const mapStateToProps = (state, props) => {
     }
 }
 
-NotificationSetting = reduxForm({
+// Analytics must be the inner most wrapper
+const AnalyticsWrapper = wrapAnalytics(
+    NotificationSetting,
+    SCREENS.NOTIFICATION_SETTING
+)
+
+const ReduxWrapper = reduxForm({
     form: 'notificationSetting',
     enableReinitialize: true,
-})(NotificationSetting)
+})(AnalyticsWrapper)
 
 export default connect(mapStateToProps, {
     saveNotificationSetting,
-})(wrapAnalytics(NotificationSetting, SCREENS.NOTIFICATION_SETTING))
+})(ReduxWrapper)

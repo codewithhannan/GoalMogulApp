@@ -183,10 +183,13 @@ const mapStateToProps = (state) => {
     }
 }
 
-EditPasswordForm = reduxForm({
+// Make sure AnalyticsWrapper is the inner most wrapper
+const AnalyticsWrapper = wrapAnalytics(EditPasswordForm, SCREENS.EDIT_PWD_FORM)
+
+const ReduxWrapper = reduxForm({
     form: 'passwordEditForm',
-})(EditPasswordForm)
+})(AnalyticsWrapper)
 
 export default connect(mapStateToProps, {
     handleUpdatePassword,
-})(wrapAnalytics(EditPasswordForm, SCREENS.EDIT_PWD_FORM))
+})(ReduxWrapper)

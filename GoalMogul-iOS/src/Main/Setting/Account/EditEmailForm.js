@@ -152,11 +152,11 @@ const mapStateToProps = (state, props) => {
     }
 }
 
-EditEmailForm = reduxForm({
+const AnalyticsWrapper = wrapAnalytics(EditEmailForm, SCREENS.EDIT_EMAIL_FORM)
+
+const ReduxWrapper = reduxForm({
     form: 'addPhoneNumberForm',
     enableReinitialize: true,
-})(EditEmailForm)
+})(AnalyticsWrapper)
 
-export default connect(mapStateToProps, { onUpdateEmailSubmit })(
-    wrapAnalytics(EditEmailForm, SCREENS.EDIT_EMAIL_FORM)
-)
+export default connect(mapStateToProps, { onUpdateEmailSubmit })(ReduxWrapper)

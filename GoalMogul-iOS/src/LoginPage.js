@@ -384,11 +384,14 @@ const mapStateToProps = (state) => {
     }
 }
 
-LoginPage = reduxForm({
+// Analytics must be the inner most HOC wrapper
+const AnalyticsWrapper = wrapAnalytics(LoginPage, SCREENS.LOGIN_PAGE)
+
+const ReduxWrapper = reduxForm({
     form: 'loginForm',
-})(LoginPage)
+})(AnalyticsWrapper)
 
 export default connect(mapStateToProps, {
     registerUser,
     loginUser,
-})(wrapAnalytics(LoginPage, SCREENS.LOGIN_PAGE))
+})(ReduxWrapper)

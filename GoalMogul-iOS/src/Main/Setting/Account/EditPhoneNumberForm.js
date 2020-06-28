@@ -164,13 +164,19 @@ const styles = {
     },
 }
 
-EditPhoneNumberForm = reduxForm({
+// Analytics must be the inner most wrapper
+const AnalyticsWrapper = wrapAnalytics(
+    EditPhoneNumberForm,
+    SCREENS.EDIT_PHONE_NUMBER
+)
+
+const ReduxWrapper = reduxForm({
     form: 'editPhoneNumberForm',
     enableReinitialize: true,
-})(EditPhoneNumberForm)
+})(AnalyticsWrapper)
 
 export default connect(null, {
     onUpdatePhoneNumberSubmit,
     onAddVerifyPhone,
     verifyPhoneNumberSuccess,
-})(wrapAnalytics(EditPhoneNumberForm, SCREENS.EDIT_PHONE_NUMBER))
+})(ReduxWrapper)

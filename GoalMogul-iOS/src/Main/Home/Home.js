@@ -463,13 +463,15 @@ const styles = {
     },
 }
 
+const AnalyticsWrapped = wrapAnalytics(Home, SCREENS.HOME)
+
 const HomeExplained = copilot({
     overlay: 'svg', // or 'view'
     animated: true, // or false
     stepNumberComponent: () => <View />,
     tooltipComponent: Tooltip,
     svgMaskPath: svgMaskPath,
-})(Home)
+})(AnalyticsWrapped)
 
 export default connect(
     mapStateToProps,
@@ -500,4 +502,4 @@ export default connect(
     },
     null,
     { withRef: true }
-)(wrapAnalytics(HomeExplained, SCREENS.HOME))
+)(HomeExplained)

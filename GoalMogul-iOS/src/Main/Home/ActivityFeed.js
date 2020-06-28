@@ -32,9 +32,7 @@ import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
 
-const wrapper = (c) => wrapAnalytics(c, SCREENS.HOME_FEED)
-
-class ActivityFeed extends wrapper() {
+class ActivityFeed extends Component {
     constructor(props) {
         super(props)
 
@@ -213,4 +211,4 @@ export default connect(
     },
     null,
     { withRef: true }
-)(ActivityFeed)
+)(wrapAnalytics(ActivityFeed, SCREENS.HOME_FEED))
