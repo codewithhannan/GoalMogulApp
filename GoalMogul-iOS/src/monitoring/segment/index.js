@@ -261,7 +261,7 @@ const resetUser = () => {
 }
 
 function wrapAnalytics(Comp, screenName) {
-    return class extends Component {
+    class AnalyticsWrapper extends Component {
         componentDidMount() {
             this.startTime = new Date()
             trackViewScreen(screenName)
@@ -276,9 +276,14 @@ function wrapAnalytics(Comp, screenName) {
         }
 
         render() {
-            return <Comp {...this.props} />
+            const { forwardedRef, ...rest } = this.props
+            return <Comp {...rest} ref={forwardedRef} />
         }
     }
+
+    return React.forwardRef((props, ref) => {
+        return <AnalyticsWrapper {...props} forwardedRef={ref} />
+    })
 }
 
 export {
