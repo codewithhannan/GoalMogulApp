@@ -138,6 +138,8 @@ class CreateChatroomModal extends React.Component {
             { ...formVals.values, ChatId: chatId, DurationSec: durationSec }
         )
 
+        // console.log("formVals are: ", formVals.values);
+
         this.props.createOrUpdateChatroom(
             formVals.values,
             membersToAdd || '',
@@ -297,6 +299,7 @@ class CreateChatroomModal extends React.Component {
                 caption="This field is required."
                 disabled={this.props.uploading}
                 style={styles.inputStyle}
+                onChangeText={(val) => this.props.change('name', val)}
             />
         )
     }
@@ -327,6 +330,7 @@ class CreateChatroomModal extends React.Component {
                 placeholder="Enter a number..."
                 keyboardType="number-pad"
                 style={styles.inputStyle}
+                onChangeText={(val) => this.props.change('memberLimit', val)}
             />
         )
     }
@@ -357,6 +361,7 @@ class CreateChatroomModal extends React.Component {
                 multiline
                 textStyle={styles.multilineTextStyle}
                 style={styles.inputStyle}
+                onChangeText={(val) => this.props.change('description', val)}
             />
         )
     }
@@ -563,9 +568,8 @@ class CreateChatroomModal extends React.Component {
                 <ToggleField
                     label={<Text>Publicly Visible</Text>}
                     checked={this.props.isPublic}
-                    onCheckedChange={(switchValue) => {
-                        this.setState({ switchValue })
-                        this.props.change('isPublic', !this.props.isPublic)
+                    onCheckedChange={(val) => {
+                        this.props.change('isPublic', val)
                     }}
                 >
                     <TouchableOpacity>
@@ -578,12 +582,8 @@ class CreateChatroomModal extends React.Component {
                 <ToggleField
                     label={<Text>Members can invite their friends</Text>}
                     checked={this.props.membersCanAdd}
-                    onCheckedChange={(switchValue2) => {
-                        this.setState({ switchValue2 })
-                        this.props.change(
-                            'membersCanAdd',
-                            !this.props.membersCanAdd
-                        )
+                    onCheckedChange={(val) => {
+                        this.props.change('membersCanAdd', val)
                     }}
                 />
             </>
