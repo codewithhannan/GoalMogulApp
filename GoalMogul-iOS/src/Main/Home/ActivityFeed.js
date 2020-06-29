@@ -27,6 +27,7 @@ import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
 
 import { GM_BLUE } from '../../styles'
 import DelayedButton from '../Common/Button/DelayedButton'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
@@ -210,4 +211,4 @@ export default connect(
     },
     null,
     { withRef: true }
-)(ActivityFeed)
+)(wrapAnalytics(ActivityFeed, SCREENS.HOME_FEED))

@@ -69,29 +69,29 @@ import {
 
 // Styles
 import { BACKGROUND_COLOR, DEFAULT_STYLE, GM_BLUE } from '../../../styles'
-import { TABBAR_HEIGHT } from '../../../styles/Goal';
+import { TABBAR_HEIGHT } from '../../../styles/Goal'
 
 // Component
-import SearchBarHeader from '../../Common/Header/SearchBarHeader';
-import LoadingModal from '../../Common/Modal/LoadingModal';
-import Tooltip from '../../Tutorial/Tooltip';
-import { svgMaskPath } from '../../Tutorial/Utils';
-import CommentBox from '../Common/CommentBoxV2';
-import SectionCardV2 from '../Common/SectionCardV2';
-import GoalDetailSection from './GoalDetailSection';
-import SuggestionModal from './SuggestionModal3';
-import CentralTab from './V3/CentralTab';
-import FocusTab from './V3/FocusTab';
-
+import SearchBarHeader from '../../Common/Header/SearchBarHeader'
+import LoadingModal from '../../Common/Modal/LoadingModal'
+import Tooltip from '../../Tutorial/Tooltip'
+import { svgMaskPath } from '../../Tutorial/Utils'
+import CommentBox from '../Common/CommentBoxV2'
+import SectionCardV2 from '../Common/SectionCardV2'
+import GoalDetailSection from './GoalDetailSection'
+import SuggestionModal from './SuggestionModal3'
+import CentralTab from './V3/CentralTab'
+import FocusTab from './V3/FocusTab'
+import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 const initialLayout = {
     height: 0,
     width: Dimensions.get('window').width,
 }
 
-const HEADER_HEIGHT = 240; // Need to be calculated in the state later based on content length
-const COLLAPSED_HEIGHT = TABBAR_HEIGHT + Constants.statusBarHeight;
-const DEBUG_KEY = '[ UI GoalDetailCardV3 ]';
+const HEADER_HEIGHT = 240 // Need to be calculated in the state later based on content length
+const COLLAPSED_HEIGHT = TABBAR_HEIGHT + Constants.statusBarHeight
+const DEBUG_KEY = '[ UI GoalDetailCardV3 ]'
 
 // const COMMENTBOX_HEIGHT = 43;
 const TOTAL_HEIGHT = TABBAR_HEIGHT
@@ -399,8 +399,8 @@ export class GoalDetailCardV3 extends Component {
 
         // Don't update if it's currently not on focused tab
         if (type === 'focusedItem' && focusType !== undefined) {
-            if (height === focusedItemHeight) return;
-            focusedItemHeight = height;
+            if (height === focusedItemHeight) return
+            focusedItemHeight = height
         }
 
         // Don't update if it's currently not on all comment item
@@ -473,11 +473,14 @@ export class GoalDetailCardV3 extends Component {
                     duration: 210 - timeout,
                 }),
                 Animated.timing(this.state.contentBottomPadding, {
-                    toValue: e.endCoordinates.height - TOTAL_HEIGHT - getBottomSpace(),
-                    duration: (210 - timeout)
-                })
-            ])
-        ]).start();
+                    toValue:
+                        e.endCoordinates.height -
+                        TOTAL_HEIGHT -
+                        getBottomSpace(),
+                    duration: 210 - timeout,
+                }),
+            ]),
+        ]).start()
     }
 
     keyboardWillHide = () => {
@@ -650,17 +653,28 @@ export class GoalDetailCardV3 extends Component {
                 return (
                     <CentralTab
                         testID="goal-detail-card-central-tab"
-                        onScroll={this.props.isSelf
-                            ? (offset) => {
-                                if (this.state.scroll) this.state.scroll.setValue(offset);
-                            } : Animated.event(
-                                [{ nativeEvent: { contentOffset: { y: this.state.scroll } } }],
-                                { useNativeDriver: true }
-                            )
+                        onScroll={
+                            this.props.isSelf
+                                ? (offset) => {
+                                      if (this.state.scroll)
+                                          this.state.scroll.setValue(offset)
+                                  }
+                                : Animated.event(
+                                      [
+                                          {
+                                              nativeEvent: {
+                                                  contentOffset: {
+                                                      y: this.state.scroll,
+                                                  },
+                                              },
+                                          },
+                                      ],
+                                      { useNativeDriver: true }
+                                  )
                         }
                         contentContainerStyle={{
                             paddingTop: this.state.cardHeight,
-                            flexGrow: 1
+                            flexGrow: 1,
                         }}
                         bottomOffset={this.state.contentBottomPadding}
                         isSelf={this.props.isSelf}
@@ -818,7 +832,7 @@ export class GoalDetailCardV3 extends Component {
                     borderTopWidth: 0.5,
                     borderBottomWidth: 0.5,
                     borderColor: '#e5e5e5',
-                    minHeight: TABBAR_HEIGHT
+                    minHeight: TABBAR_HEIGHT,
                 }}
                 onPress={this.onViewCommentPress}
                 onLayout={(event) =>
@@ -1113,6 +1127,9 @@ const getFocusedItemCount = (comments, focusType, focusRef) => {
 
     return focusedItemCount
 }
+
+// Analytics must be the inner most wrapper
+GoalDetailCardV3 = wrapAnalytics(GoalDetailCardV3, SCREENS.GOAL_DETAIL)
 
 const GoalDetailCardV3Explained = copilot({
     overlay: 'svg', // or 'view'

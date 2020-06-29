@@ -16,6 +16,7 @@ import { getBlockedUsers, friendsBlockedOnClose } from '../../../../actions'
 // selectors
 import { getBlockees } from '../../../../redux/modules/setting/selector'
 import { Logger } from '../../../../redux/middleware/utils/Logger'
+import { wrapAnalytics, SCREENS } from '../../../../monitoring/segment'
 
 const DEBUG_KEY = '[ Component FriendsBlocked ]'
 
@@ -108,4 +109,4 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     getBlockedUsers,
     friendsBlockedOnClose,
-})(FriendsBlocked)
+})(wrapAnalytics(FriendsBlocked, SCREENS.FRIENDS_BLOCKED))

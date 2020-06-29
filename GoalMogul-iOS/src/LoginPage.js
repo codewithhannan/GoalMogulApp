@@ -27,6 +27,7 @@ import { registerUser, loginUser } from './actions'
 
 import { RESET_PASSWORD_URL } from './Utils/Constants'
 import Recaptcha from './Main/Common/Recaptcha'
+import { SCREENS, wrapAnalytics } from './monitoring/segment'
 
 const validate = (values) => {
     const errors = {}
@@ -383,11 +384,14 @@ const mapStateToProps = (state) => {
     }
 }
 
-LoginPage = reduxForm({
+// Analytics must be the inner most HOC wrapper
+const AnalyticsWrapper = wrapAnalytics(LoginPage, SCREENS.LOGIN_PAGE)
+
+const ReduxWrapper = reduxForm({
     form: 'loginForm',
-})(LoginPage)
+})(AnalyticsWrapper)
 
 export default connect(mapStateToProps, {
     registerUser,
     loginUser,
-})(LoginPage)
+})(ReduxWrapper)

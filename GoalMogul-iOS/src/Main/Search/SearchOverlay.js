@@ -37,7 +37,12 @@ import {
 
 // Constants
 import { IPHONE_MODELS, DEVICE_MODEL } from '../../Utils/Constants'
-import { track, EVENT as E } from '../../monitoring/segment'
+import {
+    track,
+    EVENT as E,
+    SCREENS,
+    wrapAnalytics,
+} from '../../monitoring/segment'
 
 const DEBUG_KEY = '[ Component Search ]'
 
@@ -317,4 +322,7 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchOverlay)
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(wrapAnalytics(SearchOverlay, SCREENS.SEARCH_OVERLAY))

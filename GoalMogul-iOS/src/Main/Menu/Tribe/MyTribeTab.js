@@ -27,6 +27,7 @@ import plus from '../../../asset/utils/plus.png'
 
 // Styles
 import { DEFAULT_STYLE, GM_BLUE } from '../../../styles'
+import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 const DEBUG_KEY = '[ UI MyTribeTab ]'
 
@@ -197,4 +198,4 @@ export default connect(mapStateToProps, {
     closeMyTribeTab,
     openNewTribeModal,
     myTribeSelectTab,
-})(MyTribeTab)
+})(wrapAnalytics(MyTribeTab, SCREENS.TRIBE_TAB))

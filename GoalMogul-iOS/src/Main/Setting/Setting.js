@@ -16,6 +16,7 @@ import { settingSwitchTab } from '../../redux/modules/setting/SettingActions'
 
 /* Styles */
 import { APP_DEEP_BLUE } from '../../styles'
+import { SCREENS, wrapAnalytics } from '../../monitoring/segment'
 
 class Setting extends Component {
     handleIndexChange = (index) => {
@@ -71,4 +72,4 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
     settingSwitchTab,
-})(Setting)
+})(wrapAnalytics(Setting, SCREENS.SETTING))

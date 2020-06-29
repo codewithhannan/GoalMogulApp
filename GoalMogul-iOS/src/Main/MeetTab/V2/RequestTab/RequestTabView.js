@@ -24,6 +24,7 @@ import IncomingRequestTabView from './IncomingRequestTabView'
 import OutgoingRequestTabView from './OutgoingRequestTabView'
 import { SearchBar } from 'react-native-elements'
 import { SearchIcon } from '../../../../Utils/Icons'
+import { SCREENS, wrapAnalytics } from '../../../../monitoring/segment'
 
 class RequestTabView extends Component {
     handleIndexChange = (index) => {
@@ -138,4 +139,4 @@ export default connect(mapStateToProps, {
     handleRefresh,
     loadMoreRequest,
     handleRequestTabSwitchTab,
-})(RequestTabView)
+})(wrapAnalytics(RequestTabView, SCREENS.REQUEST_TAB_VIEW))

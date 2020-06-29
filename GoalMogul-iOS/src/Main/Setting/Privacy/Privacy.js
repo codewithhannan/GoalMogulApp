@@ -13,6 +13,7 @@ import PrivacyIcon from '../../../asset/utils/privacy.png'
 
 // Utils
 import { componentKeyByTab } from '../../../redux/middleware/utils'
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 class Privacy extends Component {
     constructor(props) {
@@ -52,4 +53,7 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, null)(Privacy)
+export default connect(
+    mapStateToProps,
+    null
+)(wrapAnalytics(Privacy, SCREENS.PRIVACY))

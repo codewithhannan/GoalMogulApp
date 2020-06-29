@@ -25,6 +25,7 @@ import { onResendEmailPress } from '../../../actions'
 
 /* Utils */
 import { componentKeyByTab } from '../../../redux/middleware/utils'
+import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 class Email extends Component {
     handleOnResendPress() {
@@ -114,4 +115,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { onResendEmailPress })(Email)
+export default connect(mapStateToProps, { onResendEmailPress })(
+    wrapAnalytics(Email, SCREENS.EMAIL)
+)

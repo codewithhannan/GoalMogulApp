@@ -47,6 +47,7 @@ import {
 } from '../../../Utils/Constants'
 
 import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from '../../../styles'
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -371,4 +372,4 @@ export default connect(mapStateToProps, {
     openProfile,
     subscribeEntityNotification,
     unsubscribeEntityNotification,
-})(ProfilePostCard)
+})(wrapAnalytics(ProfilePostCard, SCREENS.PROFILE_POST_TAB))

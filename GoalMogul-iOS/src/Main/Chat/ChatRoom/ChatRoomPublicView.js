@@ -32,6 +32,7 @@ import ModalHeader from '../../Common/Header/ModalHeader'
 import LoadingModal from '../../Common/Modal/LoadingModal'
 import { StackedAvatarsV2 } from '../../Common/StackedAvatars'
 import SettingCard from '../../Setting/SettingCard'
+import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 const windowWidth = Dimensions.get('window').width
 
@@ -356,7 +357,7 @@ export default connect(makeMapStateToProps, {
     openProfile,
     cancelJoinRequest,
     sendJoinRequest,
-})(ChatRoomPublicView)
+})(wrapAnalytics(ChatRoomPublicView, SCREENS.CHATROOM_PUBLIC_VIEW))
 
 const styles = {
     homeContainerStyle: {

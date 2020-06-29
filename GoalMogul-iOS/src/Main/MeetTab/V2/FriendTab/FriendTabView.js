@@ -36,6 +36,7 @@ import { Actions } from 'react-native-router-flux'
 import { componentKeyByTab } from '../../../../redux/middleware/utils'
 import { SearchBar } from 'react-native-elements'
 import { SearchIcon } from '../../../../Utils/Icons'
+import { SCREENS, wrapAnalytics } from '../../../../monitoring/segment'
 
 const KEY = 'friends'
 const DEBUG_KEY = '[ UI FriendTabView ]'
@@ -228,4 +229,4 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     loadMoreRequest,
     handleRefreshFriend,
-})(FriendTabView)
+})(wrapAnalytics(FriendTabView, SCREENS.FRIEND_TAB_VIEW))

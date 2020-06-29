@@ -92,6 +92,7 @@ import EmptyResult from '../../Common/Text/EmptyResult'
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard'
 import MemberListCard from '../../Tribe/MemberListCard'
 import About from './MyTribeAbout'
+import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 import MyTribeBanner from './MyTribeBanner'
 
@@ -1007,7 +1008,7 @@ export default connect(mapStateToProps, {
     inviteMultipleUsersToTribe,
     loadFriends,
     loadMoreTribeFeed,
-})(MyTribe)
+})(wrapAnalytics(MyTribe, SCREENS.TRIBE_DETAIL))
 
 const switchCaseMemberStatus = (status) =>
     switchCase({

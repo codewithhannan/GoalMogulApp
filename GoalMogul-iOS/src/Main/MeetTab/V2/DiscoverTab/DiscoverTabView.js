@@ -19,6 +19,7 @@ import SearchBarHeader from '../../../Common/Header/SearchBarHeader'
 import EmptyResult from '../../../Common/Text/EmptyResult'
 // Components
 import SuggestedCard from '../../Suggested/SuggestedCard'
+import { SCREENS, wrapAnalytics } from '../../../../monitoring/segment'
 
 // tab key
 const key = 'suggested'
@@ -118,4 +119,4 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     handleRefresh,
     loadMoreRequest,
-})(DiscoverTabView)
+})(wrapAnalytics(DiscoverTabView, SCREENS.DISCOVER_TAB_VIEW))
