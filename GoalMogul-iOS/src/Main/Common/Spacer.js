@@ -1,33 +1,35 @@
-/**
- * This component uses ui-kitten <Divider /> to implement horizontal spacer
- * with specified height and customized styles
- *
- * @format
- */
+/** @format */
 
-import React from 'react'
-import { Divider } from '@ui-kitten/components'
-import _ from 'lodash'
+// /**
+//  * This component uses ui-kitten <Divider /> to implement horizontal spacer
+//  * with specified height and customized styles
+//  *
+//  * @format
+//  */
 
-function Spacer(props) {
-    const { size } = props
+// import React from 'react'
+// import { Divider } from '@ui-kitten/components'
+// import _ from 'lodash'
 
-    return (
-        <Divider
-            style={[
-                {
-                    padding: _.get(sizeMapper, size, 1),
-                    backgroundColor: '#F2F2F2',
-                },
-            ]}
-        />
-    )
-}
+// function Spacer(props) {
+//     const { size } = props
 
-const sizeMapper = {
-    1: 1,
-    2: 2,
-    3: 4,
-}
+//     return (
+//         <Divider
+//             style={[
+//                 {
+//                     padding: _.get(sizeMapper, size, 1),
+//                     backgroundColor: '#F2F2F2',
+//                 },
+//             ]}
+//         />
+//     )
+// }
 
-export default Spacer
+// const sizeMapper = {
+//     1: 1,
+//     2: 2,
+//     3: 4,
+// }
+
+// export default Spacer
