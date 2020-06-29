@@ -28,6 +28,8 @@ import {
 } from '../../../Utils/Constants'
 import { DEFAULT_STYLE } from '../../../styles'
 
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
+
 class ProfileNeedCard extends React.Component {
     handleCardOnPress(item) {
         this.props.openGoalDetail(item)
@@ -170,4 +172,4 @@ export default connect(mapStateToProps, {
     deleteGoal,
     subscribeEntityNotification,
     unsubscribeEntityNotification,
-})(ProfileNeedCard)
+})(wrapAnalytics(ProfileNeedCard, SCREENS.PROFILE_NEED_TAB))

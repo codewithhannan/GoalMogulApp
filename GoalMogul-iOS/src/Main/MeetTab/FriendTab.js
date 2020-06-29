@@ -25,6 +25,7 @@ import RequestCard from './V2/RequestCard'
 import { componentKeyByTab } from '../../redux/middleware/utils'
 import { handleRefresh, meetOnLoadMore } from '../../actions'
 import InviteFriendModal from './Modal/InviteFriendModal'
+import { SCREENS, wrapAnalytics } from '../../monitoring/segment'
 
 /**
  * Friend tab page for GM main tabs
@@ -358,4 +359,4 @@ export default connect(mapStateToProps, {
     handleRefreshRequests,
     handleRefresh,
     meetOnLoadMore,
-})(FriendTab)
+})(wrapAnalytics(FriendTab, SCREENS.MEET_TAB))

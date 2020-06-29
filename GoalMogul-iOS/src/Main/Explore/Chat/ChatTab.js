@@ -23,6 +23,7 @@ import { makeGetUsers } from '../../../redux/modules/explore/selector'
 import ChatRoomCard from '../../Chat/ChatRoomList/ChatRoomCard'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { componentKeyByTab } from '../../../redux/middleware/utils'
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 const TAB_KEY = 'chatRooms'
 const DEBUG_KEY = '[ UI Explore.ChatTab ]'
@@ -192,4 +193,4 @@ const mapStateToProps = (state, props) => {
 export default connect(mapStateToProps, {
     exploreRefreshTab,
     exploreLoadMoreTab,
-})(ChatTab)
+})(wrapAnalytics(ChatTab, SCREENS.EXPLORE_CHAT_TAB))

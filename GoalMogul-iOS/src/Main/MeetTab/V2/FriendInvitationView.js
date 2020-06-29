@@ -19,6 +19,7 @@ import { BACKGROUND_COLOR } from '../../../styles'
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
 import SettingCard from '../../Setting/SettingCard'
+import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 // Constants
 const DEBUG_KEY = '[ UI FriendInvitationView ]'
@@ -105,4 +106,7 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, null)(FriendInvitationView)
+export default connect(
+    mapStateToProps,
+    null
+)(wrapAnalytics(FriendInvitationView, SCREENS.FRIEND_INVITATION_VIEW))

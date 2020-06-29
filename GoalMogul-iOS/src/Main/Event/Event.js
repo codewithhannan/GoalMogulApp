@@ -63,6 +63,7 @@ import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard'
 import MemberListCard from '../Tribe/MemberListCard'
 import About from './About'
 import ParticipantFilterBar from './ParticipantFilterBar'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 const DEBUG_KEY = '[ UI Event ]'
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel']
@@ -682,4 +683,4 @@ export default connect(mapStateToProps, {
     openPostDetail,
     subscribeEntityNotification,
     unsubscribeEntityNotification,
-})(Event)
+})(wrapAnalytics(Event, SCREENS.EVENT_DETAIL))
