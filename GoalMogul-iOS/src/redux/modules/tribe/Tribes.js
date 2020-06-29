@@ -56,21 +56,14 @@ export const TRIBE_NATIVATION_ROUTES = {
     ],
 }
 
+export const ALL_MEMBERS_FILTER_INDEX = 0
+export const JOIN_REQUESTS_FILTER_INDEX = 1
+export const PENDING_INVITES_FILTER_INDEX = 2
 export const TRIBE_USER_ROUTES = {
     default: [
-        { key: 'Admin', title: 'Admin' },
-        { key: 'Member', title: 'Member' },
-        { key: 'JoinRequester', title: 'Requested' },
-        { key: 'Invitee', title: 'Invited' },
-    ],
-    memberDefaultRoutes: [
-        { key: 'Admin', title: 'Admin' },
-        { key: 'Member', title: 'Member' },
-    ],
-    memberCanInviteRoutes: [
-        { key: 'Admin', title: 'Admin' },
-        { key: 'Member', title: 'Member' },
-        { key: 'Invitee', title: 'Invited' },
+        { membersFilters: ['Admin', 'Member'], title: 'All Members' },
+        { membersFilters: ['JoinRequester'], title: 'Join Requests' },
+        { membersFilters: ['Invitee'], title: 'Pending Invite' },
     ],
 }
 
@@ -134,7 +127,7 @@ export const INITIAL_TRIBE_PAGE = {
     tribeLoading: false,
     hasNextPage: undefined,
     updating: false,
-    membersFilter: 'Admin',
+    membersFilters: ['Admin', 'Member'],
     skip: 0,
     limit: 10,
     memberNavigationState: {
@@ -596,7 +589,7 @@ export default (state = INITIAL_STATE, action) => {
             if (option) {
                 tribePageToUpdate = _.set(
                     tribePageToUpdate,
-                    'membersFilter',
+                    'membersFilters',
                     option
                 )
             }

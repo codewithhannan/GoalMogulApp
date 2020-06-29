@@ -46,10 +46,8 @@ import {
     myTribeAdminPromoteUser,
     myTribeAdminRemoveUser,
     myTribeReset,
-    myTribeSelectMembersFilter,
     refreshMyTribeDetail,
     tribeDetailClose,
-    tribeSelectTab,
     loadMoreTribeFeed,
     requestJoinTribe,
     acceptTribeInvit,
@@ -63,8 +61,6 @@ import {
 } from '../../../redux/modules/tribe/MyTribeActions'
 // Selector
 import {
-    getMyTribeMemberNavigationState,
-    getMyTribeNavigationState,
     getMyTribeUserStatus,
     myTribeMemberSelector,
     getMyTribeDetailById,
@@ -222,13 +218,10 @@ class MyTribe extends React.PureComponent {
      * On plus clicked, show two icons. Post and Invite
      * const { textStyle, iconStyle, iconSource, text, onPress } = button;
      */
-    handlePlus = (item, navigationState) => {
+    handlePlus = (item) => {
         const { _id } = item
-        const { routes } = navigationState
-        const indexToGo = routes.map((route) => route.key).indexOf('posts')
 
         const postCallback = () => {
-            this._handleIndexChange(indexToGo)
             this.props.refreshMyTribeDetail(_id, this.props.pageId)
         }
 
@@ -663,7 +656,8 @@ class MyTribe extends React.PureComponent {
         )
     }
 
-    renderTribeOverview(item, data) {
+    renderTribeOverview() {
+        const { tribeId, pageId, item, data } = this.props
         const { name, picture, memberCount } = item
         const newDate = item.created ? new Date(item.created) : new Date()
         const date = `${
@@ -703,11 +697,7 @@ class MyTribe extends React.PureComponent {
                                 {count} members | Created {date}
                             </Text>
                         </View>
-                        <About
-                            item={this.props.item}
-                            data={this.props.memberData}
-                            memberProps={this.props.item}
-                        />
+                        <About pageId={pageId} tribeId={tribeId} data={item} />
                     </View>
                     <View style={styles.buttonGroup}>
                         <TouchableOpacity
@@ -747,10 +737,6 @@ class MyTribe extends React.PureComponent {
     }
 
     renderItem = (props) => {
-        const { navigationState } = this.props
-        const { routes, index } = navigationState
-        const { isUserAdmin } = this.props
-
         return (
             <ProfilePostCard
                 item={props.item}
@@ -764,18 +750,6 @@ class MyTribe extends React.PureComponent {
                 }}
             />
         )
-        // return (
-        //     <MemberListCard
-        //         item={props.item.memberRef}
-        //         category={props.item.category}
-        //         key={props.index}
-        //         isAdmin={isUserAdmin}
-        //         onRemoveUser={this.handleRemoveUser}
-        //         onPromoteUser={this.handlePromoteUser}
-        //         onDemoteUser={this.handleDemoteUser}
-        //         onAcceptUser={this.handleAcceptUser}
-        //     />
-        // );
     }
 
     renderAddPostButton(item) {
@@ -829,9 +803,9 @@ class MyTribe extends React.PureComponent {
                     ref="flatList"
                     data={data}
                     keyExtractor={(i) => i._id}
-                    ListHeaderComponent={this.renderTribeOverview(item, data)}
+                    ListHeaderComponent={this.renderTribeOverview()}
                     renderItem={this.renderItem}
-                    loading={this.props.tribeLoading && this.onPostTab()}
+                    loading={this.props.tribeLoading}
                     refreshing={this.props.loading}
                     onRefresh={() =>
                         this.props.refreshMyTribeDetail(
@@ -989,60 +963,27 @@ const mapStateToProps = (state, props) => {
         feedRefreshing,
     } = tribePage
     const { userId } = state.user
-    const navigationState = getMyTribeNavigationState(state, tribeId, pageId)
-    const memberNavigationState = getMyTribeMemberNavigationState(
-        state,
-        tribeId,
-        pageId
-    )
-
-    const navigationTab = state.navigation
 
     const memberData = myTribeMemberSelector(state, tribeId, pageId)
 
-    const { routes, index } = navigationState
     const data = getMyTribeFeedSelector(state, tribeId, pageId)
 
     return {
-        navigationState,
         item: tribe,
         user: state.user,
         data,
         isMember: getMyTribeUserStatus(state, tribeId),
         hasRequested,
-        tab: routes[index].key,
         userId,
-        isUserAdmin: checkIsAdmin(tribe ? tribe.members : [], userId),
-        memberNavigationState,
         loading: tribeLoading,
         feedLoading,
         feedRefreshing,
-        navigationTab,
         memberData,
     }
 }
 
-const checkIsAdmin = (members, userId) => {
-    let isAdmin = false
-    // Sanity check if member is not empty or undefined
-    if (members && members.length > 0) {
-        members.forEach((member) => {
-            if (
-                member.memberRef &&
-                member.memberRef._id === userId &&
-                member.category === 'Admin'
-            ) {
-                isAdmin = true
-            }
-        })
-    }
-
-    return isAdmin
-}
-
 export default connect(mapStateToProps, {
     refreshMyTribeDetail,
-    tribeSelectTab,
     tribeDetailClose,
     openTribeInvitModal,
     deleteTribe,
@@ -1055,7 +996,6 @@ export default connect(mapStateToProps, {
     myTribeAdminRemoveUser,
     myTribeAdminPromoteUser,
     myTribeAdminDemoteUser,
-    myTribeSelectMembersFilter,
     myTribeAdminAcceptUser,
     myTribeReset,
     openPostDetail,

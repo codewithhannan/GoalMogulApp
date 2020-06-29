@@ -1,7 +1,14 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { Dimensions, Text, View, Image, FlatList } from 'react-native'
+import {
+    Dimensions,
+    Text,
+    View,
+    Image,
+    FlatList,
+    ScrollView,
+} from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
@@ -11,6 +18,21 @@ import TabButtonGroup from '../../Common/TabButtonGroup'
 import flagIcon from '../../../asset/icons/flag.png'
 
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
+
+import { myTribeSelectMembersFilter } from '../../../redux/modules/tribe/MyTribeActions'
+
+import {
+    getMyTribeMemberNavigationState,
+    myTribeMemberSelector,
+} from '../../../redux/modules/tribe/TribeSelector'
+import { SearchBar } from 'react-native-elements'
+import { SearchIcon } from '../../../Utils/Icons'
+import { DEFAULT_STYLE } from '../../../styles'
+import {
+    ALL_MEMBERS_FILTER_INDEX,
+    JOIN_REQUESTS_FILTER_INDEX,
+    PENDING_INVITES_FILTER_INDEX,
+} from '../../../redux/modules/tribe/Tribes'
 
 function Item({ title }) {
     return (
@@ -23,7 +45,9 @@ function Item({ title }) {
 class MyTribeMembers extends React.PureComponent {
     constructor(props) {
         super(props)
-        console.log(this.props.data)
+        this.state = {
+            searchContent: '',
+        }
     }
 
     /**
@@ -62,50 +86,123 @@ class MyTribeMembers extends React.PureComponent {
         this.props.item.myTribeAdminAcceptUser(userId, _id)
     }
 
-    renderItem = (props) => {
-        const { isUserAdmin } = this.props.item
+    renderItem = (member) => {
         return (
             <MemberListCard
-                item={props.item.memberRef}
-                category={props.item.category}
-                key={props.item.index}
-                isAdmin={isUserAdmin}
+                item={member.memberRef}
+                category={member.category}
+                isSelf={this.props.userId === member.memberRef._id}
+                isAdmin={this.props.isAdmin}
                 onRemoveUser={this.handleRemoveUser}
                 onPromoteUser={this.handlePromoteUser}
                 onDemoteUser={this.handleDemoteUser}
                 onAcceptUser={this.handleAcceptUser}
             />
-            // <Text>test</Text>
         )
     }
 
+    _renderScene() {
+        const { memberData, navigationState } = this.props
+
+        const allMembers = memberData.filter((member) =>
+            member.memberRef.name.includes(this.state.searchContent)
+        )
+        const admins = allMembers.filter(
+            (member) => member.category === 'Admin'
+        )
+        const members = allMembers.filter(
+            (member) => member.category === 'Member'
+        )
+
+        const { index } = navigationState || { index: ALL_MEMBERS_FILTER_INDEX }
+        switch (index) {
+            case ALL_MEMBERS_FILTER_INDEX:
+                return (
+                    <ScrollView>
+                        {admins.map((admin) => this.renderItem(admin))}
+                        {members.map((member) => this.renderItem(member))}
+                        <View style={{}} />
+                    </ScrollView>
+                )
+            default:
+                return (
+                    <ScrollView>
+                        {allMembers.map((member) => this.renderItem(member))}
+                    </ScrollView>
+                )
+        }
+    }
+
     render() {
+        const { navigationState, tribeId, pageId } = this.props
+        const navigation = navigationState
+            ? {
+                  jumpToIndex: (i) =>
+                      this.props.myTribeSelectMembersFilter(
+                          navigationState.routes,
+                          i,
+                          tribeId,
+                          pageId
+                      ),
+                  navigationState,
+              }
+            : null
+
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                <View>
-                    <SearchBarHeader
-                        backButton
-                        onBackPress={() => Actions.pop()} // componentWillUnmount takes care of the state cleaning
-                        pageSetting
-                        handlePageSetting={() => this.handlePageSetting(item)}
-                    />
-                    {/* <TabButtonGroup buttons={props} subTab buttonStyle={buttonStyle} noVerticalDivider noBorder /> */}
-                    <View
-                        style={{
-                            height: 1,
-                            width: '100%',
-                            backgroundColor: '#DADADA',
+            <MenuProvider
+                style={styles.containerStyle}
+                customStyles={{ backdrop: styles.backdrop }}
+            >
+                <SearchBarHeader
+                    title="Members"
+                    backButton
+                    onBackPress={() => Actions.pop()} // componentWillUnmount takes care of the state cleaning
+                    // pageSetting
+                    // handlePageSetting={() => (this.handlePageSetting(item))}
+                />
+                <View style={{ padding: 16, backgroundColor: 'white' }}>
+                    {navigation && <TabButtonGroup buttons={navigation} />}
+                    <SearchBar
+                        round
+                        placeholder="Search"
+                        placeholderTextColor="#D3D3D3"
+                        containerStyle={{
+                            marginTop: navigation ? 16 : 0,
+                            backgroundColor: 'white',
+                            padding: 0,
+                            borderWidth: 1,
+                            borderTopColor: '#E0E0E0',
+                            borderBottomColor: '#E0E0E0',
+                            borderColor: '#E0E0E0',
+                            borderRadius: 3,
                         }}
+                        inputContainerStyle={{
+                            backgroundColor: 'white',
+                            padding: 0,
+                            margin: 0,
+                        }}
+                        searchIcon={() => (
+                            <SearchIcon
+                                iconContainerStyle={{
+                                    marginBottom: 1,
+                                    marginTop: 1,
+                                }}
+                                iconStyle={{
+                                    tintColor: '#828282',
+                                    height: 15,
+                                    width: 15,
+                                }}
+                            />
+                        )}
+                        inputStyle={DEFAULT_STYLE.subTitleText_1}
+                        onChangeText={(text) =>
+                            this.setState({ searchContent: text })
+                        }
+                        onCancel={() => this.setState({ searchContent: '' })}
+                        value={this.state.searchContent}
                     />
                 </View>
-                <View style={styles.containerStyle}>
-                    <FlatList
-                        ref="flatList"
-                        data={this.props.data}
-                        renderItem={this.renderItem}
-                        keyExtractor={(i) => i._id}
-                    />
-                </View>
+                {this._renderScene()}
             </MenuProvider>
         )
     }
@@ -113,7 +210,7 @@ class MyTribeMembers extends React.PureComponent {
 
 const styles = {
     containerStyle: {
-        flex: 1,
+        backgroundColor: '#FAFAFA',
     },
     aboutContainer: {
         padding: 20,
@@ -132,4 +229,24 @@ const styles = {
     },
 }
 
-export default connect()(MyTribeMembers)
+const mapStateToProps = (state, props) => {
+    const { tribeId, pageId } = props
+    const memberData = myTribeMemberSelector(state, tribeId, pageId)
+    const navigationState = getMyTribeMemberNavigationState(
+        state,
+        tribeId,
+        pageId
+    )
+
+    return {
+        userId: state.user.userId,
+        memberData,
+        navigationState,
+        isAdmin: !!navigationState,
+    }
+}
+
+export default connect(mapStateToProps, {
+    myTribeMemberSelector,
+    myTribeSelectMembersFilter,
+})(MyTribeMembers)

@@ -172,31 +172,6 @@ class MemberListCard extends Component {
         )
     }
 
-    // TODO: decide the final UI for additional info
-    renderAdditionalInfo() {
-        return null
-        // const { profile } = this.props.item;
-        // let content = '';
-        // if (profile.elevatorPitch) {
-        //   content = profile.elevatorPitch;
-        // } else if (profile.about) {
-        //   content = profile.about;
-        // }
-        // return (
-        //   <View style={{ flex: 1 }}>
-        //     <Text
-        //       style={styles.titleTextStyle}
-        //       numberOfLines={1}
-        //       ellipsizeMode='tail'
-        //     >
-        //       <Text style={styles.detailTextStyle}>
-        //         {content}
-        //       </Text>
-        //     </Text>
-        //   </View>
-        // );
-    }
-
     renderOccupation(item) {
         const { profile } = item
         if (profile && profile.occupation) {
@@ -217,8 +192,8 @@ class MemberListCard extends Component {
 
     // If user is admin, then he can click to remove / promote a user
     renderSettingIcon() {
-        const { isAdmin, onRemoveUser, onPromoteUser } = this.props
-        if (isAdmin) {
+        const { isAdmin, isSelf } = this.props
+        if (isAdmin && !isSelf) {
             return (
                 <TouchableOpacity
                     activeOpacity={0.6}
@@ -258,7 +233,6 @@ class MemberListCard extends Component {
                     >
                         {headline}
                     </Text>
-                    {this.renderAdditionalInfo(item)}
                 </TouchableOpacity>
                 {this.renderSettingIcon()}
             </View>

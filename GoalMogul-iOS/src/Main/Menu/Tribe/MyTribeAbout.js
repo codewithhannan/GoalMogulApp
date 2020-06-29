@@ -42,9 +42,16 @@ class MyTribeAbout extends Component {
      * Note: Tribe.js has its member pictures moved to StackedAvatars
      * @param {*} item
      */
-    renderMemberStatus(item) {
-        const { members } = item
+    renderMemberStatus({ data: { members }, isUserAdmin }) {}
 
+    render() {
+        if (!this.props.data || !this.props.data.members) return <View />
+
+        const {
+            data: { members },
+            tribeId,
+            pageId,
+        } = this.props
         const memberPictures = members
             ? members
                   .filter(
@@ -76,8 +83,8 @@ class MyTribeAbout extends Component {
                 <TouchableOpacity
                     onPress={() =>
                         Actions.push('myTribeMembers', {
-                            item: this.props.memberProps,
-                            data: this.props.data,
+                            pageId,
+                            tribeId,
                         })
                     }
                     style={{
@@ -94,15 +101,6 @@ class MyTribeAbout extends Component {
                 </TouchableOpacity>
             </View>
         )
-    }
-
-    render() {
-        const { item } = this.props
-        const indexChange = this.props.indexChange
-
-        if (!item) return <View />
-
-        return this.renderMemberStatus(item, indexChange)
     }
 }
 

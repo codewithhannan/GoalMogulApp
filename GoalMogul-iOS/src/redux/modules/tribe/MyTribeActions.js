@@ -68,13 +68,13 @@ export const tribeSelectTab = (index, tribeId, pageId) => (dispatch) => {
     })
 }
 
-export const myTribeSelectMembersFilter = (option, index, tribeId, pageId) => (
+export const myTribeSelectMembersFilter = (routes, index, tribeId, pageId) => (
     dispatch
 ) => {
     dispatch({
         type: MYTRIBE_MEMBER_SELECT_FILTER,
         payload: {
-            option,
+            option: routes[index].membersFilters,
             index,
             tribeId,
             pageId,

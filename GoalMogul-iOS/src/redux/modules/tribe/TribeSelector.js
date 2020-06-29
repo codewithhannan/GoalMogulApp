@@ -22,7 +22,10 @@ import {
  * @param {*} pageId
  */
 const getMyTribeMembersFilter = (state, tribeId, pageId) =>
-    _.get(state.tribes, `${tribeId}.${pageId}.membersFilter`, 'Member')
+    _.get(state.tribes, `${tribeId}.${pageId}.membersFilters`, [
+        'Admin',
+        'Member',
+    ])
 
 /**
  * Get tribe members by tribeId
@@ -172,10 +175,11 @@ export const getMyTribeUserStatus = createSelector(
 export const myTribeMemberSelector = createSelector(
     // Select participants based on the filter option
     [getMyTribeMembersFilter, getMyTribeMembers],
-    (filterOption, members) => {
+    (filterOptions, members) => {
         if (!members || _.isEmpty(members)) return []
-
-        return members.filter((member) => member.category === filterOption)
+        return members.filter((member) =>
+            filterOptions.includes(member.category)
+        )
     }
 )
 
@@ -215,50 +219,23 @@ export const getMyTribeNavigationState = createSelector(
  * Select member tab navigationState
  */
 export const getMyTribeMemberNavigationState = createSelector(
-    [
-        getMyTribeMemberNavigationStates,
-        getMyTribeMembers,
-        getUserId,
-        getMyTribeIsMemberCanInvite,
-    ],
-    (memberNavigationState, members, userId, membersCanInvite) => {
+    [getMyTribeMemberNavigationStates, getMyTribeMembers, getUserId],
+    (memberNavigationState, members, userId) => {
         const navigationStateToReturn = _.cloneDeep(memberNavigationState)
 
         if (!members || members.length === 0) {
-            return _.set(
-                navigationStateToReturn,
-                'routes',
-                TRIBE_USER_ROUTES.memberDefaultRoutes
-            )
+            return null
         }
 
         let isAdmin
-        let isMember
         members.forEach((member) => {
             if (member.memberRef && member.memberRef._id === userId) {
                 if (member.category === 'Admin') {
                     isAdmin = true
                 }
-                if (member.category === 'Member') {
-                    isMember = true
-                }
             }
         })
 
-        if (isMember && membersCanInvite) {
-            return _.set(
-                navigationStateToReturn,
-                'routes',
-                TRIBE_USER_ROUTES.memberCanInviteRoutes
-            )
-        }
-
-        return isAdmin
-            ? navigationStateToReturn
-            : _.set(
-                  navigationStateToReturn,
-                  'routes',
-                  TRIBE_USER_ROUTES.memberDefaultRoutes
-              )
+        return isAdmin ? navigationStateToReturn : null
     }
 )
