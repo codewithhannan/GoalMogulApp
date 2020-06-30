@@ -259,19 +259,30 @@ class GroupChatInfo extends React.Component {
                     {this.renderMuteDurationPicker()}
                     <Layout>
                         <Menu style={styles.menu} appearance="noDivider">
-                            <MenuItem
-                                title={() => (
-                                    <Text category="h6" style={styles.title}>
-                                        Settings
-                                    </Text>
-                                )}
-                                accessoryRight={ForwardIcon}
-                                accessoryLeft={(props) =>
-                                    makeAccessoryLeftIcon(props, 'settings')
-                                }
-                                onPress={() => {}}
-                                style={styles.menuItem}
-                            />
+                            {this.props.isAdmin ? (
+                                <MenuItem
+                                    title={() => (
+                                        <Text
+                                            category="h6"
+                                            style={styles.title}
+                                        >
+                                            Edit Group Chat
+                                        </Text>
+                                    )}
+                                    accessoryRight={ForwardIcon}
+                                    accessoryLeft={(props) =>
+                                        makeAccessoryLeftIcon(props, 'settings')
+                                    }
+                                    onPress={() => {
+                                        Actions.push('createChatRoomStack', {
+                                            initializeFromState: true,
+                                            chat: this.props.chatRoom,
+                                        })
+                                    }}
+                                    style={styles.menuItem}
+                                />
+                            ) : null}
+
                             <MenuItem
                                 title={() => (
                                     <Text category="h6" style={styles.title}>

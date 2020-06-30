@@ -9,10 +9,8 @@ import {
     Alert,
     FlatList,
     Image,
-    ImageBackground,
     KeyboardAvoidingView,
     SafeAreaView,
-    Switch,
     ScrollView,
     Text,
     TextInput,
@@ -20,16 +18,14 @@ import {
     View,
     Dimensions,
 } from 'react-native'
-import { CheckBox, SearchBar } from 'react-native-elements'
-import { Input, Icon, Button } from '@ui-kitten/components'
-import { MenuProvider } from 'react-native-popup-menu'
+import { SearchBar } from 'react-native-elements'
+import { Input, Icon, Button, withStyles, Layout } from '@ui-kitten/components'
 import { connect } from 'react-redux'
-import { Field, formValueSelector, reduxForm } from 'redux-form'
+import { formValueSelector, reduxForm } from 'redux-form'
 import { openCamera, openCameraRoll } from '../../../actions'
 import camera from '../../../asset/utils/camera.png'
 import cameraRoll from '../../../asset/utils/cameraRoll.png'
 // assets
-import cancel from '../../../asset/utils/cancel_no_background.png'
 import plus from '../../../asset/utils/plus.png'
 import times from '../../../asset/utils/times.png'
 // Actions
@@ -276,21 +272,6 @@ class CreateChatroomModal extends React.Component {
     AlertIcon = (props) => <Icon {...props} name="alert-circle-outline" />
 
     renderChatroomName() {
-        // const titleText = <Text style={styles.titleTextStyle}>Group Name</Text>;
-        // return (
-        //   <View style={{ marginBottom: 5 }}>
-        //     {titleText}
-        //     <Field
-        //       name="name"
-        //       label="name"
-        //       component={this.renderInput}
-        //       editable={!this.props.uploading}
-        //       numberOfLines={1}
-        //       multiline
-        //       style={styles.goalInputStyle}
-        //     />
-        //   </View>
-        // );
         return (
             <Input
                 label="Group Name"
@@ -300,29 +281,12 @@ class CreateChatroomModal extends React.Component {
                 disabled={this.props.uploading}
                 style={styles.inputStyle}
                 onChangeText={(val) => this.props.change('name', val)}
+                value={this.props.name}
             />
         )
     }
 
     renderChatRoomMemberLimit() {
-        // const titleText = (
-        //   <Text style={styles.titleTextStyle}>Member Limit (Optional)</Text>
-        // );
-        // return (
-        //   <View style={{ marginBottom: 5 }}>
-        //     {titleText}
-        //     <Field
-        //       name="memberLimit"
-        //       label="memberLimit"
-        //       component={this.renderInput}
-        //       editable={!this.props.uploading}
-        //       numberOfLines={1}
-        //       keyboardType="number-pad"
-        //       style={styles.goalInputStyle}
-        //       placeholder="Enter a number..."
-        //     />
-        //   </View>
-        // );
         return (
             <Input
                 label="Member Limit"
@@ -331,28 +295,12 @@ class CreateChatroomModal extends React.Component {
                 keyboardType="number-pad"
                 style={styles.inputStyle}
                 onChangeText={(val) => this.props.change('memberLimit', val)}
+                value={`${this.props.memberLimit}`}
             />
         )
     }
 
     renderChatroomDescription() {
-        // const titleText = (
-        //   <Text style={styles.titleTextStyle}>Description (Optional)</Text>
-        // );
-        // return (
-        //   <View style={{ marginBottom: 5 }}>
-        //     {titleText}
-        //     <Field
-        //       name="description"
-        //       label="description"
-        //       component={this.renderInput}
-        //       editable={!this.props.uploading}
-        //       numberOfLines={5}
-        //       style={styles.goalInputStyle}
-        //       placeholder="What's this room about?"
-        //     />
-        //   </View>
-        // );
         return (
             <Input
                 label="Description"
@@ -362,6 +310,7 @@ class CreateChatroomModal extends React.Component {
                 textStyle={styles.multilineTextStyle}
                 style={styles.inputStyle}
                 onChangeText={(val) => this.props.change('description', val)}
+                value={this.props.description}
             />
         )
     }
@@ -667,7 +616,7 @@ class CreateChatroomModal extends React.Component {
             : 'Group Message'
 
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <Layout style={{ flex: 1 }}>
                 <KeyboardAvoidingView
                     behavior="padding"
                     style={{
@@ -769,15 +718,33 @@ class CreateChatroomModal extends React.Component {
                 >
                     {actionText}
                 </Button>
-            </MenuProvider>
+            </Layout>
         )
     }
 }
 
-CreateChatroomModal = reduxForm({
+/**
+ * Map app theme to styles. These styles can be accessed
+ * using the <eva> prop. For example,
+ * const { eva } = this.props;
+ * eva.styles.backgroundPrimary;
+ * @see https://github.com/akveo/react-native-ui-kitten/blob/master/docs/src/articles/design-system/use-theme-variables.md
+ */
+const mapThemeToStyles = (theme) => ({
+    backgroundPrimary: {
+        backgroundColor: theme['color-primary-500'],
+    },
+})
+
+const StyledCreateChatroomModal = withStyles(
+    CreateChatroomModal,
+    mapThemeToStyles
+)
+
+const FormedCreateChatroomModal = reduxForm({
     form: 'createChatRoomModal',
     enableReinitialize: true,
-})(CreateChatroomModal)
+})(StyledCreateChatroomModal)
 
 const mapStateToProps = (state) => {
     const selector = formValueSelector('createChatRoomModal')
@@ -818,7 +785,6 @@ const mapStateToProps = (state) => {
             .map((doc) => doc._id.toString())
             .join(','),
         formVals: state.form.createChatRoomModal,
-        swithValue: false,
         switchValue2: false,
     }
 }
@@ -833,7 +799,7 @@ export default connect(mapStateToProps, {
     searchQueryUpdated,
     openCameraRoll,
     openCamera,
-})(CreateChatroomModal)
+})(FormedCreateChatroomModal)
 
 const styles = {
     homeContainerStyle: {
