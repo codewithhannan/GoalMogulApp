@@ -295,7 +295,7 @@ export const openCamera = (callback) => async (dispatch) => {
     if (!permissionGranted) {
         return
     }
-    track(E.CAMERA)
+    track(E.REG_CAMERA)
     const result = await ImagePicker.launchCameraAsync({
         mediaTypes: 'Images',
     }).catch((error) => console.log(permissions, { error }))
@@ -321,7 +321,7 @@ export const openCameraRoll = (callback, maybeOptions) => async (dispatch) => {
     if (!permissionGranted) {
         return
     }
-    track(E.CAMERA_ROLL)
+    track(E.REG_CAMROLL)
 
     const disableEditing = maybeOptions && maybeOptions.disableEditing
 
