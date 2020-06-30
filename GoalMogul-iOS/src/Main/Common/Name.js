@@ -2,12 +2,12 @@
 
 import React from 'react'
 import { Text } from 'react-native'
+import { DEFAULT_STYLE } from '../../styles'
 
 const styles = {
     containerStyle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        maxWidth: 150,
+        ...DEFAULT_STYLE.titleText_2,
+        maxWidth: 250,
     },
 }
 

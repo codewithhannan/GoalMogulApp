@@ -20,6 +20,7 @@ import { switchCase } from '../../redux/middleware/utils'
 
 // Actions
 import { openProfile } from '../../actions'
+import { DEFAULT_STYLE, GM_BLUE } from '../../styles'
 
 // Constants
 const DEBUG_KEY = '[ UI MemberListCard ]'
@@ -157,17 +158,14 @@ class MemberListCard extends Component {
     renderInfo(item) {
         const { name } = item
         return (
-            <View style={styles.infoContainerStyle}>
-                <View
-                    style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        marginRight: 6,
-                        alignItems: 'center',
-                    }}
-                >
-                    <Name text={name} />
-                </View>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    marginRight: 6,
+                    alignItems: 'center',
+                }}
+            >
+                <Name text={name} />
             </View>
         )
     }
@@ -176,14 +174,8 @@ class MemberListCard extends Component {
         const { profile } = item
         if (profile && profile.occupation) {
             return (
-                <Text
-                    style={styles.titleTextStyle}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                >
-                    <Text style={styles.detailTextStyle}>
-                        {profile.occupation}
-                    </Text>
+                <Text style={DEFAULT_STYLE.normalText_2}>
+                    {profile.occupation}
                 </Text>
             )
         }
@@ -225,7 +217,6 @@ class MemberListCard extends Component {
                     onPress={() => this.props.openProfile(_id)}
                 >
                     {this.renderInfo(item)}
-                    {this.renderOccupation(item)}
                     <Text
                         style={styles.jobTitleTextStyle}
                         numberOfLines={1}
@@ -252,12 +243,11 @@ const styles = {
         backgroundColor: '#ffffff',
     },
     bodyContainerStyle: {
-        marginLeft: 8,
         flex: 1,
+        marginLeft: 8,
     },
     infoContainerStyle: {
         flexDirection: 'row',
-        flex: 1,
     },
     imageStyle: {
         height: 48,
@@ -270,28 +260,15 @@ const styles = {
         borderColor: 'lightgray',
         alignItems: 'center',
         borderRadius: 6,
-        alignSelf: 'flex-start',
         backgroundColor: 'white',
     },
     buttonContainerStyle: {
         marginLeft: 8,
         flexDirection: 'row',
-        justifyContent: 'flex-end',
-    },
-    titleTextStyle: {
-        color: '#17B3EC',
-        fontSize: 11,
-        paddingTop: 1,
-        paddingBottom: 1,
-    },
-    detailTextStyle: {
-        color: '#000000',
-        paddingLeft: 3,
     },
     jobTitleTextStyle: {
-        color: '#17B3EC',
-        fontSize: 11,
-        fontWeight: '800',
+        ...DEFAULT_STYLE.smallTitle_1,
+        color: GM_BLUE,
         paddingTop: 5,
         paddingBottom: 3,
     },

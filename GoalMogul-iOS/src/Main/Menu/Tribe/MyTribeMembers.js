@@ -19,7 +19,13 @@ import flagIcon from '../../../asset/icons/flag.png'
 
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
 
-import { myTribeSelectMembersFilter } from '../../../redux/modules/tribe/MyTribeActions'
+import {
+    myTribeAdminAcceptUser,
+    myTribeAdminDemoteUser,
+    myTribeAdminPromoteUser,
+    myTribeAdminRemoveUser,
+    myTribeSelectMembersFilter,
+} from '../../../redux/modules/tribe/MyTribeActions'
 
 import {
     getMyTribeMemberNavigationState,
@@ -28,11 +34,7 @@ import {
 import { SearchBar } from 'react-native-elements'
 import { SearchIcon } from '../../../Utils/Icons'
 import { DEFAULT_STYLE } from '../../../styles'
-import {
-    ALL_MEMBERS_FILTER_INDEX,
-    JOIN_REQUESTS_FILTER_INDEX,
-    PENDING_INVITES_FILTER_INDEX,
-} from '../../../redux/modules/tribe/Tribes'
+import { ALL_MEMBERS_FILTER_INDEX } from '../../../redux/modules/tribe/Tribes'
 
 function Item({ title }) {
     return (
@@ -56,7 +58,7 @@ class MyTribeMembers extends React.PureComponent {
      */
     handleRemoveUser = (userId) => {
         const { _id } = this.props.item
-        this.props.item.myTribeAdminRemoveUser(userId, _id)
+        this.props.myTribeAdminRemoveUser(userId, _id)
     }
 
     /**
@@ -65,7 +67,7 @@ class MyTribeMembers extends React.PureComponent {
      */
     handlePromoteUser = (userId) => {
         const { _id } = this.props.item
-        this.props.item.myTribeAdminPromoteUser(userId, _id)
+        this.props.myTribeAdminPromoteUser(userId, _id)
     }
 
     /**
@@ -74,7 +76,7 @@ class MyTribeMembers extends React.PureComponent {
      */
     handleDemoteUser = (userId) => {
         const { _id } = this.props.item
-        this.props.item.myTribeAdminDemoteUser(userId, _id)
+        this.props.myTribeAdminDemoteUser(userId, _id)
     }
 
     /**
@@ -83,7 +85,7 @@ class MyTribeMembers extends React.PureComponent {
      */
     handleAcceptUser = (userId) => {
         const { _id } = this.props.item
-        this.props.item.myTribeAdminAcceptUser(userId, _id)
+        this.props.myTribeAdminAcceptUser(userId, _id)
     }
 
     renderItem = (member) => {
@@ -248,5 +250,9 @@ const mapStateToProps = (state, props) => {
 
 export default connect(mapStateToProps, {
     myTribeMemberSelector,
+    myTribeAdminAcceptUser,
+    myTribeAdminDemoteUser,
+    myTribeAdminPromoteUser,
+    myTribeAdminRemoveUser,
     myTribeSelectMembersFilter,
 })(MyTribeMembers)
