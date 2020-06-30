@@ -216,7 +216,9 @@ const identifyWithTraits = (userId, trait) => {
 
 const track = (event) => {
     if (!allEventNames.has(event)) {
-        throw `Don't use customized event name '${event}'. Define it first in src/monitoring/segment`
+        console.error(
+            `Don't use customized event name '${event}'. Define it first in src/monitoring/segment`
+        )
     }
     // console.log(`>>>>>> track: ${event}`)
     Segment.track(event)
@@ -224,7 +226,9 @@ const track = (event) => {
 
 const trackWithProperties = (event, properties) => {
     if (!allEventNames.has(event)) {
-        throw `Don't use customized event name '${event}'. Define it first in src/monitoring/segment`
+        console.error(
+            `Don't use customized event name '${event}'. Define it first in src/monitoring/segment`
+        )
     }
     // console.log(`>>>>>> trackWithProperties: ${event}:\n${JSON.stringify(properties)}`)
     Segment.trackWithProperties(event, properties)
@@ -232,7 +236,9 @@ const trackWithProperties = (event, properties) => {
 
 const trackViewScreen = (screenName) => {
     if (!allScreenNames.has(screenName)) {
-        throw `Don't use customized screen name '${screenName}'. Define it first in src/monitoring/segment`
+        console.error(
+            `Don't use customized screen name '${screenName}'. Define it first in src/monitoring/segment`
+        )
     }
     //console.log(`>>>>>> trackViewScreen: ${screenName}`)
     Segment.track(`ScreenView ${screenName}`)
@@ -240,7 +246,9 @@ const trackViewScreen = (screenName) => {
 
 const trackScreenWithProps = (screenName, properties) => {
     if (!allScreenNames.has(screenName)) {
-        throw `Don't use customized screen name '${screenName}'. Define it first in src/monitoring/segment`
+        console.error(
+            `Don't use customized screen name '${screenName}'. Define it first in src/monitoring/segment`
+        )
     }
     //console.log(`>>>>>> trackScreenWithProps: ${screenName}\n${JSON.stringify(properties)}`)
     // Segment.screenWithProperties does not seem to work properly
@@ -249,7 +257,9 @@ const trackScreenWithProps = (screenName, properties) => {
 
 const trackScreenCloseWithProps = (screenName, properties) => {
     if (!allScreenNames.has(screenName)) {
-        throw `Don't use customized screen name '${screenName}'. Define it first in src/monitoring/segment`
+        console.error(
+            `Don't use customized screen name '${screenName}'. Define it first in src/monitoring/segment`
+        )
     }
     //console.log(`>>>>>> trackScreenCloseWithProps: ${screenName}\n${JSON.stringify(properties)}`)
     // Segment.screenWithProperties does not seem to work properly
