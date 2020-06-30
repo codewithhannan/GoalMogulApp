@@ -23,25 +23,29 @@ import {
     Icon,
 } from '@ui-kitten/components'
 import _ from 'lodash'
+import R from 'ramda'
+import moment from 'moment'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
-import { MenuProvider } from 'react-native-popup-menu'
-import { ScrollView, StyleSheet, Alert, View } from 'react-native'
+import { StyleSheet, Alert, View } from 'react-native'
+import DateTimePicker from 'react-native-modal-datetime-picker'
 
 import ModalHeader from '../../Common/Header/ModalHeader'
-import ToggleField from '../../Common/ToggleField'
-import Spacer from '../../Common/Spacer'
 import { deleteConversationMessages } from '../../../redux/modules/chat/ChatRoomActions'
 import { removeChatMember } from '../../../redux/modules/chat/ChatRoomMembersActions'
 import {
     addMemberToChatRoom,
-    changeChatRoomMute,
+    muteChatRoom,
 } from '../../../redux/modules/chat/ChatRoomOptionsActions'
 import { openProfile } from '../../../actions'
 import {
     GROUP_CHAT_DEFAULT_ICON_URL,
     IMAGE_BASE_URL,
 } from '../../../Utils/Constants'
+import {
+    actionSheet,
+    switchByButtonIndex,
+} from '../../Common/ActionSheetFactory'
 
 // Icons
 function ForwardIcon(props) {
@@ -61,11 +65,70 @@ const makeAccessoryLeftIcon = (props, name) => {
 }
 
 class GroupChatInfo extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            muteDurationPicker: false,
+        }
+    }
     /**
      * close current page
      */
     close() {
         Actions.pop()
+    }
+
+    /**
+     * Handle mute duration
+     */
+    handleMuteDuration = () => {
+        const chatRoom = this.props.chatRoom
+        const muteDurationSwitch = switchByButtonIndex([
+            [
+                R.equals(0),
+                () => {
+                    // Add 24 hours to current time
+                    const muteDuration = moment(new Date())
+                        .add(24, 'hours')
+                        .toDate()
+                    this.props.muteChatRoom(muteDuration, chatRoom)
+                },
+            ],
+            [
+                R.equals(1),
+                () => {
+                    // Add 7 days to current time
+                    this.props.muteChatRoom(undefined, chatRoom)
+                },
+            ],
+            [
+                R.equals(2),
+                () => {
+                    // F
+                    const muteDuration = moment(new Date())
+                        .add(1, 'month')
+                        .toDate()
+                    this.props.muteChatRoom(muteDuration, chatRoom)
+                },
+            ],
+            [
+                R.equals(3),
+                () => {
+                    // Show customized time picker
+                    this.setState({
+                        ...this.state,
+                        muteDurationPicker: true,
+                    })
+                },
+            ],
+        ])
+
+        const muteActionSheet = actionSheet(
+            ['1 Day', '1 Week', 'Forever', 'Custom', 'Cancel'],
+            4,
+            muteDurationSwitch
+        )
+        return muteActionSheet()
     }
 
     // Action to leave this group chat
@@ -146,6 +209,35 @@ class GroupChatInfo extends React.Component {
         })
     }
 
+    renderMuteDurationPicker() {
+        const chatRoom = this.props.chatRoom
+        return (
+            <DateTimePicker
+                isVisible={this.state.muteDurationPicker}
+                mode="datetime"
+                titleIOS="Mute this channel until"
+                minimumDate={new Date()}
+                onConfirm={(date) => {
+                    this.setState(
+                        {
+                            ...this.state,
+                            muteDurationPicker: false,
+                        },
+                        () => {
+                            this.props.muteChatRoom(date, chatRoom)
+                        }
+                    )
+                }}
+                onCancel={() => {
+                    this.setState({
+                        ...this.state,
+                        muteDurationPicker: false,
+                    })
+                }}
+            />
+        )
+    }
+
     render() {
         const { eva, style } = this.props
 
@@ -164,6 +256,7 @@ class GroupChatInfo extends React.Component {
                     titleTextStyle={styles.modalTitleText}
                 />
                 <View style={styles.container}>
+                    {this.renderMuteDurationPicker()}
                     <Layout>
                         <Menu style={styles.menu} appearance="noDivider">
                             <MenuItem
@@ -182,7 +275,7 @@ class GroupChatInfo extends React.Component {
                             <MenuItem
                                 title={() => (
                                     <Text category="h6" style={styles.title}>
-                                        Notification
+                                        Mute Channel
                                     </Text>
                                 )}
                                 accessoryRight={ForwardIcon}
@@ -192,7 +285,7 @@ class GroupChatInfo extends React.Component {
                                         'notifications-none'
                                     )
                                 }
-                                onPress={() => {}}
+                                onPress={this.handleMuteDuration}
                                 style={styles.menuItem}
                             />
                             <MenuItem
@@ -368,7 +461,7 @@ const mapStateToProps = (state) => {
 const styledGroupChatInfo = withStyles(GroupChatInfo, mapThemeToStyles)
 export default connect(mapStateToProps, {
     openProfile,
-    changeChatRoomMute,
+    muteChatRoom,
     addMemberToChatRoom,
     removeChatMember,
     deleteConversationMessages,
