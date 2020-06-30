@@ -107,7 +107,73 @@ import { OnboardingFbPlugin } from './Main/Onboarding'
 import SplashScreen from './SplashScreen'
 import Tutorial from './Tutorial/Tutorial'
 import UserInviteModal from './Main/Common/Modal/UserInviteModal'
-import { trackViewScreen } from './monitoring/segment'
+
+// tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
+function getCommonScenes(tab) {
+    let prefix = `${tab}_`
+    if (tab === 'home') {
+        prefix = ''
+    }
+    return [
+        <Scene key={`${prefix}goal`} component={GoalDetailCard} />,
+        <Scene key={`${prefix}post`} component={PostDetailCard} />,
+        <Scene key={`${prefix}share`} component={ShareDetailCard} />,
+        <Scene
+            key={`${prefix}profile`}
+            component={Profile}
+            initial={tab === 'profileTab'}
+        />,
+        <Scene key={`${prefix}profileDetail`} component={ProfileDetail} />,
+        <Scene key={`${prefix}myEventTab`} component={MyEventTab} />,
+        <Scene key={`${prefix}myEventDetail`} component={MyEvent} />,
+        <Scene key={`${prefix}myTribeTab`} component={MyTribeTab} />,
+        <Scene key={`${prefix}myTribeDetail`} component={MyTribe} />,
+
+        <Scene key={`${prefix}setting`} component={Setting} />,
+        <Scene key={`${prefix}email`} component={Email} />,
+        <Scene key={`${prefix}editEmailForm`} component={EditEmailForm} />,
+        <Scene
+            key={`${prefix}editPasswordForm`}
+            component={EditPasswordForm}
+        />,
+        <Scene
+            key={`${prefix}phone`}
+            component={Phone}
+            path="/phone/verification"
+        />,
+        <Scene
+            key={`${prefix}addPhoneNumberForm`}
+            component={AddPhoneNumberForm}
+        />,
+        <Scene
+            key={`${prefix}editPhoneNumberForm`}
+            component={EditPhoneNumberForm}
+        />,
+        <Scene key={`${prefix}friendsBlocked`} component={FriendsBlocked} />,
+        <Scene key={`${prefix}privacy`} component={Privacy} />,
+        <Scene key={`${prefix}friendsSetting`} component={FriendsSetting} />,
+        <Scene
+            key={`${prefix}chatRoomPublicView`}
+            component={ChatRoomPubicView}
+        />,
+        <Scene
+            key={`${prefix}notification_setting`}
+            component={NotificationSetting}
+        />,
+
+        <Scene key={`${prefix}searchLightBox`} component={SearchOverlay} />,
+
+        <Scene key={`${prefix}meet`} component={MeetTab} />,
+        <Scene key={`${prefix}shareMeetTab`} component={ShareDetailCard} />,
+        <Scene key={`${prefix}friendTabView`} component={FriendTabView} />,
+        <Scene key={`${prefix}requestTabView`} component={RequestTabView} />,
+        <Scene key={`${prefix}discoverTabView`} component={DiscoverTabView} />,
+        <Scene
+            key={`${prefix}friendInvitationView`}
+            component={FriendInvitationView}
+        />,
+    ]
+}
 
 class RouterComponent extends Component {
     onTabPress = (all) => {
@@ -179,7 +245,7 @@ class RouterComponent extends Component {
 
     stateHandler = (prevState, newState, action) => {
         if (action && action.routeName) {
-            trackViewScreen(action.routeName)
+            // trackViewScreen(action.routeName)
         }
         // console.log('newState is: ', newState);
     }
@@ -359,125 +425,7 @@ class RouterComponent extends Component {
                                                 initial
                                                 component={Home}
                                             />
-
-                                            <Scene
-                                                key="goal"
-                                                component={GoalDetailCard}
-                                            />
-                                            <Scene
-                                                key="post"
-                                                component={PostDetailCard}
-                                            />
-                                            <Scene
-                                                key="share"
-                                                component={ShareDetailCard}
-                                            />
-                                            <Scene
-                                                key="profile"
-                                                component={Profile}
-                                            />
-                                            <Scene
-                                                key="profileDetail"
-                                                component={ProfileDetail}
-                                            />
-
-                                            <Scene
-                                                key="myEventTab"
-                                                component={MyEventTab}
-                                            />
-                                            <Scene
-                                                key="myEventDetail"
-                                                component={MyEvent}
-                                            />
-
-                                            <Scene
-                                                key="myTribeTab"
-                                                component={MyTribeTab}
-                                            />
-                                            <Scene
-                                                key="myTribeDetail"
-                                                component={MyTribe}
-                                            />
-
-                                            <Scene
-                                                key="setting"
-                                                component={Setting}
-                                            />
-                                            <Scene
-                                                key="email"
-                                                component={Email}
-                                            />
-                                            <Scene
-                                                key="editEmailForm"
-                                                component={EditEmailForm}
-                                            />
-                                            <Scene
-                                                key="editPasswordForm"
-                                                component={EditPasswordForm}
-                                            />
-                                            <Scene
-                                                key="phone"
-                                                component={Phone}
-                                                path="/phone/verification"
-                                            />
-                                            <Scene
-                                                key="addPhoneNumberForm"
-                                                component={AddPhoneNumberForm}
-                                            />
-                                            <Scene
-                                                key="editPhoneNumberForm"
-                                                component={EditPhoneNumberForm}
-                                            />
-                                            <Scene
-                                                key="friendsBlocked"
-                                                component={FriendsBlocked}
-                                            />
-                                            <Scene
-                                                key="privacy"
-                                                component={Privacy}
-                                            />
-                                            <Scene
-                                                key="friendsSetting"
-                                                component={FriendsSetting}
-                                            />
-                                            <Scene
-                                                key="chatRoomPublicView"
-                                                component={ChatRoomPubicView}
-                                            />
-                                            <Scene
-                                                key="notification_setting"
-                                                component={NotificationSetting}
-                                            />
-
-                                            <Scene
-                                                key="searchLightBox"
-                                                component={SearchOverlay}
-                                            />
-
-                                            <Scene
-                                                key="meet"
-                                                component={MeetTab}
-                                            />
-                                            <Scene
-                                                key="shareMeetTab"
-                                                component={ShareDetailCard}
-                                            />
-                                            <Scene
-                                                key="friendTabView"
-                                                component={FriendTabView}
-                                            />
-                                            <Scene
-                                                key="requestTabView"
-                                                component={RequestTabView}
-                                            />
-                                            <Scene
-                                                key="discoverTabView"
-                                                component={DiscoverTabView}
-                                            />
-                                            <Scene
-                                                key="friendInvitationView"
-                                                component={FriendInvitationView}
-                                            />
+                                            {getCommonScenes('home')}
                                         </Stack>
 
                                         <Stack
@@ -508,124 +456,7 @@ class RouterComponent extends Component {
                                                 },
                                             })}
                                         >
-                                            <Scene
-                                                key="profileTab_goal"
-                                                component={GoalDetailCard}
-                                            />
-                                            <Scene
-                                                key="profileTab_post"
-                                                component={PostDetailCard}
-                                            />
-                                            <Scene
-                                                key="profileTab_share"
-                                                component={ShareDetailCard}
-                                            />
-                                            <Scene
-                                                key="profileTab_profile"
-                                                component={Profile}
-                                                initial
-                                            />
-                                            <Scene
-                                                key="profileTab_profileDetail"
-                                                component={ProfileDetail}
-                                            />
-
-                                            <Scene
-                                                key="profileTab_setting"
-                                                component={Setting}
-                                            />
-                                            <Scene
-                                                key="profileTab_email"
-                                                component={Email}
-                                            />
-                                            <Scene
-                                                key="profileTab_editEmailForm"
-                                                component={EditEmailForm}
-                                            />
-                                            <Scene
-                                                key="profileTab_editPasswordForm"
-                                                component={EditPasswordForm}
-                                            />
-                                            <Scene
-                                                key="profileTab_phone"
-                                                component={Phone}
-                                                path="/phone/verification"
-                                            />
-                                            <Scene
-                                                key="profileTab_addPhoneNumberForm"
-                                                component={AddPhoneNumberForm}
-                                            />
-                                            <Scene
-                                                key="profileTab_editPhoneNumberForm"
-                                                component={EditPhoneNumberForm}
-                                            />
-                                            <Scene
-                                                key="profileTab_friendsBlocked"
-                                                component={FriendsBlocked}
-                                            />
-                                            <Scene
-                                                key="profileTab_privacy"
-                                                component={Privacy}
-                                            />
-                                            <Scene
-                                                key="profileTab_friendsSetting"
-                                                component={FriendsSetting}
-                                            />
-                                            <Scene
-                                                key="profileTab_chatRoomPublicView"
-                                                component={ChatRoomPubicView}
-                                            />
-                                            <Scene
-                                                key="profileTab_notification_setting"
-                                                component={NotificationSetting}
-                                            />
-
-                                            <Scene
-                                                key="profileTab_myEventTab"
-                                                component={MyEventTab}
-                                            />
-                                            <Scene
-                                                key="profileTab_myEventDetail"
-                                                component={MyEvent}
-                                            />
-                                            <Scene
-                                                key="profileTab_myTribeTab"
-                                                component={MyTribeTab}
-                                            />
-
-                                            <Scene
-                                                key="profileTab_searchLightBox"
-                                                component={SearchOverlay}
-                                            />
-
-                                            <Scene
-                                                key="profileTab_meet"
-                                                component={MeetTab}
-                                            />
-                                            <Scene
-                                                key="profileTab_shareMeetTab"
-                                                component={ShareDetailCard}
-                                            />
-                                            <Scene
-                                                key="profileTab_friendTabView"
-                                                component={FriendTabView}
-                                            />
-                                            <Scene
-                                                key="profileTab_requestTabView"
-                                                component={RequestTabView}
-                                            />
-                                            <Scene
-                                                key="profileTab_discoverTabView"
-                                                component={DiscoverTabView}
-                                            />
-                                            <Scene
-                                                key="profileTab_friendInvitationView"
-                                                component={FriendInvitationView}
-                                            />
-                                            <Scene
-                                                key="profileTab_myTribeDetail"
-                                                component={MyTribe}
-                                            />
+                                            {getCommonScenes('profileTab')}
                                         </Stack>
 
                                         <Stack
@@ -682,124 +513,7 @@ class RouterComponent extends Component {
                                                 }
                                                 hideNavBar
                                             />
-
-                                            <Scene
-                                                key="notificationTab_goal"
-                                                component={GoalDetailCard}
-                                            />
-                                            <Scene
-                                                key="notificationTab_post"
-                                                component={PostDetailCard}
-                                            />
-                                            <Scene
-                                                key="notificationTab_share"
-                                                component={ShareDetailCard}
-                                            />
-                                            <Scene
-                                                key="notificationTab_profile"
-                                                component={Profile}
-                                            />
-                                            <Scene
-                                                key="notificationTab_profileDetail"
-                                                component={ProfileDetail}
-                                            />
-
-                                            <Scene
-                                                key="notificationTab_setting"
-                                                component={Setting}
-                                            />
-                                            <Scene
-                                                key="notificationTab_email"
-                                                component={Email}
-                                            />
-                                            <Scene
-                                                key="notificationTab_editEmailForm"
-                                                component={EditEmailForm}
-                                            />
-                                            <Scene
-                                                key="notificationTab_editPasswordForm"
-                                                component={EditPasswordForm}
-                                            />
-                                            <Scene
-                                                key="notificationTab_phone"
-                                                component={Phone}
-                                                path="/phone/verification"
-                                            />
-                                            <Scene
-                                                key="notificationTab_addPhoneNumberForm"
-                                                component={AddPhoneNumberForm}
-                                            />
-                                            <Scene
-                                                key="notificationTab_editPhoneNumberForm"
-                                                component={EditPhoneNumberForm}
-                                            />
-                                            <Scene
-                                                key="notificationTab_friendsBlocked"
-                                                component={FriendsBlocked}
-                                            />
-                                            <Scene
-                                                key="notificationTab_privacy"
-                                                component={Privacy}
-                                            />
-                                            <Scene
-                                                key="notificationTab_friendsSetting"
-                                                component={FriendsSetting}
-                                            />
-                                            <Scene
-                                                key="notificationTab_chatRoomPublicView"
-                                                component={ChatRoomPubicView}
-                                            />
-                                            <Scene
-                                                key="notificationTab_searchLightBox"
-                                                component={SearchOverlay}
-                                                hideNavBar
-                                            />
-                                            <Scene
-                                                key="notificationTab_notification_setting"
-                                                component={NotificationSetting}
-                                            />
-
-                                            <Scene
-                                                key="notificationTab_myEventTab"
-                                                component={MyEventTab}
-                                            />
-                                            <Scene
-                                                key="notificationTab_myEventDetail"
-                                                component={MyEvent}
-                                            />
-                                            <Scene
-                                                key="notificationTab_myTribeTab"
-                                                component={MyTribeTab}
-                                            />
-
-                                            <Scene
-                                                key="notificationTab_meet"
-                                                component={MeetTab}
-                                            />
-                                            <Scene
-                                                key="notificationTab_shareMeetTab"
-                                                component={ShareDetailCard}
-                                            />
-                                            <Scene
-                                                key="notificationTab_friendTabView"
-                                                component={FriendTabView}
-                                            />
-                                            <Scene
-                                                key="notificationTab_requestTabView"
-                                                component={RequestTabView}
-                                            />
-                                            <Scene
-                                                key="notificationTab_discoverTabView"
-                                                component={DiscoverTabView}
-                                            />
-                                            <Scene
-                                                key="notificationTab_friendInvitationView"
-                                                component={FriendInvitationView}
-                                            />
-                                            <Scene
-                                                key="notificationTab_myTribeDetail"
-                                                component={MyTribe}
-                                            />
+                                            {getCommonScenes('notificationTab')}
                                         </Stack>
 
                                         <Stack
@@ -836,10 +550,6 @@ class RouterComponent extends Component {
                                                 initial
                                             />
                                             <Scene
-                                                key="exploreTab_myTribeDetail"
-                                                component={MyTribe}
-                                            />
-                                            <Scene
                                                 key="eventDetail"
                                                 component={Event}
                                             />
@@ -856,123 +566,7 @@ class RouterComponent extends Component {
                                                 component={ShareDetailCard}
                                             />
 
-                                            <Scene
-                                                key="exploreTab_chatRoomPublicView"
-                                                component={ChatRoomPubicView}
-                                            />
-                                            <Scene
-                                                key="exploreTab_goal"
-                                                component={GoalDetailCard}
-                                            />
-                                            <Scene
-                                                key="exploreTab_post"
-                                                component={PostDetailCard}
-                                            />
-                                            <Scene
-                                                key="exploreTab_share"
-                                                component={ShareDetailCard}
-                                            />
-                                            <Scene
-                                                key="exploreTab_profile"
-                                                component={Profile}
-                                            />
-                                            <Scene
-                                                key="exploreTab_profileDetail"
-                                                component={ProfileDetail}
-                                            />
-                                            <Scene
-                                                key="exploreTab_setting"
-                                                component={Setting}
-                                            />
-                                            <Scene
-                                                key="exploreTab_email"
-                                                component={Email}
-                                            />
-                                            <Scene
-                                                key="exploreTab_editEmailForm"
-                                                component={EditEmailForm}
-                                            />
-                                            <Scene
-                                                key="exploreTab_editPasswordForm"
-                                                component={EditPasswordForm}
-                                            />
-                                            <Scene
-                                                key="exploreTab_phone"
-                                                component={Phone}
-                                                path="/phone/verification"
-                                            />
-                                            <Scene
-                                                key="exploreTab_addPhoneNumberForm"
-                                                component={AddPhoneNumberForm}
-                                            />
-                                            <Scene
-                                                key="exploreTab_editPhoneNumberForm"
-                                                component={EditPhoneNumberForm}
-                                            />
-                                            <Scene
-                                                key="exploreTab_friendsBlocked"
-                                                component={FriendsBlocked}
-                                            />
-                                            <Scene
-                                                key="exploreTab_privacy"
-                                                component={Privacy}
-                                            />
-                                            <Scene
-                                                key="exploreTab_friendsSetting"
-                                                component={FriendsSetting}
-                                            />
-                                            <Scene
-                                                key="exploreTab_notification_setting"
-                                                component={NotificationSetting}
-                                            />
-
-                                            <Scene
-                                                key="exploreTab_friendInvitationView"
-                                                component={FriendInvitationView}
-                                            />
-                                            <Scene
-                                                key="exploreTab_searchLightBox"
-                                                component={SearchOverlay}
-                                                hideNavBar
-                                            />
-
-                                            <Scene
-                                                key="exploreTab_myEventTab"
-                                                component={MyEventTab}
-                                            />
-                                            <Scene
-                                                key="exploreTab_myEventDetail"
-                                                component={MyEvent}
-                                            />
-                                            <Scene
-                                                key="exploreTab_myTribeTab"
-                                                component={MyTribeTab}
-                                            />
-
-                                            <Scene
-                                                key="exploreTab_meet"
-                                                component={MeetTab}
-                                            />
-                                            <Scene
-                                                key="exploreTab_shareMeetTab"
-                                                component={ShareDetailCard}
-                                            />
-                                            <Scene
-                                                key="exploreTab_friendTabView"
-                                                component={FriendTabView}
-                                            />
-                                            <Scene
-                                                key="exploreTab_requestTabView"
-                                                component={RequestTabView}
-                                            />
-                                            <Scene
-                                                key="exploreTab_discoverTabView"
-                                                component={DiscoverTabView}
-                                            />
-                                            <Scene
-                                                key="exploreTab_friendInvitationView"
-                                                component={FriendInvitationView}
-                                            />
+                                            {getCommonScenes('exploreTab')}
                                         </Stack>
 
                                         <Stack
@@ -1036,123 +630,7 @@ class RouterComponent extends Component {
                                                     ChatMessageSnapshotModal
                                                 }
                                             />
-                                            <Scene
-                                                key="chatTab_chatRoomPublicView"
-                                                component={ChatRoomPubicView}
-                                            />
-                                            <Scene
-                                                key="chatTab_searchLightBox"
-                                                component={SearchOverlay}
-                                            />
-                                            <Scene
-                                                key="chatTab_myEventDetail"
-                                                component={MyEvent}
-                                            />
-
-                                            <Scene
-                                                key="chatTab_goal"
-                                                component={GoalDetailCard}
-                                            />
-                                            <Scene
-                                                key="chatTab_post"
-                                                component={PostDetailCard}
-                                            />
-                                            <Scene
-                                                key="chatTab_share"
-                                                component={ShareDetailCard}
-                                            />
-                                            <Scene
-                                                key="chatTab_profile"
-                                                component={Profile}
-                                            />
-                                            <Scene
-                                                key="chatTab_profileDetail"
-                                                component={ProfileDetail}
-                                            />
-
-                                            <Scene
-                                                key="chatTab_setting"
-                                                component={Setting}
-                                            />
-                                            <Scene
-                                                key="chatTab_email"
-                                                component={Email}
-                                            />
-                                            <Scene
-                                                key="chatTab_editEmailForm"
-                                                component={EditEmailForm}
-                                            />
-                                            <Scene
-                                                key="chatTab_editPasswordForm"
-                                                component={EditPasswordForm}
-                                            />
-                                            <Scene
-                                                key="chatTab_phone"
-                                                component={Phone}
-                                                path="/phone/verification"
-                                            />
-                                            <Scene
-                                                key="chatTab_addPhoneNumberForm"
-                                                component={AddPhoneNumberForm}
-                                            />
-                                            <Scene
-                                                key="chatTab_editPhoneNumberForm"
-                                                component={EditPhoneNumberForm}
-                                            />
-                                            <Scene
-                                                key="chatTab_friendsBlocked"
-                                                component={FriendsBlocked}
-                                            />
-                                            <Scene
-                                                key="chatTab_privacy"
-                                                component={Privacy}
-                                            />
-                                            <Scene
-                                                key="chatTab_friendsSetting"
-                                                component={FriendsSetting}
-                                            />
-                                            <Scene
-                                                key="chatTab_notification_setting"
-                                                component={NotificationSetting}
-                                            />
-
-                                            <Scene
-                                                key="chatTab_myEventTab"
-                                                component={MyEventTab}
-                                            />
-                                            <Scene
-                                                key="chatTab_myTribeTab"
-                                                component={MyTribeTab}
-                                            />
-
-                                            <Scene
-                                                key="chatTab_meet"
-                                                component={MeetTab}
-                                            />
-                                            <Scene
-                                                key="chatTab_shareMeetTab"
-                                                component={ShareDetailCard}
-                                            />
-                                            <Scene
-                                                key="chatTab_friendTabView"
-                                                component={FriendTabView}
-                                            />
-                                            <Scene
-                                                key="chatTab_requestTabView"
-                                                component={RequestTabView}
-                                            />
-                                            <Scene
-                                                key="chatTab_discoverTabView"
-                                                component={DiscoverTabView}
-                                            />
-                                            <Scene
-                                                key="chatTab_friendInvitationView"
-                                                component={FriendInvitationView}
-                                            />
-                                            <Scene
-                                                key="chatTab_myTribeDetail"
-                                                component={MyTribe}
-                                            />
+                                            {getCommonScenes('chatTab')}
                                         </Stack>
                                     </Tabs>
                                 </Scene>

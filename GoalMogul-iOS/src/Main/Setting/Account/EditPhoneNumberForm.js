@@ -27,6 +27,7 @@ import {
     onAddVerifyPhone,
     verifyPhoneNumberSuccess,
 } from '../../../actions'
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 const validatePhone = (value) =>
     value && /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(value)
@@ -163,13 +164,19 @@ const styles = {
     },
 }
 
-EditPhoneNumberForm = reduxForm({
+// Analytics must be the inner most wrapper
+const AnalyticsWrapper = wrapAnalytics(
+    EditPhoneNumberForm,
+    SCREENS.EDIT_PHONE_NUMBER
+)
+
+const ReduxWrapper = reduxForm({
     form: 'editPhoneNumberForm',
     enableReinitialize: true,
-})(EditPhoneNumberForm)
+})(AnalyticsWrapper)
 
 export default connect(null, {
     onUpdatePhoneNumberSubmit,
     onAddVerifyPhone,
     verifyPhoneNumberSuccess,
-})(EditPhoneNumberForm)
+})(ReduxWrapper)

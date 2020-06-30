@@ -22,6 +22,7 @@ import {
 import EventCard from './EventCard'
 import EventTabFilterBar from './EventTabFilterBar'
 import EmptyResult from '../Common/Text/EmptyResult'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 class EventTab extends React.Component {
     componentDidMount() {
@@ -145,4 +146,4 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     refreshEvent,
     loadMoreEvent,
-})(EventTab)
+})(wrapAnalytics(EventTab, SCREENS.EXPLORE_EVENT_TAB))

@@ -81,6 +81,7 @@ import EmptyResult from '../../Common/Text/EmptyResult'
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard'
 import MemberListCard from '../../Tribe/MemberListCard'
 import About from './MyEventAbout'
+import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 const DEBUG_KEY = '[ UI MyEvent ]'
 const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel']
@@ -1024,4 +1025,4 @@ export default connect(makeMapStateToProps, {
     openMultiUserInviteModal,
     inviteMultipleUsersToEvent,
     loadFriends,
-})(MyEvent)
+})(wrapAnalytics(MyEvent, SCREENS.MY_EVENT_DETAIL))

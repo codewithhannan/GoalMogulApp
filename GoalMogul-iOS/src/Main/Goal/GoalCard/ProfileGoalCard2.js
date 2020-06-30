@@ -26,6 +26,7 @@ import ShareIcon from '../../../asset/utils/forward.png'
 // Actions
 import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions'
 import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles'
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 class ProfileGoalCard2 extends React.Component {
     /* Handler functions for actions */
@@ -247,4 +248,4 @@ const styles = {
 
 export default connect(null, {
     openGoalDetail,
-})(ProfileGoalCard2)
+})(wrapAnalytics(ProfileGoalCard2, SCREENS.PROFILE_GOAL_TAB))

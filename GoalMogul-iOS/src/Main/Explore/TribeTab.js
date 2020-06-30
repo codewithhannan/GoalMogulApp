@@ -22,6 +22,7 @@ import {
 import TribeCard from './TribeCard'
 import TribeTabFilterBar from './TribeTabFilterBar'
 import EmptyResult from '../Common/Text/EmptyResult'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 class TribeTab extends React.Component {
     componentDidMount() {
@@ -145,4 +146,4 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     refreshTribe,
     loadMoreTribe,
-})(TribeTab)
+})(wrapAnalytics(TribeTab, SCREENS.EXPLORE_TRIBE_TAB))

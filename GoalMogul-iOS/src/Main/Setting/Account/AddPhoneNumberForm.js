@@ -30,6 +30,7 @@ import {
 
 // Selector
 import { getUserData } from '../../../redux/modules/User/Selector'
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 class AddPhoneNumberForm extends Component {
     handleOnAddPress = (values) => {
@@ -171,13 +172,19 @@ const mapStateToProps = (state, props) => {
     }
 }
 
-AddPhoneNumberForm = reduxForm({
+// Analytics must be the inner most wrapper
+const AnalyticsWrapper = wrapAnalytics(
+    AddPhoneNumberForm,
+    SCREENS.ADD_PHONE_NUMBER
+)
+
+const ReduxWrapper = reduxForm({
     form: 'addPhoneNumberForm',
     enableReinitialize: true,
-})(AddPhoneNumberForm)
+})(AnalyticsWrapper)
 
 export default connect(mapStateToProps, {
     onUpdatePhoneNumberSubmit,
     verifyPhoneNumberSuccess,
     onAddVerifyPhone,
-})(AddPhoneNumberForm)
+})(ReduxWrapper)

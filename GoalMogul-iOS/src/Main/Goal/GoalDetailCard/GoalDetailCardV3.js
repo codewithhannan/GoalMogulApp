@@ -66,8 +66,11 @@ import {
     startTutorial,
     updateNextStepNumber,
 } from '../../../redux/modules/User/TutorialActions'
+
 // Styles
 import { BACKGROUND_COLOR, DEFAULT_STYLE, GM_BLUE } from '../../../styles'
+import { TABBAR_HEIGHT } from '../../../styles/Goal'
+
 // Component
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
 import LoadingModal from '../../Common/Modal/LoadingModal'
@@ -79,6 +82,7 @@ import GoalDetailSection from './GoalDetailSection'
 import SuggestionModal from './SuggestionModal3'
 import CentralTab from './V3/CentralTab'
 import FocusTab from './V3/FocusTab'
+import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 const initialLayout = {
     height: 0,
@@ -86,9 +90,9 @@ const initialLayout = {
 }
 
 const HEADER_HEIGHT = 240 // Need to be calculated in the state later based on content length
-const COLLAPSED_HEIGHT = 30 + Constants.statusBarHeight
+const COLLAPSED_HEIGHT = TABBAR_HEIGHT + Constants.statusBarHeight
 const DEBUG_KEY = '[ UI GoalDetailCardV3 ]'
-const TABBAR_HEIGHT = 48.5
+
 // const COMMENTBOX_HEIGHT = 43;
 const TOTAL_HEIGHT = TABBAR_HEIGHT
 const COMPONENT_NAME = 'goalDetail'
@@ -101,7 +105,7 @@ export class GoalDetailCardV3 extends Component {
             // Following are state for CommentBox
             position: 'absolute',
             commentBoxPadding: new Animated.Value(0),
-            focusTabBottomPadding: new Animated.Value(0),
+            contentBottomPadding: new Animated.Value(0),
             keyboardDidShow: false,
             cardHeight: HEADER_HEIGHT,
             centralTabContentOffset: 0,
@@ -397,7 +401,6 @@ export class GoalDetailCardV3 extends Component {
         if (type === 'focusedItem' && focusType !== undefined) {
             if (height === focusedItemHeight) return
             focusedItemHeight = height
-            console.log('\n\n\n\n\n\n\n', height)
         }
 
         // Don't update if it's currently not on all comment item
@@ -450,10 +453,6 @@ export class GoalDetailCardV3 extends Component {
     keyboardWillShow = (e) => {
         // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: keyboard will show`);
         // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: ${Actions.currentScene}`);
-        const { focusType } = this.props.navigationState
-
-        // Keyboard listener will fire when goal edition modal is opened
-        if (focusType === undefined) return
 
         this.setState({
             ...this.state,
@@ -473,7 +472,7 @@ export class GoalDetailCardV3 extends Component {
                         getBottomSpace(),
                     duration: 210 - timeout,
                 }),
-                Animated.timing(this.state.focusTabBottomPadding, {
+                Animated.timing(this.state.contentBottomPadding, {
                     toValue:
                         e.endCoordinates.height -
                         TOTAL_HEIGHT -
@@ -486,12 +485,6 @@ export class GoalDetailCardV3 extends Component {
 
     keyboardWillHide = () => {
         // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: keyboard will hide`);
-        const { focusType } = this.props.navigationState
-
-        // Keyboard listener will fire when goal edition modal is opened
-        if (focusType === undefined) return
-        console.log(`${DEBUG_KEY}: hi there`)
-
         this.setState({
             ...this.state,
             keyboardDidShow: false,
@@ -507,7 +500,7 @@ export class GoalDetailCardV3 extends Component {
                 toValue: 0,
                 duration: 210,
             }),
-            Animated.timing(this.state.focusTabBottomPadding, {
+            Animated.timing(this.state.contentBottomPadding, {
                 toValue: 0,
                 duration: 210,
             }),
@@ -660,17 +653,30 @@ export class GoalDetailCardV3 extends Component {
                 return (
                     <CentralTab
                         testID="goal-detail-card-central-tab"
-                        onScroll={Animated.event(
-                            [
-                                {
-                                    nativeEvent: {
-                                        contentOffset: { y: this.state.scroll },
-                                    },
-                                },
-                            ],
-                            { useNativeDriver: true }
-                        )}
-                        topOffset={this.state.cardHeight}
+                        onScroll={
+                            this.props.isSelf
+                                ? (offset) => {
+                                      if (this.state.scroll)
+                                          this.state.scroll.setValue(offset)
+                                  }
+                                : Animated.event(
+                                      [
+                                          {
+                                              nativeEvent: {
+                                                  contentOffset: {
+                                                      y: this.state.scroll,
+                                                  },
+                                              },
+                                          },
+                                      ],
+                                      { useNativeDriver: true }
+                                  )
+                        }
+                        contentContainerStyle={{
+                            paddingTop: this.state.cardHeight,
+                            flexGrow: 1,
+                        }}
+                        bottomOffset={this.state.contentBottomPadding}
                         isSelf={this.props.isSelf}
                         handleIndexChange={this._handleIndexChange}
                         pageId={this.props.pageId}
@@ -679,9 +685,6 @@ export class GoalDetailCardV3 extends Component {
                 )
 
             case 'focusTab':
-                const {
-                    navigationState: { focusType },
-                } = this.props
                 return (
                     <FocusTab
                         // testID="goal-detail-card-focus-tab"
@@ -702,7 +705,7 @@ export class GoalDetailCardV3 extends Component {
                             paddingTop: this.state.cardHeight,
                             flexGrow: 1,
                         }}
-                        paddingBottom={this.state.focusTabBottomPadding}
+                        paddingBottom={this.state.contentBottomPadding}
                         pageId={this.props.pageId}
                         goalId={this.props.goalId}
                         handleReplyTo={this.handleReplyTo}
@@ -829,7 +832,7 @@ export class GoalDetailCardV3 extends Component {
                     borderTopWidth: 0.5,
                     borderBottomWidth: 0.5,
                     borderColor: '#e5e5e5',
-                    minHeight: 40 * DEFAULT_STYLE.uiScale,
+                    minHeight: TABBAR_HEIGHT,
                 }}
                 onPress={this.onViewCommentPress}
                 onLayout={(event) =>
@@ -1124,6 +1127,9 @@ const getFocusedItemCount = (comments, focusType, focusRef) => {
 
     return focusedItemCount
 }
+
+// Analytics must be the inner most wrapper
+GoalDetailCardV3 = wrapAnalytics(GoalDetailCardV3, SCREENS.GOAL_DETAIL)
 
 const GoalDetailCardV3Explained = copilot({
     overlay: 'svg', // or 'view'

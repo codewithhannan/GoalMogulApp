@@ -32,6 +32,7 @@ import LikeListModal from '../../Common/Modal/LikeListModal'
 import CommentBox from '../../Goal/Common/CommentBoxV2'
 import CommentCard from '../../Goal/GoalDetailCard/Comment/CommentCard'
 import PostDetailSection from './PostDetailSection'
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 const DEBUG_KEY = '[ UI PostDetailCard ]'
 const TABBAR_HEIGHT = 48.5
@@ -356,13 +357,12 @@ class PostDetailCard extends React.PureComponent {
                             ListFooterComponent={
                                 <View
                                     style={{
-                                        height: 43,
+                                        height: 90,
                                         backgroundColor: 'transparent',
                                     }}
                                 />
                             }
                         />
-
                         <Animated.View
                             style={[
                                 styles.composerContainer,
@@ -463,4 +463,4 @@ export default connect(makeMapStateToProps, {
     editPost,
     fetchPostDetail,
     markUserViewPost,
-})(PostDetailCard)
+})(wrapAnalytics(PostDetailCard, SCREENS.POST_DETAIL))

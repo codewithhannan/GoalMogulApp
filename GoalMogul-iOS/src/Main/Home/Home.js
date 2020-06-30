@@ -16,6 +16,7 @@ import SearchBarHeader from '../Common/Header/SearchBarHeader'
 
 import Mastermind from './Mastermind'
 import ActivityFeed from './ActivityFeed'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 // Actions
 import {
@@ -462,13 +463,15 @@ const styles = {
     },
 }
 
+const AnalyticsWrapped = wrapAnalytics(Home, SCREENS.HOME)
+
 const HomeExplained = copilot({
     overlay: 'svg', // or 'view'
     animated: true, // or false
     stepNumberComponent: () => <View />,
     tooltipComponent: Tooltip,
     svgMaskPath: svgMaskPath,
-})(Home)
+})(AnalyticsWrapped)
 
 export default connect(
     mapStateToProps,

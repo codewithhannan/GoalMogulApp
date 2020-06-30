@@ -10,6 +10,7 @@ import React from 'react'
 import { ScrollView } from 'react-native'
 
 import ProfileInfoCard from './ProfileCard/ProfileInfoCard'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 class About extends React.PureComponent {
     render() {
@@ -22,4 +23,6 @@ class About extends React.PureComponent {
     }
 }
 
-export default About
+const AboutWrapper = wrapAnalytics(About, SCREENS.PROFILE_ABOUT_TAB)
+
+export default AboutWrapper

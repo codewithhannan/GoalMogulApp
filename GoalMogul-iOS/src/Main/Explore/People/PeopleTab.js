@@ -28,6 +28,7 @@ import { makeGetUsers } from '../../../redux/modules/explore/selector'
 // Components
 import EmptyResult from '../../Common/Text/EmptyResult'
 import FriendCardView from '../../MeetTab/V2/FriendCardView'
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 const TAB_KEY = 'people'
 
@@ -162,4 +163,4 @@ const makeMapStateToProps = () => {
 export default connect(makeMapStateToProps, {
     exploreRefreshTab,
     exploreLoadMoreTab,
-})(PeopleTab)
+})(wrapAnalytics(PeopleTab, SCREENS.EXPLORE_PEOPLE_TAB))

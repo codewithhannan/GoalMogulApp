@@ -218,7 +218,7 @@ class FocusTab extends React.PureComponent {
                             <EmptyResult
                                 testID="focus-tab-empty-result"
                                 text={emptyText}
-                                textStyle={{ paddingTop: 70 }}
+                                textStyle={{ paddingTop: 90 }}
                             />
                         )
                     }

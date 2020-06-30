@@ -28,6 +28,7 @@ import IconChat from '../../asset/footer/navigation/chat.png'
 
 // Styles
 import { APP_DEEP_BLUE, DEFAULT_STYLE, GM_BLUE } from '../../styles'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 const { width } = Dimensions.get('window')
 
@@ -255,4 +256,4 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
     exploreSelectTab,
-})(Explore)
+})(wrapAnalytics(Explore, SCREENS.EXPLORE_PAGE))

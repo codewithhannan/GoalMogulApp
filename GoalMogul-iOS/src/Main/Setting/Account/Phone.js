@@ -24,6 +24,7 @@ import { onVerifyPhoneNumber, verifyPhoneNumberSuccess } from '../../../actions'
 
 /* Assets */
 import editImage from '../../../asset/utils/edit.png'
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 class Phone extends Component {
     handleOnAddPhoneNumberPress() {
@@ -159,4 +160,4 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     onVerifyPhoneNumber,
     verifyPhoneNumberSuccess,
-})(Phone)
+})(wrapAnalytics(Phone, SCREENS.PHONE_VERIFICATION))

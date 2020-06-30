@@ -354,48 +354,6 @@ class NewGoalView extends Component {
         this.props.change('priority', value)
     }
 
-    // Goal creation handler
-    /**
-     * This is a hacky solution due to the fact that redux-form
-     * handleSubmit values differ from the values actually stored.
-     * NOTE:
-     * Verify by comparing
-     * console.log('handleSubmit passed in values are: ', values);
-     * console.log('form state values: ', this.props.formVals);
-     *
-     * Synchronize validate form values, contains simple check
-     */
-    handleCreate = (values) => {
-        const errors = validate(this.props.formVals.values)
-        console.log(
-            `${DEBUG_KEY}: raw goal values are: `,
-            this.props.formVals.values
-        )
-        if (
-            !(Object.keys(errors).length === 0 && errors.constructor === Object)
-        ) {
-            return Alert.alert('Error', 'You have incomplete fields.')
-        }
-
-        const { goal, initializeFromState, uploading, callback } = this.props
-        if (!uploading) return // when uploading is false, it's actually uploading.
-        const goalId = goal ? goal._id : undefined
-
-        return this.props.submitGoal(
-            this.props.formVals.values,
-            this.props.user._id,
-            initializeFromState,
-            () => {
-                console.log(`${DEBUG_KEY}: [handleCreate] poping the modal`)
-                Actions.pop()
-                if (callback) {
-                    callback() // Callback passed to CreateGoalModal
-                }
-            },
-            goalId
-        )
-    }
-
     renderTagSearchLoadingComponent(loading) {
         if (loading) {
             return (
@@ -584,8 +542,8 @@ class NewGoalView extends Component {
                 <WalkableView>
                     <FieldTitleText
                         text="What are you trying to achieve?"
-                        required={true}
-                        style={{ marginBottom: 16 }}
+                        required={false}
+                        containerStyle={{ marginBottom: 16 }}
                     />
                     <View
                         style={{
@@ -593,7 +551,11 @@ class NewGoalView extends Component {
                             justifyContent: 'space-between',
                         }}
                     >
-                        <Text style={styles.subTitleTextStyle}>Your Goal</Text>
+                        <FieldTitleText
+                            text="Your Goal"
+                            textStyle={styles.subTitleTextStyle}
+                            required={true}
+                        />
                         <Text style={DEFAULT_STYLE.smallText_2}>
                             {title ? title.length : 0}/90
                         </Text>
@@ -752,7 +714,7 @@ class NewGoalView extends Component {
                     <FieldTitleText
                         text="How important is your goal?"
                         required={true}
-                        style={{ marginBottom: 12 }}
+                        containerStyle={{ marginBottom: 12 }}
                     />
                     <Text style={styles.descriptionTextStyle}>
                         Use is to set relative priority of your Goal.
@@ -801,41 +763,41 @@ class NewGoalView extends Component {
                 }
             />
         ) : (
-            <Modal
-                animationType="fade"
-                transparent={false}
-                visible={this.props.startTime.picker}
-            >
-                <ModalHeader
-                    title="Select start time"
-                    actionText="Done"
-                    onAction={() =>
-                        this.props.change('startTime', {
-                            date: this.props.startTime.date,
-                            picker: false,
-                        })
-                    }
-                    onCancel={() =>
-                        this.props.change('startTime', {
-                            date: this.props.startTime.date,
-                            picker: false,
-                        })
-                    }
-                />
-                <View style={{ flex: 1 }}>
-                    <DatePickerIOS
-                        date={this.props.startTime.date}
-                        onDateChange={(date) =>
+                <Modal
+                    animationType="fade"
+                    transparent={false}
+                    visible={this.props.startTime.picker}
+                >
+                    <ModalHeader
+                        title="Select start time"
+                        actionText="Done"
+                        onAction={() =>
                             this.props.change('startTime', {
-                                date,
-                                picker: true,
+                                date: this.props.startTime.date,
+                                picker: false,
                             })
                         }
-                        mode="date"
+                        onCancel={() =>
+                            this.props.change('startTime', {
+                                date: this.props.startTime.date,
+                                picker: false,
+                            })
+                        }
                     />
-                </View>
-            </Modal>
-        )
+                    <View style={{ flex: 1 }}>
+                        <DatePickerIOS
+                            date={this.props.startTime.date}
+                            onDateChange={(date) =>
+                                this.props.change('startTime', {
+                                    date,
+                                    picker: true,
+                                })
+                            }
+                            mode="date"
+                        />
+                    </View>
+                </Modal>
+            )
 
         const endDatePicker = newPicker ? (
             <DateTimePicker
@@ -855,51 +817,38 @@ class NewGoalView extends Component {
                 }
             />
         ) : (
-            <Modal
-                animationType="fade"
-                transparent={false}
-                visible={this.props.endTime.picker}
-            >
-                <ModalHeader
-                    title="Select end time"
-                    actionText="Done"
-                    onAction={() =>
-                        this.props.change('endTime', {
-                            date: this.props.endTime.date,
-                            picker: false,
-                        })
-                    }
-                    onCancel={() =>
-                        this.props.change('endTime', {
-                            date: this.props.endTime.date,
-                            picker: false,
-                        })
-                    }
-                />
-                <View style={{ flex: 1 }}>
-                    <DatePickerIOS
-                        date={this.props.endTime.date}
-                        onDateChange={(date) =>
-                            this.props.change('endTime', { date, picker: true })
+                <Modal
+                    animationType="fade"
+                    transparent={false}
+                    visible={this.props.endTime.picker}
+                >
+                    <ModalHeader
+                        title="Select end time"
+                        actionText="Done"
+                        onAction={() =>
+                            this.props.change('endTime', {
+                                date: this.props.endTime.date,
+                                picker: false,
+                            })
                         }
-                        mode="date"
+                        onCancel={() =>
+                            this.props.change('endTime', {
+                                date: this.props.endTime.date,
+                                picker: false,
+                            })
+                        }
                     />
-                </View>
-            </Modal>
-        )
-
-        if (!this.props.startTime || !this.props.startTime.date)
-            this.props.change('startTime', { date: new Date(), picker: false })
-        if (!this.props.endTime || !this.props.endTime.date) {
-            this.props.change('endTime', {
-                date: new Date(
-                    (this.props.startTime.date
-                        ? this.props.startTime.date.getTime()
-                        : new Date().getTime()) + DAY_IN_MS
-                ),
-                picker: false,
-            })
-        }
+                    <View style={{ flex: 1 }}>
+                        <DatePickerIOS
+                            date={this.props.endTime.date}
+                            onDateChange={(date) =>
+                                this.props.change('endTime', { date, picker: true })
+                            }
+                            mode="date"
+                        />
+                    </View>
+                </Modal>
+            )
 
         const startTime = (
             <Text
@@ -909,7 +858,7 @@ class NewGoalView extends Component {
                     marginRight: 12,
                 }}
             >
-                {moment(this.props.startTime.date).format('ll')}
+                {this.props.startTime.date ? moment(this.props.startTime.date).format('ll') : "Start Date"}
             </Text>
         )
         const endTime = (
@@ -920,7 +869,7 @@ class NewGoalView extends Component {
                     marginRight: 12,
                 }}
             >
-                {moment(this.props.endTime.date).format('ll')}
+                {this.props.endTime.date ? moment(this.props.endTime.date).format('ll') : "End Date"}
             </Text>
         )
 
@@ -947,6 +896,25 @@ class NewGoalView extends Component {
             </View>
         )
 
+        // Show cancel button if there is date set
+        const cancelButton = this.props.endTime.date || this.props.startTime.datem ? (
+                <TouchableOpacity
+                    activeOpacity={0.6}
+                    style={{ justifyContent: 'center', padding: 10, marginLeft: 5 }}
+                    onPress={() => {
+                        this.props.change('hasTimeline', false);
+                        this.props.change('endTime', {
+                            date: undefined, picker: false
+                        });
+                        this.props.change('startTime', {
+                            date: undefined, picker: false
+                        });
+                    }}
+                >
+                    <Image source={cancel} resizeMode="contain" style={DEFAULT_STYLE.buttonIcon_1} />
+                </TouchableOpacity>
+            ) : null;
+
         return (
             <CopilotStep
                 text={this.props.tutorialText[4]}
@@ -956,8 +924,8 @@ class NewGoalView extends Component {
                 <WalkableView style={{ ...styles.sectionMargin }}>
                     <FieldTitleText
                         text="Timeline"
-                        required={true}
-                        style={{ marginBottom: 12 }}
+                        required={false}
+                        containerStyle={{ marginBottom: 12 }}
                     />
                     <Text style={styles.descriptionTextStyle}>
                         Give your best estimate.
@@ -967,6 +935,7 @@ class NewGoalView extends Component {
                             marginTop: 8,
                             flexDirection: 'row',
                             alignItems: 'center',
+                            flexWrap: 'wrap'
                         }}
                     >
                         <TouchableOpacity
@@ -979,7 +948,7 @@ class NewGoalView extends Component {
                             }}
                             onPress={() =>
                                 this.props.change('startTime', {
-                                    date: this.props.startTime.date,
+                                    date: this.props.startTime.date || new Date(),
                                     picker: true,
                                 })
                             }
@@ -1002,7 +971,7 @@ class NewGoalView extends Component {
                             }}
                             onPress={() =>
                                 this.props.change('endTime', {
-                                    date: this.props.endTime.date,
+                                    date: this.props.endTime.date || new Date(),
                                     picker: true,
                                 })
                             }
@@ -1010,6 +979,7 @@ class NewGoalView extends Component {
                             {icon}
                             {endTime}
                         </TouchableOpacity>
+                        {cancelButton}
                     </View>
                     {startDatePicker}
                     {endDatePicker}
@@ -1063,7 +1033,7 @@ class NewGoalView extends Component {
         )
     }
 
-    renderFieldArray = (type, required, fields, error) => {
+    renderFieldArray = (type, fields, error) => {
         const onSubmitEditing = ({ nativeEvent }) => {
             const { text } = nativeEvent
             if (text && text.trim() !== '') {
@@ -1090,8 +1060,8 @@ class NewGoalView extends Component {
             >
                 <FieldTitleText
                     text={TYPE_MAP[type].title}
-                    required={required}
-                    style={{ marginBottom: 12 }}
+                    required={false}
+                    containerStyle={{ marginBottom: 12 }}
                 />
                 {fields.length > 0 ? (
                     <DraggableFlatlist
@@ -1161,14 +1131,14 @@ class NewGoalView extends Component {
                 name="create_goal_create_goal_modal_5"
             >
                 <WalkableView>
-                    {this.renderFieldArray('step', true, fields, error)}
+                    {this.renderFieldArray('step', fields, error)}
                 </WalkableView>
             </CopilotStep>
         )
     }
 
     renderNeeds = ({ fields, meta: { error, submitFailed } }) => {
-        return this.renderFieldArray('need', false, fields, error)
+        return this.renderFieldArray('need', fields, error)
     }
 
     render() {
@@ -1241,13 +1211,14 @@ class NewGoalView extends Component {
 }
 
 const FieldTitleText = (props) => {
-    const { text, style, required } = props
+    const { text, containerStyle, textStyle, required } = props
     return (
-        <View style={{ flexDirection: 'row', ...style }}>
+        <View style={{ flexDirection: 'row', ...containerStyle }}>
             {required && (
                 <Text
                     style={{
                         ...styles.subTitleTextStyle,
+                        ...textStyle,
                         color: 'red',
                         paddingRight: 0,
                     }}
@@ -1255,7 +1226,7 @@ const FieldTitleText = (props) => {
                     *
                 </Text>
             )}
-            <Text style={styles.titleTextStyle}>{text}</Text>
+            <Text style={[styles.titleTextStyle, textStyle]}>{text}</Text>
         </View>
     )
 }
