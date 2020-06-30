@@ -263,7 +263,6 @@ class ProfileInfoCard extends Component {
                 </View>
                 <View style={DEFAULT_STYLE.shadow} />
                 <View style={styles.containerStyle}>
-                    {this.renderCoinInfo(user)}
                     {this.renderFriendInfo()}
                     {this.renderOccupation(occupation)}
                     <CoinProfileInfoModal
