@@ -48,7 +48,7 @@ class MyTribeAbout extends Component {
         if (!this.props.data || !this.props.data.members) return <View />
 
         const {
-            data: { members },
+            data: { members, _id },
             tribeId,
             pageId,
         } = this.props
@@ -83,6 +83,7 @@ class MyTribeAbout extends Component {
                 <TouchableOpacity
                     onPress={() =>
                         Actions.push('myTribeMembers', {
+                            itemId: _id,
                             pageId,
                             tribeId,
                         })

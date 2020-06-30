@@ -57,8 +57,7 @@ class MyTribeMembers extends React.PureComponent {
      * and remove user option is chosen
      */
     handleRemoveUser = (userId) => {
-        const { _id } = this.props.item
-        this.props.myTribeAdminRemoveUser(userId, _id)
+        this.props.myTribeAdminRemoveUser(userId, this.props.itemId)
     }
 
     /**
@@ -66,8 +65,7 @@ class MyTribeMembers extends React.PureComponent {
      * and promote user option is chosen
      */
     handlePromoteUser = (userId) => {
-        const { _id } = this.props.item
-        this.props.myTribeAdminPromoteUser(userId, _id)
+        this.props.myTribeAdminPromoteUser(userId, this.props.itemId)
     }
 
     /**
@@ -75,8 +73,7 @@ class MyTribeMembers extends React.PureComponent {
      * and demote user option is chosen
      */
     handleDemoteUser = (userId) => {
-        const { _id } = this.props.item
-        this.props.myTribeAdminDemoteUser(userId, _id)
+        this.props.myTribeAdminDemoteUser(userId, this.props.itemId)
     }
 
     /**
@@ -84,8 +81,7 @@ class MyTribeMembers extends React.PureComponent {
      * and accept user's join request option is chosen
      */
     handleAcceptUser = (userId) => {
-        const { _id } = this.props.item
-        this.props.myTribeAdminAcceptUser(userId, _id)
+        this.props.myTribeAdminAcceptUser(userId, this.props.itemId)
     }
 
     renderItem = (member) => {

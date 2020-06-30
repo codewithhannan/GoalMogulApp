@@ -262,19 +262,6 @@ class MyTribe extends React.PureComponent {
         })
     }
 
-    handleTribeOptionsOnSelect = (value) => {
-        const { item } = this.props
-        if (!item) return
-
-        const { _id } = item
-        if (value === 'Delete') {
-            return this.props.deleteTribe(_id)
-        }
-        if (value === 'Edit') {
-            return this.props.editTribe(item)
-        }
-    }
-
     handleRespondToInvitation = (item) => {
         const { _id } = item
         const options = switchByButtonIndex([
@@ -415,6 +402,7 @@ class MyTribe extends React.PureComponent {
             Member: {
                 text: 'Invite Friends',
                 onPress: () => this.openUserInviteModal(item),
+                disabled: !item.membersCanInvite,
             },
             JoinRequester: {
                 text: 'Withdraw Request',
@@ -441,8 +429,12 @@ class MyTribe extends React.PureComponent {
 
         return (
             <TouchableOpacity
-                style={styles.buttonStyleInvite}
+                style={[
+                    styles.buttonStyleInvite,
+                    { opacity: buttonProps.disabled ? 0.6 : 1 },
+                ]}
                 onPress={buttonProps.onPress}
+                disabled={buttonProps.disabled}
             >
                 <Text style={{ ...styles.buttonText, color: 'white' }}>
                     {buttonProps.text}
@@ -573,6 +565,7 @@ class MyTribe extends React.PureComponent {
     render() {
         const { item, data } = this.props
         if (!item) return <View />
+        console.log(item)
         return (
             <MenuProvider
                 style={{ backgroundColor: '#FAFAFA' }}
