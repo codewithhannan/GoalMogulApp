@@ -15,6 +15,8 @@ import {
     SENTRY_CONTEXT,
 } from '../../../monitoring/sentry/Constants'
 
+const DEBUG_KEY = '[ Selector Tribes ]'
+
 /**
  * get tribe member filter by tribeId and pageId
  * @param {*} state

@@ -2,9 +2,8 @@
 
 import Fuse from 'fuse.js'
 import R from 'ramda'
-import React, { Component } from 'react'
+import React from 'react'
 import {
-    ActivityIndicator,
     Animated,
     Dimensions,
     FlatList,
@@ -13,14 +12,11 @@ import {
     Text,
     TouchableOpacity,
     View,
-    Button,
 } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import { loadFriends } from '../../../actions'
-import Icons from '../../../asset/base64/Icons'
-import envelope from '../../../asset/utils/envelope.png'
 import invite from '../../../asset/utils/invite.png'
 import post from '../../../asset/utils/post.png'
 import tribe_default_icon from '../../../asset/utils/tribeIcon.png'
@@ -37,8 +33,7 @@ import {
 
 // modal
 import MyTribeDescription from './MyTribeDescription'
-// middleware
-import { componentKeyByTab } from '../../../redux/middleware/utils'
+
 // Actions
 import {
     myTribeReset,
@@ -66,23 +61,17 @@ import {
 import { DEFAULT_STYLE, GM_BLUE } from '../../../styles'
 // Constants
 import {
-    CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-    CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
     IMAGE_BASE_URL,
     IPHONE_MODELS,
     DEVICE_MODEL,
 } from '../../../Utils/Constants'
-import { DotIcon } from '../../../Utils/Icons'
 import {
     actionSheet,
     switchByButtonIndex,
 } from '../../Common/ActionSheetFactory'
-import DelayedButton from '../../Common/Button/DelayedButton'
 import PlusButton from '../../Common/Button/PlusButton'
-import Divider from '../../Common/Divider'
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
-import { MenuFactory } from '../../Common/MenuFactory'
 import EmptyResult from '../../Common/Text/EmptyResult'
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard'
 import About from './MyTribeAbout'
@@ -444,7 +433,14 @@ class MyTribe extends React.PureComponent {
     }
 
     renderTribeOverview() {
-        const { tribeId, pageId, item, data } = this.props
+        const {
+            tribeId,
+            pageId,
+            item,
+            data,
+            feedLoading,
+            feedRefreshing,
+        } = this.props
         const { name, picture, memberCount } = item
         const newDate = item.created ? new Date(item.created) : new Date()
         const date = `${
@@ -453,7 +449,7 @@ class MyTribe extends React.PureComponent {
         const count = memberCount || '0'
 
         const emptyState =
-            data.length === 0 && !this.props.feedLoading ? (
+            data.length === 0 && !feedLoading && !feedRefreshing ? (
                 <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 80 }} />
             ) : null
 
@@ -565,7 +561,6 @@ class MyTribe extends React.PureComponent {
     render() {
         const { item, data } = this.props
         if (!item) return <View />
-        console.log(item)
         return (
             <MenuProvider
                 style={{ backgroundColor: '#FAFAFA' }}
@@ -584,7 +579,6 @@ class MyTribe extends React.PureComponent {
                     keyExtractor={(i) => i._id}
                     ListHeaderComponent={this.renderTribeOverview()}
                     renderItem={this.renderItem}
-                    loading={this.props.tribeLoading}
                     refreshing={this.props.loading}
                     onRefresh={() =>
                         this.props.refreshMyTribeDetail(
