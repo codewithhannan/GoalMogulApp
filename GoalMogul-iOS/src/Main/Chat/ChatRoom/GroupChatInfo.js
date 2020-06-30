@@ -13,10 +13,9 @@
  * @see https://akveo.github.io/react-native-ui-kitten/docs/
  */
 
-import React, { useState } from 'react'
+import React from 'react'
 import {
     Text,
-    Input,
     Layout,
     withStyles,
     Menu,
@@ -46,99 +45,27 @@ import {
 
 // Icons
 function ForwardIcon(props) {
-    return <Icon {...props} name="arrow-ios-forward" />
+    return <Icon name="chevron-right" pack="material" {...props} />
 }
 
-function BellIcon(props) {
-    return <Icon {...props} name="bell-outline" />
-}
-
-// Sections
-function BasicInfoSection() {
+const makeAccessoryLeftIcon = (props, name) => {
+    const { style, ...rest } = props
     return (
-        <Input
-            label="*Group Message Name"
-            placeholder="Enter a name for this group"
-            size="large"
-            style={styles.formContainer}
+        <Icon
+            name={name}
+            style={[style, styles.accessoryLeft]}
+            {...rest}
+            pack="material"
         />
     )
 }
 
-function OtherSettingsSection(props) {
-    const { leaveConversation } = props
-    // TODO update this
-    const [addSomeoneSelected, setAddSomeoneSelected] = useState(false)
-    const [leaveSelected, setLeaveSelected] = useState(false)
-
-    return (
-        <>
-            <Menu style={styles.menu} appearance="noDivider">
-                <MenuItem
-                    title={() => <Text category="h6">Manage Members</Text>}
-                    accessoryRight={ForwardIcon}
-                    onPress={() => {
-                        Actions.push('chatRoomMembers')
-                    }}
-                    style={styles.menuItem}
-                />
-                <MenuItem
-                    title={() => <Text category="h6">Add Someone</Text>}
-                    accessoryRight={ForwardIcon}
-                    // TODO replace the following two attributes
-                    //  when wiring up functionalities
-                    selected={addSomeoneSelected}
-                    onPress={() => setAddSomeoneSelected(true)}
-                    style={styles.menuItem}
-                />
-                <MenuItem
-                    title={() => <Text category="h6">Leave Group Message</Text>}
-                    accessoryRight={ForwardIcon}
-                    // TODO replace the following two attributes
-                    //  when wiring up functionalities
-                    onPress={leaveConversation}
-                    style={styles.menuItem}
-                />
-            </Menu>
-        </>
-    )
-}
-
 class GroupChatInfo extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            isMuted: undefined,
-        }
-    }
-
-    componentDidMount() {
-        this.setState({ isMuted: this.props.isMuted })
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        // if (prevProps.isMuted == undefined && this.props.isMuted !== undefined) {
-        //     console.log("isMuted has changed from undefined to: ", this.props.isMuted)
-        // }
-        if (
-            prevState.isMuted !== undefined &&
-            prevState.isMuted != this.state.isMuted
-        ) {
-            this.toggleMute(this.state.isMuted)
-            console.log('hi there')
-        }
-    }
     /**
      * close current page
      */
     close() {
         Actions.pop()
-    }
-
-    // Action to mute the notification for this group chat
-    toggleMute = (val) => {
-        const { chatRoom } = this.props
-        this.props.changeChatRoomMute(chatRoom._id, val)
     }
 
     // Action to leave this group chat
@@ -238,36 +165,78 @@ class GroupChatInfo extends React.Component {
                 />
                 <View style={styles.container}>
                     <Layout>
-                        <BasicInfoSection />
-                        <Spacer size={3} />
-                        <Menu style={styles.menu}>
+                        <Menu style={styles.menu} appearance="noDivider">
                             <MenuItem
                                 title={() => (
-                                    <Text category="h6">Notification</Text>
+                                    <Text category="h6" style={styles.title}>
+                                        Settings
+                                    </Text>
                                 )}
                                 accessoryRight={ForwardIcon}
-                                // TODO replace the following two attributes
-                                //  when wiring up functionalities
+                                accessoryLeft={(props) =>
+                                    makeAccessoryLeftIcon(props, 'settings')
+                                }
                                 onPress={() => {}}
                                 style={styles.menuItem}
                             />
-                        </Menu>
-                        <Layout style={styles.formContainer}>
-                            <ToggleField
-                                label={<Text category="h6">Mute Channel</Text>}
-                                checked={this.state.isMuted ? true : false} // Note: Sadly isMuted here is a chatRoomId
-                                onCheckedChange={(val) => {
-                                    this.setState({
-                                        ...this.state,
-                                        isMuted: val,
-                                    })
-                                }}
+                            <MenuItem
+                                title={() => (
+                                    <Text category="h6" style={styles.title}>
+                                        Notification
+                                    </Text>
+                                )}
+                                accessoryRight={ForwardIcon}
+                                accessoryLeft={(props) =>
+                                    makeAccessoryLeftIcon(
+                                        props,
+                                        'notifications-none'
+                                    )
+                                }
+                                onPress={() => {}}
+                                style={styles.menuItem}
                             />
-                        </Layout>
-                        <Spacer size={3} />
-                        <OtherSettingsSection
-                            leaveConversation={this.leaveConversation}
-                        />
+                            <MenuItem
+                                title={() => (
+                                    <Text category="h6" style={styles.title}>
+                                        Manage Members
+                                    </Text>
+                                )}
+                                accessoryRight={ForwardIcon}
+                                accessoryLeft={(props) =>
+                                    makeAccessoryLeftIcon(props, 'people')
+                                }
+                                onPress={() => {
+                                    Actions.push('chatRoomMembers')
+                                }}
+                                style={styles.menuItem}
+                            />
+                            <MenuItem
+                                title={() => (
+                                    <Text category="h6" style={styles.title}>
+                                        Add Someone
+                                    </Text>
+                                )}
+                                accessoryRight={ForwardIcon}
+                                accessoryLeft={(props) =>
+                                    makeAccessoryLeftIcon(props, 'person-add')
+                                }
+                                onPress={() => {}}
+                                style={styles.menuItem}
+                            />
+                            <MenuItem
+                                title={() => (
+                                    <Text category="h6" style={styles.title}>
+                                        Leave Group Message
+                                    </Text>
+                                )}
+                                accessoryRight={ForwardIcon}
+                                accessoryLeft={(props) =>
+                                    makeAccessoryLeftIcon(props, 'input')
+                                }
+                                onPress={this.leaveConversation}
+                                style={styles.menuItem}
+                            />
+                        </Menu>
                     </Layout>
                 </View>
             </Layout>
@@ -312,7 +281,16 @@ const styles = StyleSheet.create({
     menu: {
         marginTop: 16,
     },
+    accessoryLeft: {
+        marginHorizontal: 0,
+        marginRight: 10,
+    },
+    title: {
+        flex: 1,
+    },
     menuItem: {
+        justifyContent: 'flex-start',
+        flex: 1,
         paddingVertical: 16,
         paddingLeft: 16,
     },
