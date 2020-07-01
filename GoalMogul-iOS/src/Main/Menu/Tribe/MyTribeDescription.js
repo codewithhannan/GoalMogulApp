@@ -7,13 +7,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import { View, Image, Text, Animated, ImageBackground } from 'react-native'
+import { View, Image, Text } from 'react-native'
 import Constants from 'expo-constants'
 import Modal from 'react-native-modal'
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
 import flagIcon from '../../../asset/icons/flag.png'
+import { DEFAULT_STYLE } from '../../../styles'
 
 class MyTribeDescription extends React.PureComponent {
     constructor(props) {
@@ -37,25 +38,6 @@ class MyTribeDescription extends React.PureComponent {
 
     onModalShow = () => {
         // Mark modal as shown by calling endpoint and update user profile
-    }
-
-    renderCancelButton() {
-        return (
-            <View
-                style={{ position: 'absolute', top: 0, right: 0, padding: 10 }}
-            >
-                <DelayedButton
-                    activeOpacity={0.6}
-                    onPress={() => this.closeModal()}
-                    style={styles.modalCancelIconContainerStyle}
-                >
-                    <Image
-                        source={cancel}
-                        style={styles.modalCancelIconStyle}
-                    />
-                </DelayedButton>
-            </View>
-        )
     }
 
     render() {
@@ -90,14 +72,35 @@ class MyTribeDescription extends React.PureComponent {
                             flex: 1,
                         }}
                     >
-                        {this.renderCancelButton()}
-                        <View style={styles.aboutTitle}>
-                            <Image source={flagIcon} style={styles.imageIcon} />
-                            <Text style={styles.header}>About</Text>
+                        <View style={styles.header}>
+                            <View
+                                style={{
+                                    flex: 1,
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Image
+                                    source={flagIcon}
+                                    style={styles.imageIcon}
+                                />
+                                <Text style={styles.aboutTitle}>About</Text>
+                            </View>
+                            <DelayedButton
+                                activeOpacity={0.6}
+                                onPress={() => this.closeModal()}
+                            >
+                                <Image
+                                    source={cancel}
+                                    style={DEFAULT_STYLE.normalIcon_1}
+                                />
+                            </DelayedButton>
                         </View>
                     </View>
                     <View style={styles.aboutContainer}>
-                        <Text>{this.props.item.description}</Text>
+                        <Text style={DEFAULT_STYLE.normalText_1}>
+                            {this.props.item.description}
+                        </Text>
                     </View>
                 </View>
             </Modal>
@@ -115,41 +118,26 @@ const styles = {
     aboutContainer: {
         padding: 20,
         paddingTop: 0,
-        paddingBottom: 39,
-    },
-    header: {
-        fontSize: 20,
-        marginBottom: 10,
-        fontWeight: '700',
+        paddingBottom: 60,
     },
     aboutTitle: {
-        paddingLeft: 20,
-        paddingTop: 10,
+        ...DEFAULT_STYLE.titleText_1,
+    },
+    header: {
         flexDirection: 'row',
+        alignItems: 'center',
+        paddingBottom: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#DADADA',
     },
     imageIcon: {
-        marginTop: 5,
+        ...DEFAULT_STYLE.smallIcon_1,
         marginRight: 10,
     },
-
     modalContainerStyle: {
         backgroundColor: 'white',
         borderRadius: 15,
-        padding: 5,
+        padding: 16,
         alignItems: 'left',
-    },
-
-    modalCancelIconContainerStyle: {
-        height: 30,
-        width: 30,
-        backgroundColor: 'transparent',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 15,
-    },
-    modalCancelIconStyle: {
-        height: 14,
-        width: 14,
-        tintColor: 'black',
     },
 }

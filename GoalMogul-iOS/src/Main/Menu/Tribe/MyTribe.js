@@ -16,11 +16,16 @@ import {
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
-import { loadFriends } from '../../../actions'
+// Assets
 import invite from '../../../asset/utils/invite.png'
 import post from '../../../asset/utils/post.png'
+import flagIcon from '../../../asset/icons/flag.png'
 import tribe_default_icon from '../../../asset/utils/tribeIcon.png'
+// Utils
 import { switchCase, decode } from '../../../redux/middleware/utils'
+// modal
+import MyTribeDescription from './MyTribeDescription'
+// Actions
 import { openPostDetail } from '../../../redux/modules/feed/post/PostActions'
 import {
     subscribeEntityNotification,
@@ -30,11 +35,7 @@ import {
     openMultiUserInviteModal,
     searchFriend,
 } from '../../../redux/modules/search/SearchActions'
-
-// modal
-import MyTribeDescription from './MyTribeDescription'
-
-// Actions
+import { loadFriends } from '../../../actions'
 import {
     myTribeReset,
     refreshMyTribeDetail,
@@ -440,17 +441,57 @@ class MyTribe extends React.PureComponent {
             data,
             feedLoading,
             feedRefreshing,
+            userTribeStatus,
         } = this.props
-        const { name, picture, memberCount } = item
+        const { name, picture, memberCount, description } = item
         const newDate = item.created ? new Date(item.created) : new Date()
         const date = `${
             months[newDate.getMonth()]
         } ${newDate.getDate()}, ${newDate.getFullYear()}`
         const count = memberCount || '0'
+        const isMemberOrAdmin =
+            userTribeStatus === 'Admin' || userTribeStatus === 'Member'
 
-        const emptyState =
-            data.length === 0 && !feedLoading && !feedRefreshing ? (
-                <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 80 }} />
+        const bodyCard =
+            data.length === 0 ? (
+                isMemberOrAdmin ? (
+                    !feedLoading &&
+                    !feedRefreshing && (
+                        <EmptyResult
+                            text={'No Posts'}
+                            textStyle={{ paddingTop: 80 }}
+                        />
+                    )
+                ) : (
+                    <View
+                        style={{
+                            padding: 16,
+                            paddingBottom: 32,
+                            backgroundColor: 'white',
+                            marginTop: 8,
+                        }}
+                    >
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                paddingBottom: 16,
+                            }}
+                        >
+                            <Image
+                                source={flagIcon}
+                                style={[
+                                    DEFAULT_STYLE.smallIcon_1,
+                                    { marginRight: 10 },
+                                ]}
+                            />
+                            <Text style={DEFAULT_STYLE.titleText_1}>About</Text>
+                        </View>
+                        <Text style={DEFAULT_STYLE.normalText_1}>
+                            {description}
+                        </Text>
+                    </View>
+                )
             ) : null
 
         return (
@@ -483,30 +524,30 @@ class MyTribe extends React.PureComponent {
                         <About pageId={pageId} tribeId={tribeId} data={item} />
                     </View>
                     <View style={styles.buttonGroup}>
-                        <TouchableOpacity
-                            style={styles.buttonStyleAbout}
-                            onPress={() => {
-                                this.setState({
-                                    ...this.state,
-                                    showAboutModal: true,
-                                })
-                            }}
-                        >
-                            <Text style={styles.buttonText}>About</Text>
-                        </TouchableOpacity>
+                        {isMemberOrAdmin && (
+                            <TouchableOpacity
+                                style={styles.buttonStyleAbout}
+                                onPress={() => {
+                                    this.setState({
+                                        ...this.state,
+                                        showAboutModal: true,
+                                    })
+                                }}
+                            >
+                                <Text style={styles.buttonText}>About</Text>
+                            </TouchableOpacity>
+                        )}
                         {this.renderUserStatusButton()}
                     </View>
                 </View>
-                <MyTribeBanner />
-                {emptyState}
+                {isMemberOrAdmin && <MyTribeBanner />}
+                {bodyCard}
             </View>
         )
     }
 
     handleOnEndReached = (tribeId) => {
-        // Do not load more when user is not on posts tab
         if (!tribeId) return
-
         this.props.loadMoreTribeFeed(tribeId, this.props.pageId)
     }
 
