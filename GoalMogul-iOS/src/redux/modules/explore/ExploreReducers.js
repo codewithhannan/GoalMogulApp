@@ -31,7 +31,7 @@ const INITIAL_EXPLORE_CHAT_STATE = {
  */
 const INITIAL_STATE = {
     navigationState: {
-        index: 0,
+        index: 1,
         routes: [
             { key: 'people', title: 'People' },
             { key: 'tribes', title: 'Tribes' },
