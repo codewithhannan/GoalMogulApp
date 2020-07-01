@@ -9,7 +9,7 @@ import IconHome from '../../asset/footer/navigation/home.png'
 import IconBell from '../../asset/footer/navigation/bell.png'
 import IconProfile from '../../asset/footer/navigation/profile.png'
 import IconChat from '../../asset/footer/navigation/chat.png'
-import IconGroup from '../../asset/footer/navigation/group.png'
+import FlagIcon from '../../asset/footer/navigation/flag.png'
 
 /* Actions */
 import { updateChatCount } from '../../redux/modules/navigation/TabIconActions'
@@ -136,7 +136,7 @@ class TabIcon extends React.PureComponent {
             case 'exploreTab':
                 return (
                     <View style={styles.iconContainerStyle}>
-                        <Image source={IconGroup} style={style} />
+                        <Image source={FlagIcon} style={style} zIndex={1} />
                     </View>
                 )
             default:

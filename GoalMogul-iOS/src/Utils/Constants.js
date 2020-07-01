@@ -33,6 +33,7 @@ export const IPHONE_MODELS_2 = [
     'iphone' /* 11 */,
 ]
 export const IPHONE_MODELS = [
+    'iphone se',
     'iphone 7',
     'iphone 6',
     'iphone 6s',

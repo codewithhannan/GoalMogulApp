@@ -109,6 +109,7 @@ import { OnboardingFbPlugin } from './Main/Onboarding'
 import SplashScreen from './SplashScreen'
 import Tutorial from './Tutorial/Tutorial'
 import MultiUserInvitePage from './Main/Common/MultiUserInvitePage'
+import { GM_BLUE } from './styles'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -386,7 +387,7 @@ class RouterComponent extends Component {
                                         hideNavBar
                                         swipeEnabled={false}
                                         tabBarStyle={styles.tabBarStyle}
-                                        activeTintColor="#0397CB"
+                                        activeTintColor={GM_BLUE}
                                         inactiveTintColor="#DCE4E6"
                                         tabs
                                         showLabel={false}
@@ -428,6 +429,59 @@ class RouterComponent extends Component {
                                                 component={Home}
                                             />
                                             {getCommonScenes('home')}
+                                        </Stack>
+
+                                        <Stack
+                                            key="exploreTab"
+                                            icon={TabIcon}
+                                            hideNavBar
+                                            transitionConfig={() => ({
+                                                screenInterpolator: (props) => {
+                                                    const { scene } = props
+                                                    switch (
+                                                        scene.route.routeName
+                                                    ) {
+                                                        /* case yourKeyScene:
+                                                        return theAnimationYouWant(props)*/
+                                                        case 'explore':
+                                                            return this.rootTransitionConfig().screenInterpolator(
+                                                                props
+                                                            )
+                                                        case 'exploreTab_searchLightBox':
+                                                            return this.rootTransitionConfig().screenInterpolator(
+                                                                props
+                                                            )
+                                                        default:
+                                                            return this.rootTransitionConfig().screenInterpolator(
+                                                                props
+                                                            )
+                                                    }
+                                                },
+                                            })}
+                                        >
+                                            <Scene
+                                                key="explore"
+                                                component={Explore}
+                                                initial
+                                            />
+                                            <Scene
+                                                key="eventDetail"
+                                                component={Event}
+                                            />
+                                            <Scene
+                                                key="postExploreTab"
+                                                component={PostDetailCard}
+                                            />
+                                            <Scene
+                                                key="goalExploreTab"
+                                                component={GoalDetailCard}
+                                            />
+                                            <Scene
+                                                key="shareExploreTab"
+                                                component={ShareDetailCard}
+                                            />
+
+                                            {getCommonScenes('exploreTab')}
                                         </Stack>
 
                                         <Stack
@@ -516,59 +570,6 @@ class RouterComponent extends Component {
                                                 hideNavBar
                                             />
                                             {getCommonScenes('notificationTab')}
-                                        </Stack>
-
-                                        <Stack
-                                            key="exploreTab"
-                                            icon={TabIcon}
-                                            hideNavBar
-                                            transitionConfig={() => ({
-                                                screenInterpolator: (props) => {
-                                                    const { scene } = props
-                                                    switch (
-                                                        scene.route.routeName
-                                                    ) {
-                                                        /* case yourKeyScene:
-                                                        return theAnimationYouWant(props)*/
-                                                        case 'explore':
-                                                            return this.rootTransitionConfig().screenInterpolator(
-                                                                props
-                                                            )
-                                                        case 'exploreTab_searchLightBox':
-                                                            return this.rootTransitionConfig().screenInterpolator(
-                                                                props
-                                                            )
-                                                        default:
-                                                            return this.rootTransitionConfig().screenInterpolator(
-                                                                props
-                                                            )
-                                                    }
-                                                },
-                                            })}
-                                        >
-                                            <Scene
-                                                key="explore"
-                                                component={Explore}
-                                                initial
-                                            />
-                                            <Scene
-                                                key="eventDetail"
-                                                component={Event}
-                                            />
-                                            <Scene
-                                                key="postExploreTab"
-                                                component={PostDetailCard}
-                                            />
-                                            <Scene
-                                                key="goalExploreTab"
-                                                component={GoalDetailCard}
-                                            />
-                                            <Scene
-                                                key="shareExploreTab"
-                                                component={ShareDetailCard}
-                                            />
-
-                                            {getCommonScenes('exploreTab')}
                                         </Stack>
 
                                         <Stack

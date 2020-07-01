@@ -37,6 +37,7 @@ import { closeCreateOverlay } from '../../../redux/modules/home/mastermind/actio
 import { IPHONE_MODELS_2, DEVICE_MODEL } from '../../../Utils/Constants'
 import DelayedButton from './DelayedButton'
 import style from '../../Tutorial/style'
+import { GM_BLUE } from '../../../styles'
 
 const BUTTON_GROUP_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(DEVICE_MODEL)
     ? 106
@@ -257,8 +258,7 @@ const ActionButton = (props) => {
  */
 const actionButtonStyles = {
     containerStyle: {
-        // backgroundColor: '#17B3EC',
-        backgroundColor: '#0397CB',
+        backgroundColor: GM_BLUE,
         height: 35,
         width: 80,
         borderRadius: 6,
