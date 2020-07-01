@@ -186,9 +186,8 @@ class MyTribeMembers extends React.PureComponent {
                                     marginTop: 1,
                                 }}
                                 iconStyle={{
+                                    ...DEFAULT_STYLE.normalIcon_1,
                                     tintColor: '#828282',
-                                    height: 15,
-                                    width: 15,
                                 }}
                             />
                         )}
@@ -212,11 +211,6 @@ const styles = {
     },
     aboutContainer: {
         padding: 20,
-    },
-    header: {
-        fontSize: 20,
-        marginBottom: 10,
-        fontWeight: '700',
     },
     aboutTitle: {
         flexDirection: 'row',

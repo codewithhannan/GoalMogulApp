@@ -56,6 +56,7 @@ const renderProgressBar = (props) => {
                     backgroundColor: '#E0E0E0',
                     ...borderRadius,
                 }}
+                key={index}
             >
                 <View
                     style={{

@@ -28,16 +28,11 @@ import MyTribeDescription from './MyTribeDescription'
 // Actions
 import { openPostDetail } from '../../../redux/modules/feed/post/PostActions'
 import {
-    subscribeEntityNotification,
-    unsubscribeEntityNotification,
-} from '../../../redux/modules/notification/NotificationActions'
-import {
     openMultiUserInviteModal,
     searchFriend,
 } from '../../../redux/modules/search/SearchActions'
 import { loadFriends } from '../../../actions'
 import {
-    myTribeReset,
     refreshMyTribeDetail,
     tribeDetailClose,
     loadMoreTribeFeed,
@@ -657,11 +652,6 @@ class MyTribe extends React.PureComponent {
 }
 
 const styles = {
-    imageContainerStyle: {
-        alignItems: 'center',
-        alignSelf: 'center',
-        backgroundColor: 'white',
-    },
     imageStyle: {
         width: '100%',
         height: '100%',
@@ -675,72 +665,10 @@ const styles = {
         alignItems: 'center',
         padding: 16,
     },
-    // Style for subinfo
-    tribeStatusTextStyle: {
-        ...DEFAULT_STYLE.smallText_1,
-        marginLeft: 4,
-        marginRight: 4,
-    },
-    memberStatusContainerStyle: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginLeft: 8,
-        width: 100,
-        height: 23,
-        justifyContent: 'center',
-        borderRadius: 5,
-        backgroundColor: '#fff',
-    },
-    // caret for options
-    caretContainer: {
-        padding: 14,
-    },
-    // Style for Invite button
-    inviteButtonContainerStyle: {
-        height: 30,
-        width: 100,
-        alignItems: 'center',
-        justifyContent: 'center',
-        alignSelf: 'flex-end',
-        marginRight: 20,
-        backgroundColor: '#efefef',
-        borderRadius: 5,
-    },
-
-    // Style for tribe info
-    tribeInfoContainerStyle: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     tribeSizeTextStyle: DEFAULT_STYLE.smallText_1,
     backdrop: {
         backgroundColor: 'white',
         opacity: 0.5,
-    },
-    // Styles for plus icon
-    iconContainerStyle: {
-        height: 54,
-        width: 54,
-        borderRadius: 27,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    iconStyle: {
-        height: 26,
-        width: 26,
-        tintColor: 'white',
-    },
-    rsvpBoxContainerStyle: {
-        height: 25,
-        paddingVertical: 3,
-        paddingLeft: 5,
-        paddingRight: 5,
-        borderRadius: 5,
-        backgroundColor: '#efefef',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row',
     },
     buttonGroup: {
         flexDirection: 'row',
@@ -761,9 +689,6 @@ const styles = {
         ...DEFAULT_STYLE.buttonText_1,
         textAlign: 'center',
         margin: 7,
-    },
-    aboutStyle: {
-        backgroundColor: '#ffffff',
     },
 }
 
@@ -805,10 +730,7 @@ export default connect(mapStateToProps, {
     acceptTribeInvit,
     declineTribeInvit,
     requestJoinTribe,
-    myTribeReset,
     openPostDetail,
-    subscribeEntityNotification,
-    unsubscribeEntityNotification,
     // Multi friend invite
     searchFriend,
     openMultiUserInviteModal,

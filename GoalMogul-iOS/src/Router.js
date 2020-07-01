@@ -22,6 +22,7 @@ import ChatRoomConversation from './Main/Chat/ChatRoom/ChatRoomConversation'
 import ChatRoomMembers from './Main/Chat/ChatRoom/ChatRoomMembers'
 import ChatRoomMessageSearch from './Main/Chat/ChatRoom/ChatRoomMessageSearch'
 import ChatRoomOptions from './Main/Chat/ChatRoom/ChatRoomOptions'
+import GroupChatInfo from './Main/Chat/ChatRoom/GroupChatInfo'
 import ChatRoomPubicView from './Main/Chat/ChatRoom/ChatRoomPublicView'
 import ChatMessageSnapshotModal from './Main/Chat/Modals/ChatMessageSnapshotModal'
 import CreateChatRoomModal from './Main/Chat/Modals/CreateChatRoomModal'
@@ -107,7 +108,7 @@ import { OnboardingFbPlugin } from './Main/Onboarding'
 /* Auth */
 import SplashScreen from './SplashScreen'
 import Tutorial from './Tutorial/Tutorial'
-import UserInviteModal from './Main/Common/Modal/UserInviteModal'
+import MultiUserInvitePage from './Main/Common/MultiUserInvitePage'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -612,6 +613,10 @@ class RouterComponent extends Component {
                                                 component={ChatRoomOptions}
                                             />
                                             <Scene
+                                                key="groupChatInfo"
+                                                component={GroupChatInfo}
+                                            />
+                                            <Scene
                                                 key="chatRoomMembers"
                                                 component={ChatRoomMembers}
                                             />
@@ -665,16 +670,6 @@ class RouterComponent extends Component {
                         component={TrendingGoalView}
                         hideNavBar
                     />
-                    {/* <Scene
-                        key="trendingGoalView"
-                        component={Like}
-                        hideNavBar
-                    />
-                    <Scene
-                        key="trendingGoalView"
-                        component={TrendingGoalView}
-                        hideNavBar
-                    /> */}
                     <Scene
                         key="createPostModal"
                         component={CreatePostModal}
@@ -738,7 +733,7 @@ class RouterComponent extends Component {
                     />
                     <Scene
                         key="multiSearchPeopleLightBox"
-                        component={UserInviteModal}
+                        component={MultiUserInvitePage}
                         hideNavBar
                     />
                     <Scene
@@ -746,7 +741,6 @@ class RouterComponent extends Component {
                         component={MyTribeDescription}
                     />
                     <Scene key="myTribeMembers" component={MyTribeMembers} />
-
                     <Scene key="mutualFriends" component={MutualFriends} />
                     <Scene
                         key="meetContactSync"

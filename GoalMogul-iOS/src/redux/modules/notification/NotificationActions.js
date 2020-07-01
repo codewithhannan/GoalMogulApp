@@ -65,6 +65,16 @@ const isValidItem = (item) =>
 
 /**
  * Handle when push notification is selected
+ *
+ * /goal/goalId/comment/commentId
+ * /goal/goalId/smsplanner
+ * /post/postId
+ * /post/postId/comment/commentId
+ * /post/postId/postType/["General", "..."] (If not General, then it's share)
+ * /user/userId
+ * /event/eventId
+ * /tribe/tribeId
+ *
  * @param {Object} notification
  */
 export const handlePushNotification = (notification) => (
