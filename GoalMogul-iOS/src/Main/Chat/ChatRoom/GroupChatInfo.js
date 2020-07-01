@@ -31,13 +31,18 @@ import { StyleSheet, Alert, View } from 'react-native'
 import DateTimePicker from 'react-native-modal-datetime-picker'
 
 import ModalHeader from '../../Common/Header/ModalHeader'
-import { deleteConversationMessages } from '../../../redux/modules/chat/ChatRoomActions'
+import Spacer from '../../Common/Spacer'
+import {
+    deleteConversationMessages,
+    refreshChatRoom,
+} from '../../../redux/modules/chat/ChatRoomActions'
 import { removeChatMember } from '../../../redux/modules/chat/ChatRoomMembersActions'
 import {
     addMemberToChatRoom,
     muteChatRoom,
+    changeChatRoomMute,
 } from '../../../redux/modules/chat/ChatRoomOptionsActions'
-import { openProfile } from '../../../actions'
+import { openProfile, loadFriends } from '../../../actions'
 import {
     GROUP_CHAT_DEFAULT_ICON_URL,
     IMAGE_BASE_URL,
@@ -46,6 +51,11 @@ import {
     actionSheet,
     switchByButtonIndex,
 } from '../../Common/ActionSheetFactory'
+import {
+    openMultiUserInviteModal,
+    searchFriend,
+} from '../../../redux/modules/search/SearchActions'
+import ToggleField from '../../Common/ToggleField'
 
 // Icons
 function ForwardIcon(props) {
@@ -69,6 +79,27 @@ class GroupChatInfo extends React.Component {
         super(props)
         this.state = {
             muteDurationPicker: false,
+            isMuted: undefined,
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            ...this.state,
+            isMuted: this.props.isMuted !== undefined,
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (
+            prevState.isMuted !== undefined &&
+            prevState.isMuted !== this.state.isMuted &&
+            this.props.chatRoom
+        ) {
+            this.props.changeChatRoomMute(
+                this.props.chatRoom._id,
+                this.state.isMuted
+            )
         }
     }
     /**
@@ -184,11 +215,8 @@ class GroupChatInfo extends React.Component {
     openAddMember = () => {
         const { chatRoom } = this.props
         if (!chatRoom) return
-        const searchFor = {
-            type: 'addChatMember',
-        }
-        const cardIconStyle = { tintColor: APP_BLUE_BRIGHT }
-        const cardIconSource = plusIcon
+
+        const { name, _id } = chatRoom
         const callback = (selectedUserId) => {
             if (
                 chatRoom.members.find(
@@ -199,14 +227,34 @@ class GroupChatInfo extends React.Component {
             ) {
                 return Alert.alert('User is already a member')
             }
-            this.props.addMemberToChatRoom(chatRoom._id, selectedUserId)
+            this.props.addMemberToChatRoom(_id, selectedUserId)
         }
-        Actions.push('searchPeopleLightBox', {
-            searchFor,
-            cardIconSource,
-            cardIconStyle,
-            callback,
-        })
+
+        const props = {
+            searchFor: this.props.searchFriend,
+            onSubmitSelection: (users, inviteToEntity, actionToExecute) => {
+                const callback = () => {
+                    this.props.refreshChatRoom(
+                        inviteToEntity,
+                        this.props.pageId,
+                        null,
+                        false
+                    )
+                    actionToExecute()
+                }
+                console.log('user to invite has length: ', users.length)
+                console.log('first user is: ', users[0])
+            },
+            onCloseCallback: (actionToExecute) => {
+                actionToExecute()
+            },
+            inviteToEntityType: 'Chat',
+            inviteToEntityName: name,
+            inviteToEntity: _id,
+            preload: this.props.loadFriends,
+        }
+
+        Actions.push('multiSearchPeopleLightBoxV2', { ...props })
     }
 
     renderMuteDurationPicker() {
@@ -283,7 +331,7 @@ class GroupChatInfo extends React.Component {
                                 />
                             ) : null}
 
-                            <MenuItem
+                            {/* <MenuItem
                                 title={() => (
                                     <Text category="h6" style={styles.title}>
                                         Mute Channel
@@ -297,6 +345,33 @@ class GroupChatInfo extends React.Component {
                                     )
                                 }
                                 onPress={this.handleMuteDuration}
+                                style={styles.menuItem}
+                            /> */}
+                            <MenuItem
+                                title={() => (
+                                    <Text category="h6" style={styles.title}>
+                                        Mute Channel
+                                    </Text>
+                                )}
+                                accessoryRight={(props) => (
+                                    <ToggleField
+                                        {...props}
+                                        checked={this.state.isMuted}
+                                        onCheckedChange={(val) =>
+                                            this.setState({
+                                                ...this.state,
+                                                isMuted: val,
+                                            })
+                                        }
+                                        style={{ marginRight: 16 }}
+                                    />
+                                )}
+                                accessoryLeft={(props) =>
+                                    makeAccessoryLeftIcon(
+                                        props,
+                                        'notifications-none'
+                                    )
+                                }
                                 style={styles.menuItem}
                             />
                             <MenuItem
@@ -324,7 +399,7 @@ class GroupChatInfo extends React.Component {
                                 accessoryLeft={(props) =>
                                     makeAccessoryLeftIcon(props, 'person-add')
                                 }
-                                onPress={() => {}}
+                                onPress={this.openAddMember}
                                 style={styles.menuItem}
                             />
                             <MenuItem
@@ -476,4 +551,10 @@ export default connect(mapStateToProps, {
     addMemberToChatRoom,
     removeChatMember,
     deleteConversationMessages,
+    changeChatRoomMute,
+    // For user invite modal
+    loadFriends,
+    refreshChatRoom,
+    searchFriend,
+    openMultiUserInviteModal,
 })(styledGroupChatInfo)

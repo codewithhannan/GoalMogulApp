@@ -107,6 +107,7 @@ import { OnboardingFbPlugin } from './Main/Onboarding'
 import SplashScreen from './SplashScreen'
 import Tutorial from './Tutorial/Tutorial'
 import UserInviteModal from './Main/Common/Modal/UserInviteModal'
+import MultiUserInvitePage from './Main/Common/MultiUserInvitePage'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -742,6 +743,11 @@ class RouterComponent extends Component {
                     <Scene
                         key="multiSearchPeopleLightBox"
                         component={UserInviteModal}
+                        hideNavBar
+                    />
+                    <Scene
+                        key="multiSearchPeopleLightBoxV2"
+                        component={MultiUserInvitePage}
                         hideNavBar
                     />
 
