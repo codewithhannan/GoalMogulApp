@@ -8,7 +8,13 @@ import { connect } from 'react-redux'
 import SearchBarHeader from '../Common/Header/SearchBarHeader'
 
 // Actions
-import { exploreSelectTab } from '../../redux/modules/explore/ExploreActions'
+import {
+    refreshTribeHubFeed,
+    loadMoreTribeHubFeed,
+    refreshTribeHub,
+} from '../../redux/modules/tribe/TribeHubActions'
+
+import { makeTribeFeedSelector } from '../../redux/modules/tribe/TribeSelector'
 
 // Assets
 import TribeIcon from '../../asset/explore/tribe.png'
@@ -22,20 +28,38 @@ import FlagIcon from '../../asset/footer/navigation/flag.png'
 import { DEFAULT_STYLE, GM_BLUE } from '../../styles'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 import { FlatList } from 'react-native-gesture-handler'
-import MyTribe from '../Menu/Tribe/MyTribe'
+
 import { Actions } from 'react-native-router-flux'
 import { componentKeyByTab } from '../../redux/middleware/utils'
 import { Text, Icon } from '@ui-kitten/components'
 
-class Explore extends Component {
-    render() {
-        /*
-          TODO:
-          1. use flatlist instead of scrollview
-          2. assign key on for TabButton
-        */
+class TribeHub extends Component {
+    componentDidMount() {
+        this.props.refreshTribeHub()
+        this.props.refreshTribeHubFeed()
+    }
+
+    renderItem = (props) => {
         return (
-            <View style={{}}>
+            <ProfilePostCard
+                item={props.item}
+                key={props.index}
+                hasActionButton
+                onPress={(item) => {
+                    // onPress is called by CommentIcon
+                    this.props.openPostDetail(item, {
+                        initialFocusCommentBox: true,
+                    })
+                }}
+            />
+        )
+    }
+
+    render() {
+        const { data, loading, refreshing } = this.props
+        console.log(data)
+        return (
+            <View style={{ backgroundColor: '#FAFAFA', flex: 1 }}>
                 <SearchBarHeader rightIcon="menu" />
                 <View
                     style={{
@@ -60,7 +84,23 @@ class Explore extends Component {
                         text="Discover"
                     />
                 </View>
-                <FlatList />
+                <View style={{ backgroundColor: 'white' }}>
+                    <FlatList
+                        data={data}
+                        ListHeaderComponent={
+                            <View style={{ padding: 16 }}>
+                                <Text style={DEFAULT_STYLE.titleText_1}>
+                                    All Tribe Activity
+                                </Text>
+                            </View>
+                        }
+                        renderItem={this.renderItem}
+                        refreshing={refreshing}
+                        onRefresh={this.props.refreshTribeHubFeed}
+                        onEndReached={this.props.loadMoreTribeHubFeed}
+                        onEndReachedThreshold={2}
+                    />
+                </View>
             </View>
         )
     }
@@ -94,14 +134,25 @@ const RoundedButton = (props) => {
 
 const styles = {}
 
-const mapStateToProps = (state) => {
-    const { navigationState } = state.explore
+const makeMapStateToProps = () => {
+    const getTribeFeed = makeTribeFeedSelector()
 
-    return {
-        navigationState,
+    const mapStateToProps = (state) => {
+        const { loading, refreshing } = state.myTribeTab.feed
+        const data = getTribeFeed(state)
+
+        return {
+            data,
+            loading,
+            refreshing,
+        }
     }
+
+    return mapStateToProps
 }
 
-export default connect(mapStateToProps, {
-    exploreSelectTab,
-})(wrapAnalytics(Explore, SCREENS.EXPLORE_PAGE))
+export default connect(makeMapStateToProps, {
+    refreshTribeHubFeed,
+    loadMoreTribeHubFeed,
+    refreshTribeHub,
+})(wrapAnalytics(TribeHub, SCREENS.EXPLORE_PAGE))

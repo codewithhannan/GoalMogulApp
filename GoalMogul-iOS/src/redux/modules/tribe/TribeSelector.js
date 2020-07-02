@@ -181,7 +181,7 @@ const getTribesByType = (state, type) => {
 
     const tribes = _.get(state, 'tribes')
     // TODO: tribe hub: rename myTribeTab to tribeHub
-    const tribeRefs = _.get(tribeHub, `myTribeTab.${type}.data`)
+    const tribeRefs = _.get(state, `myTribeTab.${type}.data`)
 
     const ret = tribeRefs
         .map((r) => {
@@ -202,7 +202,7 @@ const getTribesByType = (state, type) => {
 const getTribeFeed = (state) => {
     const posts = _.get(state, 'posts')
     // TODO: tribe hub: rename myTribeTab to tribeHub
-    const feedRefs = _.get(tribeHub, `myTribeTab.feed.data`)
+    const feedRefs = _.get(state, `myTribeTab.feed.data`)
 
     const ret = feedRefs
         .map((r) => {

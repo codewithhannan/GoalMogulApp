@@ -136,7 +136,7 @@ export default (state = INITIAL_STATE, action) => {
 
         // Tribe refresh done
         case MYTRIBETAB_REFRESH_DONE: {
-            const { skip, data, hasNextPage, type } = action.payload
+            const { skip, data, hasNextPage } = action.payload
             let newState = _.cloneDeep(state)
             newState = _.set(newState, 'loading', false)
 
@@ -149,7 +149,7 @@ export default (state = INITIAL_STATE, action) => {
 
         // Tribe load done.
         case MYTRIBETAB_LOAD_DONE: {
-            const { skip, data, hasNextPage, type } = action.payload
+            const { skip, data, hasNextPage } = action.payload
             let newState = _.cloneDeep(state)
             newState = _.set(newState, 'loading', false)
 

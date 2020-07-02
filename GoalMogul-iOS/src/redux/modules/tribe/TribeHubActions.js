@@ -25,6 +25,8 @@ import { api as API } from '../../middleware/api'
 import { queryBuilder } from '../../middleware/utils'
 import _ from 'lodash'
 
+const DEBUG_KEY = '[ Actions Tribe Hub ]'
+
 export const BASE_ROUTE = 'secure/tribe'
 
 export const TRIBE_TYPE = {
@@ -54,9 +56,9 @@ const PAGE_ID = 'tribe_hub'
  * Refresh all types of tribe for tribe hub
  */
 export const refreshTribeHub = () => (dispatch, getState) => {
-    refreshTribes(TRIBE_TYPE.MANAGED)(dispatch, getState)
-    refreshTribes(TRIBE_TYPE.FAVORITE)(dispatch, getState)
-    refreshTribes(TRIBE_TYPE.OTHERS)(dispatch, getState)
+    refreshTribes(TRIBE_TYPE.managed)(dispatch, getState)
+    refreshTribes(TRIBE_TYPE.favorite)(dispatch, getState)
+    refreshTribes(TRIBE_TYPE.others)(dispatch, getState)
 }
 
 /**
@@ -68,7 +70,7 @@ export const refreshTribes = (type) => (dispatch, getState) => {
     if (!_.has(tribeHub, type)) {
         // For debugging purpose since type passed isn't one of defined ['favorite', 'managed', 'others']
         console.error(
-            `${DEBUG_KEY}: ${action.type}: incorrect type: ${type} used in action`
+            `${DEBUG_KEY}: refreshTribes: incorrect type: ${type} used in action`
         )
         return
     }
@@ -101,9 +103,12 @@ export const refreshTribes = (type) => (dispatch, getState) => {
 
     dispatch({
         type: TRIBE_HUB_REFRESH,
+        payload: {
+            type,
+        },
     })
 
-    tribeGetter(ROUTES[type], 0, limit, {}, onSuccess, onError)(getState)
+    tribeGetter(ROUTES.tribes(type), 0, limit, {}, onSuccess, onError)(getState)
 }
 
 /**
@@ -115,7 +120,7 @@ export const loadMoreTribes = (type) => (dispatch, getState) => {
     if (!_.has(tribeHub, type)) {
         // For debugging purpose since type passed isn't one of defined ['favorite', 'managed', 'others']
         console.error(
-            `${DEBUG_KEY}: ${action.type}: incorrect type: ${type} used in action`
+            `${DEBUG_KEY}: loadMoreTribes: incorrect type: ${type} used in action`
         )
         return
     }
@@ -152,9 +157,19 @@ export const loadMoreTribes = (type) => (dispatch, getState) => {
 
     dispatch({
         type: TRIBE_HUB_LOAD,
+        payload: {
+            type,
+        },
     })
 
-    tribeGetter(ROUTES[type], skip, limit, {}, onSuccess, onError)(getState)
+    tribeGetter(
+        ROUTES.tribes(type),
+        skip,
+        limit,
+        {},
+        onSuccess,
+        onError
+    )(getState)
 }
 
 /**
@@ -191,7 +206,7 @@ export const refreshTribeHubFeed = () => (dispatch, getState) => {
         type: TRIBE_HUB_FEED_REFRESH,
     })
 
-    tribeGetter(ROUTES['feed'], skip, limit, {}, onSuccess, onError)(getState)
+    tribeGetter(ROUTES.feed, skip, limit, {}, onSuccess, onError)(getState)
 }
 
 export const loadMoreTribeHubFeed = () => (dispatch, getState) => {
@@ -232,7 +247,7 @@ export const loadMoreTribeHubFeed = () => (dispatch, getState) => {
         type: TRIBE_HUB_FEED_LOAD,
     })
 
-    tribeGetter(ROUTES['feed'], skip, limit, {}, onSuccess, onError)(getState)
+    tribeGetter(ROUTES.feed, skip, limit, {}, onSuccess, onError)(getState)
 }
 
 /**
