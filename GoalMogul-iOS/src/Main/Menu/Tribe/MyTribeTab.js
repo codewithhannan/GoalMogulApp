@@ -39,6 +39,7 @@ class MyTribeTab extends React.Component {
                 this.props.openNewTribeModal()
             }, 300)
         }
+        this.props.refreshTribe()
     }
 
     _keyExtractor = (item) => item._id

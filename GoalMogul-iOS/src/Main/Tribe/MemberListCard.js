@@ -147,9 +147,7 @@ class MemberListCard extends Component {
         const { _id } = item
         return (
             <ProfileImage
-                imageStyle={styles.imageStyle}
                 imageUrl={item && item.profile ? item.profile.image : undefined}
-                imageContainerStyle={styles.imageContainerStyle}
                 userId={_id}
             />
         )
@@ -210,7 +208,6 @@ class MemberListCard extends Component {
         return (
             <View style={styles.containerStyle}>
                 {this.renderProfileImage(item)}
-
                 <TouchableOpacity
                     style={styles.bodyContainerStyle}
                     activeOpacity={0.6}
@@ -234,13 +231,14 @@ class MemberListCard extends Component {
 const styles = {
     containerStyle: {
         flexDirection: 'row',
-        marginTop: 5,
         paddingLeft: 10,
         paddingRight: 10,
         paddingTop: 8,
         paddingBottom: 8,
         alignItems: 'center',
         backgroundColor: '#ffffff',
+        borderBottomWidth: 1,
+        borderBottomColor: '#F2F2F2',
     },
     bodyContainerStyle: {
         flex: 1,
@@ -248,19 +246,6 @@ const styles = {
     },
     infoContainerStyle: {
         flexDirection: 'row',
-    },
-    imageStyle: {
-        height: 48,
-        width: 48,
-        borderRadius: 5,
-    },
-    imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 0.5,
-        borderColor: 'lightgray',
-        alignItems: 'center',
-        borderRadius: 6,
-        backgroundColor: 'white',
     },
     buttonContainerStyle: {
         marginLeft: 8,

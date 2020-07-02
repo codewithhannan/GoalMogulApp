@@ -116,15 +116,28 @@ class MyTribeMembers extends React.PureComponent {
         switch (index) {
             case ALL_MEMBERS_FILTER_INDEX:
                 return (
-                    <ScrollView>
+                    <ScrollView
+                        style={{ backgroundColor: 'white', marginTop: 8 }}
+                    >
+                        <View style={styles.headerContainer}>
+                            <Text style={DEFAULT_STYLE.titleText_1}>Admin</Text>
+                        </View>
                         {admins.map((admin) => this.renderItem(admin))}
+                        {memberData.length > 0 && (
+                            <View style={styles.headerContainer}>
+                                <Text style={DEFAULT_STYLE.titleText_1}>
+                                    Members
+                                </Text>
+                            </View>
+                        )}
                         {members.map((member) => this.renderItem(member))}
-                        <View style={{}} />
                     </ScrollView>
                 )
             default:
                 return (
-                    <ScrollView>
+                    <ScrollView
+                        style={{ backgroundColor: 'white', marginTop: 8 }}
+                    >
                         {allMembers.map((member) => this.renderItem(member))}
                     </ScrollView>
                 )
@@ -164,31 +177,17 @@ class MyTribeMembers extends React.PureComponent {
                         round
                         placeholder="Search"
                         placeholderTextColor="#D3D3D3"
-                        containerStyle={{
-                            marginTop: navigation ? 16 : 0,
-                            backgroundColor: 'white',
-                            padding: 0,
-                            borderWidth: 1,
-                            borderTopColor: '#E0E0E0',
-                            borderBottomColor: '#E0E0E0',
-                            borderColor: '#E0E0E0',
-                            borderRadius: 3,
-                        }}
-                        inputContainerStyle={{
-                            backgroundColor: 'white',
-                            padding: 0,
-                            margin: 0,
-                        }}
+                        containerStyle={[
+                            styles.searchBar.container,
+                            { marginTop: navigation ? 16 : 0 },
+                        ]}
+                        inputContainerStyle={styles.searchBar.inputContainer}
                         searchIcon={() => (
                             <SearchIcon
-                                iconContainerStyle={{
-                                    marginBottom: 1,
-                                    marginTop: 1,
-                                }}
-                                iconStyle={{
-                                    ...DEFAULT_STYLE.normalIcon_1,
-                                    tintColor: '#828282',
-                                }}
+                                iconContainerStyle={[
+                                    styles.searchBar.icon.container,
+                                ]}
+                                iconStyle={styles.searchBar.icon.style}
                             />
                         )}
                         inputStyle={DEFAULT_STYLE.subTitleText_1}
@@ -207,7 +206,7 @@ class MyTribeMembers extends React.PureComponent {
 
 const styles = {
     containerStyle: {
-        backgroundColor: '#FAFAFA',
+        backgroundColor: '#F2F2F2',
     },
     aboutContainer: {
         padding: 20,
@@ -218,6 +217,39 @@ const styles = {
     imageIcon: {
         marginTop: 5,
         marginRight: 10,
+    },
+    headerContainer: {
+        padding: 16,
+        paddingBottom: 8,
+        marginBottom: 8,
+        borderBottomWidth: 1,
+        borderBottomColor: '#F2F2F2',
+    },
+    searchBar: {
+        container: {
+            backgroundColor: 'white',
+            padding: 0,
+            borderWidth: 1,
+            borderTopColor: '#E0E0E0',
+            borderBottomColor: '#E0E0E0',
+            borderColor: '#E0E0E0',
+            borderRadius: 3,
+        },
+        inputContainer: {
+            backgroundColor: 'white',
+            padding: 0,
+            margin: 0,
+        },
+        icon: {
+            container: {
+                marginBottom: 1,
+                marginTop: 1,
+            },
+            style: {
+                ...DEFAULT_STYLE.normalIcon_1,
+                tintColor: '#828282',
+            },
+        },
     },
 }
 

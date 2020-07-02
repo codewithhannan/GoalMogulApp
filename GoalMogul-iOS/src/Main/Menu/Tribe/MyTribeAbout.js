@@ -38,15 +38,9 @@ class MyTribeAbout extends Component {
     constructor(props) {
         super(props)
     }
-    /**
-     * Note: Tribe.js has its member pictures moved to StackedAvatars
-     * @param {*} item
-     */
-    renderMemberStatus({ data: { members }, isUserAdmin }) {}
 
     render() {
         if (!this.props.data || !this.props.data.members) return <View />
-
         const {
             data: { members, _id },
             tribeId,
