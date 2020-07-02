@@ -14,6 +14,7 @@ import {
     SENTRY_MESSAGE_LEVEL,
     SENTRY_CONTEXT,
 } from '../../../monitoring/sentry/Constants'
+import { TRIBE_TYPE } from './TribeHubActions'
 
 const DEBUG_KEY = '[ Selector Tribes ]'
 
@@ -136,6 +137,84 @@ const getMyTribeFeed = (state, tribeId, pageId) => {
     return ret
 }
 
+const getUserGoals = (state, tribeId, pageId) => {
+    const tribes = state.tribes
+    const goals = state.goals
+    if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
+        return []
+    }
+
+    const goalRefs = _.get(tribes, `${tribeId}.${pageId}.goals.refs`, [])
+    let ret = goalRefs
+        .map((r) => {
+            if (!_.has(goals, r)) {
+                new SentryRequestBuilder(
+                    "Goals don't have goalRef stored in Tribe",
+                    SENTRY_MESSAGE_TYPE.MESSAGE
+                )
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.TRIBE.SELECTOR, 'getUserGoals')
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+                    .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
+                    .withExtraContext(SENTRY_CONTEXT.GOAL.GOAL_ID, r)
+                    .send()
+                return undefined
+            }
+            return _.cloneDeep(_.get(goals, `${r}.goal`))
+        })
+        .filter((r) => r !== undefined)
+
+    return ret
+}
+
+/**
+ * Merge tribe refs in tribe hub with actual tribe objects
+ * @param {Object} state reducer
+ * @param {String} type TRIBE_TYPE
+ */
+const getTribesByType = (state, type) => {
+    if (!_.has(TRIBE_TYPE, type)) {
+        // Debugging purpose
+        console.error(`${DEBUG_KEY}: invalid tribe type used: ${type}`)
+        return []
+    }
+
+    const tribes = _.get(state, 'tribes')
+    // TODO: tribe hub: rename myTribeTab to tribeHub
+    const tribeRefs = _.get(tribeHub, `myTribeTab.${type}.data`)
+
+    const ret = tribeRefs
+        .map((r) => {
+            // tribe ref is not loaded in the tribes yet
+            if (!_.has(tribes, r)) return undefined
+            // copy and return the tribe object
+            return _.cloneDeep(_.get(tribes, `${r}.tribe`))
+        })
+        .filter((r) => r !== undefined)
+
+    return ret
+}
+
+/**
+ * Merge tribe feed refs with posts objects
+ * @param {*} state
+ */
+const getTribeFeed = (state) => {
+    const posts = _.get(state, 'posts')
+    // TODO: tribe hub: rename myTribeTab to tribeHub
+    const feedRefs = _.get(tribeHub, `myTribeTab.feed.data`)
+
+    const ret = feedRefs
+        .map((r) => {
+            // post is not loaded in the posts yet
+            if (!_.has(posts, r)) return undefined
+            // copy and return the post object
+            return _.cloneDeep(_.get(posts, `${r}.post`))
+        })
+        .filter((r) => r !== undefined)
+    return ret
+}
+
 /**
  * Select tribe detail and tribe page detail by tribeId and pageId
  */
@@ -241,3 +320,42 @@ export const getMyTribeMemberNavigationState = createSelector(
         return isAdmin ? navigationStateToReturn : null
     }
 )
+
+/**
+ * Get user goals to share on tribe
+ * Inputs are: state, tribeId, pageId
+ */
+export const getUserGoalsForTribeShare = createSelector(
+    [getUserGoals],
+    (goals) => goals
+)
+
+/**
+ * Maker for tribe selector, e.g.
+ *
+ * // Create selector in makeMapStateToProps
+ * favoribeTribeSelector = makeTribesSelector()
+ * managedTribeSelector = makeTribesSelector()
+ *
+ * // Use selector in mapStateToProps to get required data.
+ * // This way we get the benefit of memorization of selector
+ * const favoriteTribes = favoriteTribeSelector(state, TRIBE_TYPE.favorite)
+ * const favoriteTribes = managedTribeSelector(state, TRIBE_TYPE.managed)
+ *
+ * NOTE: this might need further refactoring for get "others" tribe with type
+ * like reqested tribe vs invited tribe vs tribe that user is a member of
+ */
+export const makeTribesSelector = () =>
+    createSelector([getTribesByType], (tribes) => tribes)
+
+/**
+ * Maker for tribe feed selector, e.g.
+ *
+ * // Create selector
+ * tribeFeedSelector = makeTribeFeedSelector();
+ *
+ * // Use selector get required data. This way we get the benefit of memorization of selector
+ * const allTribeFeed = tribeFeedSelector(state)
+ */
+export const makeTribeFeedSelector = () =>
+    createSelector([getTribeFeed], (posts) => posts)

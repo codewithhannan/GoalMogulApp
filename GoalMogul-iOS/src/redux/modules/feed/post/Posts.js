@@ -63,6 +63,10 @@ import {
     NOTIFICATION_SUBSCRIBE,
     NOTIFICATION_UNSUBSCRIBE,
 } from '../../notification/NotificationTabReducers'
+import {
+    TRIBE_HUB_FEED_LOAD_DONE,
+    TRIBE_HUB_FEED_REFRESH_DONE,
+} from '../../tribe/MyTribeTabReducers'
 
 /* Event related */
 
@@ -334,6 +338,8 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         /* Profile, Home, Event and Tribe related */
+        case TRIBE_HUB_FEED_LOAD_DONE:
+        case TRIBE_HUB_FEED_REFRESH_DONE:
         case MYTRIBE_FEED_FETCH_DONE:
         case MYTRIBE_FEED_REFRESH_DONE:
         case MYEVENT_FEED_FETCH_DONE:
