@@ -32,10 +32,13 @@ import { FlatList } from 'react-native-gesture-handler'
 import { Actions } from 'react-native-router-flux'
 import { componentKeyByTab } from '../../redux/middleware/utils'
 import { Text, Icon } from '@ui-kitten/components'
+import EmptyResult from '../Common/Text/EmptyResult'
+import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard'
+import { MenuProvider } from 'react-native-popup-menu'
 
 class TribeHub extends Component {
     componentDidMount() {
-        this.props.refreshTribeHub()
+        // this.props.refreshTribeHub()
         this.props.refreshTribeHubFeed()
     }
 
@@ -57,34 +60,37 @@ class TribeHub extends Component {
 
     render() {
         const { data, loading, refreshing } = this.props
-        console.log(data)
+        // console.log(data)
         return (
-            <View style={{ backgroundColor: '#FAFAFA', flex: 1 }}>
-                <SearchBarHeader rightIcon="menu" />
-                <View
-                    style={{
-                        backgroundColor: 'white',
-                        padding: 12,
-                        marginBottom: 8,
-                        flexDirection: 'row',
-                    }}
-                >
-                    <RoundedButton
-                        onPress={() =>
-                            Actions.push(
-                                componentKeyByTab('exploreTab', 'myTribeTab')
-                            )
-                        }
-                        icon="flag"
-                        text="My Tribes"
-                    />
-                    <RoundedButton
-                        onPress={() => Actions.push('explore')}
-                        icon="search"
-                        text="Discover"
-                    />
-                </View>
-                <View style={{ backgroundColor: 'white' }}>
+            <MenuProvider>
+                <View style={{ backgroundColor: '#FAFAFA', flex: 1 }}>
+                    <SearchBarHeader rightIcon="menu" />
+                    <View
+                        style={{
+                            backgroundColor: 'white',
+                            padding: 12,
+                            marginBottom: 8,
+                            flexDirection: 'row',
+                        }}
+                    >
+                        <RoundedButton
+                            onPress={() =>
+                                Actions.push(
+                                    componentKeyByTab(
+                                        'exploreTab',
+                                        'myTribeTab'
+                                    )
+                                )
+                            }
+                            icon="flag"
+                            text="My Tribes"
+                        />
+                        <RoundedButton
+                            onPress={() => Actions.push('explore')}
+                            icon="search"
+                            text="Discover"
+                        />
+                    </View>
                     <FlatList
                         data={data}
                         ListHeaderComponent={
@@ -95,13 +101,26 @@ class TribeHub extends Component {
                             </View>
                         }
                         renderItem={this.renderItem}
-                        refreshing={refreshing}
+                        refreshing={loading}
                         onRefresh={this.props.refreshTribeHubFeed}
                         onEndReached={this.props.loadMoreTribeHubFeed}
                         onEndReachedThreshold={2}
+                        ListEmptyComponent={
+                            !loading &&
+                            !refreshing && (
+                                <EmptyResult
+                                    text={'No Tribe Activity'}
+                                    textStyle={{
+                                        paddingTop: 80,
+                                        paddingBottom: 80,
+                                    }}
+                                />
+                            )
+                        }
+                        contentContainerStyle={{ backgroundColor: 'white' }}
                     />
                 </View>
-            </View>
+            </MenuProvider>
         )
     }
 }
