@@ -10,7 +10,9 @@ import { connect } from 'react-redux'
 import {
     tribeRefreshUserGoals,
     tribeLoadMoreUserGoals,
+    refreshMyTribeDetail,
 } from '../../../redux/modules/tribe/MyTribeActions'
+import { openNewShareToTribeView } from '../../../redux/modules/feed/post/ShareActions'
 // Selector
 import { getUserGoalsForTribeShare } from '../../../redux/modules/tribe/TribeSelector'
 /* Styles */
@@ -52,14 +54,21 @@ class UserGoalsView extends Component {
             <ProfileGoalCard
                 item={item}
                 onPress={() =>
-                    Actions.push('shareModal', {
-                        // shareTo: ,
-                        privacy: PRIVACY_FRIENDS,
-                        // itemToShare,
-                        // postType,
-                        // formVals: state.form.shareModal,
-                        // uploading: state.newShare.uploading,
-                    })
+                    this.props.openNewShareToTribeView(
+                        {
+                            tribe: this.props.tribe,
+                            itemToShare: item,
+                            postType: 'ShareGoal',
+                            ref: item._id,
+                        },
+                        () => {
+                            this.props.refreshMyTribeDetail(
+                                this.props.tribe._id,
+                                this.props.pageId
+                            )
+                            Actions.pop()
+                        }
+                    )
                 }
             />
         )
@@ -149,4 +158,6 @@ const makeMapStateToProps = () => {
 export default connect(makeMapStateToProps, {
     tribeRefreshUserGoals,
     tribeLoadMoreUserGoals,
+    openNewShareToTribeView,
+    refreshMyTribeDetail,
 })(UserGoalsView)

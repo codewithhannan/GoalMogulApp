@@ -20,7 +20,7 @@ class MyTribeBanner extends React.PureComponent {
     }
 
     render() {
-        const { tribeId, pageId } = this.props
+        const { tribe, tribeId, pageId } = this.props
         return (
             <View style={styles.containerStyle}>
                 <View style={styles.imageContainer}>
@@ -37,6 +37,7 @@ class MyTribeBanner extends React.PureComponent {
                         activeOpacity={0.6}
                         onPress={() =>
                             Actions.push('myTribeGoalShareView', {
+                                tribe,
                                 tribeId,
                                 pageId,
                             })

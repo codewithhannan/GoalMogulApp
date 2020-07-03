@@ -67,10 +67,7 @@ export const openShareDetail = (share, pageId, initialProps) => (
         type: SHARE_DETAIL_OPEN,
         payload: {
             share,
-            post: share,
-            postId,
             tab,
-            pageId,
         },
     })
 
@@ -182,6 +179,34 @@ export const chooseShareDest = (
     })
 
     switchShareToAction(dest, callback)
+}
+
+export const openNewShareToTribeView = (
+    { postType, ref, tribe, itemToShare },
+    callback
+) => (dispatch, getState) => {
+    const { userId } = getState().user
+    const postDetail = switchPostType(postType, ref)
+
+    dispatch({
+        type: SHARE_NEW_SHARE_TO,
+        payload: {
+            ...postDetail,
+            shareTo: 'tribe',
+            owner: userId,
+            itemToShare,
+        },
+    })
+
+    dispatch({
+        type: SHARE_NEW_SELECT_DEST,
+        payload: {
+            type: 'belongsToTribe',
+            value: tribe,
+        },
+    })
+
+    Actions.push('shareModal', { callback })
 }
 
 // Cancel a share

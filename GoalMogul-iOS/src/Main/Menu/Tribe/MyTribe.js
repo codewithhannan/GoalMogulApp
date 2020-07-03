@@ -536,7 +536,11 @@ class MyTribe extends React.PureComponent {
                     </View>
                 </View>
                 {isMemberOrAdmin && (
-                    <MyTribeBanner tribeId={tribeId} pageId={pageId} />
+                    <MyTribeBanner
+                        tribe={item}
+                        tribeId={tribeId}
+                        pageId={pageId}
+                    />
                 )}
                 {bodyCard}
             </View>
@@ -594,6 +598,7 @@ class MyTribe extends React.PureComponent {
     render() {
         const { item, data } = this.props
         if (!item) return <View />
+
         return (
             <MenuProvider
                 style={{ backgroundColor: '#FAFAFA' }}

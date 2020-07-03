@@ -533,7 +533,6 @@ class ShareModal extends React.Component {
             itemToShare,
             postType,
         } = this.props
-        console.log(this.props)
         const modalTitle =
             shareTo.name !== 'feed'
                 ? `Share to ${shareTo.name}`
@@ -583,7 +582,6 @@ const mapStateToProps = (state, props) => {
         postType,
         formVals: state.form.shareModal,
         uploading: state.newShare.uploading,
-        ...props,
     }
 }
 
