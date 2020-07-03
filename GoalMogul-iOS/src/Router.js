@@ -195,7 +195,7 @@ class RouterComponent extends Component {
             isFocused() &&
             state.routes.length > 1
         ) {
-            return Actions.popTo('explore')
+            return Actions.popTo('tribeHub')
         }
 
         // Back to initial for friendTab
@@ -445,7 +445,7 @@ class RouterComponent extends Component {
                                                     ) {
                                                         /* case yourKeyScene:
                                                         return theAnimationYouWant(props)*/
-                                                        case 'explore':
+                                                        case 'tribeHub':
                                                             return this.rootTransitionConfig().screenInterpolator(
                                                                 props
                                                             )

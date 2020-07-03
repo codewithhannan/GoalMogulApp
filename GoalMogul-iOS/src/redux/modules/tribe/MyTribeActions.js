@@ -614,10 +614,8 @@ export const refreshTribeFeed = (
                 payload: {
                     tribeId,
                     pageId,
-                    type: 'tribefeed',
                     data,
                     skip: data.length,
-                    limit,
                     hasNextPage: !(data === undefined || data.length === 0),
                 },
             })
@@ -701,10 +699,8 @@ export const loadMoreTribeFeed = (tribeId, pageId) => (dispatch, getState) => {
                 payload: {
                     tribeId,
                     pageId,
-                    type: 'tribefeed',
                     data,
                     skip: data.length + feed.length,
-                    limit,
                     hasNextPage: !(data === undefined || data.length === 0),
                 },
             })

@@ -12,6 +12,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 
 import bulbIcon from '../../../asset/icons/bulb.png'
 import { DEFAULT_STYLE, GM_BLUE } from '../../../styles'
+import { Actions } from 'react-native-router-flux'
 
 class MyTribeBanner extends React.PureComponent {
     constructor(props) {
@@ -19,6 +20,7 @@ class MyTribeBanner extends React.PureComponent {
     }
 
     render() {
+        const { tribeId, pageId } = this.props
         return (
             <View style={styles.containerStyle}>
                 <View style={styles.imageContainer}>
@@ -31,7 +33,15 @@ class MyTribeBanner extends React.PureComponent {
                         recieve tips and suggestions even faster.
                     </Text>
                     {/* TODO: Add your onClick handler here, for the share your goal button. */}
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                        activeOpacity={0.6}
+                        onPress={() =>
+                            Actions.push('myTribeGoalShareView', {
+                                tribeId,
+                                pageId,
+                            })
+                        }
+                    >
                         <Text style={styles.link}>Share your goal</Text>
                     </TouchableOpacity>
                 </View>
@@ -53,6 +63,7 @@ const styles = {
         borderRadius: 5,
     },
     aboutContainer: {
+        flex: 1,
         padding: 20,
     },
     header: {
