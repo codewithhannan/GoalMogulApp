@@ -7,6 +7,7 @@ import * as WebBrowser from 'expo-web-browser'
 import { Actions } from 'react-native-router-flux'
 import R from 'ramda'
 
+import { GM_BLUE } from '../../styles'
 // Components
 import DelayedButton from '../Common/Button/DelayedButton'
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
@@ -40,7 +41,7 @@ import {
 import { DEFAULT_STYLE } from '../../styles'
 
 const DEBUG_KEY = '[ UI Menu ]'
-const { TutorialIcon, PrivacyIcon, AccountMultiple } = Icons
+const { TutorialIcon, PrivacyIcon, AccountMultiple, MessageIcon } = Icons
 
 class Menu extends React.PureComponent {
     handleTutorialOnPress = () => {
@@ -111,23 +112,33 @@ class Menu extends React.PureComponent {
                 <View style={{ ...styles.headerStyle, paddingTop }}>
                     <View style={{ height: 15 }} />
                 </View>
+
                 <DelayedButton
                     activeOpacity={0.6}
-                    onPress={() => this.props.openMyTribeTab()}
+                    onPress={() => this.props.openInviteAFriend()}
                     style={styles.buttonStyle}
                 >
-                    <Image source={TribeIcon} style={styles.iconStyle} />
-                    <Text style={styles.titleTextStyle}>My Tribes</Text>
+                    <Image
+                        source={MessageIcon}
+                        style={[styles.iconStyle, { tintColor: 'grey' }]}
+                    />
+                    <Text style={styles.titleTextStyle}>Invite a friend</Text>
                 </DelayedButton>
+
                 <DelayedButton
                     activeOpacity={0.6}
-                    onPress={() => this.props.openMyEventTab()}
+                    onPress={() => this.props.openMeet()}
                     style={styles.buttonStyle}
                 >
-                    <Image source={EventIcon} style={styles.iconStyle} />
-                    <Text style={styles.titleTextStyle}>My Events</Text>
+                    <Image
+                        source={AccountMultiple}
+                        style={[styles.iconStyle, { tintColor: 'grey' }]}
+                    />
+                    <Text style={styles.titleTextStyle}>My friends</Text>
                 </DelayedButton>
-                <DelayedButton
+
+                {/* Trending goals - this is unavailable for now, so commented out. */}
+                {/* <DelayedButton
                     activeOpacity={0.6}
                     onPress={() => this.props.openMeet()}
                     style={styles.buttonStyle}
@@ -136,78 +147,75 @@ class Menu extends React.PureComponent {
                         source={AccountMultiple}
                         style={[styles.iconStyle, { tintColor: 'black' }]}
                     />
-                    <Text style={styles.titleTextStyle}>My Friends</Text>
-                </DelayedButton>
-                {/* <DelayedButton
-                    activeOpacity={0.6}
-                    onPress={this.handleTutorialOnPress}
-                    style={styles.buttonStyle}
-                >
-                    <Image source={TutorialIcon} style={styles.iconStyle} />
-                    <Text style={styles.titleTextStyle}>Tutorials</Text>
+                    <Text style={styles.titleTextStyle}>Trending goals</Text>
                 </DelayedButton> */}
+
                 <DelayedButton
                     activeOpacity={0.6}
                     onPress={() => this.props.openSetting()}
                     style={styles.buttonStyle}
                 >
-                    <Image source={Setting} style={styles.iconStyle} />
-                    <Text style={styles.titleTextStyle}>Settings</Text>
+                    <Image
+                        source={Setting}
+                        style={[styles.iconStyle, { tintColor: 'grey' }]}
+                    />
+                    <Text style={styles.titleTextStyle}>Account settings</Text>
                 </DelayedButton>
-                <DelayedButton
-                    activeOpacity={0.6}
-                    onPress={() => this.handleBugReportOnPress()}
-                    style={styles.buttonStyle}
-                >
-                    <Image source={BugReportIcon} style={styles.iconStyle} />
-                    <Text style={styles.titleTextStyle}>Report Bug</Text>
-                </DelayedButton>
-                <DelayedButton
-                    activeOpacity={0.6}
-                    onPress={() => this.handlePrivacyPolicyOnPress()}
-                    style={styles.buttonStyle}
-                >
-                    <View style={{ padding: 2.5 }}>
-                        <Image
-                            source={PrivacyIcon}
-                            style={{
-                                ...styles.iconStyle,
-                                height: 20,
-                                width: 20,
-                            }}
-                        />
+
+                {/* Bottom Section */}
+                <View style={styles.bottomContainer}>
+                    <View style={[{ padding: 20 }]}>
+                        <DelayedButton
+                            activeOpacity={0.6}
+                            onPress={() => this.handleHelpOnPress()}
+                            style={styles.buttonStyle}
+                        >
+                            <Text style={styles.bottomText}>Help</Text>
+                        </DelayedButton>
+                        <DelayedButton
+                            activeOpacity={0.6}
+                            onPress={() => this.handleBugReportOnPress()}
+                            style={styles.buttonStyle}
+                        >
+                            <Text style={styles.bottomText}>
+                                Give us feedback
+                            </Text>
+                        </DelayedButton>
+                        <DelayedButton
+                            activeOpacity={0.6}
+                            onPress={() => this.handlePrivacyPolicyOnPress()}
+                            style={styles.buttonStyle}
+                        >
+                            <Text style={styles.bottomText}>
+                                Privacy policy
+                            </Text>
+                        </DelayedButton>
                     </View>
-                    <Text style={styles.titleTextStyle}>Privacy Policy</Text>
-                </DelayedButton>
-                <DelayedButton
-                    activeOpacity={0.6}
-                    onPress={() => {
-                        Alert.alert('Log out', 'Are you sure to log out?', [
-                            {
-                                text: 'Cancel',
-                                onPress: () =>
-                                    console.log('user cancel logout'),
-                            },
-                            {
-                                text: 'Confirm',
-                                onPress: () => this.props.logout(),
-                            },
-                        ])
-                    }}
-                    style={styles.buttonStyle}
-                >
-                    <View style={{ padding: 2.5 }}>
-                        <Image
-                            source={LogoutIcon}
-                            style={{
-                                ...styles.iconStyle,
-                                height: 20,
-                                width: 20,
-                            }}
-                        />
-                    </View>
-                    <Text style={styles.titleTextStyle}>Log Out</Text>
-                </DelayedButton>
+
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        onPress={() => {
+                            Alert.alert('Log out', 'Are you sure to log out?', [
+                                {
+                                    text: 'Cancel',
+                                    onPress: () =>
+                                        console.log('user cancel logout'),
+                                },
+                                {
+                                    text: 'Confirm',
+                                    onPress: () => this.props.logout(),
+                                },
+                            ])
+                        }}
+                        style={styles.logOutButtonStyle}
+                    >
+                        <Text
+                            style={[styles.titleTextStyle, { color: 'white' }]}
+                        >
+                            Log Out
+                        </Text>
+                    </DelayedButton>
+                </View>
             </View>
         )
     }
@@ -221,8 +229,6 @@ const styles = {
         paddingRight: 15,
         paddingBottom: 10,
         alignItems: 'center',
-        borderBottomWidth: 0.5,
-        borderBottomColor: 'lightgray',
     },
     buttonStyle: {
         paddingTop: 10,
@@ -234,10 +240,24 @@ const styles = {
     iconStyle: {
         marginLeft: 15,
         marginRight: 15,
-        height: 25,
-        width: 25,
+        height: 20,
+        width: 20,
     },
     titleTextStyle: DEFAULT_STYLE.subTitleText_1,
+    bottomContainer: {
+        bottom: 0,
+        position: 'absolute',
+        width: '100%',
+    },
+    bottomText: {
+        fontWeight: '600',
+        fontSize: 16,
+    },
+    logOutButtonStyle: {
+        backgroundColor: GM_BLUE,
+        padding: 10,
+        alignItems: 'center',
+    },
 }
 
 const mapStateToProps = (state) => {
