@@ -16,14 +16,6 @@ import {
 
 import { makeTribeFeedSelector } from '../../redux/modules/tribe/TribeSelector'
 
-// Assets
-import TribeIcon from '../../asset/explore/tribe.png'
-import EventIcon from '../../asset/suggestion/event.png'
-import PeopleIcon from '../../asset/suggestion/group.png'
-import explore_image from '../../asset/explore/ExploreImage.png'
-import people_globe from '../../asset/explore/PeopleGlobe.png'
-import FlagIcon from '../../asset/footer/navigation/flag.png'
-
 // Styles
 import { DEFAULT_STYLE, GM_BLUE } from '../../styles'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
@@ -93,6 +85,7 @@ class TribeHub extends Component {
                     </View>
                     <FlatList
                         data={data}
+                        keyExtractor={(i) => i._id}
                         ListHeaderComponent={
                             <View style={{ padding: 16 }}>
                                 <Text style={DEFAULT_STYLE.titleText_1}>
@@ -101,7 +94,7 @@ class TribeHub extends Component {
                             </View>
                         }
                         renderItem={this.renderItem}
-                        refreshing={loading}
+                        refreshing={refreshing}
                         onRefresh={this.props.refreshTribeHubFeed}
                         onEndReached={this.props.loadMoreTribeHubFeed}
                         onEndReachedThreshold={2}
