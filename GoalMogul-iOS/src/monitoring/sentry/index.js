@@ -10,6 +10,7 @@ const initSentry = () => {
     Sentry.init({
         dsn: SENTRY_CONFIG.DNS,
         enableInExpoDevelopment: true,
+        enableNative: false,
         debug: true,
         ignoreErrors: ['SubmissionError'],
     })

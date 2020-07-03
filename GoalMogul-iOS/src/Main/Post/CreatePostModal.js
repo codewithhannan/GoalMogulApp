@@ -54,7 +54,7 @@ import {
     savePostDrafts,
 } from '../../redux/modules/feed/post/PostActions'
 import { searchUser } from '../../redux/modules/search/SearchActions'
-import { IMAGE_BASE_URL } from '../../Utils/Constants'
+import { IMAGE_BASE_URL, PRIVACY_FRIENDS } from '../../Utils/Constants'
 import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from '../../styles'
 import DraftsView from './DraftsView'
 import { MenuProvider } from 'react-native-popup-menu'
@@ -256,7 +256,7 @@ class CreatePostModal extends Component {
     initializeForm() {
         const { belongsToTribe, belongsToEvent } = this.props
         const defaulVals = {
-            viewableSetting: 'Friends',
+            viewableSetting: PRIVACY_FRIENDS,
             mediaRef: undefined,
             post: '',
             tags: [],

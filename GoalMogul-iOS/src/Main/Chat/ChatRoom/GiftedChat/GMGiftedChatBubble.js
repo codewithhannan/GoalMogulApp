@@ -17,6 +17,7 @@ import {
     View,
     ViewPropTypes,
 } from 'react-native'
+import { Layout, Text as KittenText } from '@ui-kitten/components'
 import { MessageText, MessageVideo } from 'react-native-gifted-chat'
 import { Actions } from 'react-native-router-flux'
 import { APP_DEEP_BLUE } from '../../../../styles'
@@ -51,7 +52,7 @@ export default class ChatRoomConversationBubble extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isExpanded: false,
+            isExpanded: true,
             wrapperOpacityAnim: new Animated.Value(1),
             wrapperPaddingAnim: new Animated.Value(0),
             timeHeightAnim: new Animated.Value(0),
@@ -333,19 +334,40 @@ export default class ChatRoomConversationBubble extends React.Component {
 
     renderUsername() {
         const { currentMessage } = this.props
-        if (this.props.renderUsernameOnMessage) {
-            if (currentMessage.user._id === this.props.user._id) {
-                return null
-            }
-            return (
-                <View style={styles.usernameView}>
-                    <Text style={[styles.username, this.props.usernameStyle]}>
-                        ~ {currentMessage.user.name}
-                    </Text>
-                </View>
-            )
-        }
+        // if (this.props.renderUsernameOnMessage) {
+        // if (currentMessage.user._id === this.props.user._id) {
+        //     return null
+        // }
+        return (
+            <Layout style={styles.usernameView}>
+                <Text style={[styles.username, this.props.usernameStyle]}>
+                    {currentMessage.user.name}
+                </Text>
+            </Layout>
+        )
+        // }
         return null
+    }
+
+    renderUsernameTimeBlock() {
+        const { currentMessage } = this.props
+        return (
+            <Layout style={styles.usernameView}>
+                <KittenText
+                    category="p1"
+                    style={{
+                        marginRight: 6,
+                    }}
+                >
+                    {currentMessage.user.name}
+                </KittenText>
+                <KittenText category="p1" appearance="hint">
+                    {moment(currentMessage.createdAt)
+                        .locale(this.context.getLocale())
+                        .format('LT')}
+                </KittenText>
+            </Layout>
+        )
     }
 
     renderCustomView() {
@@ -510,7 +532,7 @@ export default class ChatRoomConversationBubble extends React.Component {
 
     render() {
         return (
-            <View
+            <Layout
                 style={[
                     styles[this.props.position].container,
                     this.props.containerStyle[this.props.position],
@@ -521,6 +543,7 @@ export default class ChatRoomConversationBubble extends React.Component {
                         : {},
                 ]}
             >
+                <Layout>{this.renderUsernameTimeBlock()}</Layout>
                 <TouchableOpacity
                     activeOpacity={0.6}
                     onLongPress={this.onLongPress}
@@ -546,7 +569,7 @@ export default class ChatRoomConversationBubble extends React.Component {
                             {this.renderMessageVideo()}
                             {this.renderSharedContent()}
                             {this.renderMessageText()}
-                            <View
+                            {/* <View
                                 style={[
                                     styles[this.props.position].bottom,
                                     this.props.bottomContainerStyle[
@@ -557,12 +580,12 @@ export default class ChatRoomConversationBubble extends React.Component {
                                 {this.renderUsername()}
                                 {this.renderTime()}
                                 {this.renderTicks()}
-                            </View>
+                            </View> */}
                             {this.renderGoalRecommendation()}
                         </View>
                     </Animated.View>
                 </TouchableOpacity>
-            </View>
+            </Layout>
         )
     }
 }
@@ -574,21 +597,21 @@ const styles = {
             alignItems: 'flex-start',
         },
         wrapper: {
-            borderRadius: 15,
+            // borderRadius: 15,
             marginRight: 60,
             minHeight: 20,
             justifyContent: 'flex-end',
 
             // overrides
-            backgroundColor: '#FCFCFC',
-            elevation: 1,
-            shadowColor: '#999',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.1,
-            shadowRadius: 3,
-            borderRadius: 9,
-            borderColor: '#EDEDED',
-            borderWidth: 1,
+            // backgroundColor: '#FCFCFC',
+            // elevation: 1,
+            // shadowColor: '#999',
+            // shadowOffset: { width: 0, height: 1 },
+            // shadowOpacity: 0.1,
+            // shadowRadius: 3,
+            // borderRadius: 9,
+            // borderColor: '#EDEDED',
+            // borderWidth: 1,
         },
         containerToNext: {
             borderBottomLeftRadius: 3,
@@ -607,21 +630,21 @@ const styles = {
             alignItems: 'flex-end',
         },
         wrapper: {
-            borderRadius: 15,
+            // borderRadius: 15,
             marginLeft: 60,
             minHeight: 20,
             justifyContent: 'flex-end',
 
             // overrides
-            backgroundColor: '#F5F9FA',
-            elevation: 1,
-            shadowColor: '#999',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.1,
-            shadowRadius: 3,
-            borderRadius: 9,
-            borderColor: '#D1ECF6',
-            borderWidth: 1,
+            // backgroundColor: '#F5F9FA',
+            // elevation: 1,
+            // shadowColor: '#999',
+            // shadowOffset: { width: 0, height: 1 },
+            // shadowOpacity: 0.1,
+            // shadowRadius: 3,
+            // borderRadius: 9,
+            // borderColor: '#D1ECF6',
+            // borderWidth: 1,
         },
         containerToNext: {
             borderBottomRightRadius: 3,

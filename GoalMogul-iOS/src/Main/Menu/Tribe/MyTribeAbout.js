@@ -1,15 +1,21 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, Text, Dimensions, Image } from 'react-native'
-
+import {
+    View,
+    Text,
+    Dimensions,
+    Image,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+} from 'react-native'
+import { Actions } from 'react-native-router-flux'
 // Component
-import Divider from '../../Common/Divider'
 import ProfileImage from '../../Common/ProfileImage'
 
 // Asset
-import Calendar from '../../../asset/utils/calendar.png'
-import { decode } from '../../../redux/middleware/utils'
+import threeDotsIcon from '../../../asset/utils/friendsSettingIcon.png'
+import { DEFAULT_STYLE } from '../../../styles'
 
 const { width } = Dimensions.get('window')
 const months = [
@@ -29,14 +35,17 @@ const months = [
 const DEBUG_KEY = '[ UI MyTribeAbout ]'
 
 class MyTribeAbout extends Component {
-    /**
-     * Note: Tribe.js has its member pictures moved to StackedAvatars
-     * @param {*} item
-     */
-    renderMemberStatus(item) {
-        const { members, memberCount } = item
-        const count = memberCount || 0
-        const memberPicturesWidth = count < 2 ? 45 : 50
+    constructor(props) {
+        super(props)
+    }
+
+    render() {
+        if (!this.props.data || !this.props.data.members) return <View />
+        const {
+            data: { members, _id },
+            tribeId,
+            pageId,
+        } = this.props
         const memberPictures = members
             ? members
                   .filter(
@@ -45,163 +54,49 @@ class MyTribeAbout extends Component {
                           member.category === 'Member'
                   )
                   .map((member, index) => {
-                      if (index > 1) return null
                       const { memberRef } = member
+                      if (index > 4 || !memberRef) return null
                       return (
-                          <ProfileImage
-                              key={index}
-                              imageContainerStyle={{
-                                  ...styles.topPictureContainerStyle,
-                                  left: index * 13,
-                              }}
-                              imageUrl={
-                                  memberRef && memberRef.profile
-                                      ? memberRef.profile.image
-                                      : undefined
-                              }
-                              imageStyle={{ ...styles.pictureStyle }}
-                          />
+                          <View style={{ margin: 1 }}>
+                              <ProfileImage
+                                  userId={memberRef._id}
+                                  imageUrl={
+                                      memberRef.profile
+                                          ? memberRef.profile.image
+                                          : undefined
+                                  }
+                              />
+                          </View>
                       )
                   })
             : []
 
         return (
-            <View
-                style={{ flexDirection: 'row', marginTop: 8, marginBottom: 5 }}
-            >
-                <View
+            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                {memberPictures}
+                <TouchableOpacity
+                    onPress={() =>
+                        Actions.push('myTribeMembers', {
+                            itemId: _id,
+                            pageId,
+                            tribeId,
+                        })
+                    }
                     style={{
-                        ...styles.memberPicturesContainerStyle,
-                        width: memberPicturesWidth,
+                        backgroundColor: '#E0E0E0',
+                        alignItems: 'center',
+                        borderRadius: 100,
+                        margin: 1,
                     }}
                 >
-                    {memberPictures}
-                </View>
-                <Text style={{ alignSelf: 'center' }}>
-                    <Text style={styles.boldTextStyle}>{count} </Text>
-                    members
-                </Text>
+                    <Image
+                        style={DEFAULT_STYLE.profileImage_2}
+                        source={threeDotsIcon}
+                    />
+                </TouchableOpacity>
             </View>
         )
     }
-
-    renderCreated(item) {
-        const newDate = item.created ? new Date(item.created) : new Date()
-        const date = `${
-            months[newDate.getMonth()]
-        } ${newDate.getDate()}, ${newDate.getFullYear()}`
-
-        return (
-            <View
-                style={{
-                    flexDirection: 'row',
-                    marginTop: 5,
-                    marginBottom: 10,
-                    alignItems: 'center',
-                }}
-            >
-                <View style={styles.iconContainerStyle}>
-                    <Image source={Calendar} style={styles.iconStyle} />
-                </View>
-
-                <View style={{ padding: 5 }}>
-                    <Text style={styles.subtitleTextStyle}>Created</Text>
-                    <Text style={styles.boldTextStyle}>{date}</Text>
-                </View>
-            </View>
-        )
-    }
-
-    renderDescription(item) {
-        const description = item.description
-            ? item.description
-            : 'Currently this event has no decription.'
-
-        return (
-            <View style={{ padding: 10 }}>
-                <Text style={{ ...styles.subtitleTextStyle, marginTop: 5 }}>
-                    Description
-                </Text>
-                <Text style={styles.descriptionTextStyle}>
-                    {decode(description)}
-                </Text>
-            </View>
-        )
-    }
-
-    render() {
-        const { item } = this.props
-        if (!item) return <View />
-
-        return (
-            <View style={{ flex: 1, margin: 25, marginTop: 15 }}>
-                {this.renderMemberStatus(item)}
-                {this.renderCreated(item)}
-                <Divider horizontal width={0.8 * width} borderColor="gray" />
-                {this.renderDescription(item)}
-            </View>
-        )
-    }
-}
-
-const PictureDimension = 24
-const styles = {
-    iconContainerStyle: {
-        height: 30,
-        width: 40,
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-    },
-    iconStyle: {
-        height: 28,
-        width: 28,
-    },
-    subtitleTextStyle: {
-        fontStyle: 'italic',
-        fontSize: 10,
-        color: '#696969',
-    },
-    boldTextStyle: {
-        fontSize: 13,
-        fontWeight: '700',
-    },
-    descriptionTextStyle: {
-        fontSize: 13,
-        fontWeight: '300',
-        marginTop: 8,
-        color: '#696969',
-    },
-    // Style for member pictures
-    memberPicturesContainerStyle: {
-        height: 25,
-        width: 50,
-    },
-    topPictureContainerStyle: {
-        height: PictureDimension + 2,
-        width: PictureDimension + 2,
-        borderRadius: PictureDimension / 2 + 1,
-        backgroundColor: 'white',
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'absolute',
-        left: 2,
-    },
-    bottomPictureContainerStyle: {
-        height: PictureDimension + 2,
-        width: PictureDimension + 2,
-        borderRadius: PictureDimension / 2 + 1,
-        backgroundColor: 'white',
-        justifyContent: 'center',
-        alignItems: 'center',
-        // marginLeft: 15
-        position: 'absolute',
-        left: 15,
-    },
-    pictureStyle: {
-        height: PictureDimension,
-        width: PictureDimension,
-        borderRadius: PictureDimension / 2,
-    },
 }
 
 export default MyTribeAbout

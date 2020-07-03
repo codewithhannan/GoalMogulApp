@@ -73,10 +73,7 @@ export const promoteChatMember = (memberId, chatRoomId) => (
                     'Error',
                     'Could not promote member. Please try again later.'
                 )
-                console.log(
-                    `${ChatRoomMembersActions} error promoting member`,
-                    res.message
-                )
+                console.log(`${DEBUG_KEY} error promoting member`, res.message)
             } else {
                 trackWithProperties(E.CHATROOM_MEMBER_PROMOTED, {
                     MemberId: memberId,
@@ -91,7 +88,7 @@ export const promoteChatMember = (memberId, chatRoomId) => (
                 'Error',
                 'Could not promote member. Please try again later.'
             )
-            console.log(`${ChatRoomMembersActions} error promoting member`, err)
+            console.log(`${DEBUG_KEY} error promoting member`, err)
         })
 }
 export const demoteChatMember = (memberId, chatRoomId) => (
@@ -110,10 +107,7 @@ export const demoteChatMember = (memberId, chatRoomId) => (
                     'Error',
                     'Could not demote member. Please try again later.'
                 )
-                console.log(
-                    `${ChatRoomMembersActions} error demoting member`,
-                    res.message
-                )
+                console.log(`${DEBUG_KEY} error demoting member`, res.message)
             } else {
                 trackWithProperties(E.CHATROOM_MEMBER_DEMOTED, {
                     MemberId: memberId,
@@ -128,7 +122,7 @@ export const demoteChatMember = (memberId, chatRoomId) => (
                 'Error',
                 'Could not demote member. Please try again later.'
             )
-            console.log(`${ChatRoomMembersActions} error demoting member`, err)
+            console.log(`${DEBUG_KEY} error demoting member`, err)
         })
 }
 export const acceptChatMemberJoinRequest = (memberId, chatRoomId) => (
@@ -151,7 +145,7 @@ export const acceptChatMemberJoinRequest = (memberId, chatRoomId) => (
                     'Could not accept request. Please try again later.'
                 )
                 console.log(
-                    `${ChatRoomMembersActions} error accepting member request`,
+                    `${DEBUG_KEY} error accepting member request`,
                     res.message
                 )
             } else {
@@ -168,10 +162,7 @@ export const acceptChatMemberJoinRequest = (memberId, chatRoomId) => (
                 'Error',
                 'Could not accept request. Please try again later.'
             )
-            console.log(
-                `${ChatRoomMembersActions} error accepting member request`,
-                err
-            )
+            console.log(`${DEBUG_KEY} error accepting member request`, err)
         })
 }
 export const removeChatMember = (memberId, chatRoomId, maybeCallback) => (
@@ -186,19 +177,20 @@ export const removeChatMember = (memberId, chatRoomId, maybeCallback) => (
     )
         .then((resp) => {
             if (resp.status != 200) {
-                Alert.alert(
-                    'Error',
-                    'Could not remove member. Please try again later.'
-                )
-                console.log(
-                    `${ChatRoomMembersActions} error removing member`,
-                    res.message
-                )
-                maybeCallback && maybeCallback(new Error(resp.message))
+                console.log(`${DEBUG_KEY} error removing member`, resp.message)
+                if (maybeCallback) {
+                    // maybeCallback should handle Alerting to prevent double alerting due to different usecases
+                    maybeCallback && maybeCallback(new Error(resp.message))
+                } else {
+                    Alert.alert(
+                        'Error',
+                        'Could not remove member. Please try again later.'
+                    )
+                }
             } else {
                 trackWithProperties(E.CHATROOM_MEMBER_REMOVED, {
                     MemberId: memberId,
-                    ChatRoomId: ChatRoomId,
+                    ChatRoomId: chatRoomId,
                     UserId: userId,
                 })
                 maybeCallback && maybeCallback(null, true)
@@ -210,7 +202,7 @@ export const removeChatMember = (memberId, chatRoomId, maybeCallback) => (
                 'Error',
                 'Could not remove member. Please try again later.'
             )
-            console.log(`${ChatRoomMembersActions} error removing member`, err)
+            console.log(`${DEBUG_KEY} error removing member`, err)
             maybeCallback && maybeCallback(err)
         })
 }

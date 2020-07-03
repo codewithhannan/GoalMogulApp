@@ -2,9 +2,8 @@
 
 import Fuse from 'fuse.js'
 import R from 'ramda'
-import React, { Component } from 'react'
+import React from 'react'
 import {
-    ActivityIndicator,
     Animated,
     Dimensions,
     FlatList,
@@ -17,33 +16,25 @@ import {
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
-import { loadFriends } from '../../../actions'
-import Icons from '../../../asset/base64/Icons'
-import envelope from '../../../asset/utils/envelope.png'
+// Assets
 import invite from '../../../asset/utils/invite.png'
 import post from '../../../asset/utils/post.png'
+import flagIcon from '../../../asset/icons/flag.png'
 import tribe_default_icon from '../../../asset/utils/tribeIcon.png'
+// Utils
 import { switchCase, decode } from '../../../redux/middleware/utils'
+// modal
+import MyTribeDescription from './MyTribeDescription'
+// Actions
 import { openPostDetail } from '../../../redux/modules/feed/post/PostActions'
-import {
-    subscribeEntityNotification,
-    unsubscribeEntityNotification,
-} from '../../../redux/modules/notification/NotificationActions'
 import {
     openMultiUserInviteModal,
     searchFriend,
 } from '../../../redux/modules/search/SearchActions'
-// Actions
+import { loadFriends } from '../../../actions'
 import {
-    myTribeAdminAcceptUser,
-    myTribeAdminDemoteUser,
-    myTribeAdminPromoteUser,
-    myTribeAdminRemoveUser,
-    myTribeReset,
-    myTribeSelectMembersFilter,
     refreshMyTribeDetail,
     tribeDetailClose,
-    tribeSelectTab,
     loadMoreTribeFeed,
     requestJoinTribe,
     acceptTribeInvit,
@@ -57,42 +48,33 @@ import {
 } from '../../../redux/modules/tribe/MyTribeActions'
 // Selector
 import {
-    getMyTribeMemberNavigationState,
-    getMyTribeNavigationState,
     getMyTribeUserStatus,
     myTribeMemberSelector,
     getMyTribeDetailById,
     getMyTribeFeedSelector,
 } from '../../../redux/modules/tribe/TribeSelector'
 // Styles
-import { APP_DEEP_BLUE } from '../../../styles'
+import { DEFAULT_STYLE, GM_BLUE } from '../../../styles'
 // Constants
 import {
-    CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-    CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
     IMAGE_BASE_URL,
     IPHONE_MODELS,
     DEVICE_MODEL,
 } from '../../../Utils/Constants'
-import { DotIcon } from '../../../Utils/Icons'
 import {
     actionSheet,
     switchByButtonIndex,
 } from '../../Common/ActionSheetFactory'
-import DelayedButton from '../../Common/Button/DelayedButton'
 import PlusButton from '../../Common/Button/PlusButton'
-import Divider from '../../Common/Divider'
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
-import { MenuFactory } from '../../Common/MenuFactory'
-import TabButtonGroup from '../../Common/TabButtonGroup'
 import EmptyResult from '../../Common/Text/EmptyResult'
 import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard'
-import MemberListCard from '../../Tribe/MemberListCard'
 import About from './MyTribeAbout'
 import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
-const { CheckIcon: check } = Icons
+import MyTribeBanner from './MyTribeBanner'
+
 const DEBUG_KEY = '[ UI MyTribe ]'
 const { width } = Dimensions.get('window')
 const months = [
@@ -128,7 +110,7 @@ const SEARCHBAR_HEIGHT =
 const SCREEN_HEIGHT = Dimensions.get('window').height
 const PADDING = SCREEN_HEIGHT - 48.5 - SEARCHBAR_HEIGHT
 
-const INFO_CARD_HEIGHT = (width * 0.95) / 3 + 30 + 106.5
+const INFO_CARD_HEIGHT = (width * 0.95) / 3 + 30 + 56.5
 /**
  * This is the UI file for a single event.
  */
@@ -140,8 +122,10 @@ class MyTribe extends React.PureComponent {
             showPlus: true,
             infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT),
             infoCardOpacity: new Animated.Value(1),
+            showAboutModal: false,
+            showNameInTitle: false,
         }
-        this._handleIndexChange = this._handleIndexChange.bind(this)
+        this.switchCaseButton = this.switchCaseButton.bind(this)
     }
 
     componentWillUnmount() {
@@ -175,54 +159,13 @@ class MyTribe extends React.PureComponent {
     }
 
     /**
-     * This function is passed to MemberListCard when setting icon is clicked
-     * and remove user option is chosen
-     */
-    handleRemoveUser = (userId) => {
-        const { _id } = this.props.item
-        this.props.myTribeAdminRemoveUser(userId, _id)
-    }
-
-    /**
-     * This function is passed to MemberListCard when setting icon is clicked
-     * and promote user option is chosen
-     */
-    handlePromoteUser = (userId) => {
-        const { _id } = this.props.item
-        this.props.myTribeAdminPromoteUser(userId, _id)
-    }
-
-    /**
-     * This function is passed to MemberListCard when setting icon is clicked
-     * and demote user option is chosen
-     */
-    handleDemoteUser = (userId) => {
-        const { _id } = this.props.item
-        this.props.myTribeAdminDemoteUser(userId, _id)
-    }
-
-    /**
-     * This function is passed to MemberListCard when setting icon is clicked
-     * and accept user's join request option is chosen
-     */
-    handleAcceptUser = (userId) => {
-        const { _id } = this.props.item
-        this.props.myTribeAdminAcceptUser(userId, _id)
-    }
-
-    /**
      * On plus clicked, show two icons. Post and Invite
      * const { textStyle, iconStyle, iconSource, text, onPress } = button;
      */
-    handlePlus = (item, navigationState) => {
+    handlePlus = (item) => {
         const { _id } = item
-        const { routes } = navigationState
-        const indexToGo = routes.map((route) => route.key).indexOf('posts')
-        const refreshTribeCallback = () =>
-            setTimeout(() => this.refs['flatList'].scrollToEnd(), 200)
 
         const postCallback = () => {
-            this._handleIndexChange(indexToGo)
             this.props.refreshMyTribeDetail(_id, this.props.pageId)
         }
 
@@ -304,141 +247,48 @@ class MyTribe extends React.PureComponent {
         })
     }
 
-    handleTribeOptionsOnSelect = (value) => {
-        const { item } = this.props
-        if (!item) return
-
+    handleRespondToInvitation = (item) => {
         const { _id } = item
-        if (value === 'Delete') {
-            return this.props.deleteTribe(_id)
-        }
-        if (value === 'Edit') {
-            return this.props.editTribe(item)
-        }
-    }
+        const options = switchByButtonIndex([
+            [
+                R.equals(0),
+                () => {
+                    console.log(`${DEBUG_KEY} User chooses to accept`)
+                    this.props.acceptTribeInvit(_id)
+                },
+            ],
+            [
+                R.equals(1),
+                () => {
+                    console.log(`${DEBUG_KEY} User chooses to decline`)
+                    this.props.declineTribeInvit(_id)
+                },
+            ],
+        ])
 
-    // This function is deprecated and replaced by renderPlus
-    handleInvite = (_id) => {
-        return this.props.openTribeInvitModal(_id)
-    }
-
-    // Tab related functions
-    _handleIndexChange = (index) => {
-        const { navigationState, tribeId, pageId } = this.props
-        const { routes } = navigationState
-
-        this.props.tribeSelectTab(index, tribeId, pageId)
-
-        if (routes[index].key !== 'about') {
-            // Animated to hide the infoCard if not on about tab
-            Animated.parallel([
-                Animated.timing(this.state.infoCardHeight, {
-                    duration: 200,
-                    toValue: 0,
-                }),
-                Animated.timing(this.state.infoCardOpacity, {
-                    duration: 200,
-                    toValue: 0,
-                }),
-            ]).start()
-        } else {
-            // Animated to open the infoCard if on about tab
-            Animated.parallel([
-                Animated.timing(this.state.infoCardHeight, {
-                    duration: 200,
-                    toValue: INFO_CARD_HEIGHT,
-                }),
-                Animated.timing(this.state.infoCardOpacity, {
-                    duration: 200,
-                    toValue: 1,
-                }),
-            ]).start()
-        }
-    }
-
-    _renderHeader = (props, noBorder) => {
-        return <TabButtonGroup buttons={props} />
-    }
-
-    handleStatusChange = (isMember, item) => {
-        let options
-        const { _id } = item
-        if (isMember === 'Member') {
-            options = switchByButtonIndex([
-                [
-                    R.equals(0),
-                    () => {
-                        console.log(
-                            `${DEBUG_KEY} User chooses to remove request`
-                        )
-                        this.props.leaveTribe(_id, 'mytribe')
-                    },
-                ],
-            ])
-        } else if (isMember === 'JoinRequester') {
-            options = switchByButtonIndex([
-                [
-                    R.equals(0),
-                    () => {
-                        console.log(
-                            `${DEBUG_KEY} User chooses to remove request`
-                        )
-                        this.props.requestJoinTribe(
-                            _id,
-                            false,
-                            this.props.pageId
-                        )
-                    },
-                ],
-            ])
-        } else if (isMember === 'Invitee') {
-            options = switchByButtonIndex([
-                [
-                    R.equals(0),
-                    () => {
-                        console.log(`${DEBUG_KEY} User chooses to accept`)
-                        this.props.acceptTribeInvit(_id)
-                    },
-                ],
-                [
-                    R.equals(1),
-                    () => {
-                        console.log(`${DEBUG_KEY} User chooses to decline`)
-                        this.props.declineTribeInvit(_id)
-                    },
-                ],
-            ])
-        } else {
-            options = switchByButtonIndex([
-                [
-                    R.equals(0),
-                    () => {
-                        console.log(`${DEBUG_KEY} User chooses to `)
-                    },
-                ],
-            ])
-        }
-
-        const requestOptions = switchCasesMemberStatusChangeText(isMember)
-        const cancelIndex = switchCasesCancelIndex(isMember)
-        const statusActionSheet = actionSheet(
-            requestOptions,
-            cancelIndex,
-            options
-        )
+        const requestOptions = ['Accept', 'Decline', 'Cancel']
+        const statusActionSheet = actionSheet(requestOptions, 2, options)
         statusActionSheet()
+    }
+
+    getMemberData() {
+        return this.props.memberData
     }
 
     /**
      * Handle modal setting on click. Show IOS menu with options
      */
     handlePageSetting = (item) => {
-        const { _id, members } = item
-        const { userId } = this.props
-        const isAdmin = checkIsAdmin(members, userId)
+        const { _id } = item
+        const { userTribeStatus } = this.props
+        const isAdmin = userTribeStatus === 'Admin'
+        const isMember = userTribeStatus === 'Member'
 
         let options
+        let requestOptions
+        let cancelIndex = 2
         if (isAdmin) {
+            requestOptions = ['Edit', 'Delete', 'Cancel']
             options = switchByButtonIndex([
                 [
                     R.equals(0),
@@ -459,7 +309,29 @@ class MyTribe extends React.PureComponent {
                     },
                 ],
             ])
+        } else if (isMember) {
+            requestOptions = ['Leave Tribe', 'Report', 'Cancel']
+            options = switchByButtonIndex([
+                [
+                    R.equals(0),
+                    () => {
+                        console.log(
+                            `${DEBUG_KEY} User chooses to remove request`
+                        )
+                        this.props.leaveTribe(_id, 'mytribe')
+                    },
+                    R.equals(1),
+                    () => {
+                        console.log(
+                            `${DEBUG_KEY} User chooses to remove request`
+                        )
+                        this.props.reportTribe(_id)
+                    },
+                ],
+            ])
         } else {
+            cancelIndex = 1
+            requestOptions = ['Report', 'Cancel']
             options = switchByButtonIndex([
                 [
                     R.equals(0),
@@ -473,11 +345,6 @@ class MyTribe extends React.PureComponent {
             ])
         }
 
-        const requestOptions = isAdmin
-            ? ['Edit', 'Delete', 'Cancel']
-            : ['Report', 'Cancel']
-        const cancelIndex = isAdmin ? 2 : 1
-
         const tribeActionSheet = actionSheet(
             requestOptions,
             cancelIndex,
@@ -486,123 +353,15 @@ class MyTribe extends React.PureComponent {
         tribeActionSheet()
     }
 
-    handleRequestOnPress = () => {
-        const { item, hasRequested } = this.props
-        if (!item) return
-        const { _id } = item
-
-        let options
-        if (hasRequested) {
-            options = switchByButtonIndex([
-                [
-                    R.equals(0),
-                    () => {
-                        console.log(
-                            `${DEBUG_KEY} User chooses to remove request`
-                        )
-                        this.props.requestJoinTribe(
-                            _id,
-                            false,
-                            this.props.pageId
-                        )
-                    },
-                ],
-            ])
-        } else {
-            options = switchByButtonIndex([
-                [
-                    R.equals(0),
-                    () => {
-                        console.log(
-                            `${DEBUG_KEY} User chooses to join the tribe`
-                        )
-                        this.props.requestJoinTribe(
-                            _id,
-                            true,
-                            this.props.pageId
-                        )
-                    },
-                ],
-            ])
-        }
-
-        const requestOptions = hasRequested
-            ? CANCEL_REQUEST_OPTIONS
-            : REQUEST_OPTIONS
-
-        const rsvpActionSheet = actionSheet(
-            requestOptions,
-            CANCEL_REQUEST_INDEX,
-            options
-        )
-        rsvpActionSheet()
-    }
-
-    /**
-     * Caret to show options for a tribe.
-     * If owner, options are delete and edit.
-     * Otherwise, option is report.
-     *
-     * NOTE: this is currently deprecated and replaced by handlePageSetting
-     */
-    renderCaret(item) {
-        // If item belongs to self, then caret displays delete
-        const { creator, _id, maybeIsSubscribed } = item
-
-        const isSelf = creator._id === this.props.userId
-        const menu = !isSelf
-            ? MenuFactory(
-                  [
-                      'Report',
-                      maybeIsSubscribed
-                          ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
-                          : CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-                  ],
-                  (val) => {
-                      if (val === 'Report') {
-                          return this.props.reportTribe(_id)
-                      }
-                      if (val === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
-                          return this.props.unsubscribeEntityNotification(
-                              _id,
-                              'Event'
-                          )
-                      }
-                      if (val === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
-                          return this.props.subscribeEntityNotification(
-                              _id,
-                              'Event'
-                          )
-                      }
-                  },
-                  '',
-                  { ...styles.caretContainer },
-                  () => console.log('User clicks on options for tribe')
-              )
-            : MenuFactory(
-                  ['Edit', 'Delete'],
-                  this.handleTribeOptionsOnSelect,
-                  '',
-                  { ...styles.caretContainer },
-                  () => console.log('User clicks on options for self tribe.')
-              )
-        return (
-            <View style={{ position: 'absolute', top: 3, right: 3 }}>
-                {menu}
-            </View>
-        )
-    }
-
     renderTribeImage(picture) {
         let imageUrl
         // let eventImage = (<Image source={tribe_default_icon} style={styles.defaultImageStyle} />);
         let tribeImage = (
-            <View style={styles.defaultImageContainerStyle}>
-                <Image
-                    source={tribe_default_icon}
-                    style={styles.defaultImageStyle}
-                />
-            </View>
+            <Image
+                source={tribe_default_icon}
+                resizeMode="contain"
+                style={styles.imageStyle}
+            />
         )
         if (picture) {
             imageUrl = `${IMAGE_BASE_URL}${picture}`
@@ -616,536 +375,320 @@ class MyTribe extends React.PureComponent {
             )
         }
 
-        return <View style={styles.imageContainerStyle}>{tribeImage}</View>
+        return <View style={styles.imageWrapperStyle}>{tribeImage}</View>
     }
 
-    // Render tribe visibility and user membership status
-    renderVisibilityAndStatus(item) {
-        const tribeVisibility = item.isPubliclyVisible
-            ? 'Publicly Visible'
-            : 'Private Tribe'
+    switchCaseButton = (status, item, _id) =>
+        switchCase({
+            Admin: {
+                text: 'Invite Friends',
+                onPress: () => this.openUserInviteModal(item),
+            },
+            Member: {
+                text: 'Invite Friends',
+                onPress: () => this.openUserInviteModal(item),
+                disabled: !item.membersCanInvite,
+            },
+            JoinRequester: {
+                text: 'Withdraw Request',
+                onPress: () =>
+                    this.props.requestJoinTribe(
+                        item._id,
+                        false,
+                        this.props.pageId
+                    ),
+            },
+            Invitee: {
+                text: 'Respond',
+                onPress: () => this.handleRespondToInvitation(item),
+            },
+        })({
+            text: 'Join Tribe',
+            onPress: () =>
+                this.props.requestJoinTribe(item._id, true, this.props.pageId),
+        })(status)
 
-        return (
-            <View
-                style={{
-                    flexDirection: 'row',
-                    marginTop: 8,
-                    marginBottom: 8,
-                    alignItems: 'center',
-                }}
-            >
-                <Text style={styles.tribeStatusTextStyle}>
-                    {tribeVisibility}
-                </Text>
-                <Divider orthogonal height={12} borderColor="gray" />
-                {this.renderMemberStatus(item)}
-            </View>
-        )
-    }
+    renderUserStatusButton() {
+        const { userTribeStatus, item } = this.props
+        const buttonProps = this.switchCaseButton(userTribeStatus, item)
 
-    renderMemberStatus(item) {
-        // TODO: remove test var
-        // const isUserMemeber = isMember(item.members, this.props.user);
-        const { isMember, hasRequested } = this.props
-        const tintColor = isMember ? '#2dca4a' : 'gray'
-
-        if (isMember) {
-            const { text, iconSource, iconStyle } = switchCaseMemberStatus(
-                isMember
-            )
-            return (
-                <DelayedButton
-                    activeOpacity={0.6}
-                    // style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8, height: 23 }}
-                    style={{ ...styles.rsvpBoxContainerStyle, marginLeft: 6 }}
-                    onPress={() => this.handleStatusChange(isMember, item)}
-                >
-                    <Image source={iconSource} style={iconStyle} />
-                    <Text
-                        style={{
-                            ...styles.tribeStatusTextStyle,
-                            ...styles.memberStatusTextStyle,
-                            color: tintColor,
-                        }}
-                    >
-                        {text}
-                    </Text>
-                </DelayedButton>
-            )
-        }
-        // Return view to request to join
-        const requestText = hasRequested ? 'Cancel Request' : 'Request to Join'
         return (
             <TouchableOpacity
-                activeOpacity={0.6}
-                style={styles.memberStatusContainerStyle}
-                onPress={this.handleRequestOnPress}
+                style={[
+                    styles.buttonStyleInvite,
+                    { opacity: buttonProps.disabled ? 0.6 : 1 },
+                ]}
+                onPress={buttonProps.onPress}
+                disabled={buttonProps.disabled}
             >
-                <Text
-                    style={{
-                        ...styles.tribeStatusTextStyle,
-                        ...styles.memberStatusTextStyle,
-                        color: tintColor,
-                    }}
-                >
-                    {requestText}
+                <Text style={{ ...styles.buttonText, color: 'white' }}>
+                    {buttonProps.text}
                 </Text>
             </TouchableOpacity>
         )
     }
 
-    // Render tribe size and created date
-    renderTribeInfo(item) {
+    renderTribeOverview() {
+        const {
+            tribeId,
+            pageId,
+            item,
+            data,
+            feedLoading,
+            feedRefreshing,
+            userTribeStatus,
+        } = this.props
+        const { name, picture, memberCount, description } = item
         const newDate = item.created ? new Date(item.created) : new Date()
         const date = `${
             months[newDate.getMonth()]
         } ${newDate.getDate()}, ${newDate.getFullYear()}`
-        const count = item.memberCount ? item.memberCount : '102'
-        return (
-            <View style={styles.tribeInfoContainerStyle}>
-                <Text
-                    style={{ ...styles.tribeSizeTextStyle, color: '#4ec9f3' }}
-                >
-                    <Text style={styles.tribeCountTextStyle}>{count} </Text>
-                    members
-                </Text>
-                <DotIcon
-                    iconStyle={{
-                        tintColor: '#616161',
-                        width: 4,
-                        height: 4,
-                        marginLeft: 4,
-                        marginRight: 4,
-                    }}
-                />
-                {/* <Icon name='dot-single' type='entypo' color="#616161" size={16} /> */}
-                <Text style={{ ...styles.tribeSizeTextStyle }}>
-                    Created {date}
-                </Text>
-            </View>
-        )
-    }
+        const count = memberCount || '0'
+        const isMemberOrAdmin =
+            userTribeStatus === 'Admin' || userTribeStatus === 'Member'
 
-    renderMemberTabs() {
-        const { memberNavigationState } = this.props
-        const { routes } = memberNavigationState
-
-        // Button style 1
-        // const buttonStyle = {
-        //   selected: {
-        //     backgroundColor: 'white', // container background style
-        //     tintColor: '#696969', // icon tintColor
-        //     color: '#696969', // text color
-        //     fontWeight: '800', // text fontWeight
-        //     statColor: 'white' // stat icon color
-        //   },
-        //   unselected: {
-        //     backgroundColor: 'white',
-        //     tintColor: '#696969',
-        //     color: '#b2b2b2',
-        //     fontWeight: '600',
-        //     statColor: '#696969'
-        //   }
-        // };
-
-        const props = {
-            jumpToIndex: (i) =>
-                this.props.myTribeSelectMembersFilter(
-                    routes[i].key,
-                    i,
-                    this.props.tribeId,
-                    this.props.pageId
-                ),
-            navigationState: this.props.memberNavigationState,
-        }
-
-        return (
-            <View>
-                {/* <TabButtonGroup buttons={props} subTab buttonStyle={buttonStyle} noVerticalDivider noBorder /> */}
-                <View
-                    style={{
-                        height: 1,
-                        width: '100%',
-                        backgroundColor: '#DADADA',
-                    }}
-                />
-                <TabButtonGroup buttons={props} noVerticalDivider />
-            </View>
-        )
-    }
-
-    renderTribeOverview(item, data) {
-        const { name, _id, picture } = item
-        const filterBar =
-            this.props.tab === 'members' ? this.renderMemberTabs() : null
-
-        const emptyState =
-            this.props.tab === 'posts' &&
-            data.length === 0 &&
-            !this.props.feedLoading ? (
-                <EmptyResult
-                    text={'No Posts'}
-                    textStyle={{ paddingTop: 100 }}
-                />
-            ) : null
-
-        // Invite button is replaced by renderPlus
-        const inviteButton =
-            this.props.tab === 'members' ? (
-                <TouchableOpacity
-                    activeOpacity={0.6}
-                    onPress={() => this.handleInvite(_id)}
-                    style={styles.inviteButtonContainerStyle}
-                >
-                    <Text>Invite</Text>
-                </TouchableOpacity>
-            ) : null
-
-        return (
-            <View>
-                <Animated.View
-                    style={{
-                        height: this.state.infoCardHeight,
-                        opacity: this.state.infoCardOpacity,
-                    }}
-                >
-                    <View style={styles.imagePaddingContainerStyle} />
-                    <View style={styles.imageWrapperStyle}>
-                        {this.renderTribeImage(picture)}
-                    </View>
-                    <View style={styles.generalInfoContainerStyle}>
-                        {/* {this.renderCaret(item)} */}
-                        <Text style={{ fontSize: 22, fontWeight: '300' }}>
-                            {decode(name)}
-                        </Text>
-                        {this.renderVisibilityAndStatus(item)}
+        const bodyCard =
+            data.length === 0 ? (
+                isMemberOrAdmin ? (
+                    !feedLoading &&
+                    !feedRefreshing && (
+                        <EmptyResult
+                            text={'No Posts'}
+                            textStyle={{ paddingTop: 80 }}
+                        />
+                    )
+                ) : (
+                    <View
+                        style={{
+                            padding: 16,
+                            paddingBottom: 32,
+                            backgroundColor: 'white',
+                            marginTop: 8,
+                        }}
+                    >
                         <View
                             style={{
-                                width: width * 0.75,
-                                borderColor: '#dcdcdc',
-                                borderWidth: 0.5,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                paddingBottom: 16,
                             }}
-                        />
-                        {this.renderTribeInfo(item)}
+                        >
+                            <Image
+                                source={flagIcon}
+                                style={[
+                                    DEFAULT_STYLE.smallIcon_1,
+                                    { marginRight: 10 },
+                                ]}
+                            />
+                            <Text style={DEFAULT_STYLE.titleText_1}>About</Text>
+                        </View>
+                        <Text style={DEFAULT_STYLE.normalText_1}>
+                            {description}
+                        </Text>
                     </View>
-                </Animated.View>
-                {this._renderHeader(
-                    {
-                        jumpToIndex: (i) => {
-                            this._handleIndexChange(i)
-                            {
-                                /* this.refs['flatList'].scrollToOffset({
-                  offset: 250
-                }); */
-                            }
-                        },
-                        navigationState: this.props.navigationState,
-                    },
-                    this.props.tab !== 'about'
-                )}
-                {filterBar}
-                {emptyState}
+                )
+            ) : null
+
+        return (
+            <View>
+                <View style={{ backgroundColor: 'white' }}>
+                    <View
+                        onLayout={({
+                            nativeEvent: {
+                                layout: { height },
+                            },
+                        }) => {
+                            this.topCardHeight = height
+                        }}
+                    >
+                        {this.renderTribeImage(picture)}
+                        <View style={styles.generalInfoContainerStyle}>
+                            <Text style={DEFAULT_STYLE.titleText_1}>
+                                {decode(name)}
+                            </Text>
+                            <Text
+                                style={{
+                                    ...styles.tribeSizeTextStyle,
+                                    color: '#737475',
+                                    marginTop: 5,
+                                }}
+                            >
+                                {count} members | Created {date}
+                            </Text>
+                        </View>
+                        <About pageId={pageId} tribeId={tribeId} data={item} />
+                    </View>
+                    <View style={styles.buttonGroup}>
+                        {isMemberOrAdmin && (
+                            <TouchableOpacity
+                                style={styles.buttonStyleAbout}
+                                onPress={() => {
+                                    this.setState({
+                                        ...this.state,
+                                        showAboutModal: true,
+                                    })
+                                }}
+                            >
+                                <Text style={styles.buttonText}>About</Text>
+                            </TouchableOpacity>
+                        )}
+                        {this.renderUserStatusButton()}
+                    </View>
+                </View>
+                {isMemberOrAdmin && <MyTribeBanner />}
+                {bodyCard}
             </View>
         )
-    }
-
-    onPostTab = () => {
-        const { navigationState } = this.props
-        const { routes, index } = navigationState
-        return routes[index].key == 'posts'
     }
 
     handleOnEndReached = (tribeId) => {
-        // Do not load more when user is not on posts tab
-        if (!this.onPostTab() || !tribeId) return
-
+        if (!tribeId) return
         this.props.loadMoreTribeFeed(tribeId, this.props.pageId)
     }
 
     renderItem = (props) => {
-        const { navigationState } = this.props
-        const { routes, index } = navigationState
-        const { isUserAdmin } = this.props
-
-        switch (routes[index].key) {
-            case 'about': {
-                return <About item={props.item} key={props.index} />
-            }
-
-            case 'posts': {
-                return (
-                    <ProfilePostCard
-                        item={props.item}
-                        key={props.index}
-                        hasActionButton
-                        onPress={(item) => {
-                            // onPress is called by CommentIcon
-                            this.props.openPostDetail(item, {
-                                initialFocusCommentBox: true,
-                            })
-                        }}
-                    />
-                )
-            }
-
-            case 'members': {
-                return (
-                    <MemberListCard
-                        item={props.item.memberRef}
-                        category={props.item.category}
-                        key={props.index}
-                        isAdmin={isUserAdmin}
-                        onRemoveUser={this.handleRemoveUser}
-                        onPromoteUser={this.handlePromoteUser}
-                        onDemoteUser={this.handleDemoteUser}
-                        onAcceptUser={this.handleAcceptUser}
-                    />
-                )
-            }
-
-            default:
-                return <View key={props.index} />
-        }
+        return (
+            <ProfilePostCard
+                item={props.item}
+                key={props.index}
+                hasActionButton
+                onPress={(item) => {
+                    // onPress is called by CommentIcon
+                    this.props.openPostDetail(item, {
+                        initialFocusCommentBox: true,
+                    })
+                }}
+            />
+        )
     }
 
-    renderPlus(item) {
-        const { isMember, navigationState } = this.props
+    renderAddPostButton(item) {
+        const { userTribeStatus } = this.props
         if (
             this.state.showPlus &&
-            (isMember === 'Admin' || isMember === 'Member')
+            (userTribeStatus === 'Admin' || userTribeStatus === 'Member')
         ) {
             return (
                 <PlusButton
                     plusActivated={this.state.showPlus}
-                    onPress={() => this.handlePlus(item, navigationState)}
+                    onPress={() => {
+                        const postCallback = () => {
+                            this.props.refreshMyTribeDetail(
+                                _id,
+                                this.props.pageId
+                            )
+                        }
+                        const tagSearch = (keyword, callback) => {
+                            const result = fuse.search(keyword.replace('@', ''))
+                            callback({ data: result }, keyword)
+                        }
+                        Actions.createPostModal({
+                            belongsToTribe: item._id,
+                            callback: postCallback,
+                            tagSearch,
+                        })
+                    }}
                 />
             )
         }
-        return null
-    }
-
-    // render padding has been changed to render loading indicator
-    renderPadding() {
-        const { navigationState, feedLoading, data } = this.props
-        const { routes, index } = navigationState
-
-        if (feedLoading && routes[index].key === 'posts') {
-            return (
-                <View
-                    style={{
-                        paddingVertical: 12,
-                    }}
-                >
-                    <ActivityIndicator size="small" />
-                </View>
-            )
-            // Original padding was added for scroll up animation
-            // return (
-            //   <View style={{ height: PADDING }}>
-            //     <View
-            //       style={{
-            //         paddingVertical: 12
-            //       }}
-            //     >
-            //       <ActivityIndicator size='large' />
-            //     </View>
-            //   </View>
-            // );
-        }
-        // Original padding was added for scroll up animation
-        // return (
-        //   <View style={{ height: PADDING }} />
-        // );
         return null
     }
 
     render() {
         const { item, data } = this.props
         if (!item) return <View />
-
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                <View style={styles.containerStyle}>
-                    <SearchBarHeader
-                        backButton
-                        onBackPress={() => Actions.pop()} // componentWillUnmount takes care of the state cleaning
-                        pageSetting
-                        handlePageSetting={() => this.handlePageSetting(item)}
-                    />
-                    <FlatList
-                        ref="flatList"
-                        data={data}
-                        renderItem={this.renderItem}
-                        keyExtractor={(i) => i._id}
-                        ListHeaderComponent={this.renderTribeOverview(
-                            item,
-                            data
-                        )}
-                        onRefresh={() =>
-                            this.props.refreshMyTribeDetail(
-                                item._id,
-                                this.props.pageId
-                            )
-                        }
-                        onEndReached={() => this.handleOnEndReached(item._id)}
-                        onEndReachedThreshold={2}
-                        loading={this.props.tribeLoading && this.onPostTab()}
-                        refreshing={this.props.loading}
-                        ListFooterComponent={this.renderPadding()}
-                    />
-                    {this.renderPlus(item)}
-                </View>
+            <MenuProvider
+                style={{ backgroundColor: '#FAFAFA' }}
+                customStyles={{ backdrop: styles.backdrop }}
+            >
+                <SearchBarHeader
+                    backButton
+                    title={this.state.showNameInTitle ? decode(item.name) : ''}
+                    onBackPress={() => Actions.pop()} // componentWillUnmount takes care of the state cleaning
+                    pageSetting
+                    handlePageSetting={() => this.handlePageSetting(item)}
+                />
+                <FlatList
+                    ref="flatList"
+                    data={data}
+                    keyExtractor={(i) => i._id}
+                    ListHeaderComponent={this.renderTribeOverview()}
+                    renderItem={this.renderItem}
+                    refreshing={this.props.loading}
+                    onRefresh={() =>
+                        this.props.refreshMyTribeDetail(
+                            item._id,
+                            this.props.pageId
+                        )
+                    }
+                    onEndReached={() => this.handleOnEndReached(item._id)}
+                    onEndReachedThreshold={2}
+                    onScroll={({
+                        nativeEvent: {
+                            contentOffset: { y },
+                        },
+                    }) => {
+                        if (this.topCardHeight <= y)
+                            this.setState({ showNameInTitle: true })
+                        else this.setState({ showNameInTitle: false })
+                    }}
+                    scrollEventThrottle={2}
+                />
+                {this.renderAddPostButton(item)}
+                <MyTribeDescription
+                    isVisible={this.state.showAboutModal}
+                    closeModal={() => {
+                        this.setState({
+                            ...this.state,
+                            showAboutModal: false,
+                        })
+                    }}
+                    item={this.props.item}
+                />
             </MenuProvider>
         )
     }
 }
 
 const styles = {
-    containerStyle: {
-        flex: 1,
-        backgroundColor: '#f8f8f8',
-        // shadowColor: '#000',
-        // shadowOffset: { width: 0, height: 1 },
-        // shadowOpacity: 0.3,
-        // shadowRadius: 6,
-    },
-    imageContainerStyle: {
-        borderWidth: 1,
-        borderColor: '#646464',
-        alignItems: 'center',
-        borderRadius: 14,
-        position: 'absolute',
-        bottom: 10,
-        alignSelf: 'center',
-        backgroundColor: 'white',
-    },
-    defaultImageContainerStyle: {
-        width: (width * 1.1) / 3,
-        height: (width * 0.95) / 3,
-        borderRadius: 13,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    defaultImageStyle: {
-        width: (width * 1.1 * 0.75) / 3 + 2,
-        height: (width * 0.95 * 0.75) / 3,
-        borderRadius: 13,
-        borderWidth: 1,
-        borderColor: 'white',
-    },
     imageStyle: {
-        width: (width * 1.1) / 3,
-        height: (width * 0.95) / 3,
-        borderRadius: 13,
-        borderWidth: 1,
-        borderColor: 'white',
-    },
-    // Style for the empty view for image top
-    imagePaddingContainerStyle: {
-        height: ((width * 0.95) / 3 + 30 - 10) / 2,
-        backgroundColor: '#1998c9',
+        width: '100%',
+        height: '100%',
     },
     imageWrapperStyle: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-        // height: 80,
-        height: ((width * 0.95) / 3 + 30 + 10) / 2,
+        height: (width * 0.95) / 3 + 30 + 10,
         backgroundColor: 'white',
     },
     // This is the style for general info container
     generalInfoContainerStyle: {
-        backgroundColor: 'white',
         alignItems: 'center',
+        padding: 16,
     },
-
-    // Style for subinfo
-    tribeStatusTextStyle: {
-        fontSize: 11,
-        marginLeft: 4,
-        marginRight: 4,
-    },
-    memberStatusTextStyle: {},
-    memberStatusContainerStyle: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginLeft: 8,
-        width: 100,
-        height: 23,
-        justifyContent: 'center',
-        borderRadius: 5,
-        backgroundColor: '#efefef',
-    },
-
-    // caret for options
-    caretContainer: {
-        padding: 14,
-    },
-
-    // Style for Invite button
-    inviteButtonContainerStyle: {
-        height: 30,
-        width: 100,
-        alignItems: 'center',
-        justifyContent: 'center',
-        alignSelf: 'flex-end',
-        marginRight: 20,
-        backgroundColor: '#efefef',
-        borderRadius: 5,
-    },
-
-    // Style for tribe info
-    tribeInfoContainerStyle: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 5,
-        marginBottom: 5,
-        height: 30,
-    },
-    tribeSizeTextStyle: {
-        fontSize: 11,
-    },
-    tribeCountTextStyle: {
-        fontWeight: '600',
-    },
+    tribeSizeTextStyle: DEFAULT_STYLE.smallText_1,
     backdrop: {
-        backgroundColor: 'gray',
+        backgroundColor: 'white',
         opacity: 0.5,
     },
-    // Styles for plus icon
-    iconContainerStyle: {
-        position: 'absolute',
-        bottom: 20,
-        right: 15,
-        height: 54,
-        width: 54,
-        borderRadius: 27,
-        alignItems: 'center',
-        justifyContent: 'center',
-        // backgroundColor: '#17B3EC',
-        backgroundColor: APP_DEEP_BLUE,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.4,
-        shadowRadius: 2,
-    },
-    iconStyle: {
-        height: 26,
-        width: 26,
-        tintColor: 'white',
-    },
-    rsvpBoxContainerStyle: {
-        height: 25,
-        // width: 60,
-        paddingVertical: 3,
-        paddingLeft: 5,
-        paddingRight: 5,
-        borderRadius: 5,
-        backgroundColor: '#efefef',
-        alignItems: 'center',
-        justifyContent: 'center',
+    buttonGroup: {
         flexDirection: 'row',
+        margin: 16,
+    },
+    buttonStyleAbout: {
+        flex: 2,
+        marginRight: 8,
+        backgroundColor: '#F2F2F2',
+        borderRadius: 3,
+    },
+    buttonStyleInvite: {
+        flex: 4,
+        backgroundColor: GM_BLUE,
+        borderRadius: 3,
+    },
+    buttonText: {
+        ...DEFAULT_STYLE.buttonText_1,
+        textAlign: 'center',
+        margin: 7,
     },
 }
 
@@ -1159,68 +702,25 @@ const mapStateToProps = (state, props) => {
         feedRefreshing,
     } = tribePage
     const { userId } = state.user
-    const navigationState = getMyTribeNavigationState(state, tribeId, pageId)
-    const memberNavigationState = getMyTribeMemberNavigationState(
-        state,
-        tribeId,
-        pageId
-    )
-
-    const { routes, index } = navigationState
-    const data = ((key) => {
-        switch (key) {
-            case 'about':
-                return [tribe]
-
-            case 'members':
-                return myTribeMemberSelector(state, tribeId, pageId)
-
-            case 'posts':
-                return getMyTribeFeedSelector(state, tribeId, pageId)
-
-            default:
-                return []
-        }
-    })(routes[index].key)
+    const memberData = myTribeMemberSelector(state, tribeId, pageId)
+    const data = getMyTribeFeedSelector(state, tribeId, pageId)
 
     return {
-        navigationState,
         item: tribe,
         user: state.user,
         data,
-        isMember: getMyTribeUserStatus(state, tribeId),
+        userTribeStatus: getMyTribeUserStatus(state, tribeId),
         hasRequested,
-        tab: routes[index].key,
         userId,
-        isUserAdmin: checkIsAdmin(tribe ? tribe.members : [], userId),
-        memberNavigationState,
         loading: tribeLoading,
         feedLoading,
         feedRefreshing,
+        memberData,
     }
-}
-
-const checkIsAdmin = (members, userId) => {
-    let isAdmin = false
-    // Sanity check if member is not empty or undefined
-    if (members && members.length > 0) {
-        members.forEach((member) => {
-            if (
-                member.memberRef &&
-                member.memberRef._id === userId &&
-                member.category === 'Admin'
-            ) {
-                isAdmin = true
-            }
-        })
-    }
-
-    return isAdmin
 }
 
 export default connect(mapStateToProps, {
     refreshMyTribeDetail,
-    tribeSelectTab,
     tribeDetailClose,
     openTribeInvitModal,
     deleteTribe,
@@ -1230,15 +730,7 @@ export default connect(mapStateToProps, {
     acceptTribeInvit,
     declineTribeInvit,
     requestJoinTribe,
-    myTribeAdminRemoveUser,
-    myTribeAdminPromoteUser,
-    myTribeAdminDemoteUser,
-    myTribeSelectMembersFilter,
-    myTribeAdminAcceptUser,
-    myTribeReset,
     openPostDetail,
-    subscribeEntityNotification,
-    unsubscribeEntityNotification,
     // Multi friend invite
     searchFriend,
     openMultiUserInviteModal,
@@ -1246,59 +738,3 @@ export default connect(mapStateToProps, {
     loadFriends,
     loadMoreTribeFeed,
 })(wrapAnalytics(MyTribe, SCREENS.TRIBE_DETAIL))
-
-const switchCaseMemberStatus = (status) =>
-    switchCase({
-        Admin: {
-            text: 'Admin',
-            iconSource: check,
-            iconStyle: {
-                height: 10,
-                width: 13,
-                tintColor: '#2dca4a',
-            },
-        },
-        Member: {
-            text: 'Member',
-            iconSource: check,
-            iconStyle: {
-                height: 10,
-                width: 13,
-                tintColor: '#2dca4a',
-            },
-        },
-        JoinRequester: {
-            text: 'Requested',
-            iconSource: envelope,
-            iconStyle: {
-                height: 12,
-                width: 15,
-                tintColor: '#2dca4a',
-            },
-        },
-        Invitee: {
-            text: 'Respond to Invitation',
-            iconSource: envelope,
-            iconStyle: {
-                height: 12,
-                width: 15,
-                tintColor: '#2dca4a',
-            },
-        },
-    })({ text: 'Unknown', iconSource: check })(status)
-
-const switchCasesMemberStatusChangeText = (status) =>
-    switchCase({
-        Admin: ['Cancel'],
-        Member: ['Leave tribe', 'Cancel'],
-        JoinRequester: ['Cancel Request', 'Cancel'],
-        Invitee: ['Accept', 'Decline', 'Cancel'],
-    })(['Cancel'])(status)
-
-const switchCasesCancelIndex = (status) =>
-    switchCase({
-        Admin: 0,
-        Member: 1,
-        JoinRequester: 1,
-        Invitee: 2,
-    })(0)(status)

@@ -19,6 +19,21 @@ import { EVENT, trackWithProperties } from '../../../monitoring/segment'
 const DEBUG_KEY = '[ Component SearchUserCard ]'
 
 class SearchUserCard extends Component {
+    constructor(props) {
+        super(props)
+        this.handleSelectClick = this.handleSelectClick.bind(this)
+        this.handleRemoveClick = this.handleRemoveClick.bind(this)
+        this.state = { isLoggedIn: false }
+    }
+
+    handleSelectClick() {
+        this.setState({ isLoggedIn: true })
+    }
+
+    handleRemoveClick() {
+        this.setState({ isLoggedIn: false })
+    }
+
     state = {
         imageLoading: false,
     }
@@ -111,23 +126,10 @@ class SearchUserCard extends Component {
                     justifyContent: 'flex-start',
                     flex: 1,
                     marginLeft: 10,
+                    marginTop: 13,
                 }}
             >
                 {this.renderTitle(item)}
-                <View style={{ marginTop: 6 }}>
-                    <Text
-                        style={{
-                            flex: 1,
-                            flexWrap: 'wrap',
-                            color: '#838f97',
-                            fontSize: 15,
-                        }}
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                    >
-                        {content}
-                    </Text>
-                </View>
             </View>
         )
     }
@@ -136,23 +138,48 @@ class SearchUserCard extends Component {
         const { item } = this.props
         if (!item) return null
 
+        const itemIsSelected = this.props.itemIsSelected
+
         const { _id } = item
         let { cardContainerStyles } = this.props
         if (!cardContainerStyles) {
             cardContainerStyles = {}
         }
-        return (
-            <DelayedButton
-                activeOpacity={0.6}
-                onPress={this.onButtonClicked.bind(this, _id)}
-            >
-                <View
-                    style={{ ...styles.containerStyle, ...cardContainerStyles }}
+
+        let button
+        if (!itemIsSelected) {
+            button = (
+                <TouchableOpacity
+                    style={styles.buttonStyleAdd}
+                    underlayColor="#fff"
+                    onPress={() => {
+                        this.onButtonClicked(_id)
+                        this.handleRemoveClick()
+                    }}
                 >
-                    {this.renderProfileImage(item)}
-                    {this.renderCardContent(item)}
-                </View>
-            </DelayedButton>
+                    <Text style={styles.buttonText}>Added</Text>
+                </TouchableOpacity>
+            )
+        } else {
+            button = (
+                <TouchableOpacity
+                    style={styles.buttonStyle}
+                    underlayColor="#fff"
+                    onPress={() => {
+                        this.onButtonClicked(_id)
+                        this.handleSelectClick()
+                    }}
+                >
+                    <Text style={styles.buttonText}>Add</Text>
+                </TouchableOpacity>
+            )
+        }
+        return (
+            <View style={{ ...styles.containerStyle, ...cardContainerStyles }}>
+                {this.renderProfileImage(item)}
+                {this.renderCardContent(item)}
+                {button}
+            </View>
         )
     }
 }
@@ -190,6 +217,31 @@ const styles = {
         borderRadius: 6,
         alignSelf: 'center',
         backgroundColor: 'white',
+    },
+    buttonStyle: {
+        flexGrow: 0,
+        marginRight: 10,
+        marginLeft: 10,
+        marginTop: 10,
+        marginBottom: 10,
+        padding: 10,
+        backgroundColor: '#42C0F5',
+        borderRadius: 3,
+        borderColor: '#fff',
+    },
+    buttonStyleAdd: {
+        flexGrow: 0,
+        marginRight: 10,
+        marginLeft: 10,
+        marginTop: 10,
+        marginBottom: 10,
+        padding: 10,
+        backgroundColor: '#BDBDBD',
+        borderRadius: 3,
+        borderColor: '#fff',
+    },
+    buttonText: {
+        color: 'white',
     },
 }
 

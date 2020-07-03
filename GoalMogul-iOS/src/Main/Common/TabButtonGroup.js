@@ -14,7 +14,7 @@ const WalkableView = walkthroughable(View)
  * Note: stat shouldn't be provided together with tabNotificationMap
  */
 class TabButtonGroup extends Component {
-    renderButton() {
+    renderButtons() {
         const {
             buttons,
             tabIconMap,
@@ -27,6 +27,7 @@ class TabButtonGroup extends Component {
         const { navigationState, jumpTo, jumpToIndex } = buttons
         const { index, routes } = navigationState
 
+        if (!routes) return null
         return routes.map((b, i) => {
             const isSelected = i === index
 
@@ -141,7 +142,7 @@ class TabButtonGroup extends Component {
                         : '#F2F2F2',
                 }}
             >
-                {this.renderButton()}
+                {this.renderButtons()}
             </View>
         )
     }

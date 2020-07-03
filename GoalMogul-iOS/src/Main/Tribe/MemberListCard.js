@@ -20,6 +20,7 @@ import { switchCase } from '../../redux/middleware/utils'
 
 // Actions
 import { openProfile } from '../../actions'
+import { DEFAULT_STYLE, GM_BLUE } from '../../styles'
 
 // Constants
 const DEBUG_KEY = '[ UI MemberListCard ]'
@@ -146,9 +147,7 @@ class MemberListCard extends Component {
         const { _id } = item
         return (
             <ProfileImage
-                imageStyle={styles.imageStyle}
                 imageUrl={item && item.profile ? item.profile.image : undefined}
-                imageContainerStyle={styles.imageContainerStyle}
                 userId={_id}
             />
         )
@@ -157,58 +156,24 @@ class MemberListCard extends Component {
     renderInfo(item) {
         const { name } = item
         return (
-            <View style={styles.infoContainerStyle}>
-                <View
-                    style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        marginRight: 6,
-                        alignItems: 'center',
-                    }}
-                >
-                    <Name text={name} />
-                </View>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    marginRight: 6,
+                    alignItems: 'center',
+                }}
+            >
+                <Name text={name} />
             </View>
         )
-    }
-
-    // TODO: decide the final UI for additional info
-    renderAdditionalInfo() {
-        return null
-        // const { profile } = this.props.item;
-        // let content = '';
-        // if (profile.elevatorPitch) {
-        //   content = profile.elevatorPitch;
-        // } else if (profile.about) {
-        //   content = profile.about;
-        // }
-        // return (
-        //   <View style={{ flex: 1 }}>
-        //     <Text
-        //       style={styles.titleTextStyle}
-        //       numberOfLines={1}
-        //       ellipsizeMode='tail'
-        //     >
-        //       <Text style={styles.detailTextStyle}>
-        //         {content}
-        //       </Text>
-        //     </Text>
-        //   </View>
-        // );
     }
 
     renderOccupation(item) {
         const { profile } = item
         if (profile && profile.occupation) {
             return (
-                <Text
-                    style={styles.titleTextStyle}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                >
-                    <Text style={styles.detailTextStyle}>
-                        {profile.occupation}
-                    </Text>
+                <Text style={DEFAULT_STYLE.normalText_2}>
+                    {profile.occupation}
                 </Text>
             )
         }
@@ -217,8 +182,8 @@ class MemberListCard extends Component {
 
     // If user is admin, then he can click to remove / promote a user
     renderSettingIcon() {
-        const { isAdmin, onRemoveUser, onPromoteUser } = this.props
-        if (isAdmin) {
+        const { isAdmin, isSelf } = this.props
+        if (isAdmin && !isSelf) {
             return (
                 <TouchableOpacity
                     activeOpacity={0.6}
@@ -243,14 +208,12 @@ class MemberListCard extends Component {
         return (
             <View style={styles.containerStyle}>
                 {this.renderProfileImage(item)}
-
                 <TouchableOpacity
                     style={styles.bodyContainerStyle}
                     activeOpacity={0.6}
                     onPress={() => this.props.openProfile(_id)}
                 >
                     {this.renderInfo(item)}
-                    {this.renderOccupation(item)}
                     <Text
                         style={styles.jobTitleTextStyle}
                         numberOfLines={1}
@@ -258,7 +221,6 @@ class MemberListCard extends Component {
                     >
                         {headline}
                     </Text>
-                    {this.renderAdditionalInfo(item)}
                 </TouchableOpacity>
                 {this.renderSettingIcon()}
             </View>
@@ -269,55 +231,29 @@ class MemberListCard extends Component {
 const styles = {
     containerStyle: {
         flexDirection: 'row',
-        marginTop: 5,
         paddingLeft: 10,
         paddingRight: 10,
         paddingTop: 8,
         paddingBottom: 8,
         alignItems: 'center',
         backgroundColor: '#ffffff',
+        borderBottomWidth: 1,
+        borderBottomColor: '#F2F2F2',
     },
     bodyContainerStyle: {
-        marginLeft: 8,
         flex: 1,
+        marginLeft: 8,
     },
     infoContainerStyle: {
         flexDirection: 'row',
-        flex: 1,
-    },
-    imageStyle: {
-        height: 48,
-        width: 48,
-        borderRadius: 5,
-    },
-    imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 0.5,
-        borderColor: 'lightgray',
-        alignItems: 'center',
-        borderRadius: 6,
-        alignSelf: 'flex-start',
-        backgroundColor: 'white',
     },
     buttonContainerStyle: {
         marginLeft: 8,
         flexDirection: 'row',
-        justifyContent: 'flex-end',
-    },
-    titleTextStyle: {
-        color: '#17B3EC',
-        fontSize: 11,
-        paddingTop: 1,
-        paddingBottom: 1,
-    },
-    detailTextStyle: {
-        color: '#000000',
-        paddingLeft: 3,
     },
     jobTitleTextStyle: {
-        color: '#17B3EC',
-        fontSize: 11,
-        fontWeight: '800',
+        ...DEFAULT_STYLE.smallTitle_1,
+        color: GM_BLUE,
         paddingTop: 5,
         paddingBottom: 3,
     },

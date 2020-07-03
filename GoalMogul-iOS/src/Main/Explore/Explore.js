@@ -27,7 +27,7 @@ import people_globe from '../../asset/explore/PeopleGlobe.png'
 import IconChat from '../../asset/footer/navigation/chat.png'
 
 // Styles
-import { APP_DEEP_BLUE, DEFAULT_STYLE, GM_BLUE } from '../../styles'
+import { DEFAULT_STYLE, GM_BLUE } from '../../styles'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 const { width } = Dimensions.get('window')
@@ -181,7 +181,7 @@ class Explore extends Component {
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <View style={styles.homeContainerStyle}>
-                    <SearchBarHeader rightIcon="menu" />
+                    <SearchBarHeader backButton />
                     <TabView
                         navigationState={this.props.navigationState}
                         renderScene={this._renderScene}

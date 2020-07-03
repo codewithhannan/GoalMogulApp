@@ -17,6 +17,21 @@ import {
 
 const DEBUG_KEY = '[ChatRoomOptionsActions]'
 
+/**
+ * User chooses to mute this chatRoom for duratoin
+ * @param {*} duration duration of chatRoom being mute
+ * @param {*} chatRoom chatRoom object
+ */
+export const muteChatRoom = (duration, chatRoom) => (dispatch, getState) => {
+    // TODO: jia
+    console.log('mute chatroom' + chatRoom + ' for ' + duration)
+}
+
+/**
+ * Toggle chatroom mute status
+ * @param {*} chatRoomId
+ * @param {*} isMutedTargetState
+ */
 export const changeChatRoomMute = (chatRoomId, isMutedTargetState) => (
     dispatch,
     getState

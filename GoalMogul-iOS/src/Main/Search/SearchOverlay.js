@@ -226,10 +226,9 @@ class SearchOverlay extends Component {
                             onChangeText={this.handleChangeText}
                             clearIcon={null}
                             showLoading={this.props.loading}
-                            placeholderTextColor={APP_BLUE}
+                            placeholderTextColor={GM_BLUE}
                             cancelButtonProps={{
                                 buttonTextStyle: {
-                                    // color: APP_DEEP_BLUE
                                     color: '#21364C',
                                 },
                             }}
@@ -240,7 +239,7 @@ class SearchOverlay extends Component {
                                         marginTop: 1,
                                     }}
                                     iconStyle={{
-                                        tintColor: APP_BLUE,
+                                        tintColor: GM_BLUE,
                                         height: 15,
                                         width: 15,
                                     }}

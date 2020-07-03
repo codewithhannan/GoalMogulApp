@@ -9,7 +9,9 @@
         "moduleResolution": "node",
         "noEmit": true,
         "strict": true,
-        "target": "esnext"
+        "target": "esnext",
+        "rootDir": "src",
+        "outDir": "build"
     },
     "exclude": [
         "node_modules",

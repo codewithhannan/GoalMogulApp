@@ -571,7 +571,7 @@ const switchCaseRoute = (type) =>
 
 /** Multi-select user invite */
 export const openMultiUserInviteModal = (props) => (dispatch) => {
-    Actions.push('multiSearchPeopleLightBox', { ...props })
+    Actions.push('multiSearchPeopleLightBox', props)
 }
 
 /**

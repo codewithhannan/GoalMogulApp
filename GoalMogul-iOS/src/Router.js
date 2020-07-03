@@ -22,6 +22,7 @@ import ChatRoomConversation from './Main/Chat/ChatRoom/ChatRoomConversation'
 import ChatRoomMembers from './Main/Chat/ChatRoom/ChatRoomMembers'
 import ChatRoomMessageSearch from './Main/Chat/ChatRoom/ChatRoomMessageSearch'
 import ChatRoomOptions from './Main/Chat/ChatRoom/ChatRoomOptions'
+import GroupChatInfo from './Main/Chat/ChatRoom/GroupChatInfo'
 import ChatRoomPubicView from './Main/Chat/ChatRoom/ChatRoomPublicView'
 import ChatMessageSnapshotModal from './Main/Chat/Modals/ChatMessageSnapshotModal'
 import CreateChatRoomModal from './Main/Chat/Modals/CreateChatRoomModal'
@@ -55,6 +56,8 @@ import MyEventTab from './Main/Menu/Event/MyEventTab'
 import Menu from './Main/Menu/Menu'
 import MyTribe from './Main/Menu/Tribe/MyTribe'
 import MyTribeTab from './Main/Menu/Tribe/MyTribeTab'
+import MyTribeDescription from './Main/Menu/Tribe/MyTribeDescription'
+import MyTribeMembers from './Main/Menu/Tribe/MyTribeMembers'
 import NotificationNeedListView from './Main/Notification/Need/NotificationNeedListView'
 import NotificationListView from './Main/Notification/Notification/NotificationListView'
 // Notification
@@ -105,7 +108,9 @@ import { OnboardingFbPlugin } from './Main/Onboarding'
 /* Auth */
 import SplashScreen from './SplashScreen'
 import Tutorial from './Tutorial/Tutorial'
-import UserInviteModal from './Main/Common/Modal/UserInviteModal'
+import MultiUserInvitePage from './Main/Common/MultiUserInvitePage'
+import { GM_BLUE } from './styles'
+import TribeHub from './Main/Explore/TribeHub'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -383,7 +388,7 @@ class RouterComponent extends Component {
                                         hideNavBar
                                         swipeEnabled={false}
                                         tabBarStyle={styles.tabBarStyle}
-                                        activeTintColor="#0397CB"
+                                        activeTintColor={GM_BLUE}
                                         inactiveTintColor="#DCE4E6"
                                         tabs
                                         showLabel={false}
@@ -425,6 +430,63 @@ class RouterComponent extends Component {
                                                 component={Home}
                                             />
                                             {getCommonScenes('home')}
+                                        </Stack>
+
+                                        <Stack
+                                            key="exploreTab"
+                                            icon={TabIcon}
+                                            hideNavBar
+                                            transitionConfig={() => ({
+                                                screenInterpolator: (props) => {
+                                                    const { scene } = props
+                                                    switch (
+                                                        scene.route.routeName
+                                                    ) {
+                                                        /* case yourKeyScene:
+                                                        return theAnimationYouWant(props)*/
+                                                        case 'explore':
+                                                            return this.rootTransitionConfig().screenInterpolator(
+                                                                props
+                                                            )
+                                                        case 'exploreTab_searchLightBox':
+                                                            return this.rootTransitionConfig().screenInterpolator(
+                                                                props
+                                                            )
+                                                        default:
+                                                            return this.rootTransitionConfig().screenInterpolator(
+                                                                props
+                                                            )
+                                                    }
+                                                },
+                                            })}
+                                        >
+                                            <Scene
+                                                key="tribeHub"
+                                                component={TribeHub}
+                                                initial
+                                            />
+                                            <Scene
+                                                key="explore"
+                                                component={Explore}
+                                            />
+                                            <Scene
+                                                key="eventDetail"
+                                                component={Event}
+                                            />
+                                            <Scene
+                                                key="postExploreTab"
+                                                component={PostDetailCard}
+                                            />
+                                            <Scene
+                                                key="goalExploreTab"
+                                                component={GoalDetailCard}
+                                            />
+                                            <Scene
+                                                key="shareExploreTab"
+                                                component={ShareDetailCard}
+                                            />
+
+                                            {getCommonScenes('exploreTab')}
                                         </Stack>
 
                                         <Stack
@@ -516,59 +578,6 @@ class RouterComponent extends Component {
                                         </Stack>
 
                                         <Stack
-                                            key="exploreTab"
-                                            icon={TabIcon}
-                                            hideNavBar
-                                            transitionConfig={() => ({
-                                                screenInterpolator: (props) => {
-                                                    const { scene } = props
-                                                    switch (
-                                                        scene.route.routeName
-                                                    ) {
-                                                        /* case yourKeyScene:
-                                                        return theAnimationYouWant(props)*/
-                                                        case 'explore':
-                                                            return this.rootTransitionConfig().screenInterpolator(
-                                                                props
-                                                            )
-                                                        case 'exploreTab_searchLightBox':
-                                                            return this.rootTransitionConfig().screenInterpolator(
-                                                                props
-                                                            )
-                                                        default:
-                                                            return this.rootTransitionConfig().screenInterpolator(
-                                                                props
-                                                            )
-                                                    }
-                                                },
-                                            })}
-                                        >
-                                            <Scene
-                                                key="explore"
-                                                component={Explore}
-                                                initial
-                                            />
-                                            <Scene
-                                                key="eventDetail"
-                                                component={Event}
-                                            />
-                                            <Scene
-                                                key="postExploreTab"
-                                                component={PostDetailCard}
-                                            />
-                                            <Scene
-                                                key="goalExploreTab"
-                                                component={GoalDetailCard}
-                                            />
-                                            <Scene
-                                                key="shareExploreTab"
-                                                component={ShareDetailCard}
-                                            />
-
-                                            {getCommonScenes('exploreTab')}
-                                        </Stack>
-
-                                        <Stack
                                             key="chatTab"
                                             icon={TabIcon}
                                             hideNavBar
@@ -608,6 +617,10 @@ class RouterComponent extends Component {
                                             <Scene
                                                 key="chatRoomOptions"
                                                 component={ChatRoomOptions}
+                                            />
+                                            <Scene
+                                                key="groupChatInfo"
+                                                component={GroupChatInfo}
                                             />
                                             <Scene
                                                 key="chatRoomMembers"
@@ -663,16 +676,6 @@ class RouterComponent extends Component {
                         component={TrendingGoalView}
                         hideNavBar
                     />
-                    {/* <Scene
-                        key="trendingGoalView"
-                        component={Like}
-                        hideNavBar
-                    />
-                    <Scene
-                        key="trendingGoalView"
-                        component={TrendingGoalView}
-                        hideNavBar
-                    /> */}
                     <Scene
                         key="createPostModal"
                         component={CreatePostModal}
@@ -736,10 +739,14 @@ class RouterComponent extends Component {
                     />
                     <Scene
                         key="multiSearchPeopleLightBox"
-                        component={UserInviteModal}
+                        component={MultiUserInvitePage}
                         hideNavBar
                     />
-
+                    <Scene
+                        key="myTribeDescriptionLightBox"
+                        component={MyTribeDescription}
+                    />
+                    <Scene key="myTribeMembers" component={MyTribeMembers} />
                     <Scene key="mutualFriends" component={MutualFriends} />
                     <Scene
                         key="meetContactSync"

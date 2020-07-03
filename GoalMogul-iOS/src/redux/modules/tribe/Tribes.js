@@ -13,6 +13,10 @@ import {
     SENTRY_MESSAGE_LEVEL,
     SENTRY_CONTEXT,
 } from '../../../monitoring/sentry/Constants'
+import {
+    TRIBE_HUB_LOAD_DONE,
+    TRIBE_HUB_REFRESH_DONE,
+} from './MyTribeTabReducers'
 /**
  * List of actions to add
  *
@@ -56,21 +60,14 @@ export const TRIBE_NATIVATION_ROUTES = {
     ],
 }
 
+export const ALL_MEMBERS_FILTER_INDEX = 0
+export const JOIN_REQUESTS_FILTER_INDEX = 1
+export const PENDING_INVITES_FILTER_INDEX = 2
 export const TRIBE_USER_ROUTES = {
     default: [
-        { key: 'Admin', title: 'Admin' },
-        { key: 'Member', title: 'Member' },
-        { key: 'JoinRequester', title: 'Requested' },
-        { key: 'Invitee', title: 'Invited' },
-    ],
-    memberDefaultRoutes: [
-        { key: 'Admin', title: 'Admin' },
-        { key: 'Member', title: 'Member' },
-    ],
-    memberCanInviteRoutes: [
-        { key: 'Admin', title: 'Admin' },
-        { key: 'Member', title: 'Member' },
-        { key: 'Invitee', title: 'Invited' },
+        { membersFilters: ['Admin', 'Member'], title: 'All Members' },
+        { membersFilters: ['JoinRequester'], title: 'Join Requests' },
+        { membersFilters: ['Invitee'], title: 'Pending Invite' },
     ],
 }
 
@@ -109,6 +106,11 @@ export const MYTRIBE_PROMOTE_MEMBER_SUCCESS = 'mytribe_promote_member_success'
 export const MYTRIBE_ACCEPT_MEMBER_SUCCESS = 'mytribe_accept_member_success'
 // user accept invitation
 export const MYTRIBE_MEMBER_ACCEPT_SUCCESS = 'mytribe_member_accept_success'
+// Tribe goal related constants
+export const MYTRIBE_GOAL_LOAD = 'mytribe_goal_load'
+export const MYTRIBE_GOAL_LOAD_DONE = 'mytribe_goal_load_done'
+export const MYTRIBE_GOAL_REFRESH = 'mytribe_goal_refresh'
+export const MYTRIBE_GOAL_REFRESH_DONE = 'mytribe_goal_refresh_done'
 
 export const MEMBER_UPDATE_TYPE = {
     promoteAdmin: 'promoteAdmin',
@@ -132,9 +134,18 @@ export const INITIAL_TRIBE_PAGE = {
     feedRefreshing: false,
     allFeedRefs: [], // list of all post refs that this tribe has ever load. This is for cleanup purpose.
     tribeLoading: false,
+    goals: {
+        skip: 0,
+        limit: 8,
+        hasNextPage: undefined,
+        refs: [], // current user's goal references
+        allRefs: [], // all loaded user's goal references
+        refreshing: false,
+        loading: false,
+    },
     hasNextPage: undefined,
     updating: false,
-    membersFilter: 'Admin',
+    membersFilters: ['Admin', 'Member'],
     skip: 0,
     limit: 10,
     memberNavigationState: {
@@ -596,7 +607,7 @@ export default (state = INITIAL_STATE, action) => {
             if (option) {
                 tribePageToUpdate = _.set(
                     tribePageToUpdate,
-                    'membersFilter',
+                    'membersFilters',
                     option
                 )
             }
@@ -820,6 +831,155 @@ export default (state = INITIAL_STATE, action) => {
             tribeToUpdate = _.set(tribeToUpdate, 'tribe', updatedTribe)
 
             newState = _.set(newState, tribeId, tribeToUpdate)
+            return newState
+        }
+
+        case MYTRIBE_GOAL_REFRESH: {
+            const { tribeId, pageId } = action.payload
+            let newState = _.cloneDeep(state)
+            if (!_.has(newState, `${tribeId}.${pageId}.goals`)) {
+                return newState
+            }
+            newState = _.set(
+                newState,
+                `${tribeId}.${pageId}.goals.refreshing`,
+                true
+            )
+            return newState
+        }
+
+        case MYTRIBE_GOAL_LOAD: {
+            const { tribeId, pageId } = action.payload
+            let newState = _.cloneDeep(state)
+            if (!_.has(newState, `${tribeId}.${pageId}.goals`)) {
+                return newState
+            }
+            newState = _.set(
+                newState,
+                `${tribeId}.${pageId}.goals.loading`,
+                true
+            )
+            return newState
+        }
+
+        case MYTRIBE_GOAL_LOAD_DONE: {
+            const { tribeId, pageId, data, skip, hasNextPage } = action.payload
+            let newState = _.cloneDeep(state)
+            if (!_.has(newState, `${tribeId}.${pageId}.goals`)) {
+                return newState
+            }
+
+            let tribePageToUpdate = _.get(newState, `${tribeId}.${pageId}`)
+
+            // Update metadata
+            tribePageToUpdate = _.set(
+                tribePageToUpdate,
+                'goals.hasNextPage',
+                hasNextPage
+            )
+            tribePageToUpdate = _.set(tribePageToUpdate, 'goals.skip', skip)
+            tribePageToUpdate = _.set(tribePageToUpdate, 'goals.loading', false)
+
+            // Merge new goal references
+            const goalRefs = data ? data.map((d) => d._id) : []
+            const currGoalRefs = _.get(tribePageToUpdate, 'goals.refs')
+            const curAllGoalRefs = _.get(tribePageToUpdate, 'goals.allRefs')
+            tribePageToUpdate = _.set(
+                tribePageToUpdate,
+                'goals.refs',
+                _.uniq(currGoalRefs.concat(goalRefs))
+            )
+
+            // Update all goal refs for cleanup
+            tribePageToUpdate = _.set(
+                tribePageToUpdate,
+                'goals.allRefs',
+                _.union(curAllGoalRefs, goalRefs)
+            )
+
+            // Update tribe page in new state
+            newState = _.set(
+                newState,
+                `${tribeId}.${pageId}`,
+                tribePageToUpdate
+            )
+            return newState
+        }
+
+        case MYTRIBE_GOAL_REFRESH_DONE: {
+            const { tribeId, pageId, data, skip, hasNextPage } = action.payload
+            let newState = _.cloneDeep(state)
+            if (!_.has(newState, `${tribeId}.${pageId}.goals`)) {
+                return newState
+            }
+
+            let tribePageToUpdate = _.get(newState, `${tribeId}.${pageId}`)
+
+            // Update metadata
+            tribePageToUpdate = _.set(
+                tribePageToUpdate,
+                'goals.hasNextPage',
+                hasNextPage
+            )
+            tribePageToUpdate = _.set(tribePageToUpdate, 'goals.skip', skip)
+            tribePageToUpdate = _.set(
+                tribePageToUpdate,
+                'goals.refreshing',
+                false
+            )
+
+            // Merge new goal references
+            const goalRefs = data ? data.map((d) => d._id) : []
+            const curAllGoalRefs = _.get(tribePageToUpdate, 'goals.allRefs')
+            tribePageToUpdate = _.set(
+                tribePageToUpdate,
+                'goals.refs',
+                _.uniq(goalRefs)
+            )
+
+            // Update all goal refs for cleanup
+            tribePageToUpdate = _.set(
+                tribePageToUpdate,
+                'goals.allRefs',
+                _.union(curAllGoalRefs, goalRefs)
+            )
+
+            // Update tribe page in new state
+            newState = _.set(
+                newState,
+                `${tribeId}.${pageId}`,
+                tribePageToUpdate
+            )
+            return newState
+        }
+
+        // Tribe group load tribes
+        case TRIBE_HUB_LOAD_DONE:
+        case TRIBE_HUB_REFRESH_DONE: {
+            const { data, pageId } = action.payload
+            let newState = _.cloneDeep(state)
+            if (!data || _.isEmpty(data)) return newState
+
+            data.forEach((tribe) => {
+                const tribeId = tribe._id
+
+                let tribeToUpdate = { ...INITIAL_TRIBE_OBJECT }
+                // Update goal
+                if (_.has(newState, tribeId)) {
+                    tribeToUpdate = _.get(newState, tribeId)
+                }
+
+                if (tribe !== undefined) {
+                    tribeToUpdate = _.set(tribeToUpdate, 'tribe', tribe)
+                }
+
+                // Put pageId onto reference if not previously existed
+                const oldReference = _.get(newState, `${tribeId}.reference`)
+                const newReference = _.uniq(oldReference.concat(pageId))
+                tribeToUpdate = _.set(tribeToUpdate, 'reference', newReference)
+                newState = _.set(newState, tribeId, tribeToUpdate)
+            })
+
             return newState
         }
 

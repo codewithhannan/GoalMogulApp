@@ -1,52 +1,63 @@
 {
-  "expo": {
-    "name": "GoalMogul",
-    "icon": "./assets/logo.png",
-    "sdkVersion": "37.0.0",
-    "version": "0.7.7",
-    "slug": "goalmogul",
-    "orientation": "portrait",
-    "ios": {
-      "bundleIdentifier": "com.goalmogul.goalmogulbeta",
-      "infoPlist": {
-        "NSLocationAlwaysUsageDescription" : "This app may use GPS data to help provide localized content recommendations",
-        "NSCameraUsageDescription": "This app uses the camera to allow members to share images with other members",
-        "NSPhotoLibraryUsageDescription": "This app uses the gallery to allow members to share photos with other members",
-        "NSPhotoLibraryAddUsageDescription": "This app allows members to save shared photos into their own gallery",
-        "NSContactsUsageDescription": "This app uses the user's contacts to help the user find friends who have already signed up on the platform",
-        "NSAppTransportSecurity" : {
-          "NSAllowsArbitraryLoads" : true,
-          "NSAllowsArbitraryLoadsForMedia": true,
-          "NSAllowsArbitraryLoadsInWebContent": true,
-          "NSExceptionAllowsInsecureHTTPLoads": true
+    "expo": {
+        "name": "GoalMogul",
+        "icon": "./assets/logo.png",
+        "sdkVersion": "37.0.0",
+        "version": "0.7.7",
+        "slug": "goalmogul",
+        "orientation": "portrait",
+        "ios": {
+            "bundleIdentifier": "com.goalmogul.goalmogulbeta",
+            "infoPlist": {
+                "NSLocationAlwaysUsageDescription": "This app may use GPS data to help provide localized content recommendations",
+                "NSCameraUsageDescription": "This app uses the camera to allow members to share images with other members",
+                "NSPhotoLibraryUsageDescription": "This app uses the gallery to allow members to share photos with other members",
+                "NSPhotoLibraryAddUsageDescription": "This app allows members to save shared photos into their own gallery",
+                "NSContactsUsageDescription": "This app uses the user's contacts to help the user find friends who have already signed up on the platform",
+                "NSAppTransportSecurity": {
+                    "NSAllowsArbitraryLoads": true,
+                    "NSAllowsArbitraryLoadsForMedia": true,
+                    "NSAllowsArbitraryLoadsInWebContent": true,
+                    "NSExceptionAllowsInsecureHTTPLoads": true
+                },
+                "NSFaceIDUsageDescription": "This app uses FaceId to unlock access to the App.",
+                "CFBundleExecutable": "ExpoKitApp",
+                "LSApplicationQueriesSchemes": [
+                    "fb-messenger-share-api",
+                    "fbshareextension",
+                    "fbauth2",
+                    "fbapi",
+                    "wechat",
+                    "weixin",
+                    "twitter",
+                    "whatsapp",
+                    "instagram"
+                ]
+            },
+            "associatedDomains": [
+                "applinks:web.goalmogul.com",
+                "webcredentials:web.goalmogul.com"
+            ]
         },
-        "NSFaceIDUsageDescription": "This app uses FaceId to unlock access to the App.",
-        "CFBundleExecutable": "ExpoKitApp",
-        "LSApplicationQueriesSchemes": [
-          "fb-messenger-share-api", "fbshareextension", "fbauth2", "fbapi", "wechat", "weixin", "twitter", "whatsapp", "instagram"
-        ]
-      },
-      "associatedDomains": ["applinks:web.goalmogul.com","webcredentials:web.goalmogul.com"]
-    },
-    "splash": {
-      "image": "./assets/splash1.png",
-      "resizeMode": "cover"
-    },
-    "scheme": "goalmogul",
-    "notification": {
-      "icon": "./assets/logo.png"
-    },
-    "hooks": {
-      "postPublish": [
-        {
-          "file": "sentry-expo/upload-sourcemaps",
-          "config": {
-            "organization": "goalmogul-inc",
-            "project": "react-native",
-            "authToken": "024df661dcbe47f2ab23672121179ad6ad707f1b3ccc43aa8ce9683015061c33"
-          }
+        "splash": {
+            "image": "./assets/splash1.png",
+            "resizeMode": "cover"
+        },
+        "scheme": "goalmogul",
+        "notification": {
+            "icon": "./assets/logo.png"
+        },
+        "hooks": {
+            "postPublish": [
+                {
+                    "file": "sentry-expo/upload-sourcemaps",
+                    "config": {
+                        "organization": "goalmogul-inc",
+                        "project": "react-native",
+                        "authToken": "024df661dcbe47f2ab23672121179ad6ad707f1b3ccc43aa8ce9683015061c33"
+                    }
+                }
+            ]
         }
-      ]
     }
-  }
 }

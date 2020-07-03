@@ -61,7 +61,7 @@ import { getGoalDetailByTab } from '../../../redux/modules/goal/selector'
 // Utils
 import { arrayUnique, clearTags } from '../../../redux/middleware/utils'
 import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from '../../../styles'
-import { PRIVACY_OPTIONS, DAY_IN_MS } from '../../../Utils/Constants'
+import { PRIVACY_OPTIONS, DAY_IN_MS, PRIVACY_FRIENDS } from '../../../Utils/Constants'
 
 const { Popover } = renderers
 const { width } = Dimensions.get('window')
@@ -323,7 +323,7 @@ class NewGoalView extends Component {
             needs: [...values],
             shareToMastermind: true,
             category: 'General',
-            privacy: 'Friends',
+            privacy: PRIVACY_FRIENDS,
             priority: 1,
             hasTimeline: false,
             startTime: { date: undefined, picker: false },
