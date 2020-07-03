@@ -1,7 +1,7 @@
 /** @format */
 
 import React from 'react'
-import { View, Image, Text, Platform, Alert } from 'react-native'
+import { View, Image, Text, Platform, Alert, Linking } from 'react-native'
 import { connect } from 'react-redux'
 import * as WebBrowser from 'expo-web-browser'
 import { Actions } from 'react-native-router-flux'
@@ -167,7 +167,11 @@ class Menu extends React.PureComponent {
                     <View style={[{ padding: 20 }]}>
                         <DelayedButton
                             activeOpacity={0.6}
-                            onPress={() => this.handleHelpOnPress()}
+                            onPress={() =>
+                                Linking.openURL(
+                                    'mailto:support@goalmogul.com?subject=SendMail&body=Description'
+                                )
+                            }
                             style={styles.buttonStyle}
                         >
                             <Text style={styles.bottomText}>Help</Text>
