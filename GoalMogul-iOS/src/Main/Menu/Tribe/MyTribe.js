@@ -454,7 +454,7 @@ class MyTribe extends React.PureComponent {
                     !feedRefreshing && (
                         <EmptyResult
                             text={'No Posts'}
-                            textStyle={{ paddingTop: 80 }}
+                            textStyle={{ paddingTop: 80, paddingBottom: 80 }}
                         />
                     )
                 ) : (
@@ -535,15 +535,12 @@ class MyTribe extends React.PureComponent {
                         {this.renderUserStatusButton()}
                     </View>
                 </View>
-                {isMemberOrAdmin && <MyTribeBanner />}
+                {isMemberOrAdmin && (
+                    <MyTribeBanner tribeId={tribeId} pageId={pageId} />
+                )}
                 {bodyCard}
             </View>
         )
-    }
-
-    handleOnEndReached = (tribeId) => {
-        if (!tribeId) return
-        this.props.loadMoreTribeFeed(tribeId, this.props.pageId)
     }
 
     renderItem = (props) => {
@@ -615,14 +612,19 @@ class MyTribe extends React.PureComponent {
                     keyExtractor={(i) => i._id}
                     ListHeaderComponent={this.renderTribeOverview()}
                     renderItem={this.renderItem}
-                    refreshing={this.props.loading}
+                    refreshing={this.props.feedRefreshing}
                     onRefresh={() =>
                         this.props.refreshMyTribeDetail(
                             item._id,
                             this.props.pageId
                         )
                     }
-                    onEndReached={() => this.handleOnEndReached(item._id)}
+                    onEndReached={() =>
+                        this.props.loadMoreTribeFeed(
+                            item._id,
+                            this.props.pageId
+                        )
+                    }
                     onEndReachedThreshold={2}
                     onScroll={({
                         nativeEvent: {

@@ -111,6 +111,7 @@ import Tutorial from './Tutorial/Tutorial'
 import MultiUserInvitePage from './Main/Common/MultiUserInvitePage'
 import { GM_BLUE } from './styles'
 import TribeHub from './Main/Explore/TribeHub'
+import MyTribeGoalShare from './Main/Menu/Tribe/MyTribeGoalShare'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -740,6 +741,11 @@ class RouterComponent extends Component {
                     <Scene
                         key="multiSearchPeopleLightBox"
                         component={MultiUserInvitePage}
+                        hideNavBar
+                    />
+                    <Scene
+                        key="myTribeGoalShareView"
+                        component={MyTribeGoalShare}
                         hideNavBar
                     />
                     <Scene

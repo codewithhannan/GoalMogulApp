@@ -18,6 +18,7 @@ import { IPHONE_MODELS, DEVICE_MODEL } from '../../../Utils/Constants'
 
 import BackButton from '../../../asset/utils/back.png'
 import DelayedButton from '../Button/DelayedButton'
+import { Actions } from 'react-native-router-flux'
 
 const WalkableView = walkthroughable(View)
 
@@ -124,7 +125,10 @@ const ModalHeader = (props) => {
                     { paddingTop, ...extraContainerStyles },
                 ]}
             >
-                <TouchableOpacity activeOpacity={0.6} onPress={onCancel}>
+                <TouchableOpacity
+                    activeOpacity={0.6}
+                    onPress={onCancel || Actions.pop}
+                >
                     {leftComponent}
                 </TouchableOpacity>
 

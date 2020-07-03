@@ -30,6 +30,8 @@ import {
     MYTRIBE_DELETE_SUCCESS,
     MYTRIBE_GOAL_LOAD_DONE,
     MYTRIBE_GOAL_REFRESH_DONE,
+    MYTRIBE_GOAL_REFRESH,
+    MYTRIBE_GOAL_LOAD,
 } from './Tribes'
 import { api as API } from '../../middleware/api'
 import {
@@ -694,7 +696,6 @@ export const loadMoreTribeFeed = (tribeId, pageId) => (dispatch, getState) => {
                 // Don't update as page already closed before data loaded
                 return
             }
-
             dispatch({
                 type: MYTRIBE_FEED_FETCH_DONE,
                 payload: {
@@ -1210,7 +1211,7 @@ export const tribeRefreshUserGoals = (tribeId, pageId) => (
 
     const onSuccess = (data) => {
         dispatch({
-            action: MYTRIBE_GOAL_REFRESH_DONE,
+            type: MYTRIBE_GOAL_REFRESH_DONE,
             payload: {
                 data,
                 skip: skip + data.length,
@@ -1223,11 +1224,12 @@ export const tribeRefreshUserGoals = (tribeId, pageId) => (
 
     const onError = (err) => {
         // TODO: tribe: error handling
+        console.log(err)
         new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
             .withTag()
             .send()
         dispatch({
-            action: MYTRIBE_GOAL_REFRESH_DONE,
+            type: MYTRIBE_GOAL_REFRESH_DONE,
             payload: {
                 data: [],
                 skip: 0,
@@ -1238,7 +1240,15 @@ export const tribeRefreshUserGoals = (tribeId, pageId) => (
         })
     }
 
-    return loadUserGoals(skip, limit, {}, token, onSuccess, onError)
+    dispatch({
+        type: MYTRIBE_GOAL_REFRESH,
+        payload: {
+            tribeId,
+            pageId,
+        },
+    })
+
+    return loadUserGoals(skip, limit, { userId }, token, onSuccess, onError)
 }
 
 /**
@@ -1265,7 +1275,7 @@ export const tribeLoadMoreUserGoals = (tribeId, pageId) => (
 
     const onSuccess = (data) => {
         dispatch({
-            action: MYTRIBE_GOAL_LOAD_DONE,
+            type: MYTRIBE_GOAL_LOAD_DONE,
             payload: {
                 data,
                 skip: skip + data.length,
@@ -1282,7 +1292,7 @@ export const tribeLoadMoreUserGoals = (tribeId, pageId) => (
             .withTag()
             .send()
         dispatch({
-            action: MYTRIBE_GOAL_LOAD_DONE,
+            type: MYTRIBE_GOAL_LOAD_DONE,
             payload: {
                 data: [],
                 skip,
@@ -1293,5 +1303,13 @@ export const tribeLoadMoreUserGoals = (tribeId, pageId) => (
         })
     }
 
-    return loadUserGoals(skip, limit, {}, token, onSuccess, onError)
+    dispatch({
+        type: MYTRIBE_GOAL_LOAD,
+        payload: {
+            tribeId,
+            pageId,
+        },
+    })
+
+    return loadUserGoals(skip, limit, { userId }, token, onSuccess, onError)
 }
