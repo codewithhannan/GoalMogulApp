@@ -70,7 +70,7 @@ const isValidItem = (item) =>
  * /goal/goalId/smsplanner
  * /post/postId
  * /post/postId/comment/commentId
- * /post/postId/postType/["General", "..."] (If not General, then it's share)
+ * /post/postId/postType/{Enum:["General", "..."]} (If not General, then it's share)
  * /user/userId
  * /event/eventId
  * /tribe/tribeId

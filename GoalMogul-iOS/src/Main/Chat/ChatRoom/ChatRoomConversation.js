@@ -328,7 +328,7 @@ class ChatRoomConversation extends React.Component {
     }
 
     openOptions() {
-        Actions.push('groupChatInfo')
+        Actions.push('chatRoomOptions')
     }
     closeConversation() {
         Actions.pop()
