@@ -168,6 +168,8 @@ export const refreshChatRooms = (tab, pageSize, maybeSearchQuery) => (
     dispatch,
     getState
 ) => {
+    const { refreshing } = _.get(getState().chat, tab)
+    if (refreshing) return // Don't refresh when there is a request on flight
     dispatch({
         type: CHAT_REFRESH,
         payload: {
@@ -301,6 +303,8 @@ export const loadMoreChatRooms = (
     prevResultsOffset,
     maybeSearchQuery
 ) => (dispatch, getState) => {
+    const { loading } = _.get(getState().chat, tab)
+    if (loading) return // Don't load more when there is a request on flight
     dispatch({
         type: CHAT_LOAD,
         payload: {

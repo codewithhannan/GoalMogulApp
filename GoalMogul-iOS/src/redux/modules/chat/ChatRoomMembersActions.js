@@ -14,6 +14,13 @@ import {
     trackWithProperties,
     EVENT as E,
 } from '../../../monitoring/segment'
+import { SentryRequestBuilder } from '../../../monitoring/sentry'
+import {
+    SENTRY_MESSAGE_TYPE,
+    SENTRY_MESSAGE_LEVEL,
+    SENTRY_CONTEXT,
+    SENTRY_TAGS,
+} from '../../../monitoring/sentry/Constants'
 
 const DEBUG_KEY = '[ UI ChatRoomMembersActions ]'
 
@@ -73,7 +80,14 @@ export const promoteChatMember = (memberId, chatRoomId) => (
                     'Error',
                     'Could not promote member. Please try again later.'
                 )
+                // TODO: error logging standardization
                 console.log(`${DEBUG_KEY} error promoting member`, res.message)
+                new SentryRequestBuilder(resp, SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.CHAT.ACTION, 'promoteChatMember')
+                    .withExtraContext(SENTRY_CONTEXT.CHAT.CHAT_ID, chatRoomId)
+                    .withExtraContext(SENTRY_CONTEXT.CHAT.PROMOTEE_ID, memberId)
+                    .send()
             } else {
                 trackWithProperties(E.CHATROOM_MEMBER_PROMOTED, {
                     MemberId: memberId,
@@ -88,7 +102,14 @@ export const promoteChatMember = (memberId, chatRoomId) => (
                 'Error',
                 'Could not promote member. Please try again later.'
             )
+            // TODO: error logging standardization
             console.log(`${DEBUG_KEY} error promoting member`, err)
+            new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
+                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                .withTag(SENTRY_TAGS.CHAT.ACTION, 'promoteChatMember')
+                .withExtraContext(SENTRY_CONTEXT.CHAT.CHAT_ID, chatRoomId)
+                .withExtraContext(SENTRY_CONTEXT.CHAT.PROMOTEE_ID, memberId)
+                .send()
         })
 }
 export const demoteChatMember = (memberId, chatRoomId) => (
@@ -107,7 +128,15 @@ export const demoteChatMember = (memberId, chatRoomId) => (
                     'Error',
                     'Could not demote member. Please try again later.'
                 )
+                // TODO: error logging standardization
                 console.log(`${DEBUG_KEY} error demoting member`, res.message)
+
+                new SentryRequestBuilder(resp, SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.CHAT.ACTION, 'demoteChatMember')
+                    .withExtraContext(SENTRY_CONTEXT.CHAT.CHAT_ID, chatRoomId)
+                    .withExtraContext(SENTRY_CONTEXT.CHAT.DEMOTEE_ID, memberId)
+                    .send()
             } else {
                 trackWithProperties(E.CHATROOM_MEMBER_DEMOTED, {
                     MemberId: memberId,
@@ -122,7 +151,14 @@ export const demoteChatMember = (memberId, chatRoomId) => (
                 'Error',
                 'Could not demote member. Please try again later.'
             )
+            // TODO: error logging standardization
             console.log(`${DEBUG_KEY} error demoting member`, err)
+            new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
+                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                .withTag(SENTRY_TAGS.CHAT.ACTION, 'demoteChatMember')
+                .withExtraContext(SENTRY_CONTEXT.CHAT.CHAT_ID, chatRoomId)
+                .withExtraContext(SENTRY_CONTEXT.CHAT.DEMOTEE_ID, memberId)
+                .send()
         })
 }
 export const acceptChatMemberJoinRequest = (memberId, chatRoomId) => (
@@ -148,6 +184,16 @@ export const acceptChatMemberJoinRequest = (memberId, chatRoomId) => (
                     `${DEBUG_KEY} error accepting member request`,
                     res.message
                 )
+
+                new SentryRequestBuilder(resp, SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(
+                        SENTRY_TAGS.CHAT.ACTION,
+                        'acceptChatMemberJoinRequest'
+                    )
+                    .withExtraContext(SENTRY_CONTEXT.CHAT.CHAT_ID, chatRoomId)
+                    .withExtraContext(SENTRY_CONTEXT.CHAT.MEMBER_ID, memberId)
+                    .send()
             } else {
                 trackWithProperties(E.CHATROOM_JOIN_REQUEST_ACCEPTED, {
                     MemberId: memberId,
@@ -163,6 +209,13 @@ export const acceptChatMemberJoinRequest = (memberId, chatRoomId) => (
                 'Could not accept request. Please try again later.'
             )
             console.log(`${DEBUG_KEY} error accepting member request`, err)
+
+            new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
+                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                .withTag(SENTRY_TAGS.CHAT.ACTION, 'acceptChatMemberJoinRequest')
+                .withExtraContext(SENTRY_CONTEXT.CHAT.CHAT_ID, chatRoomId)
+                .withExtraContext(SENTRY_CONTEXT.CHAT.MEMBER_ID, memberId)
+                .send()
         })
 }
 export const removeChatMember = (memberId, chatRoomId, maybeCallback) => (
@@ -187,6 +240,12 @@ export const removeChatMember = (memberId, chatRoomId, maybeCallback) => (
                         'Could not remove member. Please try again later.'
                     )
                 }
+                new SentryRequestBuilder(resp, SENTRY_MESSAGE_TYPE.MESSAGE)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.CHAT.ACTION, 'removeChatMember')
+                    .withExtraContext(SENTRY_CONTEXT.CHAT.CHAT_ID, chatRoomId)
+                    .withExtraContext(SENTRY_CONTEXT.CHAT.MEMBER_ID, memberId)
+                    .send()
             } else {
                 trackWithProperties(E.CHATROOM_MEMBER_REMOVED, {
                     MemberId: memberId,
@@ -204,5 +263,11 @@ export const removeChatMember = (memberId, chatRoomId, maybeCallback) => (
             )
             console.log(`${DEBUG_KEY} error removing member`, err)
             maybeCallback && maybeCallback(err)
+            new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
+                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                .withTag(SENTRY_TAGS.CHAT.ACTION, 'removeChatMember')
+                .withExtraContext(SENTRY_CONTEXT.CHAT.CHAT_ID, chatRoomId)
+                .withExtraContext(SENTRY_CONTEXT.CHAT.MEMBER_ID, memberId)
+                .send()
         })
 }

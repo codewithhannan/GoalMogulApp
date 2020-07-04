@@ -119,7 +119,6 @@ class CreateChatroomModal extends React.Component {
             { ...formVals.values, ChatId: chatId, DurationSec: durationSec }
         )
 
-        // console.log("formVals are: ", formVals.values);
         this.props.createOrUpdateChatroom(
             formVals.values,
             membersToAdd || '',
@@ -332,8 +331,8 @@ class CreateChatroomModal extends React.Component {
             ? 'Next'
             : 'Create'
         const titleText = this.props.initializeFromState
-            ? 'Edit Group Chat'
-            : 'Group Message'
+            ? 'Edit Group Conversation'
+            : 'Group Conversation'
 
         return (
             <Layout style={{ flex: 1 }}>
@@ -473,7 +472,6 @@ const mapStateToProps = (state) => {
             .map((doc) => doc._id.toString())
             .join(','),
         formVals: state.form.createChatRoomModal,
-        switchValue2: false,
     }
 }
 
