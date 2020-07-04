@@ -142,6 +142,20 @@ class MyTribe extends React.PureComponent {
             inviteToEntityName: name,
             inviteToEntity: _id,
             preload: this.props.loadFriends,
+            tags: {
+                member: item.members
+                    .filter((doc) => doc.category === 'Member')
+                    .map((i) => i.memberRef._id),
+                requested: item.members
+                    .filter((doc) => doc.category === 'JoinRequester')
+                    .map((i) => i.memberRef._id),
+                invited: item.members
+                    .filter((doc) => doc.category === 'Invitee')
+                    .map((i) => i.memberRef._id),
+                admin: item.members
+                    .filter((doc) => doc.category === 'Admin')
+                    .map((i) => i.memberRef._id),
+            },
         })
     }
 

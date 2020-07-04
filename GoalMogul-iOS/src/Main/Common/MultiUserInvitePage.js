@@ -64,16 +64,7 @@ class MultiUserInvitePage extends React.PureComponent {
     }
 
     updatePreloadRes = (res, hasNextPage) => {
-        // if (!res.length) {
-        //     this.setState({
-        //         ...this.state,
-        //         preloadHasNextPage: false,
-        //         loading: false,
-        //     })
-        //     return
-        // }
-
-        if (res.length < 5) {
+        if (!res.length) {
             this.setState({
                 ...this.state,
                 preloadHasNextPage: false,
@@ -155,10 +146,7 @@ class MultiUserInvitePage extends React.PureComponent {
         let newSelectedItems = _.cloneDeep(this.state.selectedItems)
         let newItemDoc = _.cloneDeep(itemDoc)
 
-        if (
-            !_.has(itemDoc, 'selected') ||
-            _.get(itemDoc, 'selected') === false
-        ) {
+        if (!itemDoc['selected']) {
             this.search.clear()
             // Item was not selected and now is selected. Thus adding to the selected list
             newSelectedItems = newSelectedItems.concat(
@@ -416,9 +404,18 @@ class MultiUserInvitePage extends React.PureComponent {
         )
     }
 
+    /**
+     * NOTE: TODO: tags should be coming from API in item rather than from the props.
+     * Refactor this function once https://app.asana.com/0/1179217829906634/1183132912958225/f
+     * is completed
+     */
     renderListItem = ({ item }) => {
         return (
-            <InviteUserCard item={item} onSelect={this.onSearchResultSelect} />
+            <InviteUserCard
+                item={item}
+                onSelect={this.onSearchResultSelect}
+                tags={this.props.tags}
+            />
         )
     }
 
@@ -462,16 +459,6 @@ class MultiUserInvitePage extends React.PureComponent {
     }
 }
 
-const getActionType = (entityType) => {
-    if (entityType === 'Event') {
-        return 'attend'
-    }
-    if (entityType === 'Tribe') {
-        return 'join'
-    }
-    return ''
-}
-
 const styles = {
     imageStyle: {
         height: 34,
@@ -501,6 +488,12 @@ MultiUserInvitePage.defaultProps = {
     onCloseCallback: (actionToExecute) => actionToExecute(),
     noHeader: false,
     onSelectionChange: (data) => {},
+    tags: {
+        invited: [],
+        requested: [],
+        admin: [],
+        member: [],
+    },
 }
 
 MultiUserInvitePage.propTypes = {
@@ -512,6 +505,18 @@ MultiUserInvitePage.propTypes = {
     onSelectionChange: PropTypes.func, // Function that directly obtains the result of the selected data.
     // Preload related
     preload: PropTypes.func, // Function to prelaod data
+
+    /**
+     * TODO: tags should be coming from API in item rather than from the props.
+     * Refactor this function once https://app.asana.com/0/1179217829906634/1183132912958225/f
+     * is completed
+     */
+    tags: PropTypes.shape({
+        invited: PropTypes.arrayOf(PropTypes.string), // user already invited
+        requested: PropTypes.arrayOf(PropTypes.string), // user already requested
+        member: PropTypes.arrayOf(PropTypes.string), // user already in the entity
+        admin: PropTypes.arrayOf(PropTypes.string), // user is an admin of the entity
+    }),
 
     // Required props
     searchFor: PropTypes.func.isRequired, // Function to load search result

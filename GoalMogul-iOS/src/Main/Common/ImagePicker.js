@@ -47,7 +47,7 @@ const CANCEL_INDEX = 2
  * Please see documentation for details.
  */
 class ImagePicker extends Component {
-    /**Prompt user for an image selection */
+    /** Prompt user for an image selection */
     onAddImagePressed = () => {
         const { handleTakingPicture, handleCameraRoll } = this.props
 
@@ -81,7 +81,7 @@ class ImagePicker extends Component {
             imageStyle.push(styles.imageStyles)
             if (rounded) imageStyle.push(styles.roundedImageStyles)
         } else if (icon) {
-            imageSrouce = icon
+            imageSource = icon
         } else {
             imageSource = TAKE_PIC_ICON
         }

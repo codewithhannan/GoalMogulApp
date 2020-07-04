@@ -14,6 +14,14 @@ import {
     CHAT_MEMBERS_SEND_JOIN_REQUEST_DONE,
     CHAT_MEMBERS_SEND_JOIN_REQUEST_ERROR,
 } from './ChatRoomMembersReducers'
+import { trackWithProperties, EVENT as E } from '../../../monitoring/segment'
+import { SentryRequestBuilder } from '../../../monitoring/sentry'
+import {
+    SENTRY_MESSAGE_TYPE,
+    SENTRY_TAGS,
+    SENTRY_MESSAGE_LEVEL,
+    SENTRY_CONTEXT,
+} from '../../../monitoring/sentry/Constants'
 
 const DEBUG_KEY = '[ChatRoomOptionsActions]'
 
@@ -217,38 +225,65 @@ export const cancelJoinRequest = (chatRoomId) => (dispatch, getState) => {
         .catch((err) => onError(err))
 }
 
-export const addMemberToChatRoom = (chatRoomId, addeeId) => (
+/**
+ * Invite a list of addee to chat room
+ * @param {*} chatRoomId
+ * @param {*} addees
+ */
+export const addMemberToChatRoom = (chatRoomId, addeeIds) => async (
     dispatch,
     getState
 ) => {
-    const { token } = getState().user
-    API.post(
-        'secure/chat/room/members',
-        {
+    const { token, userId } = getState().user
+    trackWithProperties(E.CHAT_INTIVE_SENT, {
+        UserId: userId,
+        ChatId: chatRoomId,
+    })
+    let failedItems = []
+
+    for (let addeeId of addeeIds) {
+        // send the message
+        const body = {
             chatRoomId,
             addeeId,
-        },
-        token
-    )
-        .then((resp) => {
-            if (resp.status == 200) {
-                refreshChatRoom(chatRoomId)(dispatch, getState)
-            } else {
-                Alert.alert(
-                    'Error',
-                    'Could not add selected member. Please try again later'
-                )
-                console.log(
+        }
+        try {
+            const resp = await API.post('secure/chat/room/members', body, token)
+
+            if (resp.status != 200) {
+                failedItems.push(addeeId)
+                new SentryRequestBuilder(e, SENTRY_MESSAGE_TYPE.ERROR)
+                    .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                    .withTag(SENTRY_TAGS.CHAT.ACTION, 'addMemberToChatRoom')
+                    .withExtraContext(SENTRY_CONTEXT.CHAT.CHAT_ID, chatRoomId)
+                    .withExtraContext(SENTRY_CONTEXT.CHAT.ADDEE_ID, addeeId)
+                    .send()
+                // Once we standardize the error logging, this can be removed
+                console.error(
                     `${DEBUG_KEY} error adding member to chat room`,
                     resp.message
                 )
             }
-        })
-        .catch((err) => {
-            Alert.alert(
-                'Error',
-                'Could not add selected member. Please try again later'
+        } catch (e) {
+            failedItems.push(addeeId)
+            new SentryRequestBuilder(e, SENTRY_MESSAGE_TYPE.ERROR)
+                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                .withTag(SENTRY_TAGS.CHAT.ACTION, 'addMemberToChatRoom')
+                .withExtraContext(SENTRY_CONTEXT.CHAT.CHAT_ID, chatRoomId)
+                .withExtraContext(SENTRY_CONTEXT.CHAT.ADDEE_ID, addeeId)
+                .send()
+
+            // Once we standardize the error logging, this can be removed
+            console.error(
+                `${DEBUG_KEY} error adding member to chat room`,
+                resp.message
             )
-            console.log(`${DEBUG_KEY} error adding member to chat room`, err)
-        })
+        }
+    }
+
+    // Refresh chat room regardless of error
+    refreshChatRoom(chatRoomId)(dispatch, getState)
+
+    let alertMessage = 'Could not add selected member. Please try again later'
+    Alert.alert('Error', alertMessage)
 }

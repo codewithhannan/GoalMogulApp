@@ -81,6 +81,7 @@ const EVENT = {
     EDIT_CHATROOM_OPENED: 'EditChatroom Opened',
     EDIT_CHATROOM_CANCELLED: 'EditChatroom Cancelled',
     CHATROOM_UPDATED: 'EditChatroom Updated',
+    CHAT_INTIVE_SENT: 'Chatroom Invite Sent',
     CHATROOM_JOIN_REQUEST_ACCEPTED: 'Chatroom Join Request Accepted',
     CHATROOM_MEMBER_PROMOTED: 'Chatroom Member Promoted',
     CHATROOM_MEMBER_DEMOTED: 'Chatroom Member Demoted',

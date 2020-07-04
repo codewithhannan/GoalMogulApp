@@ -31,6 +31,11 @@ const SENTRY_TAGS = {
         REDUCER: 'post reduer',
         SELECTOR: 'post selector',
     },
+    CHAT: {
+        ACTION: 'chat action',
+        REDUCER: 'chat reducer',
+        SELECTOR: 'chat seletor',
+    },
 }
 
 const SENTRY_TAG_VALUE = {
@@ -66,6 +71,13 @@ const SENTRY_CONTEXT = {
     },
     GOAL: {
         GOAL_ID: 'goal id',
+    },
+    CHAT: {
+        CHAT_ID: 'chat id',
+        ADDEE_ID: 'chat invite addee id',
+        PROMOTEE_ID: 'chat promotee id',
+        DEMOTEE_ID: 'chat demotee id',
+        MEMBER_ID: 'chat member id',
     },
 }
 
