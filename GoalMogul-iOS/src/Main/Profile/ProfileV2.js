@@ -14,7 +14,6 @@ import {
     closeCreateOverlay,
     handleProfileTabOnLoadMore,
     // Page related functions
-    refreshProfile,
     handleTabRefresh,
     openCreateOverlay,
     selectProfileTab,
@@ -449,9 +448,7 @@ class ProfileV2 extends Component {
             selectedTab,
             navigationState,
             data,
-            refreshProfile,
         } = this.props
-        if (!pageId) refreshProfile(userId)
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -520,8 +517,7 @@ const makeMapStateToProps = () => {
 
     const mapStateToProps = (state, props) => {
         // Set userId to main user if no userId present in props
-        const userId = props.userId || state.auth.user.userId
-        const { pageId } = props
+        const { pageId, userId } = props
 
         const user = getUserData(state, userId, 'user')
         let userPage = getUserDataByPageId(state, userId, pageId, '')
@@ -558,7 +554,6 @@ const makeMapStateToProps = () => {
         const appUser = state.user.user
 
         return {
-            userId,
             selectedTab,
             navigationState,
             isSelf: user && appUser && userId === appUser._id,
@@ -581,7 +576,6 @@ export default connect(makeMapStateToProps, {
     closeCreateOverlay,
     openCreateOverlay,
     closeProfile,
-    refreshProfile,
     openPostDetail,
     blockUser,
     createReport,
