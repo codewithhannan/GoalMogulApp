@@ -91,18 +91,6 @@ const months = [
     'Nov',
     'Dec',
 ]
-const CANCEL_REQUEST_INDEX = 1
-const CANCEL_REQUEST_OPTIONS = ['Cancel the request', 'Cancel']
-const REQUEST_OPTIONS = ['Request to join', 'Cancel']
-const TAG_SEARCH_OPTIONS = {
-    shouldSort: true,
-    threshold: 0.6,
-    location: 0,
-    distance: 100,
-    maxPatternLength: 32,
-    minMatchCharLength: 1,
-    keys: ['name'],
-}
 
 const SEARCHBAR_HEIGHT =
     Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL) ? 30 : 40

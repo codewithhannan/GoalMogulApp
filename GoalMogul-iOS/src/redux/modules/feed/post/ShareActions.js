@@ -67,7 +67,10 @@ export const openShareDetail = (share, pageId, initialProps) => (
         type: SHARE_DETAIL_OPEN,
         payload: {
             share,
+            post: share,
+            postId,
             tab,
+            pageId,
         },
     })
 
