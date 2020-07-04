@@ -15,16 +15,12 @@ import {
 import { openNewShareToTribeView } from '../../../redux/modules/feed/post/ShareActions'
 // Selector
 import { getUserGoalsForTribeShare } from '../../../redux/modules/tribe/TribeSelector'
-/* Styles */
-import { GM_BLUE, DEFAULT_STYLE } from '../../../styles'
-import GoalFilterBar from '../../Common/GoalFilterBar'
 /* Components */
-import SearchBarHeader from '../../Common/Header/SearchBarHeader'
+import GoalFilterBar from '../../Common/GoalFilterBar'
 import ProfileGoalCard from '../../Goal/GoalCard/ProfileGoalCard2'
 import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 import EmptyResult from '../../Common/Text/EmptyResult'
 import ModalHeader from '../../Common/Header/ModalHeader'
-import { PRIVACY_FRIENDS } from '../../../Utils/Constants'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 

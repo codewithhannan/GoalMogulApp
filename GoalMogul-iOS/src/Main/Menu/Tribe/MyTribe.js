@@ -17,8 +17,7 @@ import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 // Assets
-import invite from '../../../asset/utils/invite.png'
-import post from '../../../asset/utils/post.png'
+import plus from '../../../asset/utils/plus.png'
 import flagIcon from '../../../asset/icons/flag.png'
 import tribe_default_icon from '../../../asset/utils/tribeIcon.png'
 // Utils
@@ -74,6 +73,7 @@ import About from './MyTribeAbout'
 import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 import MyTribeBanner from './MyTribeBanner'
+import DelayedButton from '../../Common/Button/DelayedButton'
 
 const DEBUG_KEY = '[ UI MyTribe ]'
 const { width } = Dimensions.get('window')
@@ -119,7 +119,6 @@ class MyTribe extends React.PureComponent {
         super(props)
         this.state = {
             imageLoading: false,
-            showPlus: true,
             infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT),
             infoCardOpacity: new Animated.Value(1),
             showAboutModal: false,
@@ -155,95 +154,6 @@ class MyTribe extends React.PureComponent {
             inviteToEntityName: name,
             inviteToEntity: _id,
             preload: this.props.loadFriends,
-        })
-    }
-
-    /**
-     * On plus clicked, show two icons. Post and Invite
-     * const { textStyle, iconStyle, iconSource, text, onPress } = button;
-     */
-    handlePlus = (item) => {
-        const { _id } = item
-
-        const postCallback = () => {
-            this.props.refreshMyTribeDetail(_id, this.props.pageId)
-        }
-
-        const members = item
-            ? item.members
-                  .filter(
-                      (m) => m.category === 'Admin' || m.category === 'Member'
-                  )
-                  .map((m) => m.memberRef)
-            : []
-        const fuse = new Fuse(members, TAG_SEARCH_OPTIONS)
-        const tagSearch = (keyword, callback) => {
-            const result = fuse.search(keyword.replace('@', ''))
-            callback({ data: result }, keyword)
-        }
-
-        const buttons = [
-            // button info for creating a post
-            {
-                iconSource: post,
-                text: 'Post',
-                iconStyle: { height: 18, width: 18, marginLeft: 3 },
-                textStyle: { marginLeft: 5 },
-                onPress: () => {
-                    console.log('User trying to create post')
-                    this.setState({
-                        ...this.state,
-                        showPlus: true,
-                    })
-                    Actions.createPostModal({
-                        belongsToTribe: _id,
-                        callback: postCallback,
-                        tagSearch,
-                    })
-                },
-            },
-            // button info for invite
-            {
-                iconSource: invite,
-                text: 'Invite',
-                iconStyle: { height: 18, width: 18, marginLeft: 3 },
-                textStyle: { marginLeft: 5 },
-                onPress: () => {
-                    console.log('User trying to invite an user')
-                    this.setState({
-                        ...this.state,
-                        showPlus: true,
-                    })
-                    // this.props.openTribeInvitModal({
-                    //   tribeId: _id,
-                    //   cardIconSource: invite,
-                    //   cardIconStyle: { tintColor: APP_BLUE_BRIGHT }
-                    // });
-                    this.openUserInviteModal(item)
-                },
-            },
-        ]
-        this.setState({
-            ...this.state,
-            showPlus: false,
-        })
-
-        const callback = () => {
-            this.setState({
-                ...this.state,
-                showPlus: true,
-            })
-        }
-        Actions.push('createButtonOverlay', {
-            buttons,
-            callback,
-            pageId: this.props.pageId,
-            onCancel: () => {
-                this.setState({
-                    ...this.state,
-                    showPlus: true,
-                })
-            },
         })
     }
 
@@ -411,6 +321,7 @@ class MyTribe extends React.PureComponent {
     renderUserStatusButton() {
         const { userTribeStatus, item } = this.props
         const buttonProps = this.switchCaseButton(userTribeStatus, item)
+        if (buttonProps.disabled) return null
 
         return (
             <TouchableOpacity
@@ -565,13 +476,11 @@ class MyTribe extends React.PureComponent {
 
     renderAddPostButton(item) {
         const { userTribeStatus } = this.props
-        if (
-            this.state.showPlus &&
-            (userTribeStatus === 'Admin' || userTribeStatus === 'Member')
-        ) {
+        if (userTribeStatus === 'Admin' || userTribeStatus === 'Member') {
             return (
-                <PlusButton
-                    plusActivated={this.state.showPlus}
+                <DelayedButton
+                    activeOpacity={0.6}
+                    style={styles.iconContainerStyle}
                     onPress={() => {
                         const postCallback = () => {
                             this.props.refreshMyTribeDetail(
@@ -589,7 +498,9 @@ class MyTribe extends React.PureComponent {
                             tagSearch,
                         })
                     }}
-                />
+                >
+                    <Image style={styles.iconStyle} source={plus} />
+                </DelayedButton>
             )
         }
         return null
@@ -696,6 +607,23 @@ const styles = {
         ...DEFAULT_STYLE.buttonText_1,
         textAlign: 'center',
         margin: 7,
+    },
+    iconContainerStyle: {
+        position: 'absolute',
+        bottom: 20,
+        right: 29,
+        height: 54,
+        width: 54,
+        borderRadius: 28,
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 3,
+        backgroundColor: GM_BLUE,
+    },
+    iconStyle: {
+        height: 26,
+        width: 26,
+        tintColor: 'white',
     },
 }
 

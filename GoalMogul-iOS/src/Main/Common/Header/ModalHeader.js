@@ -127,7 +127,7 @@ const ModalHeader = (props) => {
             >
                 <TouchableOpacity
                     activeOpacity={0.6}
-                    onPress={onCancel || Actions.pop}
+                    onPress={onCancel !== undefined ? onCancel : Actions.pop}
                 >
                     {leftComponent}
                 </TouchableOpacity>
