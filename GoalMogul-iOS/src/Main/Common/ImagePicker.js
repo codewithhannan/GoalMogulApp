@@ -22,9 +22,7 @@ import {
 } from 'react-native'
 
 import { GM_DOT_GRAY } from '../../styles'
-
-// Resources
-const TAKE_PIC_ICON = require('../../asset/image/takePictureIcon.png')
+import { Icon, withStyles } from '@ui-kitten/components'
 
 // Action sheet specific
 //TODO: abstract out as util function
@@ -72,7 +70,7 @@ class ImagePicker extends Component {
     }
 
     renderImage = () => {
-        const { imageUri, icon, rounded } = this.props
+        const { imageUri, icon, rounded, eva } = this.props
         const imageStyle = []
         let imageSource
 
@@ -83,14 +81,23 @@ class ImagePicker extends Component {
         } else if (icon) {
             imageSource = icon
         } else {
-            imageSource = TAKE_PIC_ICON
+            imageStyle.push(styles.defaultImageStyle)
+            imageStyle.push(eva.style.icon)
+        }
+
+        imageStyle.push({ zIndex: 1 })
+        if (!imageSource) {
+            // render default image icon
+            return (
+                <Icon name="add-a-photo" pack="material" style={imageStyle} />
+            )
         }
 
         return <Image source={imageSource} style={imageStyle} />
     }
 
     render() {
-        const { rounded, bordered } = this.props
+        const { rounded, bordered, imageUri, icon } = this.props
         const buttonStyle = [styles.buttonStyles]
 
         if (rounded) buttonStyle.push(styles.roundedButtonStyles)
@@ -104,6 +111,16 @@ class ImagePicker extends Component {
                 >
                     {this.renderImage()}
                 </TouchableOpacity>
+                {/* Only render edit icon if there is existing images */}
+                {imageUri || icon ? (
+                    <View style={styles.iconContainerStyle}>
+                        <Icon
+                            name="edit"
+                            pack="material"
+                            style={styles.editIconStyle}
+                        />
+                    </View>
+                ) : null}
             </View>
         )
     }
@@ -131,9 +148,57 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         justifyContent: 'center',
     },
+    defaultImageStyle: {
+        height: 40,
+        width: 40,
+    },
     roundedImageStyles: {
         borderRadius: 180,
     },
+    // Image related styles
+    iconContainerStyle: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        borderColor: '#DDD',
+        borderWidth: 0.5,
+
+        alignItems: 'center',
+        justifyContent: 'center',
+
+        backgroundColor: 'white',
+        shadowColor: '#DDD',
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 1,
+        elevation: 1,
+        zIndex: 2,
+    },
+    editIconStyle: {
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        tintColor: '#BBB',
+    },
 })
 
-export default ImagePicker
+/**
+ * Map app theme to styles. These styles can be accessed
+ * using the <eva> prop. For example,
+ * const { eva } = this.props;
+ * eva.styles.backgroundPrimary;
+ * @see https://github.com/akveo/react-native-ui-kitten/blob/master/docs/src/articles/design-system/use-theme-variables.md
+ */
+const mapThemeToStyles = (theme) => ({
+    icon: {
+        tintColor: theme['color-primary-500'],
+    },
+})
+
+const StyledImagePicker = withStyles(ImagePicker, mapThemeToStyles)
+
+export default StyledImagePicker
