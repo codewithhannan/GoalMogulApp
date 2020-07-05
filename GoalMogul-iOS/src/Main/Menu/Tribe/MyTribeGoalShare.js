@@ -1,4 +1,9 @@
-/** @format */
+/**
+ * View that displays user goals available to share
+ * Clicking on a goal mounts it to ShareModal
+ *
+ * @format
+ * */
 
 import _ from 'lodash'
 import React, { Component } from 'react'
@@ -22,7 +27,7 @@ import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 import EmptyResult from '../../Common/Text/EmptyResult'
 import ModalHeader from '../../Common/Header/ModalHeader'
 
-const DEBUG_KEY = '[ UI ProfileV2 ]'
+const DEBUG_KEY = '[ UI MyTribeGoalShare ]'
 
 class UserGoalsView extends Component {
     constructor(props) {

@@ -511,7 +511,6 @@ class MyTribe extends React.PureComponent {
     render() {
         const { item, data } = this.props
         if (!item) return <View />
-
         return (
             <MenuProvider
                 style={{ backgroundColor: '#FAFAFA' }}

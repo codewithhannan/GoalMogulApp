@@ -1,4 +1,8 @@
-/** @format */
+/**
+ * Mounts the users profile on main profile tab
+ *
+ * @format
+ * */
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -19,7 +23,7 @@ class MainProfile extends Component {
     }
 }
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
     const userId = state.auth.user.userId
     return {
         userId,
