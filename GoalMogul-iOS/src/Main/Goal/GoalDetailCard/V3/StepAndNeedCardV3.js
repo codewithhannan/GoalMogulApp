@@ -55,7 +55,7 @@ const styles = {
         containerStyle: {
             alignItems: 'center',
             flexDirection: 'row',
-            backgroundColor: '#F5F5F5',
+            backgroundColor: '#F2F2F2',
             height: 38,
             paddingLeft: 15,
         },
