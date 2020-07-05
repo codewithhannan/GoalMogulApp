@@ -188,24 +188,16 @@ export const refreshMyTribeDetail = (
     callback,
     showIndicator
 ) => (dispatch, getState) => {
-    const tribes = getState().tribes
-    if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
-        new SentryRequestBuilder(
-            "Tribes doesn't contain tribeId or pageId",
-            SENTRY_MESSAGE_TYPE.MESSAGE
-        )
-            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
-            .withTag(SENTRY_TAGS.TRIBE.ACTION, 'TribeDetail Refresh')
-            .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
-            .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
-            .send()
-        console.error(
-            `${DEBUG_KEY}: tribeId ${tribeId} or ${pageId} not in tribes for refreshMyTribeDetail`
-        )
-        return
-    }
-    fetchTribeDetail(tribeId, pageId, null, showIndicator)(dispatch, getState)
-    refreshTribeFeed(tribeId, pageId, dispatch, getState, callback)
+    fetchTribeDetail(
+        tribeId,
+        pageId,
+        () => {
+            // Refresh tribe feed after tribe detail is loaded
+            // as tribe feed needs the tribe page to exist first
+            refreshTribeFeed(tribeId, pageId, dispatch, getState, callback)
+        },
+        showIndicator
+    )(dispatch, getState)
 }
 
 /**
@@ -1219,10 +1211,11 @@ export const tribeRefreshUserGoals = (tribeId, pageId) => (
     }
 
     const onError = (err) => {
-        // TODO: tribe: error handling
-        console.log(err)
         new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
-            .withTag()
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.TRIBE.ACTION, 'tribeRefreshUserGoals')
+            .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+            .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
             .send()
         dispatch({
             type: MYTRIBE_GOAL_REFRESH_DONE,
@@ -1285,7 +1278,10 @@ export const tribeLoadMoreUserGoals = (tribeId, pageId) => (
     const onError = (err) => {
         // TODO: tribe: error handling
         new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
-            .withTag()
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.TRIBE.ACTION, 'tribeLoadMoreUserGoals')
+            .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
+            .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
             .send()
         dispatch({
             type: MYTRIBE_GOAL_LOAD_DONE,
