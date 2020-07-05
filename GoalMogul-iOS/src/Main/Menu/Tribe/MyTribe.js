@@ -137,7 +137,7 @@ class MyTribe extends React.PureComponent {
             onSubmitSelection: (users, inviteToEntity, actionToExecute) => {
                 const callback = () => {
                     this.props.refreshMyTribeDetail(
-                        inviteToEntity,
+                        this.props.tribeId,
                         this.props.pageId,
                         null,
                         false
@@ -497,7 +497,7 @@ class MyTribe extends React.PureComponent {
                     onPress={() => {
                         const postCallback = () => {
                             this.props.refreshMyTribeDetail(
-                                _id,
+                                this.props.tribeId,
                                 this.props.pageId
                             )
                         }
@@ -543,13 +543,13 @@ class MyTribe extends React.PureComponent {
                     refreshing={this.props.feedRefreshing}
                     onRefresh={() =>
                         this.props.refreshMyTribeDetail(
-                            item._id,
+                            this.props.tribeId,
                             this.props.pageId
                         )
                     }
                     onEndReached={() =>
                         this.props.loadMoreTribeFeed(
-                            item._id,
+                            this.props.tribeId,
                             this.props.pageId
                         )
                     }

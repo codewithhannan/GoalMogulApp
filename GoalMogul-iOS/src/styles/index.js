@@ -20,10 +20,11 @@ export const GM_BLUE_LIGHT = '#9EE6FF'
 export const GM_BLUE_LIGHT_LIGHT = '#DEF7FF'
 export const GM_DOT_GRAY = '#E0E0E0'
 
-export const BACKGROUND_COLOR = 'white';
+export const BACKGROUND_COLOR = 'white'
 
-const UI_SCALE = Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.3 : 1;
-export const TEXT_COLOR_1 = '#333';
+const UI_SCALE =
+    Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.3 : 1
+export const TEXT_COLOR_1 = '#333'
 
 export const FONT_FAMILY_1 = 'SFProDisplay-Bold'
 export const FONT_FAMILY_2 = 'SFProDisplay-Regular'
@@ -43,7 +44,7 @@ export const DEFAULT_STYLE = {
     },
     titleText_2: {
         fontFamily: FONT_FAMILY_1,
-        fontSize: 15 * UI_SCALE,
+        fontSize: 14 * UI_SCALE,
         fontWeight: 'bold',
         color: TEXT_COLOR_1,
         letterSpacing: LETTER_SPACING,

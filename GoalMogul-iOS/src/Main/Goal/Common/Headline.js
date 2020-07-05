@@ -29,6 +29,7 @@ import UndoIcon from '../../../asset/utils/undo.png'
 import TrashIcon from '../../../asset/utils/trash.png'
 import Icons from '../../../asset/base64/Icons'
 import { DEFAULT_STYLE } from '../../../styles'
+import { Icon } from '@ui-kitten/components'
 
 const { CheckIcon } = Icons
 const { width } = Dimensions.get('window')
@@ -218,8 +219,7 @@ class Headline extends React.PureComponent {
                 )
         }
 
-        const categoryComponent =
-            category && !tribeName ? <Category text={category} /> : null
+        const categoryComponent = category ? <Category text={category} /> : null
 
         return (
             <View style={styles.containerStyle}>
@@ -228,21 +228,25 @@ class Headline extends React.PureComponent {
                     onPress={() => this.handleNameOnPress(user)}
                     textStyle={textStyle}
                 />
-                <UserBanner user={user} />
-                {categoryComponent}
-                {tribeName && (
+                {!tribeName && [<UserBanner user={user} />, categoryComponent]}
+                {tribeName && [
+                    <Icon
+                        style={DEFAULT_STYLE.smallIcon_1}
+                        name="arrow-right"
+                    />,
                     <Text
                         style={[
-                            DEFAULT_STYLE.normalText_1,
+                            textStyle,
                             {
                                 marginLeft: 4,
-                                maxWidth: 100 * DEFAULT_STYLE.uiScale,
+                                maxWidth: 120 * DEFAULT_STYLE.uiScale,
                             },
                         ]}
+                        numberOfLines={1}
                     >
                         {tribeName}
-                    </Text>
-                )}
+                    </Text>,
+                ]}
                 <View
                     style={{
                         flexDirection: 'row',
@@ -259,10 +263,10 @@ class Headline extends React.PureComponent {
 
 const styles = {
     containerStyle: {
-        display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
+        flexWrap: 'wrap',
     },
     caretContainer: {
         paddingBottom: 8,
