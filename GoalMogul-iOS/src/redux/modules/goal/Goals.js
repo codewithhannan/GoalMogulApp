@@ -60,6 +60,10 @@ import {
     NOTIFICATION_SUBSCRIBE,
     NOTIFICATION_UNSUBSCRIBE,
 } from '../notification/NotificationTabReducers'
+import {
+    MYTRIBE_GOAL_REFRESH_DONE,
+    MYTRIBE_GOAL_LOAD_DONE,
+} from '../tribe/Tribes'
 
 /**
  * List of const to add
@@ -460,6 +464,8 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         /* Profile related */
+        case MYTRIBE_GOAL_REFRESH_DONE:
+        case MYTRIBE_GOAL_LOAD_DONE:
         case HOME_LOAD_GOAL_DONE: // pageId for goal feed is 'HOME'
         case HOME_REFRESH_GOAL_DONE: // pageId for goal feed is 'HOME'
         case PROFILE_REFRESH_TAB_DONE:

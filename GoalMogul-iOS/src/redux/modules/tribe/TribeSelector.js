@@ -103,20 +103,26 @@ const getMyTribe = (state, tribeId, pageId) =>
     _.cloneDeep(_.get(state.tribes, `${tribeId}.tribe`, {}))
 const getUserId = (state) => state.user.userId
 
+/**
+ * Get feed for a specific tribe page
+ * @param {*} state
+ * @param {*} tribeId
+ * @param {*} pageId
+ */
 const getMyTribeFeed = (state, tribeId, pageId) => {
     const tribes = state.tribes
     const posts = state.posts
 
     if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
-        console.error(
-            `${DEBUG_KEY}: [getMyTribeFeed]: tribeId: ${tribeId} or pageId: ${pageId} not in tribes`
-        )
         return []
     }
 
+    // Tribe feed is stored as _id in tribe page and it needs to be merged with actual
+    // feed item in Posts.js
     const feedRefs = _.get(tribes, `${tribeId}.${pageId}.feed`)
     let ret = feedRefs
         .map((r) => {
+            // Check if reducer Posts.js has the object by checkng the ref
             if (!_.has(posts, r)) {
                 new SentryRequestBuilder(
                     "Posts doesn't have postRef for feed stored in Tribe",
@@ -195,7 +201,7 @@ const getTribesByType = (state, type) => {
 }
 
 /**
- * Merge tribe feed refs with posts objects
+ * Get feed for all tribes (Tribe hub) by merging tribe feed refs with posts objects
  * @param {*} state
  */
 const getTribeFeed = (state) => {
@@ -224,10 +230,8 @@ export const getMyTribeDetailById = createSelector(
     }
 )
 
-export const getMyTribeFeedSelector = createSelector(
-    [getMyTribeFeed],
-    (feed) => feed
-)
+export const makeGetMyTribeFeedSelector = () =>
+    createSelector([getMyTribeFeed], (feed) => feed)
 
 /**
  * Select current user membership for a tribe by tribeId

@@ -50,7 +50,7 @@ import {
     getMyTribeUserStatus,
     myTribeMemberSelector,
     getMyTribeDetailById,
-    getMyTribeFeedSelector,
+    makeGetMyTribeFeedSelector,
 } from '../../../redux/modules/tribe/TribeSelector'
 // Styles
 import { DEFAULT_STYLE, GM_BLUE } from '../../../styles'
@@ -116,7 +116,18 @@ class MyTribe extends React.PureComponent {
     }
 
     componentWillUnmount() {
+        // Cleanup tribe page in reducer and any other left over state
         this.props.tribeDetailClose(this.props.tribeId, this.props.pageId)
+    }
+
+    componentDidMount() {
+        // Refresh my detail without showing indicator
+        this.props.refreshMyTribeDetail(
+            this.props.tribeId,
+            this.props.pageId,
+            null,
+            false
+        )
     }
 
     openUserInviteModal = (item) => {
@@ -628,34 +639,43 @@ const styles = {
     },
 }
 
-const mapStateToProps = (state, props) => {
-    const { tribeId, pageId } = props
-    const { tribe, tribePage } = getMyTribeDetailById(state, tribeId, pageId)
-    const {
-        hasRequested,
-        tribeLoading,
-        feedLoading,
-        feedRefreshing,
-    } = tribePage
-    const { userId } = state.user
-    const memberData = myTribeMemberSelector(state, tribeId, pageId)
-    const data = getMyTribeFeedSelector(state, tribeId, pageId)
+const makeMapStateToProps = () => {
+    const myTribeFeedSelector = makeGetMyTribeFeedSelector()
+    const mapStateToProps = (state, props) => {
+        const { tribeId, pageId } = props
+        const { tribe, tribePage } = getMyTribeDetailById(
+            state,
+            tribeId,
+            pageId
+        )
+        const {
+            hasRequested,
+            tribeLoading,
+            feedLoading,
+            feedRefreshing,
+        } = tribePage
+        const { userId } = state.user
+        const memberData = myTribeMemberSelector(state, tribeId, pageId)
+        const data = myTribeFeedSelector(state, tribeId, pageId)
 
-    return {
-        item: tribe,
-        user: state.user,
-        data,
-        userTribeStatus: getMyTribeUserStatus(state, tribeId),
-        hasRequested,
-        userId,
-        loading: tribeLoading,
-        feedLoading,
-        feedRefreshing,
-        memberData,
+        return {
+            item: tribe,
+            user: state.user,
+            data,
+            userTribeStatus: getMyTribeUserStatus(state, tribeId),
+            hasRequested,
+            userId,
+            loading: tribeLoading,
+            feedLoading,
+            feedRefreshing,
+            memberData,
+        }
     }
+
+    return mapStateToProps
 }
 
-export default connect(mapStateToProps, {
+export default connect(makeMapStateToProps, {
     refreshMyTribeDetail,
     tribeDetailClose,
     openTribeInvitModal,
