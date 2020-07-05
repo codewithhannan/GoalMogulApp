@@ -203,7 +203,7 @@ class ProfilePostCard extends React.PureComponent {
     }
 
     renderHeader(item) {
-        const { owner, _id, created, maybeIsSubscribed } = item
+        const { owner, _id, created, maybeIsSubscribed, belongsToTribe } = item
         const timeStamp = created || new Date()
 
         const caret = {
@@ -278,6 +278,9 @@ class ProfilePostCard extends React.PureComponent {
                             actionDecorator={this.props.actionDecorator}
                             hasCaret={this.props.hasCaret}
                             textStyle={DEFAULT_STYLE.titleText_2}
+                            tribeName={
+                                belongsToTribe ? belongsToTribe.name : undefined
+                            }
                         />
                         <View style={{ marginTop: 2 }} />
                         <Timestamp time={timeago().format(timeStamp)} />
@@ -313,7 +316,6 @@ class ProfilePostCard extends React.PureComponent {
     render() {
         const { item, hasActionButton } = this.props
         if (!item || _.isEmpty(item)) return null
-
         return (
             <View>
                 <View style={styles.containerStyle}>

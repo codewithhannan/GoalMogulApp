@@ -217,7 +217,7 @@ export const loadMoreTribeHubFeed = () => (dispatch, getState) => {
         refreshing,
         loading,
     } = getState().myTribeTab.feed
-    if (loading || hasNextPage == false) {
+    if (refreshing || loading || hasNextPage == false) {
         // Don't refresh when it's already loading or there is no next page.
         return
     }

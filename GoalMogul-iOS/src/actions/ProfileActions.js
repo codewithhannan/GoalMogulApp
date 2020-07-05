@@ -192,7 +192,7 @@ export const closeProfile = (userId, pageId) => (dispatch, getState) => {
  * @param {string} userId
  * @param {string} tab
  */
-export const openProfile = (userId, tab, initialFilter) => (
+export const openProfile = (userId, tab, initialFilter, props) => (
     dispatch,
     getState
 ) => {
@@ -230,7 +230,7 @@ export const openProfile = (userId, tab, initialFilter) => (
         userId,
         hideProfileDetail: tab && tab !== 'about',
         initialFilter,
-        isMainTab: false,
+        ...props,
     })
 
     const { token } = getState().user
@@ -307,7 +307,7 @@ export const openProfile = (userId, tab, initialFilter) => (
  * Open user goal list by userId
  * @param {string} userId
  */
-export const refreshProfile = (userId) => (dispatch, getState) => {
+export const refreshProfileData = (userId) => (dispatch, getState) => {
     const pageId = constructPageId('user')
     dispatch({
         type: PROFILE_OPEN_PROFILE,
@@ -317,12 +317,6 @@ export const refreshProfile = (userId) => (dispatch, getState) => {
         },
     })
     trackWithProperties(E.PROFILE_REFRESHED, { UserId: userId })
-    Actions.refresh({
-        pageId,
-        userId,
-        hideProfileDetail: false,
-        isMainTab: true,
-    })
 
     const { token } = getState().user
     const self = userId.toString() === getState().user.userId.toString()

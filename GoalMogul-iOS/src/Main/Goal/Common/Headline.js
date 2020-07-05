@@ -5,7 +5,7 @@
  */
 
 import React from 'react'
-import { View, Alert, Dimensions } from 'react-native'
+import { View, Alert, Dimensions, Text } from 'react-native'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 
@@ -28,6 +28,7 @@ import EditIcon from '../../../asset/utils/edit.png'
 import UndoIcon from '../../../asset/utils/undo.png'
 import TrashIcon from '../../../asset/utils/trash.png'
 import Icons from '../../../asset/base64/Icons'
+import { DEFAULT_STYLE } from '../../../styles'
 
 const { CheckIcon } = Icons
 const { width } = Dimensions.get('window')
@@ -168,6 +169,7 @@ class Headline extends React.PureComponent {
             caret,
             textStyle,
             menuName,
+            tribeName,
         } = this.props
 
         // If item belongs to self, then caret displays delete
@@ -216,11 +218,8 @@ class Headline extends React.PureComponent {
                 )
         }
 
-        const categoryComponent = category ? (
-            <Category text={category} />
-        ) : (
-            <View style={{ flex: 1 }} />
-        )
+        const categoryComponent =
+            category && !tribeName ? <Category text={category} /> : null
 
         return (
             <View style={styles.containerStyle}>
@@ -231,7 +230,26 @@ class Headline extends React.PureComponent {
                 />
                 <UserBanner user={user} />
                 {categoryComponent}
-                <View style={{ flexDirection: 'row', alignSelf: 'flex-end' }}>
+                {tribeName && (
+                    <Text
+                        style={[
+                            DEFAULT_STYLE.normalText_1,
+                            {
+                                marginLeft: 4,
+                                maxWidth: 100 * DEFAULT_STYLE.uiScale,
+                            },
+                        ]}
+                    >
+                        {tribeName}
+                    </Text>
+                )}
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        flex: 1,
+                        justifyContent: 'flex-end',
+                    }}
+                >
                     {hasCaret === null || hasCaret === false ? null : menu}
                 </View>
             </View>

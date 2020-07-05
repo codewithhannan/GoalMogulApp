@@ -35,7 +35,9 @@ class ProfileGoalCard2 extends React.Component {
      * Open Goal Detail page on Card pressed
      */
     handleOnCardPress = (item) => {
-        this.props.openGoalDetail(item)
+        this.props.onPress
+            ? this.props.onPress()
+            : this.props.openGoalDetail(item)
     }
 
     /* Renderers for views */

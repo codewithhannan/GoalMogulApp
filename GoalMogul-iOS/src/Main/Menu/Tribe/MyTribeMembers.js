@@ -184,9 +184,9 @@ class MyTribeMembers extends React.PureComponent {
                         inputContainerStyle={styles.searchBar.inputContainer}
                         searchIcon={() => (
                             <SearchIcon
-                                iconContainerStyle={[
-                                    styles.searchBar.icon.container,
-                                ]}
+                                iconContainerStyle={
+                                    styles.searchBar.icon.container
+                                }
                                 iconStyle={styles.searchBar.icon.style}
                             />
                         )}

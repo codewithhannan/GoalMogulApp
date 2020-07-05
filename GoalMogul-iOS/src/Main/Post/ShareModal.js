@@ -567,7 +567,7 @@ class ShareModal extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
     const selector = formValueSelector('shareModal')
     const { user } = state.user
     const { itemToShare, postType } = state.newShare

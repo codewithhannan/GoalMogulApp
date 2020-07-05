@@ -53,13 +53,8 @@ class ViewableSettingMenu extends Component {
     }
 
     render() {
-        const { belongsToTribe, belongsToEvent } = this.props
-
-        const settingDisabled =
-            belongsToTribe !== undefined || belongsToEvent !== undefined
-
         // Don't show caret if belongs to event or tribe
-        const caret = settingDisabled ? null : (
+        const caret = (
             <View style={{ padding: 5 }}>
                 <Image style={styles.caretStyle} source={dropDown} />
             </View>
@@ -94,11 +89,9 @@ class ViewableSettingMenu extends Component {
                     activeOpacity={0.6}
                     style={{
                         ...styles.containerStyle,
-                        opacity: settingDisabled ? 0 : 95,
                         marginLeft: 5,
                     }}
                     onPress={this.handleOnClick}
-                    disabled={settingDisabled}
                 >
                     <Image
                         resizeMode="contain"

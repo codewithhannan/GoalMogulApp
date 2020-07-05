@@ -138,8 +138,8 @@ const getMyTribeFeed = (state, tribeId, pageId) => {
 }
 
 const getUserGoals = (state, tribeId, pageId) => {
-    const tribes = state.tribes
-    const goals = state.goals
+    const tribes = _.get(state, 'tribes')
+    const goals = _.get(state, 'goals')
     if (!_.has(tribes, tribeId) || !_.has(tribes, `${tribeId}.${pageId}`)) {
         return []
     }
@@ -163,7 +163,6 @@ const getUserGoals = (state, tribeId, pageId) => {
             return _.cloneDeep(_.get(goals, `${r}.goal`))
         })
         .filter((r) => r !== undefined)
-
     return ret
 }
 

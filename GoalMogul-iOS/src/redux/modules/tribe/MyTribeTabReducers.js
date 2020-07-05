@@ -326,7 +326,11 @@ export default (state = INITIAL_STATE, action) => {
             newState = _.set(
                 newState,
                 'feed.data',
-                _.uniq(curData.concat(data))
+                _.uniq(
+                    curData.concat(
+                        data.map((d) => d._id).filter((d) => d !== undefined)
+                    )
+                )
             )
             newState = _.set(
                 newState,
