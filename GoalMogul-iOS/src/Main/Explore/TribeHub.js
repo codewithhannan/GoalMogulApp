@@ -17,7 +17,7 @@ import {
 import { makeTribeFeedSelector } from '../../redux/modules/tribe/TribeSelector'
 
 // Styles
-import { DEFAULT_STYLE, GM_BLUE } from '../../styles'
+import { DEFAULT_STYLE } from '../../styles'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 import { FlatList } from 'react-native-gesture-handler'
 
@@ -143,8 +143,6 @@ const RoundedButton = (props) => {
         </TouchableOpacity>
     )
 }
-
-const styles = {}
 
 const makeMapStateToProps = () => {
     const getTribeFeed = makeTribeFeedSelector()

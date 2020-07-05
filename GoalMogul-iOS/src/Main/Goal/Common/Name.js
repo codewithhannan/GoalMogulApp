@@ -7,7 +7,7 @@ import { DEFAULT_STYLE } from '../../../styles'
 const styles = {
     containerStyle: {
         ...DEFAULT_STYLE.titleText_1,
-        maxWidth: 200 * DEFAULT_STYLE.uiScale,
+        maxWidth: 150 * DEFAULT_STYLE.uiScale,
     },
 }
 
