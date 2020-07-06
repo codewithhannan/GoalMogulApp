@@ -133,112 +133,118 @@ export const getGoalStepsAndNeeds = createSelector(
 )
 
 export const makeGetGoalStepsAndNeedsV2 = () =>
-    createSelector([getGoal, getCommentsV2], (goal, comments) => {
-        const { needs, steps } = goal
-        let res = []
-        if (steps && steps.length > 0) {
-            res.push({
-                sectionTitle: 'steps',
-                count: steps.length,
-            })
-        }
-
-        // Transform needs to have a type
-        let newSteps = []
-        if (steps && steps.length !== 0) {
-            newSteps = steps.map((step) => {
-                const stepComments = comments.transformedComments.filter(
-                    (c) => {
-                        const isSuggestionForStep =
-                            c.suggestion &&
-                            c.suggestion.suggestionForRef &&
-                            c.suggestion.suggestionForRef === step._id
-
-                        const isCommentForStep = c.stepRef === step._id
-                        if (isCommentForStep || isSuggestionForStep) {
-                            return true
-                        }
-                        return false
-                    }
-                )
-
-                let count = 0
-                stepComments.forEach((c) => {
-                    if (c.childComments && c.childComments.length > 0) {
-                        // Count all the childComments
-                        count += c.childComments.length
-                    }
-                    // Count the current comment
-                    count += 1
+    createSelector(
+        [getGoal, getCommentsV2, (...args) => args[args.length - 1]],
+        (goal, comments, props) => {
+            const { isSelf } = props
+            const { needs, steps } = goal
+            let res = []
+            if (isSelf || (steps && steps.length > 0)) {
+                res.push({
+                    sectionTitle: 'steps',
+                    count: steps.length,
                 })
+            }
 
-                // console.log(`${DEBUG_KEY}: count is: `, count);
-                return {
-                    ...step,
+            // Transform needs to have a type
+            let newSteps = []
+            if (steps && steps.length !== 0) {
+                newSteps = steps.map((step) => {
+                    const stepComments = comments.transformedComments.filter(
+                        (c) => {
+                            const isSuggestionForStep =
+                                c.suggestion &&
+                                c.suggestion.suggestionForRef &&
+                                c.suggestion.suggestionForRef === step._id
+
+                            const isCommentForStep = c.stepRef === step._id
+                            if (isCommentForStep || isSuggestionForStep) {
+                                return true
+                            }
+                            return false
+                        }
+                    )
+
+                    let count = 0
+                    stepComments.forEach((c) => {
+                        if (c.childComments && c.childComments.length > 0) {
+                            // Count all the childComments
+                            count += c.childComments.length
+                        }
+                        // Count the current comment
+                        count += 1
+                    })
+
+                    // console.log(`${DEBUG_KEY}: count is: `, count);
+                    return {
+                        ...step,
+                        type: 'step',
+                        count,
+                    }
+                })
+            }
+
+            res = res.concat(newSteps)
+            if (isSelf)
+                res.push({
                     type: 'step',
-                    count,
-                }
-            })
-        }
-
-        res = res.concat(newSteps)
-        if (steps && steps.length > 0)
-            res.push({
-                type: 'goal',
-                isCreateCard: true,
-            })
-
-        if (needs && needs.length > 0) {
-            res.push({
-                sectionTitle: 'needs',
-                count: needs.length,
-            })
-        }
-        // Transform needs to have a type
-        let newNeeds = []
-        if (needs && needs.length !== 0) {
-            newNeeds = needs.map((need) => {
-                const needComments = comments.transformedComments.filter(
-                    (c) => {
-                        const isSuggestionForNeed =
-                            c.suggestion &&
-                            c.suggestion.suggestionForRef &&
-                            c.suggestion.suggestionForRef === need._id
-
-                        const isCommentForNeed = c.needRef === need._id
-                        if (isSuggestionForNeed || isCommentForNeed) {
-                            return true
-                        }
-                        return false
-                    }
-                )
-
-                let count = 0
-                needComments.forEach((c) => {
-                    if (c.childComments && c.childComments.length > 0) {
-                        // Count all the childComments
-                        count += c.childComments.length
-                    }
-                    // Count the current comment
-                    count += 1
+                    isCreateCard: true,
+                    description: '',
                 })
 
-                return {
-                    ...need,
-                    type: 'need',
-                    count,
-                }
-            })
-        }
+            if (isSelf || (needs && needs.length > 0)) {
+                res.push({
+                    sectionTitle: 'needs',
+                    count: needs.length,
+                })
+            }
+            // Transform needs to have a type
+            let newNeeds = []
+            if (needs && needs.length !== 0) {
+                newNeeds = needs.map((need) => {
+                    const needComments = comments.transformedComments.filter(
+                        (c) => {
+                            const isSuggestionForNeed =
+                                c.suggestion &&
+                                c.suggestion.suggestionForRef &&
+                                c.suggestion.suggestionForRef === need._id
 
-        res = res.concat(newNeeds)
-        if (needs && needs.length > 0)
-            res.push({
-                type: 'need',
-                isCreateCard: true,
-            })
-        return res
-    })
+                            const isCommentForNeed = c.needRef === need._id
+                            if (isSuggestionForNeed || isCommentForNeed) {
+                                return true
+                            }
+                            return false
+                        }
+                    )
+
+                    let count = 0
+                    needComments.forEach((c) => {
+                        if (c.childComments && c.childComments.length > 0) {
+                            // Count all the childComments
+                            count += c.childComments.length
+                        }
+                        // Count the current comment
+                        count += 1
+                    })
+
+                    return {
+                        ...need,
+                        type: 'need',
+                        count,
+                    }
+                })
+            }
+
+            res = res.concat(newNeeds)
+            if (isSelf)
+                res.push({
+                    type: 'need',
+                    isCreateCard: true,
+                    description: '',
+                })
+            return res
+        }
+    )
 
 // Get goal detail by tabs
 export const getGoalDetailByTab = createSelector(

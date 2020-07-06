@@ -252,7 +252,7 @@ const makeMapStateToProps = () => {
         return {
             goalDetail: goal,
             loading,
-            data: getGoalStepsAndNeedsV2(state, goalId, pageId),
+            data: getGoalStepsAndNeedsV2(state, goalId, pageId, { isSelf }),
         }
     }
 

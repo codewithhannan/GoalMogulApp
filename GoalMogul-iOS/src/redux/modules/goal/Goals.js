@@ -348,7 +348,7 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         case GOAL_DETAIL_UPDATE_STEP_NEED_SUCCESS: {
-            const { id, updates, type, goalId, pageId } = action.payload
+            const { id, updates, type, goalId, pageId, isNew } = action.payload
             let newState = _.cloneDeep(state)
             const shouldUpdate = sanityCheck(
                 newState,
@@ -373,14 +373,19 @@ export default (state = INITIAL_STATE, action) => {
                 )
             }
 
-            const oldSteps = _.get(newState, `${goalId}.goal.${type}`)
+            const oldSteps = _.get(newState, `${goalId}.goal.${type}`, [])
             // When mark step as complete, user might not be in goal detail view
             // so oldNeeds could be undefined
+            if (isNew) {
+                oldSteps.push(updates)
+                newState = _.set(newState, `${goalId}.goal.${type}`, oldSteps)
+            }
             if (oldSteps !== undefined && oldSteps.length > 0) {
                 const newSteps = findAndUpdate(id, oldSteps, updates)
                 newState = _.set(newState, `${goalId}.goal.${type}`, newSteps)
             }
-
+            console.log(_.get(newState, `${goalId}.goal`))
+            console.log(updates, id)
             return newState
         }
 

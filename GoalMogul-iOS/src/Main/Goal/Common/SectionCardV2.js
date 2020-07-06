@@ -353,7 +353,9 @@ class SectionCardV2 extends Component {
                                     this.props.updateGoal(
                                         _id,
                                         type,
-                                        { description: this.state.textValue },
+                                        {
+                                            description: this.state.textValue.trim(),
+                                        },
                                         goalRef,
                                         pageId
                                     )
@@ -379,9 +381,6 @@ class SectionCardV2 extends Component {
         // console.log('item for props is: ', this.props.item);
         const { type, item, isActive, drag, isSelf } = this.props
         const { isCreateCard } = item
-
-        // We do not want to render empty card when user is not self
-        if (!isSelf && isCreateCard) return <View />
 
         let itemToRender = item
         const isCommentFocused = type === 'comment'
