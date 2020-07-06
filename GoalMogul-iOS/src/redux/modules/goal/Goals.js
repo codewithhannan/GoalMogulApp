@@ -384,8 +384,7 @@ export default (state = INITIAL_STATE, action) => {
                 const newSteps = findAndUpdate(id, oldSteps, updates)
                 newState = _.set(newState, `${goalId}.goal.${type}`, newSteps)
             }
-            console.log(_.get(newState, `${goalId}.goal`))
-            console.log(updates, id)
+
             return newState
         }
 
