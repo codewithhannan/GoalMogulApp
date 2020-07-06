@@ -140,7 +140,6 @@ export const makeGetGoalStepsAndNeedsV2 = () =>
             res.push({
                 sectionTitle: 'steps',
                 count: steps.length,
-                _id: 'step-title',
             })
         }
 
@@ -183,12 +182,16 @@ export const makeGetGoalStepsAndNeedsV2 = () =>
         }
 
         res = res.concat(newSteps)
+        if (steps && steps.length > 0)
+            res.push({
+                type: 'goal',
+                isCreateCard: true,
+            })
 
         if (needs && needs.length > 0) {
             res.push({
                 sectionTitle: 'needs',
                 count: needs.length,
-                _id: 'need-title',
             })
         }
         // Transform needs to have a type
@@ -229,6 +232,11 @@ export const makeGetGoalStepsAndNeedsV2 = () =>
         }
 
         res = res.concat(newNeeds)
+        if (needs && needs.length > 0)
+            res.push({
+                type: 'need',
+                isCreateCard: true,
+            })
         return res
     })
 

@@ -64,8 +64,8 @@ class CentralTab extends React.PureComponent {
                 index,
                 animated,
                 viewPosition: 1,
-                viewOffset
-            });
+                viewOffset,
+            })
         }, 200)
     }
 
@@ -75,9 +75,9 @@ class CentralTab extends React.PureComponent {
     }
 
     renderItem = (props) => {
-        const { goalDetail, pageId } = this.props;
-        const { item, index } = props;
-        if (!goalDetail) return null;
+        const { goalDetail, pageId } = this.props
+        const { item, index } = props
+        if (!goalDetail) return null
 
         let newCommentParams = {
             commentDetail: {
@@ -121,54 +121,88 @@ class CentralTab extends React.PureComponent {
                 pageId={pageId}
                 drag={props.drag}
                 isActive={props.isActive}
-                onEdit={() => { this.scrollToIndex(index) }}
+                onEdit={() => {
+                    this.scrollToIndex(index)
+                }}
             />
         )
     }
 
     render() {
-        const { data, isSelf, goalDetail, pageId, bottomOffset, onScroll, contentContainerStyle } = this.props;
+        const {
+            data,
+            isSelf,
+            goalDetail,
+            pageId,
+            bottomOffset,
+            onScroll,
+            contentContainerStyle,
+        } = this.props
 
-        const list = isSelf ? <DraggableFlatList
-            ref={ref => { if (ref && ref.containerRef) this.flatlist = ref.flatlistRef.current }}
-            contentContainerStyle={contentContainerStyle}
-            data={data}
-            renderItem={this.renderItem}
-            keyExtractor={this.keyExtractor}
-            refreshing={this.props.loading || false}
-            onRefresh={this.handleRefresh}
-            ListEmptyComponent={
-                this.props.loading ? null :
-                    <EmptyResult
-                        text='No steps or needs'
-                        textStyle={{ paddingTop: 70 }}
-                    />
-            }
-            onDragEnd={e => {
-                let type = 'needs';
-                let to = e.to; let from = e.from;
-
-                // Find the type of item to be swapped and it's index
-                if (e.from <= goalDetail.steps.length) {
-                    to -= 1; from -= 1;
-                    type = 'steps';
-                } else {
-                    to -= (2 + goalDetail.steps.length);
-                    from -= (2 + goalDetail.steps.length);
+        const list = isSelf ? (
+            <DraggableFlatList
+                ref={(ref) => {
+                    if (ref && ref.containerRef)
+                        this.flatlist = ref.flatlistRef.current
+                }}
+                contentContainerStyle={contentContainerStyle}
+                data={data}
+                renderItem={this.renderItem}
+                keyExtractor={this.keyExtractor}
+                refreshing={this.props.loading || false}
+                onRefresh={this.handleRefresh}
+                ListEmptyComponent={
+                    this.props.loading ? null : (
+                        <EmptyResult
+                            text="No steps or needs"
+                            textStyle={{ paddingTop: 70 }}
+                        />
+                    )
                 }
+                onDragEnd={(e) => {
+                    // This function is tightly coupled with implementation of makeGetGoalStepsAndNeedsV2 selector function
+                    let type = 'needs'
+                    let to = e.to
+                    let from = e.from
 
-                // Return if user is trying move steps/needs in wrong place
-                if (e.to === e.from || e.to === 0 || (type === 'steps' && e.to > goalDetail.steps.length) ||
-                    (type === 'needs' && e.to <= goalDetail.steps.length + 1)) return;
+                    // Find the type of item to be swapped and it's index
+                    if (e.from <= goalDetail.steps.length) {
+                        to -= 1
+                        from -= 1
+                        type = 'steps'
+                    } else {
+                        to -= 3 + goalDetail.steps.length
+                        from -= 3 + goalDetail.steps.length
+                    }
 
-                const item = this.props.data.splice(e.from, 1);
-                this.props.data.splice(e.to, 0, item);
-                this.props.updateGoalItemsOrder(type, from, to, goalDetail, pageId);
-            }}
-            onScrollOffsetChange={onScroll}
-            scrollEventThrottle={2}
-        /> : <AnimatedFlatList
-                ref={ref => { this.flatlist = ref }}
+                    // Return if user is trying move steps/needs in wrong place
+                    if (
+                        e.to === e.from ||
+                        e.to === 0 ||
+                        (type === 'steps' && e.to > goalDetail.steps.length) ||
+                        (type === 'needs' &&
+                            e.to <= goalDetail.steps.length + 1)
+                    )
+                        return
+
+                    const item = this.props.data.splice(e.from, 1)
+                    this.props.data.splice(e.to, 0, item)
+                    this.props.updateGoalItemsOrder(
+                        type,
+                        from,
+                        to,
+                        goalDetail,
+                        pageId
+                    )
+                }}
+                onScrollOffsetChange={onScroll}
+                scrollEventThrottle={2}
+            />
+        ) : (
+            <AnimatedFlatList
+                ref={(ref) => {
+                    this.flatlist = ref
+                }}
                 onScroll={onScroll}
                 contentContainerStyle={contentContainerStyle}
                 data={data}
@@ -185,13 +219,14 @@ class CentralTab extends React.PureComponent {
                     )
                 }
                 scrollEventThrottle={2}
-            />;
+            />
+        )
 
         return (
             <Animated.View style={{ flex: 1, marginBottom: bottomOffset }}>
                 {list}
             </Animated.View>
-        );
+        )
     }
 }
 
@@ -206,7 +241,7 @@ const makeMapStateToProps = () => {
     const getGoalStepsAndNeedsV2 = makeGetGoalStepsAndNeedsV2()
 
     const mapStateToProps = (state, props) => {
-        const { pageId, goalId } = props
+        const { pageId, goalId, isSelf } = props
         const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId)
         const { goal, goalPage } = goalDetail
         let loading = false

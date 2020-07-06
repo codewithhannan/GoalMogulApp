@@ -81,7 +81,7 @@ const SectionTitle = (props) => {
     ) : null
 
     return (
-        <View style={{ ...sectionTitleStyle.containerStyle }}>
+        <View style={sectionTitleStyle.containerStyle}>
             {image}
             <Text
                 style={{ ...sectionTitleStyle.textStyle, ...props.textStyle }}

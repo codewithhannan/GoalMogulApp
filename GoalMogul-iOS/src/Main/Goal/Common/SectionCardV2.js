@@ -154,7 +154,7 @@ class SectionCardV2 extends Component {
         )
     }
 
-    renderCheckBox(isCompleted) {
+    renderCheckBox(isCompleted, isCreateCard) {
         const {
             item: { _id },
             goalRef,
@@ -164,6 +164,8 @@ class SectionCardV2 extends Component {
             type,
         } = this.props
 
+        const disabled = isCreateCard || !isSelf
+
         const iconContainerStyle = isCompleted
             ? styles.checkIconContainerStyle
             : {
@@ -171,11 +173,15 @@ class SectionCardV2 extends Component {
                   padding: 0,
                   borderWidth: 2,
                   borderColor: '#DADADA',
-                  backgroundColor: isSelf ? 'white' : '#DADADA',
+                  backgroundColor: disabled ? '#F2F2F2' : 'white',
               }
+        const iconStyle = [
+            styles.checkIconStyle,
+            { tintColor: disabled ? '#F2F2F2' : 'white' },
+        ]
 
         if (type === 'comment' || isFocusedItem) return
-        else if (isSelf) {
+        else {
             return (
                 <DelayedButton
                     activeOpacity={0.6}
@@ -189,15 +195,10 @@ class SectionCardV2 extends Component {
                             pageId
                         )
                     }
+                    disabled={disabled}
                 >
-                    <Image style={styles.checkIconStyle} source={checkIcon} />
+                    <Image style={iconStyle} source={checkIcon} />
                 </DelayedButton>
-            )
-        } else {
-            return (
-                <View style={iconContainerStyle}>
-                    <Image source={checkIcon} style={styles.checkIconStyle} />
-                </View>
             )
         }
     }
@@ -376,7 +377,12 @@ class SectionCardV2 extends Component {
 
     render() {
         // console.log('item for props is: ', this.props.item);
-        const { type, item, isActive, drag } = this.props
+        const { type, item, isActive, drag, isSelf } = this.props
+        const { isCreateCard } = item
+
+        // We do not want to render empty card when user is not self
+        if (!isSelf && isCreateCard) return <View />
+
         let itemToRender = item
         const isCommentFocused = type === 'comment'
 
@@ -405,14 +411,17 @@ class SectionCardV2 extends Component {
                 onPress={this.props.onCardPress || this.props.onBackPress}
                 onLayout={this.handleOnLayout}
                 onLongPress={drag}
+                disabled={isCreateCard}
             >
                 {this.renderBackIcon()}
                 <View style={{ justifyContent: 'flex-start' }}>
-                    {this.renderCheckBox(isCompleted)}
+                    {this.renderCheckBox(isCompleted, isCreateCard)}
                 </View>
                 <View style={{ flex: 1 }}>
                     {this.renderTextStuff(isCommentFocused, description)}
-                    {!isCommentFocused && this.renderActionIcons()}
+                    {!isCommentFocused &&
+                        !isCreateCard &&
+                        this.renderActionIcons()}
                 </View>
             </DelayedButton>
         )
