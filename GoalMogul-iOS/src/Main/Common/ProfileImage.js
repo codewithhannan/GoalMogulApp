@@ -38,6 +38,35 @@ class ProfileImage extends React.Component {
         }
     }
 
+    /**
+     * Get the source prop for Image component
+     * @param {*} imageUrl
+     * @param {*} defaultImageSource
+     */
+    getImageSource = (imageUrl, defaultImageSource) => {
+        if (!imageUrl && !defaultImageSource) {
+            // Use default profile pic as image source
+            return defaultProfilePic
+        }
+
+        // Use passed in default image source
+        if (!imageUrl) return defaultImageSource
+
+        if (typeof imageUrl == 'string') {
+            if (imageUrl.indexOf('https://') != 0) {
+                // This is an image stored in S3 with format ProfileImage/token
+                return { uri: `${IMAGE_BASE_URL}${imageUrl}` }
+            } else {
+                // This is a full URL
+                return { uri: imageUrl }
+            }
+        }
+
+        // This is a local image / icon passed in as imageUrl
+        // It's typically has Integer type
+        return imageUrl
+    }
+
     render() {
         let { imageUrl } = this.props
         const {
@@ -60,13 +89,6 @@ class ProfileImage extends React.Component {
             imageContainerStyle ||
             styles.imageContainerStyle
 
-        if (imageUrl) {
-            imageUrl =
-                typeof imageUrl == 'string' && imageUrl.indexOf('https://') != 0
-                    ? `${IMAGE_BASE_URL}${imageUrl}`
-                    : imageUrl
-        }
-
         return (
             <TouchableWithoutFeedback onPress={this.handleProfileImageOnPress}>
                 <View
@@ -86,11 +108,10 @@ class ProfileImage extends React.Component {
                                   DEFAULT_STYLE.profileImage_1
                                 : defaultImageStyle
                         }
-                        source={
-                            imageUrl
-                                ? { uri: imageUrl }
-                                : defaultImageSource || defaultProfilePic
-                        }
+                        source={this.getImageSource(
+                            imageUrl,
+                            defaultImageSource
+                        )}
                         resizeMode={resizeMode}
                     />
                 </View>
