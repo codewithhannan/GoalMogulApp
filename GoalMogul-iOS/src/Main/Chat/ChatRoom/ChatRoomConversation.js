@@ -408,29 +408,29 @@ class ChatRoomConversation extends React.Component {
     closeConversation() {
         Actions.pop()
     }
-    loadEarlierMessages() {
+    loadEarlierMessages = () => {
         const { chatRoom, hasNextPage, limit, skip } = this.props
         if (hasNextPage) {
             this.props.loadOlderMessages(chatRoom, limit, skip)
         }
     }
-    openUserProfile(user) {
+    openUserProfile = (user) => {
         const userId = user._id
         this.props.openProfile(userId)
     }
-    deleteMessage(messageId) {
+    deleteMessage = (messageId) => {
         const { chatRoom, messages } = this.props
         if (!chatRoom) return
         this.props.deleteMessage(messageId, chatRoom, messages)
     }
-    dismissGoalSuggestion(messageId) {
+    dismissGoalSuggestion = (messageId) => {
         this.deleteMessage(messageId)
         this.props.sendChatBotCustomResponseMessage(
             'action:dismiss-goal',
             this.props.chatRoom
         )
     }
-    sendMessage(messagesToSend) {
+    sendMessage = (messagesToSend) => {
         const { messageMediaRef, chatRoom, messages } = this.props
         if (!messagesToSend[0].text.trim().length || !messageMediaRef) return
         if (messageMediaRef) {
@@ -469,7 +469,7 @@ class ChatRoomConversation extends React.Component {
         )
         return addMediaRefActionSheet()
     }
-    onOpenEmojiKeyboard() {
+    onOpenEmojiKeyboard = () => {
         const showEmojiSelector = !this.state.showEmojiSelector
         if (showEmojiSelector) {
             this._textInput.blur()
@@ -491,7 +491,7 @@ class ChatRoomConversation extends React.Component {
             })
         }
     }
-    onEmojiSelected(emoji) {
+    onEmojiSelected = (emoji) => {
         this._giftedChat.onInputTextChanged(this._giftedChat.state.text + emoji)
         Animated.timing(this.animations.emojiSelectorSlideAnim, {
             toValue: Dimensions.get('window').height,
@@ -513,7 +513,7 @@ class ChatRoomConversation extends React.Component {
         })
         this.props.openCameraRoll(callback, { disableEditing: true })
     }
-    onMessageLongPress(context, message) {
+    onMessageLongPress = (context, message) => {
         const options = ['Copy Text', 'Delete', 'Cancel']
         const cancelButtonIndex = options.length - 1
         context.actionSheet().showActionSheetWithOptions(
@@ -533,7 +533,7 @@ class ChatRoomConversation extends React.Component {
             }
         )
     }
-    onShareContentButtonPress() {
+    onShareContentButtonPress = () => {
         const { user, chatRoom, messages } = this.props
         const options = [
             'Share a Friend',
@@ -629,7 +629,7 @@ class ChatRoomConversation extends React.Component {
             }
         )
     }
-    onChatTextInputChanged(text) {
+    onChatTextInputChanged = (text) => {
         const { userId, chatRoomId } = this.props
         const typingStatus = text.length != 0
         if (this.state.lastEmittedTypingIndicatorStatus != typingStatus) {
@@ -650,7 +650,7 @@ class ChatRoomConversation extends React.Component {
             })
         }
     }
-    renderTypingIndicatorFooter() {
+    renderTypingIndicatorFooter = () => {
         const { currentlyTypingUserIds, chatRoomMembersMap } = this.props
         const numUsersTyping = currentlyTypingUserIds.length
         if (numUsersTyping) {
@@ -707,7 +707,7 @@ class ChatRoomConversation extends React.Component {
             <TouchableOpacity
                 activeOpacity={0.6}
                 style={styles.iconContainerStyle}
-                onPress={this.onSendImageButtonPress.bind(this)}
+                onPress={this.onSendImageButtonPress}
             >
                 <Icon
                     name="image-outline"
@@ -722,7 +722,7 @@ class ChatRoomConversation extends React.Component {
             <TouchableOpacity
                 activeOpacity={0.6}
                 style={styles.iconContainerStyle}
-                onPress={this.onShareContentButtonPress.bind(this)}
+                onPress={this.onShareContentButtonPress}
             >
                 <Icon
                     name="lightbulb-on-outline"
@@ -741,7 +741,7 @@ class ChatRoomConversation extends React.Component {
                 <TouchableOpacity
                     activeOpacity={0.6}
                     style={styles.iconContainerStyle}
-                    onPress={this.onOpenEmojiKeyboard.bind(this)}
+                    onPress={this.onOpenEmojiKeyboard}
                 >
                     <Icon
                         name="tag-faces"
@@ -787,7 +787,7 @@ class ChatRoomConversation extends React.Component {
         )
     }
 
-    renderAccessory(props, accessoryLocation) {
+    renderAccessory = (props, accessoryLocation) => {
         const { messageMediaRef } = this.props
         if (accessoryLocation == 'bottom') {
             return (
@@ -846,7 +846,7 @@ class ChatRoomConversation extends React.Component {
         )
     }
 
-    renderComposer(props) {
+    renderComposer = (props) => {
         return (
             <View
                 style={{
@@ -883,7 +883,7 @@ class ChatRoomConversation extends React.Component {
             </View>
         )
     }
-    renderInputToolbar(props) {
+    renderInputToolbar = (props) => {
         return <ChatRoomConversationInputToolbar {...props} />
     }
     async saveToCameraRoll(imageSource) {
@@ -916,7 +916,7 @@ class ChatRoomConversation extends React.Component {
         }
     }
 
-    renderMessage(props) {
+    renderMessage = (props) => {
         return <GMGiftedMessage {...props} />
     }
 
@@ -934,7 +934,7 @@ class ChatRoomConversation extends React.Component {
     }
 
     // Render user image for the message
-    renderAvatar(props) {
+    renderAvatar = (props) => {
         return (
             <Avatar
                 {...props}
@@ -999,15 +999,15 @@ class ChatRoomConversation extends React.Component {
                     renderAvatarOnTop={true}
                     loadEarlier={this.props.hasNextPage}
                     isLoadingEarlier={this.props.loading}
-                    onLoadEarlier={this.loadEarlierMessages.bind(this)}
-                    onPressAvatar={this.openUserProfile.bind(this)}
-                    onLongPress={this.onMessageLongPress.bind(this)}
-                    renderFooter={this.renderTypingIndicatorFooter.bind(this)}
-                    onSend={this.sendMessage.bind(this)}
-                    onInputTextChanged={this.onChatTextInputChanged.bind(this)}
-                    renderAccessory={this.renderAccessory.bind(this)}
+                    onLoadEarlier={this.loadEarlierMessages}
+                    onPressAvatar={this.openUserProfile}
+                    onLongPress={this.onMessageLongPress}
+                    renderFooter={this.renderTypingIndicatorFooter}
+                    onSend={this.sendMessage}
+                    onInputTextChanged={this.onChatTextInputChanged}
+                    renderAccessory={this.renderAccessory}
                     renderSend={null /*this.renderSendButton*/}
-                    renderComposer={this.renderComposer.bind(this)}
+                    renderComposer={this.renderComposer}
                     // maxComposerHeight={120 - 18} // padding
                     maxComposerHeight={196}
                     minComposerHeight={108}
@@ -1018,10 +1018,8 @@ class ChatRoomConversation extends React.Component {
                     renderAvatar={this.renderAvatar}
                     bottomOffset={GIFTED_CHAT_BOTTOM_OFFSET}
                     minInputToolbarHeight={this.props.messageMediaRef ? 90 : 60}
-                    deleteMessage={this.deleteMessage.bind(this)}
-                    dismissGoalSuggestion={this.dismissGoalSuggestion.bind(
-                        this
-                    )}
+                    deleteMessage={this.deleteMessage}
+                    dismissGoalSuggestion={this.dismissGoalSuggestion}
                 />
                 {this.state.showEmojiSelector && (
                     <Animated.View
@@ -1044,7 +1042,7 @@ class ChatRoomConversation extends React.Component {
                             actionHidden={true}
                             title={'Select an Emoji'}
                             cancelText={'Close'}
-                            onCancel={this.onOpenEmojiKeyboard.bind(this)}
+                            onCancel={this.onOpenEmojiKeyboard}
                             containerStyles={{
                                 elevation: 1,
                                 shadowColor: '#666',
@@ -1061,9 +1059,7 @@ class ChatRoomConversation extends React.Component {
                             }}
                         >
                             <EmojiSelector
-                                onEmojiSelected={this.onEmojiSelected.bind(
-                                    this
-                                )}
+                                onEmojiSelected={this.onEmojiSelected}
                             />
                         </View>
                     </Animated.View>
