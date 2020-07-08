@@ -9,6 +9,8 @@ import EditIcon from '../../../asset/utils/edit.png'
 import UndoIcon from '../../../asset/utils/undo.png'
 import TrashIcon from '../../../asset/utils/trash.png'
 import Icons from '../../../asset/base64/Icons'
+import { IMAGE_BASE_URL } from '../../../Utils/Constants'
+import DEFAULT_PROFILE_IMAGE from '../../../asset/utils/defaultUserProfile.png'
 
 const { CheckIcon } = Icons
 /**
@@ -408,3 +410,50 @@ export const decode = (text) => entities.decode(text)
 export const escapeRegExp = (string) => {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 }
+
+/**
+ * Return an image source that can be applied directly to Image component, e.g.
+ * let a = getImageOrDefault()
+ * return <Image source={a} />
+ *
+ * @param {*} imageSource
+ * @param {*} defaultImageSource
+ */
+export const getImageOrDefault = (imageSource, defaultImageSource) => {
+    if (!imageSource && !defaultImageSource) {
+        // No source and default source. Return default user icon
+        return DEFAULT_PROFILE_IMAGE
+    }
+
+    // Use passed in default image source
+    // If it's a URL, it should has format { uri: imageUrl }
+    // If it's an asset, it should be just the imported image
+    if (!imageSource) {
+        return defaultImageSource
+    }
+
+    if (typeof imageSource == 'string') {
+        if (imageSource.indexOf('https://') != 0) {
+            // This is an image stored in S3 with format ProfileImage/token
+            return { uri: `${IMAGE_BASE_URL}${imageSource}` }
+        } else {
+            // This is a full URL
+            return { uri: imageSource }
+        }
+    }
+
+    // This is a local image / icon passed in as imageUrl
+    // It's typically has Integer type
+    return imageSource
+}
+
+/**
+ * Return full profile image url by using the imageSource supplied from
+ * user object, user.profile.image. It's typically a token in S3.
+ * @param {*} imageSource
+ */
+export const getProfileImageOrDefaultFromUser = (user, defaultSource) =>
+    getImageOrDefault(_.get(user, 'profile.image', defaultSource))
+
+export const getProfileImageOrDefault = (imageSource) =>
+    getImageOrDefault(imageSource, DEFAULT_PROFILE_IMAGE)

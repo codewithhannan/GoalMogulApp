@@ -1,6 +1,13 @@
 /**
- * Icons from https://oblador.github.io/react-native-vector-icons/
+ * Materical Icons from
+ * @see https://oblador.github.io/react-native-vector-icons/
  *
+ * Sample usage:
+ * import { Icon } from '@ui-kitten/components'
+ *
+ * # Find icons in https://oblador.github.io/react-native-vector-icons/
+ * # under section MaterialIcons
+ * <Icon name='{icon name just found}' pack='material' style={{ height, width, tintColor }} />
  * @format
  */
 
