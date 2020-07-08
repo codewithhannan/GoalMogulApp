@@ -9,7 +9,6 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import {
     Text,
-    Clipboard,
     StyleSheet,
     TouchableOpacity,
     View,
@@ -18,8 +17,8 @@ import {
     Animated,
     Alert,
 } from 'react-native'
+import _ from 'lodash'
 import { Layout, Text as KittenText } from '@ui-kitten/components'
-import { Actions } from 'react-native-router-flux'
 import { MessageText, Time, utils } from 'react-native-gifted-chat'
 import { MemberDocumentFetcher } from '../../../../Utils/UserUtils'
 import ChatMessageImage from '../../Modals/ChatMessageImage'
@@ -46,7 +45,6 @@ export default class Bubble extends React.Component {
             timeHeightAnim: new Animated.Value(0),
             userRef: null,
         }
-        this.onLongPress = this.onLongPress.bind(this)
     }
 
     componentDidMount() {
@@ -65,33 +63,6 @@ export default class Bubble extends React.Component {
                     userRef: userDoc,
                 })
             })
-        }
-    }
-
-    onLongPress = () => {
-        if (this.props.onLongPress) {
-            this.props.onLongPress(this.context, this.props.currentMessage)
-        } else if (this.props.currentMessage.text) {
-            const options =
-                this.props.optionTitles.length > 0
-                    ? this.props.optionTitles.slice(0, 2)
-                    : ['Copy Text', 'Cancel']
-            const cancelButtonIndex = options.length - 1
-            this.context.actionSheet().showActionSheetWithOptions(
-                {
-                    options,
-                    cancelButtonIndex,
-                },
-                (buttonIndex) => {
-                    switch (buttonIndex) {
-                        case 0:
-                            Clipboard.setString(this.props.currentMessage.text)
-                            break
-                        default:
-                            break
-                    }
-                }
-            )
         }
     }
 
@@ -361,7 +332,14 @@ export default class Bubble extends React.Component {
     }
 
     renderUsername() {
-        const username = this.props.currentMessage.user.name
+        if (
+            !_.has(this.props.currentMessage, 'user') ||
+            _.isEmpty(_.get(this.props.currentMessage, 'user'))
+        )
+            return
+        const { user } = this.props.currentMessage
+        const username = user.name
+
         if (username) {
             const {
                 containerStyle,
@@ -379,6 +357,10 @@ export default class Bubble extends React.Component {
                         styles.username,
                         this.props.usernameStyle,
                     ]}
+                    // reuse the onPressAvatar to open user profile
+                    // this is passed through GiftedChat props in
+                    // ChatRoomConversation.js
+                    onPress={() => this.props.onPressAvatar(user)}
                 >
                     {username}
                 </Text>
@@ -434,22 +416,16 @@ export default class Bubble extends React.Component {
 
         return (
             <View style={[styles.container, this.props.containerStyle]}>
-                <TouchableOpacity
-                    onLongPress={this.onLongPress}
-                    accessibilityTraits="text"
-                    {...this.props.touchableProps}
-                >
-                    <View style={[styles.wrapper, this.props.wrapperStyle]}>
-                        <View>
-                            {this.renderCustomView()}
-                            {messageHeader}
-                            {this.renderMessageImage()}
-                            {this.renderSharedContent()}
-                            {this.renderMessageText()}
-                            {this.renderGoalRecommendation()}
-                        </View>
+                <View style={[styles.wrapper, this.props.wrapperStyle]}>
+                    <View>
+                        {this.renderCustomView()}
+                        {messageHeader}
+                        {this.renderMessageImage()}
+                        {this.renderSharedContent()}
+                        {this.renderMessageText()}
+                        {this.renderGoalRecommendation()}
                     </View>
-                </TouchableOpacity>
+                </View>
             </View>
         )
     }

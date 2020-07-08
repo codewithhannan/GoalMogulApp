@@ -7,8 +7,14 @@
 
 import PropTypes from 'prop-types'
 import React from 'react'
-import { View, ViewPropTypes, StyleSheet } from 'react-native'
-
+import {
+    View,
+    ViewPropTypes,
+    StyleSheet,
+    Clipboard,
+    TouchableHighlight,
+} from 'react-native'
+import * as Haptics from 'expo-haptics'
 import { Avatar, Day, utils } from 'react-native-gifted-chat'
 import Bubble from './GMGiftedChatBubbleSlack'
 
@@ -30,6 +36,35 @@ export default class Message extends React.Component {
             position: 'left',
             isSameUser,
             isSameDay,
+        }
+    }
+
+    onLongPress = () => {
+        // Haptic effect to notify user on interaction
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        if (this.props.onLongPress) {
+            this.props.onLongPress(this.context, this.props.currentMessage)
+        } else if (this.props.currentMessage.text) {
+            const options =
+                this.props.optionTitles.length > 0
+                    ? this.props.optionTitles.slice(0, 2)
+                    : ['Copy Text', 'Cancel']
+            const cancelButtonIndex = options.length - 1
+            this.context.actionSheet().showActionSheetWithOptions(
+                {
+                    options,
+                    cancelButtonIndex,
+                },
+                (buttonIndex) => {
+                    switch (buttonIndex) {
+                        case 0:
+                            Clipboard.setString(this.props.currentMessage.text)
+                            break
+                        default:
+                            break
+                    }
+                }
+            )
         }
     }
 
@@ -88,16 +123,22 @@ export default class Message extends React.Component {
         return (
             <View>
                 {this.renderDay()}
-                <View
-                    style={[
-                        styles.container,
-                        { marginBottom },
-                        this.props.containerStyle,
-                    ]}
+                <TouchableHighlight
+                    onLongPress={this.onLongPress}
+                    accessibilityTraits="text"
+                    underlayColor="#e1e4e8"
                 >
-                    {this.renderAvatar()}
-                    {this.renderBubble()}
-                </View>
+                    <View
+                        style={[
+                            styles.container,
+                            { marginBottom },
+                            this.props.containerStyle,
+                        ]}
+                    >
+                        {this.renderAvatar()}
+                        {this.renderBubble()}
+                    </View>
+                </TouchableHighlight>
             </View>
         )
     }
@@ -118,6 +159,10 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
 })
+
+Message.contextTypes = {
+    actionSheet: PropTypes.func,
+}
 
 Message.defaultProps = {
     renderAvatar: undefined,

@@ -5,6 +5,15 @@
  * 	- connect to live chat service for typing indicator
  * 	- fetch the full chat document with members populated
  *
+ * There are two main components for GiftedChat.js
+ * 1. GMGiftedMessage that includes Avatar and Message bubble
+ * 2. GMGfitedChatInputToolbar that includes composer, attached
+ *    image preview, and action buttons
+ *
+ * Most of the props that these two components and their
+ * children components are using are defined as props
+ * in GiftedChat props in this file
+ *
  * @format
  */
 
@@ -94,7 +103,11 @@ const CHAT_ROOM_DOCUMENT_REFRESH_INTERVAL = 3000 // milliseconds
 //     : 66
 const GIFTED_CHAT_BOTTOM_OFFSET = 102
 
-const RemoveComponent = (props) => {
+/**
+ * Remove button for image preview in chat inputbox
+ * @param {*} props
+ */
+const RemoveAttachedImageButton = (props) => {
     const { onRemove, uploading } = props
     return (
         <DelayedButton
@@ -768,7 +781,7 @@ class ChatRoomConversation extends React.Component {
                         style={{ height: 75, width: 65, borderRadius: 5 }}
                         resizeMode="cover"
                     />
-                    <RemoveComponent onRemove={onRemove} />
+                    <RemoveAttachedImageButton onRemove={onRemove} />
                 </TouchableOpacity>
             </View>
         )

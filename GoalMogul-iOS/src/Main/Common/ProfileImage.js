@@ -6,7 +6,7 @@ import _ from 'lodash'
 import { connect } from 'react-redux'
 
 // default profile picture
-import defaultProfilePic from '../../asset/utils/defaultUserProfile.png'
+import DEFAULT_PROFILE_IMAGE from '../../asset/utils/defaultUserProfile.png'
 
 // actions
 import { openProfile } from '../../actions'
@@ -46,7 +46,7 @@ class ProfileImage extends React.Component {
     getImageSource = (imageUrl, defaultImageSource) => {
         if (!imageUrl && !defaultImageSource) {
             // Use default profile pic as image source
-            return defaultProfilePic
+            return DEFAULT_PROFILE_IMAGE
         }
 
         // Use passed in default image source
