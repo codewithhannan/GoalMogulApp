@@ -13,6 +13,7 @@ import {
     loadMoreTribeHubFeed,
     refreshTribeHub,
 } from '../../redux/modules/tribe/TribeHubActions'
+import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
 
 import { makeTribeFeedSelector } from '../../redux/modules/tribe/TribeSelector'
 
@@ -165,4 +166,5 @@ export default connect(makeMapStateToProps, {
     refreshTribeHubFeed,
     loadMoreTribeHubFeed,
     refreshTribeHub,
+    openPostDetail,
 })(wrapAnalytics(TribeHub, SCREENS.EXPLORE_PAGE))
