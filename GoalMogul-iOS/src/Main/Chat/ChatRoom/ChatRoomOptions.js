@@ -42,7 +42,7 @@ import {
     muteChatRoom,
     changeChatRoomMute,
 } from '../../../redux/modules/chat/ChatRoomOptionsActions'
-import { openProfile, loadFriends } from '../../../actions'
+import { openProfile, loadFriends, openProfileDetail } from '../../../actions'
 import {
     GROUP_CHAT_DEFAULT_ICON_URL,
     IMAGE_BASE_URL,
@@ -332,7 +332,8 @@ class ChatRoomOptions extends React.Component {
      * 3. Search Messages
      * 4. Delete all messages
      */
-    renderPrivateChatOptions() {
+    renderPrivateChatOptions = (otherUser) => {
+        if (!otherUser) return
         return (
             <Menu style={styles.menu} appearance="noDivider">
                 <MenuItem
@@ -345,7 +346,7 @@ class ChatRoomOptions extends React.Component {
                     accessoryLeft={(props) =>
                         makeAccessoryIcon(props, 'search', styles.accessoryLeft)
                     }
-                    onPress={() => {}}
+                    onPress={() => this.props.openProfile(otherUser._id)}
                     style={styles.menuItem}
                 />
                 {/* // Once API for this method is ready, uncomment this and delete the toggle mute
@@ -610,7 +611,7 @@ class ChatRoomOptions extends React.Component {
                 <>
                     {this.renderMuteDurationPicker()}
                     {chatRoom.roomType == 'Direct'
-                        ? this.renderPrivateChatOptions()
+                        ? this.renderPrivateChatOptions(otherUser)
                         : this.renderGroupChatOptions()}
                 </>
             )
@@ -757,6 +758,7 @@ const mapStateToProps = (state) => {
 const styledChatRoomOptions = withStyles(ChatRoomOptions, mapThemeToStyles)
 export default connect(mapStateToProps, {
     openProfile,
+    openProfileDetail,
     muteChatRoom,
     addMemberToChatRoom,
     removeChatMember,

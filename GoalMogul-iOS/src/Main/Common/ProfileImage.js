@@ -5,15 +5,12 @@ import { Image, View, TouchableWithoutFeedback } from 'react-native'
 import _ from 'lodash'
 import { connect } from 'react-redux'
 
-// default profile picture
-import defaultProfilePic from '../../asset/utils/defaultUserProfile.png'
-
 // actions
 import { openProfile } from '../../actions'
 
 // Constants
-import { IMAGE_BASE_URL } from '../../Utils/Constants'
 import { DEFAULT_STYLE } from '../../styles'
+import { getImageOrDefault } from '../../redux/middleware/utils'
 
 const DEBUG_KEY = '[ UI ProfileImage ]'
 /*
@@ -60,13 +57,6 @@ class ProfileImage extends React.Component {
             imageContainerStyle ||
             styles.imageContainerStyle
 
-        if (imageUrl) {
-            imageUrl =
-                typeof imageUrl == 'string' && imageUrl.indexOf('https://') != 0
-                    ? `${IMAGE_BASE_URL}${imageUrl}`
-                    : imageUrl
-        }
-
         return (
             <TouchableWithoutFeedback onPress={this.handleProfileImageOnPress}>
                 <View
@@ -86,11 +76,7 @@ class ProfileImage extends React.Component {
                                   DEFAULT_STYLE.profileImage_1
                                 : defaultImageStyle
                         }
-                        source={
-                            imageUrl
-                                ? { uri: imageUrl }
-                                : defaultImageSource || defaultProfilePic
-                        }
+                        source={getImageOrDefault(imageUrl, defaultImageSource)}
                         resizeMode={resizeMode}
                     />
                 </View>

@@ -21,7 +21,6 @@ import FormHeader from '../../Common/Header/FormHeader'
 import LoadingModal from '../../Common/Modal/LoadingModal'
 
 /* Asset */
-import editImage from '../../../asset/utils/edit.png'
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png'
 
 /* Actions */
@@ -40,6 +39,7 @@ import {
 /** Constants */
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import { GM_BLUE_LIGHT_LIGHT, GM_BLUE, DEFAULT_STYLE } from '../../../styles'
+import { Icon } from '@ui-kitten/components'
 
 const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel']
 const TAKING_PICTURE_INDEX = 0
@@ -155,9 +155,10 @@ class ProfileDetailEditForm extends Component {
                         </View>
                     </View>
                     <View style={styles.iconContainerStyle}>
-                        <Image
+                        <Icon
+                            name="edit"
+                            pack="material"
                             style={styles.editIconStyle}
-                            source={editImage}
                         />
                     </View>
                 </TouchableOpacity>
@@ -343,7 +344,7 @@ const validValues = ({ headline, about, elevatorPitch }) => {
     }
 
     if (about && about.length > 500) {
-        return false;
+        return false
     }
 
     if (elevatorPitch && elevatorPitch.length > 250) {
