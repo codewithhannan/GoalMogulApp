@@ -856,14 +856,14 @@ class ChatRoomConversation extends React.Component {
                     placeholder={`${props.placeholder.slice(0, 42)}...`}
                     editable={!this.props.initializing}
                     style={{
-                        fontSize: 15,
+                        fontSize: 16,
                         padding: 9,
                         paddingTop: 10,
                         borderColor: '#F1F1F1',
                         borderRadius: 6,
                         borderWidth: 1,
                         minHeight: 15 + 18,
-                        maxHeight: 15 * 6 + 18,
+                        maxHeight: 18 * 5 + 23,
                     }}
                 />
             </View>
@@ -921,10 +921,6 @@ class ChatRoomConversation extends React.Component {
 
     // Render user image for the message
     renderAvatar(props) {
-        // if (props && props.currentMessage && props.currentMessage.user) {
-        //     console.log('props: ', props.currentMessage.user)
-        // }
-
         return (
             <Avatar
                 {...props}
@@ -999,8 +995,8 @@ class ChatRoomConversation extends React.Component {
                     renderSend={null /*this.renderSendButton*/}
                     renderComposer={this.renderComposer.bind(this)}
                     // maxComposerHeight={120 - 18} // padding
-                    maxComposerHeight={184}
-                    minComposerHeight={105}
+                    maxComposerHeight={196}
+                    minComposerHeight={108}
                     minInputToolbarHeight={47}
                     renderMessage={this.renderMessage}
                     renderSystemMessage={this.renderSystemMessage}

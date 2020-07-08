@@ -14,7 +14,7 @@ import {
     Dimensions,
 } from 'react-native'
 
-const DEFAULT_ACCESSORY_HEIGHT = 50
+const DEFAULT_ACCESSORY_HEIGHT = 70
 
 export default class ChatRoomConversationInputToolbar extends React.Component {
     constructor(props) {
