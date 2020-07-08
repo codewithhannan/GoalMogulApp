@@ -21,6 +21,7 @@ import {
     shareGoalToMastermind,
     markGoalAsComplete,
 } from '../../../redux/modules/goal/GoalDetailActions'
+import { tribeDetailOpen } from '../../../redux/modules/tribe/MyTribeActions'
 
 /* Asset */
 import ShareIcon from '../../../asset/utils/forward.png'
@@ -30,6 +31,7 @@ import TrashIcon from '../../../asset/utils/trash.png'
 import Icons from '../../../asset/base64/Icons'
 import { DEFAULT_STYLE } from '../../../styles'
 import { Icon } from '@ui-kitten/components'
+import DelayedButton from '../../Common/Button/DelayedButton'
 
 const { CheckIcon } = Icons
 const { width } = Dimensions.get('window')
@@ -170,7 +172,7 @@ class Headline extends React.PureComponent {
             caret,
             textStyle,
             menuName,
-            tribeName,
+            belongsToTribe,
         } = this.props
 
         // If item belongs to self, then caret displays delete
@@ -228,24 +230,30 @@ class Headline extends React.PureComponent {
                     onPress={() => this.handleNameOnPress(user)}
                     textStyle={textStyle}
                 />
-                {!tribeName && [<UserBanner user={user} />, categoryComponent]}
-                {tribeName && [
+                {!belongsToTribe && [
+                    <UserBanner user={user} />,
+                    categoryComponent,
+                ]}
+                {belongsToTribe && [
                     <Icon
                         style={DEFAULT_STYLE.smallIcon_1}
                         name="arrow-right"
                     />,
-                    <Text
-                        style={[
-                            textStyle,
-                            {
-                                marginLeft: 4,
-                                maxWidth: 120 * DEFAULT_STYLE.uiScale,
-                            },
-                        ]}
-                        numberOfLines={1}
+                    <DelayedButton
+                        onPress={() =>
+                            this.props.tribeDetailOpen(belongsToTribe)
+                        }
                     >
-                        {tribeName}
-                    </Text>,
+                        <Text
+                            style={[
+                                textStyle,
+                                { maxWidth: 120 * DEFAULT_STYLE.uiScale },
+                            ]}
+                            numberOfLines={1}
+                        >
+                            {belongsToTribe.name}
+                        </Text>
+                    </DelayedButton>,
                 ]}
                 <View
                     style={{
@@ -281,4 +289,5 @@ export default connect(null, {
     editGoal,
     shareGoalToMastermind,
     markGoalAsComplete,
+    tribeDetailOpen,
 })(Headline)
