@@ -236,8 +236,9 @@ class Headline extends React.PureComponent {
                 ]}
                 {belongsToTribe && [
                     <Icon
-                        style={DEFAULT_STYLE.smallIcon_1}
-                        name="arrow-right"
+                        pack="material"
+                        style={DEFAULT_STYLE.normalIcon_1}
+                        name="menu-right"
                     />,
                     <DelayedButton
                         onPress={() =>
