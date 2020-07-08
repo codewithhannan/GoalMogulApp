@@ -759,12 +759,13 @@ class ChatRoomConversation extends React.Component {
                         width: 65,
                         alignItems: 'center',
                         justifyContent: 'flex-start',
+                        borderRadius: 5,
                     }}
                     onPress={onPress}
                 >
                     <Image
                         source={{ uri: messageMediaRef }}
-                        style={{ height: 75, width: 65 }}
+                        style={{ height: 75, width: 65, borderRadius: 5 }}
                         resizeMode="cover"
                     />
                     <RemoveComponent onRemove={onRemove} />
