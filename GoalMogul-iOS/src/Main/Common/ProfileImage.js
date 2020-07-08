@@ -5,15 +5,12 @@ import { Image, View, TouchableWithoutFeedback } from 'react-native'
 import _ from 'lodash'
 import { connect } from 'react-redux'
 
-// default profile picture
-import DEFAULT_PROFILE_IMAGE from '../../asset/utils/defaultUserProfile.png'
-
 // actions
 import { openProfile } from '../../actions'
 
 // Constants
-import { IMAGE_BASE_URL } from '../../Utils/Constants'
 import { DEFAULT_STYLE } from '../../styles'
+import { getImageOrDefault } from '../../redux/middleware/utils'
 
 const DEBUG_KEY = '[ UI ProfileImage ]'
 /*
@@ -36,35 +33,6 @@ class ProfileImage extends React.Component {
         } else {
             this.props.openProfile(userId)
         }
-    }
-
-    /**
-     * Get the source prop for Image component
-     * @param {*} imageUrl
-     * @param {*} defaultImageSource
-     */
-    getImageSource = (imageUrl, defaultImageSource) => {
-        if (!imageUrl && !defaultImageSource) {
-            // Use default profile pic as image source
-            return DEFAULT_PROFILE_IMAGE
-        }
-
-        // Use passed in default image source
-        if (!imageUrl) return defaultImageSource
-
-        if (typeof imageUrl == 'string') {
-            if (imageUrl.indexOf('https://') != 0) {
-                // This is an image stored in S3 with format ProfileImage/token
-                return { uri: `${IMAGE_BASE_URL}${imageUrl}` }
-            } else {
-                // This is a full URL
-                return { uri: imageUrl }
-            }
-        }
-
-        // This is a local image / icon passed in as imageUrl
-        // It's typically has Integer type
-        return imageUrl
     }
 
     render() {
@@ -108,10 +76,7 @@ class ProfileImage extends React.Component {
                                   DEFAULT_STYLE.profileImage_1
                                 : defaultImageStyle
                         }
-                        source={this.getImageSource(
-                            imageUrl,
-                            defaultImageSource
-                        )}
+                        source={getImageOrDefault(imageUrl, defaultImageSource)}
                         resizeMode={resizeMode}
                     />
                 </View>

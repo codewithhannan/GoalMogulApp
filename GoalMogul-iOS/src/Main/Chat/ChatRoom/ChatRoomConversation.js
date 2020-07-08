@@ -92,6 +92,7 @@ import ChatRoomConversationInputToolbar from './GiftedChat/GMGiftedChatInputTool
 import { Layout, Icon } from '@ui-kitten/components'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]'
 const LISTENER_KEY = 'ChatRoomConversation'
@@ -988,10 +989,9 @@ class ChatRoomConversation extends React.Component {
                     user={{
                         _id,
                         name,
-                        avatar:
-                            profile &&
-                            profile.image &&
-                            `${IMAGE_BASE_URL}${profile.image}`,
+                        avatar: getProfileImageOrDefaultFromUser(
+                            this.props.user
+                        ),
                     }}
                     placeholder={`Send a message to '${this.props.chatRoomName}'`}
                     isAnimated={true}
