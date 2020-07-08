@@ -14,12 +14,16 @@ import {
     Dimensions,
 } from 'react-native'
 
+const DEFAULT_ACCESSORY_HEIGHT = 50
+
 export default class ChatRoomConversationInputToolbar extends React.Component {
     constructor(props) {
         super(props)
 
         this.keyboardWillShow = this.keyboardWillShow.bind(this)
         this.keyboardWillHide = this.keyboardWillHide.bind(this)
+
+        this.contentSize = undefined
 
         this.state = {
             position: 'absolute',
@@ -54,6 +58,25 @@ export default class ChatRoomConversationInputToolbar extends React.Component {
         if (this.state.position !== 'absolute') {
             this.setState({
                 position: 'absolute',
+            })
+        }
+    }
+
+    onLayout = (e) => {
+        const { layout } = e.nativeEvent
+
+        // Support earlier versions of React Native on Android.
+        if (!layout) {
+            return
+        }
+
+        if (
+            !this.contentSize ||
+            (this.contentSize && this.contentSize.height !== layout.height)
+        ) {
+            this.contentSize = layout
+            this.props.onInputSizeChanged({
+                height: layout.height - DEFAULT_ACCESSORY_HEIGHT,
             })
         }
     }
@@ -98,6 +121,7 @@ export default class ChatRoomConversationInputToolbar extends React.Component {
                     this.props.containerStyle,
                     { position: this.state.position },
                 ]}
+                onLayout={this.onLayout}
             >
                 {this.renderAccessory('top')}
                 <View style={[styles.primary, this.props.primaryStyle]}>

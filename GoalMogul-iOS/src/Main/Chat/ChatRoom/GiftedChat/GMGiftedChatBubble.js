@@ -52,7 +52,7 @@ export default class ChatRoomConversationBubble extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isExpanded: true,
+            isExpanded: false,
             wrapperOpacityAnim: new Animated.Value(1),
             wrapperPaddingAnim: new Animated.Value(0),
             timeHeightAnim: new Animated.Value(0),
@@ -569,7 +569,7 @@ export default class ChatRoomConversationBubble extends React.Component {
                             {this.renderMessageVideo()}
                             {this.renderSharedContent()}
                             {this.renderMessageText()}
-                            {/* <View
+                            <View
                                 style={[
                                     styles[this.props.position].bottom,
                                     this.props.bottomContainerStyle[
@@ -580,7 +580,7 @@ export default class ChatRoomConversationBubble extends React.Component {
                                 {this.renderUsername()}
                                 {this.renderTime()}
                                 {this.renderTicks()}
-                            </View> */}
+                            </View>
                             {this.renderGoalRecommendation()}
                         </View>
                     </Animated.View>

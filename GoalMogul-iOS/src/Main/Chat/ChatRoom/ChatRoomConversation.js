@@ -14,6 +14,7 @@ import * as FileSystem from 'expo-file-system'
 import * as Permissions from 'expo-permissions'
 import R from 'ramda'
 import React from 'react'
+import _ from 'lodash'
 import {
     ActionSheetIOS,
     Alert,
@@ -26,8 +27,9 @@ import {
     TextInput,
     TouchableOpacity,
     View,
+    Image,
+    Keyboard,
 } from 'react-native'
-import { Image, Text } from 'react-native-elements'
 import EmojiSelector from 'react-native-emoji-selector'
 import {
     Avatar,
@@ -36,17 +38,12 @@ import {
     Send,
     SystemMessage,
 } from 'react-native-gifted-chat'
-import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import UUID from 'uuid/v4'
 import { openCamera, openCameraRoll, openProfile } from '../../../actions'
-import PhotoIcon from '../../../asset/utils/cameraRoll.png'
 import profilePic from '../../../asset/utils/defaultUserProfile.png'
-import EmojiIcon from '../../../asset/utils/emoji.png'
-import LightBulb from '../../../asset/utils/lightBulb.png'
 import NextButton from '../../../asset/utils/next.png'
-import SendButton from '../../../asset/utils/sendButton.png'
 // Components
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal'
 // Actions
@@ -66,7 +63,7 @@ import MessageStorageService from '../../../services/chat/MessageStorageService'
 import LiveChatService, {
     OUTGOING_EVENT_NAMES,
 } from '../../../socketio/services/LiveChatService'
-import { APP_BLUE_BRIGHT } from '../../../styles'
+import { GM_BLUE_LIGHT, GM_BLUE } from '../../../styles'
 import {
     GROUP_CHAT_DEFAULT_ICON_URL,
     IMAGE_BASE_URL,
@@ -80,28 +77,63 @@ import {
 } from '../../Common/ActionSheetFactory'
 import ModalHeader from '../../Common/Header/ModalHeader'
 import ProfileImage from '../../Common/ProfileImage'
-import { RemoveComponent } from '../../Goal/GoalDetailCard/SuggestionPreview'
 import ChatRoomLoaderOverlay from '../Modals/ChatRoomLoaderOverlay'
-import GMGiftedChatBubble from './GiftedChat/GMGiftedChatBubble'
+import GMGiftedMessage from './GiftedChat/GMGiftedMessage'
 import ChatRoomConversationInputToolbar from './GiftedChat/GMGiftedChatInputToolbar'
-import { Layout } from '@ui-kitten/components'
+import { Layout, Icon } from '@ui-kitten/components'
+import DelayedButton from '../../Common/Button/DelayedButton'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]'
 const LISTENER_KEY = 'ChatRoomConversation'
 const MAX_TYPING_INDICATORS_TO_DISPLAY = 3
 const CHAT_ROOM_DOCUMENT_REFRESH_INTERVAL = 3000 // milliseconds
 
-const GIFTED_CHAT_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(DEVICE_MODEL)
-    ? 102
-    : 66
+// const GIFTED_CHAT_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(DEVICE_MODEL)
+//     ? 102
+//     : 66
+const GIFTED_CHAT_BOTTOM_OFFSET = 102
+
+const RemoveComponent = (props) => {
+    const { onRemove, uploading } = props
+    return (
+        <DelayedButton
+            activeOpacity={0.6}
+            onPress={onRemove}
+            style={{
+                position: 'absolute',
+                top: -8,
+                right: -8,
+                zIndex: 2,
+                height: 22,
+                width: 22,
+                backgroundColor: 'white',
+                borderRadius: 11,
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}
+            disabled={uploading}
+        >
+            <Icon
+                name="cancel"
+                pack="material"
+                style={{ height: 22, width: 22, borderRadius: 11 }}
+            />
+        </DelayedButton>
+    )
+}
 
 /**
  * @prop {String} chatRoomId: required
  */
 class ChatRoomConversation extends React.Component {
-    state = {
-        lastAlertedChatRoomId: null,
-        lastEmittedTypingIndicatorStatus: false,
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            lastAlertedChatRoomId: null,
+            lastEmittedTypingIndicatorStatus: false,
+        }
     }
 
     _keyExtractor = (item) => item._id
@@ -247,6 +279,36 @@ class ChatRoomConversation extends React.Component {
         )
         LiveChatService.cancelEmitOnConnect(LISTENER_KEY)
     }
+
+    /**
+     * TODO: nextProps.messages sometimes diffs than this.props.messages although
+     * there is actually no changes but the minor field changes in the messages,
+     * e.g.
+     */
+    shouldComponentUpdate(nextProps, nextState) {
+        return (
+            !_.isEqual(nextProps.initializing, this.props.initializing) ||
+            !_.isEqual(nextProps.userId, this.props.userId) ||
+            !_.isEqual(nextProps.token, this.props.token) ||
+            !_.isEqual(nextProps.chatRoom, this.props.chatRoom) ||
+            !_.isEqual(nextProps.messages, this.props.messages) ||
+            !_.isEqual(
+                nextProps.currentlyTypingUserIds,
+                this.props.currentlyTypingUserIds
+            ) ||
+            !_.isEqual(nextProps.messageMediaRef, this.props.messageMediaRef) ||
+            !_.isEqual(nextProps.ghostMessages, this.props.ghostMessages) ||
+            !_.isEqual(
+                nextState.lastAlertedChatRoomId,
+                this.state.lastAlertedChatRoomId
+            ) ||
+            !_.isEqual(
+                nextState.lastEmittedTypingIndicatorStatus,
+                this.state.lastEmittedTypingIndicatorStatus
+            )
+        )
+    }
+
     _pollChatRoomDocument() {
         this.chatRoomDocumentPoll = setInterval(
             this._refreshChatRoom.bind(this),
@@ -357,7 +419,7 @@ class ChatRoomConversation extends React.Component {
     }
     sendMessage(messagesToSend) {
         const { messageMediaRef, chatRoom, messages } = this.props
-        if (!messagesToSend[0].text.trim().length && !messageMediaRef) return
+        if (!messagesToSend[0].text.trim().length || !messageMediaRef) return
         if (messageMediaRef) {
             this._textInput.blur()
         }
@@ -479,7 +541,7 @@ class ChatRoomConversation extends React.Component {
                         const searchFor = {
                             type: 'directChat',
                         }
-                        const cardIconStyle = { tintColor: APP_BLUE_BRIGHT }
+                        const cardIconStyle = { tintColor: GM_BLUE_LIGHT }
                         const cardIconSource = NextButton
                         const callback = (selectedUserId) =>
                             this.props.sendMessage(
@@ -634,13 +696,10 @@ class ChatRoomConversation extends React.Component {
                 style={styles.iconContainerStyle}
                 onPress={this.onSendImageButtonPress.bind(this)}
             >
-                <Image
-                    source={PhotoIcon}
-                    style={{
-                        ...styles.iconStyle,
-                        tintColor: '#cbd6d8',
-                    }}
-                    resizeMode="contain"
+                <Icon
+                    name="image-outline"
+                    pack="material-community"
+                    style={[styles.iconStyle, { tintColor: '#4F4F4F' }]}
                 />
             </TouchableOpacity>
         )
@@ -652,13 +711,13 @@ class ChatRoomConversation extends React.Component {
                 style={styles.iconContainerStyle}
                 onPress={this.onShareContentButtonPress.bind(this)}
             >
-                <Image
-                    source={LightBulb}
-                    style={{
-                        ...styles.iconStyle,
-                        tintColor: '#cbd6d8',
-                    }}
-                    resizeMode="contain"
+                <Icon
+                    name="lightbulb-on-outline"
+                    pack="material-community"
+                    style={[
+                        styles.iconStyle,
+                        { marginBottom: 2, tintColor: '#F2C94C' },
+                    ]}
                 />
             </TouchableOpacity>
         )
@@ -671,102 +730,86 @@ class ChatRoomConversation extends React.Component {
                     style={styles.iconContainerStyle}
                     onPress={this.onOpenEmojiKeyboard.bind(this)}
                 >
-                    <Image
-                        source={EmojiIcon}
-                        style={{
-                            ...styles.iconStyle,
-                            tintColor: '#cbd6d8',
-                        }}
-                        resizeMode="contain"
+                    <Icon
+                        name="tag-faces"
+                        pack="material"
+                        style={[styles.iconStyle, { tintColor: '#4F4F4F' }]}
                     />
                 </TouchableOpacity>
             </View>
         )
     }
-    renderExtraActions() {
-        return null
-        // we're moving this below
-        return (
-            <View
-                style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                }}
-            >
-                {this.renderSendImageButton()}
-                {this.renderEmojiSelector()}
-            </View>
-        )
-    }
-    renderAccessory(props, accessoryLocation) {
-        const { messageMediaRef } = this.props
-        if (accessoryLocation == 'bottom') {
-            return (
-                <View
-                    style={{
-                        alignItems: 'center',
-                        flexDirection: 'row',
-                    }}
-                >
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            flexGrow: 2,
-                            alignItems: 'center',
-                            paddingLeft: 15,
-                        }}
-                    >
-                        {messageMediaRef ? null : this.renderSendImageButton()}
-                        {this.renderEmojiSelector()}
-                        {this.renderShareContentButton()}
-                    </View>
-                    <View
-                        style={{
-                            alignItems: 'center',
-                        }}
-                    >
-                        {this.renderSendButton(props)}
-                    </View>
-                </View>
-            )
-        }
 
+    renderAttachedImage = () => {
+        const { messageMediaRef } = this.props
         if (!messageMediaRef) return null
         const onPress = () => {}
         const onRemove = () => {
             this.props.changeMessageMediaRef(undefined)
             this._textInput.blur()
         }
+
         return (
-            <TouchableOpacity
-                activeOpacity={0.6}
-                style={styles.mediaContainerStyle}
-                onPress={onPress}
-            >
-                <ProfileImage
-                    imageStyle={{ width: 50, height: 50 }}
-                    defaultImageSource={{ uri: messageMediaRef }}
-                    imageContainerStyle={{
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                />
-                <View
+            <View style={{ height: 92, marginLeft: 16, paddingVertical: 6 }}>
+                <TouchableOpacity
+                    activeOpacity={0.6}
                     style={{
-                        flex: 1,
-                        marginLeft: 12,
-                        marginRight: 12,
-                        height: 50,
-                        flexGrow: 1,
+                        flexDirection: 'row',
+                        height: 75,
+                        width: 65,
+                        alignItems: 'center',
+                        justifyContent: 'flex-start',
                     }}
+                    onPress={onPress}
                 >
-                    <Text style={styles.attachedImageTextStyle}>
-                        Attached image
-                    </Text>
-                </View>
-                <RemoveComponent onRemove={onRemove} />
-            </TouchableOpacity>
+                    <Image
+                        source={{ uri: messageMediaRef }}
+                        style={{ height: 75, width: 65 }}
+                        resizeMode="cover"
+                    />
+                    <RemoveComponent onRemove={onRemove} />
+                </TouchableOpacity>
+            </View>
         )
+    }
+
+    renderAccessory(props, accessoryLocation) {
+        const { messageMediaRef } = this.props
+        if (accessoryLocation == 'bottom') {
+            return (
+                <View>
+                    {this.renderAttachedImage()}
+                    <View
+                        style={{
+                            alignItems: 'center',
+                            flexDirection: 'row',
+                        }}
+                    >
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                flexGrow: 2,
+                                alignItems: 'center',
+                                paddingLeft: 15,
+                            }}
+                        >
+                            {messageMediaRef
+                                ? null
+                                : this.renderSendImageButton()}
+                            {this.renderEmojiSelector()}
+                            {this.renderShareContentButton()}
+                        </View>
+                        <View
+                            style={{
+                                alignItems: 'center',
+                            }}
+                        >
+                            {this.renderSendButton(props)}
+                        </View>
+                    </View>
+                </View>
+            )
+        }
     }
 
     renderSendButton(props) {
@@ -779,14 +822,10 @@ class ChatRoomConversation extends React.Component {
                         position: 'relative',
                     }}
                 >
-                    <Image
-                        style={{
-                            height: 27,
-                            width: 27,
-                            tintColor: APP_BLUE_BRIGHT,
-                        }}
-                        source={SendButton}
-                        resizeMode="contain"
+                    <Icon
+                        name="send"
+                        pack="material-community"
+                        style={[styles.iconStyle, { tintColor: GM_BLUE }]}
                     />
                 </View>
             </Send>
@@ -811,6 +850,7 @@ class ChatRoomConversation extends React.Component {
                         props.onTextChanged(text)
                         props.onInputTextChanged(text)
                     }}
+                    onContentSizeChange={(e) => {}}
                     value={props.text}
                     multiline={true}
                     placeholder={`${props.placeholder.slice(0, 42)}...`}
@@ -861,14 +901,11 @@ class ChatRoomConversation extends React.Component {
             )
         }
     }
-    renderMessage = (props) => {
-        return (
-            <Message
-                {...props}
-                renderBubble={(props) => <GMGiftedChatBubble {...props} />}
-            />
-        )
+
+    renderMessage(props) {
+        return <GMGiftedMessage {...props} />
     }
+
     renderSystemMessage = (props) => {
         return (
             <SystemMessage
@@ -881,21 +918,19 @@ class ChatRoomConversation extends React.Component {
             />
         )
     }
+
+    // Render user image for the message
     renderAvatar(props) {
+        // if (props && props.currentMessage && props.currentMessage.user) {
+        //     console.log('props: ', props.currentMessage.user)
+        // }
+
         return (
             <Avatar
                 {...props}
                 containerStyle={{
                     left: {
                         marginRight: 0,
-                    },
-                }}
-                imageStyle={{
-                    left: {
-                        borderRadius: 6,
-                    },
-                    right: {
-                        borderRadius: 6,
                     },
                 }}
             />
@@ -905,131 +940,125 @@ class ChatRoomConversation extends React.Component {
     render() {
         const { _id, name, profile } = this.props.user
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                <Layout style={styles.homeContainerStyle}>
-                    {this.props.showInitialLoader ? (
-                        <ChatRoomLoaderOverlay />
-                    ) : null}
-                    <ModalHeader
-                        title={this.props.chatRoomName}
-                        titleIcon={this.props.chatRoomImage}
-                        actionText={`\u2026` /* ellipsis */}
-                        onAction={this.openOptions}
-                        back={true}
-                        onCancel={this.closeConversation}
-                        containerStyles={{
-                            elevation: 3,
-                            shadowColor: '#666',
-                            shadowOffset: { width: 0, height: 1 },
-                            shadowOpacity: 0.15,
-                            shadowRadius: 3,
+            <Layout style={styles.homeContainerStyle}>
+                {this.props.showInitialLoader ? (
+                    <ChatRoomLoaderOverlay />
+                ) : null}
+                <ModalHeader
+                    title={this.props.chatRoomName}
+                    titleIcon={this.props.chatRoomImage}
+                    actionText={`\u2026` /* ellipsis */}
+                    onAction={this.openOptions}
+                    back={true}
+                    onCancel={this.closeConversation}
+                    containerStyles={{
+                        elevation: 3,
+                        shadowColor: '#666',
+                        shadowOffset: { width: 0, height: 1 },
+                        shadowOpacity: 0.15,
+                        shadowRadius: 3,
+                    }}
+                    backButtonStyle={{
+                        tintColor: '#21364C',
+                    }}
+                    actionTextStyle={{
+                        color: '#fff',
+                    }}
+                    titleTextStyle={{
+                        color: '#fff',
+                    }}
+                />
+                <GiftedChat
+                    ref={(chatRef) => (this._giftedChat = chatRef)}
+                    messages={(this.props.ghostMessages || []).concat(
+                        (this.props.messages || []).sort(
+                            (doc1, doc2) => doc2.createdAt - doc1.createdAt
+                        )
+                    )}
+                    user={{
+                        _id,
+                        name,
+                        avatar:
+                            profile &&
+                            profile.image &&
+                            `${IMAGE_BASE_URL}${profile.image}`,
+                    }}
+                    placeholder={`Send a message to '${this.props.chatRoomName}'`}
+                    isAnimated={true}
+                    alwaysShowSend={true}
+                    renderAvatarOnTop={true}
+                    loadEarlier={this.props.hasNextPage}
+                    isLoadingEarlier={this.props.loading}
+                    onLoadEarlier={this.loadEarlierMessages.bind(this)}
+                    onPressAvatar={this.openUserProfile.bind(this)}
+                    onLongPress={this.onMessageLongPress.bind(this)}
+                    renderFooter={this.renderTypingIndicatorFooter.bind(this)}
+                    onSend={this.sendMessage.bind(this)}
+                    onInputTextChanged={this.onChatTextInputChanged.bind(this)}
+                    renderAccessory={this.renderAccessory.bind(this)}
+                    renderSend={null /*this.renderSendButton*/}
+                    renderComposer={this.renderComposer.bind(this)}
+                    // maxComposerHeight={120 - 18} // padding
+                    maxComposerHeight={184}
+                    minComposerHeight={105}
+                    minInputToolbarHeight={47}
+                    renderMessage={this.renderMessage}
+                    renderSystemMessage={this.renderSystemMessage}
+                    renderInputToolbar={this.renderInputToolbar}
+                    renderAvatar={this.renderAvatar}
+                    bottomOffset={GIFTED_CHAT_BOTTOM_OFFSET}
+                    minInputToolbarHeight={this.props.messageMediaRef ? 90 : 60}
+                    deleteMessage={this.deleteMessage.bind(this)}
+                    dismissGoalSuggestion={this.dismissGoalSuggestion.bind(
+                        this
+                    )}
+                />
+                {this.state.showEmojiSelector && (
+                    <Animated.View
+                        style={{
+                            position: 'absolute',
+                            width: Dimensions.get('window').width,
+                            height: Dimensions.get('window').height,
+                            backgroundColor: '#fff',
+                            zIndex: 5,
+                            transform: [
+                                {
+                                    translateY: this.animations
+                                        .emojiSelectorSlideAnim,
+                                },
+                            ],
                         }}
-                        backButtonStyle={{
-                            tintColor: '#21364C',
-                        }}
-                        actionTextStyle={{
-                            color: '#fff',
-                        }}
-                        titleTextStyle={{
-                            color: '#fff',
-                        }}
-                    />
-                    <GiftedChat
-                        ref={(chatRef) => (this._giftedChat = chatRef)}
-                        messages={(this.props.ghostMessages || []).concat(
-                            (this.props.messages || []).sort(
-                                (doc1, doc2) => doc2.createdAt - doc1.createdAt
-                            )
-                        )}
-                        user={{
-                            _id,
-                            name,
-                            avatar:
-                                profile &&
-                                profile.image &&
-                                `${IMAGE_BASE_URL}${profile.image}`,
-                        }}
-                        placeholder={`Send a message to '${this.props.chatRoomName}'`}
-                        isAnimated={true}
-                        alwaysShowSend={true}
-                        renderAvatarOnTop={true}
-                        loadEarlier={this.props.hasNextPage}
-                        isLoadingEarlier={this.props.loading}
-                        onLoadEarlier={this.loadEarlierMessages.bind(this)}
-                        onPressAvatar={this.openUserProfile.bind(this)}
-                        onLongPress={this.onMessageLongPress.bind(this)}
-                        renderFooter={this.renderTypingIndicatorFooter.bind(
-                            this
-                        )}
-                        renderActions={this.renderExtraActions.bind(this)}
-                        onSend={this.sendMessage.bind(this)}
-                        onInputTextChanged={this.onChatTextInputChanged.bind(
-                            this
-                        )}
-                        renderAccessory={this.renderAccessory.bind(this)}
-                        renderSend={null /*this.renderSendButton*/}
-                        renderComposer={this.renderComposer.bind(this)}
-                        maxComposerHeight={120 - 18} // padding
-                        renderMessage={this.renderMessage}
-                        renderSystemMessage={this.renderSystemMessage}
-                        renderInputToolbar={this.renderInputToolbar}
-                        renderAvatar={this.renderAvatar}
-                        bottomOffset={GIFTED_CHAT_BOTTOM_OFFSET}
-                        minInputToolbarHeight={
-                            this.props.messageMediaRef ? 90 : 60
-                        }
-                        deleteMessage={this.deleteMessage.bind(this)}
-                        dismissGoalSuggestion={this.dismissGoalSuggestion.bind(
-                            this
-                        )}
-                    />
-                    {this.state.showEmojiSelector && (
-                        <Animated.View
+                    >
+                        <ModalHeader
+                            actionDisabled={true}
+                            actionHidden={true}
+                            title={'Select an Emoji'}
+                            cancelText={'Close'}
+                            onCancel={this.onOpenEmojiKeyboard.bind(this)}
+                            containerStyles={{
+                                elevation: 1,
+                                shadowColor: '#666',
+                                shadowOffset: { width: 0, height: -3 },
+                                shadowOpacity: 0.3,
+                                shadowRadius: 1,
+                            }}
+                        />
+                        <View
                             style={{
-                                position: 'absolute',
-                                width: Dimensions.get('window').width,
-                                height: Dimensions.get('window').height,
-                                backgroundColor: '#fff',
-                                zIndex: 5,
-                                transform: [
-                                    {
-                                        translateY: this.animations
-                                            .emojiSelectorSlideAnim,
-                                    },
-                                ],
+                                paddingTop: 18,
+                                paddingBottom: 24,
+                                flexGrow: 1,
                             }}
                         >
-                            <ModalHeader
-                                actionDisabled={true}
-                                actionHidden={true}
-                                title={'Select an Emoji'}
-                                cancelText={'Close'}
-                                onCancel={this.onOpenEmojiKeyboard.bind(this)}
-                                containerStyles={{
-                                    elevation: 1,
-                                    shadowColor: '#666',
-                                    shadowOffset: { width: 0, height: -3 },
-                                    shadowOpacity: 0.3,
-                                    shadowRadius: 1,
-                                }}
+                            <EmojiSelector
+                                onEmojiSelected={this.onEmojiSelected.bind(
+                                    this
+                                )}
                             />
-                            <View
-                                style={{
-                                    paddingTop: 18,
-                                    paddingBottom: 24,
-                                    flexGrow: 1,
-                                }}
-                            >
-                                <EmojiSelector
-                                    onEmojiSelected={this.onEmojiSelected.bind(
-                                        this
-                                    )}
-                                />
-                            </View>
-                        </Animated.View>
-                    )}
-                </Layout>
-            </MenuProvider>
+                        </View>
+                    </Animated.View>
+                )}
+            </Layout>
         )
     }
 }
@@ -1164,12 +1193,12 @@ const styles = {
     iconContainerStyle: {
         alignItems: 'center',
         justifyContent: 'center',
-        width: 33,
+        width: 38,
         paddingBottom: 15,
     },
     iconStyle: {
-        height: 27,
-        width: 27,
+        height: 30,
+        width: 30,
     },
     mediaContainerStyle: {
         flexDirection: 'row',
