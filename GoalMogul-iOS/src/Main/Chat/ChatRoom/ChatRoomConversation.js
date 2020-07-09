@@ -44,8 +44,8 @@ import {
     Avatar,
     GiftedChat,
     Message,
-    Send,
     SystemMessage,
+    // Send,
 } from 'react-native-gifted-chat'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
@@ -93,6 +93,7 @@ import { Layout, Icon } from '@ui-kitten/components'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
+import Send from './GiftedChat/GMGiftedSend'
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]'
 const LISTENER_KEY = 'ChatRoomConversation'
@@ -432,8 +433,9 @@ class ChatRoomConversation extends React.Component {
         )
     }
     sendMessage = (messagesToSend) => {
-        const { messageMediaRef, chatRoom, messages } = this.props
-        if (!messagesToSend[0].text.trim().length || !messageMediaRef) return
+        const { chatRoom, messages, messageMediaRef } = this.props
+
+        if (!messagesToSend[0].text.trim().length && !messageMediaRef) return
         if (messageMediaRef) {
             this._textInput.blur()
         }
@@ -827,24 +829,9 @@ class ChatRoomConversation extends React.Component {
         }
     }
 
-    renderSendButton(props) {
-        return (
-            <Send {...props}>
-                <View
-                    style={{
-                        paddingRight: 15,
-                        paddingBottom: 15,
-                        position: 'relative',
-                    }}
-                >
-                    <Icon
-                        name="send"
-                        pack="material-community"
-                        style={[styles.iconStyle, { tintColor: GM_BLUE }]}
-                    />
-                </View>
-            </Send>
-        )
+    renderSendButton = (props) => {
+        const { messageMediaRef } = this.props
+        return <Send {...props} messageMediaRef={messageMediaRef} />
     }
 
     renderComposer = (props) => {
@@ -1003,7 +990,7 @@ class ChatRoomConversation extends React.Component {
                     onPressAvatar={this.openUserProfile}
                     onLongPress={this.onMessageLongPress}
                     renderFooter={this.renderTypingIndicatorFooter}
-                    onSend={this.sendMessage}
+                    onSend={this.sendMessage.bind(this)}
                     onInputTextChanged={this.onChatTextInputChanged}
                     renderAccessory={this.renderAccessory}
                     renderSend={null /*this.renderSendButton*/}
