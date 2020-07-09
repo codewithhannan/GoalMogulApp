@@ -989,7 +989,7 @@ class ChatRoomConversation extends React.Component {
                     onPressAvatar={this.openUserProfile}
                     onLongPress={this.onMessageLongPress}
                     renderFooter={this.renderTypingIndicatorFooter}
-                    onSend={this.sendMessage.bind(this)}
+                    onSend={this.sendMessage}
                     onInputTextChanged={this.onChatTextInputChanged}
                     renderAccessory={this.renderAccessory}
                     renderSend={null /*this.renderSendButton*/}
