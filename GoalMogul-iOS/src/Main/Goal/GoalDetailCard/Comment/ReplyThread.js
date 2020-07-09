@@ -9,6 +9,8 @@ import {
     ImageBackground,
     TouchableOpacity,
     Image,
+    TextInput,
+    Platform,
 } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { connect } from 'react-redux'
@@ -25,16 +27,17 @@ import CommentRef from './CommentRef'
 // Actions
 import { openPostDetail } from '../../../../redux/modules/feed/post/PostActions'
 
+import { getNewCommentByTab } from '../../../../redux/modules/feed/comment/CommentSelector'
+
 // Assets
-import {
-    GM_BLUE,
-    DEFAULT_STYLE,
-    imagePreviewContainerStyle,
-} from '../../../../styles'
+import { DEFAULT_STYLE } from '../../../../styles'
 import ProfileImage from '../../../Common/ProfileImage'
 import { IMAGE_BASE_URL } from '../../../../Utils/Constants'
 import expand from '../../../../asset/utils/expand.png'
 import ChildCommentCard from './ChildCommentCard'
+import { Icon } from '@ui-kitten/components'
+import { Text } from 'react-native-animatable'
+import CommentBox from '../../Common/CommentBoxV2'
 
 const DEBUG_KEY = '[ UI CommentCard ]'
 
@@ -157,8 +160,47 @@ class ReplyThread extends React.Component {
         return <CommentRef item={suggestion} owner={owner} />
     }
 
-    renderStatus(item) {
-        return <View style={{ flexDirection: 'row' }}></View>
+    renderStatus() {
+        const { likeCount, childComments } = this.props.item
+        const commentCount = childComments.length
+
+        return (
+            <View
+                style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    borderTopWidth: 1,
+                    borderBottomWidth: 1,
+                    borderColor: '#F2F2F2',
+                    padding: 10,
+                    paddingLeft: 16,
+                    paddingRight: 16,
+                }}
+            >
+                <Icon
+                    pack="material-community"
+                    style={[
+                        DEFAULT_STYLE.normalIcon_1,
+                        { tintColor: '#828282', marginRight: 2 },
+                    ]}
+                    name="message-outline"
+                />
+                <Text style={DEFAULT_STYLE.normalText_1}>{commentCount}</Text>
+                <Icon
+                    pack="material-community"
+                    style={[
+                        DEFAULT_STYLE.normalIcon_1,
+                        {
+                            tintColor: '#EB5757',
+                            marginLeft: 12,
+                            marginRight: 2,
+                        },
+                    ]}
+                    name="heart"
+                />
+                <Text style={DEFAULT_STYLE.normalText_1}>{likeCount}</Text>
+            </View>
+        )
     }
 
     renderHeader() {
@@ -169,7 +211,7 @@ class ReplyThread extends React.Component {
             created === undefined || created.length === 0 ? new Date() : created
 
         return (
-            <View style={{ backgroundColor: 'white', padding: 16 }}>
+            <View style={{ padding: 16 }}>
                 <View style={{ flexDirection: 'row', marginBottom: 8 }}>
                     <ProfileImage
                         imageUrl={
@@ -193,7 +235,6 @@ class ReplyThread extends React.Component {
                 {this.renderTextContent(item)}
                 {this.renderCommentMedia(item)}
                 {this.renderCommentRef(item)}
-                {this.renderStatus(item)}
             </View>
         )
     }
@@ -210,23 +251,45 @@ class ReplyThread extends React.Component {
     }
 
     render() {
-        const {
-            item: { childComments },
-        } = this.props
-        // console.log(item)
+        const { item } = this.props
+        const { childComments } = item
+
         return (
             <MenuProvider>
-                <KeyboardAvoidingView style={styles.cardContainerStyle}>
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : null}
+                    style={styles.cardContainerStyle}
+                >
                     <ModalHeader back />
                     {this.renderHeader()}
-                    <FlatList
-                        data={childComments}
-                        renderItem={this.renderItem.bind(this)}
-                        contentContainerStyle={{
-                            padding: 16,
-                            backgroundColor: 'white',
-                        }}
-                    />
+                    {this.renderStatus()}
+                    <View style={{ flex: 1 }}>
+                        <FlatList
+                            data={childComments}
+                            renderItem={this.renderItem.bind(this)}
+                            contentContainerStyle={{
+                                padding: 16,
+                                paddingTop: 8,
+                                paddingBottom: 8,
+                            }}
+                        />
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                backgroundColor: 'white',
+                                padding: 16,
+                                borderTopWidth: 1,
+                                borderColor: '#F2F2F2',
+                            }}
+                        >
+                            <TextInput
+                                multiline={true}
+                                placeholder={'Enter a message...'}
+                                value={''}
+                                style={DEFAULT_STYLE.normalText_1}
+                            />
+                        </View>
+                    </View>
                 </KeyboardAvoidingView>
             </MenuProvider>
         )
@@ -234,7 +297,10 @@ class ReplyThread extends React.Component {
 }
 
 const styles = {
-    cardContainerStyle: {},
+    cardContainerStyle: {
+        flex: 1,
+        backgroundColor: 'white',
+    },
     // Styles related to child comments
     replyIconStyle: {
         height: 20,
@@ -248,11 +314,14 @@ const styles = {
     },
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
+    const { pageId } = props
     const { userId } = state.user
+    const newComment = getNewCommentByTab(state, pageId)
 
     return {
         userId,
+        newComment,
     }
 }
 

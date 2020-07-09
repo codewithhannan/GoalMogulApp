@@ -572,16 +572,14 @@ export class GoalDetailCardV3 extends Component {
     }
 
     handleOnCommentSubmitEditing = () => {
-        Logger.log(`${DEBUG_KEY}: [ handleOnCommentSubmitEditing ]`, null, 2)
         const { focusType } = this.props.navigationState
         const { newComment } = this.props
         if (
             newComment &&
             newComment.contentText &&
             !_.isEmpty(newComment.contentText)
-        ) {
+        )
             return
-        }
 
         if (!newComment) {
             console.warn(

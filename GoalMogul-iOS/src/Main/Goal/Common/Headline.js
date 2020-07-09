@@ -237,7 +237,7 @@ class Headline extends React.PureComponent {
                 {belongsToTribe && [
                     <Icon
                         pack="material-community"
-                        style={DEFAULT_STYLE.normalIcon_1}
+                        style={DEFAULT_STYLE.buttonIcon_1}
                         name="menu-right"
                     />,
                     <DelayedButton
@@ -274,8 +274,6 @@ const styles = {
     containerStyle: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-start',
-        flexWrap: 'wrap',
     },
     caretContainer: {
         paddingBottom: 8,

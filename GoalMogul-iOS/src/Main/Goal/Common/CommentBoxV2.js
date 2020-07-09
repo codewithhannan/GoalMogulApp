@@ -98,7 +98,7 @@ class CommentBoxV2 extends Component {
     }
 
     componentDidMount() {
-        if (this.props.onRef !== null) {
+        if (this.props.onRef) {
             this.props.onRef(this)
         }
 
@@ -115,7 +115,6 @@ class CommentBoxV2 extends Component {
     }
 
     componentWillUnmount() {
-        // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: componentWillUnmount`);
         if (this.reqTimer) {
             clearTimeout(this.reqTimer)
         }
@@ -126,7 +125,6 @@ class CommentBoxV2 extends Component {
         const { name } = item
         const { pageId, newComment } = this.props
         const { contentText, contentTags } = newComment
-        // console.log(`${DEBUG_KEY}: contentText is: `, contentText);
 
         const postCursorContent = contentText.slice(cursorPosition)
         const prevCursorContent = contentText.slice(0, cursorPosition)
@@ -135,16 +133,6 @@ class CommentBoxV2 extends Component {
             /^\s+/g,
             ''
         )}`
-        // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
-        // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
-
-        // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
-        // console.log(`${DEBUG_KEY}: keyword length is: `, this.state.keyword.length);
-        // console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: prevCursorContent is: `, prevCursorContent);
-        // console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: prevCursorContent length is: `, prevCursorContent.length);
-        // console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: postCursorContent is: `, postCursorContent);
-        // console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: comment is: `, comment);
-        // console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: newContentText is: `, newContentText);
 
         this.props.newCommentOnTextChange(newContentText, pageId)
 
@@ -327,13 +315,9 @@ class CommentBoxV2 extends Component {
     handleOnBlur = (newComment) => {
         console.log(`${DEBUG_KEY}: [ handleOnBlur ]`)
         const { resetCommentType, onSubmitEditing } = this.props
-        const { contentText, tmpSuggestion } = newComment
+        const { contentText } = newComment
         // On Blur if no content then set default value to comment the goal / post
-        if (
-            contentText === undefined ||
-            contentText === '' ||
-            contentText.trim() === ''
-        ) {
+        if (!contentText || contentText === '' || contentText.trim() === '') {
             this.setState({
                 ...this.state,
                 defaultValue: 'Write a Comment...',
@@ -445,12 +429,9 @@ class CommentBoxV2 extends Component {
     }
 
     renderImageIcon(newComment) {
-        const { suggestion, commentType } = newComment
+        const { commentType } = newComment
         // Disable image icon if there is a valid suggestion
         const disableButton = commentType === 'Suggestion'
-        // console.log(`${DEBUG_KEY}: image button disabled: `, disableButton);
-        // console.log(`${DEBUG_KEY}: suggestion is: `, suggestion);
-        // (suggestion !== undefined && suggestion.suggestionFor !== undefined);
         return (
             <TouchableOpacity
                 activeOpacity={0.6}
@@ -512,21 +493,12 @@ class CommentBoxV2 extends Component {
     }
 
     renderPost(newComment) {
-        const {
-            uploading,
-            contentText,
-            tmpSuggestion,
-            suggestion,
-            commentType,
-            mediaRef,
-        } = newComment
+        const { uploading, contentText, commentType, mediaRef } = newComment
         // console.log(`${DEBUG_KEY}: new comment is: `, newComment);
 
         const isInValidComment =
             (commentType === 'Comment' || commentType === 'Reply') &&
-            (contentText === undefined ||
-                contentText === '' ||
-                contentText.trim() === '') &&
+            (!contentText || contentText === '' || contentText.trim() === '') &&
             mediaRef === undefined
 
         const isValidSuggestion = validSuggestion(newComment)
@@ -653,7 +625,7 @@ class CommentBoxV2 extends Component {
         // console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment);
 
         if (!newComment || !newComment.parentRef) return null
-        const { uploading, tag, name, contentText } = newComment
+        const { uploading } = newComment
 
         const inputContainerStyle = styles.inputContainerStyle
         const inputStyle = uploading
@@ -663,17 +635,10 @@ class CommentBoxV2 extends Component {
               }
             : styles.inputStyle
 
-        // if (tag && name && (!contentText || contentText.length === 0)) this.props.newCommentOnTextChange('@'+name, pageId);
-
         return (
             <SafeAreaView
                 style={{
                     backgroundColor: 'white',
-                    shadowColor: 'black',
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: 0.5,
-                    shadowRadius: 1,
-                    elevation: 0.3,
                 }}
             >
                 {this.renderReplyingTo()}
@@ -845,11 +810,6 @@ const styles = {
         borderColor: '#ddd',
         borderBottomWidth: 0,
         backgroundColor: '#fff',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.15,
-        shadowRadius: 1,
-        elevation: 1,
     },
     imageContainerStyle: {
         borderWidth: 0.5,
