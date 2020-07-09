@@ -45,7 +45,6 @@ import {
     GiftedChat,
     Message,
     SystemMessage,
-    // Send,
 } from 'react-native-gifted-chat'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
