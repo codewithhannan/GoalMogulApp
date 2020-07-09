@@ -178,10 +178,3 @@ RichText.propTypes = {
     textStyle: Text.propTypes.style,
     onUserTagPressed: PropTypes.func.isRequired,
 }
-
-RichText.defaultProps = {
-    textStyle: {},
-    textContainerStyle: {
-        flex: 1,
-    },
-}

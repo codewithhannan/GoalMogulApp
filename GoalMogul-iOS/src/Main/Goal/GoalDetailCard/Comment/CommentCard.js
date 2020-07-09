@@ -23,9 +23,6 @@ class CommentCard extends React.Component {
             totalViewHeight: 0,
             keyboardHeight: 216,
             commentLength: 0,
-            numberOfChildrenShowing: 3,
-            showMoreCount: 3,
-            showReplies: false,
         }
     }
 
@@ -67,43 +64,6 @@ class CommentCard extends React.Component {
         })
     }
 
-    showMoreChildComments = () => {
-        const { numberOfChildrenShowing, showMoreCount } = this.state
-        const { item } = this.props
-        const currentChildCommentLength = item.childComments
-            ? item.childComments.length
-            : 0
-
-        let newNumberOfChildrenShowing = numberOfChildrenShowing
-        if (
-            numberOfChildrenShowing >=
-            currentChildCommentLength - showMoreCount
-        ) {
-            newNumberOfChildrenShowing = currentChildCommentLength
-        } else {
-            newNumberOfChildrenShowing += showMoreCount
-        }
-        this.setState({
-            ...this.state,
-            commentLength: currentChildCommentLength,
-            numberOfChildrenShowing: newNumberOfChildrenShowing,
-        })
-    }
-
-    showLessChildComments = () => {
-        const { numberOfChildrenShowing, showMoreCount } = this.state
-        let newNumberOfChildrenShowing = numberOfChildrenShowing
-        if (numberOfChildrenShowing - showMoreCount <= showMoreCount) {
-            newNumberOfChildrenShowing = showMoreCount
-        } else {
-            newNumberOfChildrenShowing -= showMoreCount
-        }
-        this.setState({
-            ...this.state,
-            numberOfChildrenShowing: newNumberOfChildrenShowing,
-        })
-    }
-
     componentWillUnMount() {
         this.keyboardDidHideListener.remove()
         this.keyboardDidShowListener.remove()
@@ -129,108 +89,6 @@ class CommentCard extends React.Component {
         })
     }
 
-    // Render child comments if there are some.
-    renderChildComments() {
-        const { item } = this.props
-        const { childComments } = item
-        if (!childComments || childComments.length === 0) return null
-
-        if (!this.state.showReplies) {
-            const comment = childComments[childComments.length - 1]
-            const { owner } = comment
-            const imageUrl =
-                owner &&
-                owner.profile &&
-                owner.profile.image &&
-                owner.profile.image
-            const onPress = () => this.setState({ showReplies: true })
-            return (
-                <DelayedButton
-                    activeOpacity={0.6}
-                    key={childComments.length}
-                    onPress={onPress}
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 12,
-                    }}
-                >
-                    <ProfileImage
-                        imageStyle={DEFAULT_STYLE.profileImage_2}
-                        imageContainerStyle={{
-                            margin: -10,
-                            marginTop: -12,
-                            marginRight: -2,
-                        }}
-                        imageUrl={imageUrl}
-                        disabled
-                    />
-                    <Text style={DEFAULT_STYLE.smallTitle_1}>
-                        {owner.name}{' '}
-                    </Text>
-                    <Text
-                        style={{
-                            ...DEFAULT_STYLE.smallText_1,
-                            color: '#6D6D6D',
-                        }}
-                    >
-                        Replied | {childComments.length} Repl
-                        {childComments.length > 1 ? 'ies' : 'y'}
-                    </Text>
-                </DelayedButton>
-            )
-        }
-
-        const { numberOfChildrenShowing } = this.state
-
-        // For child comments, only load the first three
-        const childCommentCards = childComments.map((comment, index) => {
-            if (index < numberOfChildrenShowing) {
-                const viewOffset =
-                    getTotalPrevHeight(this.state, index) -
-                    this.state.keyboardHeight
-                return (
-                    <View
-                        key={index}
-                        onLayout={(e) => this.onLayout(e, `${index}`)}
-                    >
-                        <ChildCommentCard
-                            {...this.props}
-                            item={comment}
-                            parentCommentId={item._id}
-                            viewOffset={viewOffset}
-                            userId={this.props.userId}
-                        />
-                    </View>
-                )
-            }
-        })
-
-        if (childComments.length > numberOfChildrenShowing) {
-            childCommentCards.push(
-                <DelayedButton
-                    activeOpacity={0.6}
-                    key={childComments.length}
-                    onPress={this.showMoreChildComments}
-                    style={{ marginTop: 10 }}
-                >
-                    <Text
-                        style={{
-                            ...DEFAULT_STYLE.normalText_1,
-                            alignSelf: 'center',
-                            color: GM_BLUE,
-                            padding: 2,
-                        }}
-                    >
-                        Load more replies...
-                    </Text>
-                </DelayedButton>
-            )
-        }
-
-        return <View>{childCommentCards}</View>
-    }
-
     render() {
         const viewOffset =
             getTotalPrevHeight(this.state) - this.state.keyboardHeight
@@ -243,7 +101,6 @@ class CommentCard extends React.Component {
                     onLayout={(layout) => this.updateUserDetailLayout(layout)}
                     viewOffset={viewOffset}
                     userId={this.props.userId}
-                    childrenRenderer={this.renderChildComments.bind(this)}
                 />
             </View>
         )

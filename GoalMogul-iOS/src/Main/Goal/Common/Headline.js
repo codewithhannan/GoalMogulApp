@@ -236,7 +236,7 @@ class Headline extends React.PureComponent {
                 ]}
                 {belongsToTribe && [
                     <Icon
-                        pack="material"
+                        pack="material-community"
                         style={DEFAULT_STYLE.normalIcon_1}
                         name="menu-right"
                     />,
