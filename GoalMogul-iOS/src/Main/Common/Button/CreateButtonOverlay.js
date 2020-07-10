@@ -147,11 +147,18 @@ class CreateButtonOverlay extends Component {
         const { buttons } = this.props
 
         return (
-            <List
-                style={styles.menuContainer}
-                data={buttons}
-                renderItem={this.renderActionButton()}
-            />
+            <Animated.View
+                style={{
+                    opacity: this.fadeAnim,
+                    marginBottom: 12,
+                }}
+            >
+                <List
+                    style={styles.menuContainer}
+                    data={buttons}
+                    renderItem={this.renderActionButton()}
+                />
+            </Animated.View>
         )
     }
 
@@ -302,13 +309,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     menuContainer: {
-        marginBottom: 12,
+        flexGrow: 0,
         borderRadius: 5,
     },
     iconContainer: {
-        height: 40,
-        width: 40,
-        borderRadius: 20,
+        height: 54,
+        width: 54,
+        borderRadius: 27,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#17B3EC',

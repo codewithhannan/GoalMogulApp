@@ -181,7 +181,7 @@ const styles = {
         right: 29,
         height: 54,
         width: 54,
-        borderRadius: 28,
+        borderRadius: 27,
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 3,

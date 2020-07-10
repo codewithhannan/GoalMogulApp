@@ -4,6 +4,7 @@ import React from 'react'
 import { Text, View } from 'react-native'
 import { connect } from 'react-redux'
 import timeago from 'timeago.js'
+import _ from 'lodash'
 import profilePic from '../../../asset/utils/defaultUserProfile.png'
 import { GROUP_CHAT_DEFAULT_ICON_URL } from '../../../Utils/Constants'
 import DelayedButton from '../../Common/Button/DelayedButton'
@@ -112,14 +113,23 @@ class ChatRoomCard extends React.Component {
 
     renderCardContent(item) {
         let content
+        const lastMessageText = _.get(item, 'latestMessage.content.message', '')
         if (this.props.renderDescription && item.description) {
             content = item.description
         } else if (item.isFriend) {
             // for friend search results
             content = 'Tap to start a conversation...'
         } else if (item.latestMessage) {
-            if (item.latestMessage.content.message) {
-                content = item.latestMessage.content.message
+            if (lastMessageText) {
+                // If last message is sent by current user, add a prefix
+                // You: {message to render}
+                // to indicate the differences
+                content = _.isEqual(
+                    item.latestMessage.creator,
+                    this.props.currentUserId
+                )
+                    ? `You: ${lastMessageText}`
+                    : lastMessageText
             } else if (item.latestMessage.media) {
                 content = 'Chat member sent an image...'
             } else if (item.latestMessage.sharedEntity) {
