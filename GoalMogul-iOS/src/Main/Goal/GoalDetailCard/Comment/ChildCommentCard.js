@@ -241,14 +241,7 @@ class ChildCommentCard extends Component {
         if (item.owner && item.owner.profile && item.owner.profile.image) {
             imageUrl = item.owner.profile.image
         }
-        return (
-            <ProfileImage
-                imageStyle={DEFAULT_STYLE.profileImage_2}
-                imageUrl={imageUrl}
-                imageContainerStyle={{ margin: -10 }}
-                userId={item.owner._id}
-            />
-        )
+        return <ProfileImage imageUrl={imageUrl} userId={item.owner._id} />
     }
 
     renderActionButtons() {

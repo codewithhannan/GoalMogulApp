@@ -68,49 +68,30 @@ class ReplyThread extends React.Component {
         this.openCommentLikeList = this.openCommentLikeList.bind(this)
         this.closeCommentLikeList = this.closeCommentLikeList.bind(this)
 
-        this.handleOnCommentSubmitEditing = this.handleOnCommentSubmitEditing.bind(
-            this
-        )
+        this.resetCommentBox = this.resetCommentBox.bind(this)
         this.renderItem = this.renderItem.bind(this)
-
-        this.keyboardDidShow = this.keyboardDidShow.bind(this)
-        this.keyboardDidHide = this.keyboardDidHide.bind(this)
     }
 
     componentDidMount() {
-        this.keyboardDidShowListener = Keyboard.addListener(
-            'keyboardDidShow',
-            this.keyboardDidShow
-        )
-        this.keyboardDidHideListener = Keyboard.addListener(
-            'keyboardDidHide',
-            this.keyboardDidHide
+        this.props.createComment(
+            {
+                ...this.props.newComment,
+                commentType: 'Reply',
+                replyToRef: this.props.itemId,
+            },
+            this.props.pageId
         )
     }
 
     componentWillUnmount() {
-        this.keyboardDidShowListener.remove()
-        this.keyboardDidHideListener.remove()
-    }
-
-    keyboardDidShow() {
-        // Only move the commnt card up if replies view for user is too small
-        const hideParentCommentCard =
-            this.listViewHeight < 250 && this.listViewHeight < this.listHeight
-
-        if (!this.marginTopOnKeyboard || !hideParentCommentCard) return
-
-        Animated.timing(this.state.marginTop, {
-            toValue: -this.marginTopOnKeyboard,
-            duration: this.marginTopOnKeyboard,
-        }).start()
-    }
-
-    keyboardDidHide() {
-        Animated.timing(this.state.marginTop, {
-            toValue: 0,
-            duration: this.marginTopOnKeyboard,
-        }).start()
+        this.props.createComment(
+            {
+                ...this.props.newComment,
+                commentType: 'Comment',
+                replyToRef: undefined,
+            },
+            this.props.pageId
+        )
     }
 
     openCommentLikeList = (likeListParentType, likeListParentId) => {
@@ -129,7 +110,7 @@ class ReplyThread extends React.Component {
         })
     }
 
-    handleOnCommentSubmitEditing = () => {
+    resetCommentBox = () => {
         const { newComment, itemId } = this.props
         if (
             newComment &&
@@ -140,7 +121,7 @@ class ReplyThread extends React.Component {
 
         if (!newComment) {
             console.warn(
-                `${DEBUG_KEY}: [ handleOnCommentSubmitEditing ]: newComment is undefined. Something is wrong.`
+                `${DEBUG_KEY}: [ resetCommentBox ]: newComment is undefined. Something is wrong.`
             )
         }
         // Since the contentText is empty, reset the replyToRef and commentType
@@ -313,56 +294,54 @@ class ReplyThread extends React.Component {
             created === undefined || created.length === 0 ? new Date() : created
 
         return (
-            <Animated.View
-                style={{
-                    padding: 16,
-                    marginTop: this.state.marginTop,
-                }}
-                onLayout={(e) => {
-                    this.marginTopOnKeyboard = e.nativeEvent.layout.height
-                }}
-            >
-                <View style={{ flexDirection: 'row', marginBottom: 8 }}>
-                    <ProfileImage
-                        imageUrl={
-                            owner && owner.profile
-                                ? owner.profile.image
-                                : undefined
-                        }
-                        userId={owner._id}
-                    />
-                    <View style={{ marginLeft: 12, marginTop: 2 }}>
-                        <Headline
-                            name={owner.name || ''}
-                            user={owner}
-                            hasCaret={false}
-                            textStyle={DEFAULT_STYLE.titleText_2}
+            <View>
+                <View
+                    style={{
+                        padding: 16,
+                    }}
+                    onLayout={(e) => {
+                        this.commentCardHeight = e.nativeEvent.layout.height
+                    }}
+                >
+                    <View style={{ flexDirection: 'row', marginBottom: 8 }}>
+                        <ProfileImage
+                            imageUrl={
+                                owner && owner.profile
+                                    ? owner.profile.image
+                                    : undefined
+                            }
+                            userId={owner._id}
                         />
-                        <View style={{ marginTop: 2 }} />
-                        <Timestamp time={timeago().format(timeStamp)} />
+                        <View style={{ marginLeft: 12, marginTop: 2 }}>
+                            <Headline
+                                name={owner.name || ''}
+                                user={owner}
+                                hasCaret={false}
+                                textStyle={DEFAULT_STYLE.titleText_2}
+                            />
+                            <View style={{ marginTop: 2 }} />
+                            <Timestamp time={timeago().format(timeStamp)} />
+                        </View>
                     </View>
+                    {this.renderTextContent(item)}
+                    {this.renderCommentMedia(item)}
+                    {this.renderCommentRef(item)}
                 </View>
-                {this.renderTextContent(item)}
-                {this.renderCommentMedia(item)}
-                {this.renderCommentRef(item)}
-            </Animated.View>
+                {this.renderStatus()}
+            </View>
         )
     }
 
     renderItem({ item }) {
         return (
-            <ChildCommentCard
-                onLayout={(e) => {
-                    if (!this.listHeight)
-                        this.listHeight = e.nativeEvent.layout.height
-                    else this.listHeight += e.nativeEvent.layout.height
-                }}
-                {...this.props}
-                item={item}
-                parentCommentId={this.props.item._id}
-                userId={this.props.userId}
-                openCommentLikeList={this.openCommentLikeList}
-            />
+            <View style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8 }}>
+                <ChildCommentCard
+                    item={item}
+                    parentCommentId={this.props.item._id}
+                    userId={this.props.userId}
+                    openCommentLikeList={this.openCommentLikeList}
+                />
+            </View>
         )
     }
 
@@ -385,28 +364,22 @@ class ReplyThread extends React.Component {
                     style={styles.cardContainerStyle}
                 >
                     <ModalHeader back />
-                    {this.renderHeader()}
-                    {this.renderStatus()}
                     <View
-                        style={{ flex: 1 }}
-                        onLayout={(e) => {
-                            this.listViewHeight = e.nativeEvent.layout.height
+                        style={{
+                            flex: 1,
+                            paddingBottom: 8,
                         }}
                     >
                         <FlatList
+                            ListHeaderComponent={this.renderHeader()}
                             data={childComments}
                             renderItem={this.renderItem}
-                            contentContainerStyle={{
-                                padding: 16,
-                                paddingTop: 8,
-                                paddingBottom: 8,
-                            }}
                         />
                     </View>
                     <CommentBox
                         pageId={this.props.pageId}
                         goalId={this.props.goalId}
-                        onSubmitEditing={this.handleOnCommentSubmitEditing}
+                        resetToDefault={this.resetCommentBox}
                     />
                 </KeyboardAvoidingView>
             </MenuProvider>

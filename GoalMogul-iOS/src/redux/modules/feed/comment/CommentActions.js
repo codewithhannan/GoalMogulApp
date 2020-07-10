@@ -315,7 +315,7 @@ export const updateNewComment = (newComment, pageId) => (
  * comment(jsonStrObj):
  * parentRef, parentType("Goal" || "Post"), contentText, contentTags, commentType[, replyToRef, suggestion(Suggestion)]
  */
-export const postComment = (pageId) => (dispatch, getState) => {
+export const postComment = (pageId, callback) => (dispatch, getState) => {
     const { token, user } = getState().user
     const { tab } = getState().navigation
     const newComment = commentAdapter(getState(), pageId, tab)
@@ -386,6 +386,7 @@ export const postComment = (pageId) => (dispatch, getState) => {
             `${DEBUG_KEY}: comment posted successfully with res: `,
             data
         )
+        if (callback) callback()
         // Alert.alert('Success', 'You have successfully created a comment.');
     }
 

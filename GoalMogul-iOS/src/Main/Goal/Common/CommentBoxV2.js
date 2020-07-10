@@ -268,7 +268,7 @@ class CommentBoxV2 extends Component {
     handleOnPost = (uploading) => {
         // Ensure we only create comment once
         if (uploading) return
-        this.props.postComment(this.props.pageId)
+        this.props.postComment(this.props.pageId, this.props.resetToDefault)
     }
 
     handleOpenCamera = () => {
