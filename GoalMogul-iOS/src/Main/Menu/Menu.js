@@ -18,6 +18,7 @@ import { openMyEventTab } from '../../redux/modules/event/MyEventTabActions'
 import { openMyTribeTab } from '../../redux/modules/tribe/MyTribeTabActions'
 
 import { openMeet, openSetting, logout } from '../../actions'
+import InviteFriendModal from '../MeetTab/Modal/InviteFriendModal'
 
 import {
     showNextTutorialPage,
@@ -44,6 +45,13 @@ const DEBUG_KEY = '[ UI Menu ]'
 const { TutorialIcon, PrivacyIcon, AccountMultiple, MessageIcon } = Icons
 
 class Menu extends React.PureComponent {
+    constructor(props) {
+        super(props)
+        this.state = {
+            showInviteFriendModal: false,
+        }
+    }
+
     handleTutorialOnPress = () => {
         const tutorialSwitchCases = switchByButtonIndex([
             [
@@ -96,6 +104,14 @@ class Menu extends React.PureComponent {
         )
     }
 
+    openInviteFriendModal = () => {
+        this.setState({ ...this.state, showInviteFriendModal: true })
+    }
+
+    closeInviteFriendModal = () => {
+        this.setState({ ...this.state, showInviteFriendModal: false })
+    }
+
     handleInviteFriend = () => {
         // Close side drawer
         // Open invite friend modal
@@ -115,7 +131,7 @@ class Menu extends React.PureComponent {
 
                 <DelayedButton
                     activeOpacity={0.6}
-                    onPress={() => this.props.openInviteAFriend()}
+                    onPress={() => this.openInviteFriendModal()}
                     style={styles.buttonStyle}
                 >
                     <Image
@@ -168,9 +184,7 @@ class Menu extends React.PureComponent {
                         <DelayedButton
                             activeOpacity={0.6}
                             onPress={() =>
-                                Linking.openURL(
-                                    'mailto:support@goalmogul.com?subject=SendMail&body=Description'
-                                )
+                                Linking.openURL('mailto:support@goalmogul.com')
                             }
                             style={styles.buttonStyle}
                         >
@@ -220,6 +234,10 @@ class Menu extends React.PureComponent {
                         </Text>
                     </DelayedButton>
                 </View>
+                <InviteFriendModal
+                    isVisible={this.state.showInviteFriendModal}
+                    closeModal={this.closeInviteFriendModal}
+                />
             </View>
         )
     }
