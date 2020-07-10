@@ -24,13 +24,9 @@ import { BACKGROUND_COLOR } from '../../../../styles'
 import { switchCase } from '../../../../redux/middleware/utils'
 
 // Selectors
-import {
-    getGoalDetailByTab,
-    makeGetGoalPageDetailByPageId,
-} from '../../../../redux/modules/goal/selector'
+import { makeGetGoalPageDetailByPageId } from '../../../../redux/modules/goal/selector'
 
 import {
-    getCommentByTab,
     getNewCommentByTab,
     makeGetCommentByEntityId,
 } from '../../../../redux/modules/feed/comment/CommentSelector'
@@ -155,6 +151,7 @@ class FocusTab extends React.PureComponent {
                 onCommentClicked={this.props.handleReplyTo}
                 reportType="detail"
                 pageId={this.props.pageId}
+                entityId={this.props.goalId}
                 goalId={this.props.goalId}
                 onHeadlinePressed={this.handleHeadlineOnPressed}
                 openCommentLikeList={this.openCommentLikeList}
@@ -166,8 +163,6 @@ class FocusTab extends React.PureComponent {
         const {
             data,
             focusType,
-            pageId,
-            focusRef,
             initial,
             initialScrollToCommentReset,
             goalDetail,

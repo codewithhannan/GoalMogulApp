@@ -1,4 +1,8 @@
-/** @format */
+/**
+ * This component functions similar to reply threads in Slack
+ *
+ * @format
+ * */
 
 import React from 'react'
 import {
@@ -9,11 +13,11 @@ import {
     ImageBackground,
     TouchableOpacity,
     Image,
-    TextInput,
     Platform,
     Keyboard,
     Animated,
 } from 'react-native'
+import _ from 'lodash'
 import { MenuProvider } from 'react-native-popup-menu'
 import { connect } from 'react-redux'
 import timeago from 'timeago.js'
@@ -30,8 +34,17 @@ import CommentBox from '../../Common/CommentBoxV2'
 // Actions
 import { openPostDetail } from '../../../../redux/modules/feed/post/PostActions'
 
+import {
+    createComment,
+    updateNewComment,
+} from '../../../../redux/modules/feed/comment/CommentActions'
+import {
+    makeGetRepliesById,
+    getNewCommentByTab,
+} from '../../../../redux/modules/feed/comment/CommentSelector'
+
 // Assets
-import { DEFAULT_STYLE, GM_BLUE } from '../../../../styles'
+import { DEFAULT_STYLE } from '../../../../styles'
 import ProfileImage from '../../../Common/ProfileImage'
 import { IMAGE_BASE_URL } from '../../../../Utils/Constants'
 import expand from '../../../../asset/utils/expand.png'
@@ -51,15 +64,15 @@ class ReplyThread extends React.Component {
             likeListParentId: undefined,
             likeListParentType: undefined,
             marginTop: new Animated.Value(0),
-            newComment: {
-                mediaRef: '',
-                tagsArray: [],
-                text: '',
-            },
         }
         this.openCommentLikeList = this.openCommentLikeList.bind(this)
         this.closeCommentLikeList = this.closeCommentLikeList.bind(this)
+
+        this.handleOnCommentSubmitEditing = this.handleOnCommentSubmitEditing.bind(
+            this
+        )
         this.renderItem = this.renderItem.bind(this)
+
         this.keyboardDidShow = this.keyboardDidShow.bind(this)
         this.keyboardDidHide = this.keyboardDidHide.bind(this)
     }
@@ -81,11 +94,12 @@ class ReplyThread extends React.Component {
     }
 
     keyboardDidShow() {
-        // Only move the commnt card up if it's hiding
-        console.log(this.listHeight, this.listViewHeight)
+        // Only move the commnt card up if replies view for user is too small
         const hideParentCommentCard =
             this.listViewHeight < 250 && this.listViewHeight < this.listHeight
+
         if (!this.marginTopOnKeyboard || !hideParentCommentCard) return
+
         Animated.timing(this.state.marginTop, {
             toValue: -this.marginTopOnKeyboard,
             duration: this.marginTopOnKeyboard,
@@ -93,7 +107,6 @@ class ReplyThread extends React.Component {
     }
 
     keyboardDidHide() {
-        console.log(this.listHeight, this.listViewHeight)
         Animated.timing(this.state.marginTop, {
             toValue: 0,
             duration: this.marginTopOnKeyboard,
@@ -114,6 +127,28 @@ class ReplyThread extends React.Component {
             likeListParentId: undefined,
             likeListParentType: undefined,
         })
+    }
+
+    handleOnCommentSubmitEditing = () => {
+        const { newComment, itemId } = this.props
+        if (
+            newComment &&
+            newComment.contentText &&
+            newComment.contentText === ''
+        )
+            return
+
+        if (!newComment) {
+            console.warn(
+                `${DEBUG_KEY}: [ handleOnCommentSubmitEditing ]: newComment is undefined. Something is wrong.`
+            )
+        }
+        // Since the contentText is empty, reset the replyToRef and commentType
+        // Update new comment
+        let commentToReturn = _.cloneDeep(newComment)
+        commentToReturn = _.set(commentToReturn, 'replyToRef', itemId)
+        commentToReturn = _.set(commentToReturn, 'commentType', 'Reply')
+        this.props.updateNewComment(commentToReturn, this.props.pageId)
     }
 
     /**
@@ -331,15 +366,9 @@ class ReplyThread extends React.Component {
         )
     }
 
-    renderCommentBox() {
-        console.log(this.props.goalId)
-        return (
-            <CommentBox pageId={this.props.pageId} goalId={this.props.goalId} />
-        )
-    }
-
     render() {
         const { item } = this.props
+        if (!item) return <ModalHeader back />
         const { childComments } = item
 
         return (
@@ -374,7 +403,11 @@ class ReplyThread extends React.Component {
                             }}
                         />
                     </View>
-                    {this.renderCommentBox()}
+                    <CommentBox
+                        pageId={this.props.pageId}
+                        goalId={this.props.goalId}
+                        onSubmitEditing={this.handleOnCommentSubmitEditing}
+                    />
                 </KeyboardAvoidingView>
             </MenuProvider>
         )
@@ -399,14 +432,27 @@ const styles = {
     },
 }
 
-const mapStateToProps = (state) => {
-    const { userId } = state.user
+const makeMapStateToProps = () => {
+    const getRepliesById = makeGetRepliesById()
 
-    return {
-        userId,
+    const mapStateToProps = (state, props) => {
+        const { userId } = state.user
+        const { itemId, entityId, pageId } = props
+        const { item } = getRepliesById(state, itemId, entityId)
+        const newComment = getNewCommentByTab(state, pageId)
+
+        return {
+            userId,
+            item,
+            newComment,
+        }
     }
+
+    return mapStateToProps
 }
 
-export default connect(mapStateToProps, {
+export default connect(makeMapStateToProps, {
     openPostDetail,
+    createComment,
+    updateNewComment,
 })(ReplyThread)

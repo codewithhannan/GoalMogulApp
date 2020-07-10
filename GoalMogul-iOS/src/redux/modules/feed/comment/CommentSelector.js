@@ -68,3 +68,16 @@ export const getCommentWithPageInfo = (state, entityId, pageId) => {
 export const makeGetCommentByEntityId = () => {
     return createSelector([getCommentWithPageInfo], (comments) => comments)
 }
+
+export const getRepliesWithPageInfo = (state, commentId, entityId) => {
+    const commentObject = getCommentByEntityId(state, entityId)
+    const { transformedComments } = commentObject
+
+    return {
+        item: transformedComments.find((val) => val._id === commentId),
+    }
+}
+
+export const makeGetRepliesById = () => {
+    return createSelector([getRepliesWithPageInfo], (replies) => replies)
+}

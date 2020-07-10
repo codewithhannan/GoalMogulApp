@@ -70,6 +70,7 @@ class CommentUserDetail extends Component {
             layout: {},
             mediaModal: false,
         }
+        this.openReplyThread = this.openReplyThread.bind(this)
     }
 
     onLayout = (e) => {
@@ -84,6 +85,15 @@ class CommentUserDetail extends Component {
     }
 
     getLayout = () => this.state.layout
+
+    openReplyThread(itemId) {
+        const { pageId, entityId, goalId } = this.props
+
+        Actions.push(
+            componentKeyByTab(this.props.navigationTab, 'replyThread'),
+            { itemId, pageId, entityId, goalId }
+        )
+    }
 
     /**
      * Render Image user attached to the comment.
@@ -353,15 +363,7 @@ class CommentUserDetail extends Component {
                         // Focus the comment box
                         onCommentClicked('Reply')
                         // Update new comment reducer
-                        this.props.createComment(
-                            {
-                                ...commentDetail,
-                                commentType: 'Reply',
-                                replyToRef: _id,
-                                name: item.owner && item.owner.name,
-                            },
-                            this.props.pageId
-                        )
+                        this.openReplyThread(_id)
                     }}
                     containerStyle={{ ...buttonContainerStyle, marginLeft: 16 }}
                 />
@@ -370,7 +372,7 @@ class CommentUserDetail extends Component {
     }
 
     renderRepliesButton() {
-        const { item, commentDetail, pageId, goalId } = this.props
+        const { item } = this.props
         const { childComments, _id } = item
         if (!childComments || childComments.length === 0) return null
 
@@ -378,25 +380,11 @@ class CommentUserDetail extends Component {
         const { owner } = comment
         const imageUrl =
             owner && owner.profile && owner.profile.image && owner.profile.image
-        const onPress = () => {
-            this.props.createComment(
-                {
-                    ...commentDetail,
-                    commentType: 'Reply',
-                    replyToRef: _id,
-                },
-                pageId
-            )
-            Actions.push(
-                componentKeyByTab(this.props.navigationTab, 'replyThread'),
-                { item, pageId, goalId }
-            )
-        }
         return (
             <DelayedButton
                 activeOpacity={0.6}
                 key={childComments.length}
-                onPress={onPress}
+                onPress={() => this.openReplyThread(_id)}
                 style={{
                     flexDirection: 'row',
                     alignItems: 'center',
