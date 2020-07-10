@@ -434,7 +434,8 @@ class ChatRoomConversation extends React.Component {
     sendMessage = (messagesToSend) => {
         const { chatRoom, messages, messageMediaRef } = this.props
 
-        if (!messagesToSend[0].text.trim().length && !messageMediaRef) return
+        const messageText = _.get(messagesToSend, '[0].text', '')
+        if (!messageText.trim().length && !messageMediaRef) return
         if (messageMediaRef) {
             this._textInput.blur()
         }
