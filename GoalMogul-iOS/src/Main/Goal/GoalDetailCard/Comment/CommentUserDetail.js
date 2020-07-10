@@ -358,11 +358,6 @@ class CommentUserDetail extends Component {
                     textStyle={styles.actionText}
                     iconStyle={styles.actionIcon}
                     onPress={() => {
-                        // Update the position for FlatList
-                        scrollToIndex(index, viewOffset)
-                        // Focus the comment box
-                        onCommentClicked('Reply')
-                        // Update new comment reducer
                         this.openReplyThread(_id)
                     }}
                     containerStyle={{ ...buttonContainerStyle, marginLeft: 16 }}

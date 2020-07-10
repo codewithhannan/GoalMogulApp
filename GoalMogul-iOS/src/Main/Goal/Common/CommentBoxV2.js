@@ -359,15 +359,6 @@ class CommentBoxV2 extends Component {
                 defaultValue: 'Reply to...',
             })
         }
-        this.props.createComment(
-            {
-                ...this.props.newComment,
-                name: undefined,
-                replyToRef: undefined,
-                tag: false,
-            },
-            this.props.pageId
-        )
     }
 
     focus() {

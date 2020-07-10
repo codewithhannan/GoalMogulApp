@@ -349,7 +349,6 @@ class ReplyThread extends React.Component {
         const { item } = this.props
         if (!item) return <ModalHeader back />
         const { childComments } = item
-
         return (
             <MenuProvider>
                 <LikeListModal
@@ -377,8 +376,10 @@ class ReplyThread extends React.Component {
                         />
                     </View>
                     <CommentBox
+                        hasSuggestion={!!this.props.goalId}
                         pageId={this.props.pageId}
                         goalId={this.props.goalId}
+                        onSubmitEditing={this.resetCommentBox}
                         resetToDefault={this.resetCommentBox}
                     />
                 </KeyboardAvoidingView>
