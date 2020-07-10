@@ -17,6 +17,7 @@ import { fetchUnreadCount } from '../../redux/modules/notification/NotificationT
 
 /* Utils */
 import { Logger } from '../../redux/middleware/utils/Logger'
+import { Icon } from '@ui-kitten/components'
 
 const CHAT_COUNT_UPDATE_INTERVAL = 1000
 const NOTIFICATION_COUNT_UPDATE_INTERVAL = 10000
@@ -92,13 +93,21 @@ class TabIcon extends React.PureComponent {
             case 'homeTab':
                 return (
                     <View style={styles.iconContainerStyle}>
-                        <Image source={IconHome} style={style} />
+                        <Icon
+                            name="home"
+                            pack="material-community"
+                            style={style}
+                        />
                     </View>
                 )
             case 'profileTab':
                 return (
                     <View style={styles.iconContainerStyle}>
-                        <Image source={IconProfile} style={style} />
+                        <Icon
+                            name="account"
+                            pack="material-community"
+                            style={style}
+                        />
                     </View>
                 )
             case 'notificationTab':
@@ -114,7 +123,12 @@ class TabIcon extends React.PureComponent {
                                 </Text>
                             </View>
                         ) : null}
-                        <Image source={IconBell} style={style} zIndex={1} />
+                        <Icon
+                            name="bell"
+                            pack="material-community"
+                            style={style}
+                            zIndex={1}
+                        />
                     </View>
                 )
             case 'chatTab':
@@ -130,17 +144,28 @@ class TabIcon extends React.PureComponent {
                                 </Text>
                             </View>
                         ) : null}
-                        <Image source={IconChat} style={style} zIndex={1} />
+                        <Icon
+                            name="chat-processing"
+                            pack="material-community"
+                            style={style}
+                            zIndex={1}
+                        />
                     </View>
                 )
             case 'exploreTab':
                 return (
                     <View style={styles.iconContainerStyle}>
-                        <Image source={FlagIcon} style={style} zIndex={1} />
+                        <Icon
+                            name="flag"
+                            pack="material-community"
+                            style={style}
+                        />
                     </View>
                 )
             default:
-                return <Image source={IconHome} style={{ tintColor }} />
+                return (
+                    <Icon name="home" pack="material-community" style={style} />
+                )
         }
     }
 }

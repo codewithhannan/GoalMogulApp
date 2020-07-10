@@ -27,8 +27,6 @@ import CommentRef from './CommentRef'
 // Actions
 import { openPostDetail } from '../../../../redux/modules/feed/post/PostActions'
 
-import { getNewCommentByTab } from '../../../../redux/modules/feed/comment/CommentSelector'
-
 // Assets
 import { DEFAULT_STYLE } from '../../../../styles'
 import ProfileImage from '../../../Common/ProfileImage'
@@ -37,7 +35,6 @@ import expand from '../../../../asset/utils/expand.png'
 import ChildCommentCard from './ChildCommentCard'
 import { Icon } from '@ui-kitten/components'
 import { Text } from 'react-native-animatable'
-import CommentBox from '../../Common/CommentBoxV2'
 
 const DEBUG_KEY = '[ UI CommentCard ]'
 
@@ -46,7 +43,13 @@ class ReplyThread extends React.Component {
         super(props)
         this.state = {
             mediaModal: false,
+            showCommentLikeList: false,
+            likeListParentId: undefined,
+            likeListParentType: undefined,
         }
+        this.openCommentLikeList = this.openCommentLikeList.bind(this)
+        this.closeCommentLikeList = this.closeCommentLikeList.bind(this)
+        this.renderItem = this.renderItem.bind(this)
     }
 
     /**
@@ -181,7 +184,7 @@ class ReplyThread extends React.Component {
                     pack="material-community"
                     style={[
                         DEFAULT_STYLE.normalIcon_1,
-                        { tintColor: '#828282', marginRight: 2 },
+                        { tintColor: '#828282', marginRight: 4 },
                     ]}
                     name="message-outline"
                 />
@@ -193,7 +196,7 @@ class ReplyThread extends React.Component {
                         {
                             tintColor: '#EB5757',
                             marginLeft: 12,
-                            marginRight: 2,
+                            marginRight: 4,
                         },
                     ]}
                     name="heart"
@@ -239,6 +242,22 @@ class ReplyThread extends React.Component {
         )
     }
 
+    openCommentLikeList = (likeListParentType, likeListParentId) => {
+        this.setState({
+            showCommentLikeList: true,
+            likeListParentType,
+            likeListParentId,
+        })
+    }
+
+    closeCommentLikeList = () => {
+        this.setState({
+            showCommentLikeList: false,
+            likeListParentId: undefined,
+            likeListParentType: undefined,
+        })
+    }
+
     renderItem({ item }) {
         return (
             <ChildCommentCard
@@ -246,6 +265,7 @@ class ReplyThread extends React.Component {
                 item={item}
                 parentCommentId={this.props.item._id}
                 userId={this.props.userId}
+                openCommentLikeList={this.openCommentLikeList}
             />
         )
     }
@@ -256,6 +276,13 @@ class ReplyThread extends React.Component {
 
         return (
             <MenuProvider>
+                <LikeListModal
+                    isVisible={this.state.showCommentLikeList}
+                    closeModal={this.closeCommentLikeList}
+                    parentId={this.state.likeListParentId}
+                    parentType={this.state.likeListParentType}
+                    clearDataOnHide
+                />
                 <KeyboardAvoidingView
                     behavior={Platform.OS === 'ios' ? 'padding' : null}
                     style={styles.cardContainerStyle}
@@ -266,7 +293,7 @@ class ReplyThread extends React.Component {
                     <View style={{ flex: 1 }}>
                         <FlatList
                             data={childComments}
-                            renderItem={this.renderItem.bind(this)}
+                            renderItem={this.renderItem}
                             contentContainerStyle={{
                                 padding: 16,
                                 paddingTop: 8,
@@ -314,14 +341,11 @@ const styles = {
     },
 }
 
-const mapStateToProps = (state, props) => {
-    const { pageId } = props
+const mapStateToProps = (state) => {
     const { userId } = state.user
-    const newComment = getNewCommentByTab(state, pageId)
 
     return {
         userId,
-        newComment,
     }
 }
 
