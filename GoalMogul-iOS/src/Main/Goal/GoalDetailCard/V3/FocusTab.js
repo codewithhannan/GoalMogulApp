@@ -155,7 +155,7 @@ class FocusTab extends React.PureComponent {
                 onCommentClicked={this.props.handleReplyTo}
                 reportType="detail"
                 pageId={this.props.pageId}
-                entityId={this.props.goalId}
+                goalId={this.props.goalId}
                 onHeadlinePressed={this.handleHeadlineOnPressed}
                 openCommentLikeList={this.openCommentLikeList}
             />

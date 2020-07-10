@@ -370,19 +370,28 @@ class CommentUserDetail extends Component {
     }
 
     renderRepliesButton() {
-        const { item } = this.props
-        const { childComments } = item
+        const { item, commentDetail, pageId, goalId } = this.props
+        const { childComments, _id } = item
         if (!childComments || childComments.length === 0) return null
 
         const comment = childComments[childComments.length - 1]
         const { owner } = comment
         const imageUrl =
             owner && owner.profile && owner.profile.image && owner.profile.image
-        const onPress = () =>
+        const onPress = () => {
+            this.props.createComment(
+                {
+                    ...commentDetail,
+                    commentType: 'Reply',
+                    replyToRef: _id,
+                },
+                pageId
+            )
             Actions.push(
                 componentKeyByTab(this.props.navigationTab, 'replyThread'),
-                { item }
+                { item, pageId, goalId }
             )
+        }
         return (
             <DelayedButton
                 activeOpacity={0.6}

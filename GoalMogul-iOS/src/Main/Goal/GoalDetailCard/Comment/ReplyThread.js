@@ -25,12 +25,13 @@ import Timestamp from '../../Common/Timestamp'
 import ImageModal from '../../../Common/ImageModal'
 import RichText from '../../../Common/Text/RichText'
 import CommentRef from './CommentRef'
+import CommentBox from '../../Common/CommentBoxV2'
 
 // Actions
 import { openPostDetail } from '../../../../redux/modules/feed/post/PostActions'
 
 // Assets
-import { DEFAULT_STYLE } from '../../../../styles'
+import { DEFAULT_STYLE, GM_BLUE } from '../../../../styles'
 import ProfileImage from '../../../Common/ProfileImage'
 import { IMAGE_BASE_URL } from '../../../../Utils/Constants'
 import expand from '../../../../asset/utils/expand.png'
@@ -50,43 +51,69 @@ class ReplyThread extends React.Component {
             likeListParentId: undefined,
             likeListParentType: undefined,
             marginTop: new Animated.Value(0),
+            newComment: {
+                mediaRef: '',
+                tagsArray: [],
+                text: '',
+            },
         }
         this.openCommentLikeList = this.openCommentLikeList.bind(this)
         this.closeCommentLikeList = this.closeCommentLikeList.bind(this)
         this.renderItem = this.renderItem.bind(this)
-        this.keyboardWillShow = this.keyboardWillShow.bind(this)
-        this.keyboardWillHide = this.keyboardWillHide.bind(this)
+        this.keyboardDidShow = this.keyboardDidShow.bind(this)
+        this.keyboardDidHide = this.keyboardDidHide.bind(this)
     }
 
     componentDidMount() {
-        this.keyboardWillShowListener = Keyboard.addListener(
-            'keyboardWillShow',
-            this.keyboardWillShow
+        this.keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            this.keyboardDidShow
         )
-        this.keyboardWillHideListener = Keyboard.addListener(
-            'keyboardWillHide',
-            this.keyboardWillHide
+        this.keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            this.keyboardDidHide
         )
     }
 
     componentWillUnmount() {
-        this.keyboardWillShowListener.remove()
-        this.keyboardWillHideListener.remove()
+        this.keyboardDidShowListener.remove()
+        this.keyboardDidHideListener.remove()
     }
 
-    keyboardWillShow() {
-        if (!this.marginTopOnKeyboard) return
+    keyboardDidShow() {
+        // Only move the commnt card up if it's hiding
+        console.log(this.listHeight, this.listViewHeight)
+        const hideParentCommentCard =
+            this.listViewHeight < 250 && this.listViewHeight < this.listHeight
+        if (!this.marginTopOnKeyboard || !hideParentCommentCard) return
         Animated.timing(this.state.marginTop, {
             toValue: -this.marginTopOnKeyboard,
             duration: this.marginTopOnKeyboard,
         }).start()
     }
 
-    keyboardWillHide() {
+    keyboardDidHide() {
+        console.log(this.listHeight, this.listViewHeight)
         Animated.timing(this.state.marginTop, {
             toValue: 0,
             duration: this.marginTopOnKeyboard,
         }).start()
+    }
+
+    openCommentLikeList = (likeListParentType, likeListParentId) => {
+        this.setState({
+            showCommentLikeList: true,
+            likeListParentType,
+            likeListParentId,
+        })
+    }
+
+    closeCommentLikeList = () => {
+        this.setState({
+            showCommentLikeList: false,
+            likeListParentId: undefined,
+            likeListParentType: undefined,
+        })
     }
 
     /**
@@ -287,31 +314,27 @@ class ReplyThread extends React.Component {
         )
     }
 
-    openCommentLikeList = (likeListParentType, likeListParentId) => {
-        this.setState({
-            showCommentLikeList: true,
-            likeListParentType,
-            likeListParentId,
-        })
-    }
-
-    closeCommentLikeList = () => {
-        this.setState({
-            showCommentLikeList: false,
-            likeListParentId: undefined,
-            likeListParentType: undefined,
-        })
-    }
-
     renderItem({ item }) {
         return (
             <ChildCommentCard
+                onLayout={(e) => {
+                    if (!this.listHeight)
+                        this.listHeight = e.nativeEvent.layout.height
+                    else this.listHeight += e.nativeEvent.layout.height
+                }}
                 {...this.props}
                 item={item}
                 parentCommentId={this.props.item._id}
                 userId={this.props.userId}
                 openCommentLikeList={this.openCommentLikeList}
             />
+        )
+    }
+
+    renderCommentBox() {
+        console.log(this.props.goalId)
+        return (
+            <CommentBox pageId={this.props.pageId} goalId={this.props.goalId} />
         )
     }
 
@@ -329,13 +352,18 @@ class ReplyThread extends React.Component {
                     clearDataOnHide
                 />
                 <KeyboardAvoidingView
-                    behavior={Platform.OS === 'ios' ? 'padding' : null}
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     style={styles.cardContainerStyle}
                 >
                     <ModalHeader back />
                     {this.renderHeader()}
                     {this.renderStatus()}
-                    <View style={{ flex: 1 }}>
+                    <View
+                        style={{ flex: 1 }}
+                        onLayout={(e) => {
+                            this.listViewHeight = e.nativeEvent.layout.height
+                        }}
+                    >
                         <FlatList
                             data={childComments}
                             renderItem={this.renderItem}
@@ -345,23 +373,8 @@ class ReplyThread extends React.Component {
                                 paddingBottom: 8,
                             }}
                         />
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                backgroundColor: 'white',
-                                padding: 16,
-                                borderTopWidth: 1,
-                                borderColor: '#F2F2F2',
-                            }}
-                        >
-                            <TextInput
-                                multiline={true}
-                                placeholder={'Enter a message...'}
-                                value={''}
-                                style={DEFAULT_STYLE.normalText_1}
-                            />
-                        </View>
                     </View>
+                    {this.renderCommentBox()}
                 </KeyboardAvoidingView>
             </MenuProvider>
         )

@@ -65,19 +65,6 @@ class ChildCommentCard extends Component {
         }
     }
 
-    onLayout = (e) => {
-        this.setState({
-            layout: {
-                width: e.nativeEvent.layout.width,
-                height: e.nativeEvent.layout.height,
-                x: e.nativeEvent.layout.x,
-                y: e.nativeEvent.layout.y,
-            },
-        })
-    }
-
-    getLayout = () => this.state.layout
-
     /*
      * Render card content based on scenario
      * 1. If Suggestion, render suggestion.suggestionText
@@ -323,7 +310,7 @@ class ChildCommentCard extends Component {
         if (!item) return null
 
         return (
-            <View onLayout={this.onLayout} style={styles.containerStyle}>
+            <View onLayout={this.props.onLayout} style={styles.containerStyle}>
                 {this.renderUserProfileImage(item)}
                 <View style={{ flex: 1, marginLeft: 6 }}>
                     {this.rederBody()}

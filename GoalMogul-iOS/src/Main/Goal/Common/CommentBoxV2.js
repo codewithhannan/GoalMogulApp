@@ -389,7 +389,6 @@ class CommentBoxV2 extends Component {
         return (
             <DelayedButton
                 activeOpacity={0.6}
-                style={styles.iconContainerStyle}
                 onPress={() => {
                     console.log('suggestion on click in comment box')
                     Keyboard.dismiss()
@@ -399,11 +398,7 @@ class CommentBoxV2 extends Component {
             >
                 <Image
                     source={LightBulb}
-                    style={{
-                        height: 28,
-                        width: 28,
-                        margin: 4,
-                    }}
+                    style={{ ...styles.iconStyle, tintColor: '' }}
                 />
             </DelayedButton>
         )
@@ -419,7 +414,6 @@ class CommentBoxV2 extends Component {
                     flexDirection: 'row',
                     marginLeft: 5,
                     marginRight: 5,
-                    marginBottom: 7,
                 }}
             >
                 {suggestionIcon}
@@ -435,7 +429,6 @@ class CommentBoxV2 extends Component {
         return (
             <TouchableOpacity
                 activeOpacity={0.6}
-                style={styles.iconContainerStyle}
                 onPress={this.handleImageIconOnClick}
                 disabled={disableButton}
             >
@@ -514,15 +507,13 @@ class CommentBoxV2 extends Component {
         return (
             <DelayedButton
                 activeOpacity={0.6}
-                style={styles.postContainerStyle}
                 onPress={() => this.handleOnPost(uploading)}
                 disabled={disable}
             >
                 <Text
                     style={{
+                        ...DEFAULT_STYLE.titleText_2,
                         color,
-                        fontSize: 15,
-                        fontWeight: '700',
                         padding: 13,
                         letterSpacing: 0.5,
                         paddingBottom: 15,
@@ -588,41 +579,9 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderReplyingTo() {
-        const { newComment, pageId } = this.props
-        if (!newComment.name) return null
-        return (
-            <DelayedButton
-                style={{
-                    flexDirection: 'row',
-                    margin: 8,
-                    marginLeft: 24,
-                    alignItems: 'center',
-                }}
-                onPress={() => {
-                    this.props.createComment(
-                        {
-                            ...newComment,
-                            name: undefined,
-                            tag: false,
-                            replyToRef: undefined,
-                        },
-                        pageId
-                    )
-                }}
-            >
-                <Text style={{ ...DEFAULT_STYLE.smallText_1, marginTop: -2 }}>
-                    x{' '}
-                </Text>
-                <Text style={DEFAULT_STYLE.normalText_1}>Replying to </Text>
-                <Text style={DEFAULT_STYLE.titleText_2}>{newComment.name}</Text>
-            </DelayedButton>
-        )
-    }
-
     render() {
         const { pageId, newComment, hasSuggestion, goalId } = this.props
-        // console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment);
+        console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment)
 
         if (!newComment || !newComment.parentRef) return null
         const { uploading } = newComment
@@ -636,12 +595,11 @@ class CommentBoxV2 extends Component {
             : styles.inputStyle
 
         return (
-            <SafeAreaView
+            <View
                 style={{
                     backgroundColor: 'white',
                 }}
             >
-                {this.renderReplyingTo()}
                 <MentionsTextInput
                     ref={(r) => (this.textInput = r)}
                     placeholder={this.state.defaultValue}
@@ -715,7 +673,7 @@ class CommentBoxV2 extends Component {
                     horizontal={false} // defaut is true, change the orientation of the list
                     MaxVisibleRowCount={7} // this is required if horizontal={false}
                 />
-            </SafeAreaView>
+            </View>
         )
     }
 }
@@ -771,34 +729,21 @@ const styles = {
     inputContainerStyle: {
         justifyContent: 'center',
         borderRadius: 18,
-        marginTop: 5,
-        marginBottom: 5,
         borderColor: '#F1F1F1',
         borderWidth: 1,
         flex: 1,
-        paddingTop: 5,
-        paddingBottom: 5,
+        paddingTop: 4,
     },
     inputStyle: {
+        ...DEFAULT_STYLE.normalText_1,
         paddingLeft: 15,
         paddingRight: 15,
         backgroundColor: 'white',
         borderRadius: 22,
-        fontSize: 15,
-    },
-    postContainerStyle: {
-        alignItems: 'flex-end',
-        justifyContent: 'flex-end',
     },
     iconStyle: {
-        height: 21,
-        width: 25,
+        ...DEFAULT_STYLE.buttonIcon_1,
         margin: 4,
-        marginBottom: 6,
-    },
-    iconContainerStyle: {
-        alignItems: 'flex-end',
-        justifyContent: 'flex-end',
     },
     // Media preview styles
     mediaContainerStyle: {
