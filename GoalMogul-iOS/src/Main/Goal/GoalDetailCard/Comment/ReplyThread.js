@@ -11,6 +11,8 @@ import {
     Image,
     TextInput,
     Platform,
+    Keyboard,
+    Animated,
 } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { connect } from 'react-redux'
@@ -35,6 +37,7 @@ import expand from '../../../../asset/utils/expand.png'
 import ChildCommentCard from './ChildCommentCard'
 import { Icon } from '@ui-kitten/components'
 import { Text } from 'react-native-animatable'
+import LikeListModal from '../../../Common/Modal/LikeListModal'
 
 const DEBUG_KEY = '[ UI CommentCard ]'
 
@@ -46,10 +49,44 @@ class ReplyThread extends React.Component {
             showCommentLikeList: false,
             likeListParentId: undefined,
             likeListParentType: undefined,
+            marginTop: new Animated.Value(0),
         }
         this.openCommentLikeList = this.openCommentLikeList.bind(this)
         this.closeCommentLikeList = this.closeCommentLikeList.bind(this)
         this.renderItem = this.renderItem.bind(this)
+        this.keyboardWillShow = this.keyboardWillShow.bind(this)
+        this.keyboardWillHide = this.keyboardWillHide.bind(this)
+    }
+
+    componentDidMount() {
+        this.keyboardWillShowListener = Keyboard.addListener(
+            'keyboardWillShow',
+            this.keyboardWillShow
+        )
+        this.keyboardWillHideListener = Keyboard.addListener(
+            'keyboardWillHide',
+            this.keyboardWillHide
+        )
+    }
+
+    componentWillUnmount() {
+        this.keyboardWillShowListener.remove()
+        this.keyboardWillHideListener.remove()
+    }
+
+    keyboardWillShow() {
+        if (!this.marginTopOnKeyboard) return
+        Animated.timing(this.state.marginTop, {
+            toValue: -this.marginTopOnKeyboard,
+            duration: this.marginTopOnKeyboard,
+        }).start()
+    }
+
+    keyboardWillHide() {
+        Animated.timing(this.state.marginTop, {
+            toValue: 0,
+            duration: this.marginTopOnKeyboard,
+        }).start()
     }
 
     /**
@@ -195,7 +232,7 @@ class ReplyThread extends React.Component {
                         DEFAULT_STYLE.normalIcon_1,
                         {
                             tintColor: '#EB5757',
-                            marginLeft: 12,
+                            marginLeft: 16,
                             marginRight: 4,
                         },
                     ]}
@@ -214,7 +251,15 @@ class ReplyThread extends React.Component {
             created === undefined || created.length === 0 ? new Date() : created
 
         return (
-            <View style={{ padding: 16 }}>
+            <Animated.View
+                style={{
+                    padding: 16,
+                    marginTop: this.state.marginTop,
+                }}
+                onLayout={(e) => {
+                    this.marginTopOnKeyboard = e.nativeEvent.layout.height
+                }}
+            >
                 <View style={{ flexDirection: 'row', marginBottom: 8 }}>
                     <ProfileImage
                         imageUrl={
@@ -238,7 +283,7 @@ class ReplyThread extends React.Component {
                 {this.renderTextContent(item)}
                 {this.renderCommentMedia(item)}
                 {this.renderCommentRef(item)}
-            </View>
+            </Animated.View>
         )
     }
 
