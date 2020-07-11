@@ -1,13 +1,12 @@
 /** @format */
 
+import _ from 'lodash'
 import React from 'react'
-import { Text, View } from 'react-native'
+import { Text, TouchableHighlight, View } from 'react-native'
 import { connect } from 'react-redux'
 import timeago from 'timeago.js'
-import _ from 'lodash'
 import profilePic from '../../../asset/utils/defaultUserProfile.png'
 import { GROUP_CHAT_DEFAULT_ICON_URL } from '../../../Utils/Constants'
-import DelayedButton from '../../Common/Button/DelayedButton'
 // Components
 import ProfileImage from '../../Common/ProfileImage'
 import Timestamp from '../../Goal/Common/Timestamp'
@@ -23,7 +22,7 @@ class ChatRoomCard extends React.Component {
         }
         return (
             <ProfileImage
-                imageStyle={{ height: 55, width: 55, borderRadius: 5 }}
+                imageStyle={{ height: 45, width: 45, borderRadius: 5 }}
                 imageUrl={imageUrl}
                 rounded
                 imageContainerStyle={styles.imageContainerStyle}
@@ -44,7 +43,6 @@ class ChatRoomCard extends React.Component {
                     : item.name
             title = typeof title == 'object' ? title.memberRef.name : title
         }
-        const lastUpdated = item.lastActive || new Date()
 
         return (
             <View
@@ -58,20 +56,15 @@ class ChatRoomCard extends React.Component {
                     style={{
                         flex: 1,
                         flexWrap: 'wrap',
-                        color: 'black',
-                        fontSize: 18,
-                        fontWeight: '600',
+                        color: '#3B414B',
+                        fontSize: 16,
+                        fontWeight: '700',
                     }}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                 >
                     {title}
                 </Text>
-                {item.isChatRoom && (
-                    <View>
-                        <Timestamp time={timeago().format(lastUpdated)} />
-                    </View>
-                )}
             </View>
         )
     }
@@ -191,7 +184,7 @@ class ChatRoomCard extends React.Component {
                             flex: 1,
                             flexWrap: 'wrap',
                             color: '#838f97',
-                            fontSize: 15,
+                            fontSize: 16,
                         }}
                         numberOfLines={1}
                         ellipsizeMode="tail"
@@ -199,7 +192,51 @@ class ChatRoomCard extends React.Component {
                         {content}
                     </Text>
                 </View>
-                {this.renderChatInformation(item)}
+                {/* TODO put member count as a small circle on the bottom right of group convo image */}
+                {/* {this.renderChatInformation(item)} */}
+            </View>
+        )
+    }
+
+    renderTimestamp(item) {
+        if (!item.isChatRoom) {
+            return null
+        }
+
+        const lastUpdated = item.lastActive || new Date()
+
+        return (
+            <View
+                style={{
+                    justifyContent: 'center',
+                    flexBasis: 90,
+                }}
+            >
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        marginLeft: 6,
+                        paddingTop: 24,
+                    }}
+                >
+                    <Text
+                        style={{
+                            marginRight: 6,
+                            color: '#ccc',
+                            fontSize: 10,
+                            paddingTop: 2,
+                        }}
+                    >
+                        |
+                    </Text>
+                    <Timestamp
+                        textStyles={{
+                            color: '#999',
+                            fontSize: 13,
+                        }}
+                        time={timeago().format(lastUpdated)}
+                    />
+                </View>
             </View>
         )
     }
@@ -234,17 +271,26 @@ class ChatRoomCard extends React.Component {
                 : {}
 
         return (
-            <DelayedButton
-                activeOpacity={0.6}
+            <TouchableHighlight
+                underlayColor="#F1F1F1"
+                activeOpacity={0.9}
                 style={{
                     ...styles.cardContainerStyle,
                     ...maybeUnreadHighlight,
                 }}
                 onPress={this.handleCardOnPress}
             >
-                {this.renderCardImage(cardImage)}
-                {this.renderCardContent(item)}
-            </DelayedButton>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        flexGrow: 1,
+                    }}
+                >
+                    {this.renderCardImage(cardImage)}
+                    {this.renderCardContent(item)}
+                    {this.renderTimestamp(item)}
+                </View>
+            </TouchableHighlight>
         )
     }
 }
@@ -253,16 +299,13 @@ const styles = {
     cardContainerStyle: {
         backgroundColor: 'white',
         flexDirection: 'row',
-        paddingTop: 8,
-        paddingBottom: 8,
+        paddingTop: 15,
+        paddingBottom: 15,
         paddingLeft: 12,
         paddingRight: 12,
         marginTop: 1,
     },
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1.5,
-        borderColor: 'lightgray',
         alignItems: 'center',
         borderRadius: 6,
         alignSelf: 'center',
