@@ -100,6 +100,7 @@ const EVENT = {
     PROFILE_REFRESHED: 'Profile Refreshed',
 
     // Registration
+    REG_ACCOUNT_CREATED: 'Registration Account Created',
     REG_INTRO: 'Registration Intro Opened',
     REG_INTRO_SKIP: 'Registration Intro Skiped',
     REG_PROFILE: 'Registration AddProfile Opened',
