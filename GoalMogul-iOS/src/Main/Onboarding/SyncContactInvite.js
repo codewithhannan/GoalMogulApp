@@ -207,8 +207,8 @@ class SyncContactInvite extends React.Component {
                     )}
                 </View>
                 <OnboardingFooter
-                    totalStep={4}
-                    currentStep={4}
+                    totalStep={0}
+                    currentStep={0}
                     onNext={this.onNext}
                     onPrev={this.onBack}
                 />
