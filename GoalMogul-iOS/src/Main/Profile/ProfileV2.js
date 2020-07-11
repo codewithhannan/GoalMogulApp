@@ -1,185 +1,251 @@
-import _ from 'lodash';
-import R from 'ramda';
-import React, { Component } from 'react';
-import { ActivityIndicator, Animated, FlatList, Text, View } from 'react-native';
-import { MenuProvider } from 'react-native-popup-menu';
-import { Actions } from 'react-native-router-flux';
-import { connect } from 'react-redux';
+/** @format */
+
+import _ from 'lodash'
+import R from 'ramda'
+import React, { Component } from 'react'
+import { ActivityIndicator, Animated, FlatList, Text, View } from 'react-native'
+import { MenuProvider } from 'react-native-popup-menu'
+import { Actions } from 'react-native-router-flux'
+import { connect } from 'react-redux'
 /* Actions */
 import {
-    blockUser, changeFilter, closeCreateOverlay, handleProfileTabOnLoadMore,
+    blockUser,
+    changeFilter,
+    closeCreateOverlay,
+    handleProfileTabOnLoadMore,
     // Page related functions
-    refreshProfile, handleTabRefresh, openCreateOverlay, selectProfileTab
-} from '../../actions';
-import { closeProfile } from '../../actions/ProfileActions';
-import { Logger } from '../../redux/middleware/utils/Logger';
-import { openPostDetail } from '../../redux/modules/feed/post/PostActions';
-import { createReport } from '../../redux/modules/report/ReportActions';
+    handleTabRefresh,
+    openCreateOverlay,
+    selectProfileTab,
+} from '../../actions'
+import { closeProfile } from '../../actions/ProfileActions'
+import { Logger } from '../../redux/middleware/utils/Logger'
+import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
+import { createReport } from '../../redux/modules/report/ReportActions'
 // Selector
-import { getUserData, getUserDataByPageId, makeGetUserGoals, makeGetUserNeeds, makeGetUserPosts } from '../../redux/modules/User/Selector';
-import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users';
+import {
+    getUserData,
+    getUserDataByPageId,
+    makeGetUserGoals,
+    makeGetUserNeeds,
+    makeGetUserPosts,
+} from '../../redux/modules/User/Selector'
+import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users'
 /* Styles */
-import { BACKGROUND_COLOR, GM_BLUE, DEFAULT_STYLE } from '../../styles';
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
-import PlusButton from '../Common/Button/PlusButton';
-import GoalFilterBar from '../Common/GoalFilterBar';
+import { BACKGROUND_COLOR, GM_BLUE, DEFAULT_STYLE } from '../../styles'
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
+import PlusButton from '../Common/Button/PlusButton'
+import GoalFilterBar from '../Common/GoalFilterBar'
 /* Components */
-import SearchBarHeader from '../Common/Header/SearchBarHeader';
-import TabButtonGroup from '../Common/TabButtonGroup';
-import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal';
-import ProfileGoalCard from '../Goal/GoalCard/ProfileGoalCard2';
-import ProfileNeedCard from '../Goal/NeedCard/ProfileNeedCard';
-import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
-import About from './About';
-import ProfileDetailCard from './ProfileCard/ProfileDetailCard';
+import SearchBarHeader from '../Common/Header/SearchBarHeader'
+import TabButtonGroup from '../Common/TabButtonGroup'
+import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
+import ProfileGoalCard from '../Goal/GoalCard/ProfileGoalCard2'
+import ProfileNeedCard from '../Goal/NeedCard/ProfileNeedCard'
+import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard'
+import About from './About'
+import ProfileDetailCard from './ProfileCard/ProfileDetailCard'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
-
-const DEBUG_KEY = '[ UI ProfileV2 ]';
-const INFO_CARD_HEIGHT = 242;
+const DEBUG_KEY = '[ UI ProfileV2 ]'
+const INFO_CARD_HEIGHT = 242
 
 class ProfileV2 extends Component {
     constructor(props) {
-        super(props);
-        this._handleIndexChange = this._handleIndexChange.bind(this);
-        this.renderTabs = this.renderTabs.bind(this);
-        this.handleOnBackPress = this.handleOnBackPress.bind(this);
-        this.closeProfileInfoCard = this.closeProfileInfoCard.bind(this);
+        super(props)
+        this._handleIndexChange = this._handleIndexChange.bind(this)
+        this.renderTabs = this.renderTabs.bind(this)
+        this.handleOnBackPress = this.handleOnBackPress.bind(this)
+        this.closeProfileInfoCard = this.closeProfileInfoCard.bind(this)
         this.state = {
             infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT), // Initial info card height
             infoCardOpacity: new Animated.Value(1),
             hasLoadedProfile: false,
             cardHeight: INFO_CARD_HEIGHT, // Read info card height
-            showBadgeEarnModal: false // When user first open profile, show this info
+            showBadgeEarnModal: false, // When user first open profile, show this info
         }
-        this.handleProfileDetailCardLayout = this.handleProfileDetailCardLayout.bind(this);
+        this.handleProfileDetailCardLayout = this.handleProfileDetailCardLayout.bind(
+            this
+        )
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.userPageLoading !== this.props.userPageLoading && this.props.userPageLoading === false) {
+        if (
+            prevProps.userPageLoading !== this.props.userPageLoading &&
+            this.props.userPageLoading === false
+        ) {
             this.setState({
                 ...this.state,
-                hasLoadedProfile: true
-            });
+                hasLoadedProfile: true,
+            })
         }
 
-        // This is unlikely to be triggered. This function is to handle when user opens 
+        // This is unlikely to be triggered. This function is to handle when user opens
         // profile too fast before profile is being loaded
-        if (this.props.isSelf && !_.isEqual(prevProps.user, this.props.user)
-            && (!prevProps.user.profile || !prevProps.user.profile.badges)
-            && _.has(this.props.user, 'profile.badges.milestoneBadge.isAwardAlertShown')
-            && this.props.user.profile.badges.milestoneBadge.isAwardAlertShown === false) {
+        if (
+            this.props.isSelf &&
+            !_.isEqual(prevProps.user, this.props.user) &&
+            (!prevProps.user.profile || !prevProps.user.profile.badges) &&
+            _.has(
+                this.props.user,
+                'profile.badges.milestoneBadge.isAwardAlertShown'
+            ) &&
+            this.props.user.profile.badges.milestoneBadge.isAwardAlertShown ===
+                false
+        ) {
             // Showing modal to congrats user earning a new badge
             this.setState({
                 ...this.state,
-                showBadgeEarnModal: true
-            });
-            return;
+                showBadgeEarnModal: true,
+            })
+            return
         }
     }
 
     componentDidMount() {
-        const { userId, pageId, hideProfileDetail, isSelf } = this.props;
+        const { userId, pageId, hideProfileDetail, isSelf } = this.props
         // console.log(`${DEBUG_KEY}: mounting Profile with pageId: ${pageId}`);
 
         // Hide profile detail as it's not on about tab
-        if (hideProfileDetail) this.closeProfileInfoCard();
+        if (hideProfileDetail) this.closeProfileInfoCard()
 
-        this.props.handleTabRefresh('goals', userId, pageId, this.props.initialFilter);
-        this.props.handleTabRefresh('posts', userId, pageId);
-        this.props.handleTabRefresh('needs', userId, pageId);
+        this.props.handleTabRefresh(
+            'goals',
+            userId,
+            pageId,
+            this.props.initialFilter
+        )
+        this.props.handleTabRefresh('posts', userId, pageId)
+        this.props.handleTabRefresh('needs', userId, pageId)
 
-        if (_.has(this.props.user, 'profile.badges.milestoneBadge.isAwardAlertShown')
-            && this.props.user.profile.badges.milestoneBadge.isAwardAlertShown === false) {
-            return;
+        if (
+            _.has(
+                this.props.user,
+                'profile.badges.milestoneBadge.isAwardAlertShown'
+            ) &&
+            this.props.user.profile.badges.milestoneBadge.isAwardAlertShown ===
+                false
+        ) {
+            return
         }
     }
 
     componentWillUnmount() {
-        const { pageId, userId } = this.props;
-        this.props.closeProfile(userId, pageId);
+        const { pageId, userId } = this.props
+        this.props.closeProfile(userId, pageId)
     }
 
     closeProfileInfoCard = () => {
-        Logger.log(`${DEBUG_KEY}: [ closeProfileInfoCard ]`, {}, 2);
+        Logger.log(`${DEBUG_KEY}: [ closeProfileInfoCard ]`, {}, 2)
     }
 
     handleRefresh = () => {
-        const { userId, pageId, selectedTab } = this.props;
-        if (selectedTab === 'about') return;
-        console.log(`${DEBUG_KEY}: refreshing tab`, selectedTab);
-        this.props.handleTabRefresh(selectedTab, userId, pageId);
+        const { userId, pageId, selectedTab } = this.props
+        if (selectedTab === 'about') return
+        console.log(`${DEBUG_KEY}: refreshing tab`, selectedTab)
+        this.props.handleTabRefresh(selectedTab, userId, pageId)
     }
 
     handleOnLoadMore = () => {
-        const { userId, pageId, selectedTab } = this.props;
-        if (selectedTab === 'about') return;
-        console.log(`${DEBUG_KEY}: refreshing tab`, selectedTab);
-        this.props.handleProfileTabOnLoadMore(selectedTab, userId, pageId);
+        const { userId, pageId, selectedTab } = this.props
+        if (selectedTab === 'about') return
+        console.log(`${DEBUG_KEY}: refreshing tab`, selectedTab)
+        this.props.handleProfileTabOnLoadMore(selectedTab, userId, pageId)
     }
 
     /**
      * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
      */
     handleOnMenuChange = (type, value) => {
-        const { userId, pageId, selectedTab } = this.props;
-        this.props.changeFilter(selectedTab, type, value, { userId, pageId });
+        const { userId, pageId, selectedTab } = this.props
+        this.props.changeFilter(selectedTab, type, value, { userId, pageId })
     }
 
     handleOnBackPress = () => {
-        Actions.pop();
+        Actions.pop()
     }
 
     /**
      * Profile detail card onLayout will call this function to adjust INFO_CARD_HEIGHT
      */
     handleProfileDetailCardLayout = (e) => {
-        return;
+        return
     }
 
     /**
-     * Handle SearchBarHeader Setting icon onPress. This is only called if viewing 
+     * Handle SearchBarHeader Setting icon onPress. This is only called if viewing
      * profile that is not self
      */
     handlePageSetting = () => {
-        const text = 'Please go to Settings to manage blocked users.';
+        const text = 'Please go to Settings to manage blocked users.'
         const switchCases = switchByButtonIndex([
-            [R.equals(0), () => { // share to Direct Chat
-                // TODO: @Jay Share to direct message
-                const userToShare = this.props.user;
-                const chatRoomType = 'Direct';
-                Actions.push('shareToChatLightBox', { userToShare, chatRoomType });
-            }],
-            [R.equals(1), () => {
-                // TODO: @Jay Share to group conversation
-                const userToShare = this.props.user;
-                const chatRoomType = 'Group';
-                Actions.push('shareToChatLightBox', { userToShare, chatRoomType });
-            }],
-            [R.equals(2), () => {
-                console.log(`${DEBUG_KEY} User blocks _id: `, this.props.userId);
-                this.props.blockUser(
-                    this.props.userId,
-                    () => alert(
-                        `You have successfully blocked ${this.props.user.name}. ${text}`
+            [
+                R.equals(0),
+                () => {
+                    // share to Direct Chat
+                    // TODO: @Jay Share to direct message
+                    const userToShare = this.props.user
+                    const chatRoomType = 'Direct'
+                    Actions.push('shareToChatLightBox', {
+                        userToShare,
+                        chatRoomType,
+                    })
+                },
+            ],
+            [
+                R.equals(1),
+                () => {
+                    // TODO: @Jay Share to group conversation
+                    const userToShare = this.props.user
+                    const chatRoomType = 'Group'
+                    Actions.push('shareToChatLightBox', {
+                        userToShare,
+                        chatRoomType,
+                    })
+                },
+            ],
+            [
+                R.equals(2),
+                () => {
+                    console.log(
+                        `${DEBUG_KEY} User blocks _id: `,
+                        this.props.userId
                     )
-                );
-            }],
-            [R.equals(3), () => {
-                console.log(`${DEBUG_KEY} User reports profile with _id: `, this.props.userId);
-                this.props.createReport(this.props.userId, 'User');
-            }]
-        ]);
+                    this.props.blockUser(this.props.userId, () =>
+                        alert(
+                            `You have successfully blocked ${this.props.user.name}. ${text}`
+                        )
+                    )
+                },
+            ],
+            [
+                R.equals(3),
+                () => {
+                    console.log(
+                        `${DEBUG_KEY} User reports profile with _id: `,
+                        this.props.userId
+                    )
+                    this.props.createReport(this.props.userId, 'User')
+                },
+            ],
+        ])
         const profileSettingActionSheet = actionSheet(
-            ['Share Profile as Direct Message', 'Share Profile to Group Chat', 'Block', 'Report', 'Cancel'],
+            [
+                'Share Profile as Direct Message',
+                'Share Profile to Group Chat',
+                'Block',
+                'Report',
+                'Cancel',
+            ],
             4,
             switchCases
-        );
-        profileSettingActionSheet();
+        )
+        profileSettingActionSheet()
     }
 
     handleCreateGoal = () => {
-        const { userId, pageId } = this.props;
-        this.props.openCreateOverlay(userId, pageId);
+        const { userId, pageId } = this.props
+        this.props.openCreateOverlay(userId, pageId)
         // As we move the create option here, we no longer need to care about the tab
         Actions.createGoalButtonOverlay({
             tab: 'mastermind',
@@ -188,19 +254,21 @@ class ProfileV2 extends Component {
             onClose: () => this.props.closeCreateOverlay(userId, pageId),
             openProfile: false,
             userId,
-            pageId
-        });
+            pageId,
+        })
     }
 
     _handleIndexChange = (nextIndex) => {
-        const { pageId, userId } = this.props;
+        const { pageId, userId } = this.props
 
         // Update the reducer for index selected
-        this.props.selectProfileTab(nextIndex, userId, pageId);
-    };
+        this.props.selectProfileTab(nextIndex, userId, pageId)
+    }
 
     renderTabs = (props) => {
-        const paddingBottom = props.renderFilter ? 0 : styles.tabContainer.padding;
+        const paddingBottom = props.renderFilter
+            ? 0
+            : styles.tabContainer.padding
         return (
             <View style={{ ...styles.tabContainer, paddingBottom }}>
                 <TabButtonGroup
@@ -214,36 +282,36 @@ class ProfileV2 extends Component {
                         },
                         unselected: {
                             ...DEFAULT_STYLE.buttonText_1,
-                            backgroundColor: '#F2F2F2'
-                        }
+                            backgroundColor: '#F2F2F2',
+                        },
                     }}
                 />
             </View>
-        );
+        )
     }
 
     renderItem = ({ item }) => {
-        const { pageId, userId, navigationState } = this.props;
-        const { routes, index } = navigationState;
+        const { pageId, userId, navigationState } = this.props
+        const { routes, index } = navigationState
 
         if (item && item.type === 'refreshing') {
             return (
                 <View
                     style={{
-                        paddingVertical: 15
+                        paddingVertical: 15,
                     }}
                 >
-                    <ActivityIndicator size='small' />
+                    <ActivityIndicator size="small" />
                 </View>
-            );
+            )
         }
         // TODO: refactor to become a literal function
         switch (routes[index].key) {
             case 'about': {
-                return <About pageId={pageId} userId={userId} />;
+                return <About pageId={pageId} userId={userId} />
             }
             case 'goals': {
-                return <ProfileGoalCard item={item} pageId={pageId} />;
+                return <ProfileGoalCard item={item} pageId={pageId} />
             }
             case 'posts': {
                 return (
@@ -251,32 +319,32 @@ class ProfileV2 extends Component {
                         item={item}
                         onPress={(item) => {
                             const initialProps = {
-                                initialFocusCommentBox: true
-                            };
-                            this.props.openPostDetail(item, initialProps);
+                                initialFocusCommentBox: true,
+                            }
+                            this.props.openPostDetail(item, initialProps)
                         }}
                         hasActionButton
                     />
-                );
+                )
             }
             case 'needs': {
-                return <ProfileNeedCard item={item} pageId={pageId} />;
+                return <ProfileNeedCard item={item} pageId={pageId} />
             }
             default:
-                return <View key={props.index} />;
+                return <View key={props.index} />
         }
     }
 
     renderPlus() {
         if (!this.props.isSelf) {
-            return null;
+            return null
         }
         return (
             <PlusButton
                 onPress={this.handleCreateGoal}
                 plusActivated={this.props.showPlus}
             />
-        );
+        )
     }
 
     renderFilterBar() {
@@ -285,7 +353,7 @@ class ProfileV2 extends Component {
                 filter={this.props.filter}
                 onMenuChange={this.handleOnMenuChange}
             />
-        );
+        )
     }
 
     renderUserInfo({ userId, pageId }) {
@@ -295,83 +363,92 @@ class ProfileV2 extends Component {
                     pageId={pageId}
                     userId={userId}
                     onLayout={this.handleProfileDetailCardLayout}
-                    openEarnBageModal={() => this.setState({ ...this.state, showBadgeEarnModal: true })}
+                    openEarnBageModal={() =>
+                        this.setState({
+                            ...this.state,
+                            showBadgeEarnModal: true,
+                        })
+                    }
                 />
             </Animated.View>
-        );
+        )
     }
 
     /**
      * @param {object} props { navigationState, selectedTab, userId, pageId }
      */
     renderHeader(props) {
-        const renderFilter = (props.selectedTab === 'goals' || props.selectedTab === 'needs');
+        const renderFilter =
+            props.selectedTab === 'goals' || props.selectedTab === 'needs'
         return (
             <View>
                 {this.renderUserInfo(props)}
-                {this.renderTabs(
-                    {
-                        jumpToIndex: (i) => this._handleIndexChange(i),
-                        navigationState: props.navigationState,
-                        renderFilter
-                    })
-                }
+                {this.renderTabs({
+                    jumpToIndex: (i) => this._handleIndexChange(i),
+                    navigationState: props.navigationState,
+                    renderFilter,
+                })}
                 {renderFilter ? this.renderFilterBar(props) : null}
-                <View style={DEFAULT_STYLE.shadow}/>
+                <View style={DEFAULT_STYLE.shadow} />
             </View>
         )
     }
 
     renderListEmptyState() {
-        const { navigationState, refreshing } = this.props;
-        const { routes, index } = navigationState;
-        let emptyText = '';
+        const { navigationState, refreshing } = this.props
+        const { routes, index } = navigationState
+        let emptyText = ''
         if (routes[index].key === 'about' || refreshing) {
-            return null;
+            return null
         }
 
-        emptyText = routes[index].key;
+        emptyText = routes[index].key
         return (
             <View
                 style={{
-                    justifyContent: "center",
-                    alignItems: "center",
+                    justifyContent: 'center',
+                    alignItems: 'center',
                     flex: 1,
                 }}
             >
                 <Text
                     style={{
-                        justifyContent: "center",
-                        alignItems: "center",
+                        justifyContent: 'center',
+                        alignItems: 'center',
                         fontSize: 18,
                         color: '#999',
-                        paddingTop: 80
+                        paddingTop: 80,
                     }}
                 >
                     No {emptyText}
                 </Text>
             </View>
-        );
+        )
     }
 
     renderListFooter() {
-        const { loading, data } = this.props;
+        const { loading, data } = this.props
         if (loading && data.length >= 7) {
             return (
                 <View
                     style={{
-                        paddingVertical: 12
+                        paddingVertical: 12,
                     }}
                 >
-                    <ActivityIndicator size='small' />
+                    <ActivityIndicator size="small" />
                 </View>
-            );
+            )
         }
     }
 
     render() {
-        const { userId, pageId, selectedTab, navigationState, data, refreshProfile } = this.props;
-        if (!pageId) refreshProfile(userId);
+        const {
+            userId,
+            pageId,
+            selectedTab,
+            navigationState,
+            data,
+        } = this.props
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -379,7 +456,7 @@ class ProfileV2 extends Component {
                     <SearchBarHeader
                         backButton={!this.props.isMainTab}
                         setting={!this.props.isMainTab}
-                        rightIcon='menu'
+                        rightIcon="menu"
                         onBackPress={this.handleOnBackPress}
                         userId={userId}
                         handlePageSetting={this.handlePageSetting}
@@ -393,7 +470,12 @@ class ProfileV2 extends Component {
                         onEndReachedThreshold={0}
                         refreshing={false}
                         ListEmptyComponent={this.renderListEmptyState()}
-                        ListHeaderComponent={this.renderHeader({ userId, pageId, selectedTab, navigationState })}
+                        ListHeaderComponent={this.renderHeader({
+                            userId,
+                            pageId,
+                            selectedTab,
+                            navigationState,
+                        })}
                         ListFooterComponent={this.renderListFooter()}
                     />
                     {this.renderPlus()}
@@ -402,14 +484,14 @@ class ProfileV2 extends Component {
                         closeModal={() => {
                             this.setState({
                                 ...this.state,
-                                showBadgeEarnModal: false
-                            });
+                                showBadgeEarnModal: false,
+                            })
                         }}
                         user={this.props.user}
                     />
                 </View>
             </MenuProvider>
-        );
+        )
     }
 }
 
@@ -420,88 +502,85 @@ const styles = {
     },
     tabContainer: {
         padding: 16,
-        backgroundColor: BACKGROUND_COLOR
+        backgroundColor: BACKGROUND_COLOR,
     },
     backdrop: {
         backgroundColor: 'gray',
-        opacity: 0.5
-    }
-};
+        opacity: 0.5,
+    },
+}
 
 const makeMapStateToProps = () => {
-    const getUserGoals = makeGetUserGoals(); // Memorized selector
-    const getUserNeeds = makeGetUserNeeds();
-    const getUserPosts = makeGetUserPosts();
+    const getUserGoals = makeGetUserGoals() // Memorized selector
+    const getUserNeeds = makeGetUserNeeds()
+    const getUserPosts = makeGetUserPosts()
 
     const mapStateToProps = (state, props) => {
         // Set userId to main user if no userId present in props
-        const userId = props.userId || state.auth.user.userId;
-        const { pageId } = props;
+        const { pageId, userId } = props
 
-        const user = getUserData(state, userId, 'user');
-        let userPage = getUserDataByPageId(state, userId, pageId, '');
+        const user = getUserData(state, userId, 'user')
+        let userPage = getUserDataByPageId(state, userId, pageId, '')
 
         if (!userPage || _.isEmpty(userPage)) {
-            userPage = _.cloneDeep(INITIAL_USER_PAGE);
+            userPage = _.cloneDeep(INITIAL_USER_PAGE)
         }
 
-        const { navigationState, showPlus } = userPage;
-        const { routes, index } = navigationState;
-        const selectedTab = routes[index].key;
+        const { navigationState, showPlus } = userPage
+        const { routes, index } = navigationState
+        const selectedTab = routes[index].key
         // Get page info by tab
-        const { loading, refreshing, filter } = _.get(userPage, selectedTab);
+        const { loading, refreshing, filter } = _.get(userPage, selectedTab)
 
         // Get data to render by tab
-        let data = [{}];
-        const goals = getUserGoals(state, userId, pageId);
-        const posts = getUserPosts(state, userId, pageId);
-        const needs = getUserNeeds(state, userId, pageId);
-        const about = [{}];
+        let data = [{}]
+        const goals = getUserGoals(state, userId, pageId)
+        const posts = getUserPosts(state, userId, pageId)
+        const needs = getUserNeeds(state, userId, pageId)
+        const about = [{}]
 
         if (selectedTab === 'about') {
-            data = about;
+            data = about
         } else if (selectedTab === 'goals') {
-            data = goals;
+            data = goals
         } else if (selectedTab === 'posts') {
-            data = posts;
+            data = posts
         } else if (selectedTab === 'needs') {
-            data = needs;
+            data = needs
         }
 
         // console.log(`${DEBUG_KEY}: refreshing is:`, refreshing);
-        if (refreshing) data = [{ type: 'refreshing' }].concat(data);
-        const appUser = state.user.user;
+        if (refreshing) data = [{ type: 'refreshing' }].concat(data)
+        const appUser = state.user.user
 
         return {
-            userId,
             selectedTab,
             navigationState,
             isSelf: user && appUser && userId === appUser._id,
             showPlus,
             userPageLoading: userPage.loading,
             // Page related info
-            loading, refreshing, filter, data,
-            user // user for the current profile page
-        };
-    };
+            loading,
+            refreshing,
+            filter,
+            data,
+            user, // user for the current profile page
+        }
+    }
 
-    return mapStateToProps;
+    return mapStateToProps
 }
 
-export default connect(
-    makeMapStateToProps,
-    {
-        selectProfileTab,
-        closeCreateOverlay,
-        openCreateOverlay,
-        closeProfile,
-        refreshProfile,
-        openPostDetail,
-        blockUser,
-        createReport,
-        // Page related functions
-        handleTabRefresh,
-        handleProfileTabOnLoadMore,
-        changeFilter
-    }
-)(ProfileV2);
+export default connect(makeMapStateToProps, {
+    selectProfileTab,
+    closeCreateOverlay,
+    openCreateOverlay,
+    closeProfile,
+    openPostDetail,
+    blockUser,
+    createReport,
+    // Page related functions
+    handleTabRefresh,
+    handleProfileTabOnLoadMore,
+    changeFilter,
+})(wrapAnalytics(ProfileV2, SCREENS.PROFILE))

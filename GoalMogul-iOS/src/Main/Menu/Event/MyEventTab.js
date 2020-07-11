@@ -1,75 +1,65 @@
-import React from 'react';
-import {
-    View,
-    FlatList,
-    TouchableOpacity,
-    Image
-} from 'react-native';
-import { connect } from 'react-redux';
-import { MenuProvider } from 'react-native-popup-menu';
+/** @format */
+
+import React from 'react'
+import { View, FlatList, TouchableOpacity, Image } from 'react-native'
+import { connect } from 'react-redux'
+import { MenuProvider } from 'react-native-popup-menu'
 
 // Actions
 import {
     refreshEvent,
     loadMoreEvent,
     closeMyEventTab,
-    myEventSelectTab
-} from '../../../redux/modules/event/MyEventTabActions';
-import {
-    openNewEventModal
-} from '../../../redux/modules/event/NewEventActions';
+    myEventSelectTab,
+} from '../../../redux/modules/event/MyEventTabActions'
+import { openNewEventModal } from '../../../redux/modules/event/NewEventActions'
 
 // Components
-import MyEventCard from './MyEventCard';
-import SearchBarHeader from '../../Common/Header/SearchBarHeader';
-import MyEventFilterBar from './MyEventFilterBar';
-import TabButtonGroup from '../../Common/TabButtonGroup';
-import EmptyResult from '../../Common/Text/EmptyResult';
+import MyEventCard from './MyEventCard'
+import SearchBarHeader from '../../Common/Header/SearchBarHeader'
+import MyEventFilterBar from './MyEventFilterBar'
+import TabButtonGroup from '../../Common/TabButtonGroup'
+import EmptyResult from '../../Common/Text/EmptyResult'
 
 // Assets
-import plus from '../../../asset/utils/plus.png';
+import plus from '../../../asset/utils/plus.png'
 
 // Styles
-import { APP_DEEP_BLUE } from '../../../styles';
+import { APP_DEEP_BLUE } from '../../../styles'
+import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
-const DEBUG_KEY = '[ UI MyEventTab ]';
+const DEBUG_KEY = '[ UI MyEventTab ]'
 
 class MyEventTab extends React.Component {
-
     componentDidMount() {
-        const { initial } = this.props;
+        const { initial } = this.props
         if (initial && initial.openNewEventModal) {
             setTimeout(() => {
-                this.props.openNewEventModal();
-            }, 300);
+                this.props.openNewEventModal()
+            }, 300)
         }
     }
 
-    _keyExtractor = (item) => item._id;
+    _keyExtractor = (item) => item._id
 
-    handleOnRefresh = () => this.props.refreshEvent();
+    handleOnRefresh = () => this.props.refreshEvent()
 
-    handleOnLoadMore = () => this.props.loadMoreEvent();
+    handleOnLoadMore = () => this.props.loadMoreEvent()
 
     handleIndexChange = (index) => {
-        this.props.myEventSelectTab(index);
+        this.props.myEventSelectTab(index)
     }
 
     renderItem = ({ item }) => {
-        return <MyEventCard item={item} />;
+        return <MyEventCard item={item} />
     }
 
-    renderTabs = props => {
-        return (
-            <TabButtonGroup
-                buttons={props}
-                borderRadius={3}
-            />
-        );
+    renderTabs = (props) => {
+        return <TabButtonGroup buttons={props} borderRadius={3} />
     }
 
     renderListHeader() {
-        return null;
+        return null
         // return (
         //   <View>
         //     <MyEventFilterBar />
@@ -86,7 +76,7 @@ class MyEventTab extends React.Component {
             >
                 <Image style={styles.iconStyle} source={plus} />
             </TouchableOpacity>
-        );
+        )
     }
     // <Modal
     //   style={{ flex: 1 }}
@@ -96,21 +86,17 @@ class MyEventTab extends React.Component {
 
     render() {
         return (
-            <View
-                style={{ flex: 1, backgroundColor: 'white' }}
-            >
+            <View style={{ flex: 1, backgroundColor: 'white' }}>
                 <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                     <SearchBarHeader
                         backButton
-                        title='My Events'
+                        title="My Events"
                         onBackPress={() => this.props.closeMyEventTab()}
                     />
-                    {
-                        this.renderTabs({
-                            jumpToIndex: (i) => this.handleIndexChange(i),
-                            navigationState: this.props.navigationState
-                        })
-                    }
+                    {this.renderTabs({
+                        jumpToIndex: (i) => this.handleIndexChange(i),
+                        navigationState: this.props.navigationState,
+                    })}
                     <MyEventFilterBar />
                     <FlatList
                         data={this.props.data}
@@ -122,28 +108,29 @@ class MyEventTab extends React.Component {
                         onEndReached={this.handleOnLoadMore}
                         ListHeaderComponent={this.renderListHeader()}
                         ListEmptyComponent={
-                            this.props.loading ? null :
+                            this.props.loading ? null : (
                                 <EmptyResult text={'No Events found'} />
+                            )
                         }
                         onEndThreshold={0}
                     />
                     {this.renderCreateEventButton()}
                 </MenuProvider>
             </View>
-        );
+        )
     }
 }
 
-const mapStateToProps = state => {
-    const { showModal, data, navigationState, loading } = state.myEventTab;
+const mapStateToProps = (state) => {
+    const { showModal, data, navigationState, loading } = state.myEventTab
 
     return {
         data,
         loading,
         showModal,
-        navigationState
-    };
-};
+        navigationState,
+    }
+}
 
 const styles = {
     backdrop: {
@@ -158,7 +145,7 @@ const styles = {
         alignSelf: 'flex-end',
         marginRight: 20,
         backgroundColor: '#efefef',
-        borderRadius: 5
+        borderRadius: 5,
     },
     iconContainerStyle: {
         position: 'absolute',
@@ -181,15 +168,12 @@ const styles = {
         width: 26,
         tintColor: 'white',
     },
-};
+}
 
-export default connect(
-    mapStateToProps,
-    {
-        refreshEvent,
-        loadMoreEvent,
-        closeMyEventTab,
-        openNewEventModal,
-        myEventSelectTab
-    }
-)(MyEventTab);
+export default connect(mapStateToProps, {
+    refreshEvent,
+    loadMoreEvent,
+    closeMyEventTab,
+    openNewEventModal,
+    myEventSelectTab,
+})(wrapAnalytics(MyEventTab, SCREENS.EVENT_TAB))

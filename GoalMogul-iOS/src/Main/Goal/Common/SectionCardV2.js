@@ -1,40 +1,43 @@
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image
-} from 'react-native';
-import R from 'ramda';
-import { connect } from 'react-redux';
+/** @format */
+
+import React, { Component } from 'react'
+import { View, Text, TouchableOpacity, Image, TextInput } from 'react-native'
+import R from 'ramda'
+import { connect } from 'react-redux'
 // import Decode from 'unescape'; TODO: removed once new decode is good to go
 
 // Asset
-import bulb from '../../../asset/utils/bulb.png';
-import forward from '../../../asset/utils/forward.png';
-import Icons from '../../../asset/base64/Icons';
-import next from '../../../asset/utils/next.png';
+import bulb from '../../../asset/utils/bulb.png'
+import forward from '../../../asset/utils/forward.png'
+import Icons from '../../../asset/base64/Icons'
+import back from '../../../asset/utils/back.png'
+import menu from '../../../asset/utils/drag_indicator.png'
 
 // Components
-import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
-import DelayedButton from '../../Common/Button/DelayedButton';
+import {
+    actionSheet,
+    switchByButtonIndex,
+} from '../../Common/ActionSheetFactory'
+import DelayedButton from '../../Common/Button/DelayedButton'
 
 // Actions
-import {
-  chooseShareDest
-} from '../../../redux/modules/feed/post/ShareActions';
+import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions'
+import { updateGoal } from '../../../redux/modules/goal/GoalDetailActions'
 
-import {
-  markStepAsComplete,
-  markNeedAsComplete
-} from '../../../redux/modules/goal/GoalDetailActions';
-import { decode } from '../../../redux/middleware/utils';
+import { decode } from '../../../redux/middleware/utils'
+import { GM_BLUE, DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles'
+import { TABBAR_HEIGHT } from '../../../styles/Goal'
 
 // Constants
-const DEBUG_KEY = '[ UI GoalCard.Need/Step SectionCardV2 ]';
-const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
-const CANCEL_INDEX = 3;
-const { CheckIcon: checkIcon } = Icons;
+const DEBUG_KEY = '[ UI GoalCard.Need/Step SectionCardV2 ]'
+const SHARE_TO_MENU_OPTTIONS = [
+    'Share to Feed',
+    'Share to an Event',
+    'Share to a Tribe',
+    'Cancel',
+]
+const CANCEL_INDEX = 3
+const { CheckIcon: checkIcon } = Icons
 
 // SectionCardV2.defaultPros = {
 //   item,
@@ -45,280 +48,451 @@ const { CheckIcon: checkIcon } = Icons;
 // };
 
 class SectionCardV2 extends Component {
-
-  handleShareOnClick = () => {
-    const { item, goalRef, type } = this.props;
-    const { _id } = item;
-    const shareType = (type === 'need' || type === 'Need') ? 'ShareNeed' : 'ShareStep';
-
-    const shareToSwitchCases = switchByButtonIndex([
-      [R.equals(0), () => {
-        // User choose to share to feed
-        console.log(`${DEBUG_KEY} User choose destination: Feed `);
-        this.props.chooseShareDest(shareType, _id, 'feed', item, goalRef._id);
-        // TODO: update reducer state
-      }],
-      [R.equals(1), () => {
-        // User choose to share to an event
-        console.log(`${DEBUG_KEY} User choose destination: Event `);
-        this.props.chooseShareDest(shareType, _id, 'event', item, goalRef._id);
-      }],
-      [R.equals(2), () => {
-        // User choose to share to a tribe
-        console.log(`${DEBUG_KEY} User choose destination: Tribe `);
-        this.props.chooseShareDest(shareType, _id, 'tribe', item, goalRef._id);
-      }],
-    ]);
-
-    const shareToActionSheet = actionSheet(
-      SHARE_TO_MENU_OPTTIONS,
-      CANCEL_INDEX,
-      shareToSwitchCases
-    );
-    return shareToActionSheet();
-  };
-
-  renderActionIcons(type) {
-    if (type === 'comment') return null;
-    return (
-      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-        <DelayedButton
-          activeOpacity={0.6}
-          style={styles.iconContainerStyle}
-          onPress={() => this.handleShareOnClick()}
-        >
-          <Image style={styles.iconStyle} source={forward} />
-        </DelayedButton>
-      </View>
-    );
-  }
-
-  // If owner is self, user can click to mark a step / need as complete
-  renderSelfCheckBox(isCompleted, textToDisplay) {
-    const { type, item, goalRef, pageId } = this.props;
-    const { _id } = item;
-    const onPress = type === 'need' || type === 'Need'
-      ? () => this.props.markNeedAsComplete(_id, goalRef, pageId)
-      : () => this.props.markStepAsComplete(_id, goalRef, pageId);
-
-    const iconContainerStyle = isCompleted
-      ? { ...styles.checkIconContainerStyle, marginTop: textToDisplay > 40 ? 4 : 0 }
-      : { ...styles.checkIconContainerStyle, marginTop: textToDisplay > 40 ? 4 : 0, backgroundColor: '#efefef' };
-
-    const checkIconStyle = isCompleted
-      ? { ...styles.checkIconStyle, tintColor: '#4e966d' }
-      : { ...styles.checkIconStyle, tintColor: '#999' }
-
-    return (
-      <DelayedButton
-        activeOpacity={0.6}
-        style={iconContainerStyle}
-        onPress={onPress}
-      >
-        <Image style={checkIconStyle} source={checkIcon} />
-      </DelayedButton>
-    );
-  }
-
-  // Render Suggestion icon and number of comments
-  renderStats(type) {
-    if (type === 'comment') return null;
-    const commentCount = this.props.count === undefined ? 15 : this.props.count;
-    return (
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, paddingBottom: 4 }}>
-        <Image
-          source={bulb}
-          style={{ tintColor: '#FCB110', height: 10, width: 10, marginRight: 5 }}
-        />
-        <Text style={styles.statsTextStyle}>{commentCount} comments</Text>
-      </View>
-    );
-  }
-
-  renderCheckBox(isCompleted, type, textToDisplay) {
-    // console.log(`${DEBUG_KEY}: rendering checkbox: isSelf ${this.props.isSelf}, type: ${type}`);
-    if (this.props.isSelf && type !== 'comment') {
-      return this.renderSelfCheckBox(isCompleted, textToDisplay);
+    constructor(props) {
+        super(props)
+        this.state = {
+            isInputFocused: false,
+            textValue: props.item ? props.item.description : '',
+        }
     }
 
-    if (!isCompleted || type == 'comment') return null;
-    return (
-      <View style={{ ...styles.checkIconContainerStyle, marginTop: textToDisplay > 40 ? 4 : 0 }}>
-        <Image source={checkIcon} style={{ ...styles.checkIconStyle, tintColor: '#4e966d' }} />
-      </View>
-    );
-  }
+    handleShareOnClick = () => {
+        const { item, goalRef, type } = this.props
+        const { _id } = item
+        const shareType =
+            type === 'need' || type === 'Need' ? 'ShareNeed' : 'ShareStep'
 
-  renderBackIcon() {
-    const { isFocusedItem } = this.props;
-    if (!isFocusedItem) return null;
+        const shareToSwitchCases = switchByButtonIndex([
+            [
+                R.equals(0),
+                () => {
+                    // User choose to share to feed
+                    console.log(`${DEBUG_KEY} User choose destination: Feed `)
+                    this.props.chooseShareDest(
+                        shareType,
+                        _id,
+                        'feed',
+                        item,
+                        goalRef._id
+                    )
+                    // TODO: update reducer state
+                },
+            ],
+            [
+                R.equals(1),
+                () => {
+                    // User choose to share to an event
+                    console.log(`${DEBUG_KEY} User choose destination: Event `)
+                    this.props.chooseShareDest(
+                        shareType,
+                        _id,
+                        'event',
+                        item,
+                        goalRef._id
+                    )
+                },
+            ],
+            [
+                R.equals(2),
+                () => {
+                    // User choose to share to a tribe
+                    console.log(`${DEBUG_KEY} User choose destination: Tribe `)
+                    this.props.chooseShareDest(
+                        shareType,
+                        _id,
+                        'tribe',
+                        item,
+                        goalRef._id
+                    )
+                },
+            ],
+        ])
 
-    return (
-      <DelayedButton
-        onPress={this.props.onBackPress}
-        activeOpacity={0.6}
-        style={{ paddingRight: 17 }}
-      >
-        <Image source={next} style={styles.nextIconStyle} />
-      </DelayedButton>
-    );
-  }
-
-  render() {
-    // console.log('item for props is: ', this.props.item);
-    const { type, item } = this.props;
-    let itemToRender = item;
-
-    // Render empty state
-    if (!item && type !== 'comment') {
-      const emptyText = (type === 'need' || type === 'Need') ? 'No needs' : 'No steps';
-      itemToRender = { description: `${emptyText}`, isCompleted: false };
-      return renderEmptyState(emptyText);
+        const shareToActionSheet = actionSheet(
+            SHARE_TO_MENU_OPTTIONS,
+            CANCEL_INDEX,
+            shareToSwitchCases
+        )
+        return shareToActionSheet()
     }
 
-    const { description, isCompleted } = itemToRender;
-    const isCommentFocused = type === 'comment';
-    const sectionText = isCommentFocused ? 'Back to mastermind' : description;
-    const textToDisplay = decode(sectionText === undefined ? 'No content' : sectionText);
-
-    return (
-      <DelayedButton
-        activeOpacity={0.6}
-        style={{
-          ...styles.sectionContainerStyle,
-          backgroundColor: isCompleted ? '#fcfcfc' : 'white',
-          opacity: isCompleted ? 0.8 : 1,
-          minHeight: 54
-        }}
-        onPress={this.props.onCardPress || this.props.onBackPress}
-      >
-        {this.renderBackIcon()}
-        <View style={{ flex: 1 }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-              justifyContent: 'flex-start',
-            }}
-          >
-            {this.renderCheckBox(isCompleted, type, textToDisplay)}
-            <View style={{ flexWrap: 'wrap', flex: 1 }}>
-              <Text
-                // style={{ ...styles.sectionTextStyle, paddingTop: textToDisplay && textToDisplay.length > 40 ? 0 : 4 }}
-                style={{ ...styles.sectionTextStyle, paddingTop: isCommentFocused ? 0 : 4 }}
-                multiline
-                ellipsizeMode='tail'
-              >
-                {textToDisplay}
-              </Text>
+    // Render Suggestion icon and number of comments
+    renderActionIcons() {
+        const commentCount =
+            this.props.count === undefined ? 15 : this.props.count
+        return (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Image
+                    source={bulb}
+                    style={{
+                        ...DEFAULT_STYLE.smallIcon_1,
+                        tintColor: '#FCB110',
+                    }}
+                />
+                <Text style={styles.actionTextStyle}>
+                    {commentCount} comments
+                </Text>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    style={{
+                        flexDirection: 'row',
+                        marginLeft: 10,
+                        alignItems: 'center',
+                    }}
+                    onPress={() => this.handleShareOnClick()}
+                >
+                    <Image
+                        style={{
+                            ...DEFAULT_STYLE.smallIcon_1,
+                            tintColor: '#828282',
+                        }}
+                        source={forward}
+                    />
+                    <Text style={styles.actionTextStyle}>Share</Text>
+                </DelayedButton>
             </View>
-          </View>
-          {this.renderStats(type)}
-        </View>
-        {this.renderActionIcons(type)}
-      </DelayedButton>
-    );
-  }
+        )
+    }
+
+    renderCheckBox(isCompleted, isCreateCard) {
+        const {
+            item: { _id },
+            goalRef,
+            pageId,
+            isFocusedItem,
+            isSelf,
+            type,
+        } = this.props
+
+        const disabled = isCreateCard || !isSelf
+
+        const iconContainerStyle = isCompleted
+            ? styles.checkIconContainerStyle
+            : {
+                  ...styles.checkIconContainerStyle,
+                  padding: 0,
+                  borderWidth: 2,
+                  borderColor: '#DADADA',
+                  backgroundColor: disabled ? '#F2F2F2' : 'white',
+              }
+        const iconStyle = [
+            styles.checkIconStyle,
+            { tintColor: disabled ? '#F2F2F2' : 'white' },
+        ]
+
+        if (type === 'comment' || isFocusedItem) return
+        else {
+            return (
+                <DelayedButton
+                    activeOpacity={0.6}
+                    style={iconContainerStyle}
+                    onPress={() =>
+                        this.props.updateGoal(
+                            _id,
+                            type,
+                            { isCompleted: !isCompleted },
+                            goalRef,
+                            pageId
+                        )
+                    }
+                    disabled={disabled}
+                >
+                    <Image style={iconStyle} source={checkIcon} />
+                </DelayedButton>
+            )
+        }
+    }
+
+    renderBackIcon() {
+        const { type, isFocusedItem } = this.props
+        if (!isFocusedItem) return null
+        return (
+            <View
+                style={{
+                    justifyContent:
+                        type === 'comment' ? 'center' : 'flex-start',
+                    marginRight: 10,
+                }}
+            >
+                <DelayedButton
+                    onPress={this.props.onBackPress}
+                    activeOpacity={0.6}
+                    style={{
+                        padding: 4,
+                        backgroundColor:
+                            type === 'comment' ? GM_BLUE : '#BFBFBF',
+                        borderRadius: 100,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Image
+                        source={back}
+                        style={{
+                            ...DEFAULT_STYLE.smallIcon_1,
+                            tintColor: 'white',
+                        }}
+                    />
+                </DelayedButton>
+            </View>
+        )
+    }
+
+    handleOnLayout = (event) => {
+        if (this.props.onContentSizeChange)
+            this.props.onContentSizeChange(event)
+    }
+
+    /**
+     * Renders main text component to be displayed along with any buttons needed to support text edit
+     * @param {boolean} isCommentFocused true if component type is comment
+     * @param {string} description text to be displayed
+     */
+    renderTextStuff(isCommentFocused, description) {
+        const {
+            item: { _id },
+            goalRef,
+            pageId,
+            isSelf,
+            type,
+        } = this.props
+
+        const sectionText = isCommentFocused
+            ? 'Back to Steps & Needs'
+            : description
+        const hasTextChanged =
+            this.input && this.input.props.value !== description
+        const showSave = hasTextChanged && this.input.props.value !== ''
+
+        const textToDisplay = decode(
+            sectionText === undefined ? 'No content' : sectionText
+        )
+        const textStyle = isCommentFocused
+            ? [DEFAULT_STYLE.smallTitle_1, { color: 'black', marginTop: 4 }]
+            : [DEFAULT_STYLE.normalText_1, { marginLeft: 4 }]
+
+        return (
+            <View
+                style={{
+                    marginRight: isSelf ? 4 : 0,
+                }}
+            >
+                {isSelf === true && !isCommentFocused ? (
+                    <TextInput
+                        scrollEnabled={false}
+                        ref={(ref) => (this.input = ref)}
+                        style={{
+                            ...textStyle,
+                            padding: 4,
+                            backgroundColor: this.state.isInputFocused
+                                ? '#F2F2F2'
+                                : styles.backgroundColor,
+                        }}
+                        value={this.state.textValue}
+                        onFocus={() => {
+                            this.setState({ isInputFocused: true })
+                            if (this.props.onEdit) this.props.onEdit()
+                        }}
+                        onBlur={() => this.setState({ isInputFocused: false })}
+                        onChangeText={(text) =>
+                            this.setState({ textValue: text })
+                        }
+                        multiline
+                    />
+                ) : (
+                    <Text style={textStyle} ellipsizeMode="tail">
+                        {textToDisplay}
+                    </Text>
+                )}
+                {!isCommentFocused && (
+                    <View
+                        style={{
+                            height: isSelf ? 2 : 0,
+                            backgroundColor: '#F2F2F2',
+                            marginBottom: 10,
+                        }}
+                    />
+                )}
+                {hasTextChanged && (
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-end',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <DelayedButton
+                            activeOpacity={0.6}
+                            style={{
+                                backgroundColor: '#E0E0E0',
+                                borderRadius: 3,
+                                padding: 2,
+                                paddingRight: 8,
+                                paddingLeft: 8,
+                            }}
+                            onPress={() =>
+                                this.setState({ textValue: description })
+                            }
+                        >
+                            <Text style={DEFAULT_STYLE.normalText_2}>
+                                Cancel
+                            </Text>
+                        </DelayedButton>
+                        {showSave && (
+                            <DelayedButton
+                                activeOpacity={0.6}
+                                style={{
+                                    backgroundColor: GM_BLUE,
+                                    borderRadius: 3,
+                                    padding: 2,
+                                    paddingRight: 8,
+                                    paddingLeft: 8,
+                                    marginLeft: 12,
+                                }}
+                                onPress={() =>
+                                    this.props.updateGoal(
+                                        _id,
+                                        type,
+                                        {
+                                            description: this.state.textValue.trim(),
+                                        },
+                                        goalRef,
+                                        pageId
+                                    )
+                                }
+                            >
+                                <Text
+                                    style={{
+                                        ...DEFAULT_STYLE.normalText_2,
+                                        color: 'white',
+                                    }}
+                                >
+                                    Save
+                                </Text>
+                            </DelayedButton>
+                        )}
+                    </View>
+                )}
+            </View>
+        )
+    }
+
+    render() {
+        // console.log('item for props is: ', this.props.item);
+        const { type, item, isActive, drag, isSelf } = this.props
+        const { isCreateCard } = item
+
+        let itemToRender = item
+        const isCommentFocused = type === 'comment'
+
+        // Render empty state
+        if (!item && !isCommentFocused) {
+            const emptyText =
+                type === 'need' || type === 'Need' ? 'No needs' : 'No steps'
+            itemToRender = { description: `${emptyText}`, isCompleted: false }
+            return renderEmptyState(emptyText)
+        }
+
+        const { description, isCompleted } = itemToRender
+        const containerStyle = isCommentFocused
+            ? {
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                  minHeight: TABBAR_HEIGHT,
+                  alignItems: 'center',
+              }
+            : { backgroundColor: isActive ? '#F2F2F2' : styles.backgroundColor }
+
+        return (
+            <DelayedButton
+                activeOpacity={0.6}
+                style={[styles.sectionContainerStyle, containerStyle]}
+                onPress={this.props.onCardPress || this.props.onBackPress}
+                onLayout={this.handleOnLayout}
+                onLongPress={drag}
+                disabled={isCreateCard}
+            >
+                {this.renderBackIcon()}
+                <View style={{ justifyContent: 'flex-start' }}>
+                    {this.renderCheckBox(isCompleted, isCreateCard)}
+                </View>
+                <View style={{ flex: 1 }}>
+                    {this.renderTextStuff(isCommentFocused, description)}
+                    {!isCommentFocused &&
+                        !isCreateCard &&
+                        this.renderActionIcons()}
+                </View>
+            </DelayedButton>
+        )
+    }
 }
 
 const renderEmptyState = (text) => {
-  return (
-    <View
-      style={{
-        ...styles.sectionContainerStyle,
-        height: 66,
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 16,
-          justifyContent: 'center',
-          fontWeight: '700',
-          color: '#909090',
-        }}
-        numberOfLines={1}
-        ellipsizeMode='tail'
-      >
-        {text}
-      </Text>
-    </View>
-  );
-};
+    return (
+        <View
+            style={{
+                ...styles.sectionContainerStyle,
+                height: 66,
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
+        >
+            <Text
+                style={{
+                    fontSize: 16,
+                    justifyContent: 'center',
+                    fontWeight: '700',
+                    color: '#909090',
+                }}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+            >
+                {text}
+            </Text>
+        </View>
+    )
+}
 
 const styles = {
-  sectionContainerStyle: {
-    padding: 9,
-    paddingLeft: 17,
-    paddingRight: 17,
-    backgroundColor: 'white',
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderTopWidth: 0.5,
-    borderBottomWidth: 0.5,
-    borderTopColor: '#eaeaea',
-    borderBottomColor: '#eaeaea'
-  },
-  sectionTextStyle: {
-    color: 'black',
-    fontSize: 13,
-    paddingTop: 4
-  },
-  statsTextStyle: {
-    color: '#909090',
-    fontSize: 11,
-  },
-  textContainerStyle: {
-    flexDirection: 'row',
-    borderRightWidth: 0.5,
-    borderColor: '#e5e5e5',
-    paddingRight: 10,
-    flexShrink: 1,
-    flex: 1
-  },
-  iconContainerStyle: {
-    height: 36,
-    width: 36,
-    borderRadius: 18,
-    backgroundColor: '#efefef',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconStyle: {
-    height: 16,
-    width: 16,
-    borderRadius: 8,
-    tintColor: '#a4a7a7'
-  },
-  checkIconContainerStyle: {
-    height: 28,
-    width: 28,
-    borderRadius: 14,
-    // backgroundColor: '#eafcee',
-    backgroundColor: '#a5e5c0',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 10
-  },
-  checkIconStyle: {
-    height: 14,
-    width: 16,
-    borderRadius: 6,
-    tintColor: 'black'
-  },
-  nextIconStyle: {
-    height: 25,
-    width: 26,
-    tintColor: '#bfc3c3'
-  }
-};
+    backgroundColor: BACKGROUND_COLOR,
+    sectionContainerStyle: {
+        padding: 16,
+        flexDirection: 'row',
 
-export default connect(
-  null,
-  {
+        borderTopWidth: 0.5,
+        borderBottomWidth: 1,
+        borderTopColor: '#F2F2F2',
+        borderBottomColor: '#F2F2F2',
+    },
+    actionTextStyle: {
+        ...DEFAULT_STYLE.normalText_2,
+        marginLeft: 6,
+        marginTop: 2,
+    },
+    checkIconContainerStyle: {
+        padding: 2,
+        borderRadius: 100,
+        backgroundColor: '#27AE60',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 10,
+    },
+    checkIconStyle: {
+        ...DEFAULT_STYLE.normalIcon_1,
+        tintColor: 'white',
+    },
+    gestureHandlerContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 4,
+        paddingRight: 6,
+        margin: -10,
+        marginRight: -12,
+        marginLeft: 0,
+    },
+}
+
+export default connect(null, {
     chooseShareDest,
-    markStepAsComplete,
-    markNeedAsComplete
-  }
-)(SectionCardV2);
+    updateGoal,
+})(SectionCardV2)

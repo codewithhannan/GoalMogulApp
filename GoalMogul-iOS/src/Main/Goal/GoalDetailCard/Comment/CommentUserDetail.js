@@ -1,77 +1,76 @@
-import React, { Component } from 'react';
+/** @format */
+
+import React, { Component } from 'react'
 import {
     View,
     TouchableWithoutFeedback,
     ImageBackground,
     Image,
     TouchableOpacity,
-    Dimensions
-} from 'react-native';
-import { connect } from 'react-redux';
+    Dimensions,
+    Text,
+} from 'react-native'
+import { connect } from 'react-redux'
 
 // Assets
-import defaultProfilePic from '../../../../asset/utils/defaultUserProfile.png';
-import LoveOutlineIcon from '../../../../asset/utils/love-outline.png';
-import LoveIcon from '../../../../asset/utils/love.png';
-import CommentIcon from '../../../../asset/utils/comment.png';
-import expand from '../../../../asset/utils/expand.png';
+import LoveOutlineIcon from '../../../../asset/utils/love-outline.png'
+import LoveIcon from '../../../../asset/utils/love.png'
+import CommentIcon from '../../../../asset/utils/comment.png'
+import expand from '../../../../asset/utils/expand.png'
 
 // Components
-import ActionButton from '../../Common/ActionButton';
-import ActionButtonGroup from '../../Common/ActionButtonGroup';
-import CommentHeadline from './CommentHeadline';
-import CommentRef from './CommentRef';
-import ProfileImage from '../../../Common/ProfileImage';
-import ImageModal from '../../../Common/ImageModal';
-import RichText from '../../../Common/Text/RichText';
+import ActionButton from '../../Common/ActionButton'
+import CommentHeadline from './CommentHeadline'
+import CommentRef from './CommentRef'
+import ProfileImage from '../../../Common/ProfileImage'
+import ImageModal from '../../../Common/ImageModal'
+import RichText from '../../../Common/Text/RichText'
 
 // Actions
 import {
     likeGoal,
-    unLikeGoal
-} from '../../../../redux/modules/like/LikeActions';
+    unLikeGoal,
+} from '../../../../redux/modules/like/LikeActions'
 
 import {
     createComment,
-    deleteComment
-} from '../../../../redux/modules/feed/comment/CommentActions';
+    deleteComment,
+} from '../../../../redux/modules/feed/comment/CommentActions'
 
-import {
-    createReport
-} from '../../../../redux/modules/report/ReportActions';
+import { createReport } from '../../../../redux/modules/report/ReportActions'
 
-import {
-    openProfile
-} from '../../../../actions';
+import { openProfile } from '../../../../actions'
 
 import {
     subscribeEntityNotification,
-    unsubscribeEntityNotification
-} from '../../../../redux/modules/notification/NotificationActions';
+    unsubscribeEntityNotification,
+} from '../../../../redux/modules/notification/NotificationActions'
 
 // Styles
-import {
-    imagePreviewContainerStyle, DEFAULT_STYLE
-} from '../../../../styles';
+import { imagePreviewContainerStyle, DEFAULT_STYLE } from '../../../../styles'
 
 // Constants
 import {
     IMAGE_BASE_URL,
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-    CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
-} from '../../../../Utils/Constants';
+    CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
+} from '../../../../Utils/Constants'
+import DelayedButton from '../../../Common/Button/DelayedButton'
+import { Actions } from 'react-native-router-flux'
+import { componentKeyByTab } from '../../../../redux/middleware/utils'
 
 // Constants
-const DEBUG_KEY = '[ UI CommentCard.CommentUserDetail ]';
-const { width } = Dimensions.get('window');
+const DEBUG_KEY = '[ UI CommentCard.CommentUserDetail ]'
+const { width } = Dimensions.get('window')
 
 class CommentUserDetail extends Component {
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             layout: {},
             mediaModal: false,
-        };
+        }
+        this.openReplyThread = this.openReplyThread.bind(this)
     }
 
     onLayout = (e) => {
@@ -80,47 +79,52 @@ class CommentUserDetail extends Component {
             height: e.nativeEvent.layout.height,
             x: e.nativeEvent.layout.x,
             y: e.nativeEvent.layout.y,
-        };
-        this.setState({ layout });
-        this.props.onLayout(layout);
+        }
+        this.setState({ layout })
+        this.props.onLayout(layout)
     }
 
-    getLayout = () => this.state.layout;
+    getLayout = () => this.state.layout
+
+    openReplyThread(itemId) {
+        const { pageId, entityId, goalId } = this.props
+
+        Actions.push(
+            componentKeyByTab(this.props.navigationTab, 'replyThread'),
+            { itemId, pageId, entityId, goalId }
+        )
+    }
 
     /**
      * Render Image user attached to the comment.
      * Comment type should be "commentType": "Comment"
-     * @param {commentObject} item 
+     * @param {commentObject} item
      */
     renderCommentMedia(item) {
-        const { mediaRef } = item;
-        if (!mediaRef) return null;
+        const { mediaRef } = item
+        if (!mediaRef) return null
 
-        const url = mediaRef;
-        const imageUrl = `${IMAGE_BASE_URL}${url}`;
+        const url = mediaRef
+        const imageUrl = `${IMAGE_BASE_URL}${url}`
         return (
             <TouchableWithoutFeedback
                 onPress={() => this.setState({ mediaModal: true })}
             >
                 <View style={{ marginTop: 10 }}>
                     <ImageBackground
-                        style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle, borderRadius: 8, backgroundColor: 'black' }}
+                        style={{
+                            ...styles.mediaStyle,
+                            ...imagePreviewContainerStyle,
+                            borderRadius: 8,
+                            backgroundColor: 'black',
+                        }}
                         source={{ uri: imageUrl }}
-                        imageStyle={{ borderRadius: 8, opacity: 0.8, resizeMode: 'cover' }}
+                        imageStyle={{
+                            borderRadius: 8,
+                            opacity: 0.8,
+                            resizeMode: 'cover',
+                        }}
                     >
-                        {/* <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
-            <Image
-              source={photoIcon}
-              style={{
-                alignSelf: 'center',
-                justifyContent: 'center',
-                height: 40,
-                width: 50,
-                tintColor: '#fafafa'
-              }}
-            />
-          </View> */}
-
                         <TouchableOpacity
                             activeOpacity={0.6}
                             onPress={() => this.setState({ mediaModal: true })}
@@ -134,7 +138,7 @@ class CommentUserDetail extends Component {
                                 padding: 2,
                                 backgroundColor: 'rgba(0,0,0,0.3)',
                                 alignItems: 'center',
-                                justifyContent: 'center'
+                                justifyContent: 'center',
                             }}
                         >
                             <Image
@@ -155,7 +159,7 @@ class CommentUserDetail extends Component {
                     />
                 </View>
             </TouchableWithoutFeedback>
-        );
+        )
     }
 
     /*
@@ -164,84 +168,109 @@ class CommentUserDetail extends Component {
      * 2. If Comment / Reply, render content
      */
     renderCardContent() {
-        const { item } = this.props;
-        let text;
-        let tags = [];
-        let links = [];
-        if (item.commentType === 'Suggestion' &&
+        const { item } = this.props
+        let text
+        let tags = []
+        let links = []
+        if (
+            item.commentType === 'Suggestion' &&
             item.suggestion &&
-            item.suggestion.suggestionType === 'Link') {
-            text = (item.suggestion && item.suggestion.suggestionText)
-                ? item.suggestion.suggestionText
-                : '';
+            item.suggestion.suggestionType === 'Link'
+        ) {
+            text =
+                item.suggestion && item.suggestion.suggestionText
+                    ? item.suggestion.suggestionText
+                    : ''
         } else {
-            text = item.content.text;
-            tags = item.content.tags;
-            links = item.content.links;
+            text = item.content.text
+            tags = item.content.tags
+            links = item.content.links
         }
-        // return (
-        //   <Text
-        //     style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 12, marginTop: 3 }}
-        //     multiline
-        //   >
-        //     {text}
-        //   </Text>
-        // );
 
         return (
             <RichText
                 contentText={text}
                 contentTags={tags}
                 contentLinks={links}
-                textStyle={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 14, lineHeight: 16, marginTop: 3 }}
+                textStyle={{
+                    flex: 1,
+                    flexWrap: 'wrap',
+                    ...DEFAULT_STYLE.normalText_1,
+                    marginTop: 3,
+                }}
                 multiline
                 onUserTagPressed={(user) => {
-                    console.log(`${DEBUG_KEY}: user tag press for user: `, user);
-                    let userId = user;
+                    console.log(`${DEBUG_KEY}: user tag press for user: `, user)
+                    let userId = user
                     if (typeof user !== 'string') {
-                        userId = user._id;
+                        userId = user._id
                     }
-                    this.props.openProfile(userId);
+                    this.props.openProfile(userId)
                 }}
             />
-        );
+        )
+    }
+
+    renderCommentRef({ suggestion, owner }) {
+        return <CommentRef item={suggestion} owner={owner} />
     }
 
     // user basic information
-    renderUserDetail() {
-        const { item, reportType, goalRef, userId } = this.props;
-        const { _id, suggestion, owner, parentRef, parentType } = item;
+    renderBody() {
+        const { item, reportType, goalRef, userId } = this.props
+        const { _id, suggestion, owner, parentRef, parentType } = item
 
         // User is comment owner if user is the creator of the goal or
         // user is the creator of the comment
-        const isCommentOwner = userId === owner._id ||
-            (goalRef && goalRef.owner._id === userId);
+        const isCommentOwner =
+            userId === owner._id || (goalRef && goalRef.owner._id === userId)
 
         return (
-            <View style={{ marginLeft: 15, flex: 1 }}>
+            <View
+                style={{
+                    padding: 10,
+                    backgroundColor: '#F9F9F9',
+                    borderRadius: 8,
+                }}
+            >
                 <CommentHeadline
                     item={item}
                     isCommentOwner={isCommentOwner}
                     goalRef={goalRef}
                     onNamePress={() => {
                         if (item && item.owner && item.owner._id) {
-                            this.props.openProfile(item.owner._id);
+                            this.props.openProfile(item.owner._id)
                         }
                     }}
                     onHeadlinePressed={this.props.onHeadlinePressed}
                     caretOnPress={(type) => {
-                        console.log('Comment options type is: ', type);
+                        console.log('Comment options type is: ', type)
                         if (type === 'Report') {
-                            return this.props.createReport(_id, reportType || 'detail', 'Comment');
+                            return this.props.createReport(
+                                _id,
+                                reportType || 'detail',
+                                'Comment'
+                            )
                         }
                         if (type === 'Delete') {
-                            return this.props.deleteComment(_id, this.props.pageId, parentRef, parentType);
+                            return this.props.deleteComment(
+                                _id,
+                                this.props.pageId,
+                                parentRef,
+                                parentType
+                            )
                         }
                         if (type === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
-                            return this.props.subscribeEntityNotification(_id, 'Comment');
+                            return this.props.subscribeEntityNotification(
+                                _id,
+                                'Comment'
+                            )
                         }
                         if (type === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
-                            return this.props.unsubscribeEntityNotification(_id, 'Comment');
+                            return this.props.unsubscribeEntityNotification(
+                                _id,
+                                'Comment'
+                            )
                         }
                     }}
                 />
@@ -251,54 +280,77 @@ class CommentUserDetail extends Component {
                 {this.renderCommentMedia(item)}
                 {this.renderCommentRef(item)}
             </View>
-        );
+        )
     }
 
     renderUserProfileImage(item) {
-        let imageUrl;
+        let imageUrl
         if (item.owner && item.owner.profile && item.owner.profile.image) {
-            imageUrl = item.owner.profile.image;
+            imageUrl = item.owner.profile.image
         }
-        return (
-            <ProfileImage
-                imageUrl={imageUrl}
-                userId={item.owner._id}
-            />
-        );
-    }
-
-    renderCommentRef({ suggestion, owner }) {
-        return (
-            <CommentRef item={suggestion} owner={owner} />
-        );
+        return <ProfileImage imageUrl={imageUrl} userId={item.owner._id} />
     }
 
     renderActionButtons() {
-        const { item, index, scrollToIndex, onCommentClicked, viewOffset, commentDetail } = this.props;
-        const { childComments, _id, maybeLikeRef, parentRef } = item;
-        const commentCounts = childComments && childComments.length > 0
-            ? childComments.length
-            : undefined;
+        const {
+            item,
+            index,
+            scrollToIndex,
+            onCommentClicked,
+            viewOffset,
+            commentDetail,
+        } = this.props
+        const { childComments, _id, maybeLikeRef, parentRef } = item
+        const commentCounts =
+            childComments && childComments.length > 0
+                ? childComments.length
+                : undefined
 
-        const likeCount = item.likeCount || 0;
-        const selfLiked = maybeLikeRef && maybeLikeRef.length > 0;
+        const likeCount = item.likeCount || 0
+        const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
+        const buttonContainerStyle = { flex: 0 }
 
         return (
-            <ActionButtonGroup containerStyle={{ height: 40 }}>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    marginTop: 8,
+                }}
+            >
                 <ActionButton
                     iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
                     count={likeCount}
-                    unitText='Like'
-                    onTextPress={() => this.props.openCommentLikeList('Comment', _id)}
-                    textStyle={{ ...styles.actionText, color: selfLiked ? '#000' : '#828282' }}
-                    iconStyle={{ ...styles.actionIcon, tintColor: selfLiked ? '#EB5757' : '#828282' }}
-                    onPress={() => {
-                        console.log(`${DEBUG_KEY}: user clicks like icon.`);
-                        if (selfLiked) {
-                            return this.props.unLikeGoal('comment', _id, maybeLikeRef, this.props.pageId, parentRef);
-                        }
-                        this.props.likeGoal('comment', _id, this.props.pageId, parentRef);
+                    unitText="Like"
+                    onTextPress={() =>
+                        this.props.openCommentLikeList('Comment', _id)
+                    }
+                    textStyle={{
+                        ...styles.actionText,
+                        color: selfLiked ? '#000' : '#828282',
                     }}
+                    iconStyle={{
+                        ...styles.actionIcon,
+                        tintColor: selfLiked ? '#EB5757' : '#828282',
+                    }}
+                    onPress={() => {
+                        console.log(`${DEBUG_KEY}: user clicks like icon.`)
+                        if (selfLiked) {
+                            return this.props.unLikeGoal(
+                                'comment',
+                                _id,
+                                maybeLikeRef,
+                                this.props.pageId,
+                                parentRef
+                            )
+                        }
+                        this.props.likeGoal(
+                            'comment',
+                            _id,
+                            this.props.pageId,
+                            parentRef
+                        )
+                    }}
+                    containerStyle={buttonContainerStyle}
                 />
                 <ActionButton
                     iconSource={CommentIcon}
@@ -306,82 +358,111 @@ class CommentUserDetail extends Component {
                     textStyle={styles.actionText}
                     iconStyle={styles.actionIcon}
                     onPress={() => {
-                        // Update the position for FlatList
-                        scrollToIndex(index, viewOffset);
-                        // Focus the comment box
-                        onCommentClicked('Reply');
-                        // Update new comment reducer
-                        this.props.createComment({
-                            ...commentDetail,
-                            commentType: 'Reply',
-                            replyToRef: _id
-                        }, this.props.pageId);
+                        this.openReplyThread(_id)
                     }}
+                    containerStyle={{ ...buttonContainerStyle, marginLeft: 16 }}
                 />
-            </ActionButtonGroup>
-        );
+            </View>
+        )
+    }
+
+    renderRepliesButton() {
+        const { item } = this.props
+        const { childComments, _id } = item
+        if (!childComments || childComments.length === 0) return null
+
+        const comment = childComments[childComments.length - 1]
+        const { owner } = comment
+        const imageUrl =
+            owner && owner.profile && owner.profile.image && owner.profile.image
+        return (
+            <DelayedButton
+                activeOpacity={0.6}
+                key={childComments.length}
+                onPress={() => this.openReplyThread(_id)}
+                style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginTop: 12,
+                }}
+            >
+                <ProfileImage
+                    imageStyle={DEFAULT_STYLE.profileImage_2}
+                    imageContainerStyle={{
+                        margin: -10,
+                        marginTop: -12,
+                        marginRight: -2,
+                    }}
+                    imageUrl={imageUrl}
+                    disabled
+                />
+                <Text style={DEFAULT_STYLE.smallTitle_1}>{owner.name} </Text>
+                <Text
+                    style={{
+                        ...DEFAULT_STYLE.smallText_1,
+                        color: '#6D6D6D',
+                    }}
+                >
+                    Replied | {childComments.length} Repl
+                    {childComments.length > 1 ? 'ies' : 'y'}
+                </Text>
+            </DelayedButton>
+        )
     }
 
     render() {
-        const { item } = this.props;
-        if (!item) return null;
+        const { item } = this.props
+        if (!item) return null
 
         return (
-            <View onLayout={this.onLayout}>
-                <View style={{ ...styles.containerStyle }}>
-                    <View
-                        style={{
-                            marginTop: 16,
-                            marginBottom: 10,
-                            marginRight: 15,
-                            marginLeft: 15,
-                            flexDirection: 'row'
-                        }}
-                    >
-                        {this.renderUserProfileImage(item)}
-                        {this.renderUserDetail()}
-                    </View>
-                </View>
-
-                <View style={{ ...styles.containerStyle, marginTop: 0.5 }}>
+            <View onLayout={this.onLayout} style={styles.containerStyle}>
+                {this.renderUserProfileImage(item)}
+                <View style={{ flex: 1, marginLeft: 6 }}>
+                    {this.renderBody()}
                     {this.renderActionButtons()}
+                    {this.renderRepliesButton()}
                 </View>
             </View>
-        );
+        )
     }
 }
-
-const ImageHeight = 46;
 
 const styles = {
     containerStyle: {
         backgroundColor: 'white',
+        margin: 16,
+        marginBottom: 0,
+        flexDirection: 'row',
     },
     actionIcon: {
         ...DEFAULT_STYLE.normalIcon_1,
-        tintColor: '#828282'
+        tintColor: '#828282',
     },
     actionText: {
         ...DEFAULT_STYLE.smallText_1,
-        color: '#828282'
+        color: '#828282',
     },
     mediaStyle: {
         height: width / 2,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
-};
+}
 
-export default connect(
-    null,
-    {
-        likeGoal,
-        unLikeGoal,
-        createComment,
-        createReport,
-        deleteComment,
-        openProfile,
-        subscribeEntityNotification,
-        unsubscribeEntityNotification
+const mapStateToProps = (state) => {
+    const navigationTab = state.navigation.tab
+    return {
+        navigationTab,
     }
-)(CommentUserDetail);
+}
+
+export default connect(mapStateToProps, {
+    likeGoal,
+    unLikeGoal,
+    createComment,
+    createReport,
+    deleteComment,
+    openProfile,
+    subscribeEntityNotification,
+    unsubscribeEntityNotification,
+})(CommentUserDetail)

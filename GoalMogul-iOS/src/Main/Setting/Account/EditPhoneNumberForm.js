@@ -1,170 +1,182 @@
-import React, { Component } from 'react';
+/** @format */
+
+import React, { Component } from 'react'
 import {
-  Text,
-  View,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  ScrollView
-} from 'react-native';
-import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
-import { TextField } from 'react-native-material-textfield-gm';
-import Expo, { WebBrowser } from 'expo';
+    Text,
+    View,
+    TouchableOpacity,
+    KeyboardAvoidingView,
+    ScrollView,
+} from 'react-native'
+import { connect } from 'react-redux'
+import { Field, reduxForm } from 'redux-form'
+import { TextField } from 'react-native-material-textfield-gm'
+import Expo, { WebBrowser } from 'expo'
 
 /* Components */
-import SearchBarHeader from '../../Common/Header/SearchBarHeader';
-import Button from '../Button';
+import SearchBarHeader from '../../Common/Header/SearchBarHeader'
+import Button from '../Button'
 
 /* Styles */
-import Styles from '../Styles';
+import Styles from '../Styles'
 
 /* Actions */
 /* TODO: update actions needed */
 import {
-  onUpdatePhoneNumberSubmit,
-  onAddVerifyPhone,
-  verifyPhoneNumberSuccess
-} from '../../../actions';
+    onUpdatePhoneNumberSubmit,
+    onAddVerifyPhone,
+    verifyPhoneNumberSuccess,
+} from '../../../actions'
+import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
-const validatePhone = value =>
-  value && /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(value)
-    ? 'Invalid phone number'
-    : undefined;
+const validatePhone = (value) =>
+    value && /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(value)
+        ? 'Invalid phone number'
+        : undefined
 
 class EditPhoneNumberForm extends Component {
-
-  handleOnSubmitPress = values => {
-    // TODO: send code and show
-    // update actions imported and used in connect()
-    console.log('values are: ', values);
-    return this.props.onUpdatePhoneNumberSubmit(values, () => this.handleOnVerifyPress());
-  }
-
-  handleOnVerifyPress = async () => {
-    console.log('user trying to verify phone number');
-    alert('Please check your message for a 6 digit verification code.');
-
-    this.props.onAddVerifyPhone(this.handleRedirect);
-  }
-
-  handleRedirect = event => {
-    WebBrowser.dismissBrowser();
-    // TODO: parse url and determine verification states
-    const { path, queryParams } = Expo.Linking.parse(event.url);
-
-    if (path === 'status=fail') {
-      // TODO: error handling, verification failed
-      return;
+    handleOnSubmitPress = (values) => {
+        // TODO: send code and show
+        // update actions imported and used in connect()
+        console.log('values are: ', values)
+        return this.props.onUpdatePhoneNumberSubmit(values, () =>
+            this.handleOnVerifyPress()
+        )
     }
-    this.props.verifyPhoneNumberSuccess();
-    alert('You have successfully verified your phone number.');
-  }
 
-  /* Refactor error function out */
-  renderError(error) {
-    return error ? (
-      <View style={{ marginTop: 5 }}>
-      {/* <View style={{ height: 20 }}> */}
-        <Text style={styles.errorStyle}>{error}</Text>
-      </View>
-    ) : null;
-  }
+    handleOnVerifyPress = async () => {
+        console.log('user trying to verify phone number')
+        alert('Please check your message for a 6 digit verification code.')
 
-  renderInput = ({
-    input: { onChange, ...restInput },
-    label,
-    meta: { error },
-    ...custom
-  }) => {
-    return (
-      <View style={styles.inputContainerStyle}>
-        <TextField
-          label={label}
-          title={custom.title}
-          autoCapitalize={'none'}
-          autoCorrect={false}
-          onChangeText={onChange}
-          error={error}
-          enablesReturnKeyAutomatically={false}
-          returnKeyType='done'
-          keyboardType='phone-pad'
-          {...custom}
-          {...restInput}
-        />
-      </View>
-    );
-  };
+        this.props.onAddVerifyPhone(this.handleRedirect)
+    }
 
-  render() {
-    const { handleSubmit, error } = this.props;
+    handleRedirect = (event) => {
+        WebBrowser.dismissBrowser()
+        // TODO: parse url and determine verification states
+        const { path, queryParams } = Expo.Linking.parse(event.url)
 
-    return (
-      <KeyboardAvoidingView
-        behavior='padding'
-        style={{ flex: 1 }}
-      >
-        <SearchBarHeader backButton rightIcon='empty' title="Phone number" />
-        <ScrollView
-          style={styles.scroll}
-          keyboardShouldPersistTaps='handled'
-          contentContainerStyle={{ flexGrow: 1, backgroundColor: '#ffffff' }}
-        >
+        if (path === 'status=fail') {
+            // TODO: error handling, verification failed
+            return
+        }
+        this.props.verifyPhoneNumberSuccess()
+        alert('You have successfully verified your phone number.')
+    }
 
-          <View style={Styles.titleSectionStyle}>
-            <Text style={Styles.titleTextStyle}>
-              Update your phone number
-            </Text>
-            <Text style={{ paddingBottom: 10 }}>
-              It's important to protect your account.
-            </Text>
-          </View>
-          {this.renderError(error)}
-          <Field
-            name='phone'
-            label='Phone number'
-            component={this.renderInput}
-          />
+    /* Refactor error function out */
+    renderError(error) {
+        return error ? (
+            <View style={{ marginTop: 5 }}>
+                {/* <View style={{ height: 20 }}> */}
+                <Text style={styles.errorStyle}>{error}</Text>
+            </View>
+        ) : null
+    }
 
-          <TouchableOpacity activeOpacity={0.6} onPress={handleSubmit(this.handleOnSubmitPress)}>
-            <Button text="Submit" />
-          </TouchableOpacity>
+    renderInput = ({
+        input: { onChange, ...restInput },
+        label,
+        meta: { error },
+        ...custom
+    }) => {
+        return (
+            <View style={styles.inputContainerStyle}>
+                <TextField
+                    label={label}
+                    title={custom.title}
+                    autoCapitalize={'none'}
+                    autoCorrect={false}
+                    onChangeText={onChange}
+                    error={error}
+                    enablesReturnKeyAutomatically={false}
+                    returnKeyType="done"
+                    keyboardType="phone-pad"
+                    {...custom}
+                    {...restInput}
+                />
+            </View>
+        )
+    }
 
-        </ScrollView>
-      </KeyboardAvoidingView>
-    );
-  }
+    render() {
+        const { handleSubmit, error } = this.props
+
+        return (
+            <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+                <SearchBarHeader
+                    backButton
+                    rightIcon="empty"
+                    title="Phone number"
+                />
+                <ScrollView
+                    style={styles.scroll}
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerStyle={{
+                        flexGrow: 1,
+                        backgroundColor: '#ffffff',
+                    }}
+                >
+                    <View style={Styles.titleSectionStyle}>
+                        <Text style={Styles.titleTextStyle}>
+                            Update your phone number
+                        </Text>
+                        <Text style={{ paddingBottom: 10 }}>
+                            It's important to protect your account.
+                        </Text>
+                    </View>
+                    {this.renderError(error)}
+                    <Field
+                        name="phone"
+                        label="Phone number"
+                        component={this.renderInput}
+                    />
+
+                    <TouchableOpacity
+                        activeOpacity={0.6}
+                        onPress={handleSubmit(this.handleOnSubmitPress)}
+                    >
+                        <Button text="Submit" />
+                    </TouchableOpacity>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        )
+    }
 }
 
 const styles = {
-  contentContainer: {
-    flexGrow: 1,
-    paddingTop: 10,
-  },
-  inputContainerStyle: {
-    paddingTop: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
-    marginBottom: 5,
-  },
-  errorStyle: {
-    marginTop: 15,
-    color: '#ff0033',
-    justifyContent: 'center',
-    // marginBottom: 4,
-    alignSelf: 'center'
-  }
-};
+    contentContainer: {
+        flexGrow: 1,
+        paddingTop: 10,
+    },
+    inputContainerStyle: {
+        paddingTop: 10,
+        paddingLeft: 20,
+        paddingRight: 20,
+        marginBottom: 5,
+    },
+    errorStyle: {
+        marginTop: 15,
+        color: '#ff0033',
+        justifyContent: 'center',
+        // marginBottom: 4,
+        alignSelf: 'center',
+    },
+}
 
-EditPhoneNumberForm = reduxForm({
-  form: 'editPhoneNumberForm',
-  enableReinitialize: true
-})(EditPhoneNumberForm);
+// Analytics must be the inner most wrapper
+const AnalyticsWrapper = wrapAnalytics(
+    EditPhoneNumberForm,
+    SCREENS.EDIT_PHONE_NUMBER
+)
 
-export default connect(
-  null,
-  {
+const ReduxWrapper = reduxForm({
+    form: 'editPhoneNumberForm',
+    enableReinitialize: true,
+})(AnalyticsWrapper)
+
+export default connect(null, {
     onUpdatePhoneNumberSubmit,
     onAddVerifyPhone,
-    verifyPhoneNumberSuccess
-  }
-)(EditPhoneNumberForm);
+    verifyPhoneNumberSuccess,
+})(ReduxWrapper)

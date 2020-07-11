@@ -1,3 +1,5 @@
+/** @format */
+
 const Screen = {
     HOME_PAGE: 'Home',
     HOME_PAGE_FEED: 'Home feed',
@@ -8,7 +10,7 @@ const Screen = {
     NOTIFICATION_PAGE: 'Notification',
     EXPLORE_PAGE: 'Explore',
     CHAT_PAGE: 'Chat',
-    SPLASH_SCREEN: 'SplashScreen'
-};
+    SPLASH_SCREEN: 'SplashScreen',
+}
 
-export { Screen };
+export { Screen }

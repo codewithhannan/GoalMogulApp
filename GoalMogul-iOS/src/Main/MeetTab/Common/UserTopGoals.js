@@ -1,56 +1,60 @@
-import React from 'react';
-import {
-    View,
-    Text,
-} from 'react-native';
-import DelayedButton from '../../Common/Button/DelayedButton';
-import { GM_BLUE, DEFAULT_STYLE } from '../../../styles';
+/** @format */
+
+import React from 'react'
+import { View, Text } from 'react-native'
+import DelayedButton from '../../Common/Button/DelayedButton'
+import { GM_BLUE, DEFAULT_STYLE } from '../../../styles'
 
 class UserTopGoals extends React.PureComponent {
-
     /**
-     * Return two text, { title, text }. 
+     * Return two text, { title, text }.
      * If top goal exists, then title is "Top Goal: ", otherwise, title is "Headline: "
      */
     getText = (user) => {
-        const { topGoals, headline } = user;
-        let title; // title to display
-        let text; // text to display
+        const { topGoals, headline } = user
+        let title // title to display
+        let text // text to display
         if (topGoals && topGoals.length !== 0) {
-            text = topGoals[0];
-            title = "Top Goal: ";
+            text = topGoals[0]
+            title = 'Top Goal: '
         }
 
         if (headline) {
-            title = "Headline: ";
-            text = headline;
+            title = 'Headline: '
+            text = headline
         }
 
         return {
             title,
-            text
-        };
+            text,
+        }
     }
 
     render() {
-        const { user } = this.props;
+        const { user } = this.props
         if (!user) {
-            return null;
+            return null
         }
-        
-        const { text, title } = this.getText(user);
+
+        const { text, title } = this.getText(user)
         if (!title || !text) {
-            return <View style={{ marginTop: 20 }}/>
+            return <View style={{ marginTop: 20 }} />
         }
 
         return (
             <View style={styles.goalContainerStyle}>
-                <Text numberOfLines={2} ellipsizeMode='tail' style={[DEFAULT_STYLE.normalText_1, { marginBottom: 2 }]}>
-                    <Text style={{ fontWeight: "bold", color: GM_BLUE }}>{title}</Text>
+                <Text
+                    numberOfLines={2}
+                    ellipsizeMode="tail"
+                    style={[DEFAULT_STYLE.normalText_1, { marginBottom: 2 }]}
+                >
+                    <Text style={{ fontWeight: 'bold', color: GM_BLUE }}>
+                        {title}
+                    </Text>
                     {text}
                 </Text>
             </View>
-        );
+        )
     }
 }
 
@@ -59,8 +63,8 @@ const styles = {
         flexDirection: 'row',
         flex: 1,
         marginTop: 8,
-        marginBottom: 9
-    }
+        marginBottom: 9,
+    },
 }
 
-export default UserTopGoals;
+export default UserTopGoals

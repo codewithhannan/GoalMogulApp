@@ -1,6 +1,7 @@
-import React from 'react';
-import { View, Text, Animated, Image } from 'react-native';
+/** @format */
 
+import React from 'react'
+import { View, Text, Animated, Image } from 'react-native'
 
 const SubTabButton = (props) => {
     const {
@@ -8,42 +9,46 @@ const SubTabButton = (props) => {
         iconStyle,
         textStyle,
         containerStyle,
-        statTextStyle
-    } = props;
+        statTextStyle,
+    } = props
 
     const stat = !props.stat ? null : (
         <View>
             <DotIcon
-                iconStyle={{ width: 3, height: 3, marginLeft: 4, marginRight: 4, ...iconStyle }}
+                iconStyle={{
+                    width: 3,
+                    height: 3,
+                    marginLeft: 4,
+                    marginRight: 4,
+                    ...iconStyle,
+                }}
             />
             <Text style={{ ...styles.textStyle, ...statTextStyle }}>
                 {props.stat}
             </Text>
         </View>
-    );
+    )
 
     const icon = !iconSource ? null : (
         <Image
             source={iconSource}
             style={{ ...styles.iconStyle, ...iconStyle }}
         />
-    );
+    )
 
     return (
-        <View style={{
-            ...styles.containerStyle,
-            ...containerStyle
-        }}>
+        <View
+            style={{
+                ...styles.containerStyle,
+                ...containerStyle,
+            }}
+        >
             {icon}
-            <Animated.Text
-                style={textStyle}
-            >
-                {props.text}
-            </Animated.Text>
+            <Animated.Text style={textStyle}>{props.text}</Animated.Text>
             {stat}
         </View>
-    );
-};
+    )
+}
 
 const styles = {
     containerStyle: {
@@ -52,7 +57,7 @@ const styles = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
     },
     textStyle: {
         fontSize: 10,
@@ -64,8 +69,8 @@ const styles = {
         alignSelf: 'center',
         justifyContent: 'center',
         tintColor: '#1998c9',
-        marginRight: 9
-    }
-};
+        marginRight: 9,
+    },
+}
 
-export default SubTabButton;
+export default SubTabButton

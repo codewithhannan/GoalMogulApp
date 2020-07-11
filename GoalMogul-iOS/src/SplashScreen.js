@@ -1,67 +1,70 @@
-import React, { Component } from 'react';
+/** @format */
+
+import React, { Component } from 'react'
 import {
     View,
     Text,
     Image,
     TouchableOpacity,
     Dimensions,
-    Platform
-} from 'react-native';
-import { Asset } from 'expo-asset';
-import * as Font from 'expo-font';
-import { connect } from 'react-redux';
-import { AppLoading } from 'expo';
-import Constants from 'expo-constants';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Actions } from 'react-native-router-flux';
-import _ from 'lodash';
+    Platform,
+} from 'react-native'
+import { Asset } from 'expo-asset'
+import * as Font from 'expo-font'
+import { connect } from 'react-redux'
+import { AppLoading } from 'expo'
+import Constants from 'expo-constants'
+import { LinearGradient } from 'expo-linear-gradient'
+import { Actions } from 'react-native-router-flux'
+import _ from 'lodash'
 
 // Actions
-import { hideSplashScreen } from './redux/modules/auth/Auth';
-import {
-    tryAutoLogin,
-    loginUser
-} from './actions';
+import { hideSplashScreen } from './redux/modules/auth/Auth'
+import { tryAutoLogin, loginUser } from './actions'
 
 /* Asset */
-import HeaderLogo from './asset/header/header-logo-white.png';
-import Helpfulness from './asset/utils/help.png';
-import Icons from './asset/base64/Icons';
+import HeaderLogo from './asset/header/header-logo-white.png'
+import Helpfulness from './asset/utils/help.png'
+import Icons from './asset/base64/Icons'
 
 // Components
-import {
-    RightArrowIcon
-} from './Utils/Icons';
+import { RightArrowIcon } from './Utils/Icons'
 
-import { IPHONE_MODELS, IS_ZOOMED, DEVICE_MODEL } from './Utils/Constants';
-import banner from './asset/banner';
-import background from './asset/background';
-import image from './asset/image';
-import { trackViewScreen } from './monitoring/segment';
-import { Screen } from './monitoring/segment/Constants';
+import { IPHONE_MODELS, IS_ZOOMED, DEVICE_MODEL } from './Utils/Constants'
+import banner from './asset/banner'
+import background from './asset/background'
+import image from './asset/image'
+import { trackViewScreen } from './monitoring/segment'
+import { Screen } from './monitoring/segment/Constants'
 
-
-const IS_SMALL_PHONE = Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL);
+const IS_SMALL_PHONE =
+    Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL)
 const width = Dimensions.get('window').width
-const DEBUG_KEY = '[ UI SplashScreen ]';
+const DEBUG_KEY = '[ UI SplashScreen ]'
 
 class SplashScreen extends Component {
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             fontLoaded: false,
-            appReady: false
-        };
+            appReady: false,
+        }
     }
 
     async componentDidMount() {
-        console.log(`${DEBUG_KEY}: [componentDidMount]: iphone model: `, Constants.platform.ios.model.toLowerCase());
+        console.log(
+            `${DEBUG_KEY}: [componentDidMount]: iphone model: `,
+            Constants.platform.ios.model.toLowerCase()
+        )
         await Font.loadAsync({
             'gotham-pro': require('../assets/fonts/GothamPro.ttf'),
-            'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf')
-        });
-        this.setState({ fontLoaded: true });
-        trackViewScreen(Screen.SPLASH_SCREEN);
+            'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf'),
+            'SFProDisplay-Bold': require('../assets/fonts/SFProDisplay-Bold.otf'),
+            'SFProDisplay-Regular': require('../assets/fonts/SFProDisplay-Regular.otf'),
+            'SFProDisplay-Semibold': require('../assets/fonts/SFProDisplay-Semibold.otf'),
+        })
+        this.setState({ fontLoaded: true })
+        trackViewScreen(Screen.SPLASH_SCREEN)
     }
 
     // Functions to preload static assets
@@ -172,90 +175,124 @@ class SplashScreen extends Component {
             require('./asset/utils/profile_people.png'),
             require('./asset/utils/sendButton.png'),
             require('./asset/utils/emoji.png'),
-        ]);
+        ])
 
         const fontAssets = cacheFonts({
             'gotham-pro': require('../assets/fonts/GothamPro.ttf'),
-            'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf')
-        });
+            'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf'),
+            'SFProDisplay-Bold': require('../assets/fonts/SFProDisplay-Bold.otf'),
+            'SFProDisplay-Regular': require('../assets/fonts/SFProDisplay-Regular.otf'),
+            'SFProDisplay-Semibold': require('../assets/fonts/SFProDisplay-Semibold.otf'),
+        })
 
-        const loadBase64Icons = Object.keys(Icons).map((k) => Image.prefetch(Icons[k]));
-        const loadBase64Badges = Object.keys(banner).map((k) => Image.prefetch(banner[k]));
-        const loadBase64Backgrounds = Object.keys(background).map(k => Image.prefetch(background[k]));
-        const loadBase64Image = Object.keys(image).map(k => Image.prefetch(image[k]));
+        const loadBase64Icons = Object.keys(Icons).map((k) =>
+            Image.prefetch(Icons[k])
+        )
+        const loadBase64Badges = Object.keys(banner).map((k) =>
+            Image.prefetch(banner[k])
+        )
+        const loadBase64Backgrounds = Object.keys(background).map((k) =>
+            Image.prefetch(background[k])
+        )
+        const loadBase64Image = Object.keys(image).map((k) =>
+            Image.prefetch(image[k])
+        )
 
-        await Promise
-            .all([...imageAssets, ...fontAssets, ...loadBase64Icons, ...loadBase64Badges, ...loadBase64Backgrounds, ...loadBase64Image])
-            .catch(err => {
-                console.log(`${DEBUG_KEY}: [ _loadAssetsAsync ]: err`, err);
-            });
+        await Promise.all([
+            ...imageAssets,
+            ...fontAssets,
+            ...loadBase64Icons,
+            ...loadBase64Badges,
+            ...loadBase64Backgrounds,
+            ...loadBase64Image,
+        ]).catch((err) => {
+            console.log(`${DEBUG_KEY}: [ _loadAssetsAsync ]: err`, err)
+        })
 
-        console.log('finish loading images');
+        console.log('finish loading images')
 
-        await callback();
-        console.log('finish loading keys');
-        this.props.hideSplashScreen();
+        await callback()
+        console.log('finish loading keys')
+        this.props.hideSplashScreen()
 
-        return;
+        return
     }
 
     handleGetStartedOnPress() {
-        this.props.registration();
+        this.props.registration()
     }
 
     handleLoginPress() {
-        this.props.login();
+        this.props.login()
     }
 
     renderLogo() {
-        let headerContainerStyle;
+        let headerContainerStyle
         if (IS_ZOOMED) {
             if (IS_SMALL_PHONE) {
-                headerContainerStyle = zoomedStyles.headerContainerStyle;
+                headerContainerStyle = zoomedStyles.headerContainerStyle
             } else {
-                headerContainerStyle = zoomedStyles.largePhoneHeaderContainerStyle;
+                headerContainerStyle =
+                    zoomedStyles.largePhoneHeaderContainerStyle
             }
-
         } else {
             if (IS_SMALL_PHONE) {
-                headerContainerStyle = styles.headerContainerStyle;
+                headerContainerStyle = styles.headerContainerStyle
             } else {
-                headerContainerStyle = styles.largePhoneHeaderContainerStyle;
+                headerContainerStyle = styles.largePhoneHeaderContainerStyle
             }
         }
 
-        const logoImageStyle = IS_SMALL_PHONE ? styles.logoImageStyle : styles.largePhoneLogoImageStyle;
-        const headerFontSize = IS_SMALL_PHONE ? 36 : 38;
+        const logoImageStyle = IS_SMALL_PHONE
+            ? styles.logoImageStyle
+            : styles.largePhoneLogoImageStyle
+        const headerFontSize = IS_SMALL_PHONE ? 36 : 38
 
         return (
             <View style={headerContainerStyle}>
                 <Image style={logoImageStyle} source={HeaderLogo} />
-                {
-                    this.state.fontLoaded ?
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text style={{ ...styles.headerBoldTextStyle, fontSize: headerFontSize }}>Goal</Text>
-                            <Text style={{ ...styles.headerTextStyle, fontSize: headerFontSize }}>Mogul</Text>
-                        </View>
-                        : null
-                }
+                {this.state.fontLoaded ? (
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text
+                            style={{
+                                ...styles.headerBoldTextStyle,
+                                fontSize: headerFontSize,
+                            }}
+                        >
+                            Goal
+                        </Text>
+                        <Text
+                            style={{
+                                ...styles.headerTextStyle,
+                                fontSize: headerFontSize,
+                            }}
+                        >
+                            Mogul
+                        </Text>
+                    </View>
+                ) : null}
             </View>
-        );
+        )
     }
 
     render() {
         if (!this.state.appReady) {
             return (
                 <AppLoading
-                    startAsync={() => this._loadAssetsAsync(this.props.tryAutoLogin)}
+                    startAsync={() =>
+                        this._loadAssetsAsync(this.props.tryAutoLogin)
+                    }
                     onFinish={() => this.setState({ appReady: true })}
                     onError={console.warn}
                     autoHideSplash={false}
                 />
-            );
+            )
         }
 
         // Zoomed related style assignment
-        const highlightContainerStyle = IS_ZOOMED ? zoomedStyles.highlightContainerStyle : styles.highlightContainerStyle;
+        const highlightContainerStyle = IS_ZOOMED
+            ? zoomedStyles.highlightContainerStyle
+            : styles.highlightContainerStyle
 
         return (
             <View style={styles.containerStyle}>
@@ -269,33 +306,42 @@ class SplashScreen extends Component {
                     {/* Main content on the center */}
                     <View style={{ flex: 1, justifyContent: 'center' }}>
                         <View style={styles.bodyContainerStyle}>
-                            <Image style={styles.imageStyle} source={Helpfulness} resizeMode='contain' />
-                            {this.state.fontLoaded ?
+                            <Image
+                                style={styles.imageStyle}
+                                source={Helpfulness}
+                                resizeMode="contain"
+                            />
+                            {this.state.fontLoaded ? (
                                 <View style={{ marginTop: 30 }}>
-                                    <Text style={styles.titleTextStyle}>Achieve more,</Text>
-                                    <Text style={styles.titleTextStyle}>together.</Text>
+                                    <Text style={styles.titleTextStyle}>
+                                        Achieve more,
+                                    </Text>
+                                    <Text style={styles.titleTextStyle}>
+                                        together.
+                                    </Text>
                                 </View>
-                                : null
-                            }
+                            ) : null}
                         </View>
 
                         <View style={highlightContainerStyle}>
                             <TouchableOpacity
                                 activeOpacity={0.6}
                                 style={styles.reactionContainerStyle}
-                                onPress={this.handleGetStartedOnPress.bind(this)}
+                                onPress={this.handleGetStartedOnPress.bind(
+                                    this
+                                )}
                             >
-                                {
-                                    this.state.fontLoaded ?
-                                        <Text style={styles.buttonTextStyle}>Get Started</Text>
-                                        : null
-                                }
+                                {this.state.fontLoaded ? (
+                                    <Text style={styles.buttonTextStyle}>
+                                        Get Started
+                                    </Text>
+                                ) : null}
                                 <RightArrowIcon
                                     iconStyle={{
                                         ...styles.iconStyle,
                                         tintColor: '#ffffff',
                                         height: 15,
-                                        width: 30
+                                        width: 30,
                                     }}
                                 />
                             </TouchableOpacity>
@@ -305,29 +351,42 @@ class SplashScreen extends Component {
                     {/* Bottom bar for direct to login */}
                     <TouchableOpacity
                         activeOpacity={0.6}
-                        style={{ ...styles.loginHighlightContainerStyle, height: IS_SMALL_PHONE ? 60 : 81 }}
+                        style={{
+                            ...styles.loginHighlightContainerStyle,
+                            height: IS_SMALL_PHONE ? 60 : 81,
+                        }}
                         onPress={this.handleLoginPress.bind(this)}
                     >
-                        {
-                            this.state.fontLoaded ?
-                                <Text style={{ ...styles.haveAccountTextStyle, paddingBottom: IS_SMALL_PHONE ? 0 : 21 }}>
-                                    Have an account?
-                </Text>
-                                : null
-                        }
+                        {this.state.fontLoaded ? (
+                            <Text
+                                style={{
+                                    ...styles.haveAccountTextStyle,
+                                    paddingBottom: IS_SMALL_PHONE ? 0 : 21,
+                                }}
+                            >
+                                Have an account?
+                            </Text>
+                        ) : null}
 
-                        <TouchableOpacity activeOpacity={0.6} onPress={this.handleLoginPress.bind(this)}>
-                            {
-                                this.state.fontLoaded ?
-                                    <Text style={{ ...styles.loginTextStyle, paddingBottom: IS_SMALL_PHONE ? 0 : 24 }}>Log In</Text>
-                                    : null
-                            }
+                        <TouchableOpacity
+                            activeOpacity={0.6}
+                            onPress={this.handleLoginPress.bind(this)}
+                        >
+                            {this.state.fontLoaded ? (
+                                <Text
+                                    style={{
+                                        ...styles.loginTextStyle,
+                                        paddingBottom: IS_SMALL_PHONE ? 0 : 24,
+                                    }}
+                                >
+                                    Log In
+                                </Text>
+                            ) : null}
                         </TouchableOpacity>
                     </TouchableOpacity>
                 </LinearGradient>
             </View>
-
-        );
+        )
     }
 }
 
@@ -336,13 +395,13 @@ const zoomedStyles = {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 70
+        marginTop: 70,
     },
     headerContainerStyle: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 50
+        marginTop: 50,
     },
     highlightContainerStyle: {
         marginTop: 30,
@@ -353,59 +412,59 @@ const zoomedStyles = {
         alignItems: 'center',
         justifyContent: 'center',
         alignSelf: 'center',
-        borderRadius: 5
+        borderRadius: 5,
     },
-};
+}
 
 const styles = {
     containerStyle: {
-        flex: 1
+        flex: 1,
     },
     // Header style
     largePhoneHeaderContainerStyle: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 90
+        marginTop: 90,
     },
     headerContainerStyle: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 70
+        marginTop: 70,
     },
     headerTextStyle: {
         fontSize: 36,
         color: '#ffffff',
-        fontFamily: 'gotham-pro'
+        fontFamily: 'gotham-pro',
     },
     headerBoldTextStyle: {
         fontSize: 36,
         color: '#ffffff',
         fontWeight: '800',
-        fontFamily: 'gotham-pro-bold'
+        fontFamily: 'gotham-pro-bold',
     },
     largePhoneLogoImageStyle: {
         height: 54,
         width: 54,
         marginRight: 10,
-        marginBottom: 4
+        marginBottom: 4,
     },
     logoImageStyle: {
         height: 45,
         width: 45,
         marginRight: 10,
-        marginBottom: 3
+        marginBottom: 3,
     },
     // Body style
     bodyContainerStyle: {
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     imageStyle: {
         height: 200,
         width: 200,
-        tintColor: '#045C7A'
+        tintColor: '#045C7A',
     },
     titleTextStyle: {
         fontSize: 22,
@@ -413,7 +472,7 @@ const styles = {
         alignSelf: 'center',
         fontWeight: '700',
         letterSpacing: 0.5,
-        fontFamily: 'gotham-pro'
+        fontFamily: 'gotham-pro',
     },
     // Highlight style
     buttonTextStyle: {
@@ -422,7 +481,7 @@ const styles = {
         color: '#ffffff',
         alignSelf: 'center',
         marginTop: 5,
-        fontFamily: 'gotham-pro-bold'
+        fontFamily: 'gotham-pro-bold',
     },
     highlightContainerStyle: {
         marginTop: 50,
@@ -433,13 +492,13 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         alignSelf: 'center',
-        borderRadius: 5
+        borderRadius: 5,
     },
     reactionContainerStyle: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        alignSelf: 'center'
+        alignSelf: 'center',
     },
     // Footer style
     loginHighlightContainerStyle: {
@@ -448,39 +507,39 @@ const styles = {
         height: 60,
         width,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     loginTextStyle: {
         paddingLeft: 3,
         color: '#ffffff',
         fontWeight: '800',
         fontSize: 18,
-        fontFamily: 'gotham-pro-bold'
+        fontFamily: 'gotham-pro-bold',
     },
     haveAccountTextStyle: {
         fontSize: 15,
         color: '#0d6992',
         marginRight: 3,
-        fontFamily: 'gotham-pro'
+        fontFamily: 'gotham-pro',
     },
     iconStyle: {
         alignSelf: 'center',
-        marginLeft: 5
-    }
-};
+        marginLeft: 5,
+    },
+}
 
 function cacheImages(images) {
-    return images.map(image => {
+    return images.map((image) => {
         if (typeof image === 'string') {
-            return Image.prefetch(image);
+            return Image.prefetch(image)
         }
 
-        return Asset.fromModule(image).downloadAsync();
-    });
+        return Asset.fromModule(image).downloadAsync()
+    })
 }
 
 function cacheFonts(fonts) {
-    return [Font.loadAsync(fonts)];
+    return [Font.loadAsync(fonts)]
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -489,11 +548,8 @@ const mapDispatchToProps = (dispatch) => {
         login: () => Actions.push('login'),
         loginUser: (val) => dispatch(loginUser(val)),
         tryAutoLogin: () => dispatch(tryAutoLogin()),
-        hideSplashScreen: () => dispatch(hideSplashScreen())
-    };
-};
+        hideSplashScreen: () => dispatch(hideSplashScreen()),
+    }
+}
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(SplashScreen);
+export default connect(null, mapDispatchToProps)(SplashScreen)
