@@ -21,6 +21,7 @@ const ENV = {
         GOOGLE_RECAPTCHA_KEY,
         SENTRY_CONFIG,
         SEGMENT_CONFIG,
+        segmentDebug: true,
         url: API_URL,
         socketIOUrl: SOCKET_IO_URL,
         /**
@@ -40,6 +41,7 @@ const ENV = {
         GOOGLE_RECAPTCHA_KEY,
         SENTRY_CONFIG,
         SEGMENT_CONFIG,
+        segmentDebug: false,
         url: API_URL,
         socketIOUrl: SOCKET_IO_URL,
         logLevel: 3,
@@ -48,6 +50,7 @@ const ENV = {
         GOOGLE_RECAPTCHA_KEY,
         SENTRY_CONFIG,
         SEGMENT_CONFIG,
+        segmentDebug: false,
         url: API_URL,
         socketIOUrl: SOCKET_IO_URL,
         logLevel: 3,

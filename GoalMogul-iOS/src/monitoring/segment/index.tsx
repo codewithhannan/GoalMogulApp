@@ -5,7 +5,7 @@ import getEnvVars from '../../../environment'
 import React from 'react'
 import LRUCache from 'lru-cache'
 
-const DEBUG = false
+const DEBUG = getEnvVars().segmentDebug;
 const TAG = '[Segment]'
 
 /**
@@ -24,6 +24,11 @@ const EVENT = {
     EDIT_GOAL_MODAL_CANCELLED: 'EditGoalModal Cancelled',
     GOAL_UPDATED: 'Goal Updated',
     GOAL_DELETED: 'Goal Deleted',
+    GOAL_DEADLINE_ADDED: 'Goal Deadline Added',
+    GOAL_STEP_ADDED: 'Goal Step Added',
+    GOAL_NEED_ADDED: 'Goal Need Added',
+    GOAL_MARKED_DONE: 'Goal Marked Complete',
+    GOAL_MARKED_UNDONE: 'Goal Marked Incomplete',
     GOAL_LIKED: 'Goal Liked',
     GOAL_UNLIKED: 'Goal Unliked',
     GOAL_FOLLOWED: 'Goal Followed', //
@@ -42,6 +47,7 @@ const EVENT = {
     POST_OPENED: 'Post Opened',
     POST_FOLLOWED: 'Post Followed', //
     POST_UNFOLLOWED: 'Post Unfollowed', //
+    POST_SHARED: 'Post Shared',
 
     // Comment
     COMMENT_ADDED: 'Comment Added',
@@ -102,6 +108,7 @@ const EVENT = {
     USER_UNBLOCKED: 'User Unblocked',
     PROFILE_OPENED: 'Profile Opened',
     PROFILE_REFRESHED: 'Profile Refreshed',
+    PROFILE_PHOTO_UPDATED: 'Profile Photo Updated',
 
     // Registration
     REG_INTRO: 'Registration Intro Opened',
@@ -199,6 +206,9 @@ const screensQueue = new LRUCache<string, number>(100)
 
 const { SEGMENT_CONFIG } = getEnvVars()
 
+/**
+ * Calls to initialize segment library. Must call when app starts.
+ */
 function initSegment() {
     Segment.initialize({ iosWriteKey: SEGMENT_CONFIG.IOS_WRITE_KEY })
     allEventNames.clear()
@@ -215,10 +225,16 @@ function initSegment() {
     }
 }
 
+/**
+ * Identifies a user. Calls when user logs in, signs up, or otherwise changes its identity.
+ */
 function identify(userId: string, username: string) {
     Segment.identify(userId)
 }
 
+/**
+ * Identifies a user with a list of traits.
+ */
 function identifyWithTraits(userId: string, trait: Record<string, unknown>) {
     Segment.identifyWithTraits(userId, trait)
 }
@@ -261,6 +277,11 @@ function validateScreenTracking(screenName: string): boolean {
     return true
 }
 
+/** 
+ * Sends a tracking event with the supplied name to Segment. 
+ * 
+ * @param eventName name of the event defined in `EVENT`
+ */
 function track(eventName: string) {
     if (!validateEventTracking(eventName)) { return }
     if (DEBUG) {
@@ -269,18 +290,33 @@ function track(eventName: string) {
     Segment.track(eventName)
 }
 
+/** 
+ * Sends a tracking event with the supplied name and a list of properties to Segment. 
+ * 
+ * @param eventName name of the event defined in `EVENT`
+ */
 function trackWithProperties(eventName: string, properties: Record<string, unknown>) {
     if (!validateEventTracking(eventName)) { return }
     if (DEBUG) { console.log(`${TAG} trackWithProperties: ${eventName}:\n${JSON.stringify(properties)}`) }
     Segment.trackWithProperties(eventName, properties)
 }
 
+/** 
+ * Tracks when user views a screen, aka. impression. It should be called when the new component initializes.
+ * 
+ * @param screenName name of the screen defined in `SCREENS`
+ */
 function trackViewScreen(screenName: string) {
     if (!validateScreenTracking(screenName)) { return }
     if (DEBUG) { console.log(`${TAG} trackViewScreen: ${screenName}`) }
     Segment.track(`ScreenView ${screenName}`)
 }
 
+/** 
+ * Tracks when user views a screen, aka. impression with a list of properties.
+ * 
+ * @param screenName name of the screen defined in `SCREENS`
+ */
 function trackScreenWithProps(screenName: string, properties: Record<string, unknown>) {
     if (!validateScreenTracking(screenName)) { return }
     if (DEBUG) { console.log(`${TAG} trackScreenWithProps: ${screenName}\n${JSON.stringify(properties)}`) }
@@ -288,6 +324,15 @@ function trackScreenWithProps(screenName: string, properties: Record<string, unk
     Segment.trackWithProperties(`ScreenView ${screenName}`, properties)
 }
 
+/** 
+ * Tracks when user leaves a screen. 
+ * 
+ * Together with `trackViewScreen`, we can track when user enters / leaves
+ * a specific component / page, and how long they spend in that page. So usually, `trackViewScreen` and
+ * `trackScreenCloseWithProps` come in pairs.
+ * 
+ * @param screenName name of the screen defined in `SCREENS`
+ */
 function trackScreenCloseWithProps(screenName: string, properties: Record<string, unknown>) {
     if (!validateScreenTracking(screenName)) { return }
     if (DEBUG) { console.log(`${TAG} trackScreenCloseWithProps: ${screenName}\n${JSON.stringify(properties)}`) }
@@ -295,22 +340,32 @@ function trackScreenCloseWithProps(screenName: string, properties: Record<string
     Segment.trackWithProperties(`ScreenClose ${screenName}`, properties)
 }
 
+/**
+ * Resets user identity. Should be called when the user logs out.
+ */
 function resetUser() {
     Segment.reset()
 }
 
+/**
+ * Empowers the given component with predefined analytics tracking.
+ * 
+ * Currently, it adds screen enter and leave tracking, as well as how long a user stays there.
+ */
 function wrapAnalytics(Comp: React.ComponentType<unknown>, screenName: string) {
     class AnalyticsWrapper extends React.Component {
-        startTime: Date = new Date();
+        readonly _analyticsVars = {
+            startTime: new Date(),
+        };
 
         componentDidMount() {
-            this.startTime = new Date()
+            this._analyticsVars.startTime = new Date()
             trackViewScreen(screenName)
         }
 
         componentWillUnmount() {
             const duration =
-                (new Date().getTime() - this.startTime.getTime()) / 1000
+                (new Date().getTime() - this._analyticsVars.startTime.getTime()) / 1000
             trackScreenCloseWithProps(screenName, {
                 DurationSec: duration,
             })
