@@ -4,6 +4,7 @@ import React from 'react'
 import { Text, View } from 'react-native'
 
 import { GM_BLUE, DEFAULT_STYLE } from '../../../styles'
+import DelayedButton from '../../Common/Button/DelayedButton'
 
 const DEBUG_KEY = '[ UI ProgressBar ]'
 const months = [
@@ -92,7 +93,7 @@ const getProgress = (steps, needs, goalRef) => {
 }
 
 const ProgressBar = (props) => {
-    const { startTime, endTime, steps, needs, goalRef } = props
+    const { startTime, endTime, steps, needs, goalRef, onPress } = props
     const percentage = getProgress(steps || [], needs || [], goalRef) * 100
     // min sections 3 max 10
     const sections =
@@ -108,20 +109,16 @@ const ProgressBar = (props) => {
             : formatDate(new Date(endTime))
 
     const startTimeTextView =
-        startTimeText === 'undefined NaN' ? (
-            <Text style={{ ...DEFAULT_STYLE.smallText_2 }} />
-        ) : (
+        startTimeText === 'undefined NaN' ? null : (
             <Text style={DEFAULT_STYLE.smallText_2}>{startTimeText}</Text>
         )
 
     const endTimeTextView =
-        endTimeText === 'undefined NaN' ? (
-            <Text style={{ ...DEFAULT_STYLE.smallText_2 }} />
-        ) : (
+        endTimeText === 'undefined NaN' ? null : (
             <Text style={DEFAULT_STYLE.smallText_2}>{endTimeText}</Text>
         )
 
-    return (
+    const progressBar = (
         <View style={styles.containerStyle}>
             <View
                 style={{
@@ -143,6 +140,14 @@ const ProgressBar = (props) => {
             })}
         </View>
     )
+
+    if (onPress)
+        return (
+            <DelayedButton activeOpacity={0.6} onPress={onPress}>
+                {progressBar}
+            </DelayedButton>
+        )
+    return progressBar
 }
 
 const styles = {
