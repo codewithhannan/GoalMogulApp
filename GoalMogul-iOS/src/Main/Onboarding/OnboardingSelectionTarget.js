@@ -8,7 +8,10 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import OnboardingHeader from './Common/OnboardingHeader'
 import DelayedButton from '../Common/Button/DelayedButton'
 import { GM_FONT_SIZE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT } from '../../styles'
-import { registrationTargetSelection } from '../../redux/modules/registration/RegistrationActions'
+import {
+    registrationTargetSelection,
+    uploadSurvey,
+} from '../../redux/modules/registration/RegistrationActions'
 import OnboardingFooter from './Common/OnboardingFooter'
 import { CheckBox } from 'react-native-elements'
 import { Actions } from 'react-native-router-flux'
@@ -30,12 +33,11 @@ class OnboardingSelectionTarget extends React.Component {
     }
 
     onNext = () => {
-        // Sent api request to register targets
         // Transition to next screen
-        const screenTransitionCallback = () => {
-            Actions.push('registration_tribe_selection')
-        }
-        screenTransitionCallback()
+        Actions.push('registration_tribe_selection')
+
+        // Sent api request to upload survey
+        this.props.uploadSurvey()
     }
 
     onBack = () => {
@@ -281,4 +283,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
     registrationTargetSelection,
+    uploadSurvey,
 })(OnboardingSelectionTarget)

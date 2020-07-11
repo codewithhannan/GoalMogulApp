@@ -226,10 +226,11 @@ const styles = {
 
 const mapStateToProps = (state) => {
     return {
-        // contacts: state.contactSync.contacts || testContacts,
-        // matchedContacts: state.registration.matchedContacts || testMatchedContacts
-        contacts: testContacts,
-        matchedContacts: testMatchedContacts,
+        contacts: state.contactSync.contacts || testContacts,
+        matchedContacts:
+            state.registration.matchedContacts || testMatchedContacts,
+        // contacts: testContacts,
+        // matchedContacts: testMatchedContacts,
     }
 }
 
