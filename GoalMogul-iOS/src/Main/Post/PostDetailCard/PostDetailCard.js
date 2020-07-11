@@ -166,14 +166,6 @@ class PostDetailCard extends React.PureComponent {
         })
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextState.nextcommentBoxPadding !== this.state.nextState)
-            return false
-        if (nextState.keyboardDidShow !== this.state.keyboardDidShow)
-            return false
-        return true
-    }
-
     /**
      * Open comment like list
      */

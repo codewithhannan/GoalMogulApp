@@ -98,7 +98,7 @@ class CommentBoxV2 extends Component {
     }
 
     componentDidMount() {
-        if (this.props.onRef !== null) {
+        if (this.props.onRef) {
             this.props.onRef(this)
         }
 
@@ -115,7 +115,6 @@ class CommentBoxV2 extends Component {
     }
 
     componentWillUnmount() {
-        // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: componentWillUnmount`);
         if (this.reqTimer) {
             clearTimeout(this.reqTimer)
         }
@@ -126,7 +125,6 @@ class CommentBoxV2 extends Component {
         const { name } = item
         const { pageId, newComment } = this.props
         const { contentText, contentTags } = newComment
-        // console.log(`${DEBUG_KEY}: contentText is: `, contentText);
 
         const postCursorContent = contentText.slice(cursorPosition)
         const prevCursorContent = contentText.slice(0, cursorPosition)
@@ -135,16 +133,6 @@ class CommentBoxV2 extends Component {
             /^\s+/g,
             ''
         )}`
-        // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
-        // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
-
-        // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
-        // console.log(`${DEBUG_KEY}: keyword length is: `, this.state.keyword.length);
-        // console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: prevCursorContent is: `, prevCursorContent);
-        // console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: prevCursorContent length is: `, prevCursorContent.length);
-        // console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: postCursorContent is: `, postCursorContent);
-        // console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: comment is: `, comment);
-        // console.log(`${DEBUG_KEY}: [ onTaggingSuggestionTap ]: newContentText is: `, newContentText);
 
         this.props.newCommentOnTextChange(newContentText, pageId)
 
@@ -280,7 +268,7 @@ class CommentBoxV2 extends Component {
     handleOnPost = (uploading) => {
         // Ensure we only create comment once
         if (uploading) return
-        this.props.postComment(this.props.pageId)
+        this.props.postComment(this.props.pageId, this.props.resetToDefault)
     }
 
     handleOpenCamera = () => {
@@ -327,13 +315,9 @@ class CommentBoxV2 extends Component {
     handleOnBlur = (newComment) => {
         console.log(`${DEBUG_KEY}: [ handleOnBlur ]`)
         const { resetCommentType, onSubmitEditing } = this.props
-        const { contentText, tmpSuggestion } = newComment
+        const { contentText } = newComment
         // On Blur if no content then set default value to comment the goal / post
-        if (
-            contentText === undefined ||
-            contentText === '' ||
-            contentText.trim() === ''
-        ) {
+        if (!contentText || contentText === '' || contentText.trim() === '') {
             this.setState({
                 ...this.state,
                 defaultValue: 'Write a Comment...',
@@ -375,15 +359,6 @@ class CommentBoxV2 extends Component {
                 defaultValue: 'Reply to...',
             })
         }
-        this.props.createComment(
-            {
-                ...this.props.newComment,
-                name: undefined,
-                replyToRef: undefined,
-                tag: false,
-            },
-            this.props.pageId
-        )
     }
 
     focus() {
@@ -405,7 +380,6 @@ class CommentBoxV2 extends Component {
         return (
             <DelayedButton
                 activeOpacity={0.6}
-                style={styles.iconContainerStyle}
                 onPress={() => {
                     console.log('suggestion on click in comment box')
                     Keyboard.dismiss()
@@ -415,11 +389,7 @@ class CommentBoxV2 extends Component {
             >
                 <Image
                     source={LightBulb}
-                    style={{
-                        height: 28,
-                        width: 28,
-                        margin: 4,
-                    }}
+                    style={{ ...styles.iconStyle, tintColor: '' }}
                 />
             </DelayedButton>
         )
@@ -435,7 +405,6 @@ class CommentBoxV2 extends Component {
                     flexDirection: 'row',
                     marginLeft: 5,
                     marginRight: 5,
-                    marginBottom: 7,
                 }}
             >
                 {suggestionIcon}
@@ -445,16 +414,12 @@ class CommentBoxV2 extends Component {
     }
 
     renderImageIcon(newComment) {
-        const { suggestion, commentType } = newComment
+        const { commentType } = newComment
         // Disable image icon if there is a valid suggestion
         const disableButton = commentType === 'Suggestion'
-        // console.log(`${DEBUG_KEY}: image button disabled: `, disableButton);
-        // console.log(`${DEBUG_KEY}: suggestion is: `, suggestion);
-        // (suggestion !== undefined && suggestion.suggestionFor !== undefined);
         return (
             <TouchableOpacity
                 activeOpacity={0.6}
-                style={styles.iconContainerStyle}
                 onPress={this.handleImageIconOnClick}
                 disabled={disableButton}
             >
@@ -512,21 +477,12 @@ class CommentBoxV2 extends Component {
     }
 
     renderPost(newComment) {
-        const {
-            uploading,
-            contentText,
-            tmpSuggestion,
-            suggestion,
-            commentType,
-            mediaRef,
-        } = newComment
+        const { uploading, contentText, commentType, mediaRef } = newComment
         // console.log(`${DEBUG_KEY}: new comment is: `, newComment);
 
         const isInValidComment =
             (commentType === 'Comment' || commentType === 'Reply') &&
-            (contentText === undefined ||
-                contentText === '' ||
-                contentText.trim() === '') &&
+            (!contentText || contentText === '' || contentText.trim() === '') &&
             mediaRef === undefined
 
         const isValidSuggestion = validSuggestion(newComment)
@@ -542,15 +498,13 @@ class CommentBoxV2 extends Component {
         return (
             <DelayedButton
                 activeOpacity={0.6}
-                style={styles.postContainerStyle}
                 onPress={() => this.handleOnPost(uploading)}
                 disabled={disable}
             >
                 <Text
                     style={{
+                        ...DEFAULT_STYLE.titleText_2,
                         color,
-                        fontSize: 15,
-                        fontWeight: '700',
                         padding: 13,
                         letterSpacing: 0.5,
                         paddingBottom: 15,
@@ -616,44 +570,12 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderReplyingTo() {
-        const { newComment, pageId } = this.props
-        if (!newComment.name) return null
-        return (
-            <DelayedButton
-                style={{
-                    flexDirection: 'row',
-                    margin: 8,
-                    marginLeft: 24,
-                    alignItems: 'center',
-                }}
-                onPress={() => {
-                    this.props.createComment(
-                        {
-                            ...newComment,
-                            name: undefined,
-                            tag: false,
-                            replyToRef: undefined,
-                        },
-                        pageId
-                    )
-                }}
-            >
-                <Text style={{ ...DEFAULT_STYLE.smallText_1, marginTop: -2 }}>
-                    x{' '}
-                </Text>
-                <Text style={DEFAULT_STYLE.normalText_1}>Replying to </Text>
-                <Text style={DEFAULT_STYLE.titleText_2}>{newComment.name}</Text>
-            </DelayedButton>
-        )
-    }
-
     render() {
         const { pageId, newComment, hasSuggestion, goalId } = this.props
-        // console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment);
+        console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment)
 
         if (!newComment || !newComment.parentRef) return null
-        const { uploading, tag, name, contentText } = newComment
+        const { uploading } = newComment
 
         const inputContainerStyle = styles.inputContainerStyle
         const inputStyle = uploading
@@ -663,20 +585,12 @@ class CommentBoxV2 extends Component {
               }
             : styles.inputStyle
 
-        // if (tag && name && (!contentText || contentText.length === 0)) this.props.newCommentOnTextChange('@'+name, pageId);
-
         return (
-            <SafeAreaView
+            <View
                 style={{
                     backgroundColor: 'white',
-                    shadowColor: 'black',
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: 0.5,
-                    shadowRadius: 1,
-                    elevation: 0.3,
                 }}
             >
-                {this.renderReplyingTo()}
                 <MentionsTextInput
                     ref={(r) => (this.textInput = r)}
                     placeholder={this.state.defaultValue}
@@ -750,7 +664,7 @@ class CommentBoxV2 extends Component {
                     horizontal={false} // defaut is true, change the orientation of the list
                     MaxVisibleRowCount={7} // this is required if horizontal={false}
                 />
-            </SafeAreaView>
+            </View>
         )
     }
 }
@@ -806,34 +720,21 @@ const styles = {
     inputContainerStyle: {
         justifyContent: 'center',
         borderRadius: 18,
-        marginTop: 5,
-        marginBottom: 5,
         borderColor: '#F1F1F1',
         borderWidth: 1,
         flex: 1,
-        paddingTop: 5,
-        paddingBottom: 5,
+        paddingTop: 4,
     },
     inputStyle: {
+        ...DEFAULT_STYLE.normalText_1,
         paddingLeft: 15,
         paddingRight: 15,
         backgroundColor: 'white',
         borderRadius: 22,
-        fontSize: 15,
-    },
-    postContainerStyle: {
-        alignItems: 'flex-end',
-        justifyContent: 'flex-end',
     },
     iconStyle: {
-        height: 21,
-        width: 25,
+        ...DEFAULT_STYLE.buttonIcon_1,
         margin: 4,
-        marginBottom: 6,
-    },
-    iconContainerStyle: {
-        alignItems: 'flex-end',
-        justifyContent: 'flex-end',
     },
     // Media preview styles
     mediaContainerStyle: {
@@ -845,11 +746,6 @@ const styles = {
         borderColor: '#ddd',
         borderBottomWidth: 0,
         backgroundColor: '#fff',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.15,
-        shadowRadius: 1,
-        elevation: 1,
     },
     imageContainerStyle: {
         borderWidth: 0.5,

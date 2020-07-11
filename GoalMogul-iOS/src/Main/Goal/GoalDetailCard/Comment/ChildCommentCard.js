@@ -12,15 +12,12 @@ import {
 import { connect } from 'react-redux'
 
 // Assets
-import defaultProfilePic from '../../../../asset/utils/defaultUserProfile.png'
 import LoveOutlineIcon from '../../../../asset/utils/love-outline.png'
 import LoveIcon from '../../../../asset/utils/love.png'
-import CommentIcon from '../../../../asset/utils/comment.png'
 import expand from '../../../../asset/utils/expand.png'
 
 // Components
 import ActionButton from '../../Common/ActionButton'
-import ActionButtonGroup from '../../Common/ActionButtonGroup'
 import CommentHeadline from './CommentHeadline'
 import ProfileImage from '../../../Common/ProfileImage'
 import RichText from '../../../Common/Text/RichText'
@@ -68,19 +65,6 @@ class ChildCommentCard extends Component {
         }
     }
 
-    onLayout = (e) => {
-        this.setState({
-            layout: {
-                width: e.nativeEvent.layout.width,
-                height: e.nativeEvent.layout.height,
-                x: e.nativeEvent.layout.x,
-                y: e.nativeEvent.layout.y,
-            },
-        })
-    }
-
-    getLayout = () => this.state.layout
-
     /*
      * Render card content based on scenario
      * 1. If Suggestion, render suggestion.suggestionText
@@ -104,7 +88,6 @@ class ChildCommentCard extends Component {
                 contentTags={tags}
                 contentLinks={links}
                 textStyle={{
-                    flex: 1,
                     flexWrap: 'wrap',
                     ...DEFAULT_STYLE.normalText_1,
                     marginTop: 3,
@@ -189,8 +172,7 @@ class ChildCommentCard extends Component {
         )
     }
 
-    // user basic information
-    renderUserDetail() {
+    rederBody() {
         const { item, reportType, goalRef, userId } = this.props
         const { _id, owner, parentRef, parentType } = item
 
@@ -259,31 +241,12 @@ class ChildCommentCard extends Component {
         if (item.owner && item.owner.profile && item.owner.profile.image) {
             imageUrl = item.owner.profile.image
         }
-        return (
-            <ProfileImage
-                imageStyle={DEFAULT_STYLE.profileImage_2}
-                imageUrl={imageUrl}
-                imageContainerStyle={{ margin: -10 }}
-                userId={item.owner._id}
-            />
-        )
+        return <ProfileImage imageUrl={imageUrl} userId={item.owner._id} />
     }
 
     renderActionButtons() {
-        const {
-            item,
-            index,
-            scrollToIndex,
-            onCommentClicked,
-            viewOffset,
-            parentCommentId,
-            commentDetail,
-        } = this.props
-        const { childComments, maybeLikeRef, _id, parentRef } = item
-        const commentCounts =
-            childComments && childComments.length > 0
-                ? childComments.length
-                : undefined
+        const { item } = this.props
+        const { maybeLikeRef, _id, parentRef } = item
 
         const likeCount = item.likeCount ? item.likeCount : 0
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
@@ -331,28 +294,6 @@ class ChildCommentCard extends Component {
                     }}
                     containerStyle={buttonContainerStyle}
                 />
-                <ActionButton
-                    iconSource={CommentIcon}
-                    unitText={'Reply'}
-                    textStyle={styles.actionText}
-                    iconStyle={styles.actionIcon}
-                    onPress={() => {
-                        console.log(`${DEBUG_KEY}: user replies to comment`)
-                        scrollToIndex(index, viewOffset)
-                        onCommentClicked('Reply')
-                        this.props.createComment(
-                            {
-                                ...commentDetail,
-                                commentType: 'Reply',
-                                replyToRef: parentCommentId,
-                                name: item.owner && item.owner.name,
-                                tag: true,
-                            },
-                            this.props.pageId
-                        )
-                    }}
-                    containerStyle={{ ...buttonContainerStyle, marginLeft: 16 }}
-                />
             </View>
         )
     }
@@ -362,10 +303,10 @@ class ChildCommentCard extends Component {
         if (!item) return null
 
         return (
-            <View onLayout={this.onLayout} style={styles.containerStyle}>
+            <View onLayout={this.props.onLayout} style={styles.containerStyle}>
                 {this.renderUserProfileImage(item)}
                 <View style={{ flex: 1, marginLeft: 6 }}>
-                    {this.renderUserDetail()}
+                    {this.rederBody()}
                     {this.renderActionButtons()}
                 </View>
             </View>

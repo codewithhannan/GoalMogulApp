@@ -61,7 +61,11 @@ import { getGoalDetailByTab } from '../../../redux/modules/goal/selector'
 // Utils
 import { arrayUnique, clearTags } from '../../../redux/middleware/utils'
 import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from '../../../styles'
-import { PRIVACY_OPTIONS, DAY_IN_MS, PRIVACY_FRIENDS } from '../../../Utils/Constants'
+import {
+    PRIVACY_OPTIONS,
+    DAY_IN_MS,
+    PRIVACY_FRIENDS,
+} from '../../../Utils/Constants'
 
 const { Popover } = renderers
 const { width } = Dimensions.get('window')
@@ -763,41 +767,41 @@ class NewGoalView extends Component {
                 }
             />
         ) : (
-                <Modal
-                    animationType="fade"
-                    transparent={false}
-                    visible={this.props.startTime.picker}
-                >
-                    <ModalHeader
-                        title="Select start time"
-                        actionText="Done"
-                        onAction={() =>
+            <Modal
+                animationType="fade"
+                transparent={false}
+                visible={this.props.startTime.picker}
+            >
+                <ModalHeader
+                    title="Select start time"
+                    actionText="Done"
+                    onAction={() =>
+                        this.props.change('startTime', {
+                            date: this.props.startTime.date,
+                            picker: false,
+                        })
+                    }
+                    onCancel={() =>
+                        this.props.change('startTime', {
+                            date: this.props.startTime.date,
+                            picker: false,
+                        })
+                    }
+                />
+                <View style={{ flex: 1 }}>
+                    <DatePickerIOS
+                        date={this.props.startTime.date}
+                        onDateChange={(date) =>
                             this.props.change('startTime', {
-                                date: this.props.startTime.date,
-                                picker: false,
+                                date,
+                                picker: true,
                             })
                         }
-                        onCancel={() =>
-                            this.props.change('startTime', {
-                                date: this.props.startTime.date,
-                                picker: false,
-                            })
-                        }
+                        mode="date"
                     />
-                    <View style={{ flex: 1 }}>
-                        <DatePickerIOS
-                            date={this.props.startTime.date}
-                            onDateChange={(date) =>
-                                this.props.change('startTime', {
-                                    date,
-                                    picker: true,
-                                })
-                            }
-                            mode="date"
-                        />
-                    </View>
-                </Modal>
-            )
+                </View>
+            </Modal>
+        )
 
         const endDatePicker = newPicker ? (
             <DateTimePicker
@@ -817,38 +821,38 @@ class NewGoalView extends Component {
                 }
             />
         ) : (
-                <Modal
-                    animationType="fade"
-                    transparent={false}
-                    visible={this.props.endTime.picker}
-                >
-                    <ModalHeader
-                        title="Select end time"
-                        actionText="Done"
-                        onAction={() =>
-                            this.props.change('endTime', {
-                                date: this.props.endTime.date,
-                                picker: false,
-                            })
+            <Modal
+                animationType="fade"
+                transparent={false}
+                visible={this.props.endTime.picker}
+            >
+                <ModalHeader
+                    title="Select end time"
+                    actionText="Done"
+                    onAction={() =>
+                        this.props.change('endTime', {
+                            date: this.props.endTime.date,
+                            picker: false,
+                        })
+                    }
+                    onCancel={() =>
+                        this.props.change('endTime', {
+                            date: this.props.endTime.date,
+                            picker: false,
+                        })
+                    }
+                />
+                <View style={{ flex: 1 }}>
+                    <DatePickerIOS
+                        date={this.props.endTime.date}
+                        onDateChange={(date) =>
+                            this.props.change('endTime', { date, picker: true })
                         }
-                        onCancel={() =>
-                            this.props.change('endTime', {
-                                date: this.props.endTime.date,
-                                picker: false,
-                            })
-                        }
+                        mode="date"
                     />
-                    <View style={{ flex: 1 }}>
-                        <DatePickerIOS
-                            date={this.props.endTime.date}
-                            onDateChange={(date) =>
-                                this.props.change('endTime', { date, picker: true })
-                            }
-                            mode="date"
-                        />
-                    </View>
-                </Modal>
-            )
+                </View>
+            </Modal>
+        )
 
         const startTime = (
             <Text
@@ -858,7 +862,9 @@ class NewGoalView extends Component {
                     marginRight: 12,
                 }}
             >
-                {this.props.startTime.date ? moment(this.props.startTime.date).format('ll') : "Start Date"}
+                {this.props.startTime.date
+                    ? moment(this.props.startTime.date).format('ll')
+                    : 'Start Date'}
             </Text>
         )
         const endTime = (
@@ -869,7 +875,9 @@ class NewGoalView extends Component {
                     marginRight: 12,
                 }}
             >
-                {this.props.endTime.date ? moment(this.props.endTime.date).format('ll') : "End Date"}
+                {this.props.endTime.date
+                    ? moment(this.props.endTime.date).format('ll')
+                    : 'End Date'}
             </Text>
         )
 
@@ -897,23 +905,34 @@ class NewGoalView extends Component {
         )
 
         // Show cancel button if there is date set
-        const cancelButton = this.props.endTime.date || this.props.startTime.datem ? (
+        const cancelButton =
+            this.props.endTime.date || this.props.startTime.datem ? (
                 <TouchableOpacity
                     activeOpacity={0.6}
-                    style={{ justifyContent: 'center', padding: 10, marginLeft: 5 }}
+                    style={{
+                        justifyContent: 'center',
+                        padding: 10,
+                        marginLeft: 5,
+                    }}
                     onPress={() => {
-                        this.props.change('hasTimeline', false);
+                        this.props.change('hasTimeline', false)
                         this.props.change('endTime', {
-                            date: undefined, picker: false
-                        });
+                            date: undefined,
+                            picker: false,
+                        })
                         this.props.change('startTime', {
-                            date: undefined, picker: false
-                        });
+                            date: undefined,
+                            picker: false,
+                        })
                     }}
                 >
-                    <Image source={cancel} resizeMode="contain" style={DEFAULT_STYLE.buttonIcon_1} />
+                    <Image
+                        source={cancel}
+                        resizeMode="contain"
+                        style={DEFAULT_STYLE.buttonIcon_1}
+                    />
                 </TouchableOpacity>
-            ) : null;
+            ) : null
 
         return (
             <CopilotStep
@@ -935,7 +954,7 @@ class NewGoalView extends Component {
                             marginTop: 8,
                             flexDirection: 'row',
                             alignItems: 'center',
-                            flexWrap: 'wrap'
+                            flexWrap: 'wrap',
                         }}
                     >
                         <TouchableOpacity
@@ -948,7 +967,8 @@ class NewGoalView extends Component {
                             }}
                             onPress={() =>
                                 this.props.change('startTime', {
-                                    date: this.props.startTime.date || new Date(),
+                                    date:
+                                        this.props.startTime.date || new Date(),
                                     picker: true,
                                 })
                             }
@@ -1000,9 +1020,7 @@ class NewGoalView extends Component {
         onSubmitEditing
     ) => {
         const { item, index, drag, isActive } = props
-        const iconOnPress = () => {
-            if (type !== 'step' || fields.length > 1) fields.remove(index)
-        }
+        const iconOnPress = () => fields.remove(index)
         return (
             <Field
                 key={`description-${index}`}

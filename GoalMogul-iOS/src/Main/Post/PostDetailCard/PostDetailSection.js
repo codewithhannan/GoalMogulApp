@@ -192,6 +192,7 @@ class PostDetailSection extends React.PureComponent {
             category,
             maybeIsSubscribed,
             viewCount,
+            belongsToTribe,
         } = item
         const timeStamp =
             created === undefined || created.length === 0 ? new Date() : created
@@ -268,6 +269,7 @@ class PostDetailSection extends React.PureComponent {
                             user={owner}
                             pageId={this.props.pageId}
                             textStyle={DEFAULT_STYLE.titleText_2}
+                            belongsToTribe={belongsToTribe}
                         />
                         <View style={{ marginTop: 2 }} />
                         <Timestamp

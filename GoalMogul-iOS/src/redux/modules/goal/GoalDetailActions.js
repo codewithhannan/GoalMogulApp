@@ -407,9 +407,47 @@ export const updateGoal = (itemId, type, updates, goal, pageId) => (
         }
         return item
     })
+    if (!itemId) {
+        const newItem = {
+            description: description,
+            isCompleted: false,
+            created: new Date(),
+            order: itemsToUpdate.length + 1,
+        }
+        itemsToUpdate.push(newItem)
+    }
 
     const onSuccess = (res) => {
         console.log(`${DEBUG_KEY}: mark step complete succeed with res: `, res)
+
+        const payload = {
+            id: itemId,
+            updates: {
+                isCompleted,
+                description,
+            },
+            type: type + 's',
+            pageId,
+            goalId: _id,
+            isNew: false,
+        }
+
+        if (!itemId) {
+            const updatedItems =
+                type === 'step'
+                    ? _.get(res, 'steps', [])
+                    : _.get(res, 'needs', [])
+            payload.updates = updatedItems.find(
+                (value) => _.get(value, 'order', 1) === updatedItems.length
+            )
+            payload.id = _.get(payload.updates, '_id', itemId)
+            payload.isNew = true
+        }
+
+        dispatch({
+            type: GOAL_DETAIL_UPDATE_STEP_NEED_SUCCESS,
+            payload,
+        })
 
         dispatch({
             type: GOAL_DETAIL_UPDATE_DONE,
@@ -417,20 +455,6 @@ export const updateGoal = (itemId, type, updates, goal, pageId) => (
                 tab,
                 pageId,
                 goalId: _id,
-            },
-        })
-
-        dispatch({
-            type: GOAL_DETAIL_UPDATE_STEP_NEED_SUCCESS,
-            payload: {
-                id: itemId,
-                updates: {
-                    isCompleted,
-                    description,
-                },
-                type: type + 's',
-                pageId,
-                goalId: goal._id,
             },
         })
     }

@@ -154,7 +154,7 @@ class SectionCardV2 extends Component {
         )
     }
 
-    renderCheckBox(isCompleted) {
+    renderCheckBox(isCompleted, isCreateCard) {
         const {
             item: { _id },
             goalRef,
@@ -164,6 +164,8 @@ class SectionCardV2 extends Component {
             type,
         } = this.props
 
+        const disabled = isCreateCard || !isSelf
+
         const iconContainerStyle = isCompleted
             ? styles.checkIconContainerStyle
             : {
@@ -171,11 +173,15 @@ class SectionCardV2 extends Component {
                   padding: 0,
                   borderWidth: 2,
                   borderColor: '#DADADA',
-                  backgroundColor: isSelf ? 'white' : '#DADADA',
+                  backgroundColor: disabled ? '#F2F2F2' : 'white',
               }
+        const iconStyle = [
+            styles.checkIconStyle,
+            { tintColor: disabled ? '#F2F2F2' : 'white' },
+        ]
 
         if (type === 'comment' || isFocusedItem) return
-        else if (isSelf) {
+        else {
             return (
                 <DelayedButton
                     activeOpacity={0.6}
@@ -189,15 +195,10 @@ class SectionCardV2 extends Component {
                             pageId
                         )
                     }
+                    disabled={disabled}
                 >
-                    <Image style={styles.checkIconStyle} source={checkIcon} />
+                    <Image style={iconStyle} source={checkIcon} />
                 </DelayedButton>
-            )
-        } else {
-            return (
-                <View style={iconContainerStyle}>
-                    <Image source={checkIcon} style={styles.checkIconStyle} />
-                </View>
             )
         }
     }
@@ -289,8 +290,8 @@ class SectionCardV2 extends Component {
                         }}
                         value={this.state.textValue}
                         onFocus={() => {
-                            this.setState({ isInputFocused: true });
-                            if (this.props.onEdit) this.props.onEdit();
+                            this.setState({ isInputFocused: true })
+                            if (this.props.onEdit) this.props.onEdit()
                         }}
                         onBlur={() => this.setState({ isInputFocused: false })}
                         onChangeText={(text) =>
@@ -352,7 +353,9 @@ class SectionCardV2 extends Component {
                                     this.props.updateGoal(
                                         _id,
                                         type,
-                                        { description: this.state.textValue },
+                                        {
+                                            description: this.state.textValue.trim(),
+                                        },
                                         goalRef,
                                         pageId
                                     )
@@ -376,7 +379,9 @@ class SectionCardV2 extends Component {
 
     render() {
         // console.log('item for props is: ', this.props.item);
-        const { type, item, isActive, drag } = this.props
+        const { type, item, isActive, drag, isSelf } = this.props
+        const { isCreateCard } = item
+
         let itemToRender = item
         const isCommentFocused = type === 'comment'
 
@@ -388,15 +393,15 @@ class SectionCardV2 extends Component {
             return renderEmptyState(emptyText)
         }
 
-        const { description, isCompleted } = itemToRender;
+        const { description, isCompleted } = itemToRender
         const containerStyle = isCommentFocused
             ? {
-                paddingTop: 0,
-                paddingBottom: 0,
-                minHeight: TABBAR_HEIGHT,
-                alignItems: 'center'
-            }
-            : { backgroundColor: isActive ? '#F2F2F2' : styles.backgroundColor };
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                  minHeight: TABBAR_HEIGHT,
+                  alignItems: 'center',
+              }
+            : { backgroundColor: isActive ? '#F2F2F2' : styles.backgroundColor }
 
         return (
             <DelayedButton
@@ -404,28 +409,19 @@ class SectionCardV2 extends Component {
                 style={[styles.sectionContainerStyle, containerStyle]}
                 onPress={this.props.onCardPress || this.props.onBackPress}
                 onLayout={this.handleOnLayout}
+                onLongPress={drag}
+                disabled={isCreateCard}
             >
                 {this.renderBackIcon()}
                 <View style={{ justifyContent: 'flex-start' }}>
-                    {this.renderCheckBox(isCompleted)}
+                    {this.renderCheckBox(isCompleted, isCreateCard)}
                 </View>
                 <View style={{ flex: 1 }}>
                     {this.renderTextStuff(isCommentFocused, description)}
-                    {!isCommentFocused && this.renderActionIcons()}
+                    {!isCommentFocused &&
+                        !isCreateCard &&
+                        this.renderActionIcons()}
                 </View>
-                {drag && <TouchableOpacity
-                    onLongPress={drag}
-                    style={styles.gestureHandlerContainer}
-                >
-                    <Image
-                        source={menu}
-                        resizeMode="contain"
-                        style={{
-                            ...DEFAULT_STYLE.buttonIcon_1,
-                            tintColor: '#AAA'
-                        }}
-                    />
-                </TouchableOpacity>}
             </DelayedButton>
         )
     }
@@ -492,9 +488,9 @@ const styles = {
         paddingRight: 6,
         margin: -10,
         marginRight: -12,
-        marginLeft: 0
-    }
-};
+        marginLeft: 0,
+    },
+}
 
 export default connect(null, {
     chooseShareDest,

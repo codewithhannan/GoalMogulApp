@@ -55,7 +55,7 @@ const styles = {
         containerStyle: {
             alignItems: 'center',
             flexDirection: 'row',
-            backgroundColor: '#F5F5F5',
+            backgroundColor: '#F2F2F2',
             height: 38,
             paddingLeft: 15,
         },
@@ -81,7 +81,7 @@ const SectionTitle = (props) => {
     ) : null
 
     return (
-        <View style={{ ...sectionTitleStyle.containerStyle }}>
+        <View style={sectionTitleStyle.containerStyle}>
             {image}
             <Text
                 style={{ ...sectionTitleStyle.textStyle, ...props.textStyle }}

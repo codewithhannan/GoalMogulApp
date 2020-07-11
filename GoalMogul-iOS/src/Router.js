@@ -112,6 +112,7 @@ import { GM_BLUE } from './styles'
 import TribeHub from './Main/Explore/TribeHub'
 import MyTribeGoalShare from './Main/Menu/Tribe/MyTribeGoalShare'
 import MainProfile from './Main/Profile/MainProfile'
+import ReplyThread from './Main/Goal/GoalDetailCard/Comment/ReplyThread'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -123,6 +124,7 @@ function getCommonScenes(tab) {
         <Scene key={`${prefix}goal`} component={GoalDetailCard} />,
         <Scene key={`${prefix}post`} component={PostDetailCard} />,
         <Scene key={`${prefix}share`} component={ShareDetailCard} />,
+        <Scene key={`${prefix}replyThread`} component={ReplyThread} />,
         <Scene key={`${prefix}profile`} component={Profile} />,
         <Scene key={`${prefix}profileDetail`} component={ProfileDetail} />,
         <Scene key={`${prefix}myEventTab`} component={MyEventTab} />,

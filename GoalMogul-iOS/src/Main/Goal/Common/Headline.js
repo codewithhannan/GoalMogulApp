@@ -21,6 +21,7 @@ import {
     shareGoalToMastermind,
     markGoalAsComplete,
 } from '../../../redux/modules/goal/GoalDetailActions'
+import { tribeDetailOpen } from '../../../redux/modules/tribe/MyTribeActions'
 
 /* Asset */
 import ShareIcon from '../../../asset/utils/forward.png'
@@ -29,6 +30,8 @@ import UndoIcon from '../../../asset/utils/undo.png'
 import TrashIcon from '../../../asset/utils/trash.png'
 import Icons from '../../../asset/base64/Icons'
 import { DEFAULT_STYLE } from '../../../styles'
+import { Icon } from '@ui-kitten/components'
+import DelayedButton from '../../Common/Button/DelayedButton'
 
 const { CheckIcon } = Icons
 const { width } = Dimensions.get('window')
@@ -169,7 +172,7 @@ class Headline extends React.PureComponent {
             caret,
             textStyle,
             menuName,
-            tribeName,
+            belongsToTribe,
         } = this.props
 
         // If item belongs to self, then caret displays delete
@@ -218,8 +221,7 @@ class Headline extends React.PureComponent {
                 )
         }
 
-        const categoryComponent =
-            category && !tribeName ? <Category text={category} /> : null
+        const categoryComponent = category ? <Category text={category} /> : null
 
         return (
             <View style={styles.containerStyle}>
@@ -228,21 +230,32 @@ class Headline extends React.PureComponent {
                     onPress={() => this.handleNameOnPress(user)}
                     textStyle={textStyle}
                 />
-                <UserBanner user={user} />
-                {categoryComponent}
-                {tribeName && (
-                    <Text
-                        style={[
-                            DEFAULT_STYLE.normalText_1,
-                            {
-                                marginLeft: 4,
-                                maxWidth: 100 * DEFAULT_STYLE.uiScale,
-                            },
-                        ]}
+                {!belongsToTribe && [
+                    <UserBanner user={user} />,
+                    categoryComponent,
+                ]}
+                {belongsToTribe && [
+                    <Icon
+                        pack="material-community"
+                        style={[DEFAULT_STYLE.buttonIcon_1, { margin: -4 }]}
+                        name="menu-right"
+                    />,
+                    <DelayedButton
+                        onPress={() =>
+                            this.props.tribeDetailOpen(belongsToTribe)
+                        }
                     >
-                        {tribeName}
-                    </Text>
-                )}
+                        <Text
+                            style={[
+                                textStyle,
+                                { maxWidth: 150 * DEFAULT_STYLE.uiScale },
+                            ]}
+                            numberOfLines={1}
+                        >
+                            {belongsToTribe.name}
+                        </Text>
+                    </DelayedButton>,
+                ]}
                 <View
                     style={{
                         flexDirection: 'row',
@@ -259,10 +272,8 @@ class Headline extends React.PureComponent {
 
 const styles = {
     containerStyle: {
-        display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-start',
     },
     caretContainer: {
         paddingBottom: 8,
@@ -277,4 +288,5 @@ export default connect(null, {
     editGoal,
     shareGoalToMastermind,
     markGoalAsComplete,
+    tribeDetailOpen,
 })(Headline)

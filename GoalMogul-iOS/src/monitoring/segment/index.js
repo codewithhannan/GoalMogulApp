@@ -155,6 +155,7 @@ const SCREENS = {
     MY_EVENT_DETAIL: 'MyEventDetail',
     TRIBE_TAB: 'TribeTab',
     TRIBE_DETAIL: 'TribeDetail',
+    TRIBE_GOAL_SHARE: 'TribeGoalShare',
     SETTING: 'Setting',
     EMAIL: 'Email',
     EDIT_EMAIL_FORM: 'EditEmailForm',

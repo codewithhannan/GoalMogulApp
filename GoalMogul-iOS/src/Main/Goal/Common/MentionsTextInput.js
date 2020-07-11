@@ -188,53 +188,11 @@ export default class MentionsTextInput extends Component {
                 `gi`
             )
             const keywordArray = focusContent.match(pattern)
-            // console.log(`${DEBUG_KEY}: pattern is: `, pattern);
-            // console.log(`${DEBUG_KEY}: tagsReg is: `, tagsReg);
-            // console.log(`${DEBUG_KEY}: val is: `, val);
-            // console.log(`${DEBUG_KEY}: keywordArray is: `, keywordArray);
 
             if (keywordArray && !!keywordArray.length) {
                 const lastKeyword = keywordArray[keywordArray.length - 1]
-                // console.log(`${DEBUG_KEY}: [ identifyKeyword ]: last keyword: `, lastKeyword);
-                // console.log(`${DEBUG_KEY}: [ identifyKeyword ]: last keyword length: `, lastKeyword.length);
                 this.updateSuggestions(lastKeyword, this.cursorPosition)
             }
-
-            // const lastTriggerIndex = val.lastIndexOf(this.props.trigger);
-            // const lastTag = val.slice(lastTriggerIndex);
-            // const lastKW = lastTag.slice(1); // "@Jia Zeng" --> "Jia Zeng"
-            // const hasMoreThan2Spaces = lastTag.split(' ').length - 1 >= 2;
-            // let hasMatch;
-            // this.props.tagSearchRes.forEach((res) => {
-            //   if (res.name.includes(lastKW)) hasMatch = true;
-            // });
-            // if (hasMoreThan2Spaces && !hasMatch) {
-            //   this.stopTracking();
-            // }
-            //
-            // let tagsReg = '';
-            // this.props.contentTagsReg.forEach((reg) => {
-            //   tagsReg = `${reg}|${tagsReg}`;
-            // });
-            // const pattern = new RegExp(
-            //   `${tagsReg}` +
-            //   // Find the match for @Jia Zeng, name with spaces
-            //   `\\${boundary}${this.props.trigger}\\w+\\s\\w+|` +
-            //   `\\${boundary}${this.props.trigger}[a-z0-9_-]+|` +
-            //   `\\${boundary}${this.props.trigger}`,
-            //   `gi`
-            // );
-            // const keywordArray = val.match(pattern);
-            // // console.log(`${DEBUG_KEY}: pattern is: `, pattern);
-            // // console.log(`${DEBUG_KEY}: tagsReg is: `, tagsReg);
-            // // console.log(`${DEBUG_KEY}: val is: `, val);
-            // // console.log(`${DEBUG_KEY}: keywordArray is: `, keywordArray);
-            //
-            // if ((keywordArray && !!keywordArray.length)) {
-            //   // console.log(`${DEBUG_KEY}: keyword array: `, keywordArray);
-            //   const lastKeyword = keywordArray[keywordArray.length - 1];
-            //   this.updateSuggestions(lastKeyword);
-            // }
         }
     }
 
@@ -300,7 +258,7 @@ export default class MentionsTextInput extends Component {
             this.props.flexGrowDirection === 'bottom'
         ) {
             return (
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     {this.props.renderLeftIcons
                         ? this.props.renderLeftIcons()
                         : null}
@@ -327,7 +285,7 @@ export default class MentionsTextInput extends Component {
             )
         }
         return (
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 {this.props.renderLeftIcons
                     ? this.props.renderLeftIcons()
                     : null}
@@ -363,7 +321,7 @@ export default class MentionsTextInput extends Component {
 
     render() {
         return (
-            <View style={{ flex: 1 }}>
+            <View>
                 {this.props.suggestionPosition &&
                 this.props.suggestionPosition === 'bottom' ? null : (
                     <Animated.View
@@ -481,7 +439,5 @@ MentionsTextInput.defaultProps = {
     textInputStyle: { borderColor: '#ebebeb', borderWidth: 1, fontSize: 15 },
     suggestionsPanelStyle: { backgroundColor: 'rgba(100,100,100,0.1)' },
     loadingComponent: () => <Text>Loading...</Text>,
-    textInputMinHeight: 30,
-    textInputMaxHeight: 80,
     horizontal: true,
 }

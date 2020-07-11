@@ -142,23 +142,19 @@ const styles = {
     },
 }
 
-const makeMapStateToProps = () => {
-    const mapStateToProps = (state, props) => {
-        // Set userId to main user if no userId present in props
-        const { tribeId, pageId } = props
-        const data = getUserGoalsForTribeShare(state, tribeId, pageId)
+const mapStateToProps = (state, props) => {
+    // Set userId to main user if no userId present in props
+    const { tribeId, pageId } = props
+    const data = getUserGoalsForTribeShare(state, tribeId, pageId)
 
-        return {
-            data,
-        }
+    return {
+        data,
     }
-
-    return mapStateToProps
 }
 
-export default connect(makeMapStateToProps, {
+export default connect(mapStateToProps, {
     tribeRefreshUserGoals,
     tribeLoadMoreUserGoals,
     openNewShareToTribeView,
     refreshMyTribeDetail,
-})(UserGoalsView)
+})(wrapAnalytics(UserGoalsView, SCREENS.TRIBE_GOAL_SHARE))

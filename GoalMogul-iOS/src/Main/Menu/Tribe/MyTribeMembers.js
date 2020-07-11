@@ -1,21 +1,12 @@
 /** @format */
 
-import React, { Component } from 'react'
-import {
-    Dimensions,
-    Text,
-    View,
-    Image,
-    FlatList,
-    ScrollView,
-} from 'react-native'
+import React from 'react'
+import { Text, View, ScrollView } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import MemberListCard from '../../Tribe/MemberListCard'
 import TabButtonGroup from '../../Common/TabButtonGroup'
-
-import flagIcon from '../../../asset/icons/flag.png'
 
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
 
@@ -123,7 +114,7 @@ class MyTribeMembers extends React.PureComponent {
                             <Text style={DEFAULT_STYLE.titleText_1}>Admin</Text>
                         </View>
                         {admins.map((admin) => this.renderItem(admin))}
-                        {memberData.length > 0 && (
+                        {members.length > 0 && (
                             <View style={styles.headerContainer}>
                                 <Text style={DEFAULT_STYLE.titleText_1}>
                                     Members
@@ -271,7 +262,6 @@ const mapStateToProps = (state, props) => {
 }
 
 export default connect(mapStateToProps, {
-    myTribeMemberSelector,
     myTribeAdminAcceptUser,
     myTribeAdminDemoteUser,
     myTribeAdminPromoteUser,

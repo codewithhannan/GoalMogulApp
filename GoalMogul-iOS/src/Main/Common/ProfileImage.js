@@ -14,7 +14,7 @@ import { getImageOrDefault } from '../../redux/middleware/utils'
 
 const DEBUG_KEY = '[ UI ProfileImage ]'
 /*
- * props: imageUrl, resizeMode, imageContainerStyle, imageStyle
+ * props: imageUrl, resizeMode, imageContainerStyle, imageStyle, defaultImageSource
  */
 class ProfileImage extends React.Component {
     shouldComponentUpdate(nextProps) {
@@ -36,12 +36,12 @@ class ProfileImage extends React.Component {
     }
 
     render() {
-        let { imageUrl } = this.props
         const {
             imageContainerStyle,
             imageStyle,
             defaultImageSource,
         } = this.props
+        let imageUrl = this.props.imageUrl
         const resizeMode = setValue(this.props.resizeMode).withDefaultCase(
             'cover'
         )

@@ -278,9 +278,7 @@ class ProfilePostCard extends React.PureComponent {
                             actionDecorator={this.props.actionDecorator}
                             hasCaret={this.props.hasCaret}
                             textStyle={DEFAULT_STYLE.titleText_2}
-                            tribeName={
-                                belongsToTribe ? belongsToTribe.name : undefined
-                            }
+                            belongsToTribe={belongsToTribe}
                         />
                         <View style={{ marginTop: 2 }} />
                         <Timestamp time={timeago().format(timeStamp)} />

@@ -8,6 +8,7 @@ import {
     Image,
     TouchableOpacity,
     Dimensions,
+    Text,
 } from 'react-native'
 import { connect } from 'react-redux'
 
@@ -54,6 +55,9 @@ import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
 } from '../../../../Utils/Constants'
+import DelayedButton from '../../../Common/Button/DelayedButton'
+import { Actions } from 'react-native-router-flux'
+import { componentKeyByTab } from '../../../../redux/middleware/utils'
 
 // Constants
 const DEBUG_KEY = '[ UI CommentCard.CommentUserDetail ]'
@@ -66,6 +70,7 @@ class CommentUserDetail extends Component {
             layout: {},
             mediaModal: false,
         }
+        this.openReplyThread = this.openReplyThread.bind(this)
     }
 
     onLayout = (e) => {
@@ -80,6 +85,15 @@ class CommentUserDetail extends Component {
     }
 
     getLayout = () => this.state.layout
+
+    openReplyThread(itemId) {
+        const { pageId, entityId, goalId } = this.props
+
+        Actions.push(
+            componentKeyByTab(this.props.navigationTab, 'replyThread'),
+            { itemId, pageId, entityId, goalId }
+        )
+    }
 
     /**
      * Render Image user attached to the comment.
@@ -197,8 +211,12 @@ class CommentUserDetail extends Component {
         )
     }
 
+    renderCommentRef({ suggestion, owner }) {
+        return <CommentRef item={suggestion} owner={owner} />
+    }
+
     // user basic information
-    renderUserDetail() {
+    renderBody() {
         const { item, reportType, goalRef, userId } = this.props
         const { _id, suggestion, owner, parentRef, parentType } = item
 
@@ -273,10 +291,6 @@ class CommentUserDetail extends Component {
         return <ProfileImage imageUrl={imageUrl} userId={item.owner._id} />
     }
 
-    renderCommentRef({ suggestion, owner }) {
-        return <CommentRef item={suggestion} owner={owner} />
-    }
-
     renderActionButtons() {
         const {
             item,
@@ -344,24 +358,55 @@ class CommentUserDetail extends Component {
                     textStyle={styles.actionText}
                     iconStyle={styles.actionIcon}
                     onPress={() => {
-                        // Update the position for FlatList
-                        scrollToIndex(index, viewOffset)
-                        // Focus the comment box
-                        onCommentClicked('Reply')
-                        // Update new comment reducer
-                        this.props.createComment(
-                            {
-                                ...commentDetail,
-                                commentType: 'Reply',
-                                replyToRef: _id,
-                                name: item.owner && item.owner.name,
-                            },
-                            this.props.pageId
-                        )
+                        this.openReplyThread(_id)
                     }}
                     containerStyle={{ ...buttonContainerStyle, marginLeft: 16 }}
                 />
             </View>
+        )
+    }
+
+    renderRepliesButton() {
+        const { item } = this.props
+        const { childComments, _id } = item
+        if (!childComments || childComments.length === 0) return null
+
+        const comment = childComments[childComments.length - 1]
+        const { owner } = comment
+        const imageUrl =
+            owner && owner.profile && owner.profile.image && owner.profile.image
+        return (
+            <DelayedButton
+                activeOpacity={0.6}
+                key={childComments.length}
+                onPress={() => this.openReplyThread(_id)}
+                style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginTop: 12,
+                }}
+            >
+                <ProfileImage
+                    imageStyle={DEFAULT_STYLE.profileImage_2}
+                    imageContainerStyle={{
+                        margin: -10,
+                        marginTop: -12,
+                        marginRight: -2,
+                    }}
+                    imageUrl={imageUrl}
+                    disabled
+                />
+                <Text style={DEFAULT_STYLE.smallTitle_1}>{owner.name} </Text>
+                <Text
+                    style={{
+                        ...DEFAULT_STYLE.smallText_1,
+                        color: '#6D6D6D',
+                    }}
+                >
+                    Replied | {childComments.length} Repl
+                    {childComments.length > 1 ? 'ies' : 'y'}
+                </Text>
+            </DelayedButton>
         )
     }
 
@@ -373,9 +418,9 @@ class CommentUserDetail extends Component {
             <View onLayout={this.onLayout} style={styles.containerStyle}>
                 {this.renderUserProfileImage(item)}
                 <View style={{ flex: 1, marginLeft: 6 }}>
-                    {this.renderUserDetail()}
+                    {this.renderBody()}
                     {this.renderActionButtons()}
-                    {this.props.childrenRenderer()}
+                    {this.renderRepliesButton()}
                 </View>
             </View>
         )
@@ -404,7 +449,14 @@ const styles = {
     },
 }
 
-export default connect(null, {
+const mapStateToProps = (state) => {
+    const navigationTab = state.navigation.tab
+    return {
+        navigationTab,
+    }
+}
+
+export default connect(mapStateToProps, {
     likeGoal,
     unLikeGoal,
     createComment,
