@@ -25,7 +25,7 @@ import { Actions } from 'react-native-router-flux'
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
 
 /* Asset */
-import Logo from '../../../asset/header/logo.png'
+import Logo from '../../../asset/header/logoWithText.png'
 import IconMenu from '../../../asset/header/menu.png'
 import IconSearch from '../../../asset/header/search.png'
 import BackButton from '../../../asset/utils/back.png'
@@ -133,7 +133,7 @@ class SearchBarHeader extends Component {
 
     renderLeftIcon() {
         const { backButton } = this.props
-        const height = backButton ? 23 : 38
+        const height = backButton ? 23 : 48
         return (
             <DelayedButton
                 activeOpacity={0.6}
@@ -144,7 +144,7 @@ class SearchBarHeader extends Component {
             >
                 <Image
                     source={backButton ? BackButton : Logo}
-                    style={{ height, width: 38, tintColor }}
+                    style={{ height, width: '75%', tintColor }}
                 />
             </DelayedButton>
         )
