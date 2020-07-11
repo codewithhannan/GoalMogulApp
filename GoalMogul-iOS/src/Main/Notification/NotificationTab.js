@@ -1,23 +1,16 @@
-import React, { Component } from 'react';
-import {
-  View,
-  FlatList,
-  Text,
-  TouchableOpacity
-} from 'react-native';
-import { connect } from 'react-redux';
-import _ from 'lodash';
-import { Actions } from 'react-native-router-flux';
+import React, { Component } from "react";
+import { View, FlatList, Text, TouchableOpacity } from "react-native";
+import { connect } from "react-redux";
+import _ from "lodash";
+import { Actions } from "react-native-router-flux";
 
 // Components
-import SearchBarHeader from '../Common/Header/SearchBarHeader';
-import NotificationCard from './Notification/NotificationCard';
-import NotificationNeedCard from './Need/NotificationNeedCard';
-import EmptyResult from '../Common/Text/EmptyResult';
-import DelayedButton from '../Common/Button/DelayedButton';
-import {
-  RightArrowIcon
-} from '../../Utils/Icons';
+import SearchBarHeader from "../Common/Header/SearchBarHeader";
+import NotificationCard from "./Notification/NotificationCard";
+import NotificationNeedCard from "./Need/NotificationNeedCard";
+import EmptyResult from "../Common/Text/EmptyResult";
+import DelayedButton from "../Common/Button/DelayedButton";
+import { RightArrowIcon } from "../../Utils/Icons";
 
 // Actions
 import {
@@ -25,29 +18,26 @@ import {
   seeLessNotification,
   refreshNotificationTab,
   clearUnreadCount,
-  markAllNotificationAsRead
-} from '../../redux/modules/notification/NotificationTabActions';
+  markAllNotificationAsRead,
+} from "../../redux/modules/notification/NotificationTabActions";
 
 // Selectors
 import {
   getNotifications,
-  getNotificationNeeds
-} from '../../redux/modules/notification/NotificationSelector';
+  getNotificationNeeds,
+} from "../../redux/modules/notification/NotificationSelector";
 
 // Styles
-import {
-  APP_BLUE
-} from '../../styles';
+import { APP_BLUE } from "../../styles";
 
-import { Notifications } from 'expo';
-import MessageStorageService from '../../services/chat/MessageStorageService';
+import { Notifications } from "expo";
+import MessageStorageService from "../../services/chat/MessageStorageService";
 // Constants
-const DEBUG_KEY = '[ UI NotificationTab ]';
+const DEBUG_KEY = "[ UI NotificationTab ]";
 
 class NotificationTab extends Component {
-
   componentDidMount() {
-    // Refresh notification tab 
+    // Refresh notification tab
     console.log(`${DEBUG_KEY}: component did mount`);
     if (!this.props.data || _.isEmpty(this.props.data.length)) {
       this.props.refreshNotificationTab();
@@ -55,10 +45,11 @@ class NotificationTab extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    // When notification finishes refreshing and 
-    // user is at the notification tab. 
+    // When notification finishes refreshing and
+    // user is at the notification tab.
     // Then send mark all as read
-    const justFinishRefreshing = prevProps.refreshing === true && this.props.refreshing === false;
+    const justFinishRefreshing =
+      prevProps.refreshing === true && this.props.refreshing === false;
     const userOnNotificationPage = this.props.shouldUpdateUnreadCount === false;
 
     if (justFinishRefreshing && userOnNotificationPage) {
@@ -89,57 +80,59 @@ class NotificationTab extends Component {
 
   handleRefresh = () => {
     this.props.refreshNotificationTab();
-  }
+  };
 
   renderSeeMore = (item) => {
     // const onPress = item.type === 'seemore'
     //   ? () => this.props.seeMoreNotification()
     //   : () => this.props.seeLessNotification();
-    if (item.type !== 'seemore') return;
+    if (item.type !== "seemore") return;
 
-    const onPress = item.notificationType === 'notification'
-      ? () => Actions.push('notificationList')
-      : () => Actions.push('notificationNeedList');
+    const onPress =
+      item.notificationType === "notification"
+        ? () => Actions.push("notificationList")
+        : () => Actions.push("notificationNeedList");
     return <SeeMoreButton text={item.text} onPress={onPress} />;
-  }
+  };
 
   renderHeader = (item) => {
-    return (
-        <TitleComponent item={item} />
-    );
-  }
+    return <TitleComponent item={item} />;
+  };
 
   renderItem = (props) => {
     const { item } = props;
 
     // TODO: update this to the latest type
-    if (item.type === 'seemore' || item.type === 'seeless') {
+    if (item.type === "seemore" || item.type === "seeless") {
       return this.renderSeeMore(item);
     }
-    if (item.type === 'header') {
+    if (item.type === "header") {
       return this.renderHeader(item);
     }
-    if (item.type === 'need') {
+    if (item.type === "need") {
       return <NotificationNeedCard item={item} />;
     }
-    if (item.type === 'empty') {
-      return <EmptyResult text='You have no notifications' textStyle={{ paddingTop: 260 }} />;
+    if (item.type === "empty") {
+      return (
+        <EmptyResult
+          text="You have no notifications"
+          textStyle={{ paddingTop: 260 }}
+        />
+      );
     }
-    return (
-      <NotificationCard item={item} />
-    );
-  }
+    return <NotificationCard item={item} />;
+  };
 
   render() {
     const { data } = this.props;
     let dataToRender = data;
     if (_.isEmpty(data) || data.length === 0) {
-      dataToRender = [{ type: 'empty', _id: 'empty' }];
+      dataToRender = [{ type: "empty", _id: "empty" }];
     }
 
     return (
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
-        <SearchBarHeader rightIcon='menu' />
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <SearchBarHeader rightIcon="menu" />
         <FlatList
           data={dataToRender}
           renderItem={this.renderItem}
@@ -153,31 +146,31 @@ class NotificationTab extends Component {
 }
 
 const TestData = [
-  { _id: '0', type: 'header', text: 'Notifications' },
-  { _id: '1' },
-  { _id: '2' },
-  { _id: '3', type: 'seemore', text: 'See More' },
-  { _id: '4', type: 'header', text: 'Friend\'s Needs' },
-  { _id: '5', type: 'need' }
+  { _id: "0", type: "header", text: "Notifications" },
+  { _id: "1" },
+  { _id: "2" },
+  { _id: "3", type: "seemore", text: "See More" },
+  { _id: "4", type: "header", text: "Friend's Needs" },
+  { _id: "5", type: "need" },
 ];
 
 const SeeMoreButton = (props) => {
   const { onPress, text } = props;
   return (
-    <DelayedButton 
+    <DelayedButton
       activeOpacity={0.6}
       style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 10
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 10,
       }}
       onPress={() => onPress()}
     >
       <Text style={styles.seeMoreTextStyle}>{text}</Text>
-      <RightArrowIcon 
-        iconContainerStyle={{ alignSelf: 'center', alignItems: 'center' }}
-        iconStyle={{ tintColor: '#17B3EC', ...styles.iconStyle }}
+      <RightArrowIcon
+        iconContainerStyle={{ alignSelf: "center", alignItems: "center" }}
+        iconStyle={{ tintColor: "#17B3EC", ...styles.iconStyle }}
       />
       {/* <View style={{ alignSelf: 'center', alignItems: 'center' }}>
         <Icon
@@ -197,23 +190,31 @@ const SeeMoreButton = (props) => {
 const TitleComponent = (props) => {
   const { text, notificationType, length } = props.item;
   let seeAll = null;
-  if (length !== undefined && length === 0 && notificationType === 'notification') {
-      const { seeAllContainerStyle, seeAllTextStyle } = styles;
-      const onPress = () => Actions.push('notificationList');
-      seeAll = (
-          <DelayedButton
-              style={{ ...seeAllContainerStyle, paddingLeft: 5, alignSelf: 'flex-end' }}
-              activeOpacity={0.6} 
-              onPress={onPress}
-          >
-              <Text style={seeAllTextStyle}>Manage All</Text>
-          </DelayedButton>
-      );
+  if (
+    length !== undefined &&
+    length === 0 &&
+    notificationType === "notification"
+  ) {
+    const { seeAllContainerStyle, seeAllTextStyle } = styles;
+    const onPress = () => Actions.push("notificationList");
+    seeAll = (
+      <DelayedButton
+        style={{
+          ...seeAllContainerStyle,
+          paddingLeft: 5,
+          alignSelf: "flex-end",
+        }}
+        activeOpacity={0.6}
+        onPress={onPress}
+      >
+        <Text style={seeAllTextStyle}>Manage All</Text>
+      </DelayedButton>
+    );
   }
 
   return (
     <View style={styles.titleComponentContainerStyle}>
-      <Text style={{ fontSize: 11, color: '#6d6d6d', fontWeight: '600' }}>
+      <Text style={{ fontSize: 11, color: "#6d6d6d", fontWeight: "600" }}>
         {text}
       </Text>
       {seeAll}
@@ -222,7 +223,7 @@ const TitleComponent = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const notificationData = getNotifications(state)
+  const notificationData = getNotifications(state);
   // .filter(d => {
   //   if (d && d.parsedNoti && d.parsedNoti.error) return false;
   //   return true;
@@ -237,19 +238,19 @@ const mapStateToProps = (state) => {
     refreshing: needs.refreshing || notifications.refreshing,
     data: [...notificationData, ...notificationNeedData],
     loading: needs.loading || notifications.loading,
-    shouldUpdateUnreadCount
+    shouldUpdateUnreadCount,
   };
 };
 
 const styles = {
   seeMoreTextStyle: {
     fontSize: 13,
-    fontWeight: '600',
-    color: '#17B3EC',
-    alignSelf: 'center'
+    fontWeight: "600",
+    color: "#17B3EC",
+    alignSelf: "center",
   },
   iconStyle: {
-    alignSelf: 'center',
+    alignSelf: "center",
     // fontSize: 20,
     height: 15,
     width: 20,
@@ -258,21 +259,21 @@ const styles = {
   titleComponentContainerStyle: {
     paddingLeft: 12, // Needs to be aligned with NotificationCard padding
     padding: 12,
-    borderColor: 'lightgray',
+    borderColor: "lightgray",
     borderBottomWidth: 0.5,
-    flexDirection: 'row', 
-    alignItems: 'center'
+    flexDirection: "row",
+    alignItems: "center",
   },
   seeAllContainerStyle: {
-    backgroundColor: 'white',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "white",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   seeAllTextStyle: {
-      color: APP_BLUE,
-      fontSize: 12,
-      fontWeight: '700'
+    color: APP_BLUE,
+    fontSize: 12,
+    fontWeight: "700",
   },
 };
 
@@ -283,7 +284,7 @@ export default connect(
     seeMoreNotification,
     seeLessNotification,
     clearUnreadCount,
-    markAllNotificationAsRead
+    markAllNotificationAsRead,
   },
   null,
   { withRef: true }

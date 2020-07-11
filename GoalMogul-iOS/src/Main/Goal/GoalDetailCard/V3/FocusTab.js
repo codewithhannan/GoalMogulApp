@@ -1,49 +1,41 @@
-import React from 'react';
-import {
-  View,
-  FlatList,
-  Animated
-} from 'react-native';
-import { connect } from 'react-redux';
-import _ from 'lodash';
+import React from "react";
+import { View, FlatList, Animated } from "react-native";
+import { connect } from "react-redux";
+import _ from "lodash";
 
 // Components
-import EmptyResult from '../../../Common/Text/EmptyResult';
+import EmptyResult from "../../../Common/Text/EmptyResult";
 // import CommentBox from '../../Common/CommentBoxV2';
-import CommentCard from '../Comment/CommentCard';
+import CommentCard from "../Comment/CommentCard";
 
 // Assets
 
 // Actions
-import {
-  goalDetailSwitchTabV2ByKey
-} from '../../../../redux/modules/goal/GoalDetailActions';
+import { goalDetailSwitchTabV2ByKey } from "../../../../redux/modules/goal/GoalDetailActions";
 
-import {
-  resetCommentType
-} from '../../../../redux/modules/feed/comment/CommentActions';
+import { resetCommentType } from "../../../../redux/modules/feed/comment/CommentActions";
 
 // Styles
-import { BACKGROUND_COLOR } from '../../../../styles';
+import { BACKGROUND_COLOR } from "../../../../styles";
 
 // Utils
-import { switchCase } from '../../../../redux/middleware/utils';
+import { switchCase } from "../../../../redux/middleware/utils";
 
 // Selectors
 import {
   getGoalDetailByTab,
   makeGetGoalPageDetailByPageId,
-} from '../../../../redux/modules/goal/selector';
+} from "../../../../redux/modules/goal/selector";
 
 import {
   getCommentByTab,
   getNewCommentByTab,
-  makeGetCommentByEntityId
-} from '../../../../redux/modules/feed/comment/CommentSelector';
-import LikeListModal from '../../../Common/Modal/LikeListModal';
+  makeGetCommentByEntityId,
+} from "../../../../redux/modules/feed/comment/CommentSelector";
+import LikeListModal from "../../../Common/Modal/LikeListModal";
 
 // Constants
-const DEBUG_KEY = '[ UI FocusTab ]';
+const DEBUG_KEY = "[ UI FocusTab ]";
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const TABBAR_HEIGHT = 48.5;
@@ -55,13 +47,13 @@ class FocusTab extends React.PureComponent {
     super(props);
     this.state = {
       keyboardHeight: 0,
-      position: 'absolute',
+      position: "absolute",
       commentBoxPadding: new Animated.Value(0),
       keyboardDidShow: false,
       // TODO: merge LikeListModal for comment with the one for goal
       showCommentLikeList: false,
       likeListParentType: undefined,
-      likeListParentId: undefined
+      likeListParentId: undefined,
     };
     this.scrollToIndex = this.scrollToIndex.bind(this);
     this.handleHeadlineOnPressed = this.handleHeadlineOnPressed.bind(this);
@@ -82,14 +74,16 @@ class FocusTab extends React.PureComponent {
    * Open comment like list
    */
   openCommentLikeList = (likeListParentType, likeListParentId) => {
-    console.log(`${DEBUG_KEY}: show comment like list: ${likeListParentType}, ${likeListParentId}`);
+    console.log(
+      `${DEBUG_KEY}: show comment like list: ${likeListParentType}, ${likeListParentId}`
+    );
     this.setState({
       ...this.state,
       showCommentLikeList: true,
       likeListParentType,
-      likeListParentId
+      likeListParentId,
     });
-  }
+  };
 
   /**
    * Close comment like list
@@ -100,29 +94,31 @@ class FocusTab extends React.PureComponent {
       ...this.state,
       showCommentLikeList: false,
       likeListParentId: undefined,
-      likeListParentType: undefined
+      likeListParentType: undefined,
     });
-  }
+  };
 
   handleOnScrollToIndexFailed = (info) => {
     const { index, highestMeasuredFrameIndex, averageItemLength } = info;
-    console.log(`${DEBUG_KEY}: [ handleOnScrollToIndexFailed ]: index: ${index}, highestMeasuredFrameIndex: ${highestMeasuredFrameIndex}`);
-  }
-  
+    console.log(
+      `${DEBUG_KEY}: [ handleOnScrollToIndexFailed ]: index: ${index}, highestMeasuredFrameIndex: ${highestMeasuredFrameIndex}`
+    );
+  };
+
   // Refresh goal detail and comments all together
   handleRefresh = () => {
     console.log(`${DEBUG_KEY}: user tries to refresh.`);
-  }
+  };
 
   scrollToIndex = (index, viewOffset = 0, animated = true) => {
     this.flatlist.getNode().scrollToIndex({
-    // this.flatlist.scrollToIndex({
+      // this.flatlist.scrollToIndex({
       index,
       animated,
       viewPosition: 1,
-      viewOffset
+      viewOffset,
     });
-  }
+  };
 
   handleHeadlineOnPressed = (focusType, focusRef) => {
     // Scroll to top without animation
@@ -130,12 +126,12 @@ class FocusTab extends React.PureComponent {
 
     // Switch to the focused item
     this.props.handleIndexChange(1, focusType, focusRef);
-  }
+  };
 
   keyExtractor = (item) => {
     const { _id } = item;
     return _id;
-  }
+  };
 
   dialogOnFocus = () => this.commentBox.focus();
 
@@ -146,41 +142,59 @@ class FocusTab extends React.PureComponent {
         key={`comment-${props.index}`}
         item={props.item}
         index={props.index}
-        commentDetail={{ parentType: 'Goal', parentRef: goalDetail._id }}
+        commentDetail={{ parentType: "Goal", parentRef: goalDetail._id }}
         goalRef={goalDetail}
         scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
         onCommentClicked={this.props.handleReplyTo}
-        reportType='detail'
+        reportType="detail"
         pageId={this.props.pageId}
         entityId={this.props.goalId}
         onHeadlinePressed={this.handleHeadlineOnPressed}
         openCommentLikeList={this.openCommentLikeList}
       />
     );
-  }
+  };
 
   render() {
-    const { data, focusType, pageId, focusRef, initial, initialScrollToCommentReset, goalDetail } = this.props;
+    const {
+      data,
+      focusType,
+      pageId,
+      focusRef,
+      initial,
+      initialScrollToCommentReset,
+      goalDetail,
+    } = this.props;
     if (!focusType) return null;
     const emptyText = switchCaseEmptyText(focusType);
-    const initialScrollToComment = initial && initial.initialScrollToComment && initial.commentId && !initialScrollToCommentReset;
-    const totalCommentCount = goalDetail && goalDetail.commentCount ? goalDetail.commentCount : 100;
+    const initialScrollToComment =
+      initial &&
+      initial.initialScrollToComment &&
+      initial.commentId &&
+      !initialScrollToCommentReset;
+    const totalCommentCount =
+      goalDetail && goalDetail.commentCount ? goalDetail.commentCount : 100;
 
     // const resetCommentTypeFunc = focusType === 'comment'
     //   ? () => this.props.resetCommentType('Comment', pageId)
     //   : () => this.props.resetCommentType('Suggestion', pageId);
 
     return (
-      <View style={{ flex: 1, backgroundColor: 'transparent' }} testID="goal-detail-card-focus-tab">
-        <LikeListModal 
-          isVisible={this.state.showCommentLikeList} 
+      <View
+        style={{ flex: 1, backgroundColor: "transparent" }}
+        testID="goal-detail-card-focus-tab"
+      >
+        <LikeListModal
+          isVisible={this.state.showCommentLikeList}
           closeModal={this.closeCommentLikeList}
           parentId={this.state.likeListParentId}
           parentType={this.state.likeListParentType}
           clearDataOnHide
         />
         <AnimatedFlatList
-          ref={ref => { this.flatlist = ref; }}
+          ref={(ref) => {
+            this.flatlist = ref;
+          }}
           data={data}
           initialNumToRender={initialScrollToComment ? totalCommentCount : 5}
           renderItem={this.renderItem}
@@ -189,14 +203,17 @@ class FocusTab extends React.PureComponent {
           onRefresh={this.handleRefresh}
           onScrollToIndexFailed={this.handleOnScrollToIndexFailed}
           ListEmptyComponent={
-            this.props.loading ? null :
-            <EmptyResult
-              testID="focus-tab-empty-result"
-              text={emptyText}
-              textStyle={{ paddingTop: 70 }}
-            />
+            this.props.loading ? null : (
+              <EmptyResult
+                testID="focus-tab-empty-result"
+                text={emptyText}
+                textStyle={{ paddingTop: 70 }}
+              />
+            )
           }
-          ListFooterComponent={<View style={{ height: 51, backgroundColor: 'transparent' }} />}
+          ListFooterComponent={
+            <View style={{ height: 51, backgroundColor: "transparent" }} />
+          }
           onScroll={this.props.onScroll}
           scrollEventThrottle={1}
           contentContainerStyle={{ ...this.props.contentContainerStyle }}
@@ -226,32 +243,29 @@ const makeMapStateToProps = () => {
     const comments = getCommentByEntityId(state, goalId, pageId);
     const { transformedComments, loading } = comments || {
       transformedComments: [],
-      loading: false
+      loading: false,
     };
     // Initialize data by all comments
     let data = transformedComments;
-  
+
     // console.log(`${DEBUG_KEY}: focusType is: ${focusType}, ref is: ${focusRef}`);
-    if (focusType === 'step' || focusType === 'need') {
+    if (focusType === "step" || focusType === "need") {
       // TODO: grab comments by step, filter by typeRef
       data = data.filter((comment) => {
-        const isSuggestionForFocusRef = (
+        const isSuggestionForFocusRef =
           comment.suggestion &&
           comment.suggestion.suggestionForRef &&
-          comment.suggestion.suggestionForRef === focusRef
-        );
-        const isCommentForFocusRef = (
-          _.get(comment, `${focusType}Ref`) === focusRef
-        );
-
+          comment.suggestion.suggestionForRef === focusRef;
+        const isCommentForFocusRef =
+          _.get(comment, `${focusType}Ref`) === focusRef;
 
         if (isSuggestionForFocusRef || isCommentForFocusRef) {
-              return true;
+          return true;
         }
         return false;
       });
     }
-  
+
     return {
       newComment,
       data, // Comments of interest
@@ -259,31 +273,32 @@ const makeMapStateToProps = () => {
       loading: false,
       focusType,
       focusRef,
-      goalDetail: goal
+      goalDetail: goal,
     };
   };
 
   return mapStateToProps;
 };
 
-const switchCaseEmptyText = (type) => switchCase({
-  comment: 'No Comments',
-  step: 'No suggestions for this step',
-  need: 'No suggestions for this need'
-})('comment')(type);
+const switchCaseEmptyText = (type) =>
+  switchCase({
+    comment: "No Comments",
+    step: "No suggestions for this step",
+    need: "No suggestions for this need",
+  })("comment")(type);
 
 FocusTab.defaultPros = {
   focusType: undefined, // ['comment', 'step', 'need']
   focusRef: undefined,
   goalDetail: undefined,
-  isSelf: false
+  isSelf: false,
 };
 
 export default connect(
   makeMapStateToProps,
   {
     goalDetailSwitchTabV2ByKey,
-    resetCommentType
+    resetCommentType,
   },
   null,
   { withRef: true }

@@ -1,6 +1,4 @@
-import {
-  REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO
-} from '../actions/types';
+import { REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO } from "../actions/types";
 
 const INITIAL_STATE = {};
 

@@ -1,17 +1,12 @@
-import React, { Component } from 'react';
-import {
-  Dimensions,
-  Image,
-  TouchableWithoutFeedback
-} from 'react-native';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { Dimensions, Image, TouchableWithoutFeedback } from "react-native";
+import { connect } from "react-redux";
 
-import { registrationCameraRollOnImageChoosen } from '../../actions';
+import { registrationCameraRollOnImageChoosen } from "../../actions";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 class ImageRow extends Component {
-
   handleOnImageChoosen(uri) {
     this.props.registrationCameraRollOnImageChoosen(uri);
   }
@@ -19,14 +14,12 @@ class ImageRow extends Component {
   render() {
     const uri = this.props.photo.node.image.uri;
     return (
-      <TouchableWithoutFeedback
-        onPress={() => this.handleOnImageChoosen(uri)}
-      >
+      <TouchableWithoutFeedback onPress={() => this.handleOnImageChoosen(uri)}>
         <Image
           source={{ uri }}
           style={{
             width: width / 3,
-            height: width / 3
+            height: width / 3,
           }}
         />
       </TouchableWithoutFeedback>
@@ -34,4 +27,6 @@ class ImageRow extends Component {
   }
 }
 
-export default connect(null, { registrationCameraRollOnImageChoosen })(ImageRow);
+export default connect(null, { registrationCameraRollOnImageChoosen })(
+  ImageRow
+);

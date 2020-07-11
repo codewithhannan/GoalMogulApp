@@ -1,5 +1,5 @@
 // This reducer stores information for my tribes
-import { Actions } from 'react-native-router-flux';
+import { Actions } from "react-native-router-flux";
 import {
   MYTRIBETAB_REFRESH_DONE,
   MYTRIBETAB_LOAD_DONE,
@@ -8,32 +8,32 @@ import {
   MYTRIBETAB_UPDATE_FILTEROPTIONS,
   MYTRIBETAB_OPEN,
   MYTRIBETAB_CLOSE,
-  MYTRIBETAB_UPDATE_TAB
-} from './MyTribeTabReducers';
+  MYTRIBETAB_UPDATE_TAB,
+} from "./MyTribeTabReducers";
 
-import { api as API } from '../../middleware/api';
-import { queryBuilder, componentKeyByTab } from '../../middleware/utils';
+import { api as API } from "../../middleware/api";
+import { queryBuilder, componentKeyByTab } from "../../middleware/utils";
 
-const DEBUG_KEY = '[ Action MyTribeTab ]';
-const BASE_ROUTE = 'secure/tribe';
+const DEBUG_KEY = "[ Action MyTribeTab ]";
+const BASE_ROUTE = "secure/tribe";
 
 // Open my tribe modal
 export const openMyTribeTab = () => (dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
-    type: MYTRIBETAB_OPEN
+    type: MYTRIBETAB_OPEN,
   });
-  const componentToOpen = componentKeyByTab(tab, 'myTribeTab');
+  const componentToOpen = componentKeyByTab(tab, "myTribeTab");
   Actions.push(componentToOpen);
   refreshTribe()(dispatch, getState);
 };
 
 // Close my tribe modal
 export const closeMyTribeTab = () => (dispatch) => {
-  console.log('closing my tribe tab');
+  console.log("closing my tribe tab");
   Actions.pop();
   dispatch({
-    type: MYTRIBETAB_CLOSE
+    type: MYTRIBETAB_CLOSE,
   });
 };
 
@@ -41,18 +41,20 @@ export const closeMyTribeTab = () => (dispatch) => {
 export const updateSortBy = (value) => (dispatch, getState) => {
   dispatch({
     type: MYTRIBETAB_SORTBY,
-    payload: value
+    payload: value,
   });
 
   refreshTribe()(dispatch, getState);
 };
 
-
 // update filterForMembershipCategory
-export const updateFilterForMembershipCategory = (value) => (dispatch, getState) => {
+export const updateFilterForMembershipCategory = (value) => (
+  dispatch,
+  getState
+) => {
   dispatch({
     type: MYTRIBETAB_UPDATE_FILTEROPTIONS,
-    payload: value
+    payload: value,
   });
 
   refreshTribe()(dispatch, getState);
@@ -62,8 +64,8 @@ export const myTribeSelectTab = (index) => (dispatch, getState) => {
   dispatch({
     type: MYTRIBETAB_UPDATE_TAB,
     payload: {
-      index
-    }
+      index,
+    },
   });
   refreshTribe()(dispatch, getState);
 };
@@ -81,56 +83,88 @@ export const refreshTribe = () => (dispatch, getState) => {
   const { limit, filterForMembershipCategory, sortBy } = getState().myTribeTab;
 
   dispatch({
-    type: MYTRIBETAB_LOAD
+    type: MYTRIBETAB_LOAD,
   });
-  loadTribe(0, limit, token, sortBy, filterForMembershipCategory, (data) => {
-    dispatch({
-      type: MYTRIBETAB_REFRESH_DONE,
-      payload: {
-        type: 'mytribetab',
-        data,
-        skip: data.length,
-        limit: 20,
-        hasNextPage: !(data === undefined || data.length === 0)
-      }
-    });
-  }, () => {
-    // TODO: implement for onError
-  });
+  loadTribe(
+    0,
+    limit,
+    token,
+    sortBy,
+    filterForMembershipCategory,
+    (data) => {
+      dispatch({
+        type: MYTRIBETAB_REFRESH_DONE,
+        payload: {
+          type: "mytribetab",
+          data,
+          skip: data.length,
+          limit: 20,
+          hasNextPage: !(data === undefined || data.length === 0),
+        },
+      });
+    },
+    () => {
+      // TODO: implement for onError
+    }
+  );
 };
 
 // Load more goal for mastermind tab
 export const loadMoreTribe = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, sortBy, filterForMembershipCategory, hasNextPage } = getState().myTribeTab;
+  const {
+    skip,
+    limit,
+    sortBy,
+    filterForMembershipCategory,
+    hasNextPage,
+  } = getState().myTribeTab;
   if (hasNextPage === false) {
     return;
   }
-  loadTribe(skip, limit, token, sortBy, filterForMembershipCategory, (data) => {
-    dispatch({
-      type: MYTRIBETAB_LOAD_DONE,
-      payload: {
-        type: 'mytribetab',
-        data,
-        skip: data.length,
-        limit: 20,
-        hasNextPage: !(data === undefined || data.length === 0)
-      }
-    });
-  }, () => {
-    // TODO: implement for onError
-  });
+  loadTribe(
+    skip,
+    limit,
+    token,
+    sortBy,
+    filterForMembershipCategory,
+    (data) => {
+      dispatch({
+        type: MYTRIBETAB_LOAD_DONE,
+        payload: {
+          type: "mytribetab",
+          data,
+          skip: data.length,
+          limit: 20,
+          hasNextPage: !(data === undefined || data.length === 0),
+        },
+      });
+    },
+    () => {
+      // TODO: implement for onError
+    }
+  );
 };
 
 /**
  * Basic API to load goals based on skip and limit
  */
-const loadTribe = (skip, limit, token, sortBy, filterForMembershipCategory, callback, onError) => {
-  API
-    .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterForMembershipCategory })}`,
-      token
-    )
+const loadTribe = (
+  skip,
+  limit,
+  token,
+  sortBy,
+  filterForMembershipCategory,
+  callback,
+  onError
+) => {
+  API.get(
+    `${BASE_ROUTE}?${queryBuilder(skip, limit, {
+      sortBy,
+      filterForMembershipCategory,
+    })}`,
+    token
+  )
     .then((res) => {
       // console.log(`${DEBUG_KEY}: loading tribe feed with res`, res);
       if (res && res.data) {

@@ -1,25 +1,24 @@
 // This is a tab for General search
-import React, { Component } from 'react';
-import { View, FlatList } from 'react-native';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { View, FlatList } from "react-native";
+import { connect } from "react-redux";
 
 // Components
-import TribeSearchCard from './TribeSearchCard';
-import EmptyResult from '../../Common/Text/EmptyResult';
+import TribeSearchCard from "./TribeSearchCard";
+import EmptyResult from "../../Common/Text/EmptyResult";
 
 // actions
 import {
   refreshSearchResult,
   onLoadMore,
   refreshPreloadData,
-  loadPreloadData
-} from '../../../redux/modules/search/SearchActions';
+  loadPreloadData,
+} from "../../../redux/modules/search/SearchActions";
 
 // tab key
-const TYPE = 'Tribe'; // Used for preload function
-const key = 'tribes';
-const DEBUG_KEY = '[ Component TribeSearch ]';
-
+const TYPE = "Tribe"; // Used for preload function
+const key = "tribes";
+const DEBUG_KEY = "[ Component TribeSearch ]";
 
 class TribeSearch extends Component {
   componentDidMount() {
@@ -33,12 +32,12 @@ class TribeSearch extends Component {
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing search`);
     let keyToUse = key;
-    if (this.props.type !== 'GeneralSearch') {
-      keyToUse = 'myTribes';
+    if (this.props.type !== "GeneralSearch") {
+      keyToUse = "myTribes";
     }
 
     // Only refresh if there is content
-    if (this.props.searchContent && this.props.searchContent.trim() !== '') {
+    if (this.props.searchContent && this.props.searchContent.trim() !== "") {
       this.props.refreshSearchResult(keyToUse);
       return;
     }
@@ -47,15 +46,15 @@ class TribeSearch extends Component {
       this.props.refreshPreloadData(TYPE);
       return;
     }
-  }
+  };
 
   handleOnLoadMore = () => {
     let keyToUse = key;
-    if (this.props.type !== 'GeneralSearch') {
-      keyToUse = 'myTribes';
+    if (this.props.type !== "GeneralSearch") {
+      keyToUse = "myTribes";
     }
 
-    if (this.props.searchContent && this.props.searchContent.trim() !== '') {
+    if (this.props.searchContent && this.props.searchContent.trim() !== "") {
       this.props.onLoadMore(keyToUse);
       return;
     }
@@ -64,29 +63,37 @@ class TribeSearch extends Component {
       this.props.loadPreloadData(TYPE);
       return;
     }
-  }
+  };
 
   renderItem = ({ item }) => {
-    return <TribeSearchCard item={item} type={this.props.type} callback={this.props.callback} onItemSelect={this.props.onItemSelect} />;
+    return (
+      <TribeSearchCard
+        item={item}
+        type={this.props.type}
+        callback={this.props.callback}
+        onItemSelect={this.props.onItemSelect}
+      />
+    );
   };
 
   render() {
     return (
       <View style={{ flex: 1 }}>
-        {
-          (this.props.data.length === 0 && this.props.searchContent && !this.props.loading) ?
-            <EmptyResult text={'No Results'} />
-          :
-            <FlatList
-              data={this.props.data}
-              renderItem={this.renderItem}
-              keyExtractor={this._keyExtractor}
-              onEndReached={this.handleOnLoadMore}
-              onEndReachedThreshold={0.5}
-              onRefresh={this.handleRefresh}
-              refreshing={this.props.loading}
-            />
-        }
+        {this.props.data.length === 0 &&
+        this.props.searchContent &&
+        !this.props.loading ? (
+          <EmptyResult text={"No Results"} />
+        ) : (
+          <FlatList
+            data={this.props.data}
+            renderItem={this.renderItem}
+            keyExtractor={this._keyExtractor}
+            onEndReached={this.handleOnLoadMore}
+            onEndReachedThreshold={0.5}
+            onRefresh={this.handleRefresh}
+            refreshing={this.props.loading}
+          />
+        )}
       </View>
     );
   }
@@ -97,7 +104,7 @@ const mapStateToProps = (state, props) => {
   let refreshing, loading, data;
 
   const { shouldPreload } = props;
-  if (shouldPreload && (!searchContent || searchContent.trim() === '')) {
+  if (shouldPreload && (!searchContent || searchContent.trim() === "")) {
     // Display preload data when search content is null and shouldPreload is true
     data = tribes.preload.data;
     refreshing = tribes.preload.refreshing;
@@ -113,16 +120,13 @@ const mapStateToProps = (state, props) => {
     data,
     refreshing,
     loading,
-    searchContent
+    searchContent,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    refreshSearchResult,
-    onLoadMore,
-    refreshPreloadData,
-    loadPreloadData
-  }
-)(TribeSearch);
+export default connect(mapStateToProps, {
+  refreshSearchResult,
+  onLoadMore,
+  refreshPreloadData,
+  loadPreloadData,
+})(TribeSearch);

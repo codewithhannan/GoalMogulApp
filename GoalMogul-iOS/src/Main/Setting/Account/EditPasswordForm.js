@@ -1,79 +1,81 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Text,
   View,
   TouchableOpacity,
   KeyboardAvoidingView,
   ScrollView,
-  Keyboard
-} from 'react-native';
-import { connect } from 'react-redux';
-import { Field, reduxForm, SubmissionError } from 'redux-form';
-import {
-  DotIndicator
-} from 'react-native-indicators';
+  Keyboard,
+} from "react-native";
+import { connect } from "react-redux";
+import { Field, reduxForm, SubmissionError } from "redux-form";
+import { DotIndicator } from "react-native-indicators";
 
 /* Components */
-import SearchBarHeader from '../../Common/Header/SearchBarHeader';
-import Input from '../../Common/Text/Input';
-import LoadingModal from '../../Common/Modal/LoadingModal';
+import SearchBarHeader from "../../Common/Header/SearchBarHeader";
+import Input from "../../Common/Text/Input";
+import LoadingModal from "../../Common/Modal/LoadingModal";
 
 /* Styles */
-import Styles from '../Styles';
+import Styles from "../Styles";
 
 /* Actions */
-import { handleUpdatePassword } from '../../../actions';
+import { handleUpdatePassword } from "../../../actions";
 
 /* TODO: abstract this validation fuction */
-const DEBUG_KEY = '[ UI EditPasswordForm ]';
-const minLength = min => value =>
+const DEBUG_KEY = "[ UI EditPasswordForm ]";
+const minLength = (min) => (value) =>
   value && value.length < min ? `Must be ${min} characters or more` : undefined;
 
 const minLength8 = minLength(8);
 
-const validate = values => {
+const validate = (values) => {
   const errors = {};
   if (!values.oldPassword) {
-    errors.oldPassword = 'Required';
+    errors.oldPassword = "Required";
   }
   if (!values.newPassword) {
-    errors.newPassword = 'Required';
+    errors.newPassword = "Required";
   }
   if (!values.confirmPassword) {
-    errors.confirmPassword = 'Required';
+    errors.confirmPassword = "Required";
   }
 
   return errors;
 };
 
 class EidtPasswordForm extends Component {
-
-  handleOnSendPress = values => {
+  handleOnSendPress = (values) => {
     Keyboard.dismiss();
     const errors = validate(values);
     if (!(Object.keys(errors).length === 0 && errors.constructor === Object)) {
-      console.log('submission error: ', errors);
+      console.log("submission error: ", errors);
       throw new SubmissionError(errors);
     }
-    console.log('user tries to Reset password with values: ', values);
+    console.log("user tries to Reset password with values: ", values);
     // this.props.onResendEmailPress();
     return this.props.handleUpdatePassword(values);
-  }
+  };
 
   renderPasswordForm() {
     return (
       <View>
-        <Field name='oldPassword' label='Old password' component={Input} secure />
         <Field
-          name='newPassword'
-          label='New password'
+          name="oldPassword"
+          label="Old password"
+          component={Input}
+          secure
+        />
+        <Field
+          name="newPassword"
+          label="New password"
           component={Input}
           validate={minLength8}
           secure
         />
         <Field
-          name='confirmPassword'
-          label='Confirm new password'
+          name="confirmPassword"
+          label="Confirm new password"
           component={Input}
           secure
         />
@@ -92,7 +94,10 @@ class EidtPasswordForm extends Component {
 
   renderButton(handleSubmit) {
     return (
-      <TouchableOpacity activeOpacity={0.6} onPress={handleSubmit(this.handleOnSendPress)}>
+      <TouchableOpacity
+        activeOpacity={0.6}
+        onPress={handleSubmit(this.handleOnSendPress)}
+      >
         <View style={Styles.buttonContainerStyle}>
           <Text style={Styles.buttonTextStyle}>Update</Text>
         </View>
@@ -103,41 +108,33 @@ class EidtPasswordForm extends Component {
   renderEmail() {
     if (this.props.email.address) {
       return (
-        <Text style={Styles.detailTextStyle}>
-          {this.props.email.address}
-        </Text>
+        <Text style={Styles.detailTextStyle}>{this.props.email.address}</Text>
       );
     }
-    return (
-      <Text style={Styles.detailTextStyle}>
-        andyzeng96@gmail.com
-      </Text>
-    );
+    return <Text style={Styles.detailTextStyle}>andyzeng96@gmail.com</Text>;
   }
 
   render() {
     const { handleSubmit, error } = this.props;
 
     return (
-      <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
-        <LoadingModal 
-          visible={this.props.updatingPassword} 
-          customIndicator={<DotIndicator size={12} color='white' />}  
+      <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
+        <LoadingModal
+          visible={this.props.updatingPassword}
+          customIndicator={<DotIndicator size={12} color="white" />}
         />
-        <SearchBarHeader backButton rightIcon='empty' title="Password" />
+        <SearchBarHeader backButton rightIcon="empty" title="Password" />
         <KeyboardAvoidingView
-          behavior='padding'
-          style={{ flex: 1, backgroundColor: '#ffffff' }}
+          behavior="padding"
+          style={{ flex: 1, backgroundColor: "#ffffff" }}
         >
           <ScrollView
             style={styles.scroll}
-            keyboardShouldPersistTaps='handled'
-            contentContainerStyle={{ flexGrow: 1, backgroundColor: '#ffffff' }}
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ flexGrow: 1, backgroundColor: "#ffffff" }}
           >
             <View style={Styles.titleSectionStyle}>
-              <Text style={Styles.titleTextStyle}>
-                Update password
-              </Text>
+              <Text style={Styles.titleTextStyle}>Update password</Text>
             </View>
             {this.renderError(error)}
             {this.renderPasswordForm()}
@@ -151,30 +148,27 @@ class EidtPasswordForm extends Component {
 
 const styles = {
   errorStyle: {
-    color: '#ff0033',
-    justifyContent: 'center',
-    alignSelf: 'center',
-    fontSize: 15
-  }
+    color: "#ff0033",
+    justifyContent: "center",
+    alignSelf: "center",
+    fontSize: 15,
+  },
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { email } = state.setting;
   const { updatingPassword } = state.user;
 
   return {
     email,
-    updatingPassword
+    updatingPassword,
   };
 };
 
 EidtPasswordForm = reduxForm({
-  form: 'passwordEditForm',
+  form: "passwordEditForm",
 })(EidtPasswordForm);
 
-export default connect(
-  mapStateToProps,
-  {
-    handleUpdatePassword
-  }
-)(EidtPasswordForm);
+export default connect(mapStateToProps, {
+  handleUpdatePassword,
+})(EidtPasswordForm);

@@ -1,43 +1,41 @@
-import React, { Component } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { Text, View, TouchableOpacity } from "react-native";
+import { connect } from "react-redux";
 
 /* Components */
-import SearchBarHeader from '../../Common/Header/SearchBarHeader';
-import {
-  CheckIcon
-} from '../../../Utils/Icons';
+import SearchBarHeader from "../../Common/Header/SearchBarHeader";
+import { CheckIcon } from "../../../Utils/Icons";
 
 /* Styles */
-import Styles from '../Styles';
+import Styles from "../Styles";
 
 /* Actions */
 import {
   onFriendsSettingSelection,
-  updateFriendsSetting
-} from '../../../actions';
-import { Actions } from 'react-native-router-flux';
+  updateFriendsSetting,
+} from "../../../actions";
+import { Actions } from "react-native-router-flux";
 
 /*
   TODO: export this const file
 */
 const friendsSettingList = [
   {
-    title: 'Public',
-    explanation: "Everyone can see who I'm friends with"
+    title: "Public",
+    explanation: "Everyone can see who I'm friends with",
   },
   {
-    title: 'Mutual',
-    explanation: 'Anyone can see the friends we have in common'
+    title: "Mutual",
+    explanation: "Anyone can see the friends we have in common",
   },
   {
-    title: 'Friends',
-    explanation: "Friends can see who I'm friends with"
+    title: "Friends",
+    explanation: "Friends can see who I'm friends with",
   },
   {
-    title: 'Private',
-    explanation: "Only I know who I'm friends with"
-  }
+    title: "Private",
+    explanation: "Only I know who I'm friends with",
+  },
 ];
 
 class FriendsSetting extends Component {
@@ -52,9 +50,12 @@ class FriendsSetting extends Component {
   renderTick(info) {
     if (info.title === this.props.privacy.friends) {
       return (
-        <CheckIcon 
-          iconContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}
-          iconStyle={{ tintColor: 'black', height: 18, width: 24 }}
+        <CheckIcon
+          iconContainerStyle={{
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          iconStyle={{ tintColor: "black", height: 18, width: 24 }}
         />
       );
     }
@@ -71,19 +72,15 @@ class FriendsSetting extends Component {
   renderPrivacySettingDetail() {
     return friendsSettingList.map((info) => {
       return (
-        <TouchableOpacity 
+        <TouchableOpacity
           activeOpacity={0.6}
           onPress={this.handleOnSelectedPress.bind(this, info.title)}
           key={info.title}
         >
           <View style={styles.sectionContainerStyle}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.titleTextStyle}>
-                {info.title}
-              </Text>
-              <Text style={styles.explanationStyle}>
-                {info.explanation}
-              </Text>
+              <Text style={styles.titleTextStyle}>{info.title}</Text>
+              <Text style={styles.explanationStyle}>{info.explanation}</Text>
             </View>
             {this.renderTick(info)}
           </View>
@@ -97,14 +94,12 @@ class FriendsSetting extends Component {
       <View style={{ flex: 1 }}>
         <SearchBarHeader
           backButton
-          rightIcon='empty'
+          rightIcon="empty"
           title="Friends"
           onBackPress={() => Actions.pop()}
         />
         <View style={Styles.titleSectionStyle}>
-          <Text style={Styles.titleTextStyle}>
-            Who can see your friends
-          </Text>
+          <Text style={Styles.titleTextStyle}>Who can see your friends</Text>
         </View>
         <View style={Styles.detailCardSection}>
           {this.renderPrivacySettingDetail()}
@@ -114,32 +109,31 @@ class FriendsSetting extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { privacy } = state.setting;
 
   return {
-    privacy
+    privacy,
   };
 };
 
 const styles = {
   sectionContainerStyle: {
     paddingBottom: 20,
-    flexDirection: 'row',
-    alignItems: 'center'
+    flexDirection: "row",
+    alignItems: "center",
   },
   titleTextStyle: {
     fontSize: 14,
-    fontWeight: '700'
+    fontWeight: "700",
   },
   explanationStyle: {
     fontSize: 13,
-    color: '#4d525b'
-  }
+    color: "#4d525b",
+  },
 };
 
-export default connect(
-  mapStateToProps, {
-    onFriendsSettingSelection,
-    updateFriendsSetting
-  })(FriendsSetting);
+export default connect(mapStateToProps, {
+  onFriendsSettingSelection,
+  updateFriendsSetting,
+})(FriendsSetting);

@@ -3,19 +3,18 @@
  * For NeedCard, Someone requested help from you for a need
  * For GoalCard, Someone shared a goal with you
  */
-import React from 'react';
-import { Text, View } from 'react-native';
+import React from "react";
+import { Text, View } from "react-native";
 
 const renderText = (item) => {
   const { owner } = item;
   const { boldTextStyle, textStyle } = styles;
-  const nameComponent = owner && owner.name
-    ? <Text style={{ ...boldTextStyle, ...textStyle }}>{owner.name} </Text>
-    : null;
+  const nameComponent =
+    owner && owner.name ? (
+      <Text style={{ ...boldTextStyle, ...textStyle }}>{owner.name} </Text>
+    ) : null;
 
-  const goalHeaderText = (
-    <Text style={styles.textStyle}>shared a goal</Text>
-  );
+  const goalHeaderText = <Text style={styles.textStyle}>shared a goal</Text>;
 
   const needHeaderText = (
     <Text style={styles.textStyle}>requested help from you for a need</Text>
@@ -26,15 +25,15 @@ const renderText = (item) => {
   return (
     <View
       style={{
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'center'
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "center",
       }}
     >
       <Text
         numberOfLines={1}
-        ellipsizeMode='tail'
-        style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 10 }}
+        ellipsizeMode="tail"
+        style={{ flex: 1, flexWrap: "wrap", color: "black", fontSize: 10 }}
       >
         {nameComponent}
         {headerText}
@@ -51,11 +50,11 @@ const GoalCardHeader = (props) => {
     <View
       style={{
         marginBottom: 1,
-        backgroundColor: 'transparent',
+        backgroundColor: "transparent",
         padding: 5,
         paddingLeft: 12,
         paddingRight: 12,
-        borderBottomColor: '#F8F8F8',
+        borderBottomColor: "#F8F8F8",
         borderBottomWidth: 1,
       }}
     >
@@ -66,13 +65,13 @@ const GoalCardHeader = (props) => {
 
 const styles = {
   boldTextStyle: {
-    fontWeight: '700',
-    color: '#6d6d6d',
+    fontWeight: "700",
+    color: "#6d6d6d",
   },
   textStyle: {
     fontSize: 9,
-    color: '#6d6d6d',
-  }
+    color: "#6d6d6d",
+  },
 };
 
 export default GoalCardHeader;

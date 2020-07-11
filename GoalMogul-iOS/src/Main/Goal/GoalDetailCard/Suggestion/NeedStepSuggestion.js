@@ -1,23 +1,15 @@
-import React from 'react';
-import {
-  View,
-  TextInput,
-  SafeAreaView,
-  Text,
-  Animated
-} from 'react-native';
-import { connect } from 'react-redux';
-import { CheckBox } from 'react-native-elements';
+import React from "react";
+import { View, TextInput, SafeAreaView, Text, Animated } from "react-native";
+import { connect } from "react-redux";
+import { CheckBox } from "react-native-elements";
 
 // Actions
 import {
   onSuggestionTextChange,
-  updateSuggestionType
-} from '../../../../redux/modules/feed/comment/CommentActions';
+  updateSuggestionType,
+} from "../../../../redux/modules/feed/comment/CommentActions";
 
-import {
-  getNewCommentByTab
-} from '../../../../redux/modules/feed/comment/CommentSelector';
+import { getNewCommentByTab } from "../../../../redux/modules/feed/comment/CommentSelector";
 
 class NeedStepSuggestion extends React.Component {
   renderCheckBox() {
@@ -25,18 +17,14 @@ class NeedStepSuggestion extends React.Component {
     return (
       <View>
         <CheckBox
-          title='Need'
-          checked={suggestionType === 'NewNeed'}
-          onPress={() =>
-            this.props.updateSuggestionType('NewNeed', pageId)
-          }
+          title="Need"
+          checked={suggestionType === "NewNeed"}
+          onPress={() => this.props.updateSuggestionType("NewNeed", pageId)}
         />
         <CheckBox
-          title='Step'
-          checked={suggestionType === 'NewStep'}
-          onPress={() =>
-            this.props.updateSuggestionType('NewStep', pageId)
-          }
+          title="Step"
+          checked={suggestionType === "NewStep"}
+          onPress={() => this.props.updateSuggestionType("NewStep", pageId)}
         />
       </View>
     );
@@ -44,25 +32,30 @@ class NeedStepSuggestion extends React.Component {
 
   renderInputField() {
     const { suggestionText, suggestionType } = this.props;
-    const titleText = <Text style={styles.titleTextStyle}>Your Suggestion</Text>;
-    const placeholderText = suggestionType === 'NewNeed' ? 'New Need' : 'New Step';
+    const titleText = (
+      <Text style={styles.titleTextStyle}>Your Suggestion</Text>
+    );
+    const placeholderText =
+      suggestionType === "NewNeed" ? "New Need" : "New Step";
 
     return (
       <SafeAreaView
         style={{
-          backgroundColor: 'white',
+          backgroundColor: "white",
           borderBottomWidth: 0.5,
           marginTop: 10,
-          borderColor: 'lightgray'
+          borderColor: "lightgray",
         }}
       >
         {titleText}
         <TextInput
           placeholder={placeholderText}
-          onChangeText={(val) => this.props.onSuggestionTextChange(val, this.props.pageId)}
+          onChangeText={(val) =>
+            this.props.onSuggestionTextChange(val, this.props.pageId)
+          }
           style={styles.inputStyle}
           maxHeight={100}
-          keyboardType={'default'}
+          keyboardType={"default"}
           autoCorrect
           multiline
           value={suggestionText}
@@ -87,33 +80,29 @@ const styles = {
     fontSize: 15,
     padding: 8,
     paddingRight: 15,
-    paddingLeft: 15
+    paddingLeft: 15,
   },
   titleTextStyle: {
     fontSize: 11,
-    color: '#a1a1a1',
-    padding: 2
-  }
+    color: "#a1a1a1",
+    padding: 2,
+  },
 };
 
 const mapStateToProps = (state, props) => {
-  const {
-    suggestionLink,
-    suggestionText,
-    suggestionType
-  } = getNewCommentByTab(state, props.pageId).tmpSuggestion;
+  const { suggestionLink, suggestionText, suggestionType } = getNewCommentByTab(
+    state,
+    props.pageId
+  ).tmpSuggestion;
 
   return {
     suggestionLink,
     suggestionText,
-    suggestionType
+    suggestionType,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    onSuggestionTextChange,
-    updateSuggestionType
-  }
-)(NeedStepSuggestion);
+export default connect(mapStateToProps, {
+  onSuggestionTextChange,
+  updateSuggestionType,
+})(NeedStepSuggestion);

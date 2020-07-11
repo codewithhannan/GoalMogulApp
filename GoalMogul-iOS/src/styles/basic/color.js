@@ -1,6 +1,6 @@
 /**
- * Following is the new blue for V2 
- * 
+ * Following is the new blue for V2
+ *
  * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=1%3A626
  */
 export const GM_BLUE = "#45C9F6";

@@ -1,44 +1,45 @@
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Dimensions
-} from 'react-native';
+import React, { Component } from "react";
+import { View, Text, Image, TouchableOpacity, Dimensions } from "react-native";
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger,
-  renderers
-} from 'react-native-popup-menu';
-import { connect } from 'react-redux';
+  renderers,
+} from "react-native-popup-menu";
+import { connect } from "react-redux";
 
 // Asset
-import dropDown from '../../asset/utils/dropDown.png';
+import dropDown from "../../asset/utils/dropDown.png";
 
 // Actions
-import {
-  updateSortBy
-} from '../../redux/modules/tribe/TribeTabActions';
+import { updateSortBy } from "../../redux/modules/tribe/TribeTabActions";
 
 const { Popover } = renderers;
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 class TribeTabFilterBar extends Component {
-
   render() {
-    const { containerStyle, textStyle, detailContainerStyle, standardTextStyle, caretStyle } = styles;
+    const {
+      containerStyle,
+      textStyle,
+      detailContainerStyle,
+      standardTextStyle,
+      caretStyle,
+    } = styles;
     const { value } = this.props;
     const { sortBy } = value;
-    
-    const currentFilter = sortBy === 'RecentlyCreated' ? 'Recently Created' : `${sortBy}`;
+
+    const currentFilter =
+      sortBy === "RecentlyCreated" ? "Recently Created" : `${sortBy}`;
     return (
       <View style={containerStyle}>
         <Menu
-          onSelect={value => this.props.updateSortBy(value)}
-          rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
+          onSelect={(value) => this.props.updateSortBy(value)}
+          rendererProps={{
+            placement: "bottom",
+            anchorStyle: styles.anchorStyle,
+          }}
           renderer={Popover}
         >
           <MenuTrigger
@@ -52,21 +53,11 @@ class TribeTabFilterBar extends Component {
             </View>
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
-            <MenuOption
-              text='Popular'
-              value='Popular'
-            />
-            <MenuOption
-              text='Recently Created'
-              value='RecentlyCreated'
-            />
-            <MenuOption
-              text='Random'
-              value='Random'
-            />
+            <MenuOption text="Popular" value="Popular" />
+            <MenuOption text="Recently Created" value="RecentlyCreated" />
+            <MenuOption text="Random" value="Random" />
           </MenuOptions>
         </Menu>
-
       </View>
     );
   }
@@ -74,51 +65,49 @@ class TribeTabFilterBar extends Component {
 
 const styles = {
   containerStyle: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 50
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 50,
   },
   detailContainerStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 12,
     marginLeft: 12,
     paddingTop: 6,
-    paddingBottom: 6
+    paddingBottom: 6,
   },
   textStyle: {
     fontSize: 9,
     // color: '#1fb6dd',
-    color: '#696969',
+    color: "#696969",
     // fontWeight: '600',
   },
   standardTextStyle: {
     fontSize: 9,
-    color: 'black'
+    color: "black",
   },
   caretStyle: {
     // tintColor: '#20485f',
-    tintColor: '#696969',
-    marginLeft: 5
+    tintColor: "#696969",
+    marginLeft: 5,
   },
   anchorStyle: {
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
   menuOptionsStyles: {
     optionsContainer: {
       width: width - 14,
     },
-    optionsWrapper: {
-
-    },
+    optionsWrapper: {},
     optionWrapper: {
       flex: 1,
     },
     optionTouchable: {
-      underlayColor: 'lightgray',
+      underlayColor: "lightgray",
       activeOpacity: 10,
     },
     optionText: {
@@ -126,14 +115,11 @@ const styles = {
       paddingBottom: 5,
       paddingLeft: 10,
       paddingRight: 10,
-      color: 'black',
+      color: "black",
     },
-  }
+  },
 };
 
-export default connect(
-  null,
-  {
-    updateSortBy
-  }
-)(TribeTabFilterBar);
+export default connect(null, {
+  updateSortBy,
+})(TribeTabFilterBar);

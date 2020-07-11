@@ -6,7 +6,7 @@
  * 3. Options are obfuscated on select with animation and then show relevant page
  *    on below
  */
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   View,
   Modal,
@@ -14,49 +14,43 @@ import {
   Image,
   TouchableOpacity,
   Animated,
-  Keyboard
-} from 'react-native';
-import { connect } from 'react-redux';
-import _ from 'lodash';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+  Keyboard,
+} from "react-native";
+import { connect } from "react-redux";
+import _ from "lodash";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 // Components
-import ModalHeader from '../../../Main/Common/Header/ModalHeader';
-import SearchSuggestion from './Suggestion/SearchSuggestion';
-import GeneralSuggestion from './Suggestion/GeneralSuggestion';
-import NeedStepSuggestion from './Suggestion/NeedStepSuggestion';
-import SuggestionGoalPreview from './Suggestion/SuggestionGoalPreview';
+import ModalHeader from "../../../Main/Common/Header/ModalHeader";
+import SearchSuggestion from "./Suggestion/SearchSuggestion";
+import GeneralSuggestion from "./Suggestion/GeneralSuggestion";
+import NeedStepSuggestion from "./Suggestion/NeedStepSuggestion";
+import SuggestionGoalPreview from "./Suggestion/SuggestionGoalPreview";
 
 // Asset
 // import Book from '../../../asset/suggestion/book.png';
-import Chat from '../../../asset/suggestion/chat.png';
-import Event from '../../../asset/suggestion/event.png';
-import Flag from '../../../asset/suggestion/flag.png';
-import Friend from '../../../asset/suggestion/friend.png';
+import Chat from "../../../asset/suggestion/chat.png";
+import Event from "../../../asset/suggestion/event.png";
+import Flag from "../../../asset/suggestion/flag.png";
+import Friend from "../../../asset/suggestion/friend.png";
 // import Group from '../../../asset/suggestion/group.png';
 // import Link from '../../../asset/suggestion/link.png';
-import Other from '../../../asset/suggestion/other.png';
+import Other from "../../../asset/suggestion/other.png";
 // import HelpIcon from '../../../asset/utils/help.png';
-import StepIcon from '../../../asset/utils/steps.png';
+import StepIcon from "../../../asset/utils/steps.png";
 
 // Actions
-import {
-  updateSuggestionType
-} from '../../../redux/modules/feed/comment/CommentActions';
+import { updateSuggestionType } from "../../../redux/modules/feed/comment/CommentActions";
 
-import {
-  getNewCommentByTab
-} from '../../../redux/modules/feed/comment/CommentSelector';
+import { getNewCommentByTab } from "../../../redux/modules/feed/comment/CommentSelector";
 
-import {
-  refreshPreloadData
-} from '../../../redux/modules/feed/comment/SuggestionSearchActions';
+import { refreshPreloadData } from "../../../redux/modules/feed/comment/SuggestionSearchActions";
 
 // Utils function
-import { switchCase } from '../../../redux/middleware/utils';
-import { Logger } from '../../../redux/middleware/utils/Logger';
+import { switchCase } from "../../../redux/middleware/utils";
+import { Logger } from "../../../redux/middleware/utils/Logger";
 
-const DEBUG_KEY = '[ UI SuggestionModal3 ]';
+const DEBUG_KEY = "[ UI SuggestionModal3 ]";
 const OPTIONS_HEIGHT = 120;
 const OPTIONS_OPACITY = 0.001;
 
@@ -67,21 +61,21 @@ class SuggestionModal extends Component {
     this.fadeOpacity = new Animated.Value(1);
     this.suggestionOpacity = new Animated.Value(0.001);
     this.state = {
-      query: '',
+      query: "",
       iconMapRight: [...IconMapRight],
       iconMapLeft: [...IconMapLeft],
       optionsCollapsed: false,
-      optionsHeight: 150
+      optionsHeight: 150,
     };
   }
 
   componentDidMount() {
     // Sending request to fetch pre-populated data
     Logger.log(`${DEBUG_KEY}: [ componentDidMount ]`, {}, 2);
-    this.props.refreshPreloadData('User');
-    this.props.refreshPreloadData('Event');
-    this.props.refreshPreloadData('Tribe');
-    this.props.refreshPreloadData('ChatConvoRoom');
+    this.props.refreshPreloadData("User");
+    this.props.refreshPreloadData("Event");
+    this.props.refreshPreloadData("Tribe");
+    this.props.refreshPreloadData("ChatConvoRoom");
   }
 
   handleExpand = () => {
@@ -101,10 +95,10 @@ class SuggestionModal extends Component {
     ]).start(() => {
       this.setState({
         ...this.state,
-        optionsCollapsed: false
+        optionsCollapsed: false,
       });
     });
-  }
+  };
 
   handleCollapse = () => {
     Animated.parallel([
@@ -123,10 +117,10 @@ class SuggestionModal extends Component {
     ]).start(() => {
       this.setState({
         ...this.state,
-        optionsCollapsed: true
+        optionsCollapsed: true,
       });
     });
-  }
+  };
 
   // On modal dismiss, reset iconmap state
   resetIconMap = () => {
@@ -134,9 +128,9 @@ class SuggestionModal extends Component {
     this.setState({
       ...this.state,
       iconMapRight: [...IconMapRight],
-      iconMapLeft: [...IconMapLeft]
+      iconMapLeft: [...IconMapLeft],
     });
-  }
+  };
 
   // Update icon map with selected options
   updateIconMap = (suggestionType) => {
@@ -148,10 +142,10 @@ class SuggestionModal extends Component {
     this.setState({
       ...this.state,
       iconMapRight: newIconMapRight,
-      iconMapLeft: newIconMapLeft
+      iconMapLeft: newIconMapLeft,
     });
     this.handleCollapse();
-  }
+  };
 
   renderGoalPreview(item) {
     return <SuggestionGoalPreview item={item} />;
@@ -183,53 +177,57 @@ class SuggestionModal extends Component {
       <Options iconMap={iconMapLeft} onPress={this.updateIconMap} />
     );
 
-    const optionsCollapsedText = optionsCollapsed
-      ? (
-        <TouchableOpacity
-          activeOpacity={0.6}
-          style={{ width: 50, justifyContent: 'center' }}
-          onPress={this.handleExpand}
-        >
-          <Text style={styles.optionsCollapsedTextStyle}>Back</Text>
-        </TouchableOpacity>
-      )
-      : null;
-      // (
-      //   <TouchableOpacity activeOpacity={0.6}
-      //     style={{ width: 50, justifyContent: 'center' }}
-      //     onPress={this.handleCollapse}
-      //   >
-      //     <Text style={styles.optionsCollapsedTextStyle}>Collapse</Text>
-      //   </TouchableOpacity>
-      // );
+    const optionsCollapsedText = optionsCollapsed ? (
+      <TouchableOpacity
+        activeOpacity={0.6}
+        style={{ width: 50, justifyContent: "center" }}
+        onPress={this.handleExpand}
+      >
+        <Text style={styles.optionsCollapsedTextStyle}>Back</Text>
+      </TouchableOpacity>
+    ) : null;
+    // (
+    //   <TouchableOpacity activeOpacity={0.6}
+    //     style={{ width: 50, justifyContent: 'center' }}
+    //     onPress={this.handleCollapse}
+    //   >
+    //     <Text style={styles.optionsCollapsedTextStyle}>Collapse</Text>
+    //   </TouchableOpacity>
+    // );
 
-
-    const suggestionForTextArray = switchCaseForSuggestionForText(suggestionType);
+    const suggestionForTextArray = switchCaseForSuggestionForText(
+      suggestionType
+    );
     let suggestionForText = [];
     suggestionForTextArray.forEach((w, index) => {
-      if (index === suggestionForTextArray.length - 1 && suggestionForTextArray.length > 1) {
+      if (
+        index === suggestionForTextArray.length - 1 &&
+        suggestionForTextArray.length > 1
+      ) {
         // console.log(`${DEBUG_KEY}: i am here`);
-        suggestionForText.push(<Text style={{ fontWeight: '700' }} key={`${index}_${w}`}>{w}</Text>);
+        suggestionForText.push(
+          <Text style={{ fontWeight: "700" }} key={`${index}_${w}`}>
+            {w}
+          </Text>
+        );
       } else {
-        suggestionForText.push(<Text key={`${index}`}>{w}{' '}</Text>);
+        suggestionForText.push(<Text key={`${index}`}>{w} </Text>);
       }
-    })
+    });
 
     return (
-      <View
-        style={styles.optionsContainerStyle}
-      >
-        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+      <View style={styles.optionsContainerStyle}>
+        <View style={{ flexDirection: "row", justifyContent: "center" }}>
           {optionsCollapsedText}
           <View style={{ flex: 1 }}>
             <Text
               style={{
                 fontSize: 14,
-                fontWeight: '500',
-                alignSelf: 'center',
-                justifyContent: 'center',
+                fontWeight: "500",
+                alignSelf: "center",
+                justifyContent: "center",
                 marginTop: 10,
-                marginBottom: 10
+                marginBottom: 10,
               }}
             >
               Suggest {suggestionForText}
@@ -239,7 +237,11 @@ class SuggestionModal extends Component {
         </View>
 
         <Animated.View
-          style={{ flexDirection: 'row', height: this.fadeHeight, opacity: this.fadeOpacity }}
+          style={{
+            flexDirection: "row",
+            height: this.fadeHeight,
+            opacity: this.fadeOpacity,
+          }}
         >
           {optionsLeft}
           {optionsRight}
@@ -251,14 +253,17 @@ class SuggestionModal extends Component {
   renderSuggestionBody(newComment) {
     const { suggestionType } = newComment.tmpSuggestion;
     if (!this.state.optionsCollapsed) return null;
-    if (suggestionType === 'User' || suggestionType === 'Friend' ||
-      suggestionType === 'Event' || suggestionType === 'Tribe' ||
-      suggestionType === 'ChatConvoRoom'
+    if (
+      suggestionType === "User" ||
+      suggestionType === "Friend" ||
+      suggestionType === "Event" ||
+      suggestionType === "Tribe" ||
+      suggestionType === "ChatConvoRoom"
     ) {
       return (
-        <SearchSuggestion 
-          pageId={this.props.pageId} 
-          opacity={this.suggestionOpacity} 
+        <SearchSuggestion
+          pageId={this.props.pageId}
+          opacity={this.suggestionOpacity}
           onCancel={() => {
             Keyboard.dismiss();
           }}
@@ -272,14 +277,20 @@ class SuggestionModal extends Component {
         />
       );
     }
-    if (suggestionType === 'NewNeed' || suggestionType === 'NewStep') {
+    if (suggestionType === "NewNeed" || suggestionType === "NewStep") {
       return (
-        <NeedStepSuggestion pageId={this.props.pageId} opacity={this.suggestionOpacity} />
+        <NeedStepSuggestion
+          pageId={this.props.pageId}
+          opacity={this.suggestionOpacity}
+        />
       );
     }
-    if (suggestionType === 'Custom') {
+    if (suggestionType === "Custom") {
       return (
-        <GeneralSuggestion pageId={this.props.pageId} opacity={this.suggestionOpacity} />
+        <GeneralSuggestion
+          pageId={this.props.pageId}
+          opacity={this.suggestionOpacity}
+        />
       );
     }
     return null;
@@ -297,39 +308,39 @@ class SuggestionModal extends Component {
         onDismiss={this.resetIconMap}
       >
         <ModalHeader
-          title='Suggestion'
-          actionText='Attach'
+          title="Suggestion"
+          actionText="Attach"
           onCancel={this.props.onCancel}
           onAction={() => this.props.onAttach()}
         />
-          <KeyboardAwareScrollView
-            innerRef={ref => { this.scrollview = ref; }}
-            style={styles.scroll}
-            extraScrollHeight={13}
-            contentContainerStyle={{
-              backgroundColor: 'white',
-              flexGrow: 1 // this will fix scrollview scroll issue by passing parent view width and height to it
-            }}
-            onKeyboardWillShow={() => {
-              this.scrollview.props.scrollToPosition(0, 120);
-            }}
-            onKeyboardWillHide={() => {
-              this.scrollview.props.scrollToPosition(0, 0);
-            }}
-          >
-            <View style={{ flex: 1 }}>
-              {this.renderGoalPreview(item)}
-              {this.renderSuggestionFor(newComment, item)}
-              {this.renderOptions(newComment)}
-              {this.renderSuggestionBody(newComment)}
-            </View>
+        <KeyboardAwareScrollView
+          innerRef={(ref) => {
+            this.scrollview = ref;
+          }}
+          style={styles.scroll}
+          extraScrollHeight={13}
+          contentContainerStyle={{
+            backgroundColor: "white",
+            flexGrow: 1, // this will fix scrollview scroll issue by passing parent view width and height to it
+          }}
+          onKeyboardWillShow={() => {
+            this.scrollview.props.scrollToPosition(0, 120);
+          }}
+          onKeyboardWillHide={() => {
+            this.scrollview.props.scrollToPosition(0, 0);
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            {this.renderGoalPreview(item)}
+            {this.renderSuggestionFor(newComment, item)}
+            {this.renderOptions(newComment)}
+            {this.renderSuggestionBody(newComment)}
+          </View>
         </KeyboardAwareScrollView>
       </Modal>
     );
   }
 }
-
-
 
 // Legacy usage of KeyboardAvoidingView
 // <ScrollView>
@@ -338,132 +349,122 @@ class SuggestionModal extends Component {
 const styles = {
   // Options style
   selectedSuggestionIconStyle: {
-    tintColor: '#17B3EC',
+    tintColor: "#17B3EC",
     height: 20,
-    width: 20
+    width: 20,
   },
   suggestionIconStyle: {
-    tintColor: '#b8c7cb',
+    tintColor: "#b8c7cb",
     height: 20,
-    width: 20
+    width: 20,
   },
   selectedSuggestionTextStyle: {
-    color: 'black',
+    color: "black",
     fontSize: 14,
-    fontWeight: '700',
-    marginLeft: 15
+    fontWeight: "700",
+    marginLeft: 15,
   },
   suggestionTextStyle: {
-    color: '#b8c7cb',
+    color: "#b8c7cb",
     fontSize: 14,
-    fontWeight: '700',
-    marginLeft: 15
+    fontWeight: "700",
+    marginLeft: 15,
   },
   optionsCollapsedTextStyle: {
-    color: '#17B3EC',
+    color: "#17B3EC",
     fontSize: 12,
-    alignSelf: 'center',
-    justifyContent: 'center'
+    alignSelf: "center",
+    justifyContent: "center",
   },
   optionsContainerStyle: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     marginTop: 0.5,
     marginLeft: 15,
     marginRight: 15,
-    borderBottomColor: 'lightgray',
+    borderBottomColor: "lightgray",
     borderBottomWidth: 0.5,
     paddingBottom: 5,
-  }
+  },
 };
 
-const switchCaseForSuggestionForText = (suggestionType) => switchCase({
-  'User': ['a', 'User'],
-  'ChatConvoRoom': ['a', 'Chat room'],
-  'NewNeed': ['a', 'Need'],
-  'NewStep': ['a', 'Step'],
-  'Event': ['an', 'Event'],
-  'Tribe': ['a', 'Tribe']
-})(['a...'])(suggestionType);
+const switchCaseForSuggestionForText = (suggestionType) =>
+  switchCase({
+    User: ["a", "User"],
+    ChatConvoRoom: ["a", "Chat room"],
+    NewNeed: ["a", "Need"],
+    NewStep: ["a", "Step"],
+    Event: ["an", "Event"],
+    Tribe: ["a", "Tribe"],
+  })(["a..."])(suggestionType);
 
 // IconMapLeft: ["Person", "ChatConvoRoom", "Step or Need"],
 // IconMapRight: ["Event", "Tribe", "Custom"]
 const IconMapLeft = [
   {
-    key: 'User',
-    text: 'User',
+    key: "User",
+    text: "User",
     value: {
       iconSource: Friend,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
+    selected: undefined,
   },
   {
-    key: 'ChatConvoRoom',
-    text: 'Chatroom',
+    key: "ChatConvoRoom",
+    text: "Chatroom",
     value: {
       iconSource: Chat,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
+    selected: undefined,
   },
   {
-    key: 'NewNeed',
-    text: 'Step or Need',
+    key: "NewNeed",
+    text: "Step or Need",
     value: {
       iconSource: StepIcon,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
-  }
+    selected: undefined,
+  },
 ];
 
 const IconMapRight = [
   {
-    key: 'Event',
-    text: 'Event',
+    key: "Event",
+    text: "Event",
     value: {
       iconSource: Event,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
+    selected: undefined,
   },
   {
-    key: 'Tribe',
-    text: 'Tribe',
+    key: "Tribe",
+    text: "Tribe",
     value: {
       iconSource: Flag,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
+    selected: undefined,
   },
   {
-    key: 'Custom',
-    text: 'Custom',
+    key: "Custom",
+    text: "Custom",
     value: {
       iconSource: Other,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
+    selected: undefined,
   },
 ];
 
-const updateIconMap = (suggestionType, iconMap) => iconMap.map((item) => {
-  const newItem = _.cloneDeep(item);
-  newItem.selected = suggestionType === item.key;
-  return newItem;
-});
+const updateIconMap = (suggestionType, iconMap) =>
+  iconMap.map((item) => {
+    const newItem = _.cloneDeep(item);
+    newItem.selected = suggestionType === item.key;
+    return newItem;
+  });
 
 /**
  * Render one column of options
@@ -474,14 +475,15 @@ const Options = (props) => {
     const { text, value, key, selected } = icon;
     const { iconSource, iconStyle } = value;
     // Update Icon style if selected
-    const style = selected ?
-      {
-        ...styles.selectedSuggestionIconStyle,
-        ...iconStyle
-      } : {
-        ...styles.suggestionIconStyle,
-        ...iconStyle
-      };
+    const style = selected
+      ? {
+          ...styles.selectedSuggestionIconStyle,
+          ...iconStyle,
+        }
+      : {
+          ...styles.suggestionIconStyle,
+          ...iconStyle,
+        };
 
     // Update text style if selected
     const textStyle = selected
@@ -493,9 +495,15 @@ const Options = (props) => {
         activeOpacity={0.6}
         onPress={() => onPress(key)}
         key={key}
-        style={{ marginTop: 15, marginLeft: 30, alignItems: 'flex-start' }}
+        style={{ marginTop: 15, marginLeft: 30, alignItems: "flex-start" }}
       >
-        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <Image source={iconSource} style={style} />
           <Text style={textStyle}>{text.toUpperCase()}</Text>
         </View>
@@ -503,11 +511,7 @@ const Options = (props) => {
     );
   });
 
-  return (
-    <View style={{ flex: 1 }}>
-      {options}
-    </View>
-  );
+  return <View style={{ flex: 1 }}>{options}</View>;
 };
 
 /**
@@ -519,21 +523,21 @@ const SuggestedItem = (props) => {
   let refToSearchFor = suggestionForRef;
 
   let items = [];
-  if (type === 'Step' || stepRef) {
-    items = _.get(goal, 'steps');
+  if (type === "Step" || stepRef) {
+    items = _.get(goal, "steps");
 
     // Use stepRef if suggestionForRef is undefined
-    // This could be due to entering suggestion modal through goal card or 
+    // This could be due to entering suggestion modal through goal card or
     // NotificationNeedCard directly through suggestion button
     if (suggestionForRef === undefined && stepRef !== undefined) {
       refToSearchFor = stepRef;
     }
   }
-  if (type === 'Need' || needRef) {
-    items = _.get(goal, 'needs');
+  if (type === "Need" || needRef) {
+    items = _.get(goal, "needs");
 
     // Use needRef if suggestionForRef is undefined
-    // This could be due to entering suggestion modal through goal card or 
+    // This could be due to entering suggestion modal through goal card or
     // NotificationNeedCard directly through suggestion button
     if (suggestionForRef === undefined && needRef !== undefined) {
       refToSearchFor = needRef;
@@ -546,23 +550,23 @@ const SuggestedItem = (props) => {
   if (index === -1) return null;
   const item = items.find((temp) => temp._id === refToSearchFor);
 
-  const orderText = type === 'Need' || needRef ? '' : ` ${item.order}`;
-  const typeText = type === 'Need' || needRef ? 'Need' : 'Step';
+  const orderText = type === "Need" || needRef ? "" : ` ${item.order}`;
+  const typeText = type === "Need" || needRef ? "Need" : "Step";
   return (
     <View
       style={{
-        flexDirection: 'row',
+        flexDirection: "row",
         margin: 15,
         marginBottom: 5,
-        borderBottomColor: 'lightgray',
+        borderBottomColor: "lightgray",
         borderBottomWidth: 0.5,
-        paddingBottom: 10
+        paddingBottom: 10,
       }}
     >
       <Text
-        style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 13 }}
+        style={{ flex: 1, flexWrap: "wrap", color: "black", fontSize: 13 }}
         numberOfLines={2}
-        ellipsizeMode='tail'
+        ellipsizeMode="tail"
       >
         {`${typeText}${orderText}: ${item.description}`}
       </Text>
@@ -578,10 +582,7 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    updateSuggestionType,
-    refreshPreloadData
-  }
-)(SuggestionModal);
+export default connect(mapStateToProps, {
+  updateSuggestionType,
+  refreshPreloadData,
+})(SuggestionModal);

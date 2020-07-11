@@ -1,12 +1,9 @@
-import { createSelector } from 'reselect';
-import _ from 'lodash';
+import { createSelector } from "reselect";
+import _ from "lodash";
 
-import { 
-  INITIAL_COMMENT_OBJECT,
-  INITIAL_COMMENT_PAGE
-} from './Comments';
+import { INITIAL_COMMENT_OBJECT, INITIAL_COMMENT_PAGE } from "./Comments";
 
-const DEBUG_KEY = '[ Selector Comments ]';
+const DEBUG_KEY = "[ Selector Comments ]";
 
 const getNavigationTab = (state) => {
   const { tab } = state.navigation;
@@ -24,7 +21,7 @@ const getPageId = (state, pageId) => pageId;
 export const getCommentByTab = createSelector(
   [getNavigationTab, getComment, getPageId],
   (tab, comment, pageId) => {
-    const page = pageId ? `${pageId}` : 'default';
+    const page = pageId ? `${pageId}` : "default";
     const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
     return _.get(comment, `${path}`);
   }
@@ -33,7 +30,7 @@ export const getCommentByTab = createSelector(
 export const getNewCommentByTab = createSelector(
   [getNavigationTab, getNewComment, getPageId],
   (tab, newComment, pageId) => {
-    const page = pageId ? `${pageId}` : 'default';
+    const page = pageId ? `${pageId}` : "default";
     const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
     return _.get(newComment, `${path}`);
   }
@@ -52,7 +49,7 @@ export const getCommentWithPageInfo = (state, entityId, pageId) => {
   const commentObject = getCommentByEntityId(state, entityId);
   let commentPage = { ...INITIAL_COMMENT_PAGE };
   if (!_.has(commentObject, pageId)) {
-    console.warn(`${DEBUG_KEY}: no comments page for entityId: ${entityId}`); 
+    console.warn(`${DEBUG_KEY}: no comments page for entityId: ${entityId}`);
   } else {
     commentPage = _.get(commentObject, pageId);
   }
@@ -62,13 +59,10 @@ export const getCommentWithPageInfo = (state, entityId, pageId) => {
   return {
     data,
     transformedComments,
-    ...commentPage
+    ...commentPage,
   };
 };
 
 export const makeGetCommentByEntityId = () => {
-  return createSelector(
-    [getCommentWithPageInfo],
-    (comments) => comments
-  );
+  return createSelector([getCommentWithPageInfo], (comments) => comments);
 };

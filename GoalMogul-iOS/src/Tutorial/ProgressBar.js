@@ -1,9 +1,5 @@
-import React from 'react';
-import {
-  View,
-  Animated,
-  StyleSheet
-} from 'react-native';
+import React from "react";
+import { View, Animated, StyleSheet } from "react-native";
 
 class ProgressBar extends React.Component {
   constructor(props) {
@@ -19,42 +15,40 @@ class ProgressBar extends React.Component {
     if (prevProps.progress !== this.props.progress) {
       Animated.timing(this.animation, {
         toValue: this.props.progress,
-        duration: this.props.duration
+        duration: this.props.duration,
       }).start();
     }
   }
 
   render() {
-    const {
-      height,
-      fillColor,
-      barColor,
-
-    } = this.props;
+    const { height, fillColor, barColor } = this.props;
 
     const widthInterpolated = this.props.progress.interpolate({
       inputRange: [0, 1],
-      outputRange: ['0%', '100%'],
-      extrapolate: 'clamp'
+      outputRange: ["0%", "100%"],
+      extrapolate: "clamp",
     });
 
     return (
-      <View style={{ flex: 1, flexDirection: 'row', height }}>
+      <View style={{ flex: 1, flexDirection: "row", height }}>
         <View style={{ flex: 1 }}>
           <View
-            style={[StyleSheet.absoluteFill, {
-              backgroundColor: fillColor
-            }]}
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                backgroundColor: fillColor,
+              },
+            ]}
           />
           <Animated.View
             style={{
-              position: 'absolute',
+              position: "absolute",
               left: 0,
               right: 0,
               top: 0,
               bottom: 0,
               backgroundColor: barColor,
-              width: widthInterpolated
+              width: widthInterpolated,
             }}
           />
         </View>
@@ -65,9 +59,9 @@ class ProgressBar extends React.Component {
 
 ProgressBar.defaultPros = {
   height: 10,
-  fillColor: '#0297ce',
-  barColor: '#055c7a',
-  duration: 100
+  fillColor: "#0297ce",
+  barColor: "#055c7a",
+  duration: 100,
 };
 
 export default ProgressBar;

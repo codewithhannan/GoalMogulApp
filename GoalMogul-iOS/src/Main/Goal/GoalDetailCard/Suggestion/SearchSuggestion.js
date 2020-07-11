@@ -1,28 +1,20 @@
 // This component provides search for suggestion for Tribe, Event, User, Friend,
 // and Chat room
-import React from 'react';
-import {
-  View,
-  FlatList,
-  Animated
-} from 'react-native';
-import { connect } from 'react-redux';
-import { SearchBar } from 'react-native-elements';
-import _ from 'lodash';
+import React from "react";
+import { View, FlatList, Animated } from "react-native";
+import { connect } from "react-redux";
+import { SearchBar } from "react-native-elements";
+import _ from "lodash";
 
-import {
-  switchCaseF, switchCase
-} from '../../../../redux/middleware/utils';
+import { switchCaseF, switchCase } from "../../../../redux/middleware/utils";
 
 // Components
-import TribeCard from './TribeCard';
-import UserCard from './UserCard';
-import EventCard from './EventCard';
-import ChatCard from './ChatCard';
-import {
-  SearchIcon
-} from '../../../../Utils/Icons';
-import EmptyResult from '../../../Common/Text/EmptyResult';
+import TribeCard from "./TribeCard";
+import UserCard from "./UserCard";
+import EventCard from "./EventCard";
+import ChatCard from "./ChatCard";
+import { SearchIcon } from "../../../../Utils/Icons";
+import EmptyResult from "../../../Common/Text/EmptyResult";
 
 // Actions
 import {
@@ -31,37 +23,31 @@ import {
   refreshSearchResult,
   onLoadMore,
   refreshPreloadData,
-  loadMorePreloadData
-} from '../../../../redux/modules/feed/comment/SuggestionSearchActions';
+  loadMorePreloadData,
+} from "../../../../redux/modules/feed/comment/SuggestionSearchActions";
 
-import {
-  onSuggestionItemSelect
-} from '../../../../redux/modules/feed/comment/CommentActions';
+import { onSuggestionItemSelect } from "../../../../redux/modules/feed/comment/CommentActions";
 
-import {
-  getNewCommentByTab
-} from '../../../../redux/modules/feed/comment/CommentSelector';
+import { getNewCommentByTab } from "../../../../redux/modules/feed/comment/CommentSelector";
 
 // Constants
-import {
-  SUGGESTION_SEARCH_LIMIT
-} from '../../../../redux/modules/feed/comment/SuggestionSearchReducers';
-import { arrayUnique } from '../../../../reducers/MeetReducers';
+import { SUGGESTION_SEARCH_LIMIT } from "../../../../redux/modules/feed/comment/SuggestionSearchReducers";
+import { arrayUnique } from "../../../../reducers/MeetReducers";
 
-const DEBUG_KEY = '[ UI SearchSuggestion ]';
+const DEBUG_KEY = "[ UI SearchSuggestion ]";
 
 class SearchSuggestion extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      query: ''
+      query: "",
     };
   }
 
   // Search Query handler
   handleSearchCancel = () => {
     console.log(`${DEBUG_KEY}: search cancel`);
-    this.handleQueryChange('');
+    this.handleQueryChange("");
     this.props.clearSearchState();
 
     // This is a hacky way to work around SearchBar bug
@@ -70,34 +56,37 @@ class SearchSuggestion extends React.Component {
     this.searchBar.blur();
   };
 
-  handleSearchClear = () => this.handleQueryChange('');
+  handleSearchClear = () => this.handleQueryChange("");
 
-  handleQueryChange = query => {
+  handleQueryChange = (query) => {
     // this.setState(state => ({ ...state, query: query || '' }));
     if (query === undefined) {
       return;
     }
 
-    this.setState({
-      ...this.state,
-      query
-    }, () => {
-      if (query === '') {
-        this.props.clearSearchState(this.props.selectedTab);
-        return;
+    this.setState(
+      {
+        ...this.state,
+        query,
+      },
+      () => {
+        if (query === "") {
+          this.props.clearSearchState(this.props.selectedTab);
+          return;
+        }
+        this.props.debouncedSearch(query.trim(), this.props.selectedTab);
       }
-      this.props.debouncedSearch(query.trim(), this.props.selectedTab);
-    });
-  }
+    );
+  };
 
   handleRefresh = () => {
     const { searchType, searchContent } = this.props;
     // If there is no search input and user refresh, we refresh the preload data
-    if (searchContent === undefined || searchContent.trim() === '') {
+    if (searchContent === undefined || searchContent.trim() === "") {
       return this.props.refreshPreloadData(searchType);
     }
     this.props.refreshSearchResult();
-  }
+  };
 
   handleLoadMore = () => {
     const { searchType, hasNextPage } = this.props;
@@ -106,7 +95,7 @@ class SearchSuggestion extends React.Component {
       return;
     }
     this.props.onLoadMore();
-  }
+  };
 
   renderItem = ({ item }) => {
     const { selectedItem, pageId } = this.props;
@@ -173,36 +162,39 @@ class SearchSuggestion extends React.Component {
           }}
         />
       ),
-      Default: <View />
-    })('Default')(this.props.suggestionType);
-  }
+      Default: <View />,
+    })("Default")(this.props.suggestionType);
+  };
 
   renderSearch() {
     const { suggestionType } = this.props;
-    const placeholder = suggestionType === 'ChatConvoRoom'
-      ? 'Search Chat Room'
-      : `Search ${this.props.suggestionType}`;
+    const placeholder =
+      suggestionType === "ChatConvoRoom"
+        ? "Search Chat Room"
+        : `Search ${this.props.suggestionType}`;
     return (
       <SearchBar
-        ref={(ref) => { this.searchBar = ref; }}
-        platform='ios'
+        ref={(ref) => {
+          this.searchBar = ref;
+        }}
+        platform="ios"
         round
         autoFocus={false}
         inputStyle={styles.searchInputStyle}
         inputContainerStyle={styles.searchInputContainerStyle}
         containerStyle={styles.searchContainerStyle}
         placeholder={placeholder}
-        cancelButtonTitle='Cancel'
+        cancelButtonTitle="Cancel"
         onCancel={this.handleSearchCancel}
         onChangeText={this.handleQueryChange}
-        cancelButtonProps={{ color: '#17B3EC' }}
+        cancelButtonProps={{ color: "#17B3EC" }}
         showLoading={this.props.loading}
         onClear={this.handleSearchClear}
         clearIcon={null}
         searchIcon={() => (
-          <SearchIcon 
-            iconContainerStyle={{ marginBottom: 3, marginTop: 1 }} 
-            iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
+          <SearchIcon
+            iconContainerStyle={{ marginBottom: 3, marginTop: 1 }}
+            iconStyle={{ tintColor: "#4ec9f3", height: 15, width: 15 }}
           />
         )}
         value={this.state.query}
@@ -217,10 +209,10 @@ class SearchSuggestion extends React.Component {
       return (
         <View
           style={{
-            paddingVertical: 20
+            paddingVertical: 20,
           }}
         >
-          <ActivityIndicator size='small' />
+          <ActivityIndicator size="small" />
         </View>
       );
     }
@@ -231,7 +223,7 @@ class SearchSuggestion extends React.Component {
     return (
       <Animated.View style={{ opacity }}>
         {this.renderSearch()}
-        <View style={{ flex: 1, marginTop: 0.5, backgroundColor: 'white' }}>
+        <View style={{ flex: 1, marginTop: 0.5, backgroundColor: "white" }}>
           <FlatList
             data={this.props.data}
             renderItem={this.renderItem}
@@ -242,8 +234,12 @@ class SearchSuggestion extends React.Component {
             refreshing={this.props.refreshing}
             ListFooterComponent={this.renderListFooter()}
             ListEmptyComponent={
-              this.props.refreshing ? null :
-              <EmptyResult text={switchEmptyText(searchType)} textStyle={{ paddingTop: 130 }} />
+              this.props.refreshing ? null : (
+                <EmptyResult
+                  text={switchEmptyText(searchType)}
+                  textStyle={{ paddingTop: 130 }}
+                />
+              )
             }
           />
         </View>
@@ -252,12 +248,13 @@ class SearchSuggestion extends React.Component {
   }
 }
 
-const switchEmptyText = (searchType) => switchCase({
-  User: 'No user found',
-  Event: 'No event found',
-  Tribe: 'No tribe found',
-  ChatConvoRoom: 'No chat room found'
-})('No search result')(searchType);
+const switchEmptyText = (searchType) =>
+  switchCase({
+    User: "No user found",
+    Event: "No event found",
+    Tribe: "No tribe found",
+    ChatConvoRoom: "No chat room found",
+  })("No search result")(searchType);
 
 const styles = {
   // search related styles
@@ -265,44 +262,58 @@ const styles = {
     padding: 0,
     marginRight: 3,
     marginTop: 0.5,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     // backgroundColor: '#17B3EC',
-    borderTopColor: '#ffffff',
-    borderBottomColor: '#ffffff',
-    alignItems: 'center',
+    borderTopColor: "#ffffff",
+    borderBottomColor: "#ffffff",
+    alignItems: "center",
   },
   searchInputContainerStyle: {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: "#f3f4f6",
     // backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   searchInputStyle: {
     fontSize: 15,
   },
   searchIconStyle: {
     top: 15,
-    fontSize: 13
+    fontSize: 13,
   },
 };
 
 const mapDispatchToProps = (dispatch) => {
-  const debouncedSearch = _.debounce((value, type) => dispatch(handleSearch(value, type)), 400);
+  const debouncedSearch = _.debounce(
+    (value, type) => dispatch(handleSearch(value, type)),
+    400
+  );
 
-  return ({
+  return {
     debouncedSearch,
     clearSearchState: clearSearchState(dispatch),
     refreshSearchResult: () => dispatch(refreshSearchResult()),
     onLoadMore: () => dispatch(onLoadMore()),
-    onSuggestionItemSelect: (val, pageId) => dispatch(onSuggestionItemSelect(val, pageId)),
-    refreshPreloadData: (searchType) => dispatch(refreshPreloadData(searchType)),
-    loadMorePreloadData: (searchType) => dispatch(loadMorePreloadData(searchType))
-  });
+    onSuggestionItemSelect: (val, pageId) =>
+      dispatch(onSuggestionItemSelect(val, pageId)),
+    refreshPreloadData: (searchType) =>
+      dispatch(refreshPreloadData(searchType)),
+    loadMorePreloadData: (searchType) =>
+      dispatch(loadMorePreloadData(searchType)),
+  };
 };
 
 const mapStateToProps = (state, props) => {
-  const { suggestionType, selectedItem } = getNewCommentByTab(state, props.pageId).tmpSuggestion;
-  const { searchRes, searchContent, preloadData, searchType } = state.suggestionSearch;
+  const { suggestionType, selectedItem } = getNewCommentByTab(
+    state,
+    props.pageId
+  ).tmpSuggestion;
+  const {
+    searchRes,
+    searchContent,
+    preloadData,
+    searchType,
+  } = state.suggestionSearch;
   const { data, loading, refreshing, hasNextPage } = searchRes;
 
   let dataToRender = data;
@@ -313,9 +324,12 @@ const mapStateToProps = (state, props) => {
     // e.g. User.data, Event.data...
     const preloadDataToRender = _.get(preloadData, `${searchType}.data`);
     const preloadDataLoadingState = _.get(preloadData, `${searchType}.loading`);
-    const preloadDataRefreshingState = _.get(preloadData, `${searchType}.refreshing`);
+    const preloadDataRefreshingState = _.get(
+      preloadData,
+      `${searchType}.refreshing`
+    );
 
-    if (searchContent === undefined || searchContent.trim() === '') {
+    if (searchContent === undefined || searchContent.trim() === "") {
       // Use preload data when searchContent is empty
       dataToRender = preloadDataToRender;
       refreshingToUse = preloadDataRefreshingState;
@@ -334,11 +348,8 @@ const mapStateToProps = (state, props) => {
     searchContent,
     selectedItem,
     searchType,
-    hasNextPage // For handleLoadMore to determine whether to load more preload data or search data 
+    hasNextPage, // For handleLoadMore to determine whether to load more preload data or search data
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SearchSuggestion);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchSuggestion);

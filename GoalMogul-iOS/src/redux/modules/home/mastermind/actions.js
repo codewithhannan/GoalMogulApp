@@ -1,4 +1,4 @@
-import { Actions } from 'react-native-router-flux';
+import { Actions } from "react-native-router-flux";
 import {
   HOME_CLOSE_CREATE_OVERLAY,
   HOME_MASTERMIND_OPEN_CREATE_OVERLAY,
@@ -7,64 +7,67 @@ import {
   HOME_LOAD_GOAL,
   HOME_LOAD_GOAL_DONE,
   HOME_SET_GOAL_INDEX,
-  HOME_UPDATE_FILTER
-} from '../../../../reducers/Home';
+  HOME_UPDATE_FILTER,
+} from "../../../../reducers/Home";
 
-import {
-  GOAL_DETAIL_OPEN
-} from '../../../../reducers/GoalDetailReducers';
+import { GOAL_DETAIL_OPEN } from "../../../../reducers/GoalDetailReducers";
 
 // Actions
-import {
-  refreshComments
-} from '../../feed/comment/CommentActions';
+import { refreshComments } from "../../feed/comment/CommentActions";
 
-import {
-  refreshGoalDetailById
-} from '../../goal/GoalDetailActions';
-import {
-  EMPTY_GOAL
-} from '../../../../Utils/Constants';
+import { refreshGoalDetailById } from "../../goal/GoalDetailActions";
+import { EMPTY_GOAL } from "../../../../Utils/Constants";
 
-import { api as API } from '../../../middleware/api';
-import { queryBuilder, constructPageId, componentKeyByTab } from '../../../middleware/utils';
-import { Logger } from '../../../middleware/utils/Logger';
+import { api as API } from "../../../middleware/api";
+import {
+  queryBuilder,
+  constructPageId,
+  componentKeyByTab,
+} from "../../../middleware/utils";
+import { Logger } from "../../../middleware/utils/Logger";
 
-const DEBUG_KEY = '[ Action Home Mastermind ]';
-const BASE_ROUTE = 'secure/goal/';
+const DEBUG_KEY = "[ Action Home Mastermind ]";
+const BASE_ROUTE = "secure/goal/";
 
 export const openCreateOverlay = () => ({
-  type: HOME_MASTERMIND_OPEN_CREATE_OVERLAY
+  type: HOME_MASTERMIND_OPEN_CREATE_OVERLAY,
 });
 
 export const closeCreateOverlay = (tab) => ({
   type: HOME_CLOSE_CREATE_OVERLAY,
-  payload: tab
+  payload: tab,
 });
 
-export const openGoalDetailById = (goalId, initialProps) => (dispatch, getState) => {
+export const openGoalDetailById = (goalId, initialProps) => (
+  dispatch,
+  getState
+) => {
   const { tab } = getState().navigation;
   let goal = EMPTY_GOAL;
   goal._id = goalId;
 
   // Generate pageId on open
-  const pageId = constructPageId('goal');
+  const pageId = constructPageId("goal");
   dispatch({
     type: GOAL_DETAIL_OPEN,
     payload: {
       tab,
       pageId,
       goalId,
-      goal
-    }
+      goal,
+    },
   });
 
   // In the version 0.3.9 and later, loading goal and comment is done in goal detail
   // refreshGoalDetailById(goalId, pageId)(dispatch, getState);
   // refreshComments('Goal', goalId, tab, pageId)(dispatch, getState);
   // TODO: create new stack using Actions.create(React.Element) if needed
-  const componentToOpen = componentKeyByTab(tab, 'goal');
-  Actions.push(`${componentToOpen}`, { initial: { ...initialProps }, goalId, pageId });
+  const componentToOpen = componentKeyByTab(tab, "goal");
+  Actions.push(`${componentToOpen}`, {
+    initial: { ...initialProps },
+    goalId,
+    pageId,
+  });
 };
 
 // Open goal detail
@@ -73,15 +76,15 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
   const { _id } = goal;
 
   // Generate pageId on open
-  const pageId = constructPageId('goal');
+  const pageId = constructPageId("goal");
   dispatch({
     type: GOAL_DETAIL_OPEN,
     payload: {
       goal,
       tab,
       pageId,
-      goalId: _id
-    }
+      goalId: _id,
+    },
   });
 
   // console.log(`${DEBUG_KEY}: initialProps:`, initialProps);
@@ -94,8 +97,12 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
 
   // In the version 0.3.9 and later, loading goal and comment is done in goal detail
   // refreshComments('Goal', _id, tab, pageId)(dispatch, getState);
-  const componentToOpen = componentKeyByTab(tab, 'goal');
-  Actions.push(`${componentToOpen}`, { initial: { ...initialProps }, goalId: _id, pageId });
+  const componentToOpen = componentKeyByTab(tab, "goal");
+  Actions.push(`${componentToOpen}`, {
+    initial: { ...initialProps },
+    goalId: _id,
+    pageId,
+  });
 };
 
 // set currentIndex to the prev one
@@ -106,7 +113,7 @@ export const getPrevGoal = () => (dispatch, getState) => {
   }
   dispatch({
     type: HOME_SET_GOAL_INDEX,
-    payload: currentIndex - 1
+    payload: currentIndex - 1,
   });
   return true;
 };
@@ -119,7 +126,7 @@ export const getNextGoal = () => (dispatch, getState) => {
   }
   dispatch({
     type: HOME_SET_GOAL_INDEX,
-    payload: currentIndex + 1
+    payload: currentIndex + 1,
   });
   return true;
 };
@@ -131,8 +138,8 @@ export const changeFilter = (tab, filterType, value) => (dispatch) => {
     payload: {
       tab,
       type: filterType,
-      value
-    }
+      value,
+    },
   });
 };
 
@@ -150,35 +157,49 @@ export const refreshGoals = () => (dispatch, getState) => {
   dispatch({
     type: HOME_REFRESH_GOAL,
     payload: {
-      type: 'mastermind'
+      type: "mastermind",
+    },
+  });
+  loadGoals(
+    0,
+    limit,
+    token,
+    { priorities, categories, sortBy },
+    (data) => {
+      Logger.log(`${DEBUG_KEY}: refreshed goals with length: `, data.length, 2);
+      // console.log(`${DEBUG_KEY}: refreshed goals are: `, data);
+      // data.forEach((d) => {
+      //   console.log(`${DEBUG_KEY}: item: ${d.title} created: `, d);
+      // });
+      dispatch({
+        type: HOME_REFRESH_GOAL_DONE,
+        payload: {
+          type: "mastermind",
+          data,
+          skip: data.length,
+          limit: 20,
+          hasNextPage: !(data === undefined || data.length === 0),
+          pageId: "HOME",
+        },
+      });
+    },
+    () => {
+      // TODO: implement for onError
     }
-  });
-  loadGoals(0, limit, token, { priorities, categories, sortBy }, (data) => {
-    Logger.log(`${DEBUG_KEY}: refreshed goals with length: `, data.length, 2);
-    // console.log(`${DEBUG_KEY}: refreshed goals are: `, data);
-    // data.forEach((d) => {
-    //   console.log(`${DEBUG_KEY}: item: ${d.title} created: `, d);
-    // });
-    dispatch({
-      type: HOME_REFRESH_GOAL_DONE,
-      payload: {
-        type: 'mastermind',
-        data,
-        skip: data.length,
-        limit: 20,
-        hasNextPage: !(data === undefined || data.length === 0),
-        pageId: 'HOME'
-      }
-    });
-  }, () => {
-    // TODO: implement for onError
-  });
+  );
 };
 
 // Load more goal for mastermind tab
 export const loadMoreGoals = (callback) => (dispatch, getState) => {
   const { token } = getState().user;
-  const { skip, limit, filter, hasNextPage, refreshing, loadingMore } = getState().home.mastermind;
+  const {
+    skip,
+    limit,
+    filter,
+    hasNextPage,
+    refreshing,
+    loadingMore,
+  } = getState().home.mastermind;
   if (hasNextPage === false || refreshing || loadingMore) {
     return;
   }
@@ -186,31 +207,42 @@ export const loadMoreGoals = (callback) => (dispatch, getState) => {
   dispatch({
     type: HOME_LOAD_GOAL,
     payload: {
-      type: 'mastermind'
-    }
+      type: "mastermind",
+    },
   });
   const { categories, priorities, sortBy } = filter;
-  loadGoals(skip, limit, token, { priorities, categories, sortBy }, (data) => {
-    Logger.log(`${DEBUG_KEY}: load more goals with data length: `, data.length, 2);
-    // console.log(`${DEBUG_KEY}: load more goals with data: `, data);
-    // data.forEach((d) => {
-    //   console.log(`${DEBUG_KEY}: item: ${d.title} created: `, d.created);
-    // });
-    dispatch({
-      type: HOME_LOAD_GOAL_DONE,
-      payload: {
-        type: 'mastermind',
-        data,
-        skip: skip + (data === undefined ? 0 : data.length),
-        limit: 20,
-        hasNextPage: !(data === undefined || data.length === 0),
-        pageId: 'HOME'
-      }
-    });
-    if (callback) callback();
-  }, () => {
-    // TODO: implement for onError
-  });
+  loadGoals(
+    skip,
+    limit,
+    token,
+    { priorities, categories, sortBy },
+    (data) => {
+      Logger.log(
+        `${DEBUG_KEY}: load more goals with data length: `,
+        data.length,
+        2
+      );
+      // console.log(`${DEBUG_KEY}: load more goals with data: `, data);
+      // data.forEach((d) => {
+      //   console.log(`${DEBUG_KEY}: item: ${d.title} created: `, d.created);
+      // });
+      dispatch({
+        type: HOME_LOAD_GOAL_DONE,
+        payload: {
+          type: "mastermind",
+          data,
+          skip: skip + (data === undefined ? 0 : data.length),
+          limit: 20,
+          hasNextPage: !(data === undefined || data.length === 0),
+          pageId: "HOME",
+        },
+      });
+      if (callback) callback();
+    },
+    () => {
+      // TODO: implement for onError
+    }
+  );
 };
 
 /**
@@ -221,23 +253,20 @@ export const loadMoreGoals = (callback) => (dispatch, getState) => {
  * @param token:
  */
 const loadGoals = (skip, limit, token, params, callback, onError) => {
-  const route = 'feed';
+  const route = "feed";
   const { priorities, categories, sortBy } = params;
   let priority;
-  if (priorities && priorities !== '') {
+  if (priorities && priorities !== "") {
     priority = priorities;
   }
 
-  API
-    .get(
-      `${BASE_ROUTE}${route}?${
-        queryBuilder(skip, limit, {
-          priority,
-          categories: categories === 'All' ? undefined : categories
-        })
-      }`,
-      token
-    )
+  API.get(
+    `${BASE_ROUTE}${route}?${queryBuilder(skip, limit, {
+      priority,
+      categories: categories === "All" ? undefined : categories,
+    })}`,
+    token
+  )
     .then((res) => {
       // console.log('loading goals in mastermind with res: ', res);
       if (res.status === 200 || (res && res.data)) {

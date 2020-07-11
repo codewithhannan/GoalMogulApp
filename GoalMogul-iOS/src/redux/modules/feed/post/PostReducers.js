@@ -1,74 +1,65 @@
 // This reducer is for Post Detail Page
-import _ from 'lodash';
+import _ from "lodash";
 
-import {
-  USER_LOG_OUT
-} from '../../../../reducers/User';
+import { USER_LOG_OUT } from "../../../../reducers/User";
 
-import {
-  LIKE_POST,
-  UNLIKE_POST,
-} from '../../like/LikeReducers';
+import { LIKE_POST, UNLIKE_POST } from "../../like/LikeReducers";
 
-import {
-  COMMENT_DELETE_SUCCESS
-} from '../comment/CommentReducers';
+import { COMMENT_DELETE_SUCCESS } from "../comment/CommentReducers";
 
-import {
-  COMMENT_NEW_POST_SUCCESS
-} from '../comment/NewCommentReducers';
+import { COMMENT_NEW_POST_SUCCESS } from "../comment/NewCommentReducers";
 
 const NEW_POST_INITIAL_STATE = {
   mediaRef: undefined,
-  uploading: false
+  uploading: false,
 };
 
 const POST_INITIAL_STATE = {
   pageIdCount: 0,
-  pageId: 'post_0'
+  pageId: "post_0",
 };
 
 const INITIAL_STATE = {
   post: {
-    ...POST_INITIAL_STATE
+    ...POST_INITIAL_STATE,
   },
   newPost: {
-    ...NEW_POST_INITIAL_STATE
+    ...NEW_POST_INITIAL_STATE,
   },
   // Post detail in meet tab
   postProfileTab: {
-    ...POST_INITIAL_STATE
+    ...POST_INITIAL_STATE,
   },
   // Post detail in notification tab
   postNotificationTab: {
-    ...POST_INITIAL_STATE
+    ...POST_INITIAL_STATE,
   },
   // Post detail in explore tab
   postExploreTab: {
-    ...POST_INITIAL_STATE
+    ...POST_INITIAL_STATE,
   },
   // Post detail in chatTab
   postChatTab: {
-    ...POST_INITIAL_STATE
-  }
+    ...POST_INITIAL_STATE,
+  },
 };
 
-export const POST_DETAIL_FETCH = 'post_detail_fetch';
-export const POST_DETAIL_FETCH_DONE = 'post_detail_fetch_done';
-export const POST_DETAIL_FETCH_ERROR = 'post_detail_fetch_error';
-export const POST_DETAIL_OPEN = 'post_detail_open';
-export const POST_DETAIL_CLOSE = 'post_detail_close';
+export const POST_DETAIL_FETCH = "post_detail_fetch";
+export const POST_DETAIL_FETCH_DONE = "post_detail_fetch_done";
+export const POST_DETAIL_FETCH_ERROR = "post_detail_fetch_error";
+export const POST_DETAIL_OPEN = "post_detail_open";
+export const POST_DETAIL_CLOSE = "post_detail_close";
 // Comment related constants
-export const POST_DETAIL_GET_COMMENT = 'post_detail_get_comment';
-export const POST_DETAIL_CREATE_COMMENT = 'post_detail_create_comment';
-export const POST_DETAIL_UPDATE_COMMENT = 'post_detail_create_comment';
-export const POST_DETAIL_DELETE_COMMENT = 'post_detail_create_comment';
+export const POST_DETAIL_GET_COMMENT = "post_detail_get_comment";
+export const POST_DETAIL_CREATE_COMMENT = "post_detail_create_comment";
+export const POST_DETAIL_UPDATE_COMMENT = "post_detail_create_comment";
+export const POST_DETAIL_DELETE_COMMENT = "post_detail_create_comment";
 
 // New post related constants
-export const POST_NEW_POST_UPDATE_MEDIA = 'post_new_post_update_media';
-export const POST_NEW_POST_SUBMIT = 'post_new_post_submit';
-export const POST_NEW_POST_SUBMIT_SUCCESS = 'post_new_post_submit_success';
-export const POST_NEW_POST_SUBMIT_FAIL = 'post_new_post_submit_fail';
+export const POST_NEW_POST_UPDATE_MEDIA = "post_new_post_update_media";
+export const POST_NEW_POST_SUBMIT = "post_new_post_submit";
+export const POST_NEW_POST_SUBMIT_SUCCESS = "post_new_post_submit_success";
+export const POST_NEW_POST_SUBMIT_FAIL = "post_new_post_submit_fail";
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -83,7 +74,8 @@ export default (state = INITIAL_STATE, action) => {
     case POST_DETAIL_OPEN: {
       const newState = _.cloneDeep(state);
       const { post, tab } = action.payload;
-      const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
+      const path =
+        !tab || tab === "homeTab" ? "post" : `post${capitalizeWord(tab)}`;
       const { pageIdCount, pageId } = _.get(newState, `${path}`);
 
       return _.set(newState, `${path}`, { ...post, pageIdCount, pageId });
@@ -94,7 +86,8 @@ export default (state = INITIAL_STATE, action) => {
      */
     case POST_DETAIL_CLOSE: {
       const { tab } = action.payload;
-      const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
+      const path =
+        !tab || tab === "homeTab" ? "post" : `post${capitalizeWord(tab)}`;
       const newState = _.cloneDeep(state);
       return _.set(newState, `${path}`, { ...POST_INITIAL_STATE });
     }
@@ -108,7 +101,8 @@ export default (state = INITIAL_STATE, action) => {
       const { id, likeId, tab, undo } = action.payload;
       let newState = _.cloneDeep(state);
 
-      const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
+      const path =
+        !tab || tab === "homeTab" ? "post" : `post${capitalizeWord(tab)}`;
       const post = _.get(newState, path);
       if (post._id && post._id === id) {
         const oldLikeCount = _.get(newState, `${path}.likeCount`);
@@ -116,7 +110,7 @@ export default (state = INITIAL_STATE, action) => {
         if (action.type === LIKE_POST) {
           if (undo) {
             newLikeCount = oldLikeCount - 1;
-          } else if (likeId === 'testId') {
+          } else if (likeId === "testId") {
             newLikeCount = oldLikeCount + 1;
           }
         } else if (action.type === UNLIKE_POST) {
@@ -135,40 +129,42 @@ export default (state = INITIAL_STATE, action) => {
 
     case POST_NEW_POST_UPDATE_MEDIA: {
       const newState = _.cloneDeep(state);
-      return _.set(newState, 'newPost.mediaRef', action.payload);
+      return _.set(newState, "newPost.mediaRef", action.payload);
     }
 
     case POST_NEW_POST_SUBMIT: {
       const newState = _.cloneDeep(state);
-      return _.set(newState, 'newPost.uploading', true);
+      return _.set(newState, "newPost.uploading", true);
     }
 
     case POST_NEW_POST_SUBMIT_FAIL: {
       const newState = _.cloneDeep(state);
-      return _.set(newState, 'newPost.uploading', false);
+      return _.set(newState, "newPost.uploading", false);
     }
 
     case POST_NEW_POST_SUBMIT_SUCCESS: {
       const newState = _.cloneDeep(state);
-      return _.set(newState, 'newPost', { ...NEW_POST_INITIAL_STATE });
+      return _.set(newState, "newPost", { ...NEW_POST_INITIAL_STATE });
     }
 
     // When a comment is deleted for a goal, decrement the comment count
     case COMMENT_DELETE_SUCCESS: {
       const { tab, commentId } = action.payload;
       const newState = _.cloneDeep(state);
-      const path = (!tab || tab === 'homeTab') ? 'post' : `post${capitalizeWord(tab)}`;
+      const path =
+        !tab || tab === "homeTab" ? "post" : `post${capitalizeWord(tab)}`;
       let currentCount = _.get(newState, `${path}.commentCount`);
       if (!currentCount) return newState;
-      return _.set(newState, `${path}.commentCount`, (--currentCount));
+      return _.set(newState, `${path}.commentCount`, --currentCount);
     }
 
     case COMMENT_NEW_POST_SUCCESS: {
       const { tab, commentId } = action.payload;
       const newState = _.cloneDeep(state);
-      const path = !tab || tab === 'homeTab' ? 'post' : `post${capitalizeWord(tab)}`;
+      const path =
+        !tab || tab === "homeTab" ? "post" : `post${capitalizeWord(tab)}`;
       let currentCount = _.get(newState, `${path}.commentCount`) || 0;
-      return _.set(newState, `${path}.commentCount`, (++currentCount));
+      return _.set(newState, `${path}.commentCount`, ++currentCount);
     }
 
     default:
@@ -177,6 +173,6 @@ export default (state = INITIAL_STATE, action) => {
 };
 
 const capitalizeWord = (word) => {
-  if (!word) return '';
-  return word.replace(/^\w/, c => c.toUpperCase());
+  if (!word) return "";
+  return word.replace(/^\w/, (c) => c.toUpperCase());
 };

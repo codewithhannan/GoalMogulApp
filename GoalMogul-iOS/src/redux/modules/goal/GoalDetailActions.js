@@ -1,18 +1,15 @@
-import React from 'react';
-import { Actions } from 'react-native-router-flux';
-import _ from 'lodash';
-import {
-  Alert,
-  Keyboard
-} from 'react-native';
-import { Notifications } from 'expo';
-import * as Permissions from 'expo-permissions';
-import moment from 'moment';
+import React from "react";
+import { Actions } from "react-native-router-flux";
+import _ from "lodash";
+import { Alert, Keyboard } from "react-native";
+import { Notifications } from "expo";
+import * as Permissions from "expo-permissions";
+import moment from "moment";
 
-import { api as API } from '../../middleware/api';
-import { queryBuilder } from '../../middleware/utils';
+import { api as API } from "../../middleware/api";
+import { queryBuilder } from "../../middleware/utils";
 
-import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal';
+import { DropDownHolder } from "../../../Main/Common/Modal/DropDownModal";
 
 import {
   GOAL_DETAIL_UPDATE,
@@ -27,28 +24,24 @@ import {
   GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS,
   GOAL_DETAIL_SWITCH_TAB,
   GOAL_DETAIL_SWITCH_TAB_V2,
-} from '../../../reducers/GoalDetailReducers';
+} from "../../../reducers/GoalDetailReducers";
 
-import {
-  getGoalDetailByTab
-} from './selector';
+import { getGoalDetailByTab } from "./selector";
 
-import {
-  refreshComments
-} from '../feed/comment/CommentActions';
-import { Logger } from '../../middleware/utils/Logger';
+import { refreshComments } from "../feed/comment/CommentActions";
+import { Logger } from "../../middleware/utils/Logger";
 
-const DEBUG_KEY = '[ Action GoalDetail ]';
+const DEBUG_KEY = "[ Action GoalDetail ]";
 
 // Basic request routes
-const BASE_ROUTE = 'secure/feed';
+const BASE_ROUTE = "secure/feed";
 const LIKE_BASE_ROUTE = `${BASE_ROUTE}/like`;
 const COMMENT_BASE_ROUTE = `${BASE_ROUTE}/comment`;
-const GOAL_BASE_ROUTE = 'secure/goal';
+const GOAL_BASE_ROUTE = "secure/goal";
 
 /**
  * Send request to server endpoint /secure/goal/views
- * @param {string} goalId 
+ * @param {string} goalId
  */
 export const markUserViewGoal = (goalId) => (dispatch, getState) => {
   const { token } = getState().user;
@@ -60,56 +53,69 @@ export const markUserViewGoal = (goalId) => (dispatch, getState) => {
     Logger.log(`${DEBUG_KEY}: [markUserViewGoal]: failed with err: `, err, 1);
   };
 
-  API
-    .put('secure/goal/views', { goalId }, token)
+  API.put("secure/goal/views", { goalId }, token)
     .then((res) => {
       if (res.status === 200) {
         return onSuccess(res);
       }
       return onError(res);
     })
-    .catch(err => onError(err));
+    .catch((err) => onError(err));
 };
 
 /**
- * 
+ *
  * @param {string} type: ['Tomorrow', 'Next Week', 'Next Month', 'Custom']
  */
-export const scheduleNotification = (date, goal, hasAskedPermissions) => async (dispatch, getState) => {
+export const scheduleNotification = (date, goal, hasAskedPermissions) => async (
+  dispatch,
+  getState
+) => {
   if (!hasAskedPermissions) {
     const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-    if (status !== 'granted') {
-      return Alert.alert('Denied', 'Enable Push Notifications for GoalMogul in your phone’s settings to get reminders');
-    };
+    if (status !== "granted") {
+      return Alert.alert(
+        "Denied",
+        "Enable Push Notifications for GoalMogul in your phone’s settings to get reminders"
+      );
+    }
   }
 
   const { title, _id } = goal;
-    
+
   const localNotification = {
-    title: 'Goal Reminder',
+    title: "Goal Reminder",
     body: `Tap here to update the progress on your goal: "${title}"`,
     data: {
-      path: `/goal/${_id}`
+      path: `/goal/${_id}`,
     },
   };
 
   const schedulingOptions = {
-    time: date
+    time: date,
   };
 
   console.log(`${DEBUG_KEY}: [ scheduleNotification ]: date: `, date);
   console.log(`${DEBUG_KEY}: [ scheduleNotification ]: goal: `, goal.title);
-  const notificationId = await Notifications
-    .scheduleLocalNotificationAsync(localNotification, schedulingOptions)
-    .then((notificationId) => {
-      DropDownHolder.alert('success', 'Reminder set', `We’ll remind you about this goal ${moment(date).fromNow()}`);
-    });
+  const notificationId = await Notifications.scheduleLocalNotificationAsync(
+    localNotification,
+    schedulingOptions
+  ).then((notificationId) => {
+    DropDownHolder.alert(
+      "success",
+      "Reminder set",
+      `We’ll remind you about this goal ${moment(date).fromNow()}`
+    );
+  });
 };
 
 /**
  * Refresh goal detail and comments by goal Id
  */
-export const refreshGoalDetailById = (goalId, pageId, onErrorCallback) => (dispatch, getState) => {
+export const refreshGoalDetailById = (goalId, pageId, onErrorCallback) => (
+  dispatch,
+  getState
+) => {
   const { tab } = getState().navigation;
   const { token } = getState().user;
 
@@ -118,8 +124,8 @@ export const refreshGoalDetailById = (goalId, pageId, onErrorCallback) => (dispa
     payload: {
       goalId,
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 
   const onError = (err) => {
@@ -129,16 +135,12 @@ export const refreshGoalDetailById = (goalId, pageId, onErrorCallback) => (dispa
         onErrorCallback();
       }
       Keyboard.dismiss();
-      Alert.alert(
-        'Content not found',
-        'This goal has been removed', 
-        [
-          { 
-            text: 'Cancel', 
-            onPress: () => Actions.pop()
-          }
-        ]
-      );
+      Alert.alert("Content not found", "This goal has been removed", [
+        {
+          text: "Cancel",
+          onPress: () => Actions.pop(),
+        },
+      ]);
     }
     dispatch({
       type: GOAL_DETAIL_FETCH_ERROR,
@@ -147,8 +149,8 @@ export const refreshGoalDetailById = (goalId, pageId, onErrorCallback) => (dispa
         goalId,
         pageId,
         tab,
-        error: err
-      }
+        error: err,
+      },
     });
   };
 
@@ -160,13 +162,12 @@ export const refreshGoalDetailById = (goalId, pageId, onErrorCallback) => (dispa
         goal: res.data,
         goalId,
         tab,
-        pageId
-      }
+        pageId,
+      },
     });
   };
 
-  API
-    .get(`${GOAL_BASE_ROUTE}?goalId=${goalId}`, token)
+  API.get(`${GOAL_BASE_ROUTE}?goalId=${goalId}`, token)
     .then((res) => {
       if (res.status === 200) {
         return onSuccess(res);
@@ -177,11 +178,16 @@ export const refreshGoalDetailById = (goalId, pageId, onErrorCallback) => (dispa
       onError(err);
     });
 
-  refreshComments('Goal', goalId, tab, pageId)(dispatch, getState);
+  refreshComments("Goal", goalId, tab, pageId)(dispatch, getState);
 };
 
-export const goalDetailSwitchTabV2ByKey = (key, focusRef, focusType, goalId, pageId) => 
-(dispatch, getState) => {
+export const goalDetailSwitchTabV2ByKey = (
+  key,
+  focusRef,
+  focusType,
+  goalId,
+  pageId
+) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
     type: GOAL_DETAIL_SWITCH_TAB_V2,
@@ -190,14 +196,19 @@ export const goalDetailSwitchTabV2ByKey = (key, focusRef, focusType, goalId, pag
       key,
       focusRef,
       focusType,
-      goalId, 
-      pageId
-    }
+      goalId,
+      pageId,
+    },
   });
 };
 
-export const goalDetailSwitchTabV2 = (index, focusRef, focusType, goalId, pageId) => 
-(dispatch, getState) => {
+export const goalDetailSwitchTabV2 = (
+  index,
+  focusRef,
+  focusType,
+  goalId,
+  pageId
+) => (dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
     type: GOAL_DETAIL_SWITCH_TAB_V2,
@@ -206,23 +217,26 @@ export const goalDetailSwitchTabV2 = (index, focusRef, focusType, goalId, pageId
       index,
       focusRef,
       focusType,
-      goalId, 
-      pageId
-    }
+      goalId,
+      pageId,
+    },
   });
 };
 
 // This is used in GoalDetailCardV2 which is currently deprecated so no need to update for now
-export const goalDetailSwitchTab = (index, goalId, pageId) => (dispatch, getState) => {
+export const goalDetailSwitchTab = (index, goalId, pageId) => (
+  dispatch,
+  getState
+) => {
   const { tab } = getState().navigation;
   dispatch({
     type: GOAL_DETAIL_SWITCH_TAB,
     payload: {
       tab,
       index,
-      goalId, 
-      pageId
-    }
+      goalId,
+      pageId,
+    },
   });
 };
 
@@ -233,16 +247,19 @@ export const closeGoalDetail = (goalId, pageId) => (dispatch, getState) => {
   closeGoalDetailWithoutPoping(goalId, pageId)(dispatch, getState);
 };
 
-export const closeGoalDetailWithoutPoping = (goalId, pageId) => (dispatch, getState) => {
+export const closeGoalDetailWithoutPoping = (goalId, pageId) => (
+  dispatch,
+  getState
+) => {
   const { tab } = getState().navigation;
   // Clear the state
   dispatch({
     type: GOAL_DETAIL_CLOSE,
     payload: {
       tab,
-      goalId, 
-      pageId
-    }
+      goalId,
+      pageId,
+    },
   });
 };
 
@@ -251,7 +268,10 @@ export const closeGoalDetailWithoutPoping = (goalId, pageId) => (dispatch, getSt
  * @param goal: if it's in the need card, then goal is passed in. Otherwise, goal is
  *              undefined
  */
-export const markStepAsComplete = (stepId, goal, pageId) => (dispatch, getState) => {
+export const markStepAsComplete = (stepId, goal, pageId) => (
+  dispatch,
+  getState
+) => {
   const { token } = getState().user;
   const goalToUpdate = goal || getGoalDetailByTab(getState()).goal;
 
@@ -263,7 +283,8 @@ export const markStepAsComplete = (stepId, goal, pageId) => (dispatch, getState)
   const stepToUpdate = steps.map((item) => {
     const newItem = _.cloneDeep(item);
     if (item._id === stepId) {
-      newItem.isCompleted = newItem.isCompleted === undefined ? true : !newItem.isCompleted;
+      newItem.isCompleted =
+        newItem.isCompleted === undefined ? true : !newItem.isCompleted;
       isCompleted = newItem.isCompleted;
     }
     return newItem;
@@ -279,8 +300,8 @@ export const markStepAsComplete = (stepId, goal, pageId) => (dispatch, getState)
         tab,
         goalId: _id,
         pageId,
-        type: 'markStepAsComplete'
-      }
+        type: "markStepAsComplete",
+      },
     });
 
     dispatch({
@@ -290,8 +311,8 @@ export const markStepAsComplete = (stepId, goal, pageId) => (dispatch, getState)
         isCompleted,
         goalId: _id,
         tab,
-        pageId
-      }
+        pageId,
+      },
     });
   };
   const onError = (err) => {
@@ -301,15 +322,12 @@ export const markStepAsComplete = (stepId, goal, pageId) => (dispatch, getState)
         isCompleted,
         tab,
         goalId: _id,
-        type: 'markStepAsComplete',
-        pageId
-      }
+        type: "markStepAsComplete",
+        pageId,
+      },
     });
 
-    Alert.alert(
-      'Update step status failed',
-      'Please try again later.'
-    );
+    Alert.alert("Update step status failed", "Please try again later.");
     console.warn(`${DEBUG_KEY}: update step status failed with error: `, err);
   };
 
@@ -319,16 +337,19 @@ export const markStepAsComplete = (stepId, goal, pageId) => (dispatch, getState)
       isCompleted,
       tab,
       goalId: _id,
-      type: 'markStepAsComplete',
-      pageId
-    }
+      type: "markStepAsComplete",
+      pageId,
+    },
   });
 
   updateGoalWithFields(_id, { steps: stepToUpdate }, token, onSuccess, onError);
 };
 
 // If a need is already mark as completed, then it will change its state to incomplete
-export const markNeedAsComplete = (needId, goal, pageId) => (dispatch, getState) => {
+export const markNeedAsComplete = (needId, goal, pageId) => (
+  dispatch,
+  getState
+) => {
   const { token } = getState().user;
   const goalToUpdate = goal || getGoalDetailByTab(getState()).goal;
   // const { goal } = getState().goalDetail;
@@ -339,7 +360,8 @@ export const markNeedAsComplete = (needId, goal, pageId) => (dispatch, getState)
   const needToUpdate = needs.map((item) => {
     const newItem = _.cloneDeep(item);
     if (item._id === needId) {
-      newItem.isCompleted = newItem.isCompleted === undefined ? true : !newItem.isCompleted;
+      newItem.isCompleted =
+        newItem.isCompleted === undefined ? true : !newItem.isCompleted;
       isCompleted = newItem.isCompleted;
     }
     return newItem;
@@ -354,8 +376,8 @@ export const markNeedAsComplete = (needId, goal, pageId) => (dispatch, getState)
         tab,
         goalId: _id,
         pageId,
-        type: 'markNeedAsComplete'
-      }
+        type: "markNeedAsComplete",
+      },
     });
 
     dispatch({
@@ -365,8 +387,8 @@ export const markNeedAsComplete = (needId, goal, pageId) => (dispatch, getState)
         isCompleted,
         goalId: _id,
         pageId,
-        tab
-      }
+        tab,
+      },
     });
   };
 
@@ -377,15 +399,12 @@ export const markNeedAsComplete = (needId, goal, pageId) => (dispatch, getState)
         isCompleted,
         tab,
         goalId: _id,
-        type: 'markNeedAsComplete',
-        pageId
-      }
+        type: "markNeedAsComplete",
+        pageId,
+      },
     });
 
-    Alert.alert(
-      'Update need status failed',
-      'Please try again later.'
-    );
+    Alert.alert("Update need status failed", "Please try again later.");
     console.warn(`${DEBUG_KEY}: update need status failed with error: `, err);
   };
 
@@ -395,16 +414,19 @@ export const markNeedAsComplete = (needId, goal, pageId) => (dispatch, getState)
       isCompleted,
       tab,
       goalId: _id,
-      type: 'markNeedAsComplete',
-      pageId
-    }
+      type: "markNeedAsComplete",
+      pageId,
+    },
   });
 
   updateGoalWithFields(_id, { needs: needToUpdate }, token, onSuccess, onError);
 };
 
 // User marks a goal as completed
-export const markGoalAsComplete = (goalId, complete, pageId) => (dispatch, getState) => {
+export const markGoalAsComplete = (goalId, complete, pageId) => (
+  dispatch,
+  getState
+) => {
   const { token } = getState().user;
   const { tab } = getState().navigation;
 
@@ -415,9 +437,9 @@ export const markGoalAsComplete = (goalId, complete, pageId) => (dispatch, getSt
         complete,
         tab,
         goalId,
-        type: 'markGoalAsComplete',
-        pageId
-      }
+        type: "markGoalAsComplete",
+        pageId,
+      },
     });
 
     dispatch({
@@ -427,8 +449,8 @@ export const markGoalAsComplete = (goalId, complete, pageId) => (dispatch, getSt
         tab,
         complete,
         pageId,
-        data
-      }
+        data,
+      },
     });
     // Alert.alert(
     //   'Success',
@@ -436,8 +458,10 @@ export const markGoalAsComplete = (goalId, complete, pageId) => (dispatch, getSt
     // );
     console.log(
       `${DEBUG_KEY}: mark goal as ` +
-      `${complete ? 'complete' : 'incomplete'} ` +
-      `succeed with data: `, data);
+        `${complete ? "complete" : "incomplete"} ` +
+        `succeed with data: `,
+      data
+    );
   };
 
   const onError = (err) => {
@@ -447,19 +471,21 @@ export const markGoalAsComplete = (goalId, complete, pageId) => (dispatch, getSt
         complete,
         tab,
         goalId,
-        type: 'markGoalAsComplete',
-        pageId
-      }
+        type: "markGoalAsComplete",
+        pageId,
+      },
     });
 
     Alert.alert(
-      `Failed to mark goal as ${complete ? 'complete' : 'incomplete'}.`,
-      'Please try again later.'
+      `Failed to mark goal as ${complete ? "complete" : "incomplete"}.`,
+      "Please try again later."
     );
     console.log(
       `${DEBUG_KEY}: mark goal as
-      ${complete ? 'complete' : 'incomplete'}
-      failed with err: `, err);
+      ${complete ? "complete" : "incomplete"}
+      failed with err: `,
+      err
+    );
   };
 
   dispatch({
@@ -468,48 +494,51 @@ export const markGoalAsComplete = (goalId, complete, pageId) => (dispatch, getSt
       complete,
       tab,
       goalId,
-      type: 'markGoalAsComplete',
-      pageId
-    }
+      type: "markGoalAsComplete",
+      pageId,
+    },
   });
 
-  updateGoalWithFields(goalId, { isCompleted: complete }, token, onSuccess, onError);
+  updateGoalWithFields(
+    goalId,
+    { isCompleted: complete },
+    token,
+    onSuccess,
+    onError
+  );
 };
 
 // Load states to CreateGoal modal to edit.
 export const editGoal = (goal) => (dispatch) => {
-  Actions.push('createGoalModal', { initializeFromState: true, goal });
+  Actions.push("createGoalModal", { initializeFromState: true, goal });
 };
 
 /**
  *Send updates to server and on Success Update the state of the goal detail
  * And the goal in profile if found
  */
-export const editGoalDone = () => (dispatch, getState) => {
-
-}
+export const editGoalDone = () => (dispatch, getState) => {};
 
 // Show a popup to confirm if user wants to share this goal to mastermind
-export const shareGoalToMastermind = (goalId, pageId) => (dispatch, getState) => {
-  Alert.alert(
-    'Are you sure you want to share this to the Goal Feed?',
-    '',
-    [
-      {
-        text: 'Confirm',
-        onPress: () => shareToMastermind(goalId, pageId, dispatch, getState)
-      },
-      {
-        text: 'Cancel',
-        onPress: () => console.log('User cancel share to goal feed'),
-        style: 'cancel'
-      }
-    ]
-  );
+export const shareGoalToMastermind = (goalId, pageId) => (
+  dispatch,
+  getState
+) => {
+  Alert.alert("Are you sure you want to share this to the Goal Feed?", "", [
+    {
+      text: "Confirm",
+      onPress: () => shareToMastermind(goalId, pageId, dispatch, getState),
+    },
+    {
+      text: "Cancel",
+      onPress: () => console.log("User cancel share to goal feed"),
+      style: "cancel",
+    },
+  ]);
 };
 
 const shareToMastermind = (goalId, pageId, dispatch, getState) => {
-  console.log('user pressed confirm ');
+  console.log("user pressed confirm ");
   const { token } = getState().user;
   const { tab } = getState().navigation;
 
@@ -519,9 +548,9 @@ const shareToMastermind = (goalId, pageId, dispatch, getState) => {
       payload: {
         tab,
         goalId,
-        type: 'shareToMastermind',
-        pageId
-      }
+        type: "shareToMastermind",
+        pageId,
+      },
     });
 
     dispatch({
@@ -529,12 +558,12 @@ const shareToMastermind = (goalId, pageId, dispatch, getState) => {
       payload: {
         goalId,
         tab,
-        pageId
-      }
+        pageId,
+      },
     });
     // Alert.alert('Success', 'You have successfully shared this goal to mastermind.');
     console.log(`${DEBUG_KEY}: shareToMastermind succeed with res: `, res);
-    DropDownHolder.alert('success', 'Successfully shared Goal to Feed', '');
+    DropDownHolder.alert("success", "Successfully shared Goal to Feed", "");
   };
 
   const onError = (err) => {
@@ -543,15 +572,12 @@ const shareToMastermind = (goalId, pageId, dispatch, getState) => {
       payload: {
         tab,
         goalId,
-        type: 'shareToMastermind',
-        pageId
-      }
+        type: "shareToMastermind",
+        pageId,
+      },
     });
 
-    Alert.alert(
-      'Share to mastermind failed',
-      'Please try again later'
-    );
+    Alert.alert("Share to mastermind failed", "Please try again later");
     console.warn(`${DEBUG_KEY}: share to mastermind failed with error: `, err);
   };
 
@@ -560,11 +586,17 @@ const shareToMastermind = (goalId, pageId, dispatch, getState) => {
     payload: {
       tab,
       goalId,
-      type: 'shareToMastermind',
-      pageId
-    }
+      type: "shareToMastermind",
+      pageId,
+    },
   });
-  updateGoalWithFields(goalId, { shareToGoalFeed: true }, token, onSuccess, onError);
+  updateGoalWithFields(
+    goalId,
+    { shareToGoalFeed: true },
+    token,
+    onSuccess,
+    onError
+  );
 };
 
 /**
@@ -574,18 +606,36 @@ const shareToMastermind = (goalId, pageId, dispatch, getState) => {
  * @param token: current user token
  * @param dispatch
  */
-const updateGoalWithFields = (goalId, fields, token, onSuccessFunc, onErrorFunc) => {
-  const onError = onErrorFunc ||
+const updateGoalWithFields = (
+  goalId,
+  fields,
+  token,
+  onSuccessFunc,
+  onErrorFunc
+) => {
+  const onError =
+    onErrorFunc ||
     ((err) => console.log(`${DEBUG_KEY}: updating fields with Error: `, err));
-  const onSuccess = onSuccessFunc ||
-    ((message) => console.log(`${DEBUG_KEY}: updating fields succeed with message: `, message));
-  API
-    .put('secure/goal', { goalId, updates: JSON.stringify({ ...fields }) }, token)
+  const onSuccess =
+    onSuccessFunc ||
+    ((message) =>
+      console.log(
+        `${DEBUG_KEY}: updating fields succeed with message: `,
+        message
+      ));
+  API.put(
+    "secure/goal",
+    { goalId, updates: JSON.stringify({ ...fields }) },
+    token
+  )
     .then((res) => {
       if (!res.message) {
         return onSuccess(res.data);
       }
-      console.log(`${DEBUG_KEY}: updating fields ${fields} with with message: `, res);
+      console.log(
+        `${DEBUG_KEY}: updating fields ${fields} with with message: `,
+        res
+      );
       onError(res);
     })
     .catch((err) => {

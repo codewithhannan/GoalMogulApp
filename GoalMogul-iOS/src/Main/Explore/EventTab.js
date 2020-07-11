@@ -1,25 +1,25 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   FlatList,
   Text,
   TouchableOpacity,
-  ActivityIndicator
-} from 'react-native';
-import { connect } from 'react-redux';
-import _ from 'lodash';
-import { Actions } from 'react-native-router-flux';
+  ActivityIndicator,
+} from "react-native";
+import { connect } from "react-redux";
+import _ from "lodash";
+import { Actions } from "react-native-router-flux";
 
 // Actions
 import {
   refreshEvent,
-  loadMoreEvent
-} from '../../redux/modules/event/EventTabActions';
+  loadMoreEvent,
+} from "../../redux/modules/event/EventTabActions";
 
 // Components
-import EventCard from './EventCard';
-import EventTabFilterBar from './EventTabFilterBar';
-import EmptyResult from '../Common/Text/EmptyResult';
+import EventCard from "./EventCard";
+import EventTabFilterBar from "./EventTabFilterBar";
+import EmptyResult from "../Common/Text/EmptyResult";
 
 class EventTab extends React.Component {
   componentDidMount() {
@@ -27,7 +27,7 @@ class EventTab extends React.Component {
       this.handleOnRefresh();
     }
   }
-  
+
   _keyExtractor = (item) => item._id;
 
   handleOnRefresh = () => this.props.refreshEvent();
@@ -36,70 +36,72 @@ class EventTab extends React.Component {
 
   renderItem = ({ item }) => {
     return <EventCard item={item} />;
-  }
+  };
 
   renderListHeader() {
-    return <EventTabFilterBar value={{ sortBy: this.props.sortBy }}/>;
+    return <EventTabFilterBar value={{ sortBy: this.props.sortBy }} />;
   }
 
   renderListEmptyComponent() {
     if (this.props.loading) {
-        return null;
+      return null;
     }
     return (
-      <View style={{ flex: 1, alignItems: 'center' }}>
-        <Text 
+      <View style={{ flex: 1, alignItems: "center" }}>
+        <Text
           style={{
-              paddingTop: 100,
-              fontSize: 17,
-              fontWeight: '600',
-              color: '#818181'
+            paddingTop: 100,
+            fontSize: 17,
+            fontWeight: "600",
+            color: "#818181",
           }}
         >
           No Recommendations
         </Text>
         <TouchableOpacity
-          onPress={() => Actions.push('myEventTab', { initial: { openNewEventModal: true }})}
-          style={{ 
+          onPress={() =>
+            Actions.push("myEventTab", { initial: { openNewEventModal: true } })
+          }
+          style={{
             height: 40,
-            width: 'auto',
+            width: "auto",
             padding: 10,
             marginTop: 20,
             borderRadius: 5,
             borderWidth: 0.5,
-            borderColor: 'lightgray',
-            justifyContent: 'center'
+            borderColor: "lightgray",
+            justifyContent: "center",
           }}
           activeOpacity={0.6}
         >
           <Text
             style={{
-              color: 'gray',
+              color: "gray",
               fontSize: 13,
-              fontWeight: '600'
+              fontWeight: "600",
             }}
           >
             Create an Event
           </Text>
         </TouchableOpacity>
       </View>
-    )
+    );
   }
 
   renderListFooter() {
-		if (!this.props.loading) return null;
-		return (
-			<View
-				style={{
-					paddingVertical: 20,
-					borderTopWidth: 1,
-					borderColor: "#CED0CE"
-				}}
-			>
-				<ActivityIndicator animating size="small" />
-			</View>
-		);
-	}
+    if (!this.props.loading) return null;
+    return (
+      <View
+        style={{
+          paddingVertical: 20,
+          borderTopWidth: 1,
+          borderColor: "#CED0CE",
+        }}
+      >
+        <ActivityIndicator animating size="small" />
+      </View>
+    );
+  }
 
   render() {
     return (
@@ -122,22 +124,19 @@ class EventTab extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { data, loading, sortBy, refreshing } = state.eventTab;
-  
+
   return {
     data,
     // data: [],
     loading,
     sortBy,
-    refreshing
+    refreshing,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    refreshEvent,
-    loadMoreEvent
-  }
-)(EventTab);
+export default connect(mapStateToProps, {
+  refreshEvent,
+  loadMoreEvent,
+})(EventTab);

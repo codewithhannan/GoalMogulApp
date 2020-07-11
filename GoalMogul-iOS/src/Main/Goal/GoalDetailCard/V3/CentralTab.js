@@ -4,17 +4,14 @@
  * On tab for each subcomponent, it will open FocusTab to render corresponding
  * focus content.
  */
-import React from 'react';
-import {
-  FlatList,
-  Animated
-} from 'react-native';
-import { connect } from 'react-redux';
-import _ from 'lodash';
+import React from "react";
+import { FlatList, Animated } from "react-native";
+import { connect } from "react-redux";
+import _ from "lodash";
 
 // Components
-import EmptyResult from '../../../Common/Text/EmptyResult';
-import StepAndNeedCardV3 from './StepAndNeedCardV3';
+import EmptyResult from "../../../Common/Text/EmptyResult";
+import StepAndNeedCardV3 from "./StepAndNeedCardV3";
 
 // Assets
 
@@ -22,27 +19,27 @@ import StepAndNeedCardV3 from './StepAndNeedCardV3';
 import {
   refreshGoalDetailById,
   goalDetailSwitchTabV2,
-  goalDetailSwitchTabV2ByKey
-} from '../../../../redux/modules/goal/GoalDetailActions';
+  goalDetailSwitchTabV2ByKey,
+} from "../../../../redux/modules/goal/GoalDetailActions";
 
 import {
   createCommentFromSuggestion,
-  createCommentForSuggestion
-} from '../../../../redux/modules/feed/comment/CommentActions';
+  createCommentForSuggestion,
+} from "../../../../redux/modules/feed/comment/CommentActions";
 
 // Selectors
 import {
   // getGoalStepsAndNeeds, // These are used before refactoring
   // getGoalDetailByTab, // These are used before refactoring
   makeGetGoalPageDetailByPageId,
-  makeGetGoalStepsAndNeedsV2
-} from '../../../../redux/modules/goal/selector';
+  makeGetGoalStepsAndNeedsV2,
+} from "../../../../redux/modules/goal/selector";
 
 // Styles
-import { BACKGROUND_COLOR } from '../../../../styles';
+import { BACKGROUND_COLOR } from "../../../../styles";
 
 // Constants
-const DEBUG_KEY = '[ UI CentralTab ]';
+const DEBUG_KEY = "[ UI CentralTab ]";
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 class CentralTab extends React.PureComponent {
@@ -54,21 +51,24 @@ class CentralTab extends React.PureComponent {
   scrollToOffset = (offset) => {
     this.flatlist.getNode().scrollToOffset({
       offset,
-      animated: true
+      animated: true,
     });
-  }
+  };
 
   // Refresh goal content and comment
   handleRefresh = () => {
     if (this.props.goalDetail) {
-      this.props.refreshGoalDetailById(this.props.goalDetail._id, this.props.pageId);
+      this.props.refreshGoalDetailById(
+        this.props.goalDetail._id,
+        this.props.pageId
+      );
     }
-  }
+  };
 
   keyExtractor = (item) => {
     const { _id } = item;
     return _id;
-  }
+  };
 
   renderItem = (props) => {
     const { goalDetail, pageId, goalId } = this.props;
@@ -76,19 +76,27 @@ class CentralTab extends React.PureComponent {
 
     let newCommentParams = {
       commentDetail: {
-        parentType: 'Goal',
+        parentType: "Goal",
         parentRef: goalDetail._id, // Goal ref
-        commentType: 'Comment',
+        commentType: "Comment",
       },
       suggestionForRef: props.item._id, // Need or Step ref
-      suggestionFor: props.item.type === 'need' ? 'Need' : 'Step'
+      suggestionFor: props.item.type === "need" ? "Need" : "Step",
     };
 
-    if (props.item.type === 'need') {
-      newCommentParams = _.set(newCommentParams, 'commentDetail.needRef', props.item._id);
+    if (props.item.type === "need") {
+      newCommentParams = _.set(
+        newCommentParams,
+        "commentDetail.needRef",
+        props.item._id
+      );
     }
-    if (props.item.type === 'step') {
-      newCommentParams = _.set(newCommentParams, 'commentDetail.stepRef', props.item._id);
+    if (props.item.type === "step") {
+      newCommentParams = _.set(
+        newCommentParams,
+        "commentDetail.stepRef",
+        props.item._id
+      );
     }
 
     return (
@@ -107,24 +115,25 @@ class CentralTab extends React.PureComponent {
         goalId={goalId}
       />
     );
-  }
+  };
 
   render() {
     const { data } = this.props;
     return (
       <AnimatedFlatList
-        ref={ref => (this.flatlist = ref)}
+        ref={(ref) => (this.flatlist = ref)}
         data={data}
         renderItem={this.renderItem}
         keyExtractor={this.keyExtractor}
         refreshing={this.props.loading || false}
         onRefresh={this.handleRefresh}
         ListEmptyComponent={
-          this.props.loading ? null :
-          <EmptyResult
-            text='No steps or needs'
-            textStyle={{ paddingTop: 70 }}
-          />
+          this.props.loading ? null : (
+            <EmptyResult
+              text="No steps or needs"
+              textStyle={{ paddingTop: 70 }}
+            />
+          )
         }
         {...this.props}
         scrollEventThrottle={2}
@@ -136,7 +145,7 @@ class CentralTab extends React.PureComponent {
 CentralTab.defaultPros = {
   data: [],
   goalDetail: undefined,
-  isSelf: false
+  isSelf: false,
 };
 
 const makeMapStateToProps = () => {
@@ -152,18 +161,17 @@ const makeMapStateToProps = () => {
     if (goalPage) {
       loading = goalPage.loading;
     }
-  
+
     return {
       goalDetail: goal,
       loading,
       // data: getGoalStepsAndNeeds(state, props.pageId), // These are used before refactoring
-      data: getGoalStepsAndNeedsV2(state, goalId, pageId)
+      data: getGoalStepsAndNeedsV2(state, goalId, pageId),
     };
   };
 
   return mapStateToProps;
 };
-
 
 export default connect(
   makeMapStateToProps,
@@ -172,7 +180,7 @@ export default connect(
     goalDetailSwitchTabV2ByKey,
     refreshGoalDetailById,
     createCommentFromSuggestion,
-    createCommentForSuggestion
+    createCommentForSuggestion,
   },
   null,
   { withRef: true }

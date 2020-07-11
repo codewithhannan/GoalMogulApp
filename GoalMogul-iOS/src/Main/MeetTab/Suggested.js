@@ -1,25 +1,20 @@
-import React, { Component } from 'react';
-import { View, FlatList } from 'react-native';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { View, FlatList } from "react-native";
+import { connect } from "react-redux";
 
 // Components
-import MeetFilterBar from './MeetFilterBar';
-import SuggestedCard from './Suggested/SuggestedCard';
-import EmptyResult from '../Common/Text/EmptyResult';
+import MeetFilterBar from "./MeetFilterBar";
+import SuggestedCard from "./Suggested/SuggestedCard";
+import EmptyResult from "../Common/Text/EmptyResult";
 
 // actions
-import {
-  handleRefresh,
-  meetOnLoadMore
-} from '../../actions';
+import { handleRefresh, meetOnLoadMore } from "../../actions";
 
 // tab key
-const key = 'suggested';
-const DEBUG_KEY = '[ Component Suggested ]';
-
+const key = "suggested";
+const DEBUG_KEY = "[ Component Suggested ]";
 
 class Suggested extends Component {
-
   constructor(props) {
     super(props);
     this.handleRefresh = this.handleRefresh.bind(this);
@@ -34,12 +29,12 @@ class Suggested extends Component {
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing tab: `, key);
     this.props.handleRefresh(key);
-  }
+  };
 
   handleOnLoadMore = () => {
     console.log(`${DEBUG_KEY} Loading more for tab: `, key);
     this.props.meetOnLoadMore(key);
-  }
+  };
 
   renderItem = ({ item }) => <SuggestedCard item={item} />;
 
@@ -55,8 +50,9 @@ class Suggested extends Component {
           onRefresh={this.handleRefresh}
           refreshing={this.props.loading}
           ListEmptyComponent={
-            this.props.loading ? null :
-            <EmptyResult text={'No Recommendations'} />
+            this.props.loading ? null : (
+              <EmptyResult text={"No Recommendations"} />
+            )
           }
         />
       </View>
@@ -64,23 +60,19 @@ class Suggested extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { suggested } = state.meet;
   const { data, refreshing, loading } = suggested;
-
 
   return {
     suggested,
     data,
     refreshing,
-    loading
+    loading,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    handleRefresh,
-    meetOnLoadMore
-  }
-)(Suggested);
+export default connect(mapStateToProps, {
+  handleRefresh,
+  meetOnLoadMore,
+})(Suggested);

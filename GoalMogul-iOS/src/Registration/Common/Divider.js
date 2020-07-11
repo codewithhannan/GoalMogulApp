@@ -1,5 +1,5 @@
-import React from 'react';
-import { View } from 'react-native';
+import React from "react";
+import { View } from "react-native";
 
 const Divider = (props) => {
   let dividerStyle = { ...styles.containerStyle };
@@ -27,23 +27,19 @@ const Divider = (props) => {
     } else {
       dividerStyle.borderBottomWidth = 2;
     }
-    return (
-      <View style={dividerStyle} />
-    );
+    return <View style={dividerStyle} />;
   }
 
   dividerStyle.borderLeftWidth = 1;
-  return (
-    <View style={dividerStyle} />
-  );
+  return <View style={dividerStyle} />;
 };
 
 const styles = {
   containerStyle: {
-    borderColor: '#dcdcdc',
+    borderColor: "#dcdcdc",
     width: 1,
-    height: 1
-  }
+    height: 1,
+  },
 };
 
 export default Divider;

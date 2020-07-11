@@ -1,7 +1,7 @@
 /**
  * This report modal is used in Home and Goal Detail
  */
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   View,
   Modal,
@@ -9,27 +9,27 @@ import {
   TextInput,
   Alert,
   TouchableWithoutFeedback,
-  Keyboard
-} from 'react-native';
-import { connect } from 'react-redux';
-import _ from 'lodash';
+  Keyboard,
+} from "react-native";
+import { connect } from "react-redux";
+import _ from "lodash";
 
 // Components
-import ModalHeader from '../../Main/Common/Header/ModalHeader';
+import ModalHeader from "../../Main/Common/Header/ModalHeader";
 
 // Actions
 import {
   updateReportDetails,
   cancelReport,
-  postingReport
-} from '../../redux/modules/report/ReportActions';
+  postingReport,
+} from "../../redux/modules/report/ReportActions";
 
 class Report extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      postingSucceed: undefined
-    }
+      postingSucceed: undefined,
+    };
   }
 
   renderInputField() {
@@ -38,17 +38,17 @@ class Report extends Component {
     return (
       <View style={styles.inputContainerStyle}>
         <TextInput
-          title='title'
-          autoCapitalize={'none'}
+          title="title"
+          autoCapitalize={"none"}
           autoCorrect
           onChangeText={this.props.updateReportDetails}
-          returnKeyType='done'
+          returnKeyType="done"
           multiline
           numberOfLines={5}
           editable={!loading}
           style={{ height: 150, padding: 15, paddingTop: 15 }}
-          placeholder='Your description here...'
-          value={_.isEmpty(details) ? '' : details}
+          placeholder="Your description here..."
+          value={_.isEmpty(details) ? "" : details}
         />
       </View>
     );
@@ -60,26 +60,29 @@ class Report extends Component {
         animationType="slide"
         transparent={false}
         visible={this.props.showing}
-        onDismiss={
-          () => {
-            if (this.state.postingSucceed) {
-              Alert.alert('Success', 'You have successfully submitted your report.');
-            }
+        onDismiss={() => {
+          if (this.state.postingSucceed) {
+            Alert.alert(
+              "Success",
+              "You have successfully submitted your report."
+            );
           }
-        }
+        }}
       >
         <View style={{ flex: 1 }}>
           <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={{ flex: 1 }}>
               <ModalHeader
-                title='Report'
-                actionText='Submit'
+                title="Report"
+                actionText="Submit"
                 onCancel={() => {
                   this.setState({ postingSucceed: false });
                   this.props.cancelReport();
                 }}
                 onAction={() => {
-                  this.props.postingReport(() => this.setState({ postingSucceed: true }));
+                  this.props.postingReport(() =>
+                    this.setState({ postingSucceed: true })
+                  );
                 }}
               />
               <Text style={styles.subTitleTextStyle}>Description</Text>
@@ -110,9 +113,9 @@ const styles = {
   inputContainerStyle: {
     margin: 20,
     borderRadius: 5,
-    borderColor: 'lightgray',
+    borderColor: "lightgray",
     borderWidth: 1,
-    shadowColor: 'lightgray',
+    shadowColor: "lightgray",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 1,
     shadowRadius: 3,
@@ -121,25 +124,22 @@ const styles = {
   subTitleTextStyle: {
     padding: 20,
     paddingBottom: 0,
-    fontSize: 15
-  }
+    fontSize: 15,
+  },
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { showingModal, details, loading } = state.report;
 
   return {
     showingModal,
     details,
-    loading
+    loading,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    updateReportDetails,
-    cancelReport,
-    postingReport
-  }
-)(Report);
+export default connect(mapStateToProps, {
+  updateReportDetails,
+  cancelReport,
+  postingReport,
+})(Report);

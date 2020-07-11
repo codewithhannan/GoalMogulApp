@@ -4,21 +4,20 @@ import {
   EVENTTAB_LOAD_DONE,
   EVENTTAB_LOAD,
   EVENTTAB_SORTBY,
-  EVENTTAB_UPDATE_FILTEROPTIONS
-} from './EventTabReducers';
+  EVENTTAB_UPDATE_FILTEROPTIONS,
+} from "./EventTabReducers";
 
-import { api as API } from '../../middleware/api';
-import { queryBuilder } from '../../middleware/utils';
+import { api as API } from "../../middleware/api";
+import { queryBuilder } from "../../middleware/utils";
 
-const DEBUG_KEY = '[ Action Explore.EventTab ]';
-const BASE_ROUTE = 'secure/event/recommendations';
-
+const DEBUG_KEY = "[ Action Explore.EventTab ]";
+const BASE_ROUTE = "secure/event/recommendations";
 
 // update sortBy
 export const updateSortBy = (value) => (dispatch, getState) => {
   dispatch({
     type: EVENTTAB_SORTBY,
-    payload: value
+    payload: value,
   });
 
   refreshEvent()(dispatch, getState);
@@ -47,35 +46,43 @@ export const refreshEvent = () => (dispatch, getState) => {
   const { limit, sortBy } = getState().eventTab;
 
   dispatch({
-    type: EVENTTAB_REFRESH
+    type: EVENTTAB_REFRESH,
   });
 
-  loadEvent(0, limit, token, sortBy, { refresh: true }, (data) => {
-    console.log(`${DEBUG_KEY}: [ refreshEvent ] with res: `, data.length);
-    dispatch({
-      type: EVENTTAB_REFRESH_DONE,
-      payload: {
-        type: 'eventtab',
-        data,
-        pageId: 'EVENTTAB', // TODO: Note we are using 
-        skip: data.length,
-        limit: 20,
-        hasNextPage: !(data === undefined || data.length === 0)
-      }
-    });
-  }, () => {
-    console.warn(`${DEBUG_KEY}: [ refreshEvent ] error: `, err);
-    dispatch({
-      type: EVENTTAB_REFRESH_DONE,
-      payload: {
-        type: 'eventtab',
-        data,
-        skip: 0,
-        limit: 20,
-        hasNextPage: undefined
-      }
-    });
-  });
+  loadEvent(
+    0,
+    limit,
+    token,
+    sortBy,
+    { refresh: true },
+    (data) => {
+      console.log(`${DEBUG_KEY}: [ refreshEvent ] with res: `, data.length);
+      dispatch({
+        type: EVENTTAB_REFRESH_DONE,
+        payload: {
+          type: "eventtab",
+          data,
+          pageId: "EVENTTAB", // TODO: Note we are using
+          skip: data.length,
+          limit: 20,
+          hasNextPage: !(data === undefined || data.length === 0),
+        },
+      });
+    },
+    () => {
+      console.warn(`${DEBUG_KEY}: [ refreshEvent ] error: `, err);
+      dispatch({
+        type: EVENTTAB_REFRESH_DONE,
+        payload: {
+          type: "eventtab",
+          data,
+          skip: 0,
+          limit: 20,
+          hasNextPage: undefined,
+        },
+      });
+    }
+  );
 };
 
 // Load more goal for mastermind tab
@@ -87,46 +94,61 @@ export const loadMoreEvent = () => (dispatch, getState) => {
   }
 
   dispatch({
-    type: EVENTTAB_LOAD
+    type: EVENTTAB_LOAD,
   });
 
-  loadEvent(skip, limit, token, sortBy, {}, (data) => {
-    console.log(`${DEBUG_KEY}: [ loadMoreEvent ] with res: `, data.length);
-    dispatch({
-      type: EVENTTAB_LOAD_DONE,
-      payload: {
-        type: 'eventtab',
-        data,
-        skip: data ? data.length + skip : skip,
-        limit: 20,
-        pageId: 'EVENTTAB',
-        hasNextPage: !(data === undefined || data.length === 0)
-      }
-    });
-  }, () => {
-    console.warn(`${DEBUG_KEY}: [ loadMoreEvent ] error: `, err);
-    dispatch({
-      type: EVENTTAB_LOAD_DONE,
-      payload: {
-        type: 'eventtab',
-        data,
-        skip,
-        limit: 20,
-        hasNextPage: false
-      }
-    });
-  });
+  loadEvent(
+    skip,
+    limit,
+    token,
+    sortBy,
+    {},
+    (data) => {
+      console.log(`${DEBUG_KEY}: [ loadMoreEvent ] with res: `, data.length);
+      dispatch({
+        type: EVENTTAB_LOAD_DONE,
+        payload: {
+          type: "eventtab",
+          data,
+          skip: data ? data.length + skip : skip,
+          limit: 20,
+          pageId: "EVENTTAB",
+          hasNextPage: !(data === undefined || data.length === 0),
+        },
+      });
+    },
+    () => {
+      console.warn(`${DEBUG_KEY}: [ loadMoreEvent ] error: `, err);
+      dispatch({
+        type: EVENTTAB_LOAD_DONE,
+        payload: {
+          type: "eventtab",
+          data,
+          skip,
+          limit: 20,
+          hasNextPage: false,
+        },
+      });
+    }
+  );
 };
 
 /**
  * Basic API to load goals based on skip and limit
  */
-const loadEvent = (skip, limit, token, sortBy, filterOptions, callback, onError) => {
-  API
-    .get(
-      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, ...filterOptions })}`,
-      token
-    )
+const loadEvent = (
+  skip,
+  limit,
+  token,
+  sortBy,
+  filterOptions,
+  callback,
+  onError
+) => {
+  API.get(
+    `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, ...filterOptions })}`,
+    token
+  )
     .then((res) => {
       if (res && res.data) {
         // Right now return test data

@@ -1,38 +1,39 @@
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image
-} from 'react-native';
-import R from 'ramda';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { View, Text, TouchableOpacity, Image } from "react-native";
+import R from "ramda";
+import { connect } from "react-redux";
 // import Decode from 'unescape'; TODO: removed once new decode is good to go
 
 // Asset
-import bulb from '../../../asset/utils/bulb.png';
-import forward from '../../../asset/utils/forward.png';
-import Icons from '../../../asset/base64/Icons';
-import next from '../../../asset/utils/next.png';
+import bulb from "../../../asset/utils/bulb.png";
+import forward from "../../../asset/utils/forward.png";
+import Icons from "../../../asset/base64/Icons";
+import next from "../../../asset/utils/next.png";
 
 // Components
-import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
-import DelayedButton from '../../Common/Button/DelayedButton';
+import {
+  actionSheet,
+  switchByButtonIndex,
+} from "../../Common/ActionSheetFactory";
+import DelayedButton from "../../Common/Button/DelayedButton";
 
 // Actions
-import {
-  chooseShareDest
-} from '../../../redux/modules/feed/post/ShareActions';
+import { chooseShareDest } from "../../../redux/modules/feed/post/ShareActions";
 
 import {
   markStepAsComplete,
-  markNeedAsComplete
-} from '../../../redux/modules/goal/GoalDetailActions';
-import { decode } from '../../../redux/middleware/utils';
+  markNeedAsComplete,
+} from "../../../redux/modules/goal/GoalDetailActions";
+import { decode } from "../../../redux/middleware/utils";
 
 // Constants
-const DEBUG_KEY = '[ UI GoalCard.Need/Step SectionCardV2 ]';
-const SHARE_TO_MENU_OPTTIONS = ['Share to Feed', 'Share to an Event', 'Share to a Tribe', 'Cancel'];
+const DEBUG_KEY = "[ UI GoalCard.Need/Step SectionCardV2 ]";
+const SHARE_TO_MENU_OPTTIONS = [
+  "Share to Feed",
+  "Share to an Event",
+  "Share to a Tribe",
+  "Cancel",
+];
 const CANCEL_INDEX = 3;
 const { CheckIcon: checkIcon } = Icons;
 
@@ -45,29 +46,50 @@ const { CheckIcon: checkIcon } = Icons;
 // };
 
 class SectionCardV2 extends Component {
-
   handleShareOnClick = () => {
     const { item, goalRef, type } = this.props;
     const { _id } = item;
-    const shareType = (type === 'need' || type === 'Need') ? 'ShareNeed' : 'ShareStep';
+    const shareType =
+      type === "need" || type === "Need" ? "ShareNeed" : "ShareStep";
 
     const shareToSwitchCases = switchByButtonIndex([
-      [R.equals(0), () => {
-        // User choose to share to feed
-        console.log(`${DEBUG_KEY} User choose destination: Feed `);
-        this.props.chooseShareDest(shareType, _id, 'feed', item, goalRef._id);
-        // TODO: update reducer state
-      }],
-      [R.equals(1), () => {
-        // User choose to share to an event
-        console.log(`${DEBUG_KEY} User choose destination: Event `);
-        this.props.chooseShareDest(shareType, _id, 'event', item, goalRef._id);
-      }],
-      [R.equals(2), () => {
-        // User choose to share to a tribe
-        console.log(`${DEBUG_KEY} User choose destination: Tribe `);
-        this.props.chooseShareDest(shareType, _id, 'tribe', item, goalRef._id);
-      }],
+      [
+        R.equals(0),
+        () => {
+          // User choose to share to feed
+          console.log(`${DEBUG_KEY} User choose destination: Feed `);
+          this.props.chooseShareDest(shareType, _id, "feed", item, goalRef._id);
+          // TODO: update reducer state
+        },
+      ],
+      [
+        R.equals(1),
+        () => {
+          // User choose to share to an event
+          console.log(`${DEBUG_KEY} User choose destination: Event `);
+          this.props.chooseShareDest(
+            shareType,
+            _id,
+            "event",
+            item,
+            goalRef._id
+          );
+        },
+      ],
+      [
+        R.equals(2),
+        () => {
+          // User choose to share to a tribe
+          console.log(`${DEBUG_KEY} User choose destination: Tribe `);
+          this.props.chooseShareDest(
+            shareType,
+            _id,
+            "tribe",
+            item,
+            goalRef._id
+          );
+        },
+      ],
     ]);
 
     const shareToActionSheet = actionSheet(
@@ -79,9 +101,9 @@ class SectionCardV2 extends Component {
   };
 
   renderActionIcons(type) {
-    if (type === 'comment') return null;
+    if (type === "comment") return null;
     return (
-      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ alignItems: "center", justifyContent: "center" }}>
         <DelayedButton
           activeOpacity={0.6}
           style={styles.iconContainerStyle}
@@ -97,17 +119,25 @@ class SectionCardV2 extends Component {
   renderSelfCheckBox(isCompleted, textToDisplay) {
     const { type, item, goalRef, pageId } = this.props;
     const { _id } = item;
-    const onPress = type === 'need' || type === 'Need'
-      ? () => this.props.markNeedAsComplete(_id, goalRef, pageId)
-      : () => this.props.markStepAsComplete(_id, goalRef, pageId);
+    const onPress =
+      type === "need" || type === "Need"
+        ? () => this.props.markNeedAsComplete(_id, goalRef, pageId)
+        : () => this.props.markStepAsComplete(_id, goalRef, pageId);
 
     const iconContainerStyle = isCompleted
-      ? { ...styles.checkIconContainerStyle, marginTop: textToDisplay > 40 ? 4 : 0 }
-      : { ...styles.checkIconContainerStyle, marginTop: textToDisplay > 40 ? 4 : 0, backgroundColor: '#efefef' };
+      ? {
+          ...styles.checkIconContainerStyle,
+          marginTop: textToDisplay > 40 ? 4 : 0,
+        }
+      : {
+          ...styles.checkIconContainerStyle,
+          marginTop: textToDisplay > 40 ? 4 : 0,
+          backgroundColor: "#efefef",
+        };
 
     const checkIconStyle = isCompleted
-      ? { ...styles.checkIconStyle, tintColor: '#4e966d' }
-      : { ...styles.checkIconStyle, tintColor: '#999' }
+      ? { ...styles.checkIconStyle, tintColor: "#4e966d" }
+      : { ...styles.checkIconStyle, tintColor: "#999" };
 
     return (
       <DelayedButton
@@ -122,13 +152,25 @@ class SectionCardV2 extends Component {
 
   // Render Suggestion icon and number of comments
   renderStats(type) {
-    if (type === 'comment') return null;
+    if (type === "comment") return null;
     const commentCount = this.props.count === undefined ? 15 : this.props.count;
     return (
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, paddingBottom: 4 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginTop: 5,
+          paddingBottom: 4,
+        }}
+      >
         <Image
           source={bulb}
-          style={{ tintColor: '#FCB110', height: 10, width: 10, marginRight: 5 }}
+          style={{
+            tintColor: "#FCB110",
+            height: 10,
+            width: 10,
+            marginRight: 5,
+          }}
         />
         <Text style={styles.statsTextStyle}>{commentCount} comments</Text>
       </View>
@@ -137,14 +179,22 @@ class SectionCardV2 extends Component {
 
   renderCheckBox(isCompleted, type, textToDisplay) {
     // console.log(`${DEBUG_KEY}: rendering checkbox: isSelf ${this.props.isSelf}, type: ${type}`);
-    if (this.props.isSelf && type !== 'comment') {
+    if (this.props.isSelf && type !== "comment") {
       return this.renderSelfCheckBox(isCompleted, textToDisplay);
     }
 
-    if (!isCompleted || type == 'comment') return null;
+    if (!isCompleted || type == "comment") return null;
     return (
-      <View style={{ ...styles.checkIconContainerStyle, marginTop: textToDisplay > 40 ? 4 : 0 }}>
-        <Image source={checkIcon} style={{ ...styles.checkIconStyle, tintColor: '#4e966d' }} />
+      <View
+        style={{
+          ...styles.checkIconContainerStyle,
+          marginTop: textToDisplay > 40 ? 4 : 0,
+        }}
+      >
+        <Image
+          source={checkIcon}
+          style={{ ...styles.checkIconStyle, tintColor: "#4e966d" }}
+        />
       </View>
     );
   }
@@ -170,25 +220,28 @@ class SectionCardV2 extends Component {
     let itemToRender = item;
 
     // Render empty state
-    if (!item && type !== 'comment') {
-      const emptyText = (type === 'need' || type === 'Need') ? 'No needs' : 'No steps';
+    if (!item && type !== "comment") {
+      const emptyText =
+        type === "need" || type === "Need" ? "No needs" : "No steps";
       itemToRender = { description: `${emptyText}`, isCompleted: false };
       return renderEmptyState(emptyText);
     }
 
     const { description, isCompleted } = itemToRender;
-    const isCommentFocused = type === 'comment';
-    const sectionText = isCommentFocused ? 'Back to mastermind' : description;
-    const textToDisplay = decode(sectionText === undefined ? 'No content' : sectionText);
+    const isCommentFocused = type === "comment";
+    const sectionText = isCommentFocused ? "Back to mastermind" : description;
+    const textToDisplay = decode(
+      sectionText === undefined ? "No content" : sectionText
+    );
 
     return (
       <DelayedButton
         activeOpacity={0.6}
         style={{
           ...styles.sectionContainerStyle,
-          backgroundColor: isCompleted ? '#fcfcfc' : 'white',
+          backgroundColor: isCompleted ? "#fcfcfc" : "white",
           opacity: isCompleted ? 0.8 : 1,
-          minHeight: 54
+          minHeight: 54,
         }}
         onPress={this.props.onCardPress || this.props.onBackPress}
       >
@@ -196,18 +249,21 @@ class SectionCardV2 extends Component {
         <View style={{ flex: 1 }}>
           <View
             style={{
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-              justifyContent: 'flex-start',
+              flexDirection: "row",
+              alignItems: "flex-start",
+              justifyContent: "flex-start",
             }}
           >
             {this.renderCheckBox(isCompleted, type, textToDisplay)}
-            <View style={{ flexWrap: 'wrap', flex: 1 }}>
+            <View style={{ flexWrap: "wrap", flex: 1 }}>
               <Text
                 // style={{ ...styles.sectionTextStyle, paddingTop: textToDisplay && textToDisplay.length > 40 ? 0 : 4 }}
-                style={{ ...styles.sectionTextStyle, paddingTop: isCommentFocused ? 0 : 4 }}
+                style={{
+                  ...styles.sectionTextStyle,
+                  paddingTop: isCommentFocused ? 0 : 4,
+                }}
                 multiline
-                ellipsizeMode='tail'
+                ellipsizeMode="tail"
               >
                 {textToDisplay}
               </Text>
@@ -227,19 +283,19 @@ const renderEmptyState = (text) => {
       style={{
         ...styles.sectionContainerStyle,
         height: 66,
-        justifyContent: 'center',
-        alignItems: 'center'
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       <Text
         style={{
           fontSize: 16,
-          justifyContent: 'center',
-          fontWeight: '700',
-          color: '#909090',
+          justifyContent: "center",
+          fontWeight: "700",
+          color: "#909090",
         }}
         numberOfLines={1}
-        ellipsizeMode='tail'
+        ellipsizeMode="tail"
       >
         {text}
       </Text>
@@ -252,73 +308,70 @@ const styles = {
     padding: 9,
     paddingLeft: 17,
     paddingRight: 17,
-    backgroundColor: 'white',
-    flexDirection: 'row',
-    alignItems: 'center',
+    backgroundColor: "white",
+    flexDirection: "row",
+    alignItems: "center",
     borderTopWidth: 0.5,
     borderBottomWidth: 0.5,
-    borderTopColor: '#eaeaea',
-    borderBottomColor: '#eaeaea'
+    borderTopColor: "#eaeaea",
+    borderBottomColor: "#eaeaea",
   },
   sectionTextStyle: {
-    color: 'black',
+    color: "black",
     fontSize: 13,
-    paddingTop: 4
+    paddingTop: 4,
   },
   statsTextStyle: {
-    color: '#909090',
+    color: "#909090",
     fontSize: 11,
   },
   textContainerStyle: {
-    flexDirection: 'row',
+    flexDirection: "row",
     borderRightWidth: 0.5,
-    borderColor: '#e5e5e5',
+    borderColor: "#e5e5e5",
     paddingRight: 10,
     flexShrink: 1,
-    flex: 1
+    flex: 1,
   },
   iconContainerStyle: {
     height: 36,
     width: 36,
     borderRadius: 18,
-    backgroundColor: '#efefef',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#efefef",
+    alignItems: "center",
+    justifyContent: "center",
   },
   iconStyle: {
     height: 16,
     width: 16,
     borderRadius: 8,
-    tintColor: '#a4a7a7'
+    tintColor: "#a4a7a7",
   },
   checkIconContainerStyle: {
     height: 28,
     width: 28,
     borderRadius: 14,
     // backgroundColor: '#eafcee',
-    backgroundColor: '#a5e5c0',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 10
+    backgroundColor: "#a5e5c0",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
   },
   checkIconStyle: {
     height: 14,
     width: 16,
     borderRadius: 6,
-    tintColor: 'black'
+    tintColor: "black",
   },
   nextIconStyle: {
     height: 25,
     width: 26,
-    tintColor: '#bfc3c3'
-  }
+    tintColor: "#bfc3c3",
+  },
 };
 
-export default connect(
-  null,
-  {
-    chooseShareDest,
-    markStepAsComplete,
-    markNeedAsComplete
-  }
-)(SectionCardV2);
+export default connect(null, {
+  chooseShareDest,
+  markStepAsComplete,
+  markNeedAsComplete,
+})(SectionCardV2);

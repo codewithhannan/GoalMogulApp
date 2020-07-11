@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   KeyboardAvoidingView,
@@ -10,57 +10,63 @@ import {
   TouchableOpacity,
   Dimensions,
   ImageBackground,
-  Modal
-} from 'react-native';
-import { connect } from 'react-redux';
-import { CheckBox } from 'react-native-elements';
-import { MaterialIcons } from '@expo/vector-icons';
+  Modal,
+} from "react-native";
+import { connect } from "react-redux";
+import { CheckBox } from "react-native-elements";
+import { MaterialIcons } from "@expo/vector-icons";
 import {
   Field,
   reduxForm,
   formValueSelector,
-  SubmissionError
-} from 'redux-form';
-import R from 'ramda';
-import {
-  MenuProvider,
-} from 'react-native-popup-menu';
+  SubmissionError,
+} from "redux-form";
+import R from "ramda";
+import { MenuProvider } from "react-native-popup-menu";
 
 // Components
-import ModalHeader from '../Common/Header/ModalHeader';
-import ImageModal from '../Common/ImageModal';
+import ModalHeader from "../Common/Header/ModalHeader";
+import ImageModal from "../Common/ImageModal";
 
 // Actions
 import {
   cancelCreatingNewTribe,
   createNewTribe,
-  tribeToFormAdapter
-} from '../../redux/modules/tribe/NewTribeActions';
-import { openCameraRoll, openCamera } from '../../actions';
+  tribeToFormAdapter,
+} from "../../redux/modules/tribe/NewTribeActions";
+import { openCameraRoll, openCamera } from "../../actions";
 
 // assets
-import cancel from '../../asset/utils/cancel_no_background.png';
-import camera from '../../asset/utils/camera.png';
-import cameraRoll from '../../asset/utils/cameraRoll.png';
-import imageOverlay from '../../asset/utils/imageOverlay.png';
-import expand from '../../asset/utils/expand.png';
-import { IMAGE_BASE_URL } from '../../Utils/Constants';
-import { track, EVENT as E, trackWithProperties } from '../../monitoring/segment';
+import cancel from "../../asset/utils/cancel_no_background.png";
+import camera from "../../asset/utils/camera.png";
+import cameraRoll from "../../asset/utils/cameraRoll.png";
+import imageOverlay from "../../asset/utils/imageOverlay.png";
+import expand from "../../asset/utils/expand.png";
+import { IMAGE_BASE_URL } from "../../Utils/Constants";
+import {
+  track,
+  EVENT as E,
+  trackWithProperties,
+} from "../../monitoring/segment";
 
 // const { Popover } = renderers;
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 class CreateTribeModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mediaModal: false
+      mediaModal: false,
     };
   }
 
   componentDidMount() {
     this.startTime = new Date();
-    track(this.props.initializeFromState ? E.EDIT_TRIBE_MODAL_OPENED : E.CREATE_TRIBE_MODAL_OPENED);
+    track(
+      this.props.initializeFromState
+        ? E.EDIT_TRIBE_MODAL_OPENED
+        : E.CREATE_TRIBE_MODAL_OPENED
+    );
     this.initializeForm();
   }
 
@@ -70,7 +76,7 @@ class CreateTribeModal extends React.Component {
       membersCanInvite: false,
       isPubliclyVisible: false,
       membershipLimit: undefined,
-      description: '',
+      description: "",
       picture: undefined,
     };
 
@@ -82,41 +88,46 @@ class CreateTribeModal extends React.Component {
 
     this.props.initialize({
       // ...initialVals
-      ...initialVals
+      ...initialVals,
     });
   }
 
-  handleCreate = values => {
+  handleCreate = (values) => {
     const { initializeFromState, tribe, picture } = this.props;
     const tribeId = tribe ? tribe._id : undefined;
     const needUpload =
-      (initializeFromState && tribe.picture && tribe.picture !== picture) // picture has changed
-      || (initializeFromState && tribe.picture == undefined && picture !== undefined) // picture is updated
-      || (!initializeFromState && picture); // create new tribe with picture
-    const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
-    trackWithProperties(initializeFromState ? E.TRIBE_UPDATED : E.TRIBE_CREATED,
-        {...this.props.formVals.values, 'DurationSec': durationSec});
+      (initializeFromState && tribe.picture && tribe.picture !== picture) || // picture has changed
+      (initializeFromState &&
+        tribe.picture == undefined &&
+        picture !== undefined) || // picture is updated
+      (!initializeFromState && picture); // create new tribe with picture
+    const durationSec =
+      (new Date().getTime() - this.startTime.getTime()) / 1000;
+    trackWithProperties(
+      initializeFromState ? E.TRIBE_UPDATED : E.TRIBE_CREATED,
+      { ...this.props.formVals.values, DurationSec: durationSec }
+    );
     this.props.createNewTribe(
       this.props.formVals.values,
       needUpload,
       initializeFromState, // isEdit
       tribeId // tribeId
     );
-  }
+  };
 
   handleOpenCamera = () => {
     this.props.openCamera((result) => {
-      this.props.change('picture', result.uri);
+      this.props.change("picture", result.uri);
     });
-  }
+  };
 
   handleOpenCameraRoll = () => {
     const callback = R.curry((result) => {
       console.log("result is: ", result);
-      this.props.change('picture', result.uri);
+      this.props.change("picture", result.uri);
     });
     this.props.openCameraRoll(callback);
-  }
+  };
 
   renderInput = ({
     input: { onChange, onFocus, value, ...restInput },
@@ -138,10 +149,10 @@ class CreateTribeModal extends React.Component {
     return (
       <SafeAreaView
         style={{
-          backgroundColor: 'white',
+          backgroundColor: "white",
           borderBottomWidth: 0.5,
           margin: 5,
-          borderColor: 'lightgray'
+          borderColor: "lightgray",
         }}
       >
         <TextInput
@@ -150,24 +161,35 @@ class CreateTribeModal extends React.Component {
           style={inputStyle}
           editable={editable}
           maxHeight={150}
-          keyboardType={keyboardType || 'default'}
+          keyboardType={keyboardType || "default"}
           multiline={multiline}
           value={value}
           autoCorrect
         />
       </SafeAreaView>
     );
-  }
+  };
 
   renderActionIcons() {
     const actionIconStyle = { ...styles.actionIconStyle };
     const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
     return (
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10 }}>
-        <TouchableOpacity activeOpacity={0.6} style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "flex-start",
+          marginTop: 10,
+        }}
+      >
+        <TouchableOpacity
+          activeOpacity={0.6}
+          style={actionIconWrapperStyle}
+          onPress={this.handleOpenCamera}
+        >
           <Image style={actionIconStyle} source={camera} />
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.6}
+        <TouchableOpacity
+          activeOpacity={0.6}
           style={{ ...actionIconWrapperStyle, marginLeft: 5 }}
           onPress={this.handleOpenCameraRoll}
         >
@@ -182,8 +204,9 @@ class CreateTribeModal extends React.Component {
     const { initializeFromState, tribe, picture } = this.props;
     let imageUrl = picture;
     if (initializeFromState && picture) {
-      const hasImageModified = (tribe.picture && tribe.picture !== picture) // Picture has changed
-        || (tribe.picture == undefined && picture !== undefined); // Picture is added
+      const hasImageModified =
+        (tribe.picture && tribe.picture !== picture) || // Picture has changed
+        (tribe.picture == undefined && picture !== undefined); // Picture is added
       if (!hasImageModified) {
         // If editing a tribe and image hasn't changed, then image source should
         // be from server
@@ -193,38 +216,39 @@ class CreateTribeModal extends React.Component {
 
     if (this.props.picture) {
       return (
-        <View style={{ backgroundColor: 'gray' }}>
+        <View style={{ backgroundColor: "gray" }}>
           <ImageBackground
             style={styles.mediaStyle}
             source={{ uri: imageUrl }}
-            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
+            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: "cover" }}
           >
-            <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
+            <View style={{ alignSelf: "center", justifyContent: "center" }}>
               <Image
                 source={imageOverlay}
                 style={{
-                  alignSelf: 'center',
-                  justifyContent: 'center',
+                  alignSelf: "center",
+                  justifyContent: "center",
                   height: 40,
                   width: 50,
-                  tintColor: '#fafafa'
+                  tintColor: "#fafafa",
                 }}
               />
             </View>
 
-            <TouchableOpacity activeOpacity={0.6}
+            <TouchableOpacity
+              activeOpacity={0.6}
               onPress={() => this.setState({ mediaModal: true })}
               style={{
-                position: 'absolute',
+                position: "absolute",
                 top: 10,
                 right: 15,
                 width: 24,
                 height: 24,
                 borderRadius: 12,
                 padding: 2,
-                backgroundColor: 'rgba(0,0,0,0.3)',
-                alignItems: 'center',
-                justifyContent: 'center'
+                backgroundColor: "rgba(0,0,0,0.3)",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
               <Image
@@ -232,24 +256,25 @@ class CreateTribeModal extends React.Component {
                 style={{
                   width: 16,
                   height: 16,
-                  tintColor: '#fafafa',
+                  tintColor: "#fafafa",
                   borderRadius: 4,
                 }}
               />
             </TouchableOpacity>
 
-            <TouchableOpacity activeOpacity={0.6}
-              onPress={() => this.props.change('picture', false)}
+            <TouchableOpacity
+              activeOpacity={0.6}
+              onPress={() => this.props.change("picture", false)}
               style={{
-                position: 'absolute',
+                position: "absolute",
                 top: 10,
                 left: 15,
                 width: 24,
                 height: 24,
                 borderRadius: 12,
-                backgroundColor: 'rgba(0,0,0,0.3)',
-                alignItems: 'center',
-                justifyContent: 'center'
+                backgroundColor: "rgba(0,0,0,0.3)",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
               <Image
@@ -257,9 +282,9 @@ class CreateTribeModal extends React.Component {
                 style={{
                   width: 16,
                   height: 16,
-                  tintColor: '#fafafa',
+                  tintColor: "#fafafa",
                   borderRadius: 8,
-                  padding: 2
+                  padding: 2,
                 }}
               />
             </TouchableOpacity>
@@ -275,11 +300,13 @@ class CreateTribeModal extends React.Component {
     const { initializeFromState, tribe, picture } = this.props;
 
     return (
-      <ImageModal 
+      <ImageModal
         mediaRef={imageUrl}
         mediaModal={this.state.mediaModal}
         closeModal={() => this.setState({ mediaModal: false })}
-        isLocalFile={!(initializeFromState && tribe.picture && tribe.picture === picture)}
+        isLocalFile={
+          !(initializeFromState && tribe.picture && tribe.picture === picture)
+        }
       />
     );
   }
@@ -290,33 +317,35 @@ class CreateTribeModal extends React.Component {
       <View style={{ marginBottom: 5 }}>
         {titleText}
         <Field
-          name='name'
-          label='name'
+          name="name"
+          label="name"
           component={this.renderInput}
           editable={!this.props.uploading}
           numberOfLines={1}
           multiline
           style={styles.goalInputStyle}
-          placeholder='Enter the name...'
+          placeholder="Enter the name..."
         />
       </View>
     );
   }
 
   renderTribeMemberLimit() {
-    const titleText = <Text style={styles.titleTextStyle}>Member Limit (Optional)</Text>;
+    const titleText = (
+      <Text style={styles.titleTextStyle}>Member Limit (Optional)</Text>
+    );
     return (
       <View style={{ marginBottom: 5 }}>
         {titleText}
         <Field
-          name='membershipLimit'
-          label='membershipLimit'
+          name="membershipLimit"
+          label="membershipLimit"
           component={this.renderInput}
           editable={!this.props.uploading}
           numberOfLines={1}
-          keyboardType='number-pad'
+          keyboardType="number-pad"
           style={styles.goalInputStyle}
-          placeholder='Enter a number...'
+          placeholder="Enter a number..."
         />
       </View>
     );
@@ -328,13 +357,13 @@ class CreateTribeModal extends React.Component {
       <View style={{ marginBottom: 5 }}>
         {titleText}
         <Field
-          name='description'
-          label='description'
+          name="description"
+          label="description"
           component={this.renderInput}
           editable={!this.props.uploading}
           numberOfLines={5}
           style={styles.goalInputStyle}
-          placeholder='Describe your tribe...'
+          placeholder="Describe your tribe..."
         />
       </View>
     );
@@ -344,37 +373,28 @@ class CreateTribeModal extends React.Component {
     return (
       <View>
         <CheckBox
-					title='Members can invite new members'
-					textStyle={{fontWeight: 'normal'}}
-					checked={this.props.membersCanInvite}
-					checkedIcon={<MaterialIcons
-						name="done"
-						color="#111"
-						size={21}
-					/>}
-					uncheckedIcon={<MaterialIcons
-						name="done"
-						color="#CCC"
-						size={21}
-					/>}
-					onPress={() => this.props.change('membersCanInvite', !this.props.membersCanInvite)}
-				/>
+          title="Members can invite new members"
+          textStyle={{ fontWeight: "normal" }}
+          checked={this.props.membersCanInvite}
+          checkedIcon={<MaterialIcons name="done" color="#111" size={21} />}
+          uncheckedIcon={<MaterialIcons name="done" color="#CCC" size={21} />}
+          onPress={() =>
+            this.props.change("membersCanInvite", !this.props.membersCanInvite)
+          }
+        />
         <CheckBox
-					title='Publicly visible'
-					textStyle={{fontWeight: 'normal'}}
-					checked={this.props.isPubliclyVisible}
-					checkedIcon={<MaterialIcons
-						name="done"
-						color="#111"
-						size={21}
-					/>}
-					uncheckedIcon={<MaterialIcons
-						name="done"
-						color="#CCC"
-						size={21}
-					/>}
-					onPress={() => this.props.change('isPubliclyVisible', !this.props.isPubliclyVisible)}
-				/>
+          title="Publicly visible"
+          textStyle={{ fontWeight: "normal" }}
+          checked={this.props.isPubliclyVisible}
+          checkedIcon={<MaterialIcons name="done" color="#111" size={21} />}
+          uncheckedIcon={<MaterialIcons name="done" color="#CCC" size={21} />}
+          onPress={() =>
+            this.props.change(
+              "isPubliclyVisible",
+              !this.props.isPubliclyVisible
+            )
+          }
+        />
       </View>
     );
   }
@@ -393,31 +413,35 @@ class CreateTribeModal extends React.Component {
 
   render() {
     const { handleSubmit, errors } = this.props;
-    const actionText = this.props.initializeFromState ? 'Update' : 'Create';
-    const titleText = this.props.initializeFromState ? 'Edit Tribe' : 'New Tribe';
+    const actionText = this.props.initializeFromState ? "Update" : "Create";
+    const titleText = this.props.initializeFromState
+      ? "Edit Tribe"
+      : "New Tribe";
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <KeyboardAvoidingView
-          behavior='padding'
-          style={{ flex: 1, backgroundColor: '#ffffff' }}
+          behavior="padding"
+          style={{ flex: 1, backgroundColor: "#ffffff" }}
         >
           <ModalHeader
             title={titleText}
             actionText={actionText}
             onCancel={() => {
-              const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
-              trackWithProperties(this.props.initializeFromState ?
-                  E.EDIT_TRIBE_MODAL_CANCELLED : E.CREATE_TRIBE_MODAL_CANCELLED,
-                  {'DurationSec': durationSec});
+              const durationSec =
+                (new Date().getTime() - this.startTime.getTime()) / 1000;
+              trackWithProperties(
+                this.props.initializeFromState
+                  ? E.EDIT_TRIBE_MODAL_CANCELLED
+                  : E.CREATE_TRIBE_MODAL_CANCELLED,
+                { DurationSec: durationSec }
+              );
               this.props.cancelCreatingNewTribe();
             }}
             onAction={handleSubmit(this.handleCreate)}
             actionDisabled={this.props.uploading}
           />
-          <ScrollView
-            style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
-          >
+          <ScrollView style={{ borderTopColor: "#e9e9e9", borderTopWidth: 1 }}>
             <View style={{ flex: 1, padding: 20 }}>
               {this.renderTribeName()}
               {this.renderTribeDescription()}
@@ -425,7 +449,6 @@ class CreateTribeModal extends React.Component {
               {this.renderOptions()}
               {this.renderImageSelection()}
             </View>
-
           </ScrollView>
         </KeyboardAvoidingView>
       </MenuProvider>
@@ -434,12 +457,12 @@ class CreateTribeModal extends React.Component {
 }
 
 CreateTribeModal = reduxForm({
-  form: 'createTribeModal',
-  enableReinitialize: true
+  form: "createTribeModal",
+  enableReinitialize: true,
 })(CreateTribeModal);
 
-const mapStateToProps = state => {
-  const selector = formValueSelector('createTribeModal');
+const mapStateToProps = (state) => {
+  const selector = formValueSelector("createTribeModal");
   const { user } = state.user;
   const { profile } = user;
   const { uploading } = state.newTribe;
@@ -447,39 +470,36 @@ const mapStateToProps = state => {
   return {
     user,
     profile,
-    name: selector(state, 'name'),
-    membersCanInvite: selector(state, 'membersCanInvite'),
-    isPubliclyVisible: selector(state, 'isPubliclyVisible'),
-    membershipLimit: selector(state, 'membershipLimit'),
-    description: selector(state, 'description'),
-    picture: selector(state, 'picture'),
+    name: selector(state, "name"),
+    membersCanInvite: selector(state, "membersCanInvite"),
+    isPubliclyVisible: selector(state, "isPubliclyVisible"),
+    membershipLimit: selector(state, "membershipLimit"),
+    description: selector(state, "description"),
+    picture: selector(state, "picture"),
     formVals: state.form.createTribeModal,
-    uploading
+    uploading,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    cancelCreatingNewTribe,
-    createNewTribe,
-    openCameraRoll,
-    openCamera
-  }
-)(CreateTribeModal);
+export default connect(mapStateToProps, {
+  cancelCreatingNewTribe,
+  createNewTribe,
+  openCameraRoll,
+  openCamera,
+})(CreateTribeModal);
 
 const styles = {
   sectionMargin: {
-    marginTop: 20
+    marginTop: 20,
   },
   inputContainerStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 5,
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: '#e9e9e9',
-    shadowColor: '#ddd',
+    borderColor: "#e9e9e9",
+    shadowColor: "#ddd",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.8,
     shadowRadius: 1,
@@ -492,64 +512,64 @@ const styles = {
   },
   titleTextStyle: {
     fontSize: 11,
-    color: '#a1a1a1',
-    padding: 2
+    color: "#a1a1a1",
+    padding: 2,
   },
   standardInputStyle: {
     flex: 1,
     fontSize: 12,
     padding: 13,
     paddingRight: 14,
-    paddingLeft: 14
+    paddingLeft: 14,
   },
   goalInputStyle: {
     fontSize: 20,
     padding: 20,
     paddingRight: 15,
-    paddingLeft: 15
+    paddingLeft: 15,
   },
   inputStyle: {
     paddingTop: 6,
     paddingBottom: 6,
     padding: 10,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 22,
   },
   cancelIconStyle: {
     height: 20,
     width: 20,
-    justifyContent: 'flex-end'
+    justifyContent: "flex-end",
   },
   mediaStyle: {
     height: 150,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
   },
   actionIconWrapperStyle: {
-    backgroundColor: '#fafafa',
+    backgroundColor: "#fafafa",
     padding: 10,
     paddingLeft: 15,
     paddingRight: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 4,
   },
   actionIconStyle: {
-    tintColor: '#4a4a4a',
+    tintColor: "#4a4a4a",
     height: 15,
-    width: 18
+    width: 18,
   },
   borderStyle: {
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: '#e9e9e9',
-    shadowColor: '#ddd',
+    borderColor: "#e9e9e9",
+    shadowColor: "#ddd",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.8,
     shadowRadius: 1,
   },
   // Menu related style
   backdrop: {
-    backgroundColor: 'transparent'
-  }
+    backgroundColor: "transparent",
+  },
 };

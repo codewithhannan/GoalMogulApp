@@ -1,103 +1,121 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   View,
   Text,
   Image,
   ActionSheetIOS,
-  TouchableOpacity
-} from 'react-native';
-import { connect } from 'react-redux';
-import { Button } from 'react-native-elements';
+  TouchableOpacity,
+} from "react-native";
+import { connect } from "react-redux";
+import { Button } from "react-native-elements";
 
 // Components
-import Name from '../../Common/Name';
+import Name from "../../Common/Name";
 
 // Assets
-import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
+import defaultUserProfile from "../../../asset/utils/defaultUserProfile.png";
 
 // Actions
-import { updateFriendship, openProfile } from '../../../actions';
+import { updateFriendship, openProfile } from "../../../actions";
 
 // Styles
-import {
-  cardBoxShadow
-} from '../../../styles';
-import { IMAGE_BASE_URL } from '../../../Utils/Constants';
+import { cardBoxShadow } from "../../../styles";
+import { IMAGE_BASE_URL } from "../../../Utils/Constants";
 
-const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
+const FRIENDSHIP_BUTTONS = ["Withdraw request", "Cancel"];
 const WITHDRAW_INDEX = 0;
 const CANCEL_INDEX = 1;
 
-const ACCEPT_BUTTONS = ['Accept', 'Remove', 'Cancel'];
+const ACCEPT_BUTTONS = ["Accept", "Remove", "Cancel"];
 const ACCPET_INDEX = 0;
 const ACCPET_REMOVE_INDEX = 1;
 const ACCEPT_CANCEL_INDEX = 2;
 
-const TAB_KEY_OUTGOING = 'requests.outgoing';
-const TAB_KEY_INCOMING = 'requests.incoming';
+const TAB_KEY_OUTGOING = "requests.outgoing";
+const TAB_KEY_INCOMING = "requests.incoming";
 
 class RequestCard extends Component {
   state = {
     requested: true,
-  }
+  };
 
   componentWillReceiveProps(props) {
     // console.log('new props for meet card are: ', props);
   }
 
   onRespondClicked = (friendshipId, userId) => {
-    ActionSheetIOS.showActionSheetWithOptions({
-      options: ACCEPT_BUTTONS,
-      cancelButtonIndex: ACCEPT_CANCEL_INDEX,
-    },
-    (buttonIndex) => {
-      console.log('button clicked', ACCEPT_BUTTONS[buttonIndex]);
-      switch (buttonIndex) {
-        case ACCPET_INDEX:
-          this.props.updateFriendship(userId, friendshipId, 'acceptFriend', TAB_KEY_INCOMING, null);
-          break;
-        case ACCPET_REMOVE_INDEX:
-          this.props.updateFriendship(userId, friendshipId, 'deleteFriend', TAB_KEY_INCOMING, null);
-          break;
-        default:
-          return;
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: ACCEPT_BUTTONS,
+        cancelButtonIndex: ACCEPT_CANCEL_INDEX,
+      },
+      (buttonIndex) => {
+        console.log("button clicked", ACCEPT_BUTTONS[buttonIndex]);
+        switch (buttonIndex) {
+          case ACCPET_INDEX:
+            this.props.updateFriendship(
+              userId,
+              friendshipId,
+              "acceptFriend",
+              TAB_KEY_INCOMING,
+              null
+            );
+            break;
+          case ACCPET_REMOVE_INDEX:
+            this.props.updateFriendship(
+              userId,
+              friendshipId,
+              "deleteFriend",
+              TAB_KEY_INCOMING,
+              null
+            );
+            break;
+          default:
+            return;
+        }
       }
-    });
-  }
+    );
+  };
 
   onInvitedClicked = (friendshipId, userId) => {
-    ActionSheetIOS.showActionSheetWithOptions({
-      options: FRIENDSHIP_BUTTONS,
-      cancelButtonIndex: CANCEL_INDEX,
-    },
-    (buttonIndex) => {
-      console.log('button clicked', FRIENDSHIP_BUTTONS[buttonIndex]);
-      switch (buttonIndex) {
-        case WITHDRAW_INDEX:
-          this.props.updateFriendship(
-            userId,
-            friendshipId,
-            'deleteFriend',
-            TAB_KEY_OUTGOING,
-            () => {
-              this.setState({ requested: false });
-            }
-          );
-          break;
-        default:
-          return;
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: FRIENDSHIP_BUTTONS,
+        cancelButtonIndex: CANCEL_INDEX,
+      },
+      (buttonIndex) => {
+        console.log("button clicked", FRIENDSHIP_BUTTONS[buttonIndex]);
+        switch (buttonIndex) {
+          case WITHDRAW_INDEX:
+            this.props.updateFriendship(
+              userId,
+              friendshipId,
+              "deleteFriend",
+              TAB_KEY_OUTGOING,
+              () => {
+                this.setState({ requested: false });
+              }
+            );
+            break;
+          default:
+            return;
+        }
       }
-    });
-  }
+    );
+  };
 
   renderProfileImage(item) {
     const { profile } = item.user;
     if (!profile) return null;
     const { image } = profile;
-    let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
+    let profileImage = (
+      <Image style={styles.imageStyle} source={defaultUserProfile} />
+    );
     if (image) {
       const imageUrl = `${IMAGE_BASE_URL}${image}`;
-      profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
+      profileImage = (
+        <Image style={styles.imageStyle} source={{ uri: imageUrl }} />
+      );
     }
     return profileImage;
   }
@@ -106,10 +124,10 @@ class RequestCard extends Component {
     const { friendshipId, user } = item;
     const userId = user._id;
     switch (this.props.type) {
-      case 'outgoing': {
+      case "outgoing": {
         return (
           <Button
-            title='Invited'
+            title="Invited"
             titleStyle={styles.buttonTextStyle}
             clear
             buttonStyle={styles.buttonStyle}
@@ -117,10 +135,10 @@ class RequestCard extends Component {
           />
         );
       }
-      case 'incoming': {
+      case "incoming": {
         return (
           <Button
-            title='Respond'
+            title="Respond"
             titleStyle={styles.buttonTextStyle}
             clear
             buttonStyle={styles.buttonStyle}
@@ -139,7 +157,9 @@ class RequestCard extends Component {
     const { name } = user;
     return (
       <View style={styles.infoContainerStyle}>
-        <View style={{ flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
+        <View
+          style={{ flexDirection: "row", marginRight: 6, alignItems: "center" }}
+        >
           <Name text={name} />
         </View>
       </View>
@@ -179,7 +199,7 @@ class RequestCard extends Component {
           <Text
             style={styles.titleTextStyle}
             numberOfLines={1}
-            ellipsizeMode='tail'
+            ellipsizeMode="tail"
           >
             <Text style={styles.detailTextStyle}>{profile.occupation}</Text>
           </Text>
@@ -210,7 +230,7 @@ class RequestCard extends Component {
           <Text
             style={styles.jobTitleTextStyle}
             numberOfLines={1}
-            ellipsizeMode='tail'
+            ellipsizeMode="tail"
           >
             {headline}
           </Text>
@@ -227,21 +247,21 @@ class RequestCard extends Component {
 
 const styles = {
   containerStyle: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 5,
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 8,
     paddingBottom: 8,
-    alignItems: 'center',
-    backgroundColor: '#ffffff'
+    alignItems: "center",
+    backgroundColor: "#ffffff",
   },
   bodyContainerStyle: {
     marginLeft: 8,
     flex: 1,
   },
   infoContainerStyle: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   imageStyle: {
     height: 48,
@@ -250,68 +270,64 @@ const styles = {
   },
   buttonContainerStyle: {
     marginLeft: 8,
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   buttonStyle: {
     width: 70,
     height: 26,
     borderWidth: 1,
-    borderColor: '#17B3EC',
+    borderColor: "#17B3EC",
     borderRadius: 13,
   },
   buttonTextStyle: {
-    color: '#17B3EC',
+    color: "#17B3EC",
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
     paddingLeft: 1,
     padding: 0,
-    alignSelf: 'center'
+    alignSelf: "center",
   },
   buttonIconStyle: {
-    marginTop: 1
+    marginTop: 1,
   },
-  needContainerStyle: {
-
-  },
+  needContainerStyle: {},
   titleTextStyle: {
-    color: '#17B3EC',
+    color: "#17B3EC",
     fontSize: 11,
     paddingTop: 1,
     paddingBottom: 1,
-    marginTop: 3
+    marginTop: 3,
   },
   detailTextStyle: {
-    color: '#000000',
-    paddingLeft: 3
+    color: "#000000",
+    paddingLeft: 3,
   },
   jobTitleTextStyle: {
-    color: '#17B3EC',
+    color: "#17B3EC",
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: "800",
     paddingTop: 5,
-    paddingBottom: 3
+    paddingBottom: 3,
   },
   friendTextStyle: {
     paddingLeft: 10,
-    color: '#17B3EC',
+    color: "#17B3EC",
     fontSize: 9,
-    fontWeight: '800',
-    maxWidth: 120
-  }
+    fontWeight: "800",
+    maxWidth: 120,
+  },
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { userId } = state.user;
 
   return {
-    userId
+    userId,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    updateFriendship,
-    openProfile
+export default connect(mapStateToProps, {
+  updateFriendship,
+  openProfile,
 })(RequestCard);

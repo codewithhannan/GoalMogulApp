@@ -1,70 +1,71 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity
-} from 'react-native';
-import timeago from 'timeago.js';
-import _ from 'lodash';
-import { connect } from 'react-redux';
+import React from "react";
+import { View, Text, Image, TouchableOpacity } from "react-native";
+import timeago from "timeago.js";
+import _ from "lodash";
+import { connect } from "react-redux";
 
 // Components
-import ProfileImage from '../../Common/ProfileImage';
-import Timestamp from '../../Goal/Common/Timestamp';
-import DelayedButton from '../../Common/Button/DelayedButton';
+import ProfileImage from "../../Common/ProfileImage";
+import Timestamp from "../../Goal/Common/Timestamp";
+import DelayedButton from "../../Common/Button/DelayedButton";
 
 // Assets
-import bulb from '../../../asset/utils/bulb.png';
-import forward from '../../../asset/utils/right_arrow.png';
+import bulb from "../../../asset/utils/bulb.png";
+import forward from "../../../asset/utils/right_arrow.png";
 
 // Actions
 import {
   openGoalDetail,
-  openGoalDetailById
-} from '../../../redux/modules/home/mastermind/actions';
+  openGoalDetailById,
+} from "../../../redux/modules/home/mastermind/actions";
 
 // Constants
-const DEBUG_KEY = '[ UI NotificationNeedCard ]';
+const DEBUG_KEY = "[ UI NotificationNeedCard ]";
 
 class NotificationCard extends React.Component {
-
   /**
    * When light bulb icon is clicked, it opens goal details and then
    * Opens suggestion modal
    */
   handleOnSuggestion = (item) => {
-    if (item !== null && !_.isEmpty(item) && item.goalRef !== null && !_.isEmpty(item.goalRef)) {
+    if (
+      item !== null &&
+      !_.isEmpty(item) &&
+      item.goalRef !== null &&
+      !_.isEmpty(item.goalRef)
+    ) {
       const initialProps = {
-        focusType: 'need',
+        focusType: "need",
         focusRef: item._id,
         // commentBox is passed in to GoalDetailCardV3 as initial
         // commentBox: true,
-        initialShowSuggestionModal: true
+        initialShowSuggestionModal: true,
       };
       return this.props.openGoalDetailById(item.goalRef._id, initialProps);
     }
     console.warn(`${DEBUG_KEY}: invalid item: `, item);
-  }
+  };
 
   /**
    * When light bulb icon is clicked, it opens goal details
    */
   handleOnOpen = (item) => {
-    if (item !== null && !_.isEmpty(item) && item.goalRef !== null && !_.isEmpty(item.goalRef)) {
+    if (
+      item !== null &&
+      !_.isEmpty(item) &&
+      item.goalRef !== null &&
+      !_.isEmpty(item.goalRef)
+    ) {
       const { _id } = item;
       // console.log(`${DEBUG_KEY}: i am here with item:`, item);
-      return this.props.openGoalDetail(
-        item.goalRef, 
-        {
-          focusType: 'need', 
-          focusRef: _id, 
-          initialShowSuggestionModal: false 
-        }
-      );
+      return this.props.openGoalDetail(item.goalRef, {
+        focusType: "need",
+        focusRef: _id,
+        initialShowSuggestionModal: false,
+      });
     }
     console.warn(`${DEBUG_KEY}: invalid item: `, item);
-  }
+  };
 
   renderProfileImage(item) {
     const { goalRef } = item;
@@ -96,11 +97,19 @@ class NotificationCard extends React.Component {
     return (
       <View style={{ flex: 1, marginLeft: 10 }}>
         <Text
-          style={{ flexWrap: 'wrap', color: 'black', fontSize: 13, marginTop: 2 }}
+          style={{
+            flexWrap: "wrap",
+            color: "black",
+            fontSize: 13,
+            marginTop: 2,
+          }}
           numberOfLines={2}
-          ellipsizeMode='tail'
+          ellipsizeMode="tail"
         >
-          <Text style={{ fontWeight: '700' }}>{name}{': '}</Text>
+          <Text style={{ fontWeight: "700" }}>
+            {name}
+            {": "}
+          </Text>
           {text}
         </Text>
         <View style={{ marginBottom: 3, marginTop: 1 }}>
@@ -112,14 +121,21 @@ class NotificationCard extends React.Component {
 
   renderActionIcons(item) {
     return (
-      <View style={{ flexDirection: 'row', borderLeftWidth: 0.5, borderColor: '#dbdbdb', marginLeft: 2 }}>
-        <TouchableOpacity 
+      <View
+        style={{
+          flexDirection: "row",
+          borderLeftWidth: 0.5,
+          borderColor: "#dbdbdb",
+          marginLeft: 2,
+        }}
+      >
+        <TouchableOpacity
           activeOpacity={0.6}
-          style={{ ...styles.iconContainerStyle, backgroundColor: '#fdf9e5' }}
+          style={{ ...styles.iconContainerStyle, backgroundColor: "#fdf9e5" }}
           onPress={() => this.handleOnSuggestion(item)}
         >
           <Image
-            style={{ ...styles.iconStyle, tintColor: '#f6c44f' }}
+            style={{ ...styles.iconStyle, tintColor: "#f6c44f" }}
             source={bulb}
           />
         </TouchableOpacity>
@@ -145,11 +161,14 @@ class NotificationCard extends React.Component {
     if (!item) return null;
     const { description, goalRef } = item;
     if (!description || !goalRef) {
-      console.warn(`${DEBUG_KEY}: no description or goalRef for need feed: `, item);
+      console.warn(
+        `${DEBUG_KEY}: no description or goalRef for need feed: `,
+        item
+      );
     }
 
     return (
-      <DelayedButton 
+      <DelayedButton
         activeOpacity={0.6}
         style={styles.cardContainerStyle}
         onPress={() => this.handleOnOpen(item)}
@@ -165,28 +184,28 @@ class NotificationCard extends React.Component {
 
 const styles = {
   cardContainerStyle: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 12,
     paddingTop: 10,
     paddingBottom: 10,
-    alignItems: 'center'
+    alignItems: "center",
   },
   imageContainerStyle: {
     borderWidth: 0.5,
     padding: 0.5,
-    borderColor: 'lightgray',
-    alignItems: 'center',
+    borderColor: "lightgray",
+    alignItems: "center",
     borderRadius: 6,
-    alignSelf: 'center',
-    backgroundColor: 'white'
+    alignSelf: "center",
+    backgroundColor: "white",
   },
   iconContainerStyle: {
     height: 36,
     width: 36,
     borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 12
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 12,
   },
   iconStyle: {
     height: 16,
@@ -194,20 +213,17 @@ const styles = {
     borderRadius: 8,
   },
   defaultImageStyle: {
-    width: 44, 
-    height: 48, 
-    borderRadius: 5, 
-    marginLeft: 3, 
-    marginRight: 3, 
-    marginTop: 1, 
-    marginBottom: 1
-  }
+    width: 44,
+    height: 48,
+    borderRadius: 5,
+    marginLeft: 3,
+    marginRight: 3,
+    marginTop: 1,
+    marginBottom: 1,
+  },
 };
 
-export default connect(
-  null,
-  {
-    openGoalDetail,
-    openGoalDetailById
-  }
-)(NotificationCard);
+export default connect(null, {
+  openGoalDetail,
+  openGoalDetailById,
+})(NotificationCard);

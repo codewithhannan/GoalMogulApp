@@ -1,10 +1,8 @@
-import { createSelector } from 'reselect';
-import _ from 'lodash';
-import {
-  INITIAL_EVENT_PAGE
-} from './Events';
+import { createSelector } from "reselect";
+import _ from "lodash";
+import { INITIAL_EVENT_PAGE } from "./Events";
 
-const DEBUG_KEY = '[ Selector Event ]';
+const DEBUG_KEY = "[ Selector Event ]";
 
 const getEventParticipants = (state) => {
   if (state.event.item) {
@@ -28,14 +26,14 @@ const getMyEventMemberNavigationStates = (state) => {
   const { memberNavigationState, memberDefaultRoutes } = state.myEvent;
   return {
     memberNavigationState,
-    memberDefaultRoutes
+    memberDefaultRoutes,
   };
 };
 
 /**
  * Get event participants by eventId
- * @param {*} state 
- * @param {*} eventId 
+ * @param {*} state
+ * @param {*} eventId
  */
 const getEventParticipantsById = (state, eventId) => {
   const events = state.events;
@@ -52,49 +50,56 @@ const getEventParticipantsById = (state, eventId) => {
 export const getUserStatus = createSelector(
   [getEventParticipants, getUserId],
   (participants, userId) => {
-    if (!participants) return '';
+    if (!participants) return "";
 
     let status;
     participants.map((participant) => {
       // Participant can be null
-      if (participant.participantRef && participant.participantRef._id === userId) {
+      if (
+        participant.participantRef &&
+        participant.participantRef._id === userId
+      ) {
         status = participant.rsvp;
       }
-      return '';
+      return "";
     });
     return status;
   }
 );
 
-export const makeGetEventUserStatusById = () => createSelector(
-  [getEventParticipantsById, getUserId],
-  (participants, userId) => {
-    if (!participants) return '';
+export const makeGetEventUserStatusById = () =>
+  createSelector(
+    [getEventParticipantsById, getUserId],
+    (participants, userId) => {
+      if (!participants) return "";
 
-    let status;
-    participants.map((participant) => {
-      // console.log(`${DEBUG_KEY}: partiipant is: `, participant);
-      // Participant can be null
-      if (participant.participantRef && participant.participantRef._id === userId) {
-        status = participant.rsvp;
-      }
-      return '';
-    });
-    return status;
-  }
-);
+      let status;
+      participants.map((participant) => {
+        // console.log(`${DEBUG_KEY}: partiipant is: `, participant);
+        // Participant can be null
+        if (
+          participant.participantRef &&
+          participant.participantRef._id === userId
+        ) {
+          status = participant.rsvp;
+        }
+        return "";
+      });
+      return status;
+    }
+  );
 
 export const getMyEventUserStatus = createSelector(
   [getMyEventParticipants, getUserId],
   (participants, userId) => {
-    if (!participants) return '';
+    if (!participants) return "";
 
     let status;
     participants.map((participant) => {
       if (participant.participantRef._id === userId) {
         status = participant.rsvp;
       }
-      return '';
+      return "";
     });
     return status;
   }
@@ -104,32 +109,35 @@ export const getMyEventUserStatus = createSelector(
 export const participantSelector = createSelector(
   [getParticipantsFilter, getEventParticipants],
   (filter, participants) => {
-    if (!participants) return '';
+    if (!participants) return "";
 
     return participants.filter((participant) => participant.rsvp === filter);
   }
 );
 
 export const getParticipantsFilterById = (state, eventId, pageId) => {
-  const item = getEventPageItem(state, eventId, pageId, 'participantsFilter');
+  const item = getEventPageItem(state, eventId, pageId, "participantsFilter");
   return item;
 };
 
-export const makeGetEventParticipantSelector = () => createSelector(
-  [getEventById, getParticipantsFilterById],
-  (event, participantsFilter) => {
-    if (!event || _.isEmpty(event)) return '';
-    const participants = _.get(event, 'participants');
+export const makeGetEventParticipantSelector = () =>
+  createSelector(
+    [getEventById, getParticipantsFilterById],
+    (event, participantsFilter) => {
+      if (!event || _.isEmpty(event)) return "";
+      const participants = _.get(event, "participants");
 
-    if (!participants || _.isEmpty(participants)) return '';
-    return participants.filter((participant) => participant.rsvp === participantsFilter);
-  }
-);
+      if (!participants || _.isEmpty(participants)) return "";
+      return participants.filter(
+        (participant) => participant.rsvp === participantsFilter
+      );
+    }
+  );
 
 export const myEventParticipantSelector = createSelector(
   [getMyParticipantsFilter, getMyEventParticipants],
   (filter, participants) => {
-    if (!participants) return '';
+    if (!participants) return "";
 
     return participants.filter((participant) => participant.rsvp === filter);
   }
@@ -171,20 +179,19 @@ export const getMyEventMemberNavigationState = createSelector(
     const navigationStateToReturn = _.cloneDeep(memberNavigationState);
 
     if (!members || members.length === 0) {
-      return _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
+      return _.set(navigationStateToReturn, "routes", memberDefaultRoutes);
     }
 
     let isAdmin;
     members.forEach((member) => {
-      if (member.memberRef._id === userId
-        && (member.category === 'Admin')) {
+      if (member.memberRef._id === userId && member.category === "Admin") {
         isAdmin = true;
       }
     });
 
     return isAdmin
       ? navigationStateToReturn
-      : _.set(navigationStateToReturn, 'routes', memberDefaultRoutes);
+      : _.set(navigationStateToReturn, "routes", memberDefaultRoutes);
   }
 );
 
@@ -200,7 +207,7 @@ const getEventPage = (state, eventId, pageId) => {
   const events = state.events;
   if (!_.has(events, `${eventId}.${pageId}`)) {
     return {
-      ...INITIAL_EVENT_PAGE
+      ...INITIAL_EVENT_PAGE,
     };
   }
   return _.get(events, `${eventId}.${pageId}`);
@@ -208,12 +215,14 @@ const getEventPage = (state, eventId, pageId) => {
 
 const getEntityByIds = (ids, entities, type) => {
   let ret = [];
-  ret = _.uniq(ids).map((id) => {
+  ret = _.uniq(ids)
+    .map((id) => {
       if (_.has(entities, id)) {
-          return _.get(entities, `${id}.${type}`);
+        return _.get(entities, `${id}.${type}`);
       }
       return {};
-  }).filter(g => !_.isEmpty(g));
+    })
+    .filter((g) => !_.isEmpty(g));
   return ret;
 };
 
@@ -228,7 +237,7 @@ const getEventFeed = (state, eventId, pageId) => {
     return [];
   }
 
-  const item = getEventPageItem(state, eventId, pageId, 'feed');
+  const item = getEventPageItem(state, eventId, pageId, "feed");
   return item || [];
 };
 
@@ -242,24 +251,22 @@ const getEventPageItem = (state, eventId, pageId, path) => {
     return undefined;
   }
 
-  const pathToGet = path 
+  const pathToGet = path
     ? `${eventId}.${pageId}.${path}`
     : `${eventId}.${pageId}`;
 
   return _.get(events, `${pathToGet}`);
 };
 
-export const makeGetEventFeed = () => createSelector(
-  [getEventFeed, getFeed],
-  (feedIds, feed) => getEntityByIds(feedIds, feed, 'post')
-);
+export const makeGetEventFeed = () =>
+  createSelector([getEventFeed, getFeed], (feedIds, feed) =>
+    getEntityByIds(feedIds, feed, "post")
+  );
 
-export const makeGetEventPageById = () => createSelector(
-  [getEventById, getEventPage],
-  (event, eventPage) => {
+export const makeGetEventPageById = () =>
+  createSelector([getEventById, getEventPage], (event, eventPage) => {
     return {
       event,
-      eventPage
-    }
-  }
-);
+      eventPage,
+    };
+  });

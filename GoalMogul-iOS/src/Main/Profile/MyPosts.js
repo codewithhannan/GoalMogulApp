@@ -1,35 +1,29 @@
-import React, { Component } from 'react';
-import {
-  View,
-  FlatList,
-  ActivityIndicator
-} from 'react-native';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { View, FlatList, ActivityIndicator } from "react-native";
+import { connect } from "react-redux";
 
 // Components
-import GoalFilterBar from '../Common/GoalFilterBar';
-import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard';
+import GoalFilterBar from "../Common/GoalFilterBar";
+import ProfilePostCard from "../Post/PostProfileCard/ProfilePostCard";
 
 // actions
 import {
   handleTabRefresh,
   handleProfileTabOnLoadMore,
-  changeFilter
-} from '../../actions';
+  changeFilter,
+} from "../../actions";
 
-import {
-  openPostDetail
-} from '../../redux/modules/feed/post/PostActions';
+import { openPostDetail } from "../../redux/modules/feed/post/PostActions";
 
 // Selectors
-import { 
+import {
   makeGetUserPosts,
-  makeGetUserPageInfoByType
-} from '../../redux/modules/User/Selector';
+  makeGetUserPageInfoByType,
+} from "../../redux/modules/User/Selector";
 
 // tab key
-const key = 'posts';
-const DEBUG_KEY = '[ UI Profile Posts ]';
+const key = "posts";
+const DEBUG_KEY = "[ UI Profile Posts ]";
 
 class MyPosts extends Component {
   constructor(props) {
@@ -38,18 +32,18 @@ class MyPosts extends Component {
     this.handleRefresh = this.handleRefresh.bind(this);
   }
 
-  _keyExtractor = (item) => item._id
+  _keyExtractor = (item) => item._id;
 
   handleRefresh = () => {
     const { userId, pageId } = this.props;
     console.log(`${DEBUG_KEY}: refreshing tab`, key);
     this.props.handleTabRefresh(key, userId, pageId);
-  }
+  };
 
   handleOnLoadMore = () => {
     const { userId, pageId } = this.props;
     this.props.handleProfileTabOnLoadMore(key, userId, pageId);
-  }
+  };
 
   /**
    * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
@@ -57,7 +51,7 @@ class MyPosts extends Component {
   handleOnMenuChange = (type, value) => {
     const { userId, pageId } = this.props;
     this.props.changeFilter(key, type, value, { userId, pageId });
-  }
+  };
 
   renderListFooter() {
     const { loading, data } = this.props;
@@ -66,10 +60,10 @@ class MyPosts extends Component {
       return (
         <View
           style={{
-            paddingVertical: 15
+            paddingVertical: 15,
           }}
         >
-          <ActivityIndicator size='small' />
+          <ActivityIndicator size="small" />
         </View>
       );
     }
@@ -78,18 +72,18 @@ class MyPosts extends Component {
   renderItem = ({ item }) => {
     // TODO: render item
     return (
-      <ProfilePostCard 
-        item={item} 
+      <ProfilePostCard
+        item={item}
         onPress={(item) => {
           const initialProps = {
-            initialFocusCommentBox: true
+            initialFocusCommentBox: true,
           };
           this.props.openPostDetail(item, initialProps);
         }}
         hasActionButton
       />
     );
-  }
+  };
 
   render() {
     const { refreshing, data } = this.props;
@@ -127,22 +121,21 @@ const styles = {
   labelContainerStyle: {
     marginTop: 10,
     marginBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 5,
-    justifyContent: 'center'
+    justifyContent: "center",
   },
   labelTextStyle: {
-    fontWeight: '600',
-    color: '#969696',
-    fontSize: 11
+    fontWeight: "600",
+    color: "#969696",
+    fontSize: 11,
   },
   buttonTextStyle: {
     marginLeft: 5,
-    color: '#17B3EC',
-    fontSize: 11
-  }
-
+    color: "#17B3EC",
+    fontSize: 11,
+  },
 };
 
 const makeMapStateToProps = () => {
@@ -152,30 +145,30 @@ const makeMapStateToProps = () => {
   const mapStateToProps = (state, props) => {
     const { pageId, userId } = props;
     const data = getUserPosts(state, userId, pageId);
-    const { 
-      loading, refreshing, filter, selectedTab 
-    } = getPageInfo(state, userId, pageId, 'posts');
+    const { loading, refreshing, filter, selectedTab } = getPageInfo(
+      state,
+      userId,
+      pageId,
+      "posts"
+    );
 
     // console.log(`${DEBUG_KEY}: user posts composed: `, userPosts.length);
-  
+
     return {
       selectedTab,
       data,
       loading,
       filter,
-      refreshing
+      refreshing,
     };
   };
 
   return mapStateToProps;
 };
 
-export default connect(
-  makeMapStateToProps,
-  {
-    handleTabRefresh,
-    handleProfileTabOnLoadMore,
-    changeFilter,
-    openPostDetail
-  }
-)(MyPosts);
+export default connect(makeMapStateToProps, {
+  handleTabRefresh,
+  handleProfileTabOnLoadMore,
+  changeFilter,
+  openPostDetail,
+})(MyPosts);

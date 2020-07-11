@@ -1,52 +1,52 @@
 import {
   REGISTRATION_ACCOUNT_FORM_CHANGE,
   ACCOUNT_UPDATE_PASSWORD_DONE,
-  ACCOUNT_UPDATE_PASSWORD
-} from './types';
+  ACCOUNT_UPDATE_PASSWORD,
+} from "./types";
 
-import { Actions } from 'react-native-router-flux';
-import { SubmissionError } from 'redux-form';
+import { Actions } from "react-native-router-flux";
+import { SubmissionError } from "redux-form";
 
-import { updatePassword } from '../Utils/ProfileUtils';
-import { auth as Auth } from '../redux/modules/auth/Auth';
+import { updatePassword } from "../Utils/ProfileUtils";
+import { auth as Auth } from "../redux/modules/auth/Auth";
 
-const DEBUG_KEY = '[ Action Account ]';
+const DEBUG_KEY = "[ Action Account ]";
 /* Registration Account Actions */
 export const handleOnFormChange = (value, prop) => {
   return {
-      type: REGISTRATION_ACCOUNT_FORM_CHANGE,
-      payload: { value, prop }
+    type: REGISTRATION_ACCOUNT_FORM_CHANGE,
+    payload: { value, prop },
   };
 };
 
 /* Profile Account Actions */
-export const handleUpdatePassword = values => {
+export const handleUpdatePassword = (values) => {
   return async (dispatch, getState) => {
     const { token } = getState().user;
     const { oldPassword, newPassword, confirmPassword } = values;
 
     if (newPassword !== confirmPassword) {
       throw new SubmissionError({
-        _error: 'New passwords does\'t match'
+        _error: "New passwords does't match",
       });
     }
     dispatch({
-      type: ACCOUNT_UPDATE_PASSWORD
-    })
+      type: ACCOUNT_UPDATE_PASSWORD,
+    });
 
     const result = await updatePassword({ oldPassword, newPassword, token })
       .then(async (res) => {
-        console.log('response for updating password is: ', res);
+        console.log("response for updating password is: ", res);
         await Auth.updatePassword(newPassword);
         return res;
       })
       .catch((err) => {
-        console.log('errro in updating password', err);
+        console.log("errro in updating password", err);
         dispatch({
-          type: ACCOUNT_UPDATE_PASSWORD_DONE
-        })
+          type: ACCOUNT_UPDATE_PASSWORD_DONE,
+        });
         throw new SubmissionError({
-          _error: err
+          _error: err,
         });
       });
     /*
@@ -55,12 +55,12 @@ export const handleUpdatePassword = values => {
     */
     if (!result) {
       throw new SubmissionError({
-        _error: 'Error updating password. Please try later.'
+        _error: "Error updating password. Please try later.",
       });
     }
     dispatch({
-      type: ACCOUNT_UPDATE_PASSWORD_DONE
-    })
+      type: ACCOUNT_UPDATE_PASSWORD_DONE,
+    });
     console.log(`${DEBUG_KEY}: result is: `, result);
     Actions.pop();
   };

@@ -1,25 +1,25 @@
-import React from 'react';
-import { Image, View, Text } from 'react-native';
-import { connect } from 'react-redux';
+import React from "react";
+import { Image, View, Text } from "react-native";
+import { connect } from "react-redux";
 
 /* Assets */
-import IconHome from '../../asset/footer/navigation/home.png';
-import IconBell from '../../asset/footer/navigation/bell.png';
-import IconProfile from '../../asset/footer/navigation/profile.png';
-import IconChat from '../../asset/footer/navigation/chat.png';
-import IconGroup from '../../asset/footer/navigation/group.png';
+import IconHome from "../../asset/footer/navigation/home.png";
+import IconBell from "../../asset/footer/navigation/bell.png";
+import IconProfile from "../../asset/footer/navigation/profile.png";
+import IconChat from "../../asset/footer/navigation/chat.png";
+import IconGroup from "../../asset/footer/navigation/group.png";
 
 /* Actions */
-import { updateChatCount } from '../../redux/modules/navigation/TabIconActions';
-import { fetchUnreadCount } from '../../redux/modules/notification/NotificationTabActions';
+import { updateChatCount } from "../../redux/modules/navigation/TabIconActions";
+import { fetchUnreadCount } from "../../redux/modules/notification/NotificationTabActions";
 
 /* Utils */
-import { Logger } from '../../redux/middleware/utils/Logger';
+import { Logger } from "../../redux/middleware/utils/Logger";
 
 const CHAT_COUNT_UPDATE_INTERVAL = 1000;
 const NOTIFICATION_COUNT_UPDATE_INTERVAL = 10000;
-const DEBUG_KEY = '[ UI TabIcon ]';
-const TUTORIAL_KEY = 'meet_tab_icon'
+const DEBUG_KEY = "[ UI TabIcon ]";
+const TUTORIAL_KEY = "meet_tab_icon";
 
 class TabIcon extends React.PureComponent {
   componentDidUpdate(prevProps) {
@@ -30,7 +30,7 @@ class TabIcon extends React.PureComponent {
 
   componentDidMount() {
     const { navigation } = this.props;
-    if (navigation.state.key == 'chatTab') {
+    if (navigation.state.key == "chatTab") {
       // chat count updater
       this.props.updateChatCount();
       this.refreshChatInterval = setInterval(() => {
@@ -38,11 +38,15 @@ class TabIcon extends React.PureComponent {
       }, CHAT_COUNT_UPDATE_INTERVAL);
     }
 
-    if (navigation.state.key === 'notificationTab') {
+    if (navigation.state.key === "notificationTab") {
       // notification count updater
       this.props.fetchUnreadCount();
       this.refreshNotificationInterval = setInterval(() => {
-        Logger.log(`${DEBUG_KEY}: [ Timer firing ] Fetching unread count.`, '', 4);
+        Logger.log(
+          `${DEBUG_KEY}: [ Timer firing ] Fetching unread count.`,
+          "",
+          4
+        );
         this.props.fetchUnreadCount();
       }, NOTIFICATION_COUNT_UPDATE_INTERVAL);
     }
@@ -59,10 +63,10 @@ class TabIcon extends React.PureComponent {
   }
 
   render() {
-    const { 
-      activeTintColor, 
-      inactiveTintColor, 
-      navigation, 
+    const {
+      activeTintColor,
+      inactiveTintColor,
+      navigation,
       focused,
       notificationCount,
       chatCount,
@@ -75,60 +79,56 @@ class TabIcon extends React.PureComponent {
       tintColor,
       height: 25,
       width: 35,
-      resizeMode: 'contain'
+      resizeMode: "contain",
     };
 
     switch (navigation.state.key) {
-      case 'homeTab':
+      case "homeTab":
         return (
           <View style={styles.iconContainerStyle}>
             <Image source={IconHome} style={style} />
           </View>
         );
-      case 'profileTab':
+      case "profileTab":
         return (
           <View style={styles.iconContainerStyle}>
             <Image source={IconProfile} style={style} />
           </View>
         );
-      case 'notificationTab':
+      case "notificationTab":
         return (
           <View style={styles.iconContainerStyle}>
-            {
-              (notificationCount && notificationCount > 0)
-              ? (
-                <View style={styles.notificationCountContainerStyle} zIndex={2}>
-                  <Text style={styles.notificationCountTextStyle}>{notificationCount}</Text>
-                </View>
-              ) : null
-            }
+            {notificationCount && notificationCount > 0 ? (
+              <View style={styles.notificationCountContainerStyle} zIndex={2}>
+                <Text style={styles.notificationCountTextStyle}>
+                  {notificationCount}
+                </Text>
+              </View>
+            ) : null}
             <Image source={IconBell} style={style} zIndex={1} />
           </View>
         );
-      case 'chatTab':
+      case "chatTab":
         return (
           <View style={styles.iconContainerStyle}>
-            {
-              (chatCount && chatCount > 0)
-              ? (
-                <View style={styles.notificationCountContainerStyle} zIndex={2}>
-                  <Text style={styles.notificationCountTextStyle}>{chatCount}</Text>
-                </View>
-              ) : null
-            }
+            {chatCount && chatCount > 0 ? (
+              <View style={styles.notificationCountContainerStyle} zIndex={2}>
+                <Text style={styles.notificationCountTextStyle}>
+                  {chatCount}
+                </Text>
+              </View>
+            ) : null}
             <Image source={IconChat} style={style} zIndex={1} />
           </View>
         );
-      case 'exploreTab':
+      case "exploreTab":
         return (
           <View style={styles.iconContainerStyle}>
             <Image source={IconGroup} style={style} />
           </View>
         );
       default:
-        return (
-          <Image source={IconHome} style={{ tintColor }} />
-        );
+        return <Image source={IconHome} style={{ tintColor }} />;
     }
   }
 }
@@ -137,30 +137,30 @@ const styles = {
   iconContainerStyle: {
     height: 48,
     width: 48,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
   },
   notificationCountContainerStyle: {
-    backgroundColor: '#fa5052',
+    backgroundColor: "#fa5052",
     height: 16,
     minWidth: 16,
     borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
     top: 2,
-    right: 1
+    right: 1,
   },
   notificationCountTextStyle: {
     fontSize: 10,
-    color: 'white',
+    color: "white",
     marginLeft: 4,
     marginRight: 3,
-    alignSelf: 'center'
-  }
+    alignSelf: "center",
+  },
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { unreadCount } = state.notification.unread;
   const { chatCount } = state.navigationTabBadging;
   const { activeChatRoomId } = state.chatRoom;
@@ -173,10 +173,7 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    updateChatCount,
-    fetchUnreadCount
-  }
-)(TabIcon);
+export default connect(mapStateToProps, {
+  updateChatCount,
+  fetchUnreadCount,
+})(TabIcon);

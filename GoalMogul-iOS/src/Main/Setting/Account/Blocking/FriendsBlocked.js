@@ -1,25 +1,21 @@
-import React, { Component } from 'react';
-import {
-  View,
-  FlatList,
-  ActivityIndicator
-} from 'react-native';
-import { connect } from 'react-redux';
-import { Actions } from 'react-native-router-flux';
+import React, { Component } from "react";
+import { View, FlatList, ActivityIndicator } from "react-native";
+import { connect } from "react-redux";
+import { Actions } from "react-native-router-flux";
 
 /* Components */
-import SearchBarHeader from '../../../Common/Header/SearchBarHeader';
-import FriendCard from './FriendCard';
-import EmptyResult from '../../../Common/Text/EmptyResult';
+import SearchBarHeader from "../../../Common/Header/SearchBarHeader";
+import FriendCard from "./FriendCard";
+import EmptyResult from "../../../Common/Text/EmptyResult";
 
 // Actions
-import { getBlockedUsers, friendsBlockedOnClose } from '../../../../actions';
+import { getBlockedUsers, friendsBlockedOnClose } from "../../../../actions";
 
 // selectors
-import { getBlockees } from '../../../../redux/modules/setting/selector';
-import { Logger } from '../../../../redux/middleware/utils/Logger';
+import { getBlockees } from "../../../../redux/modules/setting/selector";
+import { Logger } from "../../../../redux/middleware/utils/Logger";
 
-const DEBUG_KEY = '[ Component FriendsBlocked ]';
+const DEBUG_KEY = "[ Component FriendsBlocked ]";
 
 class FriendsBlocked extends Component {
   constructor(props) {
@@ -40,12 +36,12 @@ class FriendsBlocked extends Component {
   handleOnLoadMore = () => {
     console.log(`${DEBUG_KEY} load more`);
     this.props.getBlockedUsers(false);
-  }
+  };
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} refresh`);
     this.props.getBlockedUsers(true);
-  }
+  };
 
   _keyExtractor = (item) => item.blockId;
 
@@ -57,10 +53,10 @@ class FriendsBlocked extends Component {
       return (
         <View
           style={{
-            paddingVertical: 20
+            paddingVertical: 20,
           }}
         >
-          <ActivityIndicator size='small' />
+          <ActivityIndicator size="small" />
         </View>
       );
     }
@@ -71,7 +67,7 @@ class FriendsBlocked extends Component {
       <View style={{ flex: 1 }}>
         <SearchBarHeader
           backButton
-          rightIcon='empty'
+          rightIcon="empty"
           title="Block"
           onBackPress={() => Actions.pop()}
         />
@@ -82,8 +78,12 @@ class FriendsBlocked extends Component {
           onRefresh={this.handleRefresh.bind()}
           refreshing={this.props.refreshing}
           ListEmptyComponent={
-            this.props.refreshing ? null :
-            <EmptyResult text={'No blocked users'} textStyle={{ paddingTop: 200 }} />
+            this.props.refreshing ? null : (
+              <EmptyResult
+                text={"No blocked users"}
+                textStyle={{ paddingTop: 200 }}
+              />
+            )
           }
           ListFooterComponent={this.renderListFooter()}
         />
@@ -92,18 +92,18 @@ class FriendsBlocked extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { block } = state.setting;
   const { refreshing } = block;
 
   return {
     block,
     refreshing,
-    data: getBlockees(state)
+    data: getBlockees(state),
   };
 };
 
 export default connect(mapStateToProps, {
   getBlockedUsers,
-  friendsBlockedOnClose
+  friendsBlockedOnClose,
 })(FriendsBlocked);

@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
-import { View, FlatList } from 'react-native';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { View, FlatList } from "react-native";
+import { connect } from "react-redux";
 
 // Components
-import SearchUserCard from './SearchUserCard';
-import EmptyResult from '../../Common/Text/EmptyResult';
+import SearchUserCard from "./SearchUserCard";
+import EmptyResult from "../../Common/Text/EmptyResult";
 
 // actions
 import {
   refreshSearchResult,
-  onLoadMore
-} from '../../../redux/modules/search/SearchActions';
+  onLoadMore,
+} from "../../../redux/modules/search/SearchActions";
 
 // tab key
-const key = 'friends';
-const DEBUG_KEY = '[ Component FriendsSearch ]';
+const key = "friends";
+const DEBUG_KEY = "[ Component FriendsSearch ]";
 
 class FriendsSearch extends Component {
   _keyExtractor = (item) => item._id;
@@ -22,12 +22,12 @@ class FriendsSearch extends Component {
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing tab: `, key);
     this.props.refreshSearchResult(key);
-  }
+  };
 
   handleOnLoadMore = () => {
     console.log(`${DEBUG_KEY} Loading more for tab: `, key);
     this.props.onLoadMore(key);
-  }
+  };
 
   renderItem = ({ item }) => {
     return (
@@ -36,33 +36,34 @@ class FriendsSearch extends Component {
         item={item}
         onSelect={this.props.onSelect}
         type={this.props.type}
-      />  
+      />
     );
   };
 
   render() {
     return (
       <View style={{ flex: 1 }}>
-        {
-          (this.props.data.length === 0 && this.props.searchContent && !this.props.loading) ?
-            <EmptyResult text={'No Results'} />
-          :
-            <FlatList
-              data={this.props.data}
-              renderItem={this.renderItem}
-              keyExtractor={this._keyExtractor}
-              onEndReached={this.handleOnLoadMore}
-              onEndReachedThreshold={0.5}
-              onRefresh={this.handleRefresh}
-              refreshing={this.props.loading}
-            />
-        }
+        {this.props.data.length === 0 &&
+        this.props.searchContent &&
+        !this.props.loading ? (
+          <EmptyResult text={"No Results"} />
+        ) : (
+          <FlatList
+            data={this.props.data}
+            renderItem={this.renderItem}
+            keyExtractor={this._keyExtractor}
+            onEndReached={this.handleOnLoadMore}
+            onEndReachedThreshold={0.5}
+            onRefresh={this.handleRefresh}
+            refreshing={this.props.loading}
+          />
+        )}
       </View>
     );
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { friends, searchContent } = state.search;
   const { data, refreshing, loading } = friends;
 
@@ -71,14 +72,11 @@ const mapStateToProps = state => {
     data,
     refreshing,
     loading,
-    searchContent
+    searchContent,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    refreshSearchResult,
-    onLoadMore
-  }
-)(FriendsSearch);
+export default connect(mapStateToProps, {
+  refreshSearchResult,
+  onLoadMore,
+})(FriendsSearch);

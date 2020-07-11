@@ -2,19 +2,16 @@
  * This file contains actions for fetching comments for a specific goal and also
  * actions related to a specific comment
  */
-import {
-  Alert,
-  Keyboard
-} from 'react-native';
-import _ from 'lodash';
-import validator from 'validator';
+import { Alert, Keyboard } from "react-native";
+import _ from "lodash";
+import validator from "validator";
 import {
   COMMENT_LOAD,
   COMMENT_REFRESH_DONE,
   COMMENT_LOAD_DONE,
   COMMENT_LOAD_ERROR,
-  COMMENT_DELETE_SUCCESS
-} from './CommentReducers';
+  COMMENT_DELETE_SUCCESS,
+} from "./CommentReducers";
 
 import {
   COMMENT_NEW,
@@ -37,53 +34,61 @@ import {
 
   // Select searched suggestion item
   COMMENT_NEW_SUGGESTION_SELECT_ITEM,
-
   COMMENT_NEW_POST_START,
   COMMENT_NEW_POST_SUCCESS,
   COMMENT_NEW_POST_FAIL,
   COMMENT_NEW_POST_SUGGESTION_SUCCESS,
   COMMENT_NEW_SELECT_IMAGE,
-  COMMENT_NEW_UPLOAD_PICTURE_SUCCESS
-} from './NewCommentReducers';
+  COMMENT_NEW_UPLOAD_PICTURE_SUCCESS,
+} from "./NewCommentReducers";
 
+import { SUGGESTION_SEARCH_CLEAR_STATE } from "./SuggestionSearchReducers";
+
+import { getGoal } from "../../goal/selector";
+
+import { api as API } from "../../../middleware/api";
 import {
-  SUGGESTION_SEARCH_CLEAR_STATE
-} from './SuggestionSearchReducers';
-
+  queryBuilder,
+  switchCase,
+  sanitizeTags,
+} from "../../../middleware/utils";
+import ImageUtils from "../../../../Utils/ImageUtils";
 import {
-  getGoal
-} from '../../goal/selector';
+  trackWithProperties,
+  EVENT as E,
+} from "../../../../monitoring/segment";
 
-import { api as API } from '../../../middleware/api';
-import { queryBuilder, switchCase, sanitizeTags } from '../../../middleware/utils';
-import ImageUtils from '../../../../Utils/ImageUtils';
-import { trackWithProperties, EVENT as E } from '../../../../monitoring/segment';
-
-const DEBUG_KEY = '[ Action Comment ]';
-const BASE_ROUTE = 'secure/feed/comment';
+const DEBUG_KEY = "[ Action Comment ]";
+const BASE_ROUTE = "secure/feed/comment";
 
 // New comment related actions
-export const newCommentOnTextChange = (text, pageId) => (dispatch, getState) => {
+export const newCommentOnTextChange = (text, pageId) => (
+  dispatch,
+  getState
+) => {
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_TEXT_ON_CHANGE,
     payload: {
       text,
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 };
 
-export const newCommentOnTagsChange = (contentTags, pageId) => (dispatch, getState) => {
+export const newCommentOnTagsChange = (contentTags, pageId) => (
+  dispatch,
+  getState
+) => {
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_TAGS_ON_CHANGE,
     payload: {
       contentTags,
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 };
 
@@ -91,15 +96,18 @@ export const newCommentOnTagsChange = (contentTags, pageId) => (dispatch, getSta
  * Update the tags regular expression array
  * @param contentTagsReg: array of contentTagsReg
  */
-export const newCommentOnTagsRegChange = (contentTagsReg, pageId) => (dispatch, getState) => {
+export const newCommentOnTagsRegChange = (contentTagsReg, pageId) => (
+  dispatch,
+  getState
+) => {
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_TAGS_REG_ON_CHANGE,
     payload: {
       contentTagsReg,
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 };
 
@@ -108,15 +116,18 @@ export const newCommentOnTagsRegChange = (contentTagsReg, pageId) => (dispatch, 
 /**
  * Select an image for the comment
  */
-export const newCommentOnMediaRefChange = (mediaRef, pageId) => (dispatch, getState) => {
+export const newCommentOnMediaRefChange = (mediaRef, pageId) => (
+  dispatch,
+  getState
+) => {
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_SELECT_IMAGE,
     payload: {
       mediaRef,
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 };
 /**
@@ -124,47 +135,53 @@ export const newCommentOnMediaRefChange = (mediaRef, pageId) => (dispatch, getSt
  * @params commentId: id of the comment
  * @params updates: JsonObject of the updated comment
  */
-export const updateComment = (commentId, updates) => {
-
-};
+export const updateComment = (commentId, updates) => {};
 
 /**
  * action to delete a comment for a goal / post
  * @params commentId: id of the comment
  */
-export const deleteComment = (commentId, pageId, parentRef, parentType) => (dispatch, getState) => {
+export const deleteComment = (commentId, pageId, parentRef, parentType) => (
+  dispatch,
+  getState
+) => {
   const { token, userId } = getState().user;
   const { tab } = getState().navigation;
   const onSuccess = (res) => {
     console.log(`${DEBUG_KEY}: comment delete success with res: `, res);
-    trackWithProperties(E.COMMENT_DELETED, {'CommentId': commentId, 'UserId': userId});
+    trackWithProperties(E.COMMENT_DELETED, {
+      CommentId: commentId,
+      UserId: userId,
+    });
     dispatch({
       type: COMMENT_DELETE_SUCCESS,
       payload: {
         pageId,
         tab,
         commentId,
-        parentRef, 
-        parentType
-      }
+        parentRef,
+        parentType,
+      },
     });
-    Alert.alert('Success', 'Comment deleted successfully');
+    Alert.alert("Success", "Comment deleted successfully");
   };
 
   const onError = (err) => {
-    console.log(`${DEBUG_KEY}: delete comment ${commentId} failed with err: `, err);
-    Alert.alert('Failed to delete comment', 'Please try again later');
+    console.log(
+      `${DEBUG_KEY}: delete comment ${commentId} failed with err: `,
+      err
+    );
+    Alert.alert("Failed to delete comment", "Please try again later");
   };
 
-  API
-    .delete(`${BASE_ROUTE}?commentId=${commentId}`, {}, token)
+  API.delete(`${BASE_ROUTE}?commentId=${commentId}`, {}, token)
     .then((res) => {
-      if (res.status === '200' || res.status === 200 || res.isSuccess) {
+      if (res.status === "200" || res.status === 200 || res.isSuccess) {
         return onSuccess(res);
       }
       onError(res);
     })
-    .catch(err => onError(err));
+    .catch((err) => onError(err));
 };
 
 /**
@@ -173,13 +190,18 @@ export const deleteComment = (commentId, pageId, parentRef, parentType) => (disp
  */
 
 // User clicks on the comment button
-export const createComment = (commentDetail, pageId) =>
-(dispatch, getState) => {
+export const createComment = (commentDetail, pageId) => (
+  dispatch,
+  getState
+) => {
   // const { parentType, parentRef, commentType, replyToRef } = commentDetail;
   const { userId } = getState().user;
   const { tab } = getState().navigation;
-  console.log('Creating comment with commentDetail: ', commentDetail);
-  trackWithProperties(E.COMMENT_ADDED, {'CommentDetail': commentDetail, 'UserId': userId});
+  console.log("Creating comment with commentDetail: ", commentDetail);
+  trackWithProperties(E.COMMENT_ADDED, {
+    CommentDetail: commentDetail,
+    UserId: userId,
+  });
 
   dispatch({
     type: COMMENT_NEW,
@@ -187,17 +209,18 @@ export const createComment = (commentDetail, pageId) =>
       ...commentDetail,
       owner: userId,
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 };
 
 /**
  * Create comment as a suggestion as user enter focused content for a need or a step
  */
-export const createCommentForSuggestion = ({
-  commentDetail, suggestionFor, suggestionForRef }, pageId) =>
-(dispatch, getState) => {
+export const createCommentForSuggestion = (
+  { commentDetail, suggestionFor, suggestionForRef },
+  pageId
+) => (dispatch, getState) => {
   const { userId } = getState().user;
   const { tab } = getState().navigation;
 
@@ -210,8 +233,8 @@ export const createCommentForSuggestion = ({
       pageId,
       suggestionFor,
       suggestionForRef,
-      suggestionType: 'Custom'
-    }
+      suggestionType: "Custom",
+    },
   });
 
   // We don't pass in suggestionType because we want user to choose
@@ -221,17 +244,17 @@ export const createCommentForSuggestion = ({
       suggestionFor,
       suggestionForRef,
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 };
 
 // When user clicks on suggestion icon outside comment box
 // const { parentType, parentRef, commentType, replyToRef } = commentDetail;
 export const createCommentFromSuggestion = (
-  { commentDetail, suggestionForRef, suggestionFor }, pageId
-) =>
-(dispatch, getState) => {
+  { commentDetail, suggestionForRef, suggestionFor },
+  pageId
+) => (dispatch, getState) => {
   const { userId } = getState().user;
   const { tab } = getState().navigation;
 
@@ -241,8 +264,8 @@ export const createCommentFromSuggestion = (
       ...commentDetail,
       owner: userId,
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 
   dispatch({
@@ -251,35 +274,41 @@ export const createCommentFromSuggestion = (
       suggestionFor,
       suggestionForRef,
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 };
 
-export const resetCommentType = (commentType, pageId) => (dispatch, getState) => {
+export const resetCommentType = (commentType, pageId) => (
+  dispatch,
+  getState
+) => {
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_UPDATE_COMMENT_TYPE,
     payload: {
       commentType,
       pageId,
-      tab
-    }
+      tab,
+    },
   });
 };
 
 /**
  * Update the fields / properties for the new comment
  */
-export const updateNewComment = (newComment, pageId) => (dispatch, getState) => {
+export const updateNewComment = (newComment, pageId) => (
+  dispatch,
+  getState
+) => {
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_UPDATE,
     payload: {
       newComment,
       pageId,
-      tab
-    }
+      tab,
+    },
   });
 };
 
@@ -299,8 +328,8 @@ export const postComment = (pageId) => (dispatch, getState) => {
     payload: {
       tab,
       pageId,
-      entityId: newComment.parentRef // This is for post/share/goal to set the loading indicator
-    }
+      entityId: newComment.parentRef, // This is for post/share/goal to set the loading indicator
+    },
   });
 
   // TODO: Check if no suggestion and no replyToRef is filled
@@ -312,10 +341,10 @@ export const postComment = (pageId) => (dispatch, getState) => {
       payload: {
         pageId,
         tab,
-        entityId: newComment.parentRef // This is for post/share/goal to remove the loading indicator
-      }
+        entityId: newComment.parentRef, // This is for post/share/goal to remove the loading indicator
+      },
     });
-    Alert.alert('Error', 'Failed to submit comment. Please try again later.');
+    Alert.alert("Error", "Failed to submit comment. Please try again later.");
     console.log(`${DEBUG_KEY}: error submitting comment: `, err);
   };
 
@@ -328,24 +357,27 @@ export const postComment = (pageId) => (dispatch, getState) => {
         comment: {
           ...data,
           owner: {
-            ...user
-          }
+            ...user,
+          },
         },
         tab,
         pageId,
-        entityId: newComment.parentRef // This is for post/share/goal to remove the loading indicator
-      }
+        entityId: newComment.parentRef, // This is for post/share/goal to remove the loading indicator
+      },
     });
     // If succeed and comment type is suggestionFor a need or a step, switch to
     // comment tab
-    if (commentType === 'Suggestion' && suggestion
-        && (suggestion.suggestionFor === 'Need'
-        || suggestion.suggestionFor === 'Step')) {
+    if (
+      commentType === "Suggestion" &&
+      suggestion &&
+      (suggestion.suggestionFor === "Need" ||
+        suggestion.suggestionFor === "Step")
+    ) {
       dispatch({
         type: COMMENT_NEW_POST_SUGGESTION_SUCCESS,
         payload: {
-          tab
-        }
+          tab,
+        },
       });
     }
     console.log(`${DEBUG_KEY}: comment posted successfully with res: `, data);
@@ -360,41 +392,56 @@ export const postComment = (pageId) => (dispatch, getState) => {
   ImageUtils.getImageSize(mediaRef)
     .then(({ width, height }) => {
       // Resize image
-      console.log('width, height are: ', width, height);
-      return ImageUtils.resizeImage(mediaRef, width, height, { capHeight: 720, capWidth: 720 });
+      console.log("width, height are: ", width, height);
+      return ImageUtils.resizeImage(mediaRef, width, height, {
+        capHeight: 720,
+        capWidth: 720,
+      });
     })
     .then((image) => {
       // Upload image to S3 server
-      console.log('image to upload is: ', image);
-      return ImageUtils.getPresignedUrl(image.uri, token, (objectKey) => {
-        // Obtain pre-signed url and store in getState().postDetail.newPost.mediaRef
-        dispatch({
-          type: COMMENT_NEW_UPLOAD_PICTURE_SUCCESS,
-          payload: {
-            tab,
-            pageId,
-            objectKey
-          }
-        });
-      }, 'GoalImage');
+      console.log("image to upload is: ", image);
+      return ImageUtils.getPresignedUrl(
+        image.uri,
+        token,
+        (objectKey) => {
+          // Obtain pre-signed url and store in getState().postDetail.newPost.mediaRef
+          dispatch({
+            type: COMMENT_NEW_UPLOAD_PICTURE_SUCCESS,
+            payload: {
+              tab,
+              pageId,
+              objectKey,
+            },
+          });
+        },
+        "GoalImage"
+      );
     })
-    .then(({ signedRequest, file }) => ImageUtils.uploadImage(file, signedRequest))
+    .then(({ signedRequest, file }) =>
+      ImageUtils.uploadImage(file, signedRequest)
+    )
     .then((res) => {
       if (res instanceof Error) {
         // uploading to s3 failed
-        console.log(`${DEBUG_KEY}: error uploading image to s3 with res: `, res);
+        console.log(
+          `${DEBUG_KEY}: error uploading image to s3 with res: `,
+          res
+        );
         throw res;
       }
-      const page = pageId ? `${pageId}` : 'default';
+      const page = pageId ? `${pageId}` : "default";
       const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
-      const imageUrl = _.get(getState().newComment, `${path}.mediaPresignedUrl`);
+      const imageUrl = _.get(
+        getState().newComment,
+        `${path}.mediaPresignedUrl`
+      );
       // Use the presignedUrl as media string
       console.log(`${BASE_ROUTE}: presigned url sent is: `, imageUrl);
-      const newCommentObject =
-        {
-          ...newComment,
-          mediaRef: imageUrl
-        };
+      const newCommentObject = {
+        ...newComment,
+        mediaRef: imageUrl,
+      };
 
       return sendPostCommentRequest(
         newCommentObject,
@@ -416,9 +463,13 @@ export const postComment = (pageId) => (dispatch, getState) => {
 };
 
 // Send creating comment request
-export const sendPostCommentRequest = (newComment, token, onError, onSuccess) => {
-  API
-    .post(`${BASE_ROUTE}`, { comment: JSON.stringify(newComment) }, token)
+export const sendPostCommentRequest = (
+  newComment,
+  token,
+  onError,
+  onSuccess
+) => {
+  API.post(`${BASE_ROUTE}`, { comment: JSON.stringify(newComment) }, token)
     .then((res) => {
       if (!res.message && res.data) {
         return onSuccess(res.data);
@@ -434,7 +485,7 @@ export const sendPostCommentRequest = (newComment, token, onError, onSuccess) =>
  * Transform the new comment in state to proper comment format
  */
 const commentAdapter = (state, pageId, tab) => {
-  const page = pageId ? `${pageId}` : 'default';
+  const page = pageId ? `${pageId}` : "default";
   const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
   let newComment = _.get(state.newComment, `${path}`);
   console.log(`${DEBUG_KEY}: raw comment is: `, newComment);
@@ -451,12 +502,13 @@ const commentAdapter = (state, pageId, tab) => {
     suggestion,
     mediaRef,
     needRef,
-    stepRef
+    stepRef,
   } = newComment;
 
-  const tmpCommentType = suggestion && suggestion.suggestionFor && suggestion.suggestionForRef
-    ? 'Suggestion'
-    : 'Comment';
+  const tmpCommentType =
+    suggestion && suggestion.suggestionFor && suggestion.suggestionForRef
+      ? "Suggestion"
+      : "Comment";
 
   // Tags sanitization will reassign index as well as removing the unused tags
   const contentTagsToUser = sanitizeTags(contentText, contentTags);
@@ -473,11 +525,11 @@ const commentAdapter = (state, pageId, tab) => {
     commentType: commentType || tmpCommentType,
     replyToRef,
     mediaRef,
-    suggestion: suggestionAdapter(suggestion)
+    suggestion: suggestionAdapter(suggestion),
   };
   // console.log(`${DEBUG_KEY}: adapted comment is: `, commentToReturn.suggestion);
   if (replyToRef === undefined) {
-    commentToReturn = _.omit(commentToReturn, 'replyToRef');
+    commentToReturn = _.omit(commentToReturn, "replyToRef");
   }
 
   if (_.isEmpty(suggestion)) {
@@ -485,16 +537,16 @@ const commentAdapter = (state, pageId, tab) => {
   }
 
   if (stepRef) {
-    commentToReturn = _.set(commentToReturn, 'stepRef', stepRef);
+    commentToReturn = _.set(commentToReturn, "stepRef", stepRef);
   }
 
   if (needRef) {
-    commentToReturn = _.set(commentToReturn, 'needRef', needRef);
+    commentToReturn = _.set(commentToReturn, "needRef", needRef);
   }
 
-  if (commentType === 'Comment') {
+  if (commentType === "Comment") {
     // This is a comment, remove any suggestion related stuff
-    commentToReturn = _.omit(commentToReturn, 'suggestion');
+    commentToReturn = _.omit(commentToReturn, "suggestion");
   }
 
   return commentToReturn;
@@ -511,34 +563,36 @@ const suggestionAdapter = (suggestion) => {
     suggestionType,
     suggestionLink,
     suggestionText,
-    goalRef
+    goalRef,
   } = suggestion;
 
   const ret = switchCase({
     User: {
-      userRef: selectedItem ? selectedItem._id : undefined
+      userRef: selectedItem ? selectedItem._id : undefined,
     },
     ChatConvoRoom: {
-      chatRoomRef: selectedItem ? selectedItem._id : undefined
+      chatRoomRef: selectedItem ? selectedItem._id : undefined,
     },
     NewNeed: {
       suggestionText,
-      goalRef
+      goalRef,
     },
     NewStep: {
       suggestionText,
-      goalRef
+      goalRef,
     },
     Event: {
-      eventRef: selectedItem ? selectedItem._id : undefined
+      eventRef: selectedItem ? selectedItem._id : undefined,
     },
     Tribe: {
-      tribeRef: selectedItem ? selectedItem._id : undefined
+      tribeRef: selectedItem ? selectedItem._id : undefined,
     },
     Custom: {
       suggestionLink,
-      suggestionText: suggestionText === '' || suggestionText === undefined 
-        ? 'Suggestion' : suggestionText
+      suggestionText:
+        suggestionText === "" || suggestionText === undefined
+          ? "Suggestion"
+          : suggestionText,
     },
   })({})(suggestionType);
 
@@ -565,8 +619,8 @@ export const openSuggestionModal = (pageId) => (dispatch, getState) => {
     type: COMMENT_NEW_SUGGESTION_OPEN_MODAL,
     payload: {
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 };
 
@@ -575,25 +629,31 @@ export const createSuggestion = (goalId, pageId) => (dispatch, getState) => {
   //check if suggestionFor and suggestionRef have assignment,
   //If not then we assign the current goal ref and 'Goal'
   const { tab } = getState().navigation;
-  const page = pageId ? `${pageId}` : 'default';
+  const page = pageId ? `${pageId}` : "default";
   const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
 
   const { suggestion, tmpSuggestion } = _.get(getState().newComment, `${path}`);
   const goal = getGoal(getState(), goalId);
   // const { _id } = getState().goalDetail;
   if (!goal || _.isEmpty(goal)) {
-    console.warn(`${DEBUG_KEY}: fetch to get goal for creating suggestion: ${goalId}`);
+    console.warn(
+      `${DEBUG_KEY}: fetch to get goal for creating suggestion: ${goalId}`
+    );
     return;
   }
   const { _id } = goal;
   // Already have a suggestion. Open the current one
-  if (suggestion.suggestionFor &&
-      suggestion.suggestionForRef &&
-      // When suggestionType is Custom and no suggestionText or suggestionLink,
-      // it means that it's suggestion comment for a step or a need
-      !(suggestion.suggestionType === 'Custom' &&
+  if (
+    suggestion.suggestionFor &&
+    suggestion.suggestionForRef &&
+    // When suggestionType is Custom and no suggestionText or suggestionLink,
+    // it means that it's suggestion comment for a step or a need
+    !(
+      suggestion.suggestionType === "Custom" &&
       (!suggestion.suggestionText || _.isEmpty(suggestion.suggestionText)) &&
-        (!suggestion.suggestionLink || _.isEmpty(suggestion.suggestionLink)))) {
+      (!suggestion.suggestionLink || _.isEmpty(suggestion.suggestionLink))
+    )
+  ) {
     return openCurrentSuggestion(pageId)(dispatch, getState);
   }
 
@@ -602,10 +662,10 @@ export const createSuggestion = (goalId, pageId) => (dispatch, getState) => {
     dispatch({
       type: COMMENT_NEW_SUGGESTION_CREATE,
       payload: {
-        suggestionFor: 'Goal',
+        suggestionFor: "Goal",
         suggestionForRef: _id,
-        tab
-      }
+        tab,
+      },
     });
   }
 
@@ -619,8 +679,8 @@ export const cancelSuggestion = (pageId) => (dispatch, getState) => {
     type: COMMENT_NEW_SUGGESTION_CANCEL,
     payload: {
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 };
 
@@ -631,21 +691,21 @@ export const removeSuggestion = (pageId) => (dispatch, getState) => {
     type: COMMENT_NEW_SUGGESTION_REMOVE,
     payload: {
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 };
 
-
-export const updateSuggestionType = (suggestionType, pageId) => (dispatch, getState) => {
+export const updateSuggestionType = (suggestionType, pageId) => (
+  dispatch,
+  getState
+) => {
   const { tab } = getState().navigation;
 
   // Clear previous search state
   dispatch({
     type: SUGGESTION_SEARCH_CLEAR_STATE,
-    payload: {
-
-    }
+    payload: {},
   });
 
   dispatch({
@@ -653,11 +713,10 @@ export const updateSuggestionType = (suggestionType, pageId) => (dispatch, getSt
     payload: {
       suggestionType,
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 };
-
 
 export const openCurrentSuggestion = (pageId) => (dispatch, getState) => {
   const { tab } = getState().navigation;
@@ -665,33 +724,46 @@ export const openCurrentSuggestion = (pageId) => (dispatch, getState) => {
     type: COMMENT_NEW_SUGGESTION_OPEN_CURRENT,
     payload: {
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 };
 
-export const attachSuggestion = (goalDetail, focusType,
-focusRef, pageId) => (dispatch, getState) => {
+export const attachSuggestion = (goalDetail, focusType, focusRef, pageId) => (
+  dispatch,
+  getState
+) => {
   const { tab } = getState().navigation;
-  const page = pageId ? `${pageId}` : 'default';
+  const page = pageId ? `${pageId}` : "default";
   const path = !tab ? `homeTab.${page}` : `${tab}.${page}`;
   const { tmpSuggestion } = _.get(getState().newComment, `${path}`);
 
-  const { suggestionText, suggestionLink, selectedItem, suggestionType } = tmpSuggestion;
+  const {
+    suggestionText,
+    suggestionLink,
+    selectedItem,
+    suggestionType,
+  } = tmpSuggestion;
 
   // If nothing is selected, then we show an error
   if (!suggestionText && !suggestionLink && !selectedItem) {
-    return Alert.alert('Error', 'Make sure you suggest something to your friend');
+    return Alert.alert(
+      "Error",
+      "Make sure you suggest something to your friend"
+    );
   }
 
   let isUrl = true;
-  if (suggestionType === 'Custom' && suggestionLink) {
+  if (suggestionType === "Custom" && suggestionLink) {
     isUrl = validator.isURL(suggestionLink);
   }
 
   console.log(`${DEBUG_KEY}: isURL: `, isUrl);
   if (!selectedItem && suggestionLink && !isUrl) {
-    return Alert.alert('Invalid link', 'Make sure you have the correct format for URL');
+    return Alert.alert(
+      "Invalid link",
+      "Make sure you have the correct format for URL"
+    );
   }
 
   dispatch({
@@ -701,45 +773,54 @@ focusRef, pageId) => (dispatch, getState) => {
       pageId,
       goalDetail,
       focusType,
-      focusRef
-    }
+      focusRef,
+    },
   });
 };
 
-export const onSuggestionTextChange = (text, pageId) => (dispatch, getState) => {
+export const onSuggestionTextChange = (text, pageId) => (
+  dispatch,
+  getState
+) => {
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_SUGGESTION_UPDATE_TEXT,
     payload: {
       text,
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 };
 
-export const onSuggestionLinkChange = (suggestionLink, pageId) => (dispatch, getState) => {
+export const onSuggestionLinkChange = (suggestionLink, pageId) => (
+  dispatch,
+  getState
+) => {
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_SUGGESTION_UPDATE_LINK,
     payload: {
       suggestionLink,
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 };
 
-export const onSuggestionItemSelect = (selectedItem, pageId) => (dispatch, getState) => {
-  console.log('suggestion item selected with item: ', selectedItem);
+export const onSuggestionItemSelect = (selectedItem, pageId) => (
+  dispatch,
+  getState
+) => {
+  console.log("suggestion item selected with item: ", selectedItem);
   const { tab } = getState().navigation;
   dispatch({
     type: COMMENT_NEW_SUGGESTION_SELECT_ITEM,
     payload: {
       selectedItem,
       tab,
-      pageId
-    }
+      pageId,
+    },
   });
 };
 
@@ -749,9 +830,15 @@ export const onSuggestionItemSelect = (selectedItem, pageId) => (dispatch, getSt
  * NOTE: goal feed and activity feed share the same constants with different
  * input on type field
  */
-export const refreshComments = (parentType, parentId, tab, pageId, callback) => (dispatch, getState) => {
+export const refreshComments = (
+  parentType,
+  parentId,
+  tab,
+  pageId,
+  callback
+) => (dispatch, getState) => {
   const { token } = getState().user;
-  const page = pageId ? `${pageId}` : 'default';
+  const page = pageId ? `${pageId}` : "default";
   const path = tab ? `${tab}.${page}` : `homeTab.${page}`;
   console.log(`${DEBUG_KEY}: path is: `, path);
   const { limit, hasNextPage } = _.get(getState().comment, path);
@@ -763,8 +850,8 @@ export const refreshComments = (parentType, parentId, tab, pageId, callback) => 
     payload: {
       tab,
       pageId,
-      parentId
-    }
+      parentId,
+    },
   });
   const onSuccess = (data) => {
     dispatch({
@@ -777,12 +864,15 @@ export const refreshComments = (parentType, parentId, tab, pageId, callback) => 
         hasNextPage: !(data === undefined || data.length === 0),
         tab,
         pageId,
-        parentId
-      }
+        parentId,
+      },
     });
-    console.log(`${DEBUG_KEY}: [ refreshComments ]: refresh comment success with data length: `, data.length);
+    console.log(
+      `${DEBUG_KEY}: [ refreshComments ]: refresh comment success with data length: `,
+      data.length
+    );
     if (callback) {
-      // console.log(`${DEBUG_KEY}: [ refreshComments ]: calling callback`); 
+      // console.log(`${DEBUG_KEY}: [ refreshComments ]: calling callback`);
       callback();
     }
   };
@@ -794,17 +884,20 @@ export const refreshComments = (parentType, parentId, tab, pageId, callback) => 
       payload: {
         tab,
         pageId,
-        parentId
-      }
+        parentId,
+      },
     });
   };
 
   loadComments(0, limit, token, { parentId, parentType }, onSuccess, onError);
 };
 
-export const loadMoreComments = (parentType, parentId, tab, pageId) => (dispatch, getState) => {
+export const loadMoreComments = (parentType, parentId, tab, pageId) => (
+  dispatch,
+  getState
+) => {
   const { token } = getState().user;
-  const page = pageId ? `${pageId}` : 'default';
+  const page = pageId ? `${pageId}` : "default";
   const path = tab ? `${tab}.${page}` : `homeTab.${page}`;
   const { skip, limit, hasNextPage } = _.get(getState().comment, path);
 
@@ -816,8 +909,8 @@ export const loadMoreComments = (parentType, parentId, tab, pageId) => (dispatch
     payload: {
       tab,
       pageId,
-      parentId
-    }
+      parentId,
+    },
   });
 
   const onSuccess = (data) => {
@@ -831,8 +924,8 @@ export const loadMoreComments = (parentType, parentId, tab, pageId) => (dispatch
         hasNextPage: !(data === undefined || data.length === 0),
         tab,
         pageId,
-        parentId
-      }
+        parentId,
+      },
     });
     console.log(`${DEBUG_KEY}: load more comments succeeds with data: `, data);
   };
@@ -844,24 +937,40 @@ export const loadMoreComments = (parentType, parentId, tab, pageId) => (dispatch
       payload: {
         tab,
         pageId,
-        parentId
-      }
+        parentId,
+      },
     });
   };
 
-  loadComments(skip, limit, token, { parentId, parentType }, onSuccess, onError);
+  loadComments(
+    skip,
+    limit,
+    token,
+    { parentId, parentType },
+    onSuccess,
+    onError
+  );
 };
 
-export const loadComments = (skip, limit, token, { parentId, parentType }, callback, onError) => {
-  API
-    .get(
-      `${BASE_ROUTE}?parentId=${parentId}&parentType=${parentType}`,
-      // `${BASE_ROUTE}?parentId=5bc81da9d4f72c0019bb0cdb&parentType=Goal`,
-      token
-    )
+export const loadComments = (
+  skip,
+  limit,
+  token,
+  { parentId, parentType },
+  callback,
+  onError
+) => {
+  API.get(
+    `${BASE_ROUTE}?parentId=${parentId}&parentType=${parentType}`,
+    // `${BASE_ROUTE}?parentId=5bc81da9d4f72c0019bb0cdb&parentType=Goal`,
+    token
+  )
     .then((res) => {
       if (res.data) {
-        console.log(`${DEBUG_KEY}: loading with res data length: `, res.data.length);
+        console.log(
+          `${DEBUG_KEY}: loading with res data length: `,
+          res.data.length
+        );
         // Right now return test data
         return callback(res.data.filter((i) => !_.isEmpty(i)));
       }

@@ -1,94 +1,86 @@
 // This is backup for original implementation for suggesiton modal
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   View,
   Modal,
   Text,
   FlatList,
   Image,
-  TouchableOpacity
-} from 'react-native';
-import { SearchBar } from 'react-native-elements';
-import { connect } from 'react-redux';
-import _ from 'lodash';
+  TouchableOpacity,
+} from "react-native";
+import { SearchBar } from "react-native-elements";
+import { connect } from "react-redux";
+import _ from "lodash";
 
 // Components
-import ModalHeader from '../../../Main/Common/Header/ModalHeader';
-import PeopleCard from '../Common/PeopleCard';
-import PeopleCardDetail from '../Common/PeopleCardDetail';
+import ModalHeader from "../../../Main/Common/Header/ModalHeader";
+import PeopleCard from "../Common/PeopleCard";
+import PeopleCardDetail from "../Common/PeopleCardDetail";
 
 // Asset
-import Book from '../../../asset/suggestion/book.png';
-import Chat from '../../../asset/suggestion/chat.png';
-import Event from '../../../asset/suggestion/event.png';
-import Flag from '../../../asset/suggestion/flag.png';
-import Friend from '../../../asset/suggestion/friend.png';
-import Group from '../../../asset/suggestion/group.png';
-import Link from '../../../asset/suggestion/link.png';
-import Other from '../../../asset/suggestion/other.png';
-import HelpIcon from '../../../asset/utils/help.png';
-import StepIcon from '../../../asset/utils/steps.png';
+import Book from "../../../asset/suggestion/book.png";
+import Chat from "../../../asset/suggestion/chat.png";
+import Event from "../../../asset/suggestion/event.png";
+import Flag from "../../../asset/suggestion/flag.png";
+import Friend from "../../../asset/suggestion/friend.png";
+import Group from "../../../asset/suggestion/group.png";
+import Link from "../../../asset/suggestion/link.png";
+import Other from "../../../asset/suggestion/other.png";
+import HelpIcon from "../../../asset/utils/help.png";
+import StepIcon from "../../../asset/utils/steps.png";
 
 // Actions
-import {
-  updateSuggestionType
-} from '../../../redux/modules/feed/comment/CommentActions';
+import { updateSuggestionType } from "../../../redux/modules/feed/comment/CommentActions";
 
-import {
-  getNewCommentByTab
-} from '../../../redux/modules/feed/comment/CommentSelector';
+import { getNewCommentByTab } from "../../../redux/modules/feed/comment/CommentSelector";
 
 const testData = [
   {
-    name: 'Jia Zeng',
-    headline: 'Students at Duke University',
+    name: "Jia Zeng",
+    headline: "Students at Duke University",
     request: false,
-    _id: '120937109287091'
+    _id: "120937109287091",
   },
   {
-    name: 'Peter Kushner',
-    headline: 'CEO at start industries',
+    name: "Peter Kushner",
+    headline: "CEO at start industries",
     request: false,
-    _id: '019280980248303'
-  }
+    _id: "019280980248303",
+  },
 ];
 
 class SuggestionModal extends Component {
   state = {
-    query: ''
-  }
+    query: "",
+  };
 
   // Flatlist handler
-  handleRefresh = () => {
+  handleRefresh = () => {};
 
-  }
-
-  handleOnLoadMore = () => {
-
-  }
+  handleOnLoadMore = () => {};
 
   // Search Query handler
-  handleSearchCancel = () => this.handleQueryChange('');
-  handleSearchClear = () => this.handleQueryChange('');
+  handleSearchCancel = () => this.handleQueryChange("");
+  handleSearchClear = () => this.handleQueryChange("");
 
-  handleQueryChange = query => {
-    this.setState(state => ({ ...state, query: query || '' }));
-  }
+  handleQueryChange = (query) => {
+    this.setState((state) => ({ ...state, query: query || "" }));
+  };
 
   renderSearch() {
     return (
       <SearchBar
-        platform='ios'
+        platform="ios"
         round
         autoFocus={false}
         inputStyle={styles.searchInputStyle}
         inputContainerStyle={styles.searchInputContainerStyle}
         containerStyle={styles.searchContainerStyle}
-        placeholder='Search by name, occupation, etc.'
-        cancelButtonTitle='Cancel'
+        placeholder="Search by name, occupation, etc."
+        cancelButtonTitle="Cancel"
         onCancel={this.handleSearchCancel}
         onChangeText={this.handleQueryChange}
-        cancelButtonProps={{ color: '#17B3EC' }}
+        cancelButtonProps={{ color: "#17B3EC" }}
         showLoading={this.props.loading}
         onClear={this.handleSearchClear}
         value={this.state.query}
@@ -100,14 +92,15 @@ class SuggestionModal extends Component {
     const { selected } = item;
 
     // Update Icon style if selected
-    const style = selected ?
-      {
-        ...styles.selectedSuggestionIconStyle,
-        ...item.value.iconStyle
-      } : {
-        ...styles.suggestionIconStyle,
-        ...item.value.iconStyle
-      };
+    const style = selected
+      ? {
+          ...styles.selectedSuggestionIconStyle,
+          ...item.value.iconStyle,
+        }
+      : {
+          ...styles.suggestionIconStyle,
+          ...item.value.iconStyle,
+        };
 
     // Update text style if selected
     const textStyle = selected
@@ -117,46 +110,55 @@ class SuggestionModal extends Component {
       <View
         style={{
           flex: 1,
-          alignItems: 'flex-start',
-          justifyContent: 'flex-start',
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
           marginBottom: 7,
-          marginLeft: 10
+          marginLeft: 10,
         }}
       >
-        <TouchableOpacity activeOpacity={0.6}
-          onPress={() => this.props.updateSuggestionType(item.key, this.props.pageId)}
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() =>
+            this.props.updateSuggestionType(item.key, this.props.pageId)
+          }
         >
-          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-          <Image source={item.value.iconSource} style={style} />
-          <Text style={textStyle}>{item.text.toUpperCase()}</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Image source={item.value.iconSource} style={style} />
+            <Text style={textStyle}>{item.text.toUpperCase()}</Text>
           </View>
         </TouchableOpacity>
       </View>
     );
-  }
+  };
 
   renderOptions() {
     const options = (
       <View style={{ padding: 10 }}>
-      <FlatList
-        data={this.props.iconMap}
-        renderItem={this.renderIconItem}
-        keyExtractor={(item) => item.key}
-        numColumns={2}
-      />
+        <FlatList
+          data={this.props.iconMap}
+          renderItem={this.renderIconItem}
+          keyExtractor={(item) => item.key}
+          numColumns={2}
+        />
       </View>
     );
 
     return (
-      <View style={{ backgroundColor: 'white', marginTop: 0.5 }}>
+      <View style={{ backgroundColor: "white", marginTop: 0.5 }}>
         <Text
           style={{
             fontSize: 14,
-            fontWeight: '700',
-            alignSelf: 'center',
-            justifyContent: 'center',
+            fontWeight: "700",
+            alignSelf: "center",
+            justifyContent: "center",
             marginTop: 10,
-            marginBottom: 10
+            marginBottom: 10,
           }}
         >
           Suggest a...
@@ -170,11 +172,11 @@ class SuggestionModal extends Component {
     <PeopleCard>
       <PeopleCardDetail item={item} />
     </PeopleCard>
-  )
+  );
 
   renderQueryResult() {
     return (
-      <View style={{ flex: 1, marginTop: 0.5, backgroundColor: 'white' }}>
+      <View style={{ flex: 1, marginTop: 0.5, backgroundColor: "white" }}>
         <FlatList
           data={testData}
           renderItem={this.renderItem}
@@ -196,10 +198,10 @@ class SuggestionModal extends Component {
         transparent={false}
         visible={this.props.visible}
       >
-        <View style={{ flex: 1, backgroundColor: 'lightgray' }}>
+        <View style={{ flex: 1, backgroundColor: "lightgray" }}>
           <ModalHeader
-            title='Suggestion'
-            actionText='Attach'
+            title="Suggestion"
+            actionText="Attach"
             onCancel={this.props.onCancel}
             onAction={() => this.props.onAttach()}
           />
@@ -217,169 +219,150 @@ const styles = {
     padding: 0,
     marginRight: 3,
     marginTop: 0.5,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     // backgroundColor: '#17B3EC',
-    borderTopColor: '#ffffff',
-    borderBottomColor: '#ffffff',
-    alignItems: 'center',
+    borderTopColor: "#ffffff",
+    borderBottomColor: "#ffffff",
+    alignItems: "center",
   },
   searchInputContainerStyle: {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: "#f3f4f6",
     // backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   searchInputStyle: {
     fontSize: 15,
   },
   searchIconStyle: {
     top: 15,
-    fontSize: 13
+    fontSize: 13,
   },
   // Options style
   selectedSuggestionIconStyle: {
-    tintColor: '#17B3EC',
+    tintColor: "#17B3EC",
     height: 20,
-    width: 20
+    width: 20,
   },
   suggestionIconStyle: {
-    tintColor: '#b8c7cb',
+    tintColor: "#b8c7cb",
     height: 20,
-    width: 20
+    width: 20,
   },
   selectedSuggestionTextStyle: {
-    color: 'black',
+    color: "black",
     fontSize: 14,
-    fontWeight: '700',
-    marginLeft: 15
+    fontWeight: "700",
+    marginLeft: 15,
   },
   suggestionTextStyle: {
-    color: '#b8c7cb',
+    color: "#b8c7cb",
     fontSize: 14,
-    fontWeight: '700',
-    marginLeft: 15
-  }
+    fontWeight: "700",
+    marginLeft: 15,
+  },
 };
 //["ChatConvoRoom", "Event", "Tribe", "Link", "Reading",
 // "Step", "Need", "Friend", "User", "Custom"]
 const IconMap = [
   {
-    key: 'Reading',
-    text: 'Reading',
+    key: "Reading",
+    text: "Reading",
     value: {
       iconSource: Book,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
+    selected: undefined,
   },
   {
-    key: 'ChatConvoRoom',
-    text: 'Chatroom',
+    key: "ChatConvoRoom",
+    text: "Chatroom",
     value: {
       iconSource: Chat,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
+    selected: undefined,
   },
   {
-    key: 'Event',
-    text: 'Event',
+    key: "Event",
+    text: "Event",
     value: {
       iconSource: Event,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
+    selected: undefined,
   },
   {
-    key: 'Tribe',
-    text: 'Tribe',
+    key: "Tribe",
+    text: "Tribe",
     value: {
       iconSource: Flag,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
+    selected: undefined,
   },
   {
-    key: 'User',
-    text: 'User',
+    key: "User",
+    text: "User",
     value: {
       iconSource: Friend,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
+    selected: undefined,
   },
   {
-    key: 'Friend',
-    text: 'Friend',
+    key: "Friend",
+    text: "Friend",
     value: {
       iconSource: Group,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
+    selected: undefined,
   },
   {
-    key: 'Step',
-    text: 'Step',
+    key: "Step",
+    text: "Step",
     value: {
       iconSource: StepIcon,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
+    selected: undefined,
   },
   {
-    key: 'Need',
-    text: 'Need',
+    key: "Need",
+    text: "Need",
     value: {
       iconSource: HelpIcon,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
+    selected: undefined,
   },
   {
-    key: 'Link',
-    text: 'Link',
+    key: "Link",
+    text: "Link",
     value: {
       iconSource: Link,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
+    selected: undefined,
   },
   {
-    key: 'Custom',
-    text: 'Custom',
+    key: "Custom",
+    text: "Custom",
     value: {
       iconSource: Other,
-      iconStyle: {
-
-      }
+      iconStyle: {},
     },
-    selected: undefined
+    selected: undefined,
   },
 ];
 
-const updateIconMap = (suggestionType, iconMap) => iconMap.map((item) => {
-  const newItem = _.cloneDeep(item);
-  newItem.selected = suggestionType === item.key;
-  return newItem;
-});
+const updateIconMap = (suggestionType, iconMap) =>
+  iconMap.map((item) => {
+    const newItem = _.cloneDeep(item);
+    newItem.selected = suggestionType === item.key;
+    return newItem;
+  });
 
 const mapStateToProps = (state, props) => {
   const { tmpSuggestion } = getNewCommentByTab(state, props.pageId);
@@ -388,13 +371,10 @@ const mapStateToProps = (state, props) => {
 
   return {
     tmpSuggestion,
-    iconMap
+    iconMap,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    updateSuggestionType
-  }
-)(SuggestionModal);
+export default connect(mapStateToProps, {
+  updateSuggestionType,
+})(SuggestionModal);

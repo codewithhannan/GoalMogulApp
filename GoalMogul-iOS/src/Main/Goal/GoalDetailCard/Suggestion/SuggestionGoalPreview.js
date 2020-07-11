@@ -1,24 +1,20 @@
 // This component is used to display goal on a user's profile page
-import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity
-} from 'react-native';
-import timeago from 'timeago.js';
-import { connect } from 'react-redux';
+import React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import timeago from "timeago.js";
+import { connect } from "react-redux";
 
 // Components
-import Headline from '../../Common/Headline';
-import Timestamp from '../../Common/Timestamp';
-import ProfileImage from '../../../Common/ProfileImage';
+import Headline from "../../Common/Headline";
+import Timestamp from "../../Common/Timestamp";
+import ProfileImage from "../../../Common/ProfileImage";
 
 class SuggestionGoalPreview extends React.Component {
-
   renderProfileImage(item) {
-    const imageUrl = item.owner && item.owner.profile && item.owner.profile.image
-      ? item.owner.profile.image
-      : undefined;
+    const imageUrl =
+      item.owner && item.owner.profile && item.owner.profile.image
+        ? item.owner.profile.image
+        : undefined;
 
     // Not passing in userId since we don't want to user profile here
     return (
@@ -34,11 +30,11 @@ class SuggestionGoalPreview extends React.Component {
   // user basic information
   renderUserDetail(item) {
     const { title, owner, category, _id, created } = item;
-    const timeStamp = (created === undefined || created.length === 0)
-      ? new Date() : created;
+    const timeStamp =
+      created === undefined || created.length === 0 ? new Date() : created;
     // TODO: verify all the fields have data
     return (
-      <View style={{ flexDirection: 'row', flex: 1 }}>
+      <View style={{ flexDirection: "row", flex: 1 }}>
         <View style={{ marginLeft: 15, flex: 1 }}>
           <Headline
             name={owner.name}
@@ -48,10 +44,15 @@ class SuggestionGoalPreview extends React.Component {
             disabled
           />
           <Timestamp time={timeago().format(timeStamp)} />
-          <View style={{ flexDirection: 'row', marginTop: 10 }}>
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
             <Text
-              style={{ flex: 1, flexWrap: 'wrap', color: 'black', fontSize: 15 }}
-              ellipsizeMode='tail'
+              style={{
+                flex: 1,
+                flexWrap: "wrap",
+                color: "black",
+                fontSize: 15,
+              }}
+              ellipsizeMode="tail"
             >
               {title}
             </Text>
@@ -67,7 +68,7 @@ class SuggestionGoalPreview extends React.Component {
 
     return (
       <View style={styles.containerStyle}>
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: "row" }}>
           {this.renderProfileImage(item)}
           {this.renderUserDetail(item)}
         </View>
@@ -78,17 +79,17 @@ class SuggestionGoalPreview extends React.Component {
 
 const styles = {
   containerStyle: {
-    backgroundColor: 'white',
-    margin: 12
+    backgroundColor: "white",
+    margin: 12,
   },
   iconStyle: {
-    alignSelf: 'center',
+    alignSelf: "center",
     fontSize: 20,
     marginLeft: 5,
-    marginTop: 2
+    marginTop: 2,
   },
   borderShadow: {
-    shadowColor: 'lightgray',
+    shadowColor: "lightgray",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 1,
     shadowRadius: 3,
@@ -97,12 +98,12 @@ const styles = {
   imageContainerStyle: {
     borderWidth: 0.5,
     padding: 1.5,
-    borderColor: 'lightgray',
-    alignItems: 'center',
+    borderColor: "lightgray",
+    alignItems: "center",
     borderRadius: 6,
-    alignSelf: 'center',
-    backgroundColor: 'white',
-    marginLeft: 3
+    alignSelf: "center",
+    backgroundColor: "white",
+    marginLeft: 3,
   },
 };
 
@@ -110,11 +111,8 @@ const mapStateToProps = (state) => {
   const { userId } = state.user;
 
   return {
-    userId
+    userId,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  null
-)(SuggestionGoalPreview);
+export default connect(mapStateToProps, null)(SuggestionGoalPreview);

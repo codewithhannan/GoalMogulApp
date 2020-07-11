@@ -1,43 +1,44 @@
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Dimensions
-} from 'react-native';
+import React, { Component } from "react";
+import { View, Text, Image, TouchableOpacity, Dimensions } from "react-native";
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger,
-  renderers
-} from 'react-native-popup-menu';
+  renderers,
+} from "react-native-popup-menu";
 
 // Asset
-import dropDown from '../../asset/utils/dropDown.png';
+import dropDown from "../../asset/utils/dropDown.png";
 
 // Actions
 
 const { Popover } = renderers;
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 class GoalFilter extends Component {
-
   handleOnMenuSelect = (type, value) => {
-    console.log('selecting value is: ', value);
-    console.log('selecting type is: ', type)
+    console.log("selecting value is: ", value);
+    console.log("selecting type is: ", type);
     // TODO: alter reducer state
-  }
+  };
 
   render() {
-    const { containerStyle, textStyle, detailContainerStyle, standardTextStyle, caretStyle } = styles;
+    const {
+      containerStyle,
+      textStyle,
+      detailContainerStyle,
+      standardTextStyle,
+      caretStyle,
+    } = styles;
     return (
       <View style={containerStyle}>
-
         <Menu
-          onSelect={value => this.handleOnMenuSelect('sortBy', value)}
-          rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
+          onSelect={(value) => this.handleOnMenuSelect("sortBy", value)}
+          rendererProps={{
+            placement: "bottom",
+            anchorStyle: styles.anchorStyle,
+          }}
           renderer={Popover}
         >
           <MenuTrigger
@@ -51,25 +52,15 @@ class GoalFilter extends Component {
             </View>
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
-            <MenuOption
-              text='Important'
-              value='important'
-            />
-            <MenuOption
-              text='Recent'
-              value='recent'
-            />
-            <MenuOption
-              text='Popular'
-              value='popular'
-            />
-
+            <MenuOption text="Important" value="important" />
+            <MenuOption text="Recent" value="recent" />
+            <MenuOption text="Popular" value="popular" />
           </MenuOptions>
         </Menu>
 
         <Menu
-          onSelect={value => console.log('selecting value is: ', value)}
-          rendererProps={{ placement: 'bottom' }}
+          onSelect={(value) => console.log("selecting value is: ", value)}
+          rendererProps={{ placement: "bottom" }}
           renderer={Popover}
         >
           <MenuTrigger
@@ -78,21 +69,17 @@ class GoalFilter extends Component {
             }}
           >
             <View style={detailContainerStyle}>
-              <Text style={textStyle}>CATEGORY (ALL)
+              <Text style={textStyle}>
+                CATEGORY (ALL)
                 {/* <Text style={standardTextStyle}> (ALL)</Text> */}
               </Text>
               <Image style={caretStyle} source={dropDown} />
             </View>
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
-            <MenuOption
-              text='All'
-              value='all'
-            />
-
+            <MenuOption text="All" value="all" />
           </MenuOptions>
         </Menu>
-
       </View>
     );
   }
@@ -104,51 +91,49 @@ const touchableOpacityProps = {
 
 const styles = {
   containerStyle: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 50
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 50,
   },
   detailContainerStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 12,
     marginLeft: 12,
     paddingTop: 6,
-    paddingBottom: 6
+    paddingBottom: 6,
   },
   textStyle: {
     fontSize: 9,
     // color: '#1fb6dd',
-    color: '#696969',
+    color: "#696969",
     // fontWeight: '600',
   },
   standardTextStyle: {
     fontSize: 9,
-    color: 'black'
+    color: "black",
   },
   caretStyle: {
     // tintColor: '#20485f',
-    tintColor: '#696969',
-    marginLeft: 5
+    tintColor: "#696969",
+    marginLeft: 5,
   },
   anchorStyle: {
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
   menuOptionsStyles: {
     optionsContainer: {
       width: width - 14,
     },
-    optionsWrapper: {
-
-    },
+    optionsWrapper: {},
     optionWrapper: {
       flex: 1,
     },
     optionTouchable: {
-      underlayColor: 'lightgray',
+      underlayColor: "lightgray",
       activeOpacity: 10,
     },
     optionText: {
@@ -156,9 +141,9 @@ const styles = {
       paddingBottom: 5,
       paddingLeft: 10,
       paddingRight: 10,
-      color: 'black',
+      color: "black",
     },
-  }
+  },
 };
 
 export default GoalFilter;

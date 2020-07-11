@@ -1,23 +1,19 @@
-import React from 'react';
-import { View } from 'react-native';
+import React from "react";
+import { View } from "react-native";
 
 const ContactCard = (props) => {
-  return (
-    <View style={styles.containerStyle}>
-      {props.children}
-    </View>
-  );
+  return <View style={styles.containerStyle}>{props.children}</View>;
 };
 
 const styles = {
   containerStyle: {
     minHeight: 50,
     flex: 1,
-    flexDirection: 'row',
-    borderColor: '#eaeaea',
+    flexDirection: "row",
+    borderColor: "#eaeaea",
     borderBottomWidth: 1,
-    alignItems: 'center'
-  }
+    alignItems: "center",
+  },
 };
 
 export default ContactCard;

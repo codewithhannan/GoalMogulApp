@@ -1,36 +1,34 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Dimensions,
   ImageBackground,
-  TouchableWithoutFeedback
-} from 'react-native';
-import _ from 'lodash';
+  TouchableWithoutFeedback,
+} from "react-native";
+import _ from "lodash";
 
-import {
-  switchCase
-} from '../../../redux/middleware/utils';
+import { switchCase } from "../../../redux/middleware/utils";
 
 // Components
-import ImageModal from '../../Common/ImageModal';
+import ImageModal from "../../Common/ImageModal";
 
 // Assets
-import RefPreview from '../../Common/RefPreview';
+import RefPreview from "../../Common/RefPreview";
 // import TestImage from '../../../asset/TestEventImage.png';
 
 // Styles
-import { imagePreviewContainerStyle } from '../../../styles';
-import { IMAGE_BASE_URL } from '../../../Utils/Constants';
-import SparkleBadgeView from '../../Gamification/Badge/SparkleBadgeView';
+import { imagePreviewContainerStyle } from "../../../styles";
+import { IMAGE_BASE_URL } from "../../../Utils/Constants";
+import SparkleBadgeView from "../../Gamification/Badge/SparkleBadgeView";
 
 // Constants
-const DEBUG_KEY = '[ UI ProfilePostCard.ProfilePostBody ]';
-const { width } = Dimensions.get('window');
+const DEBUG_KEY = "[ UI ProfilePostCard.ProfilePostBody ]";
+const { width } = Dimensions.get("window");
 
 class ProfilePostBody extends React.Component {
   state = {
-    mediaModal: false
-  }
+    mediaModal: false,
+  };
 
   // Current media type is only picture
   renderPostImage(url) {
@@ -39,16 +37,21 @@ class ProfilePostBody extends React.Component {
       return null;
     }
     const imageUrl = `${IMAGE_BASE_URL}${url}`;
-      return (
-        <TouchableWithoutFeedback
-          onPress={() => this.setState({ mediaModal: true })}
-        >
-          <View>
-            <ImageBackground
-              style={{ ...styles.mediaStyle, ...imagePreviewContainerStyle, borderRadius: 8, backgroundColor: 'black' }}
-              source={{ uri: imageUrl }}
-              imageStyle={{ borderRadius: 8, opacity: 0.8, resizeMode: 'cover' }}
-            >
+    return (
+      <TouchableWithoutFeedback
+        onPress={() => this.setState({ mediaModal: true })}
+      >
+        <View>
+          <ImageBackground
+            style={{
+              ...styles.mediaStyle,
+              ...imagePreviewContainerStyle,
+              borderRadius: 8,
+              backgroundColor: "black",
+            }}
+            source={{ uri: imageUrl }}
+            imageStyle={{ borderRadius: 8, opacity: 0.8, resizeMode: "cover" }}
+          >
             {/*
               <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
                 <Image
@@ -73,13 +76,12 @@ class ProfilePostBody extends React.Component {
                 />
               </TouchableOpacity>
             */}
-            </ImageBackground>
-            {this.renderPostImageModal(imageUrl)}
-          </View>
-        </TouchableWithoutFeedback>
-      );
+          </ImageBackground>
+          {this.renderPostImageModal(imageUrl)}
+        </View>
+      </TouchableWithoutFeedback>
+    );
   }
-
 
   renderPostImageModal(imageUrl) {
     return (
@@ -102,8 +104,11 @@ class ProfilePostBody extends React.Component {
 
   renderPostBody(item) {
     const { postType } = item;
-    if (postType === 'General') {
-      const milestoneIdentifier = _.get(item, 'milestoneCelebration.milestoneIdentifier');
+    if (postType === "General") {
+      const milestoneIdentifier = _.get(
+        item,
+        "milestoneCelebration.milestoneIdentifier"
+      );
       if (milestoneIdentifier !== undefined) {
         return this.renderBadgeEarnImage(milestoneIdentifier);
       }
@@ -114,7 +119,11 @@ class ProfilePostBody extends React.Component {
     const previewItem = switchItem(item, postType);
     return (
       <View>
-        <RefPreview item={previewItem} postType={postType} goalRef={item.goalRef} />
+        <RefPreview
+          item={previewItem}
+          postType={postType}
+          goalRef={item.goalRef}
+        />
       </View>
     );
   }
@@ -123,11 +132,7 @@ class ProfilePostBody extends React.Component {
     const { item } = this.props;
     if (!item) return null;
 
-    return (
-      <View style={{ marginTop: 8 }}>
-        {this.renderPostBody(item)}
-      </View>
-    );
+    return <View style={{ marginTop: 8 }}>{this.renderPostBody(item)}</View>;
   }
 }
 
@@ -135,31 +140,34 @@ const styles = {
   // Post image and modal style
   postImageStyle: {
     width,
-    height: width
+    height: width,
   },
   cancelIconStyle: {
     height: 20,
     width: 20,
-    justifyContent: 'flex-end'
+    justifyContent: "flex-end",
   },
   mediaStyle: {
     height: width / 2,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
   },
 };
 
-const switchItem = (item, postType) => switchCase({
-  ShareNeed: getNeedFromRef(item.goalRef, item.needRef),
-  ShareGoal: item.goalRef,
-  SharePost: item.postRef,
-  ShareUser: item.userRef,
-  ShareStep: getStepFromGoal(item.goalRef, item.stepRef)
-})('ShareGoal')(postType);
+const switchItem = (item, postType) =>
+  switchCase({
+    ShareNeed: getNeedFromRef(item.goalRef, item.needRef),
+    ShareGoal: item.goalRef,
+    SharePost: item.postRef,
+    ShareUser: item.userRef,
+    ShareStep: getStepFromGoal(item.goalRef, item.stepRef),
+  })("ShareGoal")(postType);
 
-const getStepFromGoal = (goal, stepRef) => getItemFromGoal(goal, 'steps', stepRef);
+const getStepFromGoal = (goal, stepRef) =>
+  getItemFromGoal(goal, "steps", stepRef);
 
-const getNeedFromRef = (goal, needRef) => getItemFromGoal(goal, 'needs', needRef);
+const getNeedFromRef = (goal, needRef) =>
+  getItemFromGoal(goal, "needs", needRef);
 
 const getItemFromGoal = (goal, type, ref) => {
   let ret;

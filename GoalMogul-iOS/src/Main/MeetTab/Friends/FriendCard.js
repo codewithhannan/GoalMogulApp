@@ -1,43 +1,33 @@
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity
-} from 'react-native';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { connect } from "react-redux";
 
 // Components
-import Name from '../../Common/Name';
-import ProfileImage from '../../Common/ProfileImage';
+import Name from "../../Common/Name";
+import ProfileImage from "../../Common/ProfileImage";
 
 // Assets
-import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
+import defaultUserProfile from "../../../asset/utils/defaultUserProfile.png";
 
 // Actions
-import {
-  updateFriendship,
-  blockUser,
-  openProfile
-} from '../../../actions';
+import { updateFriendship, blockUser, openProfile } from "../../../actions";
 
 // Styles
-import {
-  cardBoxShadow
-} from '../../../styles';
-import DelayedButton from '../../Common/Button/DelayedButton';
+import { cardBoxShadow } from "../../../styles";
+import DelayedButton from "../../Common/Button/DelayedButton";
 
-const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel'];
+const FRIENDSHIP_BUTTONS = ["Block", "Unfriend", "Cancel"];
 const BLOCK_INDEX = 0;
 const UNFRIEND_INDEX = 1;
 const CANCEL_INDEX = 2;
-const TAB_KEY = 'friends';
-const DEBUG_KEY = '[ UI FriendCard ]';
+const TAB_KEY = "friends";
+const DEBUG_KEY = "[ UI FriendCard ]";
 
 class FriendCard extends Component {
   state = {
     requested: false,
-    accepted: false
-  }
+    accepted: false,
+  };
 
   // onButtonClicked = (friendshipId) => {
   //   ActionSheetIOS.showActionSheetWithOptions({
@@ -77,11 +67,11 @@ class FriendCard extends Component {
       // return this.props.openProfile(_id);
     }
     // TODO: showToast
-  }
+  };
 
   renderProfileImage(item) {
     const { profile, _id } = item;
-    
+
     // let profileImage = (
     //   <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />
     // );
@@ -91,13 +81,13 @@ class FriendCard extends Component {
     // }
     // return profileImage;
     return (
-      <ProfileImage 
+      <ProfileImage
         imageStyle={styles.imageStyle}
         imageUrl={profile && profile.image ? profile.image : undefined}
         imageContainerStyle={styles.imageContainerStyle}
         userId={_id}
       />
-    )
+    );
   }
 
   /**
@@ -116,44 +106,49 @@ class FriendCard extends Component {
     const { name } = item;
     return (
       <View style={styles.infoContainerStyle}>
-        <View style={{ flex: 1, flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            marginRight: 6,
+            alignItems: "center",
+          }}
+        >
           <Name text={name} />
         </View>
 
-        <View style={styles.buttonContainerStyle}>
-          {this.renderButton()}
-        </View>
+        <View style={styles.buttonContainerStyle}>{this.renderButton()}</View>
       </View>
     );
   }
 
   /**
    * Render user top goals and needs
-   * @param {} item 
+   * @param {} item
    */
   renderGoals(item) {
     const { topGoals, topNeeds } = item;
 
-    let topGoalText = 'None shared';
+    let topGoalText = "None shared";
     if (topGoals !== null && topGoals !== undefined && topGoals.length !== 0) {
-      topGoalText = '';
+      topGoalText = "";
       topGoals.forEach((g, index) => {
         if (index !== 0) {
-          topGoalText = `${topGoalText}, ${g}`; 
+          topGoalText = `${topGoalText}, ${g}`;
         } else {
-          topGoalText = `${g}`; 
+          topGoalText = `${g}`;
         }
       });
     }
 
-    let topNeedText = 'None shared';
+    let topNeedText = "None shared";
     if (topNeeds !== null && topNeeds !== undefined && topNeeds.length !== 0) {
-      topNeedText = '';
+      topNeedText = "";
       topNeeds.forEach((n, index) => {
         if (index !== 0) {
-          topNeedText = `${topNeedText}, ${n}`; 
+          topNeedText = `${topNeedText}, ${n}`;
         } else {
-          topNeedText = `${n}`; 
+          topNeedText = `${n}`;
         }
       });
     }
@@ -161,11 +156,15 @@ class FriendCard extends Component {
     return (
       <View style={styles.infoContainerStyle}>
         <View style={{ flex: 1, marginRight: 6 }}>
-          <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginBottom: 2 }}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={{ marginBottom: 2 }}
+          >
             <Text style={styles.subTitleTextStyle}>Goals: </Text>
             <Text style={styles.bodyTextStyle}>{topGoalText}</Text>
           </Text>
-          <Text numberOfLines={1} ellipsizeMode='tail'>
+          <Text numberOfLines={1} ellipsizeMode="tail">
             <Text style={styles.subTitleTextStyle}>Needs: </Text>
             <Text style={styles.bodyTextStyle}>{topNeedText}</Text>
           </Text>
@@ -180,7 +179,7 @@ class FriendCard extends Component {
       <Text
         style={styles.jobTitleTextStyle}
         numberOfLines={1}
-        ellipsizeMode='tail'
+        ellipsizeMode="tail"
       >
         {headline}
       </Text>
@@ -195,7 +194,7 @@ class FriendCard extends Component {
         <Text
           style={styles.titleTextStyle}
           numberOfLines={1}
-          ellipsizeMode='tail'
+          ellipsizeMode="tail"
         >
           <Text style={styles.detailTextStyle}>{profile.occupation}</Text>
         </Text>
@@ -232,22 +231,22 @@ class FriendCard extends Component {
 
 const styles = {
   containerStyle: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 5,
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 8,
     paddingBottom: 8,
-    alignItems: 'center',
-    backgroundColor: '#ffffff'
+    alignItems: "center",
+    backgroundColor: "#ffffff",
   },
   bodyContainerStyle: {
     marginLeft: 8,
     flex: 1,
   },
   infoContainerStyle: {
-    flexDirection: 'row',
-    flex: 1
+    flexDirection: "row",
+    flex: 1,
   },
   imageStyle: {
     height: 48,
@@ -257,52 +256,52 @@ const styles = {
   imageContainerStyle: {
     borderWidth: 0.5,
     padding: 0.5,
-    borderColor: 'lightgray',
-    alignItems: 'center',
+    borderColor: "lightgray",
+    alignItems: "center",
     borderRadius: 6,
-    alignSelf: 'flex-start',
-    backgroundColor: 'white'
+    alignSelf: "flex-start",
+    backgroundColor: "white",
   },
   buttonContainerStyle: {
     marginLeft: 8,
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   settingIconStyle: {
     height: 20,
-    width: 20
+    width: 20,
   },
   // Top goals and needs text style
   subTitleTextStyle: {
-    color: '#17B3EC',
+    color: "#17B3EC",
     fontSize: 12,
-    fontWeight: '600'
+    fontWeight: "600",
   },
   bodyTextStyle: {
     fontSize: 12,
-    color: '#9B9B9B'
+    color: "#9B9B9B",
   },
   titleTextStyle: {
-    color: '#17B3EC',
+    color: "#17B3EC",
     fontSize: 11,
     paddingTop: 1,
-    paddingBottom: 1
+    paddingBottom: 1,
   },
   detailTextStyle: {
-    color: '#000000',
-    paddingLeft: 3
+    color: "#000000",
+    paddingLeft: 3,
   },
   jobTitleTextStyle: {
-    color: '#17B3EC',
+    color: "#17B3EC",
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: "800",
     paddingTop: 5,
-    paddingBottom: 3
-  }
+    paddingBottom: 3,
+  },
 };
 
 export default connect(null, {
   updateFriendship,
   blockUser,
-  openProfile
+  openProfile,
 })(FriendCard);

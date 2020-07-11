@@ -3,78 +3,85 @@
  */
 
 const SENTRY_TAGS = {
-    GOOGLE_SERVIVE: 'google service',
-    ACTION: {
-        LOGIN_IN: 'login',
-        LOGOUT: 'logout',
-        FETCH_USER_PROFILE: 'fetech user profile',
-        USERNAME: 'username',
-        TOKEN: 'token verification',
-        UNSUBSCRIBE_NOTIFICATIONS: 'unsubscribe notifications (expo push token deletion)'
-    },
-    TRIBE: {
-        ACTION: "tribe action",
-        REDUCER: "tribe reducer",
-        SELECTOR: "tribe selector",
-    },
-    GOAL: {
-        ACTION: "goal action",
-        REDUCER: "goal reducer",
-        SELECTOR: "goal selector"
-    },
-    POST: {
-        ACTION: "post action",
-        REDUCER: "post reduer",
-        SELECTOR: "post selector"
-    }
+  GOOGLE_SERVIVE: "google service",
+  ACTION: {
+    LOGIN_IN: "login",
+    LOGOUT: "logout",
+    FETCH_USER_PROFILE: "fetech user profile",
+    USERNAME: "username",
+    TOKEN: "token verification",
+    UNSUBSCRIBE_NOTIFICATIONS:
+      "unsubscribe notifications (expo push token deletion)",
+  },
+  TRIBE: {
+    ACTION: "tribe action",
+    REDUCER: "tribe reducer",
+    SELECTOR: "tribe selector",
+  },
+  GOAL: {
+    ACTION: "goal action",
+    REDUCER: "goal reducer",
+    SELECTOR: "goal selector",
+  },
+  POST: {
+    ACTION: "post action",
+    REDUCER: "post reduer",
+    SELECTOR: "post selector",
+  },
 };
 
 const SENTRY_TAG_VALUE = {
-    ACTIONS: {
-        FAILED: 'failed'
-    }
+  ACTIONS: {
+    FAILED: "failed",
+  },
 };
 
 const SENTRY_MESSAGE_TYPE = {
-    ERROR: 'error', // handle exception being thrown, e.g. catch(err)
-    MESSAGE: 'message', // customized error messages in code piece
-    EVENT: 'event' // currently this is not used as context is added in scope 
+  ERROR: "error", // handle exception being thrown, e.g. catch(err)
+  MESSAGE: "message", // customized error messages in code piece
+  EVENT: "event", // currently this is not used as context is added in scope
 };
 
 const SENTRY_CONTEXT = {
-    USER: {
-        USER_ID: "user id",
+  USER: {
+    USER_ID: "user id",
+  },
+  TRIBE: {
+    PAGE: {
+      PAGE_ID: "tribe page id",
     },
-    TRIBE: {
-        PAGE: {
-            PAGE_ID: "tribe page id"
-        },
-        MEMBER_UPDATE_TYPE: "tribe membership update type",
-        TRIBE_ID: "tribe id",
-        LEAVE_TYPE: "leave type", // leave type can be removed by admin or member leaves himself
-    },
-    PAGINATION: {
-        SKIP: "skip",
-        LIMIT: "limit",
-    },
-    POST: {
-        POST_ID: "post id",
-    },
-    GOAL: {
-        GOAL_ID: "goal id",
-    }
-}
+    MEMBER_UPDATE_TYPE: "tribe membership update type",
+    TRIBE_ID: "tribe id",
+    LEAVE_TYPE: "leave type", // leave type can be removed by admin or member leaves himself
+  },
+  PAGINATION: {
+    SKIP: "skip",
+    LIMIT: "limit",
+  },
+  POST: {
+    POST_ID: "post id",
+  },
+  GOAL: {
+    GOAL_ID: "goal id",
+  },
+};
 
 // Based on the document, exception / message level can be one of:
 // 'fatal', 'error', 'warning', 'log', 'info, 'debug', 'critical'
 const SENTRY_MESSAGE_LEVEL = {
-    DEBUG: 'debug', // debugging purpose
-    INFO: 'info', // extra information for app behavior
-    LOG: 'log', // TBD
-    WARNING: 'warning', // TBD
-    ERROR: 'error', // request exception and un-intended behavior of app
-    FATAL: 'fatal', // app crash, this should be handled by Sentry mostly
-    CRITICAL: 'critical' // TBD
-}
+  DEBUG: "debug", // debugging purpose
+  INFO: "info", // extra information for app behavior
+  LOG: "log", // TBD
+  WARNING: "warning", // TBD
+  ERROR: "error", // request exception and un-intended behavior of app
+  FATAL: "fatal", // app crash, this should be handled by Sentry mostly
+  CRITICAL: "critical", // TBD
+};
 
-export { SENTRY_TAGS, SENTRY_TAG_VALUE, SENTRY_MESSAGE_LEVEL, SENTRY_MESSAGE_TYPE, SENTRY_CONTEXT };
+export {
+  SENTRY_TAGS,
+  SENTRY_TAG_VALUE,
+  SENTRY_MESSAGE_LEVEL,
+  SENTRY_MESSAGE_TYPE,
+  SENTRY_CONTEXT,
+};

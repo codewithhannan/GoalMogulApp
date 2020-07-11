@@ -1,11 +1,8 @@
-import React from 'react';
-import {
-  View,
-} from 'react-native';
-import TabButton from './TabButton';
+import React from "react";
+import { View } from "react-native";
+import TabButton from "./TabButton";
 
 class TabButtonGroup extends React.PureComponent {
-
   renderTabs() {
     const { buttons, tabIconMap, buttonStyle } = this.props;
     const { navigationState, jumpToIndex, jumpTo, statsState } = buttons;
@@ -40,25 +37,21 @@ class TabButtonGroup extends React.PureComponent {
   }
 
   render() {
-    return (
-      <View style={styles.containerStyle}>
-        {this.renderTabs()}
-      </View>
-    );
+    return <View style={styles.containerStyle}>{this.renderTabs()}</View>;
   }
 }
 
 const styles = {
   containerStyle: {
     height: 38,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
     marginTop: 0.5,
     marginBottom: 0.5,
-    backgroundColor: 'white'
-  }
+    backgroundColor: "white",
+  },
 };
 
 export default TabButtonGroup;

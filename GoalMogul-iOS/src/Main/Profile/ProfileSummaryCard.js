@@ -2,56 +2,58 @@
  * This component is replaced by ProfileDetailCard in new version 0.3.5 since we are merging
  * user goal page and user profile page
  */
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   View,
   Image,
   TouchableWithoutFeedback,
   TouchableOpacity,
-  ActivityIndicator
-} from 'react-native';
-import { connect } from 'react-redux';
+  ActivityIndicator,
+} from "react-native";
+import { connect } from "react-redux";
 
 /* Assets */
-import next from '../../asset/utils/next.png';
-import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
+import next from "../../asset/utils/next.png";
+import defaultUserProfile from "../../asset/utils/defaultUserProfile.png";
 
 /* Actions */
-import { openProfileDetail, UserBanner } from '../../actions';
+import { openProfileDetail, UserBanner } from "../../actions";
 
 /* Components */
-import Name from '../Common/Name';
-import Position from '../Common/Position';
-import Stats from '../Common/Text/Stats';
+import Name from "../Common/Name";
+import Position from "../Common/Position";
+import Stats from "../Common/Text/Stats";
 
 // Selector
 import {
   getUserDataByPageId,
-  getUserData
-} from '../../redux/modules/User/Selector';
-import { IMAGE_BASE_URL } from '../../Utils/Constants';
+  getUserData,
+} from "../../redux/modules/User/Selector";
+import { IMAGE_BASE_URL } from "../../Utils/Constants";
 
-const DEBUG_KEY = '[ Component ProfileSummaryCard ]';
+const DEBUG_KEY = "[ Component ProfileSummaryCard ]";
 
 class ProfileSummaryCard extends Component {
   state = {
     requested: false,
-    imageLoading: false
-  }
+    imageLoading: false,
+  };
 
   onButtonClicked = () => {
-    console.log(`${DEBUG_KEY} open profile detail for id: ${this.props.userId}`);
+    console.log(
+      `${DEBUG_KEY} open profile detail for id: ${this.props.userId}`
+    );
     this.props.openProfileDetail(this.props.userId);
-  }
+  };
 
   handleOpenProfileDetail() {
     this.props.openProfileDetail(this.props.userId);
   }
 
   renderStats() {
-    const data = this.props.isSelf ?
-      [{ name: 'Friends', stat: this.props.friendsCount || 0 }] :
-      [{ name: 'Mutual Friends', stat: this.props.mutualFriends.count || 0 }];
+    const data = this.props.isSelf
+      ? [{ name: "Friends", stat: this.props.friendsCount || 0 }]
+      : [{ name: "Mutual Friends", stat: this.props.mutualFriends.count || 0 }];
     return <Stats data={data} />;
   }
 
@@ -65,13 +67,10 @@ class ProfileSummaryCard extends Component {
           paddingTop: 10,
           paddingBottom: 10,
           borderLeftWidth: 1,
-          borderColor: '#efefef'
+          borderColor: "#efefef",
         }}
       >
-        <Image
-          source={next}
-          style={{ ...styles.iconStyle, opacity: 0.8 }}
-        />
+        <Image source={next} style={{ ...styles.iconStyle, opacity: 0.8 }} />
       </TouchableOpacity>
     );
   }
@@ -83,28 +82,37 @@ class ProfileSummaryCard extends Component {
     const { name, headline, profile } = user;
     let imageUrl = profile.image;
     // let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
-    let profileImage = (!this.props.loading & !imageUrl) ?
-    (<Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />)
-    :
-    (
-      <View style={{ ...styles.imageStyle, alignItems: 'center', justifyContent: 'center' }}>
-         <ActivityIndicator size="large" color="lightgray" />
-      </View>
-    );
+    let profileImage =
+      !this.props.loading & !imageUrl ? (
+        <Image
+          style={styles.imageStyle}
+          resizeMode="contain"
+          source={defaultUserProfile}
+        />
+      ) : (
+        <View
+          style={{
+            ...styles.imageStyle,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ActivityIndicator size="large" color="lightgray" />
+        </View>
+      );
 
     if (imageUrl) {
       imageUrl = `${IMAGE_BASE_URL}${imageUrl}`;
-      profileImage =
-        (
-          <View style={styles.imageContainerStyle}>
-            <Image
-              onLoadStart={() => this.setState({ imageLoading: true })}
-              onLoadEnd={() => this.setState({ imageLoading: false })}
-              style={styles.imageStyle}
-              source={{ uri: imageUrl }}
-            />
-          </View>
-        );
+      profileImage = (
+        <View style={styles.imageContainerStyle}>
+          <Image
+            onLoadStart={() => this.setState({ imageLoading: true })}
+            onLoadEnd={() => this.setState({ imageLoading: false })}
+            style={styles.imageStyle}
+            source={{ uri: imageUrl }}
+          />
+        </View>
+      );
     }
     // Style 1:
     // const addFriendButton = !this.props.isSelf ? (
@@ -128,13 +136,15 @@ class ProfileSummaryCard extends Component {
     // ) : null;
 
     return (
-      <TouchableWithoutFeedback onPress={this.handleOpenProfileDetail.bind(this)}>
+      <TouchableWithoutFeedback
+        onPress={this.handleOpenProfileDetail.bind(this)}
+      >
         <View style={styles.containerStyle}>
-          <View style={{ flex: 5, flexDirection: 'row' }}>
+          <View style={{ flex: 5, flexDirection: "row" }}>
             {profileImage}
 
             <View style={styles.bodyStyle}>
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{ flexDirection: "row" }}>
                 <Name text={name} textStyle={{ fontSize: 18 }} />
                 <UserBanner user={user} iconStyle={{ height: 17, width: 13 }} />
               </View>
@@ -154,46 +164,46 @@ class ProfileSummaryCard extends Component {
 
 const styles = {
   containerStyle: {
-    display: 'flex',
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
+    display: "flex",
+    flexDirection: "row",
+    backgroundColor: "#ffffff",
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 8,
     paddingBottom: 8,
-    maxHeight: 70
+    maxHeight: 70,
   },
   bodyStyle: {
     flex: 3,
-    display: 'flex',
+    display: "flex",
     marginLeft: 10,
     marginRight: 5,
-    justifyContent: 'space-between'
+    justifyContent: "space-between",
   },
   buttonContainerStyle: {
     flex: 1,
-    flexDirection: 'row',
-    alignSelf: 'center',
-    justifyContent: 'center'
+    flexDirection: "row",
+    alignSelf: "center",
+    justifyContent: "center",
   },
   imageStyle: {
     height: 54,
     width: 54,
-    borderRadius: 5
+    borderRadius: 5,
   },
   buttonStyle: {
     width: 80,
     height: 26,
     borderWidth: 1,
-    borderColor: '#17B3EC',
+    borderColor: "#17B3EC",
     borderRadius: 13,
   },
   buttonTextStyle: {
-    color: '#17B3EC',
+    color: "#17B3EC",
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: "700",
     padding: 0,
-    alignSelf: 'center'
+    alignSelf: "center",
   },
   buttonIconStyle: {
     marginTop: 2,
@@ -201,27 +211,27 @@ const styles = {
   iconStyle: {
     height: 25,
     width: 26,
-    transform: [{ rotateY: '180deg' }],
-    tintColor: '#17B3EC'
+    transform: [{ rotateY: "180deg" }],
+    tintColor: "#17B3EC",
   },
   imageContainerStyle: {
     borderWidth: 0.5,
     padding: 1.5,
-    borderColor: 'lightgray',
-    alignItems: 'center',
+    borderColor: "lightgray",
+    alignItems: "center",
     borderRadius: 6,
-    alignSelf: 'flex-start',
-    backgroundColor: 'white'
-  }
+    alignSelf: "flex-start",
+    backgroundColor: "white",
+  },
 };
 
 const mapStateToProps = (state, props) => {
   const { userId, pageId } = props;
 
-  const userObject = getUserData(state, userId, '');
+  const userObject = getUserData(state, userId, "");
   const { user, mutualFriends } = userObject;
 
-  const loading = getUserDataByPageId(state, userId, pageId, 'loading');
+  const loading = getUserDataByPageId(state, userId, pageId, "loading");
 
   const friendsCount = state.meet.friends.count;
   const isSelf = userId.toString() === state.user.userId.toString();
@@ -232,8 +242,10 @@ const mapStateToProps = (state, props) => {
     isSelf,
     mutualFriends,
     friendsCount,
-    loading
+    loading,
   };
 };
 
-export default connect(mapStateToProps, { openProfileDetail })(ProfileSummaryCard);
+export default connect(mapStateToProps, { openProfileDetail })(
+  ProfileSummaryCard
+);

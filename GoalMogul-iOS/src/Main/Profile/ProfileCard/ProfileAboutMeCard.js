@@ -1,16 +1,12 @@
-import React, { Component } from 'react';
-import {
-  View,
-  Text
-} from 'react-native';
+import React, { Component } from "react";
+import { View, Text } from "react-native";
 
 /* Components */
-import Card from './Card';
-import ProfileActionButton from '../../Common/Button/ProfileActionButton';
+import Card from "./Card";
+import ProfileActionButton from "../../Common/Button/ProfileActionButton";
 
 // TODO: use redux instead of passed in props
 class ProfileAboutMeCard extends Component {
-
   render() {
     const { about } = this.props.data.profile;
     if (!about) {
@@ -25,7 +21,6 @@ class ProfileAboutMeCard extends Component {
           <View style={styles.detailContainerStyle}>
             <Text stye={styles.detailTextStyle}>{about}</Text>
           </View>
-
         </View>
       </Card>
     );
@@ -34,32 +29,32 @@ class ProfileAboutMeCard extends Component {
 
 const styles = {
   containerStyle: {
-    display: 'flex',
+    display: "flex",
     paddingTop: 15,
     paddingLeft: 15,
     paddingRight: 15,
-    paddingBottom: 15
+    paddingBottom: 15,
   },
   headerContainerStyle: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingBottom: 20
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingBottom: 20,
   },
   titleTextStyle: {
     fontSize: 23,
-    marginRight: 10
+    marginRight: 10,
   },
   occupationTextStyle: {
-    fontSize: 15
+    fontSize: 15,
   },
   detailContainerStyle: {
-    display: 'flex',
-    minHeight: 60
+    display: "flex",
+    minHeight: 60,
   },
   detailTextStyle: {
-    fontSize: 20
-  }
+    fontSize: 20,
+  },
 };
 
 export default ProfileAboutMeCard;

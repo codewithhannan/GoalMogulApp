@@ -1,5 +1,5 @@
-import React from 'react';
-import { Text, View } from 'react-native';
+import React from "react";
+import { Text, View } from "react-native";
 
 const EmptyResult = (props) => {
   const { textStyle, containerStyle } = props;
@@ -13,14 +13,14 @@ const EmptyResult = (props) => {
 const styles = {
   containerStyle: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: "center",
   },
   textStyle: {
     paddingTop: 150,
     fontSize: 17,
-    fontWeight: '600',
-    color: '#818181'
-  }
+    fontWeight: "600",
+    color: "#818181",
+  },
 };
 
 export default EmptyResult;

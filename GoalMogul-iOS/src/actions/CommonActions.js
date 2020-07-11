@@ -1,9 +1,9 @@
-import { Actions } from 'react-native-router-flux';
+import { Actions } from "react-native-router-flux";
 
 export const back = () => {
   return (dispatch) => {
     dispatch({
-      type: ''
+      type: "",
     });
     Actions.pop();
   };

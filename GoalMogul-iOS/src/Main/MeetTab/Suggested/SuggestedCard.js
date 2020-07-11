@@ -1,43 +1,36 @@
 /**
  * This is currently used in the DiscoverTabView for friend discovery
  */
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { View, Text, TouchableOpacity, Image } from "react-native";
+import { connect } from "react-redux";
 
 // Components
-import Name from '../../Common/Name';
-import ProfileImage from '../../Common/ProfileImage';
+import Name from "../../Common/Name";
+import ProfileImage from "../../Common/ProfileImage";
 
 // Assets
 // import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
-import next from '../../../asset/utils/next.png';
+import next from "../../../asset/utils/next.png";
 
 // Styles
-import {
-  cardBoxShadow
-} from '../../../styles';
+import { cardBoxShadow } from "../../../styles";
 
 // Actions
-import { updateFriendship, openProfile } from '../../../actions';
-import DelayedButton from '../../Common/Button/DelayedButton';
+import { updateFriendship, openProfile } from "../../../actions";
+import DelayedButton from "../../Common/Button/DelayedButton";
 
-const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel'];
+const FRIENDSHIP_BUTTONS = ["Withdraw request", "Cancel"];
 const WITHDRAW_INDEX = 0;
 const CANCEL_INDEX = 1;
-const TAB_KEY = 'suggested';
-const DEBUG_KEY = '[ Component SearchUserCard ]';
+const TAB_KEY = "suggested";
+const DEBUG_KEY = "[ Component SearchUserCard ]";
 
 class SuggestedCard extends Component {
   state = {
     requested: false,
-    accepted: false
-  }
+    accepted: false,
+  };
 
   onButtonClicked = (_id) => {
     console.log(`${DEBUG_KEY} open profile with id: `, _id);
@@ -63,7 +56,7 @@ class SuggestedCard extends Component {
     // return this.props.updateFriendship(_id, '', 'requesteFriend', TAB_KEY, () => {
     //   this.setState({ requested: true });
     // });
-  }
+  };
 
   renderProfileImage(item) {
     const { profile, _id } = item;
@@ -93,10 +86,7 @@ class SuggestedCard extends Component {
           onPress={this.onButtonClicked.bind(this, _id)}
           style={{ padding: 15 }}
         >
-          <Image
-            source={next}
-            style={{ ...styles.iconStyle, opacity: 0.8 }}
-          />
+          <Image source={next} style={{ ...styles.iconStyle, opacity: 0.8 }} />
         </DelayedButton>
       </View>
     );
@@ -139,7 +129,14 @@ class SuggestedCard extends Component {
     const { name } = this.props.item;
     return (
       <View style={styles.infoContainerStyle}>
-        <View style={{ flex: 1, flexDirection: 'row', marginRight: 6, alignItems: 'center' }}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            marginRight: 6,
+            alignItems: "center",
+          }}
+        >
           <Name text={name} />
         </View>
       </View>
@@ -149,51 +146,69 @@ class SuggestedCard extends Component {
   renderUserInfo(item, headline) {
     const { topGoals, topNeeds } = item;
 
-    let topGoalText = 'None shared';
+    let topGoalText = "None shared";
     if (topGoals !== null && topGoals !== undefined && topGoals.length !== 0) {
-      topGoalText = '';
+      topGoalText = "";
       topGoals.forEach((g, index) => {
         if (index !== 0) {
-          topGoalText = `${topGoalText}, ${g}`; 
+          topGoalText = `${topGoalText}, ${g}`;
         } else {
-          topGoalText = `${g}`; 
+          topGoalText = `${g}`;
         }
       });
     }
 
-    let topNeedText = 'None shared';
+    let topNeedText = "None shared";
     if (topNeeds !== null && topNeeds !== undefined && topNeeds.length !== 0) {
-      topNeedText = '';
+      topNeedText = "";
       topNeeds.forEach((n, index) => {
         if (index !== 0) {
-          topNeedText = `${topNeedText}, ${n}`; 
+          topNeedText = `${topNeedText}, ${n}`;
         } else {
-          topNeedText = `${n}`; 
+          topNeedText = `${n}`;
         }
       });
     }
 
     let textComponent;
-    if (topNeedText === 'None shared' && topGoalText === 'None shared') {
+    if (topNeedText === "None shared" && topGoalText === "None shared") {
       if (headline) {
         textComponent = (
-          <View style={{ flex: 1, marginRight: 4, paddingVertical: 2, marginBottom: 2 }}>
-            <Text 
-              numberOfLines={2} 
-              ellipsizeMode='tail' 
+          <View
+            style={{
+              flex: 1,
+              marginRight: 4,
+              paddingVertical: 2,
+              marginBottom: 2,
+            }}
+          >
+            <Text
+              numberOfLines={2}
+              ellipsizeMode="tail"
               style={{ ...styles.bodyTextStyle, fontSize: 14 }}
             >
-                {headline}
+              {headline}
             </Text>
           </View>
         );
       } else {
         textComponent = (
-          <View style={{ flex: 1, marginRight: 4, paddingVertical: 2, marginBottom: 2 }}>
-            <Text 
-              numberOfLines={2} 
-              ellipsizeMode='tail' 
-              style={{ ...styles.bodyTextStyle, fontSize: 14, color: '#9B9B9B' }}
+          <View
+            style={{
+              flex: 1,
+              marginRight: 4,
+              paddingVertical: 2,
+              marginBottom: 2,
+            }}
+          >
+            <Text
+              numberOfLines={2}
+              ellipsizeMode="tail"
+              style={{
+                ...styles.bodyTextStyle,
+                fontSize: 14,
+                color: "#9B9B9B",
+              }}
             >
               No goals or needs shared publicly
             </Text>
@@ -203,11 +218,15 @@ class SuggestedCard extends Component {
     } else {
       textComponent = (
         <View style={{ flex: 1, marginRight: 6 }}>
-          <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginBottom: 2 }}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={{ marginBottom: 2 }}
+          >
             <Text style={styles.subTitleTextStyle}>Goals: </Text>
             <Text style={styles.bodyTextStyle}>{topGoalText}</Text>
           </Text>
-          <Text numberOfLines={1} ellipsizeMode='tail'>
+          <Text numberOfLines={1} ellipsizeMode="tail">
             <Text style={styles.subTitleTextStyle}>Needs: </Text>
             <Text style={styles.bodyTextStyle}>{topNeedText}</Text>
           </Text>
@@ -215,11 +234,7 @@ class SuggestedCard extends Component {
       );
     }
 
-    return (
-      <View style={styles.infoContainerStyle}>
-        {textComponent}
-      </View>
-    );
+    return <View style={styles.infoContainerStyle}>{textComponent}</View>;
   }
 
   renderOccupation() {
@@ -229,7 +244,7 @@ class SuggestedCard extends Component {
         <Text
           style={styles.titleTextStyle}
           numberOfLines={1}
-          ellipsizeMode='tail'
+          ellipsizeMode="tail"
         >
           <Text style={styles.detailTextStyle}>{profile.occupation}</Text>
         </Text>
@@ -263,7 +278,6 @@ class SuggestedCard extends Component {
             {this.renderButton(_id)}
           </View>
         */}
-
       </DelayedButton>
     );
   }
@@ -281,41 +295,41 @@ class SuggestedCard extends Component {
 
 const styles = {
   containerStyle: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 5,
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 8,
     paddingBottom: 8,
-    alignItems: 'center',
-    backgroundColor: '#ffffff'
+    alignItems: "center",
+    backgroundColor: "#ffffff",
   },
   imageContainerStyle: {
     borderWidth: 0.5,
     padding: 1.5,
-    borderColor: 'lightgray',
-    alignItems: 'center',
+    borderColor: "lightgray",
+    alignItems: "center",
     borderRadius: 6,
-    alignSelf: 'flex-start',
-    backgroundColor: 'white'
+    alignSelf: "flex-start",
+    backgroundColor: "white",
   },
   bodyContainerStyle: {
     marginLeft: 10,
     flex: 1,
   },
   infoContainerStyle: {
-    flexDirection: 'row',
-    flex: 1
+    flexDirection: "row",
+    flex: 1,
   },
   subTitleTextStyle: {
-    color: '#17B3EC',
+    color: "#17B3EC",
     fontSize: 12,
-    fontWeight: '600'
+    fontWeight: "600",
   },
   bodyTextStyle: {
     fontSize: 12,
     // color: '#9B9B9B'
-    color: '#8f8f8f'
+    color: "#8f8f8f",
   },
   imageStyle: {
     height: 48,
@@ -324,68 +338,66 @@ const styles = {
   },
   buttonContainerStyle: {
     marginLeft: 8,
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   buttonStyle: {
     width: 70,
     height: 26,
     borderWidth: 1,
-    borderColor: '#17B3EC',
+    borderColor: "#17B3EC",
     borderRadius: 13,
   },
   buttonTextStyle: {
-    color: '#17B3EC',
+    color: "#17B3EC",
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
     paddingLeft: 1,
     padding: 0,
-    alignSelf: 'center'
+    alignSelf: "center",
   },
   buttonIconStyle: {
-    marginTop: 1
+    marginTop: 1,
   },
-  needContainerStyle: {
-
-  },
+  needContainerStyle: {},
   titleTextStyle: {
-    color: '#17B3EC',
+    color: "#17B3EC",
     fontSize: 11,
     paddingTop: 1,
-    paddingBottom: 1
+    paddingBottom: 1,
   },
   detailTextStyle: {
-    color: '#000000',
-    paddingLeft: 3
+    color: "#000000",
+    paddingLeft: 3,
   },
   jobTitleTextStyle: {
-    color: '#17B3EC',
+    color: "#17B3EC",
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: "800",
     paddingTop: 5,
-    paddingBottom: 3
+    paddingBottom: 3,
   },
   friendTextStyle: {
     paddingLeft: 10,
-    color: '#17B3EC',
+    color: "#17B3EC",
     fontSize: 9,
-    fontWeight: '800',
-    maxWidth: 120
+    fontWeight: "800",
+    maxWidth: 120,
   },
   iconContainerStyle: {
     marginLeft: 8,
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   iconStyle: {
     height: 25,
     width: 26,
-    transform: [{ rotateY: '180deg' }],
-    tintColor: '#17B3EC'
-  }
+    transform: [{ rotateY: "180deg" }],
+    tintColor: "#17B3EC",
+  },
 };
 
 export default connect(null, {
   updateFriendship,
-  openProfile
+  openProfile,
 })(SuggestedCard);

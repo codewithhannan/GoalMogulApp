@@ -1,177 +1,175 @@
-import React from 'react';
-import {
-    View,
-    FlatList,
-    Dimensions,
-    ActivityIndicator
-} from 'react-native';
-import { connect } from 'react-redux';
-import {
-    MenuProvider
-} from 'react-native-popup-menu';
+import React from "react";
+import { View, FlatList, Dimensions, ActivityIndicator } from "react-native";
+import { connect } from "react-redux";
+import { MenuProvider } from "react-native-popup-menu";
 
 // Components
-import TrendingGoalCardView from './TrendingGoalCardView';
-import EmptyResult from '../../Common/Text/EmptyResult';
+import TrendingGoalCardView from "./TrendingGoalCardView";
+import EmptyResult from "../../Common/Text/EmptyResult";
 
 // Actions
 import {
-    selectTrendingGoalsCategory,
-    refreshTrendingGoals,
-    loadMoreTrendingGoals
-} from '../../../redux/modules/goal/CreateGoalActions';
+  selectTrendingGoalsCategory,
+  refreshTrendingGoals,
+  loadMoreTrendingGoals,
+} from "../../../redux/modules/goal/CreateGoalActions";
 
 // Assets
-import { BACKGROUND_COLOR } from '../../../styles';
-import ModalHeader from '../../Common/Header/ModalHeader';
-import { Actions } from 'react-native-router-flux';
-import { CATEGORY_OPTIONS } from '../../../Utils/Constants';
-import GoalFilterBar from '../../Common/GoalFilterBar';
+import { BACKGROUND_COLOR } from "../../../styles";
+import ModalHeader from "../../Common/Header/ModalHeader";
+import { Actions } from "react-native-router-flux";
+import { CATEGORY_OPTIONS } from "../../../Utils/Constants";
+import GoalFilterBar from "../../Common/GoalFilterBar";
 
-const DEBUG_KEY = '[ UI TrendingGOalView ]';
-const { width } = Dimensions.get('window');
+const DEBUG_KEY = "[ UI TrendingGOalView ]";
+const { width } = Dimensions.get("window");
 
 class TrendingGoalView extends React.PureComponent {
-    componentDidMount() {
-        console.log(`${DEBUG_KEY}: component did mount`);
-    }
+  componentDidMount() {
+    console.log(`${DEBUG_KEY}: component did mount`);
+  }
 
-    keyExtractor = (item) => item.title;
+  keyExtractor = (item) => item.title;
 
-    handleOnRefresh = () => {
-        this.props.refreshTrendingGoals();
-    }
+  handleOnRefresh = () => {
+    this.props.refreshTrendingGoals();
+  };
 
-    handleOnLoadMore = () => {
-        this.props.loadMoreTrendingGoals();
-    }
+  handleOnLoadMore = () => {
+    this.props.loadMoreTrendingGoals();
+  };
 
-    handleOnMenuSelect = (value) => {
-        this.props.selectTrendingGoalsCategory(value);
-    }
+  handleOnMenuSelect = (value) => {
+    this.props.selectTrendingGoalsCategory(value);
+  };
 
-    renderItem = ({ item, index }) => {
-        return <TrendingGoalCardView index={index + 1} item={item} />;
-    }
+  renderItem = ({ item, index }) => {
+    return <TrendingGoalCardView index={index + 1} item={item} />;
+  };
 
-    render() {
-        const { refreshing, loading, category } = this.props;
-        return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                <ModalHeader
-                    title="Treading Goals"
-                    back
-                    onCancel={() => {
-                        if (this.props.onClose) this.props.onClose();
-                        Actions.pop();
-                    }}
+  render() {
+    const { refreshing, loading, category } = this.props;
+    return (
+      <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+        <ModalHeader
+          title="Treading Goals"
+          back
+          onCancel={() => {
+            if (this.props.onClose) this.props.onClose();
+            Actions.pop();
+          }}
+        />
+        <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
+          <GoalFilterBar
+            onMenuChange={(type, value) => this.handleOnMenuSelect(value)}
+            filter={{
+              categories: category || CATEGORY_OPTIONS[0].value,
+            }}
+            buttonText="Category"
+          />
+          <FlatList
+            data={this.props.data}
+            renderItem={this.renderItem}
+            numColumns={1}
+            keyExtractor={this.keyExtractor}
+            refreshing={refreshing}
+            onRefresh={this.handleOnRefresh}
+            onEndReached={this.handleOnLoadMore}
+            ListEmptyComponent={
+              loading || refreshing ? null : (
+                <EmptyResult
+                  text={"No Trending"}
+                  textStyle={{ paddingTop: 150 }}
                 />
-                <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
-                    <GoalFilterBar
-                        onMenuChange={(type, value) => this.handleOnMenuSelect(value)}
-                        filter={{
-                            categories: category || CATEGORY_OPTIONS[0].value
-                        }}
-                        buttonText="Category"
-                    />
-                    <FlatList
-                        data={this.props.data}
-                        renderItem={this.renderItem}
-                        numColumns={1}
-                        keyExtractor={this.keyExtractor}
-                        refreshing={refreshing}
-                        onRefresh={this.handleOnRefresh}
-                        onEndReached={this.handleOnLoadMore}
-                        ListEmptyComponent={
-                            loading || refreshing ? null :
-                                <EmptyResult text={'No Trending'} textStyle={{ paddingTop: 150 }} />
-                        }
-                        onEndThreshold={0}
-                        ListFooterComponent={
-                            loading ? (
-                                <View
-                                    style={{ flex: 1, height: 50, width, justifyContent: 'center', alignItems: 'center' }}
-                                >
-                                    <ActivityIndicator />
-                                </View>
-                            ) : null
-                        }
-                    />
+              )
+            }
+            onEndThreshold={0}
+            ListFooterComponent={
+              loading ? (
+                <View
+                  style={{
+                    flex: 1,
+                    height: 50,
+                    width,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <ActivityIndicator />
                 </View>
-            </MenuProvider>
-        );
-    }
+              ) : null
+            }
+          />
+        </View>
+      </MenuProvider>
+    );
+  }
 }
 
 const styles = {
-    backdrop: {
-        backgroundColor: 'transparent'
+  backdrop: {
+    backgroundColor: "transparent",
+  },
+  containerStyle: {
+    marginLeft: 5,
+    marginRight: 5,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  detailContainerStyle: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 15,
+    marginLeft: 15,
+    paddingTop: 12,
+    paddingBottom: 12,
+  },
+  caretStyle: {
+    tintColor: "#696969",
+    marginLeft: 5,
+  },
+  anchorStyle: {
+    backgroundColor: BACKGROUND_COLOR,
+  },
+  menuOptionsStyles: {
+    optionsContainer: {
+      width: width - 14,
     },
-    containerStyle: {
-        marginLeft: 5,
-        marginRight: 5,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
+    optionsWrapper: {},
+    optionWrapper: {
+      flex: 1,
     },
-    detailContainerStyle: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginRight: 15,
-        marginLeft: 15,
-        paddingTop: 12,
-        paddingBottom: 12
+    optionTouchable: {
+      underlayColor: "lightgray",
+      activeOpacity: 10,
     },
-    caretStyle: {
-        tintColor: '#696969',
-        marginLeft: 5
+    optionText: {
+      paddingTop: 5,
+      paddingBottom: 5,
+      paddingLeft: 10,
+      paddingRight: 10,
+      color: "black",
     },
-    anchorStyle: {
-        backgroundColor: BACKGROUND_COLOR
-    },
-    menuOptionsStyles: {
-        optionsContainer: {
-            width: width - 14,
-        },
-        optionsWrapper: {
-
-        },
-        optionWrapper: {
-            flex: 1,
-        },
-        optionTouchable: {
-            underlayColor: 'lightgray',
-            activeOpacity: 10,
-        },
-        optionText: {
-            paddingTop: 5,
-            paddingBottom: 5,
-            paddingLeft: 10,
-            paddingRight: 10,
-            color: 'black',
-        },
-    }
+  },
 };
 
-const mapStateToProps = state => {
-    const { trendingGoals } = state.createGoal;
-    const { data, refreshing, loading, category } = trendingGoals;
+const mapStateToProps = (state) => {
+  const { trendingGoals } = state.createGoal;
+  const { data, refreshing, loading, category } = trendingGoals;
 
-    return {
-        data,
-        refreshing,
-        loading,
-        category
-    };
+  return {
+    data,
+    refreshing,
+    loading,
+    category,
+  };
 };
 
-export default connect(
-    mapStateToProps,
-    {
-        selectTrendingGoalsCategory,
-        refreshTrendingGoals,
-        loadMoreTrendingGoals
-    }
-)(TrendingGoalView);
+export default connect(mapStateToProps, {
+  selectTrendingGoalsCategory,
+  refreshTrendingGoals,
+  loadMoreTrendingGoals,
+})(TrendingGoalView);

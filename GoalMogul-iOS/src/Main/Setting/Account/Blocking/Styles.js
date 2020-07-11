@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
 const Styles = StyleSheet.create({
   container: {
@@ -8,26 +8,26 @@ const Styles = StyleSheet.create({
     height: 48,
     width: 48,
     borderRadius: 5,
-    alignSelf: 'center'
+    alignSelf: "center",
   },
   buttonTextStyle: {
-    color: '#17B3EC',
+    color: "#17B3EC",
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
     paddingLeft: 1,
     padding: 0,
-    alignSelf: 'center'
+    alignSelf: "center",
   },
   buttonContainerStyle: {
     marginLeft: 8,
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   buttonStyle: {
     width: 70,
     height: 26,
     borderWidth: 1,
-    borderColor: '#17B3EC',
+    borderColor: "#17B3EC",
     borderRadius: 13,
   },
 });

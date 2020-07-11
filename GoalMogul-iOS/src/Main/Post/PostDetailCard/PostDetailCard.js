@@ -1,33 +1,37 @@
-import React from 'react';
-import { Animated, FlatList, Keyboard, KeyboardAvoidingView, View } from 'react-native';
-import { getBottomSpace } from 'react-native-iphone-x-helper';
-import { MenuProvider } from 'react-native-popup-menu';
-import { connect } from 'react-redux';
-import { getParentCommentId } from '../../../redux/middleware/utils';
-import { Logger } from '../../../redux/middleware/utils/Logger';
-import { refreshComments } from '../../../redux/modules/feed/comment/CommentActions';
+import React from "react";
+import {
+  Animated,
+  FlatList,
+  Keyboard,
+  KeyboardAvoidingView,
+  View,
+} from "react-native";
+import { getBottomSpace } from "react-native-iphone-x-helper";
+import { MenuProvider } from "react-native-popup-menu";
+import { connect } from "react-redux";
+import { getParentCommentId } from "../../../redux/middleware/utils";
+import { Logger } from "../../../redux/middleware/utils/Logger";
+import { refreshComments } from "../../../redux/modules/feed/comment/CommentActions";
 // Selectors
-import { makeGetCommentByEntityId } from '../../../redux/modules/feed/comment/CommentSelector';
+import { makeGetCommentByEntityId } from "../../../redux/modules/feed/comment/CommentSelector";
 // Actions
-import { closePostDetail, editPost, fetchPostDetail, markUserViewPost } from '../../../redux/modules/feed/post/PostActions';
-import { makeGetPostById } from '../../../redux/modules/feed/post/PostSelector';
+import {
+  closePostDetail,
+  editPost,
+  fetchPostDetail,
+  markUserViewPost,
+} from "../../../redux/modules/feed/post/PostActions";
+import { makeGetPostById } from "../../../redux/modules/feed/post/PostSelector";
 // Styles
-import { BACKGROUND_COLOR } from '../../../styles';
+import { BACKGROUND_COLOR } from "../../../styles";
 // Component
-import SearchBarHeader from '../../Common/Header/SearchBarHeader';
-import LikeListModal from '../../Common/Modal/LikeListModal';
-import CommentBox from '../../Goal/Common/CommentBoxV2';
-import CommentCard from '../../Goal/GoalDetailCard/Comment/CommentCard';
-import PostDetailSection from './PostDetailSection';
+import SearchBarHeader from "../../Common/Header/SearchBarHeader";
+import LikeListModal from "../../Common/Modal/LikeListModal";
+import CommentBox from "../../Goal/Common/CommentBoxV2";
+import CommentCard from "../../Goal/GoalDetailCard/Comment/CommentCard";
+import PostDetailSection from "./PostDetailSection";
 
-
-
-
-
-
-
-
-const DEBUG_KEY = '[ UI PostDetailCard ]';
+const DEBUG_KEY = "[ UI PostDetailCard ]";
 const TABBAR_HEIGHT = 48.5;
 const TOTAL_HEIGHT = TABBAR_HEIGHT;
 
@@ -36,9 +40,9 @@ class PostDetailCard extends React.PureComponent {
     super(props);
     this.commentBox = undefined;
     this.state = {
-      position: 'absolute',
+      position: "absolute",
       commentBoxPadding: new Animated.Value(0),
-      keyboardDidShow: false
+      keyboardDidShow: false,
     };
     this.handleScrollToCommentItem = this.handleScrollToCommentItem.bind(this);
   }
@@ -46,36 +50,61 @@ class PostDetailCard extends React.PureComponent {
   componentDidMount() {
     // Add listeners for keyboard
     this.keyboardWillShowListener = Keyboard.addListener(
-      'keyboardWillShow', this.keyboardWillShow);
+      "keyboardWillShow",
+      this.keyboardWillShow
+    );
     this.keyboardWillHideListener = Keyboard.addListener(
-      'keyboardWillHide', this.keyboardWillHide);
+      "keyboardWillHide",
+      this.keyboardWillHide
+    );
 
-    const { initialProps, postDetail, pageId, postId, tab, userId } = this.props;
-    console.log(`${DEBUG_KEY}: [ componentDidMount ]: initialProps:`, initialProps);
+    const {
+      initialProps,
+      postDetail,
+      pageId,
+      postId,
+      tab,
+      userId,
+    } = this.props;
+    console.log(
+      `${DEBUG_KEY}: [ componentDidMount ]: initialProps:`,
+      initialProps
+    );
 
     // Send tracking event to mark this post as viewed
-    if (postDetail && postDetail.owner && postDetail.owner._id && postDetail.owner._id !== userId) {
+    if (
+      postDetail &&
+      postDetail.owner &&
+      postDetail.owner._id &&
+      postDetail.owner._id !== userId
+    ) {
       this.props.markUserViewPost(postId);
     }
 
     // Check if needed to scroll to comment after loading
-    const refreshCommentsCallback = initialProps && initialProps.initialScrollToComment && initialProps.commentId
-      ? () => this.handleScrollToCommentItem(initialProps.commentId)
-      : undefined;
+    const refreshCommentsCallback =
+      initialProps &&
+      initialProps.initialScrollToComment &&
+      initialProps.commentId
+        ? () => this.handleScrollToCommentItem(initialProps.commentId)
+        : undefined;
 
-    this.props.refreshComments('Post', postId, tab, pageId, refreshCommentsCallback);
+    this.props.refreshComments(
+      "Post",
+      postId,
+      tab,
+      pageId,
+      refreshCommentsCallback
+    );
 
     // Check if there is any initial operations
     if (initialProps) {
-      const { 
-        initialShowPostModal, 
-        initialFocusCommentBox
-      } = initialProps;
+      const { initialShowPostModal, initialFocusCommentBox } = initialProps;
 
       // Display CreatePostModal
-      if (initialShowPostModal) { 
+      if (initialShowPostModal) {
         setTimeout(() => {
-          this.props.editPost(postDetail);  
+          this.props.editPost(postDetail);
         }, 750);
         return;
       }
@@ -100,31 +129,31 @@ class PostDetailCard extends React.PureComponent {
     if (!this.state.keyboardDidShow) {
       this.dialogOnFocus();
     }
-    const timeout = ((TOTAL_HEIGHT * 210) / e.endCoordinates.height);
+    const timeout = (TOTAL_HEIGHT * 210) / e.endCoordinates.height;
     Animated.sequence([
       Animated.delay(timeout),
       Animated.parallel([
         Animated.timing(this.state.commentBoxPadding, {
           toValue: e.endCoordinates.height - TOTAL_HEIGHT - getBottomSpace(),
-          duration: (210 - timeout)
+          duration: 210 - timeout,
         }),
-      ])
+      ]),
     ]).start();
-  }
+  };
 
   keyboardWillHide = () => {
     console.log(`${DEBUG_KEY}: [ keyboardWillHide ]`);
     Animated.parallel([
       Animated.timing(this.state.commentBoxPadding, {
         toValue: 0,
-        duration: 210
+        duration: 210,
       }),
     ]).start();
     this.setState({
       ...this.state,
-      keyboardDidShow: false
+      keyboardDidShow: false,
     });
-  }
+  };
 
   shouldComponentUpdate(nextProps, nextState) {
     if (nextState.nextcommentBoxPadding !== this.state.nextState) return false;
@@ -136,14 +165,16 @@ class PostDetailCard extends React.PureComponent {
    * Open comment like list
    */
   openCommentLikeList = (likeListParentType, likeListParentId) => {
-    console.log(`${DEBUG_KEY}: show comment like list: ${likeListParentType}, ${likeListParentId}`);
+    console.log(
+      `${DEBUG_KEY}: show comment like list: ${likeListParentType}, ${likeListParentId}`
+    );
     this.setState({
       ...this.state,
       showCommentLikeList: true,
       likeListParentType,
-      likeListParentId
+      likeListParentId,
     });
-  }
+  };
 
   /**
    * Close comment like list
@@ -154,9 +185,9 @@ class PostDetailCard extends React.PureComponent {
       ...this.state,
       showCommentLikeList: false,
       likeListParentId: undefined,
-      likeListParentType: undefined
+      likeListParentType: undefined,
     });
-  }
+  };
 
   /**
    * Scroll to comment item
@@ -164,58 +195,79 @@ class PostDetailCard extends React.PureComponent {
   handleScrollToCommentItem = (commentId) => {
     const { originalComments, comments } = this.props;
 
-    Logger.log(`${DEBUG_KEY}: [ handleScrollToCommentItem ]: originalComments`, originalComments, 2);
+    Logger.log(
+      `${DEBUG_KEY}: [ handleScrollToCommentItem ]: originalComments`,
+      originalComments,
+      2
+    );
     const parentCommentId = getParentCommentId(commentId, originalComments);
 
-    Logger.log(`${DEBUG_KEY}: [ handleScrollToCommentItem ]: commentId`, commentId, 2);
+    Logger.log(
+      `${DEBUG_KEY}: [ handleScrollToCommentItem ]: commentId`,
+      commentId,
+      2
+    );
     if (!parentCommentId) return; // Do nothing since it's no loaded. Defensive coding
-    
-    Logger.log(`${DEBUG_KEY}: [ handleScrollToCommentItem ]: parentCommentId`, parentCommentId, 2);
-    const parentCommentIndex = comments.findIndex(c => c._id === parentCommentId);
-    Logger.log(`${DEBUG_KEY}: [ handleScrollToCommentItem ]: parentCommentIndex`, parentCommentIndex, 2);
-    if (this.refs['flatList'] === undefined || parentCommentIndex === -1) return;
+
+    Logger.log(
+      `${DEBUG_KEY}: [ handleScrollToCommentItem ]: parentCommentId`,
+      parentCommentId,
+      2
+    );
+    const parentCommentIndex = comments.findIndex(
+      (c) => c._id === parentCommentId
+    );
+    Logger.log(
+      `${DEBUG_KEY}: [ handleScrollToCommentItem ]: parentCommentIndex`,
+      parentCommentIndex,
+      2
+    );
+    if (this.refs["flatList"] === undefined || parentCommentIndex === -1)
+      return;
 
     setTimeout(() => {
-      this.refs['flatList'].scrollToIndex({
+      this.refs["flatList"].scrollToIndex({
         index: parentCommentIndex,
-        animated: true
+        animated: true,
       });
     }, 200);
-  }
+  };
 
   handleRefresh = () => {
     // const { routes, index } = this.state.navigationState;
     const { tab, postDetail, pageId } = this.props;
     // if (routes[index].key === 'comments') {
-      this.props.refreshComments('Post', postDetail._id, tab, pageId);
+    this.props.refreshComments("Post", postDetail._id, tab, pageId);
     // }
-  }
+  };
 
   keyExtractor = (item) => item._id;
 
   scrollToIndex = (index, viewOffset = 0) => {
-    this.refs['flatList'].scrollToIndex({
+    this.refs["flatList"].scrollToIndex({
       index,
       animated: true,
       viewPosition: 1,
-      viewOffset
+      viewOffset,
     });
-  }
+  };
 
   /**
    * Only pass in 'Reply' as type if it's a reply
    */
   dialogOnFocus = (type) => {
     if (!this.commentBox) {
-      console.warn(`${DEBUG_KEY}: [ dialogOnFocus ]: this.commentBox is undefined`);
+      console.warn(
+        `${DEBUG_KEY}: [ dialogOnFocus ]: this.commentBox is undefined`
+      );
       return;
     }
     this.setState({
       ...this.state,
-      keyboardDidShow: true
+      keyboardDidShow: true,
     });
     this.commentBox.focusForReply(type);
-  }
+  };
 
   renderItem = (props) => {
     const { postDetail, pageId, postId } = this.props;
@@ -225,17 +277,17 @@ class PostDetailCard extends React.PureComponent {
         key={props.index}
         item={props.item}
         index={props.index}
-        commentDetail={{ parentType: 'Post', parentRef }}
+        commentDetail={{ parentType: "Post", parentRef }}
         scrollToIndex={(i, viewOffset) => this.scrollToIndex(i, viewOffset)}
         onCommentClicked={this.dialogOnFocus}
-        onReportPressed={() => console.log('post detail report clicked')}
-        reportType='postDetail'
+        onReportPressed={() => console.log("post detail report clicked")}
+        reportType="postDetail"
         pageId={pageId}
         entityId={postId}
         openCommentLikeList={this.openCommentLikeList}
       />
     );
-  }
+  };
 
   renderPostDetailSection(postDetail) {
     return (
@@ -257,8 +309,8 @@ class PostDetailCard extends React.PureComponent {
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <View style={styles.containerStyle}>
-          <LikeListModal 
-            isVisible={this.state.showCommentLikeList} 
+          <LikeListModal
+            isVisible={this.state.showCommentLikeList}
             closeModal={this.closeCommentLikeList}
             parentId={this.state.likeListParentId}
             parentType={this.state.likeListParentType}
@@ -266,40 +318,46 @@ class PostDetailCard extends React.PureComponent {
           />
           <SearchBarHeader
             backButton
-            title='Post'
+            title="Post"
             onBackPress={() => this.props.closePostDetail(postId, pageId)}
           />
-            <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
-              <FlatList
-                ref="flatList"
-                data={data}
-                renderItem={this.renderItem}
-                keyExtractor={this.keyExtractor}
-                ListHeaderComponent={() => this.renderPostDetailSection(postDetail)}
-                refreshing={this.props.commentLoading}
-                onRefresh={this.handleRefresh}
-                ListFooterComponent={<View style={{ height: 43, backgroundColor: 'transparent' }} />}
+          <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+            <FlatList
+              ref="flatList"
+              data={data}
+              renderItem={this.renderItem}
+              keyExtractor={this.keyExtractor}
+              ListHeaderComponent={() =>
+                this.renderPostDetailSection(postDetail)
+              }
+              refreshing={this.props.commentLoading}
+              onRefresh={this.handleRefresh}
+              ListFooterComponent={
+                <View style={{ height: 43, backgroundColor: "transparent" }} />
+              }
+            />
+
+            <Animated.View
+              style={[
+                styles.composerContainer,
+                {
+                  position: this.state.position,
+                  paddingBottom: this.state.commentBoxPadding,
+                  backgroundColor: "white",
+                  zIndex: 3,
+                },
+              ]}
+            >
+              <CommentBox
+                onRef={(ref) => {
+                  this.commentBox = ref;
+                }}
+                hasSuggestion={false}
+                pageId={pageId}
+                entityId={postId}
               />
-
-              <Animated.View
-                style={[
-                  styles.composerContainer, {
-                    position: this.state.position,
-                    paddingBottom: this.state.commentBoxPadding,
-                    backgroundColor: 'white',
-                    zIndex: 3
-                  }
-                ]}
-              >
-                <CommentBox
-                  onRef={(ref) => { this.commentBox = ref; }}
-                  hasSuggestion={false}
-                  pageId={pageId}
-                  entityId={postId}
-                />
-              </Animated.View>
-
-            </KeyboardAvoidingView>
+            </Animated.View>
+          </KeyboardAvoidingView>
         </View>
       </MenuProvider>
     );
@@ -311,7 +369,7 @@ class PostDetailCard extends React.PureComponent {
 
 const styles = {
   containerStyle: {
-    backgroundColor: BACKGROUND_COLOR, 
+    backgroundColor: BACKGROUND_COLOR,
     flex: 1,
     // shadowColor: '#000',
     // shadowOffset: { width: 0, height: 1 },
@@ -319,19 +377,19 @@ const styles = {
     // shadowRadius: 6,
   },
   iconStyle: {
-    alignSelf: 'center',
+    alignSelf: "center",
     fontSize: 20,
     marginLeft: 5,
-    marginTop: 2
+    marginTop: 2,
   },
   backdrop: {
-    backgroundColor: 'gray',
-    opacity: 0.5
+    backgroundColor: "gray",
+    opacity: 0.5,
   },
   composerContainer: {
     left: 0,
     right: 0,
-    bottom: 0
+    bottom: 0,
   },
 };
 
@@ -351,13 +409,13 @@ const makeMapStateToProps = () => {
     const postDetail = post;
 
     const comments = getCommentByEntityId(state, postId, pageId);
-    
+
     const { transformedComments, loading, data } = comments || {
       transformedComments: [],
       loading: false,
-      data: []
+      data: [],
     };
-  
+
     return {
       commentLoading: loading,
       comments: transformedComments,
@@ -373,13 +431,10 @@ const makeMapStateToProps = () => {
   return mapStateToProps;
 };
 
-export default connect(
-  makeMapStateToProps,
-  {
-    closePostDetail,
-    refreshComments,
-    editPost,
-    fetchPostDetail,
-    markUserViewPost
-  }
-)(PostDetailCard);
+export default connect(makeMapStateToProps, {
+  closePostDetail,
+  refreshComments,
+  editPost,
+  fetchPostDetail,
+  markUserViewPost,
+})(PostDetailCard);

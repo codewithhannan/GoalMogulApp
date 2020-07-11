@@ -1,23 +1,26 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import {
-  RightArrowIcon
-} from '../../Utils/Icons';
+import React from "react";
+import { View, Text } from "react-native";
+import { RightArrowIcon } from "../../Utils/Icons";
 
 const Button = (props) => {
   const containerStyle = { ...styles.containerStyle };
   const textStyle = { ...styles.textStyle };
 
   if (props.arrow) {
-    containerStyle.backgroundColor = '#ffffff';
-    textStyle.color = '#34c0dd';
-    textStyle.fontWeight = '600';
+    containerStyle.backgroundColor = "#ffffff";
+    textStyle.color = "#34c0dd";
+    textStyle.fontWeight = "600";
 
     return (
       <View style={containerStyle}>
         <Text style={textStyle}>{props.text}</Text>
-        <RightArrowIcon 
-          iconStyle={{ ...styles.iconStyle, height: 15, width: 20, tintColor: '#34c0dd' }}
+        <RightArrowIcon
+          iconStyle={{
+            ...styles.iconStyle,
+            height: 15,
+            width: 20,
+            tintColor: "#34c0dd",
+          }}
         />
         {/**
            <Icon
@@ -39,28 +42,28 @@ const Button = (props) => {
 
 const styles = {
   containerStyle: {
-    display: 'flex',
-    flexDirection: 'row',
+    display: "flex",
+    flexDirection: "row",
     marginTop: 16,
     marginBottom: 8,
     marginLeft: 18,
     marginRight: 18,
     height: 41,
-    justifyContent: 'center',
-    backgroundColor: '#34c0dd'
+    justifyContent: "center",
+    backgroundColor: "#34c0dd",
   },
   textStyle: {
     fontSize: 15,
-    fontWeight: '800',
-    color: '#ffffff',
-    alignSelf: 'center'
+    fontWeight: "800",
+    color: "#ffffff",
+    alignSelf: "center",
   },
   iconStyle: {
-    alignSelf: 'center',
+    alignSelf: "center",
     fontSize: 26,
     marginLeft: 5,
-    marginTop: 3
-  }
+    marginTop: 3,
+  },
 };
 
 export default Button;

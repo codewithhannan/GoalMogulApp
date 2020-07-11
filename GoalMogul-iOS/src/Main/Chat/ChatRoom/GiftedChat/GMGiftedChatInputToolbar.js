@@ -1,11 +1,16 @@
 /* eslint no-use-before-define: ["error", { "variables": false }] */
 
-import PropTypes from 'prop-types';
-import React from 'react';
-import { StyleSheet, View, Keyboard, ViewPropTypes, Dimensions, } from 'react-native';
+import PropTypes from "prop-types";
+import React from "react";
+import {
+  StyleSheet,
+  View,
+  Keyboard,
+  ViewPropTypes,
+  Dimensions,
+} from "react-native";
 
 export default class ChatRoomConversationInputToolbar extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -13,13 +18,19 @@ export default class ChatRoomConversationInputToolbar extends React.Component {
     this.keyboardWillHide = this.keyboardWillHide.bind(this);
 
     this.state = {
-      position: 'absolute',
+      position: "absolute",
     };
   }
 
   componentWillMount() {
-    this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
-    this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+    this.keyboardWillShowListener = Keyboard.addListener(
+      "keyboardWillShow",
+      this.keyboardWillShow
+    );
+    this.keyboardWillHideListener = Keyboard.addListener(
+      "keyboardWillHide",
+      this.keyboardWillHide
+    );
   }
 
   componentWillUnmount() {
@@ -28,17 +39,17 @@ export default class ChatRoomConversationInputToolbar extends React.Component {
   }
 
   keyboardWillShow() {
-    if (this.state.position !== 'relative') {
+    if (this.state.position !== "relative") {
       this.setState({
-        position: 'relative',
+        position: "relative",
       });
     }
   }
 
   keyboardWillHide() {
-    if (this.state.position !== 'absolute') {
+    if (this.state.position !== "absolute") {
       this.setState({
-        position: 'absolute',
+        position: "absolute",
       });
     }
   }
@@ -46,28 +57,30 @@ export default class ChatRoomConversationInputToolbar extends React.Component {
   renderActions() {
     if (this.props.renderActions) {
       return this.props.renderActions(this.props);
-    };
+    }
     return null;
   }
 
   renderSend() {
     if (this.props.renderSend) {
       return this.props.renderSend(this.props);
-    };
+    }
     return null;
   }
 
   renderComposer() {
     if (this.props.renderComposer) {
       return this.props.renderComposer(this.props);
-    };
+    }
     return null;
   }
 
   renderAccessory(accessoryLocation) {
     if (this.props.renderAccessory) {
       return (
-        <View style={[styles.accessory, this.props.accessoryStyle]}>{this.props.renderAccessory(this.props, accessoryLocation)}</View>
+        <View style={[styles.accessory, this.props.accessoryStyle]}>
+          {this.props.renderAccessory(this.props, accessoryLocation)}
+        </View>
       );
     }
     return null;
@@ -75,33 +88,38 @@ export default class ChatRoomConversationInputToolbar extends React.Component {
 
   render() {
     return (
-      <View style={[styles.container, this.props.containerStyle, { position: this.state.position }]}>
-        {this.renderAccessory('top')}
+      <View
+        style={[
+          styles.container,
+          this.props.containerStyle,
+          { position: this.state.position },
+        ]}
+      >
+        {this.renderAccessory("top")}
         <View style={[styles.primary, this.props.primaryStyle]}>
           {this.renderActions()}
           {this.renderComposer()}
           {this.renderSend()}
         </View>
-        {this.renderAccessory('bottom')}
+        {this.renderAccessory("bottom")}
       </View>
     );
   }
-
 }
 
 const styles = StyleSheet.create({
   container: {
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#b2b2b2',
-    backgroundColor: 'white',
+    borderTopColor: "#b2b2b2",
+    backgroundColor: "white",
     bottom: 0,
     left: 0,
     right: 0,
-    width: Dimensions.get('window').width,
+    width: Dimensions.get("window").width,
   },
   primary: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
+    flexDirection: "row",
+    alignItems: "flex-end",
   },
   accessory: {},
 });
