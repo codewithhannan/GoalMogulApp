@@ -506,12 +506,6 @@ class ChatRoomConversation extends React.Component {
         })
         this.props.openCameraRoll(callback, { disableEditing: true })
     }
-    onComposerFocus = () => {
-        this.setState({ composerFocus: true })
-    }
-    onComposerBlur = () => {
-        this.setState({ composerFocus: false })
-    }
     onMessageLongPress = (context, message) => {
         const options = ['Copy Text', 'Delete', 'Cancel']
         const cancelButtonIndex = options.length - 1
@@ -853,8 +847,6 @@ class ChatRoomConversation extends React.Component {
                     multiline={true}
                     placeholder={`${props.placeholder.slice(0, 42)}...`}
                     editable={!this.props.initializing}
-                    onFocus={this.onComposerFocus.bind(this)}
-                    onBlur={this.onComposerBlur.bind(this)}
                     style={{
                         fontSize: 16,
                         padding: 9,

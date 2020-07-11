@@ -27,7 +27,6 @@ export default class ChatRoomConversationInputToolbar extends React.Component {
 
         this.state = {
             position: 'absolute',
-            isFocussed: false,
         }
     }
 
@@ -99,9 +98,6 @@ export default class ChatRoomConversationInputToolbar extends React.Component {
             })
         }
     }
-    onFocusChange(isFocussed) {
-        this.setState({ isFocussed })
-    }
 
     renderActions() {
         if (this.props.renderActions) {
@@ -119,10 +115,7 @@ export default class ChatRoomConversationInputToolbar extends React.Component {
 
     renderComposer() {
         if (this.props.renderComposer) {
-            return this.props.renderComposer({
-                ...this.props,
-                onFocusChange: this.onFocusChange.bind(this),
-            })
+            return this.props.renderComposer(this.props)
         }
         return null
     }
