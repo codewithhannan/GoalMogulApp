@@ -29,11 +29,11 @@ class OnboardingIntroTransition extends React.Component {
         screenTransitionCallback()
     }
 
-    renderProfileImage() {
+    renderImage() {
         return (
             <View style={styles.imageContainerStyle}>
                 <Image
-                    source={Icons.LionMascotStarts}
+                    source={Icons.LionMascotStars}
                     style={[styles.imageStyle]}
                 />
             </View>
@@ -61,7 +61,7 @@ class OnboardingIntroTransition extends React.Component {
                             alignItems: 'center',
                         }}
                     >
-                        {this.renderProfileImage()}
+                        {this.renderImage()}
                         <Text
                             style={[
                                 textStyle.onboardingTitleTextStyle,

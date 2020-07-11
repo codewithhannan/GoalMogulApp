@@ -3,6 +3,7 @@
  *
  * @format
  */
+import Icons from '../../../asset/base64/Onboarding'
 
 export const REGISTRATION_TEXT_CHANGE = 'registration_text_change'
 export const REGISTRATION_TARGET_SELECTION = 'registration_target_selection'
@@ -85,22 +86,22 @@ export const REGISTRATION_COMMUNITY_GUIDELINE = [
     {
         title: "We're a positive, safe & judgement-free community",
         subTitle: '(NO NEGATIVITY AND NO TROLLING)',
-        picture: undefined,
+        picture: Icons.SafeCommunity,
     },
     {
         title: 'Post goals often & stay committed',
         subTitle: '',
-        picture: undefined,
+        picture: Icons.StayCommited,
     },
     {
-        title: 'Inspare others with supportive comments',
+        title: 'Inspire others with supportive comments',
         subTitle: '',
-        picture: undefined,
+        picture: Icons.InspireOthers,
     },
     {
         title: 'Give & get suggestions, achieve more together!',
         subTitle: '',
-        picture: undefined,
+        picture: Icons.AchieveTogether,
     },
 ]
 

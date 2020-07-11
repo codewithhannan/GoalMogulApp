@@ -20,7 +20,12 @@ import {
     REGISTRATION_ACCOUNT_SUCCESS,
 } from '../../../actions/types'
 import { api as API } from '../../middleware/api'
-import { track, EVENT as E } from '../../../monitoring/segment'
+import {
+    track,
+    EVENT as E,
+    trackWithProperties,
+} from '../../../monitoring/segment'
+import ImageUtils from '../../../Utils/ImageUtils'
 
 /**
  * Alter the state of registration text input
@@ -160,9 +165,13 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
             })
 
             // Invoke screen transition callback for registration success
-            onSuccess()
+            if (onSuccess) {
+                onSuccess()
+            }
 
-            track(E.REG_SUCCESS)
+            trackWithProperties(E.REG_ACCOUNT_CREATED, {
+                UserId: res.userId,
+            })
 
             // set up chat listeners
             LiveChatService.mountUser({
@@ -185,5 +194,78 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
             type: REGISTRATION_ERROR,
             error: message,
         })
+    }
+}
+
+export const registrationAddProfilePhoto = (maybeOnSuccess) => (
+    dispatch,
+    getState
+) => {
+    // Obtain pre-signed url
+    const imageUri = getState().registration.profilePic
+    const token = getState().user.token
+
+    if (imageUri) {
+        ImageUtils.getImageSize(imageUri)
+            .then(({ width, height }) => {
+                // Resize image
+                console.log('width, height are: ', width, height)
+                return ImageUtils.resizeImage(imageUri, width, height)
+            })
+            .then((image) => {
+                // Upload image to S3 server
+                console.log('image to upload is: ', image)
+                return ImageUtils.getPresignedUrl(
+                    image.uri,
+                    token,
+                    (objectKey) => {
+                        dispatch({
+                            type: REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS,
+                            payload: objectKey,
+                        })
+                    }
+                )
+            })
+            .then(({ signedRequest, file }) => {
+                return ImageUtils.uploadImage(file, signedRequest)
+            })
+            .then((res) => {
+                if (res instanceof Error) {
+                    // uploading to s3 failed
+                    console.log('error uploading image to s3 with res: ', res)
+                    throw res
+                }
+                return getState().user.profile.imageObjectId
+            })
+            .then((image) => {
+                // Update profile imageId to the latest uploaded one
+                return API.put(
+                    'secure/user/profile',
+                    {
+                        image,
+                    },
+                    token
+                )
+                    .then((res) => {
+                        console.log('update profile picture Id with res: ', res)
+                    })
+                    .catch((err) => {
+                        console.log('error updating record: ', err)
+                    })
+            })
+            .catch((err) => {
+                // TODO: error handling for different kinds of errors.
+                /*
+                    Error Type:
+                    image getSize
+                    image Resize
+                    image upload to S3
+                    update profile image Id
+                */
+                console.log('profile picture error: ', err)
+            })
+    }
+    if (maybeOnSuccess) {
+        maybeOnSuccess()
     }
 }
