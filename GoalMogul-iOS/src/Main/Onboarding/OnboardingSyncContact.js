@@ -20,7 +20,10 @@ import {
     TEXT_STYLE as textStyle,
 } from '../../styles'
 import { PRIVACY_POLICY_URL } from '../../Utils/Constants'
-import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions'
+import {
+    registrationTribeSelection,
+    uploadContacts,
+} from '../../redux/modules/registration/RegistrationActions'
 import { REGISTRATION_SYNC_CONTACT_NOTES } from '../../redux/modules/registration/RegistrationReducers'
 import DelayedButton from '../Common/Button/DelayedButton'
 import SyncContactInfoModal from './SyncContactInfoModal'
@@ -67,9 +70,25 @@ class OnboardingSyncContact extends React.Component {
      */
     onSyncContact = () => {
         this.openModal()
-        setTimeout(() => {
-            this.setState({ ...this.state, loading: false })
-        }, 6000)
+
+        // Match is not found
+        // Render failure result in modal
+        // by setting loading to false
+        const onMatchNotFound = () => {
+            this.setState({
+                ...this.state,
+                loading: false,
+            })
+        }
+
+        // close modal and go to invite page
+        const onMatchFound = () => {
+            this.closeModal()
+            setTimeout(() => {
+                Actions.push('registration_contact_invite')
+            }, 150)
+        }
+        this.props.uploadContacts({ onMatchFound, onMatchNotFound })
     }
 
     onNotNow = () => {
@@ -199,4 +218,6 @@ const mapStateToProps = (state) => {
     return {}
 }
 
-export default connect(mapStateToProps, {})(OnboardingSyncContact)
+export default connect(mapStateToProps, {
+    uploadContacts,
+})(OnboardingSyncContact)
