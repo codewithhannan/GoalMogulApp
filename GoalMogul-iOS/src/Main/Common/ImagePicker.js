@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
  * Map app theme to styles. These styles can be accessed
  * using the <eva> prop. For example,
  * const { eva } = this.props;
- * eva.styles.backgroundPrimary;
+ * eva.style.backgroundPrimary;
  * @see https://github.com/akveo/react-native-ui-kitten/blob/master/docs/src/articles/design-system/use-theme-variables.md
  */
 const mapThemeToStyles = (theme) => ({
