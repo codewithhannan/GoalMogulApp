@@ -237,7 +237,7 @@ class Headline extends React.PureComponent {
                 {belongsToTribe && [
                     <Icon
                         pack="material-community"
-                        style={DEFAULT_STYLE.buttonIcon_1}
+                        style={[DEFAULT_STYLE.buttonIcon_1, { margin: -4 }]}
                         name="menu-right"
                     />,
                     <DelayedButton
@@ -248,7 +248,7 @@ class Headline extends React.PureComponent {
                         <Text
                             style={[
                                 textStyle,
-                                { maxWidth: 120 * DEFAULT_STYLE.uiScale },
+                                { maxWidth: 150 * DEFAULT_STYLE.uiScale },
                             ]}
                             numberOfLines={1}
                         >

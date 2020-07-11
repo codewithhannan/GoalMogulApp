@@ -1,5 +1,9 @@
 /**
  * This component functions similar to reply threads in Slack
+ * required props:
+ *  @param itemId: id of comment that the thread belongs to
+ *  @param entityId: id of goal/post that the thread belongs to
+ *  @param pageId: id of page that the thread was spawned from
  *
  * @format
  * */
@@ -14,7 +18,6 @@ import {
     TouchableOpacity,
     Image,
     Platform,
-    Keyboard,
     Animated,
 } from 'react-native'
 import _ from 'lodash'
