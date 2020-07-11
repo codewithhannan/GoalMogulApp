@@ -44,6 +44,13 @@ import { DEFAULT_STYLE } from '../../styles'
 const DEBUG_KEY = '[ UI Menu ]'
 const { TutorialIcon, PrivacyIcon, AccountMultiple, MessageIcon } = Icons
 
+const IS_SMALL_PHONE =
+    Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL)
+
+const padding = IS_SMALL_PHONE ? 10 : 15
+
+console.log(padding)
+
 class Menu extends React.PureComponent {
     constructor(props) {
         super(props)
@@ -277,7 +284,7 @@ const styles = {
     },
     logOutButtonStyle: {
         backgroundColor: GM_BLUE,
-        padding: 10,
+        padding: padding,
         alignItems: 'center',
     },
 }
