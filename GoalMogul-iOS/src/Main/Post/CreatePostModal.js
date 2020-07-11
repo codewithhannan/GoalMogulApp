@@ -1,959 +1,861 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
-  View,
-  KeyboardAvoidingView,
-  ScrollView,
-  Image,
-  Text,
-  TouchableOpacity,
-  ImageBackground,
-  ActivityIndicator,
-} from "react-native";
-import { connect } from "react-redux";
-import { Field, reduxForm, formValueSelector } from "redux-form";
-import _ from "lodash";
-import R from "ramda";
-import { Actions } from "react-native-router-flux";
+    View,
+    KeyboardAvoidingView,
+    ScrollView,
+    Image,
+    Text,
+    TouchableOpacity,
+    ImageBackground,
+    ActivityIndicator
+} from 'react-native';
+import { connect } from 'react-redux';
+import { Field, reduxForm, formValueSelector } from 'redux-form';
+import _ from 'lodash';
+import R from 'ramda';
+import { Actions } from 'react-native-router-flux';
 // import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 // import Modal from 'react-native-modal';
 
 /* Components */
-import ModalHeader from "../Common/Header/ModalHeader";
-import ViewableSettingMenu from "../Goal/ViewableSettingMenu";
-import ImageModal from "../Common/ImageModal";
-import EmptyResult from "../Common/Text/EmptyResult";
-import ProfileImage from "../Common/ProfileImage";
-import MentionsTextInput from "../Goal/Common/MentionsTextInput";
-import DelayedButton from "../Common/Button/DelayedButton";
-import { actionSheet, switchByButtonIndex } from "../Common/ActionSheetFactory";
+import ModalHeader from '../Common/Header/ModalHeader';
+import ViewableSettingMenu from '../Goal/ViewableSettingMenu';
+import ImageModal from '../Common/ImageModal';
+import EmptyResult from '../Common/Text/EmptyResult';
+import ProfileImage from '../Common/ProfileImage';
+import MentionsTextInput from '../Goal/Common/MentionsTextInput';
+import DelayedButton from '../Common/Button/DelayedButton';
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory';
 
 // assets
-import defaultUserProfile from "../../asset/utils/defaultUserProfile.png";
-import cancel from "../../asset/utils/cancel_no_background.png";
-import camera from "../../asset/utils/camera.png";
-import cameraRoll from "../../asset/utils/cameraRoll.png";
-import imageOverlay from "../../asset/utils/imageOverlay.png";
-import expand from "../../asset/utils/expand.png";
+import defaultUserProfile from '../../asset/utils/defaultUserProfile.png';
+import cancel from '../../asset/utils/cancel_no_background.png';
+import camera from '../../asset/utils/camera.png';
+import cameraRoll from '../../asset/utils/cameraRoll.png';
+import imageOverlay from '../../asset/utils/imageOverlay.png';
+import expand from '../../asset/utils/expand.png';
 
 // Utils
-import { arrayUnique, clearTags } from "../../redux/middleware/utils";
-import {
-  track,
-  trackWithProperties,
-  EVENT as E,
-} from "../../monitoring/segment";
+import { arrayUnique, clearTags } from '../../redux/middleware/utils';
+import { track, trackWithProperties, EVENT as E } from '../../monitoring/segment';
 
 // Actions
-import { openCameraRoll, openCamera } from "../../actions";
-import {
-  submitCreatingPost,
-  postToFormAdapter,
-  fetchPostDrafts,
-  savePostDrafts,
-} from "../../redux/modules/feed/post/PostActions";
-import { searchUser } from "../../redux/modules/search/SearchActions";
-import { IMAGE_BASE_URL } from "../../Utils/Constants";
-import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from "../../styles";
-import DraftsView from "./DraftsView";
-import { MenuProvider } from "react-native-popup-menu";
+import { openCameraRoll, openCamera } from '../../actions';
+import { submitCreatingPost, postToFormAdapter, fetchPostDrafts, savePostDrafts } from '../../redux/modules/feed/post/PostActions';
+import { searchUser } from '../../redux/modules/search/SearchActions';
+import { IMAGE_BASE_URL } from '../../Utils/Constants';
+import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from '../../styles';
+import DraftsView from './DraftsView';
+import { MenuProvider } from 'react-native-popup-menu';
 
-const DEBUG_KEY = "[ UI CreatePostModal ]";
+
+const DEBUG_KEY = '[ UI CreatePostModal ]';
 const INITIAL_TAG_SEARCH = {
-  data: [],
-  skip: 0,
-  limit: 10,
-  loading: false,
+    data: [],
+    skip: 0,
+    limit: 10,
+    loading: false
 };
-const ON_CANCEL_OPTIONS = ["Save Draft", "Discard", "Cancel"];
+const ON_CANCEL_OPTIONS = ['Save Draft', 'Discard', 'Cancel'];
 const ON_CANCEL_CANCEL_INDEX = 2;
 
 class CreatePostModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      draftIndex: 0,
-      drafts: [],
-      mediaModal: false,
-      keyword: "",
-      tagSearchData: { ...INITIAL_TAG_SEARCH },
-    };
-    this.updateSearchRes = this.updateSearchRes.bind(this);
-  }
-
-  componentDidMount() {
-    this.startTime = new Date();
-    track(
-      this.props.initializeFromState
-        ? E.EDIT_POST_MODAL_OPENED
-        : E.CREATE_POST_MODAL_OPENED
-    );
-    this.initializeForm();
-  }
-
-  /**
-   * Tag related functions
-   */
-  onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
-    hidePanel();
-    const { name } = item;
-    const { post, tags } = this.props;
-
-    const postCursorContent = post.slice(cursorPosition);
-    const prevCursorContent = post.slice(0, cursorPosition);
-    const content = prevCursorContent.slice(0, -this.state.keyword.length);
-    const newContent = `${content}@${name} ${postCursorContent.replace(
-      /^\s+/g,
-      ""
-    )}`;
-    // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
-    // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
-    this.props.change("post", newContent);
-
-    const newContentTag = {
-      user: item,
-      startIndex: content.length, // `${comment}@${name} `
-      endIndex: content.length + 1 + name.length, // `${comment}@${name} `
-      tagReg: `\\B@${name}`,
-      tagText: `@${name}`,
-    };
-
-    // Clean up tags position before comparing
-    const newTags = clearTags(newContent, newContentTag, tags);
-
-    // Check if this tags is already in the array
-    const containsTag = newTags.some(
-      (t) => t.tagReg === `\\B@${name}` && t.startIndex === content.length + 1
-    );
-
-    const needReplceOldTag = newTags.some(
-      (t) => t.startIndex === content.length
-    );
-
-    // Update comment contentTags regex and contentTags
-    if (!containsTag) {
-      let newContentTags;
-      if (needReplceOldTag) {
-        newContentTags = newTags.map((t) => {
-          if (t.startIndex === newContentTag.startIndex) {
-            return newContentTag;
-          }
-          return t;
-        });
-      } else {
-        newContentTags = [...newTags, newContentTag];
-      }
-      // TODO: sort newContentTags by startIndex
-      this.props.change(
-        "tags",
-        newContentTags.sort((a, b) => a.startIndex - b.startIndex)
-      );
+    constructor(props) {
+        super(props);
+        this.state = {
+            draftIndex: 0,
+            drafts: [],
+            mediaModal: false,
+            keyword: '',
+            tagSearchData: { ...INITIAL_TAG_SEARCH },
+        };
+        this.updateSearchRes = this.updateSearchRes.bind(this);
     }
 
-    // Clear tag search data state
-    this.setState({
-      ...this.state,
-      tagSearchData: { ...INITIAL_TAG_SEARCH },
-    });
-  }
-
-  // This is triggered when a trigger (@) is removed. Verify if all tags
-  // are still valid.
-  validateContentTags = (change) => {
-    const { tags, post } = this.props;
-    const newContentTags = tags.filter((tag) => {
-      const { startIndex, endIndex, tagText } = tag;
-
-      const actualTag = post.slice(startIndex, endIndex);
-      // Verify if with the same startIndex and endIndex, we can still get the
-      // tag. If not, then we remove the tag.
-      return actualTag === tagText;
-    });
-    change("tags", newContentTags);
-  };
-
-  updateSearchRes(res, searchContent) {
-    if (searchContent !== this.state.keyword) return;
-    this.setState({
-      ...this.state,
-      // keyword,
-      tagSearchData: {
-        ...this.state.tagSearchData,
-        skip: res.data.length, //TODO: new skip
-        data: res.data,
-        loading: false,
-      },
-    });
-  }
-
-  triggerCallback(keyword) {
-    if (this.reqTimer) {
-      clearTimeout(this.reqTimer);
+    componentDidMount() {
+        this.startTime = new Date();
+        track(this.props.initializeFromState ? E.EDIT_POST_MODAL_OPENED : E.CREATE_POST_MODAL_OPENED);
+        this.initializeForm();
     }
 
-    this.reqTimer = setTimeout(() => {
-      console.log(`${DEBUG_KEY}: requesting for keyword: `, keyword);
-      this.setState({
-        ...this.state,
-        keyword,
-        tagSearchData: {
-          ...this.state.tagSearchData,
-          loading: true,
-        },
-      });
-      const { limit } = this.state.tagSearchData;
-      // Use the customized search if there is one
-      if (this.props.tagSearch) {
-        this.props.tagSearch(keyword, (res, searchContent) => {
-          this.updateSearchRes(res, searchContent);
-        });
-        return;
-      }
+    /**
+     * Tag related functions
+     */
+    onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
+        hidePanel();
+        const { name } = item;
+        const { post, tags } = this.props;
 
-      this.props.searchUser(keyword, 0, limit, (res, searchContent) => {
-        this.updateSearchRes(res, searchContent);
-      });
-    }, 150);
-  }
+        const postCursorContent = post.slice(cursorPosition);
+        const prevCursorContent = post.slice(0, cursorPosition);
+        const content = prevCursorContent.slice(0, -this.state.keyword.length);
+        const newContent = `${content}@${name} ${postCursorContent.replace(/^\s+/g, '')}`;
+        // console.log(`${DEBUG_KEY}: keyword is: `, this.state.keyword);
+        // console.log(`${DEBUG_KEY}: newContentText is: `, newContentText);
+        this.props.change('post', newContent);
 
-  handleTagSearchLoadMore = () => {
-    const { tagSearchData, keyword } = this.state;
-    const { skip, limit, data, loading } = tagSearchData;
+        const newContentTag = {
+            user: item,
+            startIndex: content.length, // `${comment}@${name} `
+            endIndex: content.length + 1 + name.length, // `${comment}@${name} `
+            tagReg: `\\B@${name}`,
+            tagText: `@${name}`
+        };
 
-    // Disable load more if customized search is provided
-    if (this.props.tagSearch) {
-      return;
-    }
+        // Clean up tags position before comparing
+        const newTags = clearTags(newContent, newContentTag, tags);
 
-    if (loading) return;
-    this.setState({
-      ...this.state,
-      keyword,
-      tagSearchData: {
-        ...this.state.tagSearchData,
-        loading: true,
-      },
-    });
+        // Check if this tags is already in the array
+        const containsTag = newTags.some((t) => (
+            t.tagReg === `\\B@${name}` && t.startIndex === content.length + 1
+        ));
 
-    this.props.searchUser(keyword, skip, limit, (res) => {
-      this.setState({
-        ...this.state,
-        keyword,
-        tagSearchData: {
-          ...this.state.tagSearchData,
-          skip: skip + res.data.length, //TODO: new skip
-          data: arrayUnique([...data, ...res.data]),
-          loading: false,
-        },
-      });
-    });
-  };
-  /* Tagging related function ends */
+        const needReplceOldTag = newTags.some((t) => (
+            t.startIndex === content.length
+        ));
 
-  initializeForm() {
-    const { belongsToTribe, belongsToEvent } = this.props;
-    const defaulVals = {
-      viewableSetting: "Friends",
-      mediaRef: undefined,
-      post: "",
-      tags: [],
-      belongsToTribe,
-      belongsToEvent,
-    };
-
-    // Initialize based on the props, if it's opened through edit button
-    const { initializeFromState, initialPost } = this.props;
-    const initialVals = initializeFromState
-      ? { ...postToFormAdapter(initialPost) }
-      : { ...defaulVals };
-
-    this.props.initialize({
-      ...initialVals,
-    });
-
-    fetchPostDrafts().then((drafts) => {
-      if (drafts && drafts.length > 0) {
-        this.setState({
-          draftIndex: drafts.length,
-          drafts: drafts,
-        });
-      }
-    });
-  }
-
-  handleOpenCamera = () => {
-    this.props.openCamera((result) => {
-      this.props.change("mediaRef", result.uri);
-    });
-  };
-
-  handleOpenCameraRoll = () => {
-    const callback = (result) => {
-      this.props.change("mediaRef", result.uri);
-    };
-    this.props.openCameraRoll(callback, { disableEditing: true });
-  };
-
-  handleSaveDraft = async () => {
-    const draft = {
-      post: this.props.post,
-      mediaRef: this.props.mediaRef,
-    };
-
-    let index = this.state.draftIndex;
-    let drafts = this.state.drafts;
-
-    if (index >= drafts.length) {
-      drafts.push(draft);
-      index = drafts.length - 1;
-    } else drafts[index] = draft;
-
-    await savePostDrafts(drafts)
-      .then(() => {
-        this.setState({
-          drafts: drafts,
-          draftIndex: index,
-        });
-      })
-      .catch(this.handleDraftUpdateError);
-  };
-
-  handleDeleteDraft = async (index) => {
-    let drafts = this.state.drafts;
-
-    if (index < drafts.length) {
-      const { draftIndex } = this.state;
-
-      drafts.splice(index, 1);
-      const newIndex =
-        index === draftIndex
-          ? drafts.length
-          : index > draftIndex
-          ? draftIndex
-          : draftIndex - 1;
-
-      await savePostDrafts(drafts)
-        .then(() => {
-          this.setState({
-            drafts: drafts,
-            draftIndex: newIndex,
-          });
-        })
-        .catch(this.handleDraftUpdateError);
-    }
-  };
-
-  handleDraftUpdateError(error) {}
-
-  /**
-   * This is a hacky solution due to the fact that redux-form
-   * handleSubmit values differ from the values actually stored.
-   * NOTE:
-   * Verify by comparing
-   * console.log('handleSubmit passed in values are: ', values);
-   * console.log('form state values: ', this.props.formVals);
-   *
-   * Synchronize validate form values, contains simple check
-   */
-  handleCreate = (values) => {
-    // Delete from drafts
-    this.handleDeleteDraft(this.state.draftIndex);
-
-    const {
-      initializeFromState,
-      initialPost,
-      mediaRef,
-      belongsToTribe,
-      belongsToEvent,
-      openProfile,
-    } = this.props;
-
-    const needUpload =
-      (initializeFromState &&
-        initialPost.mediaRef &&
-        initialPost.mediaRef !== mediaRef) ||
-      (!initializeFromState && mediaRef);
-
-    const needOpenProfile =
-      belongsToTribe === undefined &&
-      belongsToEvent === undefined &&
-      (openProfile === undefined || openProfile === true) &&
-      !initializeFromState;
-
-    const needRefreshProfile = openProfile === false;
-
-    const durationSec =
-      (new Date().getTime() - this.startTime.getTime()) / 1000;
-    trackWithProperties(initializeFromState ? E.POST_UPDATED : E.POST_CREATED, {
-      ...this.props.formVals.values,
-      DurationSec: durationSec,
-    });
-
-    return this.props.submitCreatingPost(
-      this.props.formVals.values,
-      needUpload,
-      {
-        needOpenProfile, // Open user profile page and refresh the profile
-        needRefreshProfile, // Only refresh the profile page with given tab and filter
-      },
-      initializeFromState,
-      initialPost,
-      this.props.callback,
-      this.props.pageId
-    );
-  };
-
-  handleCancel = () => {
-    const durationSec =
-      (new Date().getTime() - this.startTime.getTime()) / 1000;
-    trackWithProperties(
-      this.props.initializeFromState
-        ? E.EDIT_POST_MODAL_CANCELLED
-        : E.CREATE_POST_MODAL_CANCELLED,
-      { DurationSec: durationSec }
-    );
-    this.handleDraftCancel(() => {
-      if (this.props.onClose) this.props.onClose();
-      Actions.pop();
-    });
-  };
-
-  handleDraftCancel = (callback) => {
-    const { post, mediaRef } = this.props;
-    // TODO: check if draft is already saved
-    const draftSaved =
-      ((!post || post.trim() === "") && !mediaRef) ||
-      !this.isSaveDraftDisabled();
-
-    if (draftSaved) return callback ? callback() : null;
-
-    const onCancelSwitchCases = switchByButtonIndex([
-      [
-        R.equals(0),
-        () => {
-          this.handleSaveDraft().then(callback);
-        },
-      ],
-      [
-        R.equals(1),
-        () => {
-          if (callback) callback();
-        },
-      ],
-    ]);
-    const onCancelActionSheet = actionSheet(
-      ON_CANCEL_OPTIONS,
-      ON_CANCEL_CANCEL_INDEX,
-      onCancelSwitchCases
-    );
-    return onCancelActionSheet();
-  };
-
-  renderTagSearchLoadingComponent(loading) {
-    if (loading) {
-      return (
-        <View style={styles.activityIndicatorStyle}>
-          <ActivityIndicator />
-        </View>
-      );
-    }
-    return (
-      <EmptyResult
-        text={"No User Found"}
-        textStyle={{ paddingTop: 15, height: 50 }}
-      />
-    );
-  }
-
-  /**
-   * This is added on ms2 polish as a new way to render textinput for post
-   */
-  renderInput = (props) => {
-    const {
-      input: { value, onChange },
-      editable,
-      placeholder,
-      style,
-      loading,
-      tagData,
-      change,
-    } = props;
-
-    const { tags } = this.props;
-
-    return (
-      <View style={{ zIndex: 3 }}>
-        <MentionsTextInput
-          placeholder={placeholder}
-          onChangeText={(val) => onChange(val)}
-          editable={editable}
-          value={_.isEmpty(value) ? "" : value}
-          contentTags={tags || []}
-          contentTagsReg={tags ? tags.map((t) => t.tagReg) : []}
-          tagSearchRes={this.state.tagSearchData.data}
-          flexGrowDirection="bottom"
-          suggestionPosition="bottom"
-          textInputContainerStyle={{ ...styles.inputContainerStyle }}
-          textInputStyle={style}
-          validateTags={() => this.validateContentTags(change)}
-          autoCorrect
-          suggestionsPanelStyle={{ backgroundColor: "#f8f8f8" }}
-          loadingComponent={() => this.renderTagSearchLoadingComponent(loading)}
-          textInputMinHeight={80}
-          textInputMaxHeight={200}
-          trigger={"@"}
-          triggerLocation={"new-word-only"} // 'new-word-only', 'anywhere'
-          triggerCallback={(keyword) => this.triggerCallback(keyword)}
-          triggerLoadMore={this.handleTagSearchLoadMore.bind(this)}
-          renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
-          suggestionsData={tagData} // array of objects
-          keyExtractor={(item, index) => item._id}
-          suggestionRowHeight={50}
-          horizontal={false} // defaut is true, change the orientation of the list
-          MaxVisibleRowCount={4} // this is required if horizontal={false}
-        />
-      </View>
-    );
-  };
-
-  /**
-   * This is to render tagging suggestion row
-   * @param hidePanel: lib passed in funct to close suggestion panel
-   * @param item: suggestion item to render
-   */
-  renderSuggestionsRow({ item }, hidePanel, cursorPosition) {
-    const { name, profile } = item;
-    return (
-      <TouchableOpacity
-        onPress={() =>
-          this.onTaggingSuggestionTap(item, hidePanel, cursorPosition)
+        // Update comment contentTags regex and contentTags
+        if (!containsTag) {
+            let newContentTags;
+            if (needReplceOldTag) {
+                newContentTags = newTags.map((t) => {
+                    if (t.startIndex === newContentTag.startIndex) {
+                        return newContentTag;
+                    }
+                    return t;
+                });
+            } else {
+                newContentTags = [...newTags, newContentTag];
+            }
+            // TODO: sort newContentTags by startIndex
+            this.props.change(
+                'tags',
+                newContentTags.sort((a, b) => a.startIndex - b.startIndex)
+            );
         }
-        style={{
-          height: 50,
-          width: "100%",
-          flexDirection: "row",
-          alignItems: "center",
-          backgroundColor: "white",
-        }}
-      >
-        <ProfileImage
-          imageContainerStyle={styles.imageContainerStyle}
-          imageUrl={profile && profile.image ? profile.image : undefined}
-          imageStyle={{ height: 31, width: 30, borderRadius: 3 }}
-          defaultImageSource={defaultUserProfile}
-        />
-        <Text style={{ fontSize: 16, color: "darkgray" }}>{name}</Text>
-      </TouchableOpacity>
-    );
-  }
 
-  renderUserInfo() {
-    const { belongsToTribe, belongsToEvent, user } = this.props;
-    const { profile, name } = user;
-
-    const callback = R.curry((value) =>
-      this.props.change("viewableSetting", value)
-    );
-
-    return (
-      <View style={{ flexDirection: "row", marginBottom: 15 }}>
-        <ProfileImage imageUrl={profile ? profile.image : undefined} />
-        <View style={{ flexDirection: "column", marginLeft: 12, marginTop: 0 }}>
-          <Text style={{ ...DEFAULT_STYLE.titleText_2, marginBottom: 2 }}>
-            {name}
-          </Text>
-          <ViewableSettingMenu
-            viewableSetting={this.props.viewableSetting}
-            callback={callback}
-            shareToMastermind={null}
-            belongsToTribe={belongsToTribe}
-            belongsToEvent={belongsToEvent}
-          />
-        </View>
-      </View>
-    );
-  }
-
-  // Current media type is only picture
-  renderMedia() {
-    const { initializeFromState, post, mediaRef } = this.props;
-    let imageUrl = mediaRef;
-    if (initializeFromState && mediaRef) {
-      const hasImageModified = post.mediaRef && post.mediaRef !== mediaRef;
-      if (!hasImageModified) {
-        // If editing a tribe and image hasn't changed, then image source should
-        // be from server
-        imageUrl = `${IMAGE_BASE_URL}${mediaRef}`;
-      }
+        // Clear tag search data state
+        this.setState({
+            ...this.state,
+            tagSearchData: { ...INITIAL_TAG_SEARCH }
+        });
     }
 
-    // Do not render cancel button if editing since we
-    // don't allow editing image
-    const cancelButton = initializeFromState ? null : (
-      <TouchableOpacity
-        activeOpacity={0.6}
-        onPress={() => this.props.change("mediaRef", false)}
-        style={{ position: "absolute", top: 10, left: 15 }}
-      >
-        <Image
-          source={cancel}
-          style={{ width: 15, height: 15, tintColor: "#fafafa" }}
-        />
-      </TouchableOpacity>
-    );
+    // This is triggered when a trigger (@) is removed. Verify if all tags
+    // are still valid.
+    validateContentTags = (change) => {
+        const { tags, post } = this.props;
+        const newContentTags = tags.filter((tag) => {
+            const { startIndex, endIndex, tagText } = tag;
 
-    if (this.props.mediaRef) {
-      return (
-        <View
-          style={{ marginTop: 8, backgroundColor: "gray", borderRadius: 8 }}
-        >
-          <ImageBackground
-            style={styles.mediaStyle}
-            source={{ uri: imageUrl }}
-            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: "cover" }}
-          >
-            <View style={{ alignSelf: "center", justifyContent: "center" }}>
-              <Image
-                source={imageOverlay}
-                style={{
-                  alignSelf: "center",
-                  justifyContent: "center",
-                  height: 45,
-                  width: 50,
-                  tintColor: "#fafafa",
-                }}
-              />
-            </View>
-
-            <TouchableOpacity
-              activeOpacity={0.6}
-              onPress={() => this.setState({ mediaModal: true })}
-              style={{ position: "absolute", top: 10, right: 15 }}
-            >
-              <Image
-                source={expand}
-                style={{ width: 15, height: 15, tintColor: "#fafafa" }}
-              />
-            </TouchableOpacity>
-
-            {cancelButton}
-          </ImageBackground>
-        </View>
-      );
+            const actualTag = post.slice(startIndex, endIndex);
+            // Verify if with the same startIndex and endIndex, we can still get the
+            // tag. If not, then we remove the tag.
+            return actualTag === tagText;
+        });
+        change('tags', newContentTags);
     }
-    return null;
-  }
 
-  renderImageModal() {
-    const { initializeFromState, initialPost, mediaRef } = this.props;
+    updateSearchRes(res, searchContent) {
+        if (searchContent !== this.state.keyword) return;
+        this.setState({
+            ...this.state,
+            // keyword,
+            tagSearchData: {
+                ...this.state.tagSearchData,
+                skip: res.data.length, //TODO: new skip
+                data: res.data,
+                loading: false
+            }
+        });
+    }
 
-    // This is not a local file if
-    // this is an edit and mediaRef has not changed yet
-    return (
-      <ImageModal
-        mediaRef={this.props.mediaRef}
-        mediaModal={this.state.mediaModal}
-        closeModal={() => this.setState({ mediaModal: false })}
-        isLocalFile={
-          !(
-            initializeFromState &&
-            initialPost.mediaRef &&
-            initialPost.mediaRef === mediaRef
-          )
+    triggerCallback(keyword) {
+        if (this.reqTimer) {
+            clearTimeout(this.reqTimer);
         }
-      />
-    );
-  }
 
-  renderPost() {
-    const titleText = <Text style={styles.titleTextStyle}>Your thoughts</Text>;
-    return (
-      <View style={{ marginTop: 5 }}>
-        {titleText}
-        <Field
-          name="post"
-          label="post"
-          component={this.renderInput}
-          editable={!this.props.uploading}
-          multiline
-          style={styles.goalInputStyle}
-          placeholder="What do you have in mind?"
-          loading={this.state.tagSearchData.loading}
-          tagData={this.state.tagSearchData.data}
-          keyword={this.state.keyword}
-          change={(type, val) => this.props.change(type, val)}
-        />
-      </View>
-    );
-  }
-
-  isSaveDraftDisabled() {
-    if (this.props.initializeFromState) return false;
-    const { drafts, draftIndex } = this.state;
-    if (
-      drafts.length <= draftIndex ||
-      this.props.post !== drafts[draftIndex].post ||
-      this.props.mediaRef != drafts[draftIndex].mediaRef
-    )
-      return true;
-    return false;
-  }
-
-  renderActionIcons() {
-    // If user already has the image, they need to delete the image and then
-    // these icons would show up to attach another image
-    const { post, mediaRef, uploading } = this.props;
-    const actionIconStyle = {
-      ...DEFAULT_STYLE.buttonIcon_1,
-      marginRight: 8,
-    };
-    const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
-    const actionDisabled =
-      uploading || ((!post || post.trim() === "") && !mediaRef);
-    const saveDraftDisabled = actionDisabled || !this.isSaveDraftDisabled();
-    return (
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginTop: 10,
-        }}
-      >
-        <DelayedButton
-          activeOpacity={0.6}
-          style={{ marginTop: 8, padding: 2 }}
-          onPress={this.handleSaveDraft}
-          disabled={saveDraftDisabled}
-        >
-          <Text
-            style={{
-              ...DEFAULT_STYLE.titleText_2,
-              color: saveDraftDisabled ? BACKGROUND_COLOR : GM_BLUE,
-            }}
-          >
-            Save Draft
-          </Text>
-        </DelayedButton>
-        <View style={{ flexDirection: "row" }}>
-          <DelayedButton
-            activeOpacity={0.6}
-            style={actionIconWrapperStyle}
-            onPress={this.handleOpenCamera}
-            disabled={uploading}
-          >
-            <Image
-              resizeMode="contain"
-              style={{ ...actionIconStyle, tintColor: "#828282" }}
-              source={camera}
-            />
-            <Text
-              style={{
-                ...DEFAULT_STYLE.titleText_2,
-                color: "#828282",
-                marginTop: 2,
-              }}
-            >
-              Camera
-            </Text>
-          </DelayedButton>
-          <DelayedButton
-            activeOpacity={0.6}
-            style={{ ...actionIconWrapperStyle, marginLeft: 8 }}
-            onPress={this.handleOpenCameraRoll}
-            disabled={uploading}
-          >
-            <Image
-              resizeMode="contain"
-              style={actionIconStyle}
-              source={cameraRoll}
-            />
-            <Text
-              style={{
-                ...DEFAULT_STYLE.titleText_2,
-                color: "#828282",
-                marginTop: 2,
-              }}
-            >
-              Photo
-            </Text>
-          </DelayedButton>
-        </View>
-      </View>
-    );
-  }
-
-  renderDraftsHeader() {
-    return (
-      <View style={styles.draftsHeader}>
-        <Text style={{ ...DEFAULT_STYLE.subTitleText_1, color: "#D39F00" }}>
-          {this.state.drafts.length} Draft
-          {this.state.drafts.length !== 1 ? "s" : ""}
-        </Text>
-        <DraftsView
-          drafts={this.state.drafts}
-          onDelete={this.handleDeleteDraft}
-          onSelect={(index) => {
-            this.handleDraftCancel(() => {
-              const selectedDraft = this.state.drafts[index];
-              this.setState({ draftIndex: index });
-              this.props.change(
-                "mediaRef",
-                selectedDraft.mediaRef ? selectedDraft.mediaRef : null
-              );
-              this.props.change("post", selectedDraft.post);
+        this.reqTimer = setTimeout(() => {
+            console.log(`${DEBUG_KEY}: requesting for keyword: `, keyword);
+            this.setState({
+                ...this.state,
+                keyword,
+                tagSearchData: {
+                    ...this.state.tagSearchData,
+                    loading: true
+                }
             });
-          }}
-        />
-      </View>
-    );
-  }
+            const { limit } = this.state.tagSearchData;
+            // Use the customized search if there is one
+            if (this.props.tagSearch) {
+                this.props.tagSearch(keyword, (res, searchContent) => {
+                    this.updateSearchRes(res, searchContent);
+                });
+                return;
+            }
 
-  render() {
-    const {
-      handleSubmit,
-      initializeFromState,
-      post,
-      mediaRef,
-      uploading,
-    } = this.props;
-    const modalActionText = initializeFromState ? "Update" : "Create";
-    const actionDisabled =
-      uploading || ((!post || post.trim() === "") && !mediaRef);
+            this.props.searchUser(keyword, 0, limit, (res, searchContent) => {
+                this.updateSearchRes(res, searchContent);
+            });
+        }, 150);
+    }
 
-    return (
-      <KeyboardAvoidingView
-        behavior="padding"
-        style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}
-      >
-        <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-          <ModalHeader
-            title="New Post"
-            actionText={modalActionText}
-            onCancel={this.handleCancel}
-            onAction={handleSubmit(this.handleCreate)}
-            actionDisabled={actionDisabled}
-          />
-          {!initializeFromState &&
-            this.state.drafts.length > 0 &&
-            this.renderDraftsHeader()}
-          <ScrollView>
-            <View style={{ flex: 1, padding: 20 }}>
-              {this.renderUserInfo()}
-              {this.renderPost()}
-              {this.renderActionIcons()}
-              {this.renderMedia()}
+    handleTagSearchLoadMore = () => {
+        const { tagSearchData, keyword } = this.state;
+        const { skip, limit, data, loading } = tagSearchData;
+
+        // Disable load more if customized search is provided
+        if (this.props.tagSearch) {
+            return;
+        }
+
+        if (loading) return;
+        this.setState({
+            ...this.state,
+            keyword,
+            tagSearchData: {
+                ...this.state.tagSearchData,
+                loading: true
+            }
+        });
+
+        this.props.searchUser(keyword, skip, limit, (res) => {
+            this.setState({
+                ...this.state,
+                keyword,
+                tagSearchData: {
+                    ...this.state.tagSearchData,
+                    skip: skip + res.data.length, //TODO: new skip
+                    data: arrayUnique([...data, ...res.data]),
+                    loading: false
+                }
+            });
+        });
+    }
+    /* Tagging related function ends */
+
+    initializeForm() {
+        const { belongsToTribe, belongsToEvent } = this.props;
+        const defaulVals = {
+            viewableSetting: 'Friends',
+            mediaRef: undefined,
+            post: '',
+            tags: [],
+            belongsToTribe,
+            belongsToEvent
+        };
+
+        // Initialize based on the props, if it's opened through edit button
+        const { initializeFromState, initialPost } = this.props;
+        const initialVals = initializeFromState
+            ? { ...postToFormAdapter(initialPost) }
+            : { ...defaulVals };
+
+        this.props.initialize({
+            ...initialVals
+        });
+
+        fetchPostDrafts().then((drafts) => {
+            if (drafts && drafts.length > 0) {
+                this.setState({
+                    draftIndex: drafts.length,
+                    drafts: drafts
+                });
+            }
+        });
+    }
+
+    handleOpenCamera = () => {
+        this.props.openCamera((result) => {
+            this.props.change('mediaRef', result.uri);
+        });
+    }
+
+    handleOpenCameraRoll = () => {
+        const callback = (result) => {
+            this.props.change('mediaRef', result.uri);
+        };
+        this.props.openCameraRoll(callback, { disableEditing: true });
+    }
+
+    handleSaveDraft = async () => {
+        const draft = {
+            post: this.props.post,
+            mediaRef: this.props.mediaRef
+        };
+
+        let index = this.state.draftIndex;
+        let drafts = this.state.drafts;
+
+        if (index >= drafts.length) {
+            drafts.push(draft);
+            index = drafts.length - 1;
+        }
+        else drafts[index] = draft;
+
+        await savePostDrafts(drafts).then(()=> {
+            this.setState({
+                drafts: drafts,
+                draftIndex: index
+            });
+        }).catch(this.handleDraftUpdateError);
+    }
+
+    handleDeleteDraft = async (index) => {
+        let drafts = this.state.drafts;
+
+        if (index < drafts.length) {
+            const { draftIndex } = this.state;
+
+            drafts.splice(index, 1);
+            const newIndex = index === draftIndex ? drafts.length : (index > draftIndex ? draftIndex : draftIndex - 1);
+
+            await savePostDrafts(drafts).then(() => {
+                this.setState({
+                    drafts: drafts,
+                    draftIndex: newIndex
+                });
+            }).catch(this.handleDraftUpdateError);
+        }
+    }
+
+    handleDraftUpdateError(error) {
+
+    }
+
+    /**
+     * This is a hacky solution due to the fact that redux-form
+     * handleSubmit values differ from the values actually stored.
+     * NOTE:
+     * Verify by comparing
+     * console.log('handleSubmit passed in values are: ', values);
+     * console.log('form state values: ', this.props.formVals);
+     *
+     * Synchronize validate form values, contains simple check
+     */
+    handleCreate = (values) => {
+        // Delete from drafts
+        this.handleDeleteDraft(this.state.draftIndex);
+
+        const { initializeFromState, initialPost, mediaRef, belongsToTribe, belongsToEvent, openProfile } = this.props;
+
+        const needUpload = (initializeFromState && initialPost.mediaRef && initialPost.mediaRef !== mediaRef)
+            || (!initializeFromState && mediaRef);
+
+        const needOpenProfile = (belongsToTribe === undefined && belongsToEvent === undefined) &&
+            (openProfile === undefined || openProfile === true) && !initializeFromState;
+
+        const needRefreshProfile = openProfile === false;
+
+        const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
+        trackWithProperties(initializeFromState ? E.POST_UPDATED : E.POST_CREATED,
+            {
+            ...this.props.formVals.values,
+            'DurationSec': durationSec,
+            });
+
+        return this.props.submitCreatingPost(
+            this.props.formVals.values,
+            needUpload,
+            {
+                needOpenProfile, // Open user profile page and refresh the profile
+                needRefreshProfile // Only refresh the profile page with given tab and filter
+            },
+            initializeFromState,
+            initialPost,
+            this.props.callback,
+            this.props.pageId
+        );
+    }
+
+    handleCancel = () => {
+        const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
+        trackWithProperties(this.props.initializeFromState ?
+            E.EDIT_POST_MODAL_CANCELLED : E.CREATE_POST_MODAL_CANCELLED,
+            {'DurationSec': durationSec});
+        this.handleDraftCancel(() => {
+            if (this.props.onClose) this.props.onClose();
+            Actions.pop();
+        });
+    }
+
+    handleDraftCancel = (callback) => {
+        const { post, mediaRef } = this.props;
+        // TODO: check if draft is already saved
+        const draftSaved = ((!post || post.trim() === '') && !mediaRef) ||
+                !this.isSaveDraftDisabled();
+
+        if (draftSaved) 
+            return callback ? callback() : null;
+
+        const onCancelSwitchCases = switchByButtonIndex([
+            [R.equals(0), () => {
+                this.handleSaveDraft().then(callback);
+            }],
+            [R.equals(1), () => {
+                if(callback) callback();
+            }]
+        ]);
+        const onCancelActionSheet = actionSheet(
+            ON_CANCEL_OPTIONS,
+            ON_CANCEL_CANCEL_INDEX,
+            onCancelSwitchCases
+        );
+        return onCancelActionSheet();
+    }
+
+    renderTagSearchLoadingComponent(loading) {
+        if (loading) {
+            return (
+                <View style={styles.activityIndicatorStyle}>
+                    <ActivityIndicator />
+                </View>
+            );
+        }
+        return <EmptyResult text={'No User Found'} textStyle={{ paddingTop: 15, height: 50 }} />;
+    }
+
+    /**
+     * This is added on ms2 polish as a new way to render textinput for post
+     */
+    renderInput = (props) => {
+        const {
+            input: { value, onChange },
+            editable,
+            placeholder,
+            style,
+            loading,
+            tagData,
+            change,
+        } = props;
+
+        const { tags } = this.props;
+
+        return (
+            <View style={{ zIndex: 3 }}>
+                <MentionsTextInput
+                    placeholder={placeholder}
+                    onChangeText={(val) => onChange(val)}
+                    editable={editable}
+                    value={_.isEmpty(value) ? '' : value}
+                    contentTags={tags || []}
+                    contentTagsReg={tags ? tags.map((t) => t.tagReg) : []}
+                    tagSearchRes={this.state.tagSearchData.data}
+                    flexGrowDirection='bottom'
+                    suggestionPosition='bottom'
+                    textInputContainerStyle={{ ...styles.inputContainerStyle }}
+                    textInputStyle={style}
+                    validateTags={() => this.validateContentTags(change)}
+                    autoCorrect
+                    suggestionsPanelStyle={{ backgroundColor: '#f8f8f8' }}
+                    loadingComponent={() => this.renderTagSearchLoadingComponent(loading)}
+                    textInputMinHeight={80}
+                    textInputMaxHeight={200}
+                    trigger={'@'}
+                    triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
+                    triggerCallback={(keyword) => this.triggerCallback(keyword)}
+                    triggerLoadMore={this.handleTagSearchLoadMore.bind(this)}
+                    renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
+                    suggestionsData={tagData} // array of objects
+                    keyExtractor={(item, index) => item._id}
+                    suggestionRowHeight={50}
+                    horizontal={false} // defaut is true, change the orientation of the list
+                    MaxVisibleRowCount={4} // this is required if horizontal={false}
+                />
             </View>
-          </ScrollView>
-          {this.renderImageModal()}
-        </MenuProvider>
-      </KeyboardAvoidingView>
-    );
-  }
+        );
+    }
+
+    /**
+     * This is to render tagging suggestion row
+     * @param hidePanel: lib passed in funct to close suggestion panel
+     * @param item: suggestion item to render
+     */
+    renderSuggestionsRow({ item }, hidePanel, cursorPosition) {
+        const { name, profile } = item;
+        return (
+            <TouchableOpacity
+                onPress={() => this.onTaggingSuggestionTap(item, hidePanel, cursorPosition)}
+                style={{
+                    height: 50,
+                    width: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: 'white'
+                }}
+            >
+                <ProfileImage
+                    imageContainerStyle={styles.imageContainerStyle}
+                    imageUrl={profile && profile.image ? profile.image : undefined}
+                    imageStyle={{ height: 31, width: 30, borderRadius: 3 }}
+                    defaultImageSource={defaultUserProfile}
+                />
+                <Text style={{ fontSize: 16, color: 'darkgray' }}>{name}</Text>
+            </TouchableOpacity>
+        );
+    }
+
+    renderUserInfo() {
+        const { belongsToTribe, belongsToEvent, user } = this.props;
+        const { profile, name } = user;
+
+        const callback = R.curry((value) => this.props.change('viewableSetting', value));
+
+        return (
+            <View style={{ flexDirection: 'row', marginBottom: 15 }}>
+                <ProfileImage
+                    imageUrl={profile ? profile.image : undefined}
+                />
+                <View style={{ flexDirection: 'column', marginLeft: 12, marginTop: 0 }}>
+                    <Text style={{ ...DEFAULT_STYLE.titleText_2, marginBottom: 2 }}>
+                        {name}
+                    </Text>
+                    <ViewableSettingMenu
+                        viewableSetting={this.props.viewableSetting}
+                        callback={callback}
+                        shareToMastermind={null}
+                        belongsToTribe={belongsToTribe}
+                        belongsToEvent={belongsToEvent}
+                    />
+                </View>
+            </View>
+        );
+    }
+
+    // Current media type is only picture
+    renderMedia() {
+        const { initializeFromState, post, mediaRef } = this.props;
+        let imageUrl = mediaRef;
+        if (initializeFromState && mediaRef) {
+            const hasImageModified = post.mediaRef && post.mediaRef !== mediaRef;
+            if (!hasImageModified) {
+                // If editing a tribe and image hasn't changed, then image source should
+                // be from server
+                imageUrl = `${IMAGE_BASE_URL}${mediaRef}`;
+            }
+        }
+
+        // Do not render cancel button if editing since we 
+        // don't allow editing image
+        const cancelButton = initializeFromState ? null : (
+            <TouchableOpacity
+                activeOpacity={0.6}
+                onPress={() => this.props.change('mediaRef', false)}
+                style={{ position: 'absolute', top: 10, left: 15 }}
+            >
+                <Image
+                    source={cancel}
+                    style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+                />
+            </TouchableOpacity>
+        );
+
+        if (this.props.mediaRef) {
+            return (
+                <View style={{ marginTop: 8, backgroundColor: 'gray', borderRadius: 8 }}>
+                    <ImageBackground
+                        style={styles.mediaStyle}
+                        source={{ uri: imageUrl }}
+                        imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
+                    >
+                        <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
+                            <Image
+                                source={imageOverlay}
+                                style={{
+                                    alignSelf: 'center',
+                                    justifyContent: 'center',
+                                    height: 45,
+                                    width: 50,
+                                    tintColor: '#fafafa'
+                                }}
+                            />
+                        </View>
+
+                        <TouchableOpacity
+                            activeOpacity={0.6}
+                            onPress={() => this.setState({ mediaModal: true })}
+                            style={{ position: 'absolute', top: 10, right: 15 }}
+                        >
+                            <Image
+                                source={expand}
+                                style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+                            />
+                        </TouchableOpacity>
+
+                        {cancelButton}
+                    </ImageBackground>
+                </View>
+            );
+        }
+        return null;
+    }
+
+    renderImageModal() {
+        const { initializeFromState, initialPost, mediaRef } = this.props;
+
+        // This is not a local file if
+        // this is an edit and mediaRef has not changed yet
+        return (
+            <ImageModal
+                mediaRef={this.props.mediaRef}
+                mediaModal={this.state.mediaModal}
+                closeModal={() => this.setState({ mediaModal: false })}
+                isLocalFile={!(initializeFromState && initialPost.mediaRef && initialPost.mediaRef === mediaRef)}
+            />
+        );
+    }
+
+    renderPost() {
+        const titleText = <Text style={styles.titleTextStyle}>Your thoughts</Text>;
+        return (
+            <View style={{ marginTop: 5 }}>
+                {titleText}
+                <Field
+                    name='post'
+                    label='post'
+                    component={this.renderInput}
+                    editable={!this.props.uploading}
+                    multiline
+                    style={styles.goalInputStyle}
+                    placeholder='What do you have in mind?'
+                    loading={this.state.tagSearchData.loading}
+                    tagData={this.state.tagSearchData.data}
+                    keyword={this.state.keyword}
+                    change={(type, val) => this.props.change(type, val)}
+                />
+            </View>
+        );
+    }
+
+    isSaveDraftDisabled() {
+        if (this.props.initializeFromState) return false;
+        const { drafts, draftIndex } = this.state;
+        if (drafts.length <= draftIndex || this.props.post !== drafts[draftIndex].post ||
+            (this.props.mediaRef != drafts[draftIndex].mediaRef)) return true;
+        return false;
+    }
+
+    renderActionIcons() {
+        // If user already has the image, they need to delete the image and then
+        // these icons would show up to attach another image
+        const { post, mediaRef, uploading } = this.props;
+        const actionIconStyle = {
+            ...DEFAULT_STYLE.buttonIcon_1,
+            marginRight: 8
+        };
+        const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
+        const actionDisabled = uploading || ((!post || post.trim() === '') && !mediaRef);
+        const saveDraftDisabled = actionDisabled || !this.isSaveDraftDisabled();
+        return (
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    style={{ marginTop: 8, padding: 2 }}
+                    onPress={this.handleSaveDraft}
+                    disabled={saveDraftDisabled}
+                >
+                    <Text style={{
+                        ...DEFAULT_STYLE.titleText_2,
+                        color: saveDraftDisabled ? BACKGROUND_COLOR : GM_BLUE
+                    }} >
+                        Save Draft
+                    </Text>
+                </DelayedButton>
+                <View style={{ flexDirection: 'row' }}>
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        style={actionIconWrapperStyle}
+                        onPress={this.handleOpenCamera}
+                        disabled={uploading}
+                    >
+                        <Image
+                            resizeMode="contain"
+                            style={{ ...actionIconStyle, tintColor: '#828282' }}
+                            source={camera}
+                        />
+                        <Text style={{ ...DEFAULT_STYLE.titleText_2, color: '#828282', marginTop: 2 }} >Camera</Text>
+                    </DelayedButton>
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        style={{ ...actionIconWrapperStyle, marginLeft: 8 }}
+                        onPress={this.handleOpenCameraRoll}
+                        disabled={uploading}
+                    >
+                        <Image
+                            resizeMode="contain"
+                            style={actionIconStyle}
+                            source={cameraRoll}
+                        />
+                        <Text style={{ ...DEFAULT_STYLE.titleText_2, color: '#828282', marginTop: 2 }} >Photo</Text>
+                    </DelayedButton>
+                </View>
+            </View>
+        );
+    }
+
+    renderDraftsHeader() {
+        return (
+            <View style={styles.draftsHeader}>
+                <Text style={{ ...DEFAULT_STYLE.subTitleText_1, color: '#D39F00' }}>
+                    {this.state.drafts.length} Draft{this.state.drafts.length !== 1 ? 's' : ''}
+                </Text>
+                <DraftsView
+                    drafts={this.state.drafts}
+                    onDelete={this.handleDeleteDraft}
+                    onSelect={(index) => {
+                        this.handleDraftCancel(() => {
+                            const selectedDraft = this.state.drafts[index];
+                            this.setState({ draftIndex: index });
+                            this.props.change('mediaRef', selectedDraft.mediaRef ? selectedDraft.mediaRef : null);
+                            this.props.change('post', selectedDraft.post);
+                        });
+                    }}
+                />
+            </View>
+        );
+    }
+
+    render() {
+        const { handleSubmit, initializeFromState, post, mediaRef, uploading } = this.props;
+        const modalActionText = initializeFromState ? 'Update' : 'Create';
+        const actionDisabled = uploading || ((!post || post.trim() === '') && !mediaRef);
+
+        return (
+            <KeyboardAvoidingView
+                behavior='padding'
+                style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}
+            >
+                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                    <ModalHeader
+                        title='New Post'
+                        actionText={modalActionText}
+                        onCancel={this.handleCancel}
+                        onAction={handleSubmit(this.handleCreate)}
+                        actionDisabled={actionDisabled}
+                    />
+                    {!initializeFromState && this.state.drafts.length > 0 && this.renderDraftsHeader()}
+                    <ScrollView>
+                        <View style={{ flex: 1, padding: 20 }}>
+                            {this.renderUserInfo()}
+                            {this.renderPost()}
+                            {this.renderActionIcons()}
+                            {this.renderMedia()}
+                        </View>
+                    </ScrollView>
+                    {this.renderImageModal()}
+                </MenuProvider>
+            </KeyboardAvoidingView>
+        );
+    }
 }
 
 const styles = {
-  inputContainerStyle: {
-    flex: 1,
-    justifyContent: "center",
-    marginTop: 5,
-    borderWidth: 1,
-    borderRadius: 5,
-    borderColor: "#E0E0E0",
-  },
-  backdrop: {
-    backgroundColor: "gray",
-    opacity: 0.5,
-  },
-  draftsHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#FFF8E3",
-    borderColor: "#D39F00",
-    borderWidth: 1,
-    padding: 12,
-  },
-  goalInputStyle: {
-    ...DEFAULT_STYLE.subTitleText_1,
-    paddingTop: 15,
-    padding: 15,
-    width: "100%",
-    height: "auto",
-    maxHeight: 200 * DEFAULT_STYLE.uiScale,
-    minHeight: 90,
-  },
-  titleTextStyle: {
-    ...DEFAULT_STYLE.smallTitle_1,
-    padding: 2,
-  },
-  mediaStyle: {
-    height: 150 * DEFAULT_STYLE.uiScale,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  actionIconWrapperStyle: {
-    flexDirection: "row",
-    backgroundColor: "#F2F2F2",
-    padding: 8,
-    paddingLeft: 16,
-    paddingRight: 16,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 4,
-  },
-  userImageContainerStyle: {
-    borderWidth: 0.5,
-    borderColor: "lightgray",
-    alignItems: "center",
-    borderRadius: 100,
-    alignSelf: "flex-start",
-    backgroundColor: "white",
-  },
-  imageContainerStyle: {
-    borderWidth: 0.5,
-    padding: 1,
-    borderColor: "lightgray",
-    alignItems: "center",
-    borderRadius: 3,
-    alignSelf: "center",
-    backgroundColor: "white",
-    marginLeft: 10,
-    marginRight: 10,
-    margin: 5,
-  },
-  activityIndicatorStyle: {
-    flex: 1,
-    height: 50,
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
+    inputContainerStyle: {
+        flex: 1,
+        justifyContent: 'center',
+        marginTop: 5,
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#E0E0E0'
+    },
+    backdrop: {
+        backgroundColor: 'gray',
+        opacity: 0.5
+    },
+    draftsHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#FFF8E3',
+        borderColor: '#D39F00',
+        borderWidth: 1,
+        padding: 12
+    },
+    goalInputStyle: {
+        ...DEFAULT_STYLE.subTitleText_1,
+        paddingTop: 15,
+        padding: 15,
+        width: '100%',
+        height: 'auto',
+        maxHeight: 200 * DEFAULT_STYLE.uiScale,
+        minHeight: 90
+    },
+    titleTextStyle: {
+        ...DEFAULT_STYLE.smallTitle_1,
+        padding: 2
+    },
+    mediaStyle: {
+        height: 150 * DEFAULT_STYLE.uiScale,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    actionIconWrapperStyle: {
+        flexDirection: 'row',
+        backgroundColor: '#F2F2F2',
+        padding: 8,
+        paddingLeft: 16,
+        paddingRight: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 4
+    },
+    userImageContainerStyle: {
+        borderWidth: 0.5,
+        borderColor: 'lightgray',
+        alignItems: 'center',
+        borderRadius: 100,
+        alignSelf: 'flex-start',
+        backgroundColor: 'white'
+    },
+    imageContainerStyle: {
+        borderWidth: 0.5,
+        padding: 1,
+        borderColor: 'lightgray',
+        alignItems: 'center',
+        borderRadius: 3,
+        alignSelf: 'center',
+        backgroundColor: 'white',
+        marginLeft: 10,
+        marginRight: 10,
+        margin: 5
+    },
+    activityIndicatorStyle: {
+        flex: 1,
+        height: 50,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
 };
 
 CreatePostModal = reduxForm({
-  form: "createPostModal",
-  enableReinitialize: true,
+    form: 'createPostModal',
+    enableReinitialize: true
 })(CreatePostModal);
 
 const mapStateToProps = (state) => {
-  const selector = formValueSelector("createPostModal");
-  const { user } = state.user;
-  const { profile } = user;
+    const selector = formValueSelector('createPostModal');
+    const { user } = state.user;
+    const { profile } = user;
 
-  return {
-    user,
-    profile,
-    viewableSetting: selector(state, "viewableSetting"),
-    post: selector(state, "post"),
-    tags: selector(state, "tags"),
-    mediaRef: selector(state, "mediaRef"),
-    formVals: state.form.createPostModal,
-    uploading: state.posts.newPost.uploading,
-  };
+    return {
+        user,
+        profile,
+        viewableSetting: selector(state, 'viewableSetting'),
+        post: selector(state, 'post'),
+        tags: selector(state, 'tags'),
+        mediaRef: selector(state, 'mediaRef'),
+        formVals: state.form.createPostModal,
+        uploading: state.posts.newPost.uploading
+    };
 };
 
-export default connect(mapStateToProps, {
-  searchUser,
-  openCameraRoll,
-  openCamera,
-  submitCreatingPost,
-})(CreatePostModal);
+export default connect(
+    mapStateToProps,
+    {
+        searchUser,
+        openCameraRoll,
+        openCamera,
+        submitCreatingPost
+    }
+)(CreatePostModal);

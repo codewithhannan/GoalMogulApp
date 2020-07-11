@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   View,
   Modal,
@@ -7,51 +7,54 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  KeyboardAvoidingView,
-} from "react-native";
-import { connect } from "react-redux";
-import _ from "lodash";
+  KeyboardAvoidingView
+} from 'react-native';
+import { connect } from 'react-redux';
+import _ from 'lodash';
 
 // Components
-import ModalHeader from "../../../Main/Common/Header/ModalHeader";
-import SearchSuggestion from "./Suggestion/SearchSuggestion";
-import GeneralSuggestion from "./Suggestion/GeneralSuggestion";
+import ModalHeader from '../../../Main/Common/Header/ModalHeader';
+import SearchSuggestion from './Suggestion/SearchSuggestion';
+import GeneralSuggestion from './Suggestion/GeneralSuggestion';
 
 // Asset
-import Book from "../../../asset/suggestion/book.png";
-import Chat from "../../../asset/suggestion/chat.png";
-import Event from "../../../asset/suggestion/event.png";
-import Flag from "../../../asset/suggestion/flag.png";
-import Friend from "../../../asset/suggestion/friend.png";
-import Group from "../../../asset/suggestion/group.png";
-import Link from "../../../asset/suggestion/link.png";
-import Other from "../../../asset/suggestion/other.png";
-import HelpIcon from "../../../asset/utils/help.png";
-import StepIcon from "../../../asset/utils/steps.png";
+import Book from '../../../asset/suggestion/book.png';
+import Chat from '../../../asset/suggestion/chat.png';
+import Event from '../../../asset/suggestion/event.png';
+import Flag from '../../../asset/suggestion/flag.png';
+import Friend from '../../../asset/suggestion/friend.png';
+import Group from '../../../asset/suggestion/group.png';
+import Link from '../../../asset/suggestion/link.png';
+import Other from '../../../asset/suggestion/other.png';
+import HelpIcon from '../../../asset/utils/help.png';
+import StepIcon from '../../../asset/utils/steps.png';
 
 // Actions
-import { updateSuggestionType } from "../../../redux/modules/feed/comment/CommentActions";
+import {
+  updateSuggestionType
+} from '../../../redux/modules/feed/comment/CommentActions';
 
-import { getNewCommentByTab } from "../../../redux/modules/feed/comment/CommentSelector";
+import {
+  getNewCommentByTab
+} from '../../../redux/modules/feed/comment/CommentSelector';
 
 class SuggestionModal extends Component {
   state = {
-    query: "",
-  };
+    query: ''
+  }
 
   renderIconItem = ({ item }) => {
     const { selected } = item;
 
     // Update Icon style if selected
-    const style = selected
-      ? {
-          ...styles.selectedSuggestionIconStyle,
-          ...item.value.iconStyle,
-        }
-      : {
-          ...styles.suggestionIconStyle,
-          ...item.value.iconStyle,
-        };
+    const style = selected ?
+      {
+        ...styles.selectedSuggestionIconStyle,
+        ...item.value.iconStyle
+      } : {
+        ...styles.suggestionIconStyle,
+        ...item.value.iconStyle
+      };
 
     // Update text style if selected
     const textStyle = selected
@@ -61,32 +64,23 @@ class SuggestionModal extends Component {
       <View
         style={{
           flex: 1,
-          alignItems: "flex-start",
-          justifyContent: "flex-start",
+          alignItems: 'flex-start',
+          justifyContent: 'flex-start',
           marginBottom: 7,
-          marginLeft: 10,
+          marginLeft: 10
         }}
       >
-        <TouchableOpacity
-          activeOpacity={0.6}
-          onPress={() =>
-            this.props.updateSuggestionType(item.key, this.props.pageId)
-          }
+        <TouchableOpacity activeOpacity={0.6}
+          onPress={() => this.props.updateSuggestionType(item.key, this.props.pageId)}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Image source={item.value.iconSource} style={style} />
-            <Text style={textStyle}>{item.text.toUpperCase()}</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          <Image source={item.value.iconSource} style={style} />
+          <Text style={textStyle}>{item.text.toUpperCase()}</Text>
           </View>
         </TouchableOpacity>
       </View>
     );
-  };
+  }
 
   renderOptions(newComment) {
     const { suggestionType } = newComment.tmpSuggestion;
@@ -104,15 +98,15 @@ class SuggestionModal extends Component {
     );
 
     return (
-      <View style={{ backgroundColor: "white", marginTop: 0.5 }}>
+      <View style={{ backgroundColor: 'white', marginTop: 0.5 }}>
         <Text
           style={{
             fontSize: 14,
-            fontWeight: "700",
-            alignSelf: "center",
-            justifyContent: "center",
+            fontWeight: '700',
+            alignSelf: 'center',
+            justifyContent: 'center',
             marginTop: 10,
-            marginBottom: 10,
+            marginBottom: 10
           }}
         >
           Suggest a...
@@ -125,12 +119,9 @@ class SuggestionModal extends Component {
   renderSuggestionBody(newComment) {
     const { suggestionType } = newComment.tmpSuggestion;
 
-    if (
-      suggestionType === "User" ||
-      suggestionType === "Friend" ||
-      suggestionType === "Event" ||
-      suggestionType === "Tribe" ||
-      suggestionType === "ChatConvoRoom"
+    if (suggestionType === 'User' || suggestionType === 'Friend' ||
+      suggestionType === 'Event' || suggestionType === 'Tribe' ||
+      suggestionType === 'ChatConvoRoom'
     ) {
       return <SearchSuggestion pageId={this.props.pageId} />;
     }
@@ -149,14 +140,14 @@ class SuggestionModal extends Component {
         visible={this.props.visible}
       >
         <ModalHeader
-          title="Suggestion"
-          actionText="Attach"
+          title='Suggestion'
+          actionText='Attach'
           onCancel={this.props.onCancel}
           onAction={() => this.props.onAttach()}
         />
         <ScrollView>
-          <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-            <View style={{ flex: 1, backgroundColor: "lightgray" }}>
+          <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
+            <View style={{ flex: 1, backgroundColor: 'lightgray' }}>
               {this.renderOptions(newComment)}
               {this.renderSuggestionBody(newComment)}
             </View>
@@ -170,129 +161,148 @@ class SuggestionModal extends Component {
 const styles = {
   // Options style
   selectedSuggestionIconStyle: {
-    tintColor: "#17B3EC",
+    tintColor: '#17B3EC',
     height: 20,
-    width: 20,
+    width: 20
   },
   suggestionIconStyle: {
-    tintColor: "#b8c7cb",
+    tintColor: '#b8c7cb',
     height: 20,
-    width: 20,
+    width: 20
   },
   selectedSuggestionTextStyle: {
-    color: "black",
+    color: 'black',
     fontSize: 14,
-    fontWeight: "700",
-    marginLeft: 15,
+    fontWeight: '700',
+    marginLeft: 15
   },
   suggestionTextStyle: {
-    color: "#b8c7cb",
+    color: '#b8c7cb',
     fontSize: 14,
-    fontWeight: "700",
-    marginLeft: 15,
-  },
+    fontWeight: '700',
+    marginLeft: 15
+  }
 };
 //["ChatConvoRoom", "Event", "Tribe", "Link", "Reading",
 // "Step", "Need", "Friend", "User", "Custom"]
 const IconMap = [
   {
-    key: "Reading",
-    text: "Reading",
+    key: 'Reading',
+    text: 'Reading',
     value: {
       iconSource: Book,
-      iconStyle: {},
+      iconStyle: {
+
+      }
     },
-    selected: undefined,
+    selected: undefined
   },
   {
-    key: "ChatConvoRoom",
-    text: "Chatroom",
+    key: 'ChatConvoRoom',
+    text: 'Chatroom',
     value: {
       iconSource: Chat,
-      iconStyle: {},
+      iconStyle: {
+
+      }
     },
-    selected: undefined,
+    selected: undefined
   },
   {
-    key: "Event",
-    text: "Event",
+    key: 'Event',
+    text: 'Event',
     value: {
       iconSource: Event,
-      iconStyle: {},
+      iconStyle: {
+
+      }
     },
-    selected: undefined,
+    selected: undefined
   },
   {
-    key: "Tribe",
-    text: "Tribe",
+    key: 'Tribe',
+    text: 'Tribe',
     value: {
       iconSource: Flag,
-      iconStyle: {},
+      iconStyle: {
+
+      }
     },
-    selected: undefined,
+    selected: undefined
   },
   {
-    key: "User",
-    text: "User",
+    key: 'User',
+    text: 'User',
     value: {
       iconSource: Friend,
-      iconStyle: {},
+      iconStyle: {
+
+      }
     },
-    selected: undefined,
+    selected: undefined
   },
   {
-    key: "Friend",
-    text: "Friend",
+    key: 'Friend',
+    text: 'Friend',
     value: {
       iconSource: Group,
-      iconStyle: {},
+      iconStyle: {
+
+      }
     },
-    selected: undefined,
+    selected: undefined
   },
   {
-    key: "Step",
-    text: "Step",
+    key: 'Step',
+    text: 'Step',
     value: {
       iconSource: StepIcon,
-      iconStyle: {},
+      iconStyle: {
+
+      }
     },
-    selected: undefined,
+    selected: undefined
   },
   {
-    key: "Need",
-    text: "Need",
+    key: 'Need',
+    text: 'Need',
     value: {
       iconSource: HelpIcon,
-      iconStyle: {},
+      iconStyle: {
+
+      }
     },
-    selected: undefined,
+    selected: undefined
   },
   {
-    key: "Link",
-    text: "Link",
+    key: 'Link',
+    text: 'Link',
     value: {
       iconSource: Link,
-      iconStyle: {},
+      iconStyle: {
+
+      }
     },
-    selected: undefined,
+    selected: undefined
   },
   {
-    key: "Custom",
-    text: "Custom",
+    key: 'Custom',
+    text: 'Custom',
     value: {
       iconSource: Other,
-      iconStyle: {},
+      iconStyle: {
+
+      }
     },
-    selected: undefined,
+    selected: undefined
   },
 ];
 
-const updateIconMap = (suggestionType, iconMap) =>
-  iconMap.map((item) => {
-    const newItem = _.cloneDeep(item);
-    newItem.selected = suggestionType === item.key;
-    return newItem;
-  });
+const updateIconMap = (suggestionType, iconMap) => iconMap.map((item) => {
+  const newItem = _.cloneDeep(item);
+  newItem.selected = suggestionType === item.key;
+  return newItem;
+});
 
 const mapStateToProps = (state, props) => {
   const newComment = getNewCommentByTab(state, props.pageId);
@@ -302,6 +312,9 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-export default connect(mapStateToProps, {
-  updateSuggestionType,
-})(SuggestionModal);
+export default connect(
+  mapStateToProps,
+  {
+    updateSuggestionType
+  }
+)(SuggestionModal);

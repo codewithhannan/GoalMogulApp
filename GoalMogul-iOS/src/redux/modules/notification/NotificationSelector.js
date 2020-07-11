@@ -1,7 +1,7 @@
-import { createSelector } from "reselect";
-import _ from "lodash";
+import { createSelector } from 'reselect';
+import _ from 'lodash';
 
-const DEBUG_KEY = "[ Selector Notification ]";
+const DEBUG_KEY = '[ Selector Notification ]';
 const getNotificationData = (state) => state.notification.notifications;
 const getNotificationFeed = (state) => state.notification.needs;
 
@@ -10,23 +10,14 @@ export const getNotifications = createSelector(
   (notifications) => {
     const { seeMoreCount, data } = notifications;
 
-    const header = [
-      {
-        type: "header",
-        text: "Notifications",
-        _id: "notification",
-        notificationType: "notification",
-        length: data.length,
-      },
-    ];
-    const seeMore = [
-      {
-        type: "seemore",
-        text: "See More",
-        _id: "notification_see_more",
-        notificationType: "notification",
-      },
-    ];
+    const header = [{ 
+      type: 'header', 
+      text: 'Notifications', 
+      _id: 'notification', 
+      notificationType: 'notification',
+      length: data.length
+    }];
+    const seeMore = [{ type: 'seemore', text: 'See More', _id: 'notification_see_more', notificationType: 'notification' }];
     // const seeLess = [{ type: 'seeless', text: 'See Less', _id: 'notification_see_less' }];
     if (_.isEmpty(data) || data.length === 0) return header;
 
@@ -39,8 +30,8 @@ export const getNotifications = createSelector(
     dataToReturn = dataToReturn.map((item) => {
       if (!item.type) {
         return {
-          type: "notification",
-          ...item,
+          type: 'notification',
+          ...item
         };
       }
       return item;
@@ -57,17 +48,8 @@ export const getNotificationNeeds = createSelector(
 
     if (_.isEmpty(data) || data.length === 0) return [];
 
-    const header = [
-      { type: "header", text: "Friend's Needs", _id: "notification_feed" },
-    ];
-    const seeMore = [
-      {
-        type: "seemore",
-        text: "See More",
-        _id: "notification_feed_see_more",
-        notificationType: "feed",
-      },
-    ];
+    const header = [{ type: 'header', text: 'Friend\'s Needs', _id: 'notification_feed' }];
+    const seeMore = [{ type: 'seemore', text: 'See More', _id: 'notification_feed_see_more', notificationType: 'feed' }];
     // const seeLess = [{ type: 'seeless', text: 'See Less', _id: 'notification_feed_see_less' }];
 
     let dataToReturn = [];
@@ -79,8 +61,8 @@ export const getNotificationNeeds = createSelector(
     dataToReturn = dataToReturn.map((item) => {
       if (!item.type) {
         return {
-          type: "need",
-          ...item,
+          type: 'need',
+          ...item
         };
       }
       return item;

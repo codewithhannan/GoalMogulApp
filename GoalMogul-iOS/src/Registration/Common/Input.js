@@ -1,12 +1,14 @@
-import React, { Component } from "react";
-import { View } from "react-native";
-import { TextField } from "react-native-material-textfield-gm";
+import React, { Component } from 'react';
+import {
+  View
+} from 'react-native';
+import { TextField } from 'react-native-material-textfield-gm';
 
 class Input extends Component {
   focus() {
     this.input.focus();
   }
-
+  
   render() {
     const {
       input: { onChange, ...restInput },
@@ -26,19 +28,19 @@ class Input extends Component {
     return (
       <View style={styles.inputContainerStyle}>
         <TextField
-          ref={(ref) => (this.input = ref)}
+          ref={ref => this.input = ref}
           label={label}
           title={title}
-          autoCapitalize={"none"}
+          autoCapitalize={'none'}
           autoCorrect={false}
           onChangeText={onChange}
           error={error}
           enablesReturnKeyAutomatically={false}
-          returnKeyType={returnKeyType || "done"}
+          returnKeyType={returnKeyType || 'done'}
           secureTextEntry={secure}
           characterRestriction={limitation}
           multiline={multiline}
-          keyboardType={keyboardType || "default"}
+          keyboardType={keyboardType || 'default'}
           labelHeight={26}
           fontSize={17}
           disabled={disabled}
@@ -55,8 +57,8 @@ class Input extends Component {
 const styles = {
   inputContainerStyle: {
     paddingLeft: 20,
-    paddingRight: 20,
-  },
+    paddingRight: 20
+  }
 };
 
 export default Input;

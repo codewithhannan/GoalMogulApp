@@ -1,15 +1,19 @@
-import React, { Component } from "react";
-import _ from "lodash";
-import { View, FlatList } from "react-native";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import _ from 'lodash';
+import {
+  View,
+  FlatList
+} from 'react-native';
+import { connect } from 'react-redux';
 
 /* Actions */
-import { openCameraRoll, registrationCameraRollLoadPhoto } from "../actions";
+import { openCameraRoll, registrationCameraRollLoadPhoto } from '../actions';
 
 /* Components */
-import ImageRow from "./Common/ImageRow";
+import ImageRow from './Common/ImageRow';
 
 class cameraRollModal extends Component {
+
   componentDidMount() {
     // this.props.registrationCameraRollLoadPhoto();
   }
@@ -19,7 +23,9 @@ class cameraRollModal extends Component {
   renderRow(data) {
     // console.log('rendering item p: ', data.item);
     const p = data.item;
-    return <ImageRow photo={p} key={p.node.image.uri} />;
+    return (
+      <ImageRow photo={p} key={p.node.image.uri} />
+    );
   }
 
   render() {
@@ -46,7 +52,8 @@ const mapStateToProps = (state) => {
   return { photos, cameraRollModalOpen };
 };
 
-export default connect(mapStateToProps, {
-  openCameraRoll,
-  registrationCameraRollLoadPhoto,
-})(cameraRollModal);
+export default connect(
+  mapStateToProps, {
+    openCameraRoll,
+    registrationCameraRollLoadPhoto
+  })(cameraRollModal);

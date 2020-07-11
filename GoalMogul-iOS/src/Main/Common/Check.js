@@ -1,20 +1,23 @@
-import React from "react";
-import { View, Image } from "react-native";
-import Icons from "../../asset/base64/Icons";
+import React from 'react';
+import {
+  View,
+  Image
+} from 'react-native';
+import Icons from '../../asset/base64/Icons';
 const { CheckIcon: check } = Icons;
 
 const Check = ({ selected }) => {
   const checkIconContainerStyle = selected
-    ? { ...styles.checkIconContainerStyle, backgroundColor: "#a5e5c0" }
-    : { ...styles.checkIconContainerStyle, backgroundColor: "#efefef" };
+    ? { ...styles.checkIconContainerStyle, backgroundColor: '#a5e5c0' }
+    : { ...styles.checkIconContainerStyle, backgroundColor: '#efefef' };
 
   const checkIconStyle = selected
-    ? { ...styles.checkIconStyle, tintColor: "#4e966d" }
-    : { ...styles.checkIconStyle, tintColor: "#999" };
+    ? { ...styles.checkIconStyle, tintColor: '#4e966d' }
+    : { ...styles.checkIconStyle, tintColor: '#999' };
 
   return (
     <View style={checkIconContainerStyle}>
-      <Image source={check} resizeMode="contain" style={checkIconStyle} />
+      <Image source={check} resizeMode='contain' style={checkIconStyle} />
     </View>
   );
 };
@@ -24,17 +27,17 @@ const styles = {
     marginLeft: 8,
     height: 24,
     width: 24,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 12,
     // borderWidth: 0.5,
     // borderColor: 'lightgray',
-    alignSelf: "center",
+    alignSelf: 'center'
   },
   checkIconStyle: {
     width: 16,
-    height: 14,
-  },
+    height: 14
+  }
 };
 
 export default Check;

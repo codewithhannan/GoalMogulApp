@@ -1,38 +1,43 @@
-import React, { Component } from "react";
-import { View, FlatList } from "react-native";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { View, FlatList } from 'react-native';
+import { connect } from 'react-redux';
 
 // Selector
-import { getFilteredFriendsList } from "../../redux/modules/meet/selector";
+import { getFilteredFriendsList } from '../../redux/modules/meet/selector';
 
 // Components
-import FriendsFilterBar from "./Friends/FriendsFilterBar";
-import FriendCard from "./Friends/FriendCard";
-import EmptyResult from "../Common/Text/EmptyResult";
+import FriendsFilterBar from './Friends/FriendsFilterBar';
+import FriendCard from './Friends/FriendCard';
+import EmptyResult from '../Common/Text/EmptyResult';
 
 // actions
-import { handleRefresh, meetOnLoadMore } from "../../actions";
+import {
+  handleRefresh,
+  meetOnLoadMore
+} from '../../actions';
 
 // tab key
-const key = "friends";
-const DEBUG_KEY = "[ Component Friends ]";
+const key = 'friends';
+const DEBUG_KEY = '[ Component Friends ]';
+
 
 class Friends extends Component {
+
   componentDidMount() {
     this.handleRefresh();
   }
 
-  _keyExtractor = (item) => item._id;
+  _keyExtractor = (item) => item._id
 
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing tab: `, key);
     this.props.handleRefresh(key);
-  };
+  }
 
   handleOnLoadMore = () => {
     console.log(`${DEBUG_KEY} Loading more for tab: `, key);
     this.props.meetOnLoadMore(key);
-  };
+  }
 
   renderItem = ({ item }) => <FriendCard item={item} />;
 
@@ -49,9 +54,8 @@ class Friends extends Component {
             onEndReached={this.handleOnLoadMore}
             onEndReachedThreshold={0}
             ListEmptyComponent={
-              this.props.refreshing ? null : (
-                <EmptyResult text={"You haven't added any friends"} />
-              )
+              this.props.refreshing ? null :
+              <EmptyResult text={'You haven\'t added any friends'} />
             }
           />
         </View>
@@ -63,18 +67,21 @@ class Friends extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const { friends } = state.meet;
   const { refreshing } = friends;
 
   return {
     friends,
     data: getFilteredFriendsList(state),
-    refreshing,
+    refreshing
   };
 };
 
-export default connect(mapStateToProps, {
-  handleRefresh,
-  meetOnLoadMore,
-})(Friends);
+export default connect(
+  mapStateToProps,
+  {
+    handleRefresh,
+    meetOnLoadMore
+  }
+)(Friends);

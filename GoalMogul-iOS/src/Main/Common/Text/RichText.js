@@ -1,20 +1,31 @@
-import React from "react";
-import { View, StyleSheet, ViewPropTypes, Text, Linking } from "react-native";
-import { connect } from "react-redux";
-import ParsedText from "react-native-parsed-text";
-import PropTypes from "prop-types";
+import React from 'react';
+import {
+  View,
+  StyleSheet,
+  ViewPropTypes,
+  Text,
+  Linking
+} from 'react-native';
+import { connect } from 'react-redux';
+import ParsedText from 'react-native-parsed-text';
+import PropTypes from 'prop-types';
 // import Decode from 'unescape'; TODO: removed once new decode is good to go
-import _ from "lodash";
-import Hyperlink from "react-native-hyperlink";
+import _ from 'lodash';
+import Hyperlink from 'react-native-hyperlink'
 
 // Styles
-import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from "../../../styles";
+import {
+  APP_BLUE_BRIGHT,
+  APP_DEEP_BLUE
+} from '../../../styles';
 
 // Utils
-import { URL_REGEX } from "../../../Utils/Constants";
-import { decode, escapeRegExp } from "../../../redux/middleware/utils";
+import {
+  URL_REGEX
+} from '../../../Utils/Constants';
+import { decode, escapeRegExp } from '../../../redux/middleware/utils';
 
-const DEBUG_KEY = "[ UI RichText ]";
+const DEBUG_KEY = '[ UI RichText ]';
 
 class RichText extends React.Component {
   constructor(props) {
@@ -26,25 +37,19 @@ class RichText extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     // Only update if bricks change
     // console.log(`${DEBUG_KEY}: [ shouldComponentUpdate ]: ${this.props.contentText}`);
-    const hasTextChanged = !_.isEqual(
-      nextProps.contentText,
-      this.props.contentText
-    );
-    return (
-      !_.isEqual(nextProps.numberOfLines, this.props.numberOfLines) ||
-      hasTextChanged
-    );
+    const hasTextChanged = !_.isEqual(nextProps.contentText, this.props.contentText);
+    return !_.isEqual(nextProps.numberOfLines, this.props.numberOfLines) || hasTextChanged;
   }
 
   constructParsedLink(contentLinks = []) {
     const ret = contentLinks.map((link) => {
       // Need to add backslash to escape question mark
       if (!link || _.isEmpty(link)) return null;
-      const linkToUse = link.replace("?", "\\?");
+      const linkToUse = link.replace('?', '\\?');
       return {
         pattern: new RegExp(`${linkToUse}`),
         style: styles.url,
-        onPress: () => this.handleUrlPress(link),
+        onPress: () => this.handleUrlPress(link)
       };
     });
 
@@ -59,7 +64,7 @@ class RichText extends React.Component {
       return {
         pattern: new RegExp(tagReg),
         style: styles.userTag,
-        onPress: () => this.props.onUserTagPressed(user),
+        onPress: () => this.props.onUserTagPressed(user)
       };
     });
 
@@ -72,7 +77,7 @@ class RichText extends React.Component {
       return this.props.handleUrlPress(url);
     }
     console.log(`${DEBUG_KEY}: url on pressed: `, url);
-
+    
     // Below is the original expo webbrowser way of opening but it doesn't work in real
     // build environment
     // const returnUrl = Expo.Linking.makeUrl('/');
@@ -90,23 +95,28 @@ class RichText extends React.Component {
       return;
     }
 
+
     if (!urlToOpen.match(/^[a-zA-Z]+:\/\//)) {
-      urlToOpen = "http://" + urlToOpen;
+      urlToOpen = 'http://' + urlToOpen;
     }
 
     const canOpenWithProtocal = await Linking.canOpenURL(urlToOpen);
-
+    
     if (canOpenWithProtocal) {
       console.log(`${DEBUG_KEY}: open url with protocal added:`, urlToOpen);
       await Linking.openURL(urlToOpen);
       return;
     }
 
-    console.log(`${DEBUG_KEY}: failed to open url: `, urlToOpen);
-  };
+    console.log(`${DEBUG_KEY}: failed to open url: `, urlToOpen);    
+  }
 
   render() {
-    const { contentText, contentTags, contentLinks } = this.props;
+    const {
+      contentText,
+      contentTags,
+      contentLinks
+    } = this.props;
 
     if (!contentText) return null;
 
@@ -118,7 +128,7 @@ class RichText extends React.Component {
 
     // Following is the original url detection for ParsedText. After we added HyperLink, this is no longer needed.
     // { type: 'url', style: styles.url, onPress: this.handleUrlPress },
-    // {
+    // { 
     //   pattern: URL_REGEX, // Additional regex to match without HTTP protocal
     //   style: styles.url,
     //   onPress: this.handleUrlPress
@@ -126,27 +136,29 @@ class RichText extends React.Component {
     return (
       <View style={[this.props.textContainerStyle]}>
         {/* <Hyperlink linkStyle={styles.url} onPress={(url, text) => this.handleUrlPress(url)}> */}
-        <ParsedText
-          {...this.props}
-          style={[this.props.textStyle]}
-          parse={[
-            // { type: 'url', style: styles.url, onPress: this.handleUrlPress },
-            // { type: 'phone', style: styles.phone, onPress: this.handlePhonePress },
-            // { type: 'email', style: styles.email, onPress: this.handleEmailPress },
-            ...parsedTags,
-            ...parsedLink,
-            // {
-            //   pattern: URL_REGEX, // Additional regex to match without HTTP protocal
-            //   style: styles.url,
-            //   onPress: this.handleUrlPress
-            // },
-          ]}
-          childrenProps={{ allowFontScaling: false }}
-          selectable
-        >
-          {/* <Hyperlink linkStyle={styles.url} onPress={(url, text) => this.handleUrlPress(url)}>{convertedText}</Hyperlink> */}
-          {convertedText}
-        </ParsedText>
+          <ParsedText
+            {...this.props}
+            style={[this.props.textStyle]}
+            parse={
+              [
+                // { type: 'url', style: styles.url, onPress: this.handleUrlPress },
+                // { type: 'phone', style: styles.phone, onPress: this.handlePhonePress },
+                // { type: 'email', style: styles.email, onPress: this.handleEmailPress },
+                ...parsedTags,
+                ...parsedLink,
+                // { 
+                //   pattern: URL_REGEX, // Additional regex to match without HTTP protocal
+                //   style: styles.url,
+                //   onPress: this.handleUrlPress
+                // },
+              ]
+            }
+            childrenProps={{ allowFontScaling: false }}
+            selectable
+          >
+            {/* <Hyperlink linkStyle={styles.url} onPress={(url, text) => this.handleUrlPress(url)}>{convertedText}</Hyperlink> */}
+            {convertedText}
+          </ParsedText>
         {/* </Hyperlink> */}
       </View>
     );
@@ -155,25 +167,30 @@ class RichText extends React.Component {
 
 const styles = {
   url: {
-    color: APP_BLUE_BRIGHT,
+    color: APP_BLUE_BRIGHT
   },
   userTag: {
     color: APP_DEEP_BLUE,
     // textDecorationLine: 'underline',
-  },
+  }
 };
 
-export default connect(null, null)(RichText);
+export default connect(
+  null,
+  null
+)(RichText);
 
 RichText.propTypes = {
   textContainerStyle: ViewPropTypes.style,
   textStyle: Text.propTypes.style,
-  onUserTagPressed: PropTypes.func.isRequired,
+  onUserTagPressed: PropTypes.func.isRequired
 };
 
 RichText.defaultProps = {
-  textStyle: {},
-  textContainerStyle: {
-    flex: 1,
+  textStyle: {
+
   },
+  textContainerStyle: {
+    flex: 1
+  }
 };

@@ -1,63 +1,64 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   Text,
   View,
   TouchableOpacity,
   KeyboardAvoidingView,
-  ScrollView,
-} from "react-native";
-import { connect } from "react-redux";
-import { Field, reduxForm } from "redux-form";
-import { TextField } from "react-native-material-textfield-gm";
-import Expo, { WebBrowser } from "expo";
+  ScrollView
+} from 'react-native';
+import { connect } from 'react-redux';
+import { Field, reduxForm } from 'redux-form';
+import { TextField } from 'react-native-material-textfield-gm';
+import Expo, { WebBrowser } from 'expo';
 
 /* Components */
-import SearchBarHeader from "../../Common/Header/SearchBarHeader";
-import Button from "../Button";
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
+import Button from '../Button';
 
 /* Styles */
-import Styles from "../Styles";
+import Styles from '../Styles';
 
 /* Actions */
 /* TODO: update actions needed */
 import {
   onUpdatePhoneNumberSubmit,
   verifyPhoneNumberSuccess,
-  onAddVerifyPhone,
-} from "../../../actions";
+  onAddVerifyPhone
+} from '../../../actions';
 
 // Selector
-import { getUserData } from "../../../redux/modules/User/Selector";
+import { 
+  getUserData 
+} from '../../../redux/modules/User/Selector';
 
 class AddPhoneNumberForm extends Component {
-  handleOnAddPress = (values) => {
+
+  handleOnAddPress = values => {
     // TODO: validate phone number
     // update actions imported and used in connect()
-    console.log("phone number is: ", values);
-    return this.props.onUpdatePhoneNumberSubmit(values, () =>
-      this.handleOnVerifyPress()
-    );
-  };
+    console.log('phone number is: ', values);
+    return this.props.onUpdatePhoneNumberSubmit(values, () => this.handleOnVerifyPress());
+  }
 
   handleOnVerifyPress = async () => {
-    console.log("user trying to verify phone number");
-    alert("Please check your message for a 6 digit verification code.");
+    console.log('user trying to verify phone number');
+    alert('Please check your message for a 6 digit verification code.');
 
     this.props.onAddVerifyPhone(this.handleRedirect);
-  };
+  }
 
-  handleRedirect = (event) => {
+  handleRedirect = event => {
     WebBrowser.dismissBrowser();
     // TODO: parse url and determine verification states
     const { path, queryParams } = Expo.Linking.parse(event.url);
 
-    if (path === "status=fail") {
+    if (path === 'status=fail') {
       // TODO: error handling, verification failed
       return;
     }
     this.props.verifyPhoneNumberSuccess();
-    alert("You have successfully verified your phone number.");
-  };
+    alert('You have successfully verified your phone number.');
+  }
 
   renderInput = ({
     input: { onChange, ...restInput },
@@ -70,13 +71,13 @@ class AddPhoneNumberForm extends Component {
         <TextField
           label={label}
           title={custom.title}
-          autoCapitalize={"none"}
+          autoCapitalize={'none'}
           autoCorrect={false}
           onChangeText={onChange}
           error={error}
           enablesReturnKeyAutomatically={false}
-          returnKeyType="done"
-          keyboardType="phone-pad"
+          returnKeyType='done'
+          keyboardType='phone-pad'
           {...custom}
           {...restInput}
         />
@@ -97,34 +98,34 @@ class AddPhoneNumberForm extends Component {
     const { handleSubmit, error } = this.props;
 
     return (
-      <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
-        <SearchBarHeader backButton rightIcon="empty" title="Phone numbers" />
+      <KeyboardAvoidingView
+        behavior='padding'
+        style={{ flex: 1 }}
+      >
+        <SearchBarHeader backButton rightIcon='empty' title="Phone numbers" />
         <ScrollView
           style={styles.scroll}
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ flexGrow: 1, backgroundColor: "#ffffff" }}
+          keyboardShouldPersistTaps='handled'
+          contentContainerStyle={{ flexGrow: 1, backgroundColor: '#ffffff' }}
         >
+
           <View style={Styles.titleSectionStyle}>
-            <Text style={Styles.titleTextStyle}>Add a new phone number</Text>
+            <Text style={Styles.titleTextStyle}>
+              Add a new phone number
+            </Text>
             <Text style={{ paddingBottom: 10 }}>
-              We'll send a verification code to this number. You'll need it for
-              the next step.
+              We'll send a verification code to this number.
+              You'll need it for the next step.
             </Text>
           </View>
           {this.renderError(error)}
 
-          <Field
-            name="phone"
-            label="Phone number"
-            component={this.renderInput}
-          />
+          <Field name='phone' label='Phone number' component={this.renderInput} />
 
-          <TouchableOpacity
-            activeOpacity={0.6}
-            onPress={handleSubmit(this.handleOnAddPress)}
-          >
+          <TouchableOpacity activeOpacity={0.6} onPress={handleSubmit(this.handleOnAddPress)}>
             <Button text="Add" />
           </TouchableOpacity>
+
         </ScrollView>
       </KeyboardAvoidingView>
     );
@@ -143,11 +144,11 @@ const styles = {
   },
   errorStyle: {
     marginTop: 15,
-    color: "#ff0033",
-    justifyContent: "center",
+    color: '#ff0033',
+    justifyContent: 'center',
     marginBottom: 4,
-    alignSelf: "center",
-  },
+    alignSelf: 'center'
+  }
 };
 
 const mapStateToProps = (state, props) => {
@@ -161,12 +162,15 @@ const mapStateToProps = (state, props) => {
 };
 
 AddPhoneNumberForm = reduxForm({
-  form: "addPhoneNumberForm",
-  enableReinitialize: true,
+  form: 'addPhoneNumberForm',
+  enableReinitialize: true
 })(AddPhoneNumberForm);
 
-export default connect(mapStateToProps, {
-  onUpdatePhoneNumberSubmit,
-  verifyPhoneNumberSuccess,
-  onAddVerifyPhone,
-})(AddPhoneNumberForm);
+export default connect(
+  mapStateToProps,
+  {
+    onUpdatePhoneNumberSubmit,
+    verifyPhoneNumberSuccess,
+    onAddVerifyPhone
+  }
+)(AddPhoneNumberForm);

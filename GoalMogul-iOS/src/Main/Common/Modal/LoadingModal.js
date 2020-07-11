@@ -1,26 +1,26 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { StyleSheet, View, Text, Modal, ActivityIndicator } from "react-native";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { StyleSheet, View, Text, Modal, ActivityIndicator } from 'react-native';
 
-const transparent = "transparent";
+const transparent = 'transparent';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: transparent,
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     bottom: 0,
     left: 0,
-    right: 0,
+    right: 0
   },
   background: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     bottom: 0,
     left: 0,
     right: 0,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   textContainer: {
     flex: 1,
@@ -28,23 +28,23 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute'
   },
   textContent: {
     top: 80,
     height: 50,
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold'
   },
   activityIndicator: {
-    flex: 1,
-  },
+    flex: 1
+  }
 });
 
-const ANIMATION = ["none", "slide", "fade"];
-const SIZES = ["small", "normal", "large"];
+const ANIMATION = ['none', 'slide', 'fade'];
+const SIZES = ['small', 'normal', 'large'];
 
 export default class Spinner extends React.PureComponent {
   static propTypes = {
@@ -58,24 +58,24 @@ export default class Spinner extends React.PureComponent {
     visible: PropTypes.bool,
     indicatorStyle: PropTypes.object,
     customIndicator: PropTypes.element,
-    children: PropTypes.element,
+    children: PropTypes.element
   };
 
   static defaultProps = {
     visible: false,
     cancelable: false,
-    textContent: "",
-    animation: "none",
-    color: "white",
-    size: "large", // 'normal',
-    overlayColor: "rgba(0, 0, 0, 0.25)",
+    textContent: '',
+    animation: 'none',
+    color: 'white',
+    size: 'large', // 'normal',
+    overlayColor: 'rgba(0, 0, 0, 0.25)'
   };
 
   constructor(props) {
     super(props);
     this.state = {
       visible: this.props.visible,
-      textContent: this.props.textContent,
+      textContent: this.props.textContent
     };
   }
 
@@ -83,7 +83,7 @@ export default class Spinner extends React.PureComponent {
     const newState = {};
     if (state.visible !== props.visible) newState.visible = props.visible;
     if (state.textContent !== props.textContent) {
-      newState.textContent = props.textContent;
+        newState.textContent = props.textContent;
     }
     return newState;
   }
@@ -137,7 +137,7 @@ export default class Spinner extends React.PureComponent {
       <Modal
         animationType={this.props.animation}
         onRequestClose={() => this._handleOnRequestClose()}
-        supportedOrientations={["landscape", "portrait"]}
+        supportedOrientations={['landscape', 'portrait']}
         transparent
         visible={this.state.visible}
       >

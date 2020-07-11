@@ -1,103 +1,62 @@
-import Fuse from "fuse.js";
-import R from "ramda";
-import React, { Component } from "react";
-import {
-  ActivityIndicator,
-  Animated,
-  Dimensions,
-  FlatList,
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { MenuProvider } from "react-native-popup-menu";
-import { Actions } from "react-native-router-flux";
-import { connect } from "react-redux";
-import { loadFriends } from "../../../actions";
-import DefaultUserProfile from "../../../asset/utils/defaultUserProfile.png";
-import EditIcon from "../../../asset/utils/edit.png";
+import Fuse from 'fuse.js';
+import R from 'ramda';
+import React, { Component } from 'react';
+import { ActivityIndicator, Animated, Dimensions, FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import { MenuProvider } from 'react-native-popup-menu';
+import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import { loadFriends } from '../../../actions';
+import DefaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
+import EditIcon from '../../../asset/utils/edit.png';
 // Asset
-import event_default_image from "../../../asset/utils/eventIcon.png";
-import invite from "../../../asset/utils/invite.png";
-import post from "../../../asset/utils/post.png";
-import {
-  deleteEvent,
-  editEvent,
-  openEventInviteModal,
-  reportEvent,
-  rsvpEvent,
-} from "../../../redux/modules/event/EventActions";
+import event_default_image from '../../../asset/utils/eventIcon.png';
+import invite from '../../../asset/utils/invite.png';
+import post from '../../../asset/utils/post.png';
+import { deleteEvent, editEvent, openEventInviteModal, reportEvent, rsvpEvent } from '../../../redux/modules/event/EventActions';
 // Selector
 import {
-  makeGetEventFeed,
-  makeGetEventPageById,
-  makeGetEventParticipantSelector,
+makeGetEventFeed, makeGetEventPageById, makeGetEventParticipantSelector
   // getMyEventMemberNavigationState
-  makeGetEventUserStatusById,
-} from "../../../redux/modules/event/EventSelector";
+  , makeGetEventUserStatusById
+} from '../../../redux/modules/event/EventSelector';
 // Actions
-import {
-  eventDetailClose,
-  eventSelectTab,
-  inviteMultipleUsersToEvent,
-  loadMoreEventFeed,
-  myEventSelectMembersFilter,
-  refreshMyEventDetail,
-} from "../../../redux/modules/event/MyEventActions";
-import { openPostDetail } from "../../../redux/modules/feed/post/PostActions";
-import {
-  subscribeEntityNotification,
-  unsubscribeEntityNotification,
-} from "../../../redux/modules/notification/NotificationActions";
-import {
-  openMultiUserInviteModal,
-  searchFriend,
-} from "../../../redux/modules/search/SearchActions";
+import { eventDetailClose, eventSelectTab, inviteMultipleUsersToEvent, loadMoreEventFeed, myEventSelectMembersFilter, refreshMyEventDetail } from '../../../redux/modules/event/MyEventActions';
+import { openPostDetail } from '../../../redux/modules/feed/post/PostActions';
+import { subscribeEntityNotification, unsubscribeEntityNotification } from '../../../redux/modules/notification/NotificationActions';
+import { openMultiUserInviteModal, searchFriend } from '../../../redux/modules/search/SearchActions';
 // Styles
-import { APP_DEEP_BLUE } from "../../../styles";
+import { APP_DEEP_BLUE } from '../../../styles';
 // Constants
-import {
-  CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-  CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
-  IMAGE_BASE_URL,
-} from "../../../Utils/Constants";
-import {
-  actionSheet,
-  switchByButtonIndex,
-} from "../../Common/ActionSheetFactory";
-import DelayedButton from "../../Common/Button/DelayedButton";
-import PlusButton from "../../Common/Button/PlusButton";
-import Dot from "../../Common/Dot";
+import { CARET_OPTION_NOTIFICATION_SUBSCRIBE, CARET_OPTION_NOTIFICATION_UNSUBSCRIBE, IMAGE_BASE_URL } from '../../../Utils/Constants';
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import DelayedButton from '../../Common/Button/DelayedButton';
+import PlusButton from '../../Common/Button/PlusButton';
+import Dot from '../../Common/Dot';
 // Components
-import SearchBarHeader from "../../Common/Header/SearchBarHeader";
-import { MenuFactory } from "../../Common/MenuFactory";
-import { StackedAvatarsV2 } from "../../Common/StackedAvatars";
-import TabButtonGroup from "../../Common/TabButtonGroup";
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
+import { MenuFactory } from '../../Common/MenuFactory';
+import { StackedAvatarsV2 } from '../../Common/StackedAvatars';
+import TabButtonGroup from '../../Common/TabButtonGroup';
 // import ParticipantFilterBar from '../../Event/ParticipantFilterBar';
-import EmptyResult from "../../Common/Text/EmptyResult";
-import ProfilePostCard from "../../Post/PostProfileCard/ProfilePostCard";
-import MemberListCard from "../../Tribe/MemberListCard";
-import About from "./MyEventAbout";
+import EmptyResult from '../../Common/Text/EmptyResult';
+import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard';
+import MemberListCard from '../../Tribe/MemberListCard';
+import About from './MyEventAbout';
 
-const DEBUG_KEY = "[ UI MyEvent ]";
-const RSVP_OPTIONS = ["Interested", "Going", "Maybe", "Not Going", "Cancel"];
+
+
+
+
+
+
+
+
+
+const DEBUG_KEY = '[ UI MyEvent ]';
+const RSVP_OPTIONS = ['Interested', 'Going', 'Maybe', 'Not Going', 'Cancel'];
 const CANCEL_INDEX = 4;
-const { width } = Dimensions.get("window");
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+const { width } = Dimensions.get('window');
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const TAG_SEARCH_OPTIONS = {
   shouldSort: true,
   threshold: 0.6,
@@ -105,7 +64,9 @@ const TAG_SEARCH_OPTIONS = {
   distance: 100,
   maxPatternLength: 32,
   minMatchCharLength: 1,
-  keys: ["name"],
+  keys: [
+    'name',
+  ]
 };
 
 const INFO_CARD_HEIGHT = 242;
@@ -120,7 +81,7 @@ class MyEvent extends Component {
       imageLoading: false,
       showPlus: true,
       infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT),
-      infoCardOpacity: new Animated.Value(1),
+      infoCardOpacity: new Animated.Value(1)
     };
     this._handleIndexChange = this._handleIndexChange.bind(this);
     this.handleGoingOnPress = this.handleGoingOnPress.bind(this);
@@ -140,11 +101,7 @@ class MyEvent extends Component {
       searchFor: this.props.searchFriend,
       onSubmitSelection: (users, inviteToEntity, actionToExecute) => {
         const callback = () => {
-          this.props.refreshMyEventDetail(
-            inviteToEntity,
-            null,
-            this.props.pageId
-          );
+          this.props.refreshMyEventDetail(inviteToEntity, null, this.props.pageId);
           actionToExecute();
         };
         this.props.inviteMultipleUsersToEvent(_id, users, callback);
@@ -152,16 +109,16 @@ class MyEvent extends Component {
       onCloseCallback: (actionToExecute) => {
         actionToExecute();
       },
-      inviteToEntityType: "Event",
+      inviteToEntityType: 'Event',
       inviteToEntityName: title,
       inviteToEntity: _id,
-      preload: this.props.loadFriends,
+      preload: this.props.loadFriends
     });
-  };
+  }
 
   /**
    * User clicks on the number of participants going
-   * this should redirect to participants page with
+   * this should redirect to participants page with 
    * subtab going
    */
   handleGoingOnPress = () => {
@@ -172,7 +129,7 @@ class MyEvent extends Component {
 
     // 0 is the Going index
     this.props.myEventSelectMembersFilter(routes[0].key, 0, eventId, pageId);
-  };
+  }
 
   /**
    * On plus clicked, show two icons. Post and Invite
@@ -181,10 +138,8 @@ class MyEvent extends Component {
   handlePlus = (item, navigationState) => {
     const { _id } = item;
     const { routes } = navigationState;
-    const indexToGoForPost = routes.map((route) => route.key).indexOf("posts");
-    const indexToGoForInvite = routes
-      .map((route) => route.key)
-      .indexOf("attendees");
+    const indexToGoForPost = routes.map((route) => route.key).indexOf('posts');
+    const indexToGoForInvite = routes.map((route) => route.key).indexOf('attendees');
 
     const postCallback = () => {
       this._handleIndexChange(indexToGoForPost);
@@ -196,10 +151,10 @@ class MyEvent extends Component {
       this.props.refreshMyEventDetail(_id, undefined, this.props.pageId);
     };
 
-    const participants = item.participants.map((p) => p.participantRef);
+    const participants = item.participants.map(p => p.participantRef);
     const fuse = new Fuse(participants, TAG_SEARCH_OPTIONS);
     const tagSearch = (keyword, callback) => {
-      const result = fuse.search(keyword.replace("@", ""));
+      const result = fuse.search(keyword.replace('@', ''));
       callback({ data: result }, keyword);
     };
 
@@ -207,33 +162,33 @@ class MyEvent extends Component {
       // button info for creating a post
       {
         iconSource: post,
-        text: "Post",
+        text: 'Post',
         iconStyle: { height: 18, width: 18, marginLeft: 3 },
         textStyle: { marginLeft: 5 },
         onPress: () => {
-          console.log("User trying to create post");
+          console.log('User trying to create post');
           this.setState({
             ...this.state,
-            showPlus: true,
+            showPlus: true
           });
-          Actions.push("createPostModal", {
+          Actions.push('createPostModal', {
             belongsToEvent: _id,
             callback: postCallback,
-            tagSearch,
+            tagSearch
           });
-        },
+        }
       },
       // button info for invite
       {
         iconSource: invite,
-        text: "Invite",
+        text: 'Invite',
         iconStyle: { height: 18, width: 18, marginLeft: 3 },
         textStyle: { marginLeft: 5 },
         onPress: () => {
-          console.log("User trying to invite an user");
+          console.log('User trying to invite an user');
           this.setState({
             ...this.state,
-            showPlus: true,
+            showPlus: true
           });
           // this.props.openEventInviteModal(
           //   {
@@ -244,38 +199,38 @@ class MyEvent extends Component {
           //   }
           // );
           this.openUserInviteModal(item);
-        },
-      },
+        }
+      }
     ];
     this.setState({
       ...this.state,
-      showPlus: false,
+      showPlus: false
     });
 
     const callback = () => {
       this.setState({
         ...this.state,
-        showPlus: true,
+        showPlus: true
       });
     };
-    Actions.push("createButtonOverlay", {
-      buttons,
+    Actions.push('createButtonOverlay', { 
+      buttons, 
       callback,
       onCancel: () => {
         this.setState({
           ...this.state,
-          showPlus: true,
+          showPlus: true
         });
-      },
+      }
     });
-  };
+  }
 
   /**
    * This method is deprecated by the renderPlus
    */
   handleInvite = (_id) => {
     return this.props.openEventInviteModal(_id);
-  };
+  }
 
   handleRSVPOnPress = () => {
     const { item, pageId } = this.props;
@@ -283,34 +238,22 @@ class MyEvent extends Component {
     const { _id } = item;
 
     const switchCases = switchByButtonIndex([
-      [
-        R.equals(0),
-        () => {
-          console.log(`${DEBUG_KEY} User chooses: Intereseted`);
-          this.props.rsvpEvent("Interested", _id, pageId);
-        },
-      ],
-      [
-        R.equals(1),
-        () => {
-          console.log(`${DEBUG_KEY} User chooses: Going`);
-          this.props.rsvpEvent("Going", _id, pageId);
-        },
-      ],
-      [
-        R.equals(2),
-        () => {
-          console.log(`${DEBUG_KEY} User chooses: Maybe`);
-          this.props.rsvpEvent("Maybe", _id, pageId);
-        },
-      ],
-      [
-        R.equals(3),
-        () => {
-          console.log(`${DEBUG_KEY} User chooses: Not Going`);
-          this.props.rsvpEvent("NotGoing", _id, pageId);
-        },
-      ],
+      [R.equals(0), () => {
+        console.log(`${DEBUG_KEY} User chooses: Intereseted`);
+        this.props.rsvpEvent('Interested', _id, pageId);
+      }],
+      [R.equals(1), () => {
+        console.log(`${DEBUG_KEY} User chooses: Going`);
+        this.props.rsvpEvent('Going', _id, pageId);
+      }],
+      [R.equals(2), () => {
+        console.log(`${DEBUG_KEY} User chooses: Maybe`);
+        this.props.rsvpEvent('Maybe', _id, pageId);
+      }],
+      [R.equals(3), () => {
+        console.log(`${DEBUG_KEY} User chooses: Not Going`);
+        this.props.rsvpEvent('NotGoing', _id, pageId);
+      }],
     ]);
     const rsvpActionSheet = actionSheet(
       RSVP_OPTIONS,
@@ -318,7 +261,7 @@ class MyEvent extends Component {
       switchCases
     );
     rsvpActionSheet();
-  };
+  }
 
   // Tab related functions
   _handleIndexChange = (index) => {
@@ -327,7 +270,7 @@ class MyEvent extends Component {
 
     this.props.eventSelectTab(index, eventId, pageId);
 
-    if (routes[index].key !== "about") {
+    if (routes[index].key !== 'about') {
       // Animated to hide the infoCard if not on about tab
       Animated.parallel([
         Animated.timing(this.state.infoCardHeight, {
@@ -358,13 +301,13 @@ class MyEvent extends Component {
   handleEventOptionsOnSelect = (value) => {
     const { item } = this.props;
     const { _id } = item;
-    if (value === "Delete") {
+    if (value === 'Delete') {
       return this.props.deleteEvent(_id);
     }
-    if (value === "Edit") {
+    if (value === 'Edit') {
       return this.props.editEvent(item);
     }
-  };
+  }
 
   /**
    * Handle modal setting on click. Show IOS menu with options
@@ -377,60 +320,53 @@ class MyEvent extends Component {
     let options;
     if (isAdmin) {
       options = switchByButtonIndex([
-        [
-          R.equals(0),
-          () => {
-            console.log(`${DEBUG_KEY} User chooses to edit current event`);
-            this.props.editEvent(item);
-          },
-        ],
-        [
-          R.equals(1),
-          () => {
-            console.log(`${DEBUG_KEY} User chooses to delete current event`);
-            this.props.deleteEvent(_id);
-          },
-        ],
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to edit current event`);
+          this.props.editEvent(item);
+        }],
+        [R.equals(1), () => {
+          console.log(`${DEBUG_KEY} User chooses to delete current event`);
+          this.props.deleteEvent(_id);
+        }],
       ]);
     } else {
       options = switchByButtonIndex([
-        [
-          R.equals(0),
-          () => {
-            console.log(`${DEBUG_KEY} User chooses to report this event`);
-            this.props.reportEvent(_id);
-          },
-        ],
+        [R.equals(0), () => {
+          console.log(`${DEBUG_KEY} User chooses to report this event`);
+          this.props.reportEvent(_id);
+        }]
       ]);
     }
 
-    const requestOptions = isAdmin
-      ? ["Edit", "Delete", "Cancel"]
-      : ["Report", "Cancel"];
+    const requestOptions = isAdmin ? ['Edit', 'Delete', 'Cancel'] : ['Report', 'Cancel'];
     const cancelIndex = isAdmin ? 2 : 1;
 
-    const eventActionSheet = actionSheet(requestOptions, cancelIndex, options);
+    const eventActionSheet = actionSheet(
+      requestOptions,
+      cancelIndex,
+      options
+    );
     eventActionSheet();
-  };
+  }
 
   _renderHeader = (props, noBorder) => {
     return (
-      <TabButtonGroup
+      <TabButtonGroup 
         buttons={props}
-        noBorder={noBorder}
+        noBorder={noBorder} 
         buttonStyle={{
           selected: {
             backgroundColor: APP_DEEP_BLUE,
-            tintColor: "white",
-            color: "white",
-            fontWeight: "700",
+            tintColor: 'white',
+            color: 'white',
+            fontWeight: '700'
           },
           unselected: {
-            backgroundColor: "#FCFCFC",
-            tintColor: "#616161",
-            color: "#616161",
-            fontWeight: "600",
-          },
+            backgroundColor: '#FCFCFC',
+            tintColor: '#616161',
+            color: '#616161',
+            fontWeight: '600'
+          }
         }}
       />
     );
@@ -439,20 +375,20 @@ class MyEvent extends Component {
   // If feed is loading and feed tab is selected, then render the spinner
   renderFooter = () => {
     const { routes, index } = this.props.navigationState;
-    if (this.props.feedLoading && routes[index].key === "posts") {
+    if (this.props.feedLoading && routes[index].key === 'posts') {
       return (
         <View
           style={{
-            paddingVertical: 20,
+            paddingVertical: 20
           }}
         >
-          <ActivityIndicator size="small" color="#17B3EC" />
+          <ActivityIndicator size='small' color='#17B3EC' />
         </View>
       );
     }
 
     return null;
-  };
+  }
 
   /**
    * Caret to show options for an event.
@@ -464,56 +400,50 @@ class MyEvent extends Component {
     const { creator, _id, maybeIsSubscribed } = item;
 
     const isSelf = creator._id === this.props.userId;
-    const menu = !isSelf
+    const menu = (!isSelf)
       ? MenuFactory(
           [
-            "Report",
-            maybeIsSubscribed
-              ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
-              : CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+            'Report',
+            maybeIsSubscribed ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE : CARET_OPTION_NOTIFICATION_SUBSCRIBE
           ],
-          (val) => {
-            if (val === "Report") {
+          (val) => {  
+            if (val === 'Report') {
               return this.props.reportEvent(_id);
             }
             if (val === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
-              return this.props.unsubscribeEntityNotification(_id, "Event");
+              return this.props.unsubscribeEntityNotification(_id, 'Event');
             }
             if (val === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
-              return this.props.subscribeEntityNotification(_id, "Event");
+              return this.props.subscribeEntityNotification(_id, 'Event');
             }
           },
-          "",
+          '',
           { ...styles.caretContainer },
-          () => console.log("User clicks on options for event")
+          () => console.log('User clicks on options for event')
         )
       : MenuFactory(
-          ["Edit", "Delete"],
+          [
+            'Edit',
+            'Delete'
+            
+          ],
           this.handleEventOptionsOnSelect,
-          "",
+          '',
           { ...styles.caretContainer },
-          () => console.log("User clicks on options for self event.")
+          () => console.log('User clicks on options for self event.')
         );
     return (
-      <View style={{ position: "absolute", top: 3, right: 3 }}>{menu}</View>
+      <View style={{ position: 'absolute', top: 3, right: 3 }}>
+        {menu}
+      </View>
     );
   }
 
   renderEventImage(picture) {
     let imageUrl;
     let eventImage = (
-      <View
-        style={{
-          height: 110,
-          width,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Image
-          source={event_default_image}
-          style={styles.defaultCoverImageStyle}
-        />
+      <View style={{ height: 110, width, alignItems: 'center', justifyContent: 'center' }}>
+        <Image source={event_default_image} style={styles.defaultCoverImageStyle} />
       </View>
     );
     if (picture) {
@@ -535,15 +465,14 @@ class MyEvent extends Component {
     const { item, status } = this.props;
     if (!item) return <View />;
 
-    const rsvpText =
-      status === undefined || status === "Invited" ? "RSVP" : status;
-    const eventProperty = item.isInviteOnly ? "Private Event" : "Public Event";
+    const rsvpText = status === undefined || status === 'Invited' ? 'RSVP' : status;
+    const eventProperty = item.isInviteOnly ? 'Private Event' : 'Public Event';
     const { eventPropertyTextStyle, eventPropertyContainerStyle } = styles;
     return (
       <View style={eventPropertyContainerStyle}>
         <Text style={eventPropertyTextStyle}>{eventProperty}</Text>
         <Dot />
-        <DelayedButton
+        <DelayedButton 
           activeOpacity={0.6}
           style={styles.rsvpBoxContainerStyle}
           onPress={this.handleRSVPOnPress}
@@ -551,7 +480,7 @@ class MyEvent extends Component {
           {/* <Image source={EditIcon} style={styles.rsvpIconStyle} /> */}
           <Image source={EditIcon} style={styles.rsvpIconStyle} />
           <Text style={styles.rsvpTextStyle}>
-            {rsvpText === "NotGoing" ? "Not going" : rsvpText}
+            {rsvpText === 'NotGoing' ? 'Not going' : rsvpText}
           </Text>
         </DelayedButton>
       </View>
@@ -564,40 +493,40 @@ class MyEvent extends Component {
 
     const { start, durationHours, participants } = item;
     const startDate = start ? new Date(start) : new Date();
-    const date =
-      `${months[startDate.getMonth()]} ${startDate.getDate()}, ` +
+    const date = `${months[startDate.getMonth()]} ${startDate.getDate()}, ` +
       `${startDate.getFullYear()}`;
 
-    const startTime = `${startDate.toLocaleString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
+    const startTime = `${startDate.toLocaleString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
     })}`;
 
     const endDate = durationHours
-      ? new Date(startDate.getTime() + 1000 * 60 * 60 * durationHours)
-      : new Date(startDate.getTime() + 1000 * 60 * 60 * 2);
-    const endTime = `${endDate.toLocaleString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
+      ? new Date(startDate.getTime() + (1000 * 60 * 60 * durationHours))
+      : new Date(startDate.getTime() + (1000 * 60 * 60 * 2));
+    const endTime = `${endDate.toLocaleString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
     })}`;
     const { eventInfoBasicTextStyle, eventContainerStyle } = styles;
     return (
       <View style={eventContainerStyle}>
-        <StackedAvatarsV2
-          imageSource={DefaultUserProfile}
-          participants={participants}
-        />
-        <TouchableOpacity activeOpacity={0.6} onPress={this.handleGoingOnPress}>
-          <Text style={{ ...eventInfoBasicTextStyle, color: "#4ec9f3" }}>
+        <StackedAvatarsV2 imageSource={DefaultUserProfile} participants={participants} />
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={this.handleGoingOnPress}
+        >
+          <Text style={{ ...eventInfoBasicTextStyle, color: '#4ec9f3' }}
+          >
             {item.participantCount} going
           </Text>
         </TouchableOpacity>
-
+        
         <Dot />
         <Text style={{ ...eventInfoBasicTextStyle }}>{date}, </Text>
-        <Text style={{ ...eventInfoBasicTextStyle, fontWeight: "600" }}>
+        <Text style={{ ...eventInfoBasicTextStyle, fontWeight: '600' }}>
           {startTime} - {endTime}
         </Text>
       </View>
@@ -627,14 +556,8 @@ class MyEvent extends Component {
     // };
 
     const props = {
-      jumpToIndex: (i) =>
-        this.props.myEventSelectMembersFilter(
-          routes[i].key,
-          i,
-          eventId,
-          pageId
-        ),
-      navigationState: this.props.memberNavigationState,
+      jumpToIndex: (i) => this.props.myEventSelectMembersFilter(routes[i].key, i, eventId, pageId),
+      navigationState: this.props.memberNavigationState
     };
     return (
       <View>
@@ -649,47 +572,50 @@ class MyEvent extends Component {
     // const filterBar = this.props.tab === 'attendees'
     //   ? <ParticipantFilterBar />
     //   : null;
-    const filterBar =
-      this.props.tab === "attendees" ? this.renderMemberTabs() : null;
+    const filterBar = this.props.tab === 'attendees'
+      ? this.renderMemberTabs()
+      : null;
 
     // Invite button is replaced by renderPlus
-    const inviteButton =
-      this.props.tab === "attendees" ? (
-        <TouchableOpacity
-          activeOpacity={0.6}
+    const inviteButton = this.props.tab === 'attendees'
+      ? (
+        <TouchableOpacity activeOpacity={0.6}
           onPress={() => this.handleInvite(_id)}
           style={styles.inviteButtonContainerStyle}
         >
           <Text>Invite</Text>
         </TouchableOpacity>
-      ) : null;
+      )
+      : null;
 
-    const emptyState =
-      this.props.tab === "posts" && data.length === 0 ? (
-        <EmptyResult text={"No Posts"} textStyle={{ paddingTop: 100 }} />
-      ) : null;
+    const emptyState = this.props.tab === 'posts' && data.length === 0
+      ? <EmptyResult text={'No Posts'} textStyle={{ paddingTop: 100 }} />
+      : null;
 
     return (
       <View style={{ flex: 1 }}>
-        <Animated.View
-          style={{
+        <Animated.View 
+          style={{ 
             height: this.state.infoCardHeight,
-            opacity: this.state.infoCardOpacity,
+            opacity: this.state.infoCardOpacity
           }}
         >
           {this.renderEventImage(picture)}
           <View style={styles.generalInfoContainerStyle}>
             {/* {this.renderCaret(item)} */}
-            <Text style={styles.eventTitleTextStyle}>{title}</Text>
+            <Text style={styles.eventTitleTextStyle}>
+              {title}
+            </Text>
             {this.renderEventStatus()}
             <View
               style={{
                 width: width * 0.75,
-                borderColor: "#dcdcdc",
-                borderWidth: 0.5,
+                borderColor: '#dcdcdc',
+                borderWidth: 0.5
               }}
             />
             {this.renderEventInfo()}
+
           </View>
         </Animated.View>
         {
@@ -697,9 +623,9 @@ class MyEvent extends Component {
           this._renderHeader(
             {
               jumpToIndex: (i) => this._handleIndexChange(i),
-              navigationState: this.props.navigationState,
+              navigationState: this.props.navigationState
             },
-            this.props.tab !== "about"
+            this.props.tab !== 'about'
           )
         }
         {filterBar}
@@ -714,11 +640,11 @@ class MyEvent extends Component {
 
     // TODO: refactor to become a literal function
     switch (routes[index].key) {
-      case "about": {
+      case 'about': {
         return <About item={props.item} key={props.index} />;
       }
 
-      case "posts": {
+      case 'posts': {
         return (
           <ProfilePostCard
             item={props.item}
@@ -732,16 +658,14 @@ class MyEvent extends Component {
         );
       }
 
-      case "attendees": {
-        return (
-          <MemberListCard item={props.item.participantRef} key={props.index} />
-        );
+      case 'attendees': {
+        return <MemberListCard item={props.item.participantRef} key={props.index} />;
       }
 
       default:
         return <View key={props.index} />;
     }
-  };
+  }
 
   renderPlus(item) {
     const { isMember, navigationState } = this.props;
@@ -773,13 +697,7 @@ class MyEvent extends Component {
             data={data}
             renderItem={this.renderItem}
             keyExtractor={(i) => i._id}
-            onRefresh={() =>
-              this.props.refreshMyEventDetail(
-                item._id,
-                undefined,
-                this.props.pageId
-              )
-            }
+            onRefresh={() => this.props.refreshMyEventDetail(item._id, undefined, this.props.pageId)}
             refreshing={this.props.loading}
             ListHeaderComponent={this.renderEventOverview(item, data)}
           />
@@ -792,8 +710,8 @@ class MyEvent extends Component {
 
 const styles = {
   containerStyle: {
-    flex: 1,
-    backgroundColor: "#f8f8f8",
+    flex: 1, 
+    backgroundColor: '#f8f8f8',
     // shadowColor: '#000',
     // shadowOffset: { width: 0, height: 1 },
     // shadowOpacity: 0.3,
@@ -801,49 +719,49 @@ const styles = {
   },
   defaultCoverImageStyle: {
     height: 65,
-    width: 65,
+    width: 65
   },
   coverImageStyle: {
     height: 110,
-    width,
+    width
   },
   generalInfoContainerStyle: {
-    backgroundColor: "white",
-    alignItems: "center",
+    backgroundColor: 'white',
+    alignItems: 'center'
   },
   eventTitleTextStyle: {
     marginTop: 15,
     fontSize: 19,
-    fontWeight: "300",
+    fontWeight: '300'
   },
   // Event property related styles
   eventPropertyContainerStyle: {
     margin: 8,
     marginTop: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row'
   },
   eventPropertyTextStyle: {
-    color: "#696969",
-    fontSize: 12,
+    color: '#696969',
+    fontSize: 12
   },
 
   // caret for options
   caretContainer: {
-    padding: 14,
+    padding: 14
   },
 
   // Style for Invite button
   inviteButtonContainerStyle: {
     height: 30,
     width: 100,
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "flex-end",
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
     marginRight: 20,
-    backgroundColor: "#efefef",
-    borderRadius: 5,
+    backgroundColor: '#efefef',
+    borderRadius: 5
   },
 
   // RSVP related styles
@@ -853,48 +771,48 @@ const styles = {
     paddingLeft: 5,
     paddingRight: 5,
     borderRadius: 5,
-    backgroundColor: "#efefef",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
+    backgroundColor: '#efefef',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row'
   },
   rsvpIconStyle: {
     height: 13,
     width: 13,
-    margin: 2,
+    margin: 2
   },
   rsvpTextStyle: {
     fontSize: 10,
-    margin: 2,
+    margin: 2
   },
   // Event info related styles
   eventContainerStyle: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 50
   },
   eventInfoBasicTextStyle: {
     fontSize: 11,
-    fontWeight: "300",
+    fontWeight: '300'
   },
   backdrop: {
-    backgroundColor: "gray",
+    backgroundColor: 'gray',
     opacity: 0.5,
   },
   // Styles for plus icon
   iconContainerStyle: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 20,
     right: 15,
     height: 54,
     width: 54,
     borderRadius: 27,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     // backgroundColor: '#17B3EC',
     backgroundColor: APP_DEEP_BLUE,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
     shadowRadius: 2,
@@ -902,7 +820,7 @@ const styles = {
   iconStyle: {
     height: 26,
     width: 26,
-    tintColor: "white",
+    tintColor: 'white',
   },
 };
 
@@ -920,35 +838,31 @@ const makeMapStateToProps = () => {
     const userStatus = getEventUserStatus(state, eventId);
 
     const {
-      navigationState,
-      feedLoading,
-      memberNavigationState,
-      eventLoading,
+      navigationState, feedLoading, memberNavigationState, eventLoading
     } = eventPage;
 
     // const {
     //   navigationState, item, feed, feedLoading, memberNavigationState, eventLoading
     // } = state.myEvent;
     // const memberNavigationState = getMyEventMemberNavigationState(state);
-
+  
     const { routes, index } = navigationState;
     const data = ((key) => {
       switch (key) {
-        case "about":
+        case 'about':
           return [event];
-
-        case "attendees":
+  
+        case 'attendees':
           // return myEventParticipantSelector(state);
           return getEventParticipantSelector(state, eventId, pageId);
-
-        case "posts":
+  
+        case 'posts':
           return feed;
-
-        default:
-          return [];
+  
+        default: return [];
       }
     })(routes[index].key);
-
+  
     return {
       navigationState,
       item: event,
@@ -958,30 +872,33 @@ const makeMapStateToProps = () => {
       memberNavigationState,
       tab: routes[index].key,
       loading: eventLoading || false,
-      userId,
+      userId
     };
   };
 
   return mapStateToProps;
 };
 
-export default connect(makeMapStateToProps, {
-  eventSelectTab,
-  eventDetailClose,
-  loadMoreEventFeed,
-  openEventInviteModal,
-  deleteEvent,
-  editEvent,
-  reportEvent,
-  myEventSelectMembersFilter,
-  rsvpEvent,
-  refreshMyEventDetail,
-  openPostDetail,
-  subscribeEntityNotification,
-  unsubscribeEntityNotification,
-  // Multi friend invite
-  searchFriend,
-  openMultiUserInviteModal,
-  inviteMultipleUsersToEvent,
-  loadFriends,
-})(MyEvent);
+export default connect(
+  makeMapStateToProps,
+  {
+    eventSelectTab,
+    eventDetailClose,
+    loadMoreEventFeed,
+    openEventInviteModal,
+    deleteEvent,
+    editEvent,
+    reportEvent,
+    myEventSelectMembersFilter,
+    rsvpEvent,
+    refreshMyEventDetail,
+    openPostDetail,
+    subscribeEntityNotification,
+    unsubscribeEntityNotification,
+    // Multi friend invite
+    searchFriend, 
+    openMultiUserInviteModal,
+    inviteMultipleUsersToEvent,
+    loadFriends
+  }
+)(MyEvent);

@@ -1,6 +1,8 @@
-import React, { Component } from "react";
-import { View } from "react-native";
-import { TextField } from "react-native-material-textfield-gm";
+import React, { Component } from 'react';
+import {
+  View
+} from 'react-native';
+import { TextField } from 'react-native-material-textfield-gm';
 
 class Input extends Component {
   render() {
@@ -19,16 +21,16 @@ class Input extends Component {
         <TextField
           label={label}
           title={custom.title}
-          autoCapitalize={"none"}
+          autoCapitalize={'none'}
           autoCorrect={false}
           onChangeText={onChange}
           error={error}
           enablesReturnKeyAutomatically={false}
-          returnKeyType="done"
+          returnKeyType='done'
           secureTextEntry={secure}
           characterRestriction={limitation}
           multiline={multiline}
-          keyboardType={keyboardType || "default"}
+          keyboardType={keyboardType || 'default'}
           {...custom}
           {...restInput}
         />
@@ -40,8 +42,8 @@ class Input extends Component {
 const styles = {
   inputContainerStyle: {
     paddingLeft: 20,
-    paddingRight: 20,
-  },
+    paddingRight: 20
+  }
 };
 
 export default Input;

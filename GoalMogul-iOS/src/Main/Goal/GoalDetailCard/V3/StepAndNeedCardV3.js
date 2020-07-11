@@ -1,24 +1,31 @@
-import React, { Component } from "react";
-import { View, Image, Text } from "react-native";
+import React, { Component } from 'react';
+import {
+  View,
+  Image,
+  Text
+} from 'react-native';
 
 // Components
-import SectionCardV2 from "../../Common/SectionCardV2";
-import { DotIcon } from "../../../../Utils/Icons";
+import SectionCardV2 from '../../Common/SectionCardV2';
+import { DotIcon } from '../../../../Utils/Icons';
 
 // Assets
-import HelpIcon from "../../../../asset/utils/help.png";
-import StepIcon from "../../../../asset/utils/steps.png";
+import HelpIcon from '../../../../asset/utils/help.png';
+import StepIcon from '../../../../asset/utils/steps.png';
 
 // Styles
-import {} from "../../../../styles";
+import {
+
+} from '../../../../styles';
 
 class StepAndNeedCardV3 extends Component {
+
   renderSectionTitle(item) {
-    if (item.sectionTitle === "needs") {
+    if (item.sectionTitle === 'needs') {
       return (
         <SectionTitle
           iconSource={HelpIcon}
-          text="Needs"
+          text='Needs'
           count={item.count}
           goalRef={this.props.goalRef}
         />
@@ -28,7 +35,7 @@ class StepAndNeedCardV3 extends Component {
       <SectionTitle
         iconSource={StepIcon}
         iconStyle={{ height: 20, width: 20 }}
-        text="Steps"
+        text='Steps'
         count={item.count}
         goalRef={this.props.goalRef}
       />
@@ -42,50 +49,55 @@ class StepAndNeedCardV3 extends Component {
       return this.renderSectionTitle(item);
     }
 
-    return <SectionCardV2 type={item.type} {...this.props} />;
+    return (
+      <SectionCardV2
+        type={item.type}
+        {...this.props}
+      />
+    );
   }
 }
 
 const styles = {
   iconStyle: {
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: 20,
     marginLeft: 5,
-    marginTop: 2,
+    marginTop: 2
   },
   sectionTitleStyle: {
     containerStyle: {
-      alignItems: "center",
-      flexDirection: "row",
+      alignItems: 'center',
+      flexDirection: 'row',
       height: 38,
       marginLeft: 15,
-      marginTop: 10,
+      marginTop: 10
     },
     iconStyle: {
       height: 26,
       width: 26,
-      tintColor: "#616161",
+      tintColor: '#616161'
     },
     textStyle: {
       fontSize: 11,
       marginLeft: 8,
-      color: "#616161",
+      color: '#616161'
     },
     countTextStyle: {
       fontSize: 11,
-      color: "#616161",
-    },
-  },
+      color: '#616161'
+    }
+  }
 };
 
 const SectionTitle = (props) => {
   const { sectionTitleStyle } = styles;
-  const image = props.iconSource ? (
-    <Image
+  const image = props.iconSource ?
+    (<Image
       source={props.iconSource}
       style={{ ...sectionTitleStyle.iconStyle, ...props.iconStyle }}
-    />
-  ) : null;
+    />)
+    : null;
 
   return (
     <View style={{ ...sectionTitleStyle.containerStyle }}>
@@ -93,14 +105,8 @@ const SectionTitle = (props) => {
       <Text style={{ ...sectionTitleStyle.textStyle, ...props.textStyle }}>
         {props.text}
       </Text>
-      <DotIcon
-        iconStyle={{
-          tintColor: "#616161",
-          width: 3,
-          height: 3,
-          marginLeft: 4,
-          marginRight: 4,
-        }}
+      <DotIcon 
+        iconStyle={{ tintColor: '#616161', width: 3, height: 3, marginLeft: 4, marginRight: 4 }}
       />
       {/* <Icon name='dot-single' type='entypo' color='#616161' size={20} /> */}
       <Text style={sectionTitleStyle.countTextStyle}>{props.count}</Text>

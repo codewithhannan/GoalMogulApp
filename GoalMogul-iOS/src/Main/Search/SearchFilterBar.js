@@ -1,47 +1,39 @@
-import React, { Component } from "react";
-import { View, Text, Image, TouchableOpacity, Dimensions } from "react-native";
+import React, { Component } from 'react';
+import { View, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger,
-  renderers,
-} from "react-native-popup-menu";
-import { connect } from "react-redux";
+  renderers
+} from 'react-native-popup-menu';
+import { connect } from 'react-redux';
 
 /* asset */
-import dropDown from "../../asset/utils/dropDown.png";
+import dropDown from '../../asset/utils/dropDown.png';
 
 // actions
-import { searchChangeFilter } from "../../actions";
+import { searchChangeFilter } from '../../actions';
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get('window');
 const { Popover } = renderers;
 
-const DEBUG_KEY = "[ Component SearchFilterBar ]";
+const DEBUG_KEY = '[ Component SearchFilterBar ]';
 
 class SearchFilterBar extends Component {
   handleOnMenuSelect = (type, value) => {
     console.log(`${DEBUG_KEY} filter by type: ${type} with value: ${value}`);
     this.props.searchChangeFilter(type, value);
-  };
+  }
 
   render() {
-    const {
-      containerStyle,
-      textStyle,
-      detailContainerStyle,
-      standardTextStyle,
-      caretStyle,
-    } = styles;
+    const { containerStyle, textStyle, detailContainerStyle, standardTextStyle, caretStyle } = styles;
     return (
       <View style={containerStyle}>
+
         <Menu
-          onSelect={(value) => this.handleOnMenuSelect("sortBy", value)}
-          rendererProps={{
-            placement: "bottom",
-            anchorStyle: styles.anchorStyle,
-          }}
+          onSelect={value => this.handleOnMenuSelect('sortBy', value)}
+          rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
           renderer={Popover}
         >
           <MenuTrigger
@@ -55,18 +47,25 @@ class SearchFilterBar extends Component {
             </View>
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
-            <MenuOption text="Important" value="important" />
-            <MenuOption text="Recent" value="recent" />
-            <MenuOption text="Popular" value="popular" />
+            <MenuOption
+              text='Important'
+              value='important'
+            />
+            <MenuOption
+              text='Recent'
+              value='recent'
+            />
+            <MenuOption
+              text='Popular'
+              value='popular'
+            />
+
           </MenuOptions>
         </Menu>
 
         <Menu
-          onSelect={(value) => this.handleOnMenuSelect("category", value)}
-          rendererProps={{
-            placement: "bottom",
-            anchorStyle: styles.anchorStyle,
-          }}
+          onSelect={value => this.handleOnMenuSelect('category', value)}
+          rendererProps={{ placement: 'bottom', anchorStyle: styles.anchorStyle }}
           renderer={Popover}
         >
           <MenuTrigger
@@ -75,19 +74,28 @@ class SearchFilterBar extends Component {
             }}
           >
             <View style={detailContainerStyle}>
-              <Text style={textStyle}>
-                Category
+              <Text style={textStyle}>Category
                 {/* <Text style={standardTextStyle}> (ALL)</Text> */}
               </Text>
               <Image style={caretStyle} source={dropDown} />
             </View>
           </MenuTrigger>
           <MenuOptions customStyles={styles.menuOptionsStyles}>
-            <MenuOption text="People" value="people" />
-            <MenuOption text="Tribe" value="tribe" />
-            <MenuOption text="Event" value="event" />
+            <MenuOption
+              text='People'
+              value='people'
+            />
+            <MenuOption
+              text='Tribe'
+              value='tribe'
+            />
+            <MenuOption
+              text='Event'
+              value='event'
+            />
           </MenuOptions>
         </Menu>
+
       </View>
     );
   }
@@ -99,46 +107,48 @@ const touchableOpacityProps = {
 
 const styles = {
   containerStyle: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   detailContainerStyle: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 15,
     marginLeft: 15,
     paddingTop: 12,
-    paddingBottom: 12,
+    paddingBottom: 12
   },
   textStyle: {
     fontSize: 10,
-    color: "#1fb6dd",
-    fontWeight: "600",
+    color: '#1fb6dd',
+    fontWeight: '600',
   },
   standardTextStyle: {
     fontSize: 9,
-    color: "black",
+    color: 'black'
   },
   caretStyle: {
-    tintColor: "#20485f",
-    marginLeft: 5,
+    tintColor: '#20485f',
+    marginLeft: 5
   },
   anchorStyle: {
-    backgroundColor: "white",
+    backgroundColor: 'white'
   },
   menuOptionsStyles: {
     optionsContainer: {
       width: width - 14,
     },
-    optionsWrapper: {},
+    optionsWrapper: {
+
+    },
     optionWrapper: {
       flex: 1,
     },
     optionTouchable: {
-      underlayColor: "lightgray",
+      underlayColor: 'lightgray',
       activeOpacity: 10,
     },
     optionText: {
@@ -146,9 +156,9 @@ const styles = {
       paddingBottom: 3,
       paddingLeft: 10,
       paddingRight: 10,
-      color: "black",
+      color: 'black',
     },
-  },
+  }
 };
 
 export default connect(null, { searchChangeFilter })(SearchFilterBar);

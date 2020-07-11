@@ -1,32 +1,34 @@
-import React from "react";
-import { View } from "react-native";
-import { WebView } from "react-native-webview";
+import React from 'react';
+import {
+    View
+} from 'react-native';
+import { WebView } from 'react-native-webview';
 
 const APP_ID = "543421933041871";
 const PAGE_ID = "391422631718856";
 
 class OnboardingFbPlugin extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loaded: false,
-    };
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            loaded: false
+        };
+    }
 
-  onMessage = (message) => {
-    console.log("message is:", message);
-    console.log("data is:", message.nativeEvent.data);
-    // const data = message.nativeEvent.data;
-    // console.log("data 1: ", data.state)
+    onMessage = (message) => {
+        console.log("message is:", message);
+        console.log("data is:",message.nativeEvent.data);
+        // const data = message.nativeEvent.data;
+        // console.log("data 1: ", data.state)
+        
+        // if (Array.isArray(data)) {
+        //     data.map(d => console.log(d));
+        // }
+    }
 
-    // if (Array.isArray(data)) {
-    //     data.map(d => console.log(d));
-    // }
-  };
-
-  getWebviewContent() {
-    const userId = "5b82f41b15f7df001aa03633";
-    var originalForm = `
+    getWebviewContent() {
+        const userId = "5b82f41b15f7df001aa03633";
+        var originalForm = `
             <!DOCTYPE html>
             <html>
                 <head>
@@ -110,37 +112,37 @@ class OnboardingFbPlugin extends React.PureComponent {
                 </body>
             </html>`;
 
-    return originalForm;
-  }
+        return originalForm; 
+    }
 
-  render() {
-    return (
-      <View style={{ flex: 1 }}>
-        <WebView
-          javaScriptEnabled={true}
-          mixedContentMode={"always"}
-          style={{ flex: 1, backgroundColor: "transparent" }}
-          source={{
-            html: this.getWebviewContent(),
-            baseUrl: "https://goalmogul.com", // <-- SET YOUR DOMAIN HERE
-          }}
-          // source={{ uri: "https://"}}
-          onMessage={this.onMessage}
-          bounces={false}
-          scrollEnabled={false}
-          onLoadEnd={(e) => {
-            if (!this.state.loaded) {
-              // Wait for WebView to be fully loaded and converted to transparent.
-              // Otherwise, it will be a white glitch.
-              setTimeout(() => {
-                this.setState({ loaded: true });
-              }, 100);
-            }
-          }}
-        />
-      </View>
-    );
-  }
+    render() {
+        return (
+            <View style={{ flex: 1 }}>
+                <WebView 
+                    javaScriptEnabled={true} 
+                    mixedContentMode={'always'} 
+                    style={{ flex: 1, backgroundColor: 'transparent' }} 
+                    source={{
+                        html: this.getWebviewContent(),
+                        baseUrl: 'https://goalmogul.com' // <-- SET YOUR DOMAIN HERE
+                    }}
+                    // source={{ uri: "https://"}}
+                    onMessage={this.onMessage}
+                    bounces={false}
+                    scrollEnabled={false}
+                    onLoadEnd={(e) => {
+                        if (!this.state.loaded) {
+                            // Wait for WebView to be fully loaded and converted to transparent.
+                            // Otherwise, it will be a white glitch.
+                            setTimeout(() => {
+                                this.setState({ loaded: true });
+                            }, 100);
+                        }
+                    }}
+                />
+            </View>
+        );
+    }
 }
 
 export default OnboardingFbPlugin;

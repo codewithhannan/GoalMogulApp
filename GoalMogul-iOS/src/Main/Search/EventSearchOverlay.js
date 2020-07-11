@@ -1,28 +1,34 @@
 // This component is used for search for only event
 // This component is a search overlay for three tabs, people, event and tribe
-import React, { Component } from "react";
-import { View, Platform, KeyboardAvoidingView } from "react-native";
-import { connect } from "react-redux";
-import { SearchBar } from "react-native-elements";
-import { MenuProvider } from "react-native-popup-menu";
-import _ from "lodash";
+import React, { Component } from 'react';
+import {
+  View,
+  Platform,
+  KeyboardAvoidingView
+} from 'react-native';
+import { connect } from 'react-redux';
+import { SearchBar } from 'react-native-elements';
+import { MenuProvider } from 'react-native-popup-menu';
+import _ from 'lodash';
 
 // Component
-import BaseOverlay from "./BaseOverlay";
-import EventSearch from "./Event/EventSearch";
-import { SearchIcon } from "../../Utils/Icons";
+import BaseOverlay from './BaseOverlay';
+import EventSearch from './Event/EventSearch';
+import { SearchIcon } from '../../Utils/Icons';
 
 // Actions
 import {
   handleSearch,
-  clearSearchState,
-} from "../../redux/modules/search/SearchActions";
+  clearSearchState
+} from '../../redux/modules/search/SearchActions';
 
 // Constants
-import { IPHONE_MODELS, DEVICE_MODEL } from "../../Utils/Constants";
+import {
+  IPHONE_MODELS, DEVICE_MODEL
+} from '../../Utils/Constants';
 
-const DEBUG_KEY = "[ Event Search ]";
-const SEARCH_TYPE = "myEvents";
+const DEBUG_KEY = '[ Event Search ]';
+const SEARCH_TYPE = 'myEvents';
 
 class EventSearchOverlay extends Component {
   constructor(props) {
@@ -30,7 +36,7 @@ class EventSearchOverlay extends Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.handleOnEndSubmitting = this.handleOnEndSubmitting.bind(this);
     this.state = {
-      searchContent: undefined,
+      searchContent: undefined
     };
   }
 
@@ -41,82 +47,72 @@ class EventSearchOverlay extends Component {
     this.props.clearSearchState();
     // Actions.pop();
     this.refs.baseOverlay.closeModal();
-  };
+  }
 
   handleOnEndSubmitting = ({ nativeEvent }) => {
     const { text, eventCount, taget } = nativeEvent;
     // Close the search modal if nothing is entered
-    if (
-      text === undefined ||
-      text === null ||
-      text === "" ||
-      text.trim() === ""
-    ) {
+    if (text === undefined || text === null || text === '' || text.trim() === '') {
       this.handleCancel();
     }
-  };
+  }
 
   handleChangeText = (value) => {
     if (value === undefined) {
       return;
     }
 
-    this.setState(
-      {
-        ...this.state,
-        searchContent: value,
-      },
-      () => {
-        if (value === "") {
-          this.props.clearSearchState(SEARCH_TYPE);
-        }
-        this.props.debouncedSearch(value.trim(), SEARCH_TYPE);
+    this.setState({
+      ...this.state,
+      searchContent: value 
+    }, () => {
+      if (value === '') {
+        this.props.clearSearchState(SEARCH_TYPE);
       }
-    );
-  };
+      this.props.debouncedSearch(value.trim(), SEARCH_TYPE);
+    });
+  }
 
   render() {
     const searchPlaceHolder = this.props.searchPlaceHolder
       ? this.props.searchPlaceHolder
-      : "Search an event";
+      : 'Search an event';
 
-    const marginTop =
-      Platform.OS === "ios" && IPHONE_MODELS.includes(DEVICE_MODEL) ? 20 : 30;
+    const marginTop = (
+      Platform.OS === 'ios' &&
+      IPHONE_MODELS.includes(DEVICE_MODEL)
+    ) ? 20 : 30;
 
     return (
-      <BaseOverlay verticalPercent={1} horizontalPercent={1} ref="baseOverlay">
+      <BaseOverlay verticalPercent={1} horizontalPercent={1} ref='baseOverlay'>
         <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-          <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }} enabled>
+          <KeyboardAvoidingView behavior='padding' style={{ flex: 1 }} enabled>
             <View style={{ ...styles.headerContainerStyle, marginTop }}>
               <SearchBar
-                platform="ios"
+                platform='ios'
                 round
                 autoFocus
                 inputStyle={styles.searchInputStyle}
                 inputContainerStyle={styles.searchInputContainerStyle}
                 containerStyle={styles.searchContainerStyle}
                 placeholder={searchPlaceHolder}
-                cancelButtonTitle="Cancel"
+                cancelButtonTitle='Cancel'
                 onCancel={this.handleCancel}
                 onChangeText={this.handleChangeText}
                 clearIcon={null}
-                cancelButtonProps={{ color: "#17B3EC" }}
+                cancelButtonProps={{ color: '#17B3EC' }}
                 showLoading={this.props.loading}
                 searchIcon={() => (
-                  <SearchIcon
-                    iconContainerStyle={{ marginBottom: 1, marginTop: 1 }}
-                    iconStyle={{ tintColor: "#4ec9f3", height: 15, width: 15 }}
+                  <SearchIcon 
+                    iconContainerStyle={{ marginBottom: 1, marginTop: 1 }} 
+                    iconStyle={{ tintColor: '#4ec9f3', height: 15, width: 15 }}
                   />
                 )}
                 onSubmitEditing={this.handleOnEndSubmitting}
                 value={this.state.searchContent}
               />
             </View>
-            <EventSearch
-              callback={this.props.callback}
-              onItemSelect={this.props.onItemSelect}
-              shouldPreload={this.props.shouldPreload}
-            />
+            <EventSearch callback={this.props.callback} onItemSelect={this.props.onItemSelect} shouldPreload={this.props.shouldPreload} />
           </KeyboardAvoidingView>
         </MenuProvider>
       </BaseOverlay>
@@ -128,54 +124,55 @@ const styles = {
   searchContainerStyle: {
     padding: 0,
     marginRight: 3,
-    backgroundColor: "#ffffff",
-    borderTopColor: "#ffffff",
-    borderBottomColor: "#ffffff",
-    alignItems: "center",
+    backgroundColor: '#ffffff',
+    borderTopColor: '#ffffff',
+    borderBottomColor: '#ffffff',
+    alignItems: 'center',
+
   },
   searchInputContainerStyle: {
-    backgroundColor: "#f3f4f6",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#f3f4f6',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   searchInputStyle: {
     fontSize: 15,
   },
   searchIconStyle: {
     top: 15,
-    fontSize: 13,
+    fontSize: 13
   },
   headerContainerStyle: {
     marginTop: 15,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   backdrop: {
-    backgroundColor: "gray",
+    backgroundColor: 'gray',
     opacity: 0.7,
-  },
+  }
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const { selectedTab, navigationState } = state.search;
   const { loading } = state.search[selectedTab];
 
   return {
     selectedTab,
     navigationState,
-    loading,
+    loading
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  const debouncedSearch = _.debounce(
-    (value, type) => dispatch(handleSearch(value, type)),
-    400
-  );
-  return {
+  const debouncedSearch = _.debounce((value, type) => dispatch(handleSearch(value, type)), 400);
+  return ({
     debouncedSearch,
-    clearSearchState: clearSearchState(dispatch),
-  };
+    clearSearchState: clearSearchState(dispatch)
+  });
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EventSearchOverlay);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EventSearchOverlay);

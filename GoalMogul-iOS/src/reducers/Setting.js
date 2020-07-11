@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _ from 'lodash';
 import {
   LOGIN_USER_SUCCESS,
   SETTING_OPEN_SETTING,
@@ -15,53 +15,54 @@ import {
   SETTING_BLOCK_BLOCK_REQUEST_DONE,
   SETTING_BLOCK_UNBLOCK_REQUEST,
   SETTING_BLOCK_UNBLOCK_REQUEST_DONE,
-  PROFILE_UPDATE_SUCCESS,
-} from "../actions/types";
+  PROFILE_UPDATE_SUCCESS
+} from '../actions/types';
 
-import { USER_LOG_OUT } from "./User";
+import {
+  USER_LOG_OUT
+} from './User';
 
 import {
   SETTING_UPDATE_NOTIFICATION_PREFERENCE,
   SETTING_UPDATE_NOTIFICATION_PREFERENCE_SUCCESS,
-  SETTING_UPDATE_NOTIFICATION_PREFERENCE_ERROR,
-} from "../redux/modules/User/Setting";
+  SETTING_UPDATE_NOTIFICATION_PREFERENCE_ERROR
+} from '../redux/modules/User/Setting';
 
-export const SETTING_NOTIFICATION_TOKEN_PUSH_SUCCESS =
-  "setting_notification_token_push_success";
-export const SETTING_SWITCH_TAB = "setting_switch_tab";
-export const SETTING_BLOCK_PAGE_CLOSE = "setting_block_page_close";
+export const SETTING_NOTIFICATION_TOKEN_PUSH_SUCCESS = 'setting_notification_token_push_success';
+export const SETTING_SWITCH_TAB = 'setting_switch_tab';
+export const SETTING_BLOCK_PAGE_CLOSE = 'setting_block_page_close';
 
 const INITIAL_STATE = {
   userId: undefined,
   email: {},
   phone: {},
   privacy: {
-    friends: "",
+    friends: ''
   },
   notificationPreferences: {
     pushDisabled: undefined,
-    emailDisabled: undefined,
+		emailDisabled: undefined,
   },
-  selectedTab: "account",
+  selectedTab: 'account',
   block: {
     data: [],
     skip: 0,
     limit: 10,
     refreshing: false,
     loading: false,
-    hasNextPage: undefined,
+    hasNextPage: undefined
   },
   notificationToken: undefined,
   navigationState: {
     index: 0,
     routes: [
-      { key: "account", title: "Account" },
-      { key: "privacy", title: "Privacy" },
-    ],
+      { key: 'account', title: 'Account' },
+      { key: 'privacy', title: 'Privacy' },
+    ]
   },
 };
 
-const DEBUG_KEY = "[ Reducer Setting ]";
+const DEBUG_KEY = '[ Reducer Setting ]';
 /*
   TODO:
   1. populate initial set on profile fetch successfully
@@ -71,21 +72,21 @@ export default (state = INITIAL_STATE, action) => {
     case LOGIN_USER_SUCCESS: {
       const { userId } = action.payload;
       const newState = _.cloneDeep(state);
-      return _.set(newState, "userId", userId);
+      return _.set(newState, 'userId', userId);
     }
 
     case SETTING_SWITCH_TAB: {
       let newState = _.cloneDeep(state);
       const { index } = action.payload;
-      newState = _.set(newState, "navigationState.index", index);
+      newState = _.set(newState, 'navigationState.index', index);
       return newState;
     }
 
     // Reset skip and hasNext page
     case SETTING_BLOCK_PAGE_CLOSE: {
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, "block.skip", 0);
-      newState = _.set(newState, "block.hasNextPage", undefined);
+      newState = _.set(newState, 'block.skip', 0);
+      newState = _.set(newState, 'block.hasNextPage', undefined);
       return newState;
     }
 
@@ -94,20 +95,16 @@ export default (state = INITIAL_STATE, action) => {
       const { user, userId } = action.payload;
       let newState = _.cloneDeep(state);
 
-      if (_.get(newState, "userId") !== userId) {
+      if (_.get(newState, 'userId') !== userId) {
         // Do not update if not current user
         return newState;
       }
       const { privacy, email, phone, notificationPreferences } = user;
 
-      newState = _.set(newState, "privacy", privacy);
-      newState = _.set(newState, "email", email);
-      newState = _.set(newState, "phone", phone);
-      newState = _.set(
-        newState,
-        "notificationPreferences",
-        notificationPreferences
-      );
+      newState = _.set(newState, 'privacy', privacy);
+      newState = _.set(newState, 'email', email);
+      newState = _.set(newState, 'phone', phone);
+      newState = _.set(newState, 'notificationPreferences', notificationPreferences);
 
       return newState;
     }
@@ -127,38 +124,28 @@ export default (state = INITIAL_STATE, action) => {
     case SETTING_EMAIL_UPDATE_SUCCESS: {
       let newState = _.cloneDeep(state);
       const { email, userId } = action.payload;
-      if (userId !== _.get(newState, "userId")) {
-        console.warn(
-          `${DEBUG_KEY}: email updated is not for app user.` +
-            `Expected userId: ${_.get(
-              newState,
-              "userId"
-            )}, actual userId: ${userId}`
-        );
+      if (userId !== _.get(newState, 'userId')) {
+        console.warn(`${DEBUG_KEY}: email updated is not for app user.` + 
+        `Expected userId: ${_.get(newState, 'userId')}, actual userId: ${userId}`);
         return newState;
       }
 
-      newState = _.set(newState, "email.address", email);
-      newState = _.set(newState, "email.isVerified", false);
+      newState = _.set(newState, 'email.address', email);
+      newState = _.set(newState, 'email.isVerified', false);
       return newState;
     }
 
     case SETTING_PHONE_UPDATE_SUCCESS: {
       let newState = _.cloneDeep(state);
       const { phone, userId } = action.payload;
-      if (userId !== _.get(newState, "userId")) {
-        console.warn(
-          `${DEBUG_KEY}: email updated is not for app user.` +
-            `Expected userId: ${_.get(
-              newState,
-              "userId"
-            )}, actual userId: ${userId}`
-        );
+      if (userId !== _.get(newState, 'userId')) {
+        console.warn(`${DEBUG_KEY}: email updated is not for app user.` + 
+        `Expected userId: ${_.get(newState, 'userId')}, actual userId: ${userId}`);
         return newState;
       }
 
-      newState = _.set(newState, "phone.number", phone);
-      newState = _.set(newState, "phone.isVerified", false);
+      newState = _.set(newState, 'phone.number', phone);
+      newState = _.set(newState, 'phone.isVerified', false);
       return newState;
     }
 
@@ -179,9 +166,9 @@ export default (state = INITIAL_STATE, action) => {
       let newState = _.cloneDeep(state);
       const { refresh } = action.payload;
       if (refresh) {
-        newState = _.set(newState, "block.refreshing", true);
+        newState = _.set(newState, 'block.refreshing', true);
       } else {
-        newState = _.set(newState, "block.loading", true);
+        newState = _.set(newState, 'block.loading', true);
       }
 
       return newState;
@@ -195,10 +182,7 @@ export default (state = INITIAL_STATE, action) => {
         if (refresh || skip === 0) {
           newState.block.data = data;
         } else {
-          console.log(
-            `${DEBUG_KEY}: [ ${action.type}]: payload is`,
-            action.payload
-          );
+          console.log(`${DEBUG_KEY}: [ ${action.type}]: payload is`, action.payload);
           newState.block.data = newState.block.data.concat(data);
         }
         newState.block.skip = skip;
@@ -241,17 +225,13 @@ export default (state = INITIAL_STATE, action) => {
     case SETTING_NOTIFICATION_TOKEN_PUSH_SUCCESS: {
       const { notificationToken } = action.payload;
       const newState = _.cloneDeep(state);
-      return _.set(newState, "notificationToken", notificationToken);
+      return _.set(newState, 'notificationToken', notificationToken);
     }
 
     case SETTING_UPDATE_NOTIFICATION_PREFERENCE_SUCCESS: {
       const { notificationPreferences } = action.payload;
       const newState = _.cloneDeep(state);
-      return _.set(
-        newState,
-        "notificationPreferences",
-        notificationPreferences
-      );
+      return _.set(newState, 'notificationPreferences', notificationPreferences);
     }
 
     default:

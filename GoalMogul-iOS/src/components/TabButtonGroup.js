@@ -1,9 +1,10 @@
-import React, { Component } from "react";
-import { View, Text } from "react-native";
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
 
-import Divider from "./Divider";
+import Divider from './Divider'
 
 class TabButtonGroup extends Component {
+
   constructor(props) {
     super(props);
   }
@@ -25,29 +26,33 @@ class TabButtonGroup extends Component {
 
   render() {
     // console.log(this.props.children);
-    return <View style={styles.containerStyle}>{this.renderButton()}</View>;
+    return (
+      <View style={styles.containerStyle}>
+        {this.renderButton()}
+      </View>
+    );
   }
 }
 
 const styles = {
   containerStyle: {
-    display: "flex",
+    display: 'flex',
     height: 32,
-    flexDirection: "row",
+    flexDirection: 'row',
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: '#ddd',
     borderBottomWidth: 0,
-    backgroundColor: "#fff",
-    shadowColor: "#000",
+    backgroundColor: '#fff',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 1,
-    elevation: 1,
+    elevation: 1
   },
   dividerContainerStyle: {
-    flexDirection: "row",
-    flex: 1,
-  },
+    flexDirection: 'row',
+    flex: 1
+  }
 };
 
 export default TabButtonGroup;

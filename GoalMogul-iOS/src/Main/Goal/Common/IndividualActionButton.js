@@ -1,5 +1,10 @@
-import React from "react";
-import { TouchableOpacity, View, Image, Text } from "react-native";
+import React from 'react';
+import {
+  TouchableOpacity,
+  View,
+  Image,
+  Text
+} from 'react-native';
 
 const IndividualActionButton = (props) => {
   const {
@@ -8,12 +13,11 @@ const IndividualActionButton = (props) => {
     iconStyle,
     textStyle,
     containerStyle,
-    onPress,
+    onPress
   } = props;
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.6}
+    <TouchableOpacity activeOpacity={0.6}
       style={{ ...styles.containerDefaultStyle, ...containerStyle }}
       onPress={onPress}
     >
@@ -21,7 +25,9 @@ const IndividualActionButton = (props) => {
         source={iconSource}
         style={{ ...styles.iconDefaultStyle, ...iconStyle }}
       />
-      <Text style={{ ...styles.textDefaultStyle, ...textStyle }}>
+      <Text
+        style={{ ...styles.textDefaultStyle, ...textStyle }}
+      >
         {buttonName}
       </Text>
     </TouchableOpacity>
@@ -30,23 +36,23 @@ const IndividualActionButton = (props) => {
 
 const styles = {
   containerDefaultStyle: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 8,
-    backgroundColor: "#f9f9f9",
+    backgroundColor: '#f9f9f9',
     borderRadius: 5,
-    height: 30,
+    height: 30
   },
   textDefaultStyle: {
     fontSize: 12,
-    color: "#3f3f3f",
+    color: '#3f3f3f'
   },
   iconDefaultStyle: {
     height: 15,
     width: 15,
-    marginRight: 5,
-  },
+    marginRight: 5
+  }
 };
 
 export default IndividualActionButton;

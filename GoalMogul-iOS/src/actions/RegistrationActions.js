@@ -1,12 +1,12 @@
-import { Actions } from "react-native-router-flux";
-import { CameraRoll, ImagePickerIOS } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import * as Permissions from "expo-permissions";
-import { SubmissionError } from "redux-form";
-import { api as API } from "../redux/middleware/api";
-import { tutorial as Tutorial } from "../redux/modules/auth/Tutorial";
-import { DropDownHolder } from "../Main/Common/Modal/DropDownModal";
-import { track, trackWithProperties, EVENT as E } from "../monitoring/segment";
+import { Actions } from 'react-native-router-flux';
+import { CameraRoll, ImagePickerIOS } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
+import { SubmissionError } from 'redux-form';
+import { api as API } from '../redux/middleware/api';
+import { tutorial as Tutorial } from '../redux/modules/auth/Tutorial';
+import { DropDownHolder } from '../Main/Common/Modal/DropDownModal';
+import { track, trackWithProperties, EVENT as E} from '../monitoring/segment';
 
 import {
   REGISTRATION_BACK,
@@ -14,6 +14,7 @@ import {
   REGISTRATION_ADDPROFILE,
   REGISTRATION_ACCOUNT_LOADING,
   REGISTRATION_ACCOUNT_SUCCESS,
+
   REGISTRATION_CONTACT_SKIP,
   REGISTRATION_CONTACT,
   REGISTRATION_CONTACT_SYNC,
@@ -24,29 +25,28 @@ import {
   REGISTRATION_CONTACT_SYNC_FETCH_DONE,
   REGISTRATION_CONTACT_SYNC_REFRESH,
   REGISTRATION_CONTACT_SYNC_REFRESH_DONE,
+
   REGISTRATION_INTRO,
   REGISTRATION_INTRO_FORM_CHANGE,
   REGISTRATION_INTRO_SKIP,
+
   REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS,
   REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO,
   REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
-  REGISTRATION_ERROR,
-} from "./types";
+  REGISTRATION_ERROR
+} from './types';
 
-import ImageUtils from "../Utils/ImageUtils";
-import {
-  handleUploadContacts,
-  fetchMatchedContacts,
-} from "../Utils/ContactUtils";
+import ImageUtils from '../Utils/ImageUtils';
+import { handleUploadContacts, fetchMatchedContacts } from '../Utils/ContactUtils';
 
-import LiveChatService from "../socketio/services/LiveChatService";
-import MessageStorageService from "../services/chat/MessageStorageService";
+import LiveChatService from '../socketio/services/LiveChatService';
+import MessageStorageService from '../services/chat/MessageStorageService';
 
-const DEBUG_KEY = "[ Action Registration ]";
+const DEBUG_KEY = '[ Action Registration ]';
 export const registrationLogin = () => {
   return (dispatch) => {
     dispatch({
-      type: REGISTRATION_LOGIN,
+      type: REGISTRATION_LOGIN
     });
     Actions.pop();
   };
@@ -55,7 +55,7 @@ export const registrationLogin = () => {
 export const registrationBack = () => {
   return (dispatch) => {
     dispatch({
-      type: REGISTRATION_BACK,
+      type: REGISTRATION_BACK
     });
     Actions.pop();
   };
@@ -64,7 +64,7 @@ export const registrationBack = () => {
 /* Account actions */
 const validateEmail = (email) => {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
+   return re.test(String(email).toLowerCase());
 };
 
 export const registrationNextAddProfile = (value) => {
@@ -89,28 +89,29 @@ export const registrationNextAddProfile = (value) => {
   // TODO: refactor network request as factory function
   return async (dispatch) => {
     dispatch({
-      type: REGISTRATION_ACCOUNT_LOADING,
+      type: REGISTRATION_ACCOUNT_LOADING
     });
 
-    const message = await API.post("pub/user/", { ...data }, undefined)
+    const message = await API
+      .post('pub/user/', { ...data }, undefined)
       .then((res) => {
         if (res.message) {
           return res.message;
         }
         dispatch({
-          type: REGISTRATION_ADDPROFILE,
+          type: REGISTRATION_ADDPROFILE
         });
         // AuthReducers record user token
         const payload = {
           token: res.token,
           userId: res.userId,
-          name,
+          name
         };
         dispatch({
           type: REGISTRATION_ACCOUNT_SUCCESS,
-          payload,
+          payload
         });
-        Actions.replace("registration");
+        Actions.replace('registration');
 
         // set up chat listeners
         LiveChatService.mountUser({
@@ -125,6 +126,7 @@ export const registrationNextAddProfile = (value) => {
       })
       // TODO: error handling
       .catch((err) => console.log(err));
+
 
     // const url = 'https://goalmogul-api-dev.herokuapp.com/api/pub/user/';
     // const headers = {
@@ -166,16 +168,16 @@ export const registrationNextAddProfile = (value) => {
     if (message) {
       dispatch({
         type: REGISTRATION_ERROR,
-        error: message,
+        error: message
       });
       throw new SubmissionError({
-        _error: message,
+        _error: message
       });
     }
   };
 };
 
-export * from "./AccountActions";
+export * from './AccountActions';
 
 /* Profile Picture actions */
 
@@ -197,16 +199,16 @@ export const registrationNextIntro = (skip) => {
       ImageUtils.getImageSize(imageUri)
         .then(({ width, height }) => {
           // Resize image
-          console.log("width, height are: ", width, height);
+          console.log('width, height are: ', width, height);
           return ImageUtils.resizeImage(imageUri, width, height);
         })
         .then((image) => {
           // Upload image to S3 server
-          console.log("image to upload is: ", image);
+          console.log('image to upload is: ', image);
           return ImageUtils.getPresignedUrl(image.uri, token, (objectKey) => {
             dispatch({
               type: REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS,
-              payload: objectKey,
+              payload: objectKey
             });
           });
         })
@@ -216,26 +218,22 @@ export const registrationNextIntro = (skip) => {
         .then((res) => {
           if (res instanceof Error) {
             // uploading to s3 failed
-            console.log("error uploading image to s3 with res: ", res);
+            console.log('error uploading image to s3 with res: ', res);
             throw res;
           }
           return getState().user.profile.imageObjectId;
         })
         .then((image) => {
           // Update profile imageId to the latest uploaded one
-          return API.put(
-            "secure/user/profile",
-            {
-              image,
-            },
-            token
-          )
-            .then((res) => {
-              console.log("update profile picture Id with res: ", res);
-            })
-            .catch((err) => {
-              console.log("error updating record: ", err);
-            });
+          return API.put('secure/user/profile', {
+            image
+          }, token)
+          .then((res) => {
+            console.log('update profile picture Id with res: ', res);
+          })
+          .catch((err) => {
+            console.log('error updating record: ', err);
+          });
 
           // const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/profile';
           // const headers = {
@@ -267,7 +265,7 @@ export const registrationNextIntro = (skip) => {
             image upload to S3
             update profile image Id
           */
-          console.log("profile picture error: ", err);
+          console.log('profile picture error: ', err);
         });
     }
     Actions.registrationIntro();
@@ -285,8 +283,9 @@ export const openCamera = (callback) => async (dispatch) => {
   }
   track(E.CAMERA);
   const result = await ImagePicker.launchCameraAsync({
-    mediaTypes: "Images",
-  }).catch((error) => console.log(permissions, { error }));
+      mediaTypes: 'Images',
+    })
+    .catch(error => console.log(permissions, { error }));
 
   if (!result.cancelled) {
     if (callback) {
@@ -294,11 +293,11 @@ export const openCamera = (callback) => async (dispatch) => {
     }
     return dispatch({
       type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
-      payload: result.uri,
+      payload: result.uri
     });
   }
 
-  console.log("user took image fail with result: ", result);
+  console.log('user took image fail with result: ', result);
 };
 
 // Action to open camera roll modal
@@ -313,15 +312,11 @@ export const openCameraRoll = (callback, maybeOptions) => async (dispatch) => {
 
   const disableEditing = maybeOptions && maybeOptions.disableEditing;
 
-  const result = await ImagePicker.launchImageLibraryAsync(
-    disableEditing
-      ? {}
-      : {
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 0.7,
-        }
-  );
+  const result = await ImagePicker.launchImageLibraryAsync(disableEditing ? {} : {
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 0.7,
+  });
 
   if (!result.cancelled) {
     if (callback) {
@@ -329,11 +324,11 @@ export const openCameraRoll = (callback, maybeOptions) => async (dispatch) => {
     }
     return dispatch({
       type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
-      payload: result.uri,
+      payload: result.uri
     });
   }
 
-  console.log("user choosing from camera roll fail with result: ", result);
+  console.log('user choosing from camera roll fail with result: ', result);
   // Method 2:
   // ImagePickerIOS.canUseCamera(() => {
   //   ImagePickerIOS.openSelectDialog({}, imageUri => {
@@ -372,12 +367,13 @@ export const registrationCameraRollLoadPhoto = () => {
   return (dispatch) => {
     CameraRoll.getPhotos({
       first: 20,
-      assetType: "All",
-    }).then((r) => {
-      console.log("loading photos with r: ", r);
+      assetType: 'All'
+    })
+    .then((r) => {
+      console.log('loading photos with r: ', r);
       dispatch({
         type: REGISTRATION_ADDPROFILE_CAMERAROLL_LOAD_PHOTO,
-        payload: r.edges,
+        payload: r.edges
       });
     });
   };
@@ -389,7 +385,7 @@ export const registrationCameraRollOnImageChoosen = (uri) => {
     Actions.pop();
     dispatch({
       type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
-      payload: uri,
+      payload: uri
     });
   };
 };
@@ -401,38 +397,39 @@ export const registrationNextContact = (headline, skip) => {
   track(skip ? E.REG_CONTACT_SKIP : E.REG_CONTACT);
 
   const error = {};
-  if (headline === "" && !skip) {
+  if (headline === '' && !skip) {
     error.headline = true;
-    return {
+    return ({
       type: REGISTRATION_ERROR,
-      payload: error,
-    };
+      payload: error
+    });
   }
   return (dispatch, getState) => {
     if (skip) {
       // User skip intro input
       dispatch({
-        type,
+        type
       });
       return Actions.registrationContact();
     }
     const token = getState().user.token;
 
-    API.put("secure/user/account", { headline }, token)
+    API
+      .put('secure/user/account', { headline }, token)
       .then((res) => {
         dispatch({
           type,
-          payload: headline,
+          payload: headline
         });
         Actions.registrationContact();
       })
       .catch((err) => {
-        console.log("error is: ", err);
+        console.log('error is: ', err);
         error.headline = err.message;
-        return {
+        return ({
           type: REGISTRATION_ERROR,
-          payload: error,
-        };
+          payload: error
+        });
       });
 
     // const url = 'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account';
@@ -470,16 +467,14 @@ export const registrationNextContact = (headline, skip) => {
 export const handleOnHeadlineChanged = (headline) => {
   return {
     type: REGISTRATION_INTRO_FORM_CHANGE,
-    payload: headline,
+    payload: headline
   };
 };
 
 /* Contact actions */
 
 export const registrationNextContactSync = ({ skip }) => {
-  const type = skip
-    ? REGISTRATION_CONTACT_SYNC_SKIP
-    : REGISTRATION_CONTACT_SYNC;
+  const type = skip ? REGISTRATION_CONTACT_SYNC_SKIP : REGISTRATION_CONTACT_SYNC;
   track(skip ? E.REG_CONTACT_SYNC_SKIP : E.REG_CONTACT_SYNC);
 
   if (skip) {
@@ -494,7 +489,7 @@ export const registrationNextContactSync = ({ skip }) => {
       //   Actions.replace('tutorial');
       //   return;
       // }
-      Actions.replace("drawer");
+      Actions.replace('drawer');
     };
   }
 
@@ -502,8 +497,8 @@ export const registrationNextContactSync = ({ skip }) => {
 
   return async (dispatch, getState) => {
     const permission = await Permissions.askAsync(Permissions.CONTACTS);
-    if (permission.status !== "granted") {
-      // Permission was denied and dispatch an action
+    if (permission.status !== 'granted') {
+    // Permission was denied and dispatch an action
       return;
     }
     const { token } = getState().user;
@@ -514,8 +509,8 @@ export const registrationNextContactSync = ({ skip }) => {
     dispatch({
       type,
       payload: {
-        uploading: true,
-      },
+        uploading: true
+      }
     });
 
     // Push UI to avoid delay
@@ -523,13 +518,13 @@ export const registrationNextContactSync = ({ skip }) => {
 
     handleUploadContacts(token)
       .then((res) => {
-        console.log(" response is: ", res);
+        console.log(' response is: ', res);
         // Uploading contacts done. Hide spinner
         dispatch({
           type: REGISTRATION_CONTACT_SYNC_UPLOAD_DONE,
           payload: {
-            uploading: false,
-          },
+            uploading: false
+          }
         });
 
         // Fetching matched records. Show spinner
@@ -537,15 +532,15 @@ export const registrationNextContactSync = ({ skip }) => {
           type: REGISTRATION_CONTACT_SYNC_FETCH,
           payload: {
             refreshing: true,
-            loading: false,
-          },
+            loading: false
+          }
         });
 
         /* TODO: load matched contacts */
         return fetchMatchedContacts(token, 0, matchedContacts.limit);
       })
       .then((res) => {
-        console.log("matched contacts are: ", res);
+        console.log('matched contacts are: ', res);
         if (res.data) {
           // User finish fetching
           dispatch({
@@ -554,37 +549,34 @@ export const registrationNextContactSync = ({ skip }) => {
               data: res.data, // TODO: replaced with res
               skip: res.data.length,
               limit: matchedContacts.limit,
-              refreshing: true,
-            },
+              refreshing: true
+            }
           });
           return;
         }
         // TODO: error handling for fail to fetch contact cards
         // TODO: show toast for user to refresh
 
-        console.warn(
-          `${DEBUG_KEY}: failed to fetch contact cards with res:`,
-          res
-        );
+        console.warn(`${DEBUG_KEY}: failed to fetch contact cards with res:`, res);
         dispatch({
           type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
           payload: {
             data: [], // TODO: replaced with res
             skip: 0,
             limit: matchedContacts.limit,
-            refreshing: true,
-          },
+            refreshing: true
+          }
         });
       })
       .catch((err) => {
-        console.warn("[ Action ContactSync Fail ]: ", err);
-        console.log("error is:", err);
+        console.warn('[ Action ContactSync Fail ]: ', err);
+        console.log('error is:', err);
         // Error handling to clear both uploading and refreshing status
         dispatch({
           type: REGISTRATION_CONTACT_SYNC_UPLOAD_DONE,
           payload: {
-            uploading: false,
-          },
+            uploading: false
+          }
         });
 
         dispatch({
@@ -593,14 +585,10 @@ export const registrationNextContactSync = ({ skip }) => {
             data: [], // TODO: replaced with res
             skip: 0,
             limit: matchedContacts.limit,
-            refreshing: true,
-          },
+            refreshing: true
+          }
         });
-        DropDownHolder.alert(
-          "error",
-          "Error",
-          "We're sorry that some error happened. Please try again later."
-        );
+        DropDownHolder.alert('error', 'Error', 'We\'re sorry that some error happened. Please try again later.');
       });
   };
 };
@@ -611,65 +599,58 @@ export const contactSyncLoadMore = () => (dispatch, getState) => {
     type: REGISTRATION_CONTACT_SYNC_FETCH,
     payload: {
       loading: true,
-      refreshing: false,
-    },
+      refreshing: false
+    }
   });
 
   const { token } = getState().user;
   // Skip and limit for fetching matched contacts
-  const {
-    skip,
-    limit,
-    hasNextPage,
-    loading,
-    refreshing,
-  } = getState().registration.matchedContacts;
+  const { skip, limit, hasNextPage, loading, refreshing } = getState().registration.matchedContacts;
 
   if (refreshing || loading) return; // Don't load more on refreshing already
   if (hasNextPage === undefined || hasNextPage) {
-    fetchMatchedContacts(token, skip, limit)
-      .then((res) => {
-        if (res.data) {
-          dispatch({
-            type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
-            payload: {
-              data: res.data, // TODO: replaced with res
-              skip: skip + res.data.length,
-              limit,
-              hasNextPage: res.data.length !== 0,
-              loading: true,
-            },
-          });
+    fetchMatchedContacts(token, skip, limit).then((res) => {
+      if (res.data) {
+        dispatch({
+          type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
+          payload: {
+            data: res.data, // TODO: replaced with res
+            skip: skip + res.data.length,
+            limit,
+            hasNextPage: res.data.length !== 0,
+            loading: true
+          }
+        });
 
-          return;
+        return;
+      }
+
+      // Error no data to return empty list
+      dispatch({
+        type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
+        payload: {
+          data: [],
+          skip,
+          limit,
+          hasNextPage: false,
+          loading: true
         }
-
-        // Error no data to return empty list
-        dispatch({
-          type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
-          payload: {
-            data: [],
-            skip,
-            limit,
-            hasNextPage: false,
-            loading: true,
-          },
-        });
-      })
-      .catch((err) => {
-        console.warn("[ Action ContactSync Loadmore Fail ]: ", err);
-        // Error no data to return empty list
-        dispatch({
-          type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
-          payload: {
-            data: [],
-            skip,
-            limit,
-            hasNextPage: false,
-            loading: true,
-          },
-        });
       });
+    })
+    .catch((err) => {
+      console.warn('[ Action ContactSync Loadmore Fail ]: ', err);
+      // Error no data to return empty list
+      dispatch({
+        type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
+        payload: {
+          data: [],
+          skip,
+          limit,
+          hasNextPage: false,
+          loading: true
+        }
+      });
+    });
   }
 };
 
@@ -678,7 +659,7 @@ export const contactSyncRefresh = () => (dispatch, getState) => {
   // REGISTRATION_CONTACT_SYNC_REFRESH
   // REGISTRATION_CONTACT_SYNC_REFRESH_DONE
   dispatch({
-    type: REGISTRATION_CONTACT_SYNC_REFRESH,
+    type: REGISTRATION_CONTACT_SYNC_REFRESH
   });
 
   const { token } = getState().user;
@@ -688,40 +669,39 @@ export const contactSyncRefresh = () => (dispatch, getState) => {
   // Don't refresh if already refreshing
   if (refreshing) return;
 
-  fetchMatchedContacts(token, 0, limit)
-    .then((res) => {
-      console.log("[ Action ContactSync ]: Refresh with res: ", res);
-      if (res.data) {
-        dispatch({
-          type: REGISTRATION_CONTACT_SYNC_REFRESH_DONE,
-          payload: {
-            data: res.data, // TODO: replaced with res
-            skip: res.data.length,
-            hasNextPage: res.data.length !== 0,
-          },
-        });
-      }
+  fetchMatchedContacts(token, 0, limit).then((res) => {
+    console.log('[ Action ContactSync ]: Refresh with res: ', res);
+    if (res.data) {
+      dispatch({
+        type: REGISTRATION_CONTACT_SYNC_REFRESH_DONE,
+        payload: {
+          data: res.data, // TODO: replaced with res
+          skip: res.data.length,
+          hasNextPage: res.data.length !== 0,
+        }
+      });
+    }
 
-      dispatch({
-        type: REGISTRATION_CONTACT_SYNC_REFRESH_DONE,
-        payload: {
-          data: [],
-          skip: 0,
-          hasNextPage: false,
-        },
-      });
-    })
-    .catch((err) => {
-      console.warn("[ Action ContactSync Refresh Fail ]: ", err);
-      dispatch({
-        type: REGISTRATION_CONTACT_SYNC_REFRESH_DONE,
-        payload: {
-          data: [],
-          skip: 0,
-          hasNextPage: false,
-        },
-      });
+    dispatch({
+      type: REGISTRATION_CONTACT_SYNC_REFRESH_DONE,
+      payload: {
+        data: [],
+        skip: 0,
+        hasNextPage: false
+      }
     });
+  })
+  .catch((err) => {
+    console.warn('[ Action ContactSync Refresh Fail ]: ', err);
+    dispatch({
+      type: REGISTRATION_CONTACT_SYNC_REFRESH_DONE,
+      payload: {
+        data: [],
+        skip: 0,
+        hasNextPage: false
+      }
+    });
+  });
 };
 
 /* Contact Sync actions */
@@ -732,15 +712,15 @@ export const registrationContactSyncDone = () => {
     const { userId } = getState().user;
     const hasTutorialShown = await Tutorial.getTutorialShown(userId);
     dispatch({
-      type: REGISTRATION_CONTACT_SYNC_DONE,
+      type: REGISTRATION_CONTACT_SYNC_DONE
     });
 
     // Starting version 0.4.2, we replace this with step by step tutorial
     // if (!hasTutorialShown) {
     //   Actions.replace('tutorial');
     //   return;
-    // }
+    // }  
     // Actions.mainTabs();
-    Actions.replace("drawer");
+    Actions.replace('drawer');
   };
 };

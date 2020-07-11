@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _ from 'lodash';
 import {
   REGISTRATION_ERROR,
   REGISTRATION_BACK,
@@ -19,21 +19,17 @@ import {
   REGISTRATION_CONTACT_SYNC_SKIP,
   REGISTRATION_CONTACT_SYNC_REFRESH,
   REGISTRATION_CONTACT_SYNC_REFRESH_DONE,
+
   REGISTRATION_ACCOUNT_FORM_CHANGE,
   REGISTRATION_INTRO_FORM_CHANGE,
   REGISTRATION_ADDPROFILE_CAMERAROLL_OPEN,
   REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
-  REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS,
-} from "../actions/types";
-import { USER_LOG_OUT } from "./User";
+  REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS
+} from '../actions/types';
 import {
-  REGISTRATION_TEXT_CHANGE,
-  REGISTRATION_USER_TARGETS,
-  REGISTRATION_DEFAULT_TRIBES,
-  REGISTRATION_TRIBE_FETCH,
-  REGISTRATION_TRIBE_SELECT,
-  REGISTRATION_COMMUNITY_GUIDELINE,
-} from "../redux/modules/registration/RegistrationReducers";
+  USER_LOG_OUT
+} from './User';
+import { REGISTRATION_TEXT_CHANGE, REGISTRATION_USER_TARGETS, REGISTRATION_DEFAULT_TRIBES, REGISTRATION_TRIBE_FETCH, REGISTRATION_TRIBE_SELECT, REGISTRATION_COMMUNITY_GUIDELINE } from '../redux/modules/registration/RegistrationReducers';
 
 export function arrayUnique(array) {
   let a = array.concat();
@@ -49,23 +45,27 @@ export function arrayUnique(array) {
 }
 
 const INITIAL_STATE = {
-  name: "",
-  email: "",
-  password: "",
-  headline: "",
+  name: '',
+  email: '',
+  password: '',
+  headline: '',
   countryCode: {
-    cca2: "US",
-    country: {
-      callingCode: ["1"],
-      cca2: "US",
-      currency: ["USD"],
-      flag: "flag-us",
-      name: "United States",
-      region: "Americas",
-      subregion: "North America",
+    "cca2": "US",
+    "country": {
+      "callingCode": [
+        "1",
+      ],
+      "cca2": "US",
+      "currency": [
+        "USD",
+      ],
+      "flag": "flag-us",
+      "name": "United States",
+      "region": "Americas",
+      "subregion": "North America",
     },
   }, // country code for phone number
-  phone: "",
+  phone: '',
   userTargets: [...REGISTRATION_USER_TARGETS],
   tribes: [...REGISTRATION_DEFAULT_TRIBES],
   communityGuidelines: [...REGISTRATION_COMMUNITY_GUIDELINE],
@@ -76,16 +76,16 @@ const INITIAL_STATE = {
     refreshing: false,
     loading: false,
     hasNextPage: undefined,
-    uploading: false,
+    uploading: false
   },
   profilePic: null,
   profileObjectId: null,
-  step: "",
+  step: '',
   error: {},
-  errorMessage: "",
+  errorMessage: '',
   uploading: false, // flag for uploading user contacts, no longer being used after v0.4.8
   fetching: false, // flag for fetching matched contacts, no longer being used after v0.4.8
-  loading: false, // Register account loading. Disable account input when loading, no longer being used after v0.4.8
+  loading: false // Register account loading. Disable account input when loading, no longer being used after v0.4.8
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -140,7 +140,7 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case REGISTRATION_ERROR:
-      return { ...state, error: action.payload, loading: false };
+     return { ...state, error: action.payload, loading: false };
 
     // User pressed back button on nav bar
     case REGISTRATION_BACK:
@@ -163,20 +163,10 @@ export default (state = INITIAL_STATE, action) => {
 
     // Registration account form change
     case REGISTRATION_ACCOUNT_FORM_CHANGE:
-      return {
-        ...state,
-        [action.payload.prop]: action.payload.value,
-        error: {},
-        errorMessage: "",
-      };
+      return { ...state, [action.payload.prop]: action.payload.value, error: {}, errorMessage: '' };
 
     case REGISTRATION_INTRO_FORM_CHANGE:
-      return {
-        ...state,
-        headline: action.payload,
-        error: {},
-        errorMessage: "",
-      };
+      return { ...state, headline: action.payload, error: {}, errorMessage: '' };
 
     // User go to adding profile picture part
     case REGISTRATION_ADDPROFILE:
@@ -202,22 +192,22 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, step: REGISTRATION_CONTACT };
 
     case REGISTRATION_CONTACT_SKIP:
-      return { ...state, headline: "" };
+      return { ...state, headline: '' };
 
     // User starts to upload contacts
     case REGISTRATION_CONTACT_SYNC: {
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, "step", REGISTRATION_CONTACT_SYNC);
-      newState = _.set(newState, "uploading", true);
-      newState = _.set(newState, "matchedContacts.uploading", true); // New standardized way for uploading flag
+      newState = _.set(newState, 'step', REGISTRATION_CONTACT_SYNC);
+      newState = _.set(newState, 'uploading', true);
+      newState = _.set(newState, 'matchedContacts.uploading', true); // New standardized way for uploading flag
       return newState;
     }
 
     // Contacts upload done
     case REGISTRATION_CONTACT_SYNC_UPLOAD_DONE: {
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, "uploading", false);
-      newState = _.set(newState, "matchedContacts.uploading", false); // New standardized way for uploading flag
+      newState = _.set(newState, 'uploading', false);
+      newState = _.set(newState, 'matchedContacts.uploading', false); // New standardized way for uploading flag
       return newState;
     }
 
@@ -225,10 +215,10 @@ export default (state = INITIAL_STATE, action) => {
       const { refreshing, loading } = action.payload;
       let newState = _.cloneDeep(state);
       // For refreshing, loading will be undefined which is fine and vice versa
-      newState = _.set(newState, "matchedContacts.refreshing", refreshing); // New standardized way for uploading flag
-      newState = _.set(newState, "matchedContacts.loading", loading); // New standardized way for uploading flag
+      newState = _.set(newState, 'matchedContacts.refreshing', refreshing); // New standardized way for uploading flag
+      newState = _.set(newState, 'matchedContacts.loading', loading); // New standardized way for uploading flag
 
-      newState = _.set(newState, "fetching", true);
+      newState = _.set(newState, 'fetching', true);
       return newState;
     }
 
@@ -238,14 +228,14 @@ export default (state = INITIAL_STATE, action) => {
 
       let newState = _.cloneDeep(state);
       if (refreshing) {
-        newState = _.set(newState, "matchedContacts.refreshing", false); // New standardized way for uploading flag
+        newState = _.set(newState, 'matchedContacts.refreshing', false); // New standardized way for uploading flag
       }
       if (loading) {
-        newState = _.set(newState, "matchedContacts.loading", false); // New standardized way for uploading flag
+        newState = _.set(newState, 'matchedContacts.loading', false); // New standardized way for uploading flag
       }
-      newState = _.set(newState, "matchedContacts.skip", skip);
-      newState = _.set(newState, "matchedContacts.hasNextPage", hasNextPage);
-      newState = _.set(newState, "fetching", false);
+      newState = _.set(newState, 'matchedContacts.skip', skip);
+      newState = _.set(newState, 'matchedContacts.hasNextPage', hasNextPage);
+      newState = _.set(newState, 'fetching', false);
 
       // Set new data based on fetch type
       let newData = [];
@@ -254,10 +244,10 @@ export default (state = INITIAL_STATE, action) => {
       }
 
       if (loading) {
-        const oldData = _.get(newState, "matchedContacts.data");
+        const oldData = _.get(newState, 'matchedContacts.data');
         newData = arrayUnique(oldData.concat(data));
       }
-      newState = _.set(newState, "matchedContacts.data", newData);
+      newState = _.set(newState, 'matchedContacts.data', newData);
 
       // const newMatchedContacts = { ...state.matchedContacts };
       // newMatchedContacts.data = arrayUnique(newMatchedContacts.data.concat(data));
@@ -276,8 +266,8 @@ export default (state = INITIAL_STATE, action) => {
       // return { ...state, fetching: true, matchedContacts: newMatchedContacts };
 
       let newState = _.cloneDeep(state);
-      newState = _.set(newState, "matchedContacts.refreshing", true); // New standardized way for uploading flag
-      newState = _.set(newState, "fetching", true);
+      newState = _.set(newState, 'matchedContacts.refreshing', true); // New standardized way for uploading flag
+      newState = _.set(newState, 'fetching', true);
       return newState;
     }
 
@@ -286,10 +276,10 @@ export default (state = INITIAL_STATE, action) => {
       const { skip, data } = action.payload;
       let newState = _.cloneDeep(state);
 
-      newState = _.set(newState, "matchedContacts.data", data);
-      newState = _.set(newState, "matchedContacts.refreshing", false);
-      newState = _.set(newState, "matchedContacts.skip", skip);
-      newState = _.set(newState, "fetching", false);
+      newState = _.set(newState, 'matchedContacts.data', data);
+      newState = _.set(newState, 'matchedContacts.refreshing', false);
+      newState = _.set(newState, 'matchedContacts.skip', skip);
+      newState = _.set(newState, 'fetching', false);
 
       return newState;
     }

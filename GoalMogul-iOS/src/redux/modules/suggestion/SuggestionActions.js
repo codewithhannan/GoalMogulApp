@@ -1,12 +1,19 @@
 // Actions for suggestion modal
 
-export const createSuggestion = () => {};
 
-export const cancelSuggestion = () => {};
+export const createSuggestion = () => {
 
-export const chooseCategory = (category) => (dispatch) =>
+};
+
+export const cancelSuggestion = () => {
+
+};
+
+export const chooseCategory = category => (dispatch) =>
   dispatch({
-    payload: category,
+    payload: category
   });
 
-export const submitSuggestion = () => (dispatch, getState) => {};
+export const submitSuggestion = () => (dispatch, getState) => {
+
+};

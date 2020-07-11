@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   View,
   KeyboardAvoidingView,
@@ -12,72 +12,72 @@ import {
   ImageBackground,
   Modal,
   DatePickerIOS,
-} from "react-native";
-import { connect } from "react-redux";
-import { CheckBox } from "react-native-elements";
-import moment from "moment";
-import { MaterialIcons } from "@expo/vector-icons";
-import { Field, reduxForm, formValueSelector } from "redux-form";
-import R from "ramda";
-import { MenuProvider } from "react-native-popup-menu";
-import DateTimePicker from "react-native-modal-datetime-picker";
+} from 'react-native';
+import { connect } from 'react-redux';
+import { CheckBox } from 'react-native-elements';
+import moment from 'moment';
+import { MaterialIcons } from '@expo/vector-icons';
+import {
+  Field,
+  reduxForm,
+  formValueSelector,
+} from 'redux-form';
+import R from 'ramda';
+import {
+  MenuProvider,
+} from 'react-native-popup-menu';
+import DateTimePicker from 'react-native-modal-datetime-picker';
 
 // Components
-import ModalHeader from "../Common/Header/ModalHeader";
-import ImageModal from "../Common/ImageModal";
+import ModalHeader from '../Common/Header/ModalHeader';
+import ImageModal from '../Common/ImageModal';
 
 // Actions
 import {
   cancelCreatingNewEvent,
   createNewEvent,
-  eventToFormAdapter,
-} from "../../redux/modules/event/NewEventActions";
-import { openCameraRoll, openCamera } from "../../actions";
+  eventToFormAdapter
+} from '../../redux/modules/event/NewEventActions';
+import { openCameraRoll, openCamera } from '../../actions';
 
 // assets
-import cancel from "../../asset/utils/cancel_no_background.png";
-import camera from "../../asset/utils/camera.png";
-import cameraRoll from "../../asset/utils/cameraRoll.png";
-import imageOverlay from "../../asset/utils/imageOverlay.png";
-import expand from "../../asset/utils/expand.png";
+import cancel from '../../asset/utils/cancel_no_background.png';
+import camera from '../../asset/utils/camera.png';
+import cameraRoll from '../../asset/utils/cameraRoll.png';
+import imageOverlay from '../../asset/utils/imageOverlay.png';
+import expand from '../../asset/utils/expand.png';
 
 // Constants
-import { IMAGE_BASE_URL } from "../../Utils/Constants";
 import {
-  track,
-  trackWithProperties,
-  EVENT as E,
-} from "../../monitoring/segment";
+  IMAGE_BASE_URL
+} from '../../Utils/Constants';
+import { track, trackWithProperties, EVENT as E } from '../../monitoring/segment';
 
 // const { Popover } = renderers;
-const { width } = Dimensions.get("window");
-const DEBUG_KEY = "[ UI CreateEventModal ]";
+const { width } = Dimensions.get('window');
+const DEBUG_KEY = '[ UI CreateEventModal ]';
 
 class CreateEventModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mediaModal: false,
+      mediaModal: false
     };
   }
 
   componentDidMount() {
     this.startTime = new Date();
-    track(
-      this.props.initializeFromState
-        ? E.EDIT_EVENT_MODAL_OPENED
-        : E.CREATE_EVENT_MODAL_OPENED
-    );
+    track(this.props.initializeFromState ? E.EDIT_EVENT_MODAL_OPENED : E.CREATE_EVENT_MODAL_OPENED);
     this.initializeForm();
   }
 
   initializeForm() {
     const defaulVals = {
-      title: "",
+      title: '',
       participantsCanInvite: false,
       isInviteOnly: false,
-      location: "",
-      description: "",
+      location: '',
+      description: '',
       startTime: { date: new Date(), picker: false },
       endTime: { date: new Date(), picker: false },
       picture: undefined,
@@ -92,16 +92,16 @@ class CreateEventModal extends React.Component {
       : { ...defaulVals };
 
     this.props.initialize({
-      ...initialVals,
+      ...initialVals
     });
   }
 
-  handleCreate = (values) => {
+  handleCreate = values => {
     const { initializeFromState, event, picture } = this.props;
     const eventId = event ? event._id : undefined;
     const needUpload =
-      (initializeFromState && event.picture && event.picture !== picture) ||
-      (!initializeFromState && picture);
+      (initializeFromState && event.picture && event.picture !== picture)
+      || (!initializeFromState && picture);
 
     const { startTime, endTime } = this.props.formVals.values;
     const { isValid, callback } = isTimeValid(startTime.date, endTime.date);
@@ -111,12 +111,9 @@ class CreateEventModal extends React.Component {
       return;
     }
 
-    const durationSec =
-      (new Date().getTime() - this.startTime.getTime()) / 1000;
-    trackWithProperties(
-      initializeFromState ? E.EVENT_EDITED : E.EVENT_CREATED,
-      { ...this.props.formVals.values, DurationSec: durationSec }
-    );
+    const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
+    trackWithProperties(initializeFromState ? E.EVENT_EDITED : E.EVENT_CREATED,
+        {...this.props.formVals.values, 'DurationSec': durationSec});
 
     this.props.createNewEvent(
       this.props.formVals.values,
@@ -124,20 +121,20 @@ class CreateEventModal extends React.Component {
       initializeFromState, // isEdit
       eventId // eventId for updating
     );
-  };
+  }
 
   handleOpenCamera = () => {
     this.props.openCamera((result) => {
-      this.props.change("picture", result.uri);
+      this.props.change('picture', result.uri);
     });
-  };
+  }
 
   handleOpenCameraRoll = () => {
     const callback = R.curry((result) => {
-      this.props.change("picture", result.uri);
+      this.props.change('picture', result.uri);
     });
     this.props.openCameraRoll(callback);
-  };
+  }
 
   renderInput = ({
     input: { onChange, onFocus, value, ...restInput },
@@ -159,10 +156,10 @@ class CreateEventModal extends React.Component {
     return (
       <SafeAreaView
         style={{
-          backgroundColor: "white",
+          backgroundColor: 'white',
           borderBottomWidth: 0.5,
           margin: 5,
-          borderColor: "lightgray",
+          borderColor: 'lightgray'
         }}
       >
         <TextInput
@@ -172,13 +169,13 @@ class CreateEventModal extends React.Component {
           editable={editable}
           maxHeight={150}
           autoCorrect
-          keyboardType={keyboardType || "default"}
+          keyboardType={keyboardType || 'default'}
           multiline={multiline}
           value={value}
         />
       </SafeAreaView>
     );
-  };
+  }
 
   // Renderer for timeline
   renderTimeline = () => {
@@ -213,203 +210,191 @@ class CreateEventModal extends React.Component {
     if (this.props.startTime === undefined) return;
 
     const newPicker = true;
-    const startDatePicker = newPicker ? (
-      <DateTimePicker
-        isVisible={this.props.startTime.picker}
-        date={
-          this.props.startTime && this.props.startTime.date
-            ? this.props.startTime.date
-            : new Date()
-        }
-        mode="datetime"
-        onConfirm={(date) => {
-          if (!validateTime(date, this.props.endTime.date)) {
-            // If start date is later than end date, set the end date to
-            // be the same as start date
-            this.props.change("endTime", { date, picker: false });
-          }
-          // alert('Start time cannot be later than end time');
-          this.props.change("startTime", { date, picker: false });
-        }}
-        onCancel={() =>
-          this.props.change("startTime", {
-            date: this.props.startTime.date,
-            picker: false,
-          })
-        }
-      />
-    ) : (
-      <Modal
-        animationType="fade"
-        transparent={false}
-        visible={this.props.startTime.picker}
-      >
-        <ModalHeader
-          title="Select start time"
-          actionText="Done"
-          onAction={() =>
-            this.props.change("startTime", {
-              date: this.props.startTime.date,
-              picker: false,
-            })
-          }
-          onCancel={() =>
-            this.props.change("startTime", {
-              date: this.props.startTime.date,
-              picker: false,
-            })
-          }
-        />
-        <View style={{ flex: 1 }}>
-          <DatePickerIOS
-            date={this.props.startTime.date}
-            onDateChange={(date) =>
-              this.props.change("startTime", { date, picker: true })
+    const startDatePicker = newPicker ? 
+      (
+        <DateTimePicker
+          isVisible={this.props.startTime.picker}
+          date={this.props.startTime && this.props.startTime.date ? this.props.startTime.date : new Date()}
+          mode='datetime'
+          onConfirm={(date) => {
+            if (!validateTime(date, this.props.endTime.date)) {
+              // If start date is later than end date, set the end date to 
+              // be the same as start date
+              this.props.change('endTime', { date, picker: false });
             }
-          />
-        </View>
-      </Modal>
-    );
-
-    const endDatePicker = newPicker ? (
-      <DateTimePicker
-        isVisible={this.props.endTime.picker}
-        date={
-          this.props.endTime && this.props.endTime.date
-            ? this.props.endTime.date
-            : new Date()
-        }
-        mode="datetime"
-        onConfirm={(date) => {
-          if (!validateTime(this.props.startTime.date, date)) {
-            // If end date is early than start date, set the start date to
-            // be the same as end date
-            this.props.change("startTime", { date, picker: false });
-          }
-          // alert('End time cannot be early than start time');
-          this.props.change("endTime", { date, picker: false });
-        }}
-        onCancel={() =>
-          this.props.change("endTime", {
-            date: this.props.endTime.date,
-            picker: false,
-          })
-        }
-      />
-    ) : (
-      <Modal
-        animationType="fade"
-        transparent={false}
-        visible={this.props.endTime.picker}
-      >
-        <ModalHeader
-          title="Select end time"
-          actionText="Done"
-          onAction={() => {
-            this.props.change("endTime", {
-              date: this.props.endTime.date,
-              picker: false,
-            });
+            // alert('Start time cannot be later than end time');
+            this.props.change('startTime', { date, picker: false });
           }}
-          onCancel={() =>
-            this.props.change("endTime", {
-              date: this.props.endTime.date,
-              picker: false,
+          onCancel={() => 
+            this.props.change('startTime', { 
+              date: this.props.startTime.date, picker: false 
             })
           }
         />
-        <View style={{ flex: 1 }}>
-          <DatePickerIOS
-            date={this.props.endTime.date}
-            onDateChange={(date) =>
-              this.props.change("endTime", { date, picker: true })
+      ) :
+      (
+        <Modal
+          animationType="fade"
+          transparent={false}
+          visible={this.props.startTime.picker}
+        >
+          <ModalHeader
+            title='Select start time'
+            actionText='Done'
+            onAction={() =>
+              this.props.change('startTime', {
+                date: this.props.startTime.date,
+                picker: false
+              })
+            }
+            onCancel={() =>
+              this.props.change('startTime', {
+                date: this.props.startTime.date,
+                picker: false
+              })
             }
           />
+          <View style={{ flex: 1 }}>
+            <DatePickerIOS
+              date={this.props.startTime.date}
+              onDateChange={(date) => this.props.change('startTime', { date, picker: true })}
+            />
+          </View>
+
+        </Modal>
+      );
+
+      const endDatePicker = newPicker ?
+        (
+          <DateTimePicker
+            isVisible={this.props.endTime.picker}
+            date={this.props.endTime && this.props.endTime.date ? this.props.endTime.date : new Date()}
+            mode='datetime'
+            onConfirm={(date) => {
+              if (!validateTime(this.props.startTime.date, date)) {
+              // If end date is early than start date, set the start date to 
+              // be the same as end date
+                this.props.change('startTime', { date, picker: false });
+              }
+              // alert('End time cannot be early than start time');
+              this.props.change('endTime', { date, picker: false });
+            }}
+            onCancel={() => 
+              this.props.change('endTime', { 
+                date: this.props.endTime.date, picker: false 
+              })
+            }
+          />
+        ) :
+        (
+          <Modal
+            animationType="fade"
+            transparent={false}
+            visible={this.props.endTime.picker}
+          >
+            <ModalHeader
+              title='Select end time'
+              actionText='Done'
+              onAction={() => {
+                this.props.change('endTime', {
+                  date: this.props.endTime.date,
+                  picker: false
+                });
+              }}
+              onCancel={() =>
+                this.props.change('endTime', {
+                  date: this.props.endTime.date,
+                  picker: false
+                })
+              }
+            />
+            <View style={{ flex: 1 }}>
+              <DatePickerIOS
+                date={this.props.endTime.date}
+                onDateChange={(date) => this.props.change('endTime', { date, picker: true })}
+              />
+            </View>
+
+          </Modal>
+        );
+
+    const startTime = this.props.startTime.date ?
+      (
+        <View>
+          <Text>{moment(this.props.startTime.date).format('LL')}</Text>
+          <Text>{moment(this.props.startTime.date).format('LT')}</Text>
         </View>
-      </Modal>
-    );
+      ) :
+      <Text style={{ fontSize: 15 }}>Start</Text>;
 
-    const startTime = this.props.startTime.date ? (
-      <View>
-        <Text>{moment(this.props.startTime.date).format("LL")}</Text>
-        <Text>{moment(this.props.startTime.date).format("LT")}</Text>
-      </View>
-    ) : (
-      <Text style={{ fontSize: 15 }}>Start</Text>
-    );
-
-    const endTime = this.props.endTime.date ? (
-      <View>
-        <Text>{moment(this.props.endTime.date).format("LL")}</Text>
-        <Text>{moment(this.props.endTime.date).format("LT")}</Text>
-      </View>
-    ) : (
-      <Text style={{ fontSize: 15 }}>End</Text>
-    );
+    const endTime = this.props.endTime.date ?
+      (
+        <View>
+          <Text>{moment(this.props.endTime.date).format('LL')}</Text>
+          <Text>{moment(this.props.endTime.date).format('LT')}</Text>
+        </View>
+      ) :
+      <Text style={{ fontSize: 15 }}>End</Text>;
 
     // Show cancel button if there is date set
-    const cancelButton =
-      this.props.endTime.date || this.props.startTime.date ? (
-        <TouchableOpacity
+    const cancelButton = this.props.endTime.date || this.props.startTime.date 
+      ? 
+      (
+        <TouchableOpacity 
           activeOpacity={0.6}
-          style={{ justifyContent: "center", padding: 10, marginLeft: 5 }}
+          style={{ justifyContent: 'center', padding: 10, marginLeft: 5 }}
           onPress={() => {
-            this.props.change("hasTimeline", false);
-            this.props.change("endTime", {
-              date: undefined,
-              picker: false,
+            this.props.change('hasTimeline', false);
+            this.props.change('endTime', {
+              date: undefined, picker: false
             });
-            this.props.change("startTime", {
-              date: undefined,
-              picker: false,
+            this.props.change('startTime', {
+              date: undefined, picker: false
             });
           }}
         >
           <Image source={cancel} style={{ ...styles.cancelIconStyle }} />
         </TouchableOpacity>
-      ) : null;
+      )
+      : null;
 
     return (
       <View style={{ ...styles.sectionMargin }}>
         {titleText}
-        <View style={{ marginTop: 8, marginLeft: 10, flexDirection: "row" }}>
-          <TouchableOpacity
+        <View style={{ marginTop: 8, marginLeft: 10, flexDirection: 'row' }}>
+          <TouchableOpacity 
             activeOpacity={0.6}
             style={{
               height: 50,
               width: 130,
-              alignItems: "center",
-              justifyContent: "center",
-              ...styles.borderStyle,
+              alignItems: 'center',
+              justifyContent: 'center',
+              ...styles.borderStyle
             }}
             onPress={() =>
-              this.props.change("startTime", {
-                date: this.props.startTime.date
-                  ? this.props.startTime.date
-                  : new Date(),
-                picker: true,
+              this.props.change('startTime', {
+                date: this.props.startTime.date ? this.props.startTime.date : new Date(),
+                picker: true
               })
             }
           >
             {startTime}
           </TouchableOpacity>
 
-          <TouchableOpacity
+          <TouchableOpacity 
             activeOpacity={0.6}
             style={{
               height: 50,
               width: 130,
-              alignItems: "center",
-              justifyContent: "center",
+              alignItems: 'center',
+              justifyContent: 'center',
               marginLeft: 15,
-              ...styles.borderStyle,
+              ...styles.borderStyle
             }}
             onPress={() =>
-              this.props.change("endTime", {
-                date: this.props.endTime.date
-                  ? this.props.endTime.date
-                  : new Date(),
-                picker: true,
+              this.props.change('endTime', {
+                date: this.props.endTime.date ? this.props.endTime.date : new Date(),
+                picker: true
               })
             }
           >
@@ -422,27 +407,17 @@ class CreateEventModal extends React.Component {
         {endDatePicker}
       </View>
     );
-  };
+  }
 
   renderActionIcons() {
     const actionIconStyle = { ...styles.actionIconStyle };
     const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle };
     return (
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "flex-start",
-          marginTop: 10,
-        }}
-      >
-        <TouchableOpacity
-          activeOpacity={0.6}
-          style={actionIconWrapperStyle}
-          onPress={this.handleOpenCamera}
-        >
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10 }}>
+        <TouchableOpacity activeOpacity={0.6} style={actionIconWrapperStyle} onPress={this.handleOpenCamera}>
           <Image style={actionIconStyle} source={camera} />
         </TouchableOpacity>
-        <TouchableOpacity
+        <TouchableOpacity 
           activeOpacity={0.6}
           style={{ ...actionIconWrapperStyle, marginLeft: 5 }}
           onPress={this.handleOpenCameraRoll}
@@ -468,39 +443,39 @@ class CreateEventModal extends React.Component {
 
     if (picture) {
       return (
-        <View style={{ backgroundColor: "gray" }}>
+        <View style={{ backgroundColor: 'gray' }}>
           <ImageBackground
             style={styles.mediaStyle}
             source={{ uri: imageUrl }}
-            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: "cover" }}
+            imageStyle={{ borderRadius: 8, opacity: 0.7, resizeMode: 'cover' }}
           >
-            <View style={{ alignSelf: "center", justifyContent: "center" }}>
+            <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
               <Image
                 source={imageOverlay}
                 style={{
-                  alignSelf: "center",
-                  justifyContent: "center",
+                  alignSelf: 'center',
+                  justifyContent: 'center',
                   height: 40,
                   width: 50,
-                  tintColor: "#fafafa",
+                  tintColor: '#fafafa'
                 }}
               />
             </View>
 
-            <TouchableOpacity
+            <TouchableOpacity 
               activeOpacity={0.6}
               onPress={() => this.setState({ mediaModal: true })}
               style={{
-                position: "absolute",
+                position: 'absolute',
                 top: 10,
                 right: 15,
                 width: 24,
                 height: 24,
                 borderRadius: 12,
                 padding: 2,
-                backgroundColor: "rgba(0,0,0,0.3)",
-                alignItems: "center",
-                justifyContent: "center",
+                backgroundColor: 'rgba(0,0,0,0.3)',
+                alignItems: 'center',
+                justifyContent: 'center'
               }}
             >
               <Image
@@ -508,25 +483,24 @@ class CreateEventModal extends React.Component {
                 style={{
                   width: 16,
                   height: 16,
-                  tintColor: "#fafafa",
+                  tintColor: '#fafafa',
                   borderRadius: 4,
                 }}
               />
             </TouchableOpacity>
 
-            <TouchableOpacity
-              activeOpacity={0.6}
-              onPress={() => this.props.change("picture", false)}
+            <TouchableOpacity activeOpacity={0.6}
+              onPress={() => this.props.change('picture', false)}
               style={{
-                position: "absolute",
+                position: 'absolute',
                 top: 10,
                 left: 15,
                 width: 24,
                 height: 24,
                 borderRadius: 12,
-                backgroundColor: "rgba(0,0,0,0.3)",
-                alignItems: "center",
-                justifyContent: "center",
+                backgroundColor: 'rgba(0,0,0,0.3)',
+                alignItems: 'center',
+                justifyContent: 'center'
               }}
             >
               <Image
@@ -534,9 +508,9 @@ class CreateEventModal extends React.Component {
                 style={{
                   width: 16,
                   height: 16,
-                  tintColor: "#fafafa",
+                  tintColor: '#fafafa',
                   borderRadius: 8,
-                  padding: 2,
+                  padding: 2
                 }}
               />
             </TouchableOpacity>
@@ -552,13 +526,11 @@ class CreateEventModal extends React.Component {
     const { initializeFromState, event, picture } = this.props;
 
     return (
-      <ImageModal
+      <ImageModal 
         mediaRef={imageUrl}
         mediaModal={this.state.mediaModal}
         closeModal={() => this.setState({ mediaModal: false })}
-        isLocalFile={
-          !(initializeFromState && event.picture && event.picture === picture)
-        }
+        isLocalFile={!(initializeFromState && event.picture && event.picture === picture)}
       />
     );
   }
@@ -569,14 +541,14 @@ class CreateEventModal extends React.Component {
       <View style={{ marginBottom: 5 }}>
         {titleText}
         <Field
-          name="title"
-          label="title"
+          name='title'
+          label='title'
           component={this.renderInput}
           editable={!this.props.uploading}
           numberOfLines={1}
           multiline
           style={styles.goalInputStyle}
-          placeholder="Enter the title..."
+          placeholder='Enter the title...'
         />
       </View>
     );
@@ -588,14 +560,14 @@ class CreateEventModal extends React.Component {
       <View style={{ marginBottom: 5 }}>
         {titleText}
         <Field
-          name="location"
-          label="location"
+          name='location'
+          label='location'
           component={this.renderInput}
           editable={!this.props.uploading}
           numberOfLines={1}
-          keyboardType="default"
+          keyboardType='default'
           style={styles.goalInputStyle}
-          placeholder="Enter the location..."
+          placeholder='Enter the location...'
         />
       </View>
     );
@@ -607,46 +579,59 @@ class CreateEventModal extends React.Component {
       <View style={{ marginBottom: 5 }}>
         {titleText}
         <Field
-          name="description"
-          label="description"
+          name='description'
+          label='description'
           component={this.renderInput}
           editable={!this.props.uploading}
           numberOfLines={5}
           style={styles.goalInputStyle}
-          placeholder="Describe your event..."
+          placeholder='Describe your event...'
         />
       </View>
     );
   }
 
   renderOptions() {
-    const participantOptions = this.props.isInviteOnly ? (
-      <CheckBox
-        title="Participants can invite others"
-        textStyle={{ fontWeight: "normal" }}
-        checked={this.props.participantsCanInvite}
-        checkedIcon={<MaterialIcons name="done" color="#111" size={21} />}
-        uncheckedIcon={<MaterialIcons name="done" color="#CCC" size={21} />}
-        onPress={() =>
-          this.props.change(
-            "participantsCanInvite",
-            !this.props.participantsCanInvite
-          )
-        }
-      />
-    ) : null;
+    const participantOptions = this.props.isInviteOnly
+      ? (
+        <CheckBox
+					title='Participants can invite others'
+					textStyle={{fontWeight: 'normal'}}
+					checked={this.props.participantsCanInvite}
+					checkedIcon={<MaterialIcons
+						name="done"
+						color="#111"
+						size={21}
+					/>}
+					uncheckedIcon={<MaterialIcons
+						name="done"
+						color="#CCC"
+						size={21}
+					/>}
+					onPress={() =>
+            this.props.change('participantsCanInvite', !this.props.participantsCanInvite)
+          }
+				/>
+      )
+      : null;
     return (
       <View>
         <CheckBox
-          title="Invite only"
-          textStyle={{ fontWeight: "normal" }}
-          checked={this.props.isInviteOnly}
-          checkedIcon={<MaterialIcons name="done" color="#111" size={21} />}
-          uncheckedIcon={<MaterialIcons name="done" color="#CCC" size={21} />}
-          onPress={() =>
-            this.props.change("isInviteOnly", !this.props.isInviteOnly)
-          }
-        />
+					title='Invite only'
+					textStyle={{fontWeight: 'normal'}}
+					checked={this.props.isInviteOnly}
+					checkedIcon={<MaterialIcons
+						name="done"
+						color="#111"
+						size={21}
+					/>}
+					uncheckedIcon={<MaterialIcons
+						name="done"
+						color="#CCC"
+						size={21}
+					/>}
+					onPress={() => this.props.change('isInviteOnly', !this.props.isInviteOnly)}
+				/>
         {participantOptions}
       </View>
     );
@@ -666,35 +651,30 @@ class CreateEventModal extends React.Component {
 
   render() {
     const { handleSubmit, errors } = this.props;
-    const actionText = this.props.initializeFromState ? "Update" : "Create";
-    const titleText = this.props.initializeFromState
-      ? "Edit Event"
-      : "New Event";
+    const actionText = this.props.initializeFromState ? 'Update' : 'Create';
+    const titleText = this.props.initializeFromState ? 'Edit Event' : 'New Event';
 
     return (
       <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
         <KeyboardAvoidingView
-          behavior="padding"
-          style={{ flex: 1, backgroundColor: "#ffffff" }}
+          behavior='padding'
+          style={{ flex: 1, backgroundColor: '#ffffff' }}
         >
           <ModalHeader
             title={titleText}
             actionText={actionText}
             onCancel={() => {
-              const durationSec =
-                (new Date().getTime() - this.startTime.getTime()) / 1000;
-              trackWithProperties(
-                this.props.initializeFromState
-                  ? E.EDIT_EVENT_MODAL_CANCELLED
-                  : E.CREATE_EVENT_MODAL_CANCELLED,
-                { DurationSec: durationSec }
-              );
+              const durationSec = (new Date().getTime() - this.startTime.getTime()) / 1000;
+              trackWithProperties(this.props.initializeFromState ? E.EDIT_EVENT_MODAL_CANCELLED : E.CREATE_EVENT_MODAL_CANCELLED,
+                  {'DurationSec': durationSec});
               this.props.cancelCreatingNewEvent();
             }}
             onAction={handleSubmit(this.handleCreate)}
             actionDisabled={this.props.uploading}
           />
-          <ScrollView style={{ borderTopColor: "#e9e9e9", borderTopWidth: 1 }}>
+          <ScrollView
+            style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
+          >
             <View style={{ flex: 1, padding: 20 }}>
               {this.renderEventTitle()}
               {this.renderEventDescription()}
@@ -703,6 +683,7 @@ class CreateEventModal extends React.Component {
               {this.renderOptions()}
               {this.renderImageSelection()}
             </View>
+
           </ScrollView>
         </KeyboardAvoidingView>
       </MenuProvider>
@@ -720,47 +701,38 @@ const isTimeValid = (start, end) => {
   let ret = { isValid: true };
 
   if (!start) {
-    ret = {
-      isValid: false,
-      callback: () => {
-        alert("Missing start time");
-      },
-    };
+    ret = { isValid: false, callback: () => {
+      alert("Missing start time");
+    }};
     return ret;
   }
 
   if (!end) {
-    ret = {
-      isValid: false,
-      callback: () => {
-        alert("Missing end time");
-      },
-    };
+    ret = { isValid: false, callback: () => {
+      alert("Missing end time");
+    }};
     return ret;
   }
 
   if (moment(start) > moment(end)) {
-    ret = {
-      isValid: false,
-      callback: () => {
-        alert("End time should be early than start time");
-      },
-    };
+    ret = { isValid: false, callback: () => {
+      alert("End time should be early than start time");
+    }};
     return ret;
   }
 
   return {
-    isValid: true,
+    isValid: true
   };
 };
 
 CreateEventModal = reduxForm({
-  form: "createEventModal",
-  enableReinitialize: true,
+  form: 'createEventModal',
+  enableReinitialize: true
 })(CreateEventModal);
 
-const mapStateToProps = (state) => {
-  const selector = formValueSelector("createEventModal");
+const mapStateToProps = state => {
+  const selector = formValueSelector('createEventModal');
   const { user } = state.user;
   const { profile } = user;
   const { uploading } = state.newEvent;
@@ -768,42 +740,45 @@ const mapStateToProps = (state) => {
   return {
     user,
     profile,
-    title: selector(state, "title"),
+    title: selector(state, 'title'),
     // start: selector(state, 'start'),
     // durationHours: selector(state, 'durationHours'),
-    startTime: selector(state, "startTime"),
-    endTime: selector(state, "endTime"),
-    participantsCanInvite: selector(state, "participantsCanInvite"),
-    isInviteOnly: selector(state, "isInviteOnly"),
-    location: selector(state, "location"),
-    description: selector(state, "description"),
-    picture: selector(state, "picture"),
-    hasTimeline: selector(state, "hasTimeline"),
+    startTime: selector(state, 'startTime'),
+    endTime: selector(state, 'endTime'),
+    participantsCanInvite: selector(state, 'participantsCanInvite'),
+    isInviteOnly: selector(state, 'isInviteOnly'),
+    location: selector(state, 'location'),
+    description: selector(state, 'description'),
+    picture: selector(state, 'picture'),
+    hasTimeline: selector(state, 'hasTimeline'),
     formVals: state.form.createEventModal,
-    uploading,
+    uploading
   };
 };
 
-export default connect(mapStateToProps, {
-  cancelCreatingNewEvent,
-  createNewEvent,
-  openCameraRoll,
-  openCamera,
-})(CreateEventModal);
+export default connect(
+  mapStateToProps,
+  {
+    cancelCreatingNewEvent,
+    createNewEvent,
+    openCameraRoll,
+    openCamera,
+  }
+)(CreateEventModal);
 
 const styles = {
   sectionMargin: {
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 10
   },
   inputContainerStyle: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 5,
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: "#e9e9e9",
-    shadowColor: "#ddd",
+    borderColor: '#e9e9e9',
+    shadowColor: '#ddd',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.8,
     shadowRadius: 1,
@@ -816,64 +791,64 @@ const styles = {
   },
   titleTextStyle: {
     fontSize: 11,
-    color: "#a1a1a1",
-    padding: 2,
+    color: '#a1a1a1',
+    padding: 2
   },
   standardInputStyle: {
     flex: 1,
     fontSize: 12,
     padding: 13,
     paddingRight: 14,
-    paddingLeft: 14,
+    paddingLeft: 14
   },
   goalInputStyle: {
     fontSize: 20,
     padding: 20,
     paddingRight: 15,
-    paddingLeft: 15,
+    paddingLeft: 15
   },
   inputStyle: {
     paddingTop: 6,
     paddingBottom: 6,
     padding: 10,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 22,
   },
   cancelIconStyle: {
     height: 20,
     width: 20,
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end'
   },
   mediaStyle: {
     height: 150,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   actionIconWrapperStyle: {
-    backgroundColor: "#fafafa",
+    backgroundColor: '#fafafa',
     padding: 10,
     paddingLeft: 15,
     paddingRight: 15,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4
   },
   actionIconStyle: {
-    tintColor: "#4a4a4a",
+    tintColor: '#4a4a4a',
     height: 15,
-    width: 18,
+    width: 18
   },
   borderStyle: {
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: "#e9e9e9",
-    shadowColor: "#ddd",
+    borderColor: '#e9e9e9',
+    shadowColor: '#ddd',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.8,
     shadowRadius: 1,
   },
   // Menu related style
   backdrop: {
-    backgroundColor: "transparent",
-  },
+    backgroundColor: 'transparent'
+  }
 };

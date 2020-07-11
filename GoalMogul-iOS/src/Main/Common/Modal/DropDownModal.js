@@ -5,7 +5,7 @@ export class DropDownHolder {
   }
   /**
    * Set drop down image src
-   * @param {String} imageSrc
+   * @param {String} imageSrc 
    */
   static setDropDownImage(imageSrc) {
     return this.dropDown.setImageSrc(imageSrc);
@@ -17,7 +17,7 @@ export class DropDownHolder {
   /**
    * Set drop down image style
    * Will only be valid for one time
-   * @param {*} style
+   * @param {*} style 
    */
   static setDropDownImageStyle(style) {
     return this.dropDown.setImageStyle(style);
@@ -26,7 +26,7 @@ export class DropDownHolder {
   /**
    * Set drop down image container style
    * Will only be valid for one time
-   * @param {*} style
+   * @param {*} style 
    */
   static setDropDownImageContainerStyle(style) {
     return this.dropDown.setImageContainerStyle(style);
@@ -34,19 +34,19 @@ export class DropDownHolder {
 
   /**
    * Set one time onClose function
-   * @param {*} func
+   * @param {*} func 
    */
   static setOnClose(func) {
     return this.dropDown.setOnClose(func);
   }
-
+  
   /**
    * Show alert toast
-   * @param {*} type
-   * @param {*} title
-   * @param {*} message
+   * @param {*} type 
+   * @param {*} title 
+   * @param {*} message 
    */
   static alert(type, title, message) {
     return this.dropDown.alertWithType(type, title, message);
   }
-}
+};

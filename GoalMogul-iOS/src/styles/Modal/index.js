@@ -1,3 +1,5 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
-export const ChatStyles = StyleSheet.create({});
+export const ChatStyles = StyleSheet.create({
+    
+});

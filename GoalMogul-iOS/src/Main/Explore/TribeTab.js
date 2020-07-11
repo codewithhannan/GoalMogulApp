@@ -1,33 +1,33 @@
-import React from "react";
+import React from 'react';
 import {
   View,
   FlatList,
   TouchableOpacity,
   Text,
-  ActivityIndicator,
-} from "react-native";
-import { connect } from "react-redux";
-import _ from "lodash";
-import { Actions } from "react-native-router-flux";
+  ActivityIndicator
+} from 'react-native';
+import { connect } from 'react-redux';
+import _ from 'lodash'
+import { Actions } from 'react-native-router-flux';
 
 // Actions
 import {
   refreshTribe,
-  loadMoreTribe,
-} from "../../redux/modules/tribe/TribeTabActions";
+  loadMoreTribe
+} from '../../redux/modules/tribe/TribeTabActions';
 
 // Components
-import TribeCard from "./TribeCard";
-import TribeTabFilterBar from "./TribeTabFilterBar";
-import EmptyResult from "../Common/Text/EmptyResult";
+import TribeCard from './TribeCard';
+import TribeTabFilterBar from './TribeTabFilterBar';
+import EmptyResult from '../Common/Text/EmptyResult';
 
 class TribeTab extends React.Component {
-  componentDidMount() {
+  componentDidMount() {  
     if (!this.props.data || _.isEmpty(this.props.data)) {
       this.handleOnRefresh();
     }
   }
-
+  
   _keyExtractor = (item) => item._id;
 
   handleOnRefresh = () => this.props.refreshTribe();
@@ -36,72 +36,70 @@ class TribeTab extends React.Component {
 
   renderItem = ({ item }) => {
     return <TribeCard item={item} />;
-  };
+  }
 
   renderListHeader() {
-    return <TribeTabFilterBar value={{ sortBy: this.props.sortBy }} />;
+    return <TribeTabFilterBar value={{ sortBy: this.props.sortBy }}/>;
   }
 
   renderListEmptyComponent() {
     if (this.props.loading) {
-      return null;
+        return null;
     }
     return (
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <Text
-          style={{
-            paddingTop: 100,
-            fontSize: 17,
-            fontWeight: "600",
-            color: "#818181",
-          }}
-        >
-          No Recommendations
-        </Text>
-        <TouchableOpacity
-          onPress={() =>
-            Actions.push("myTribeTab", { initial: { openNewTribeModal: true } })
-          }
-          style={{
-            height: 40,
-            width: "auto",
-            padding: 10,
-            marginTop: 20,
-            borderRadius: 5,
-            borderWidth: 0.5,
-            borderColor: "lightgray",
-            justifyContent: "center",
-          }}
-          activeOpacity={0.6}
-        >
-          <Text
-            style={{
-              color: "gray",
-              fontSize: 13,
-              fontWeight: "600",
-            }}
-          >
-            Create a Tribe
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
+        <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text 
+                style={{
+                    paddingTop: 100,
+                    fontSize: 17,
+                    fontWeight: '600',
+                    color: '#818181'
+                }}
+            >
+                No Recommendations
+            </Text>
+            <TouchableOpacity
+                onPress={() => Actions.push('myTribeTab', { initial: { openNewTribeModal: true }})}
+                style={{ 
+                    height: 40,
+                    width: 'auto',
+                    padding: 10,
+                    marginTop: 20,
+                    borderRadius: 5,
+                    borderWidth: 0.5,
+                    borderColor: 'lightgray',
+                    justifyContent: 'center'
+                }}
+                activeOpacity={0.6}
+            >
+                <Text
+                    style={{
+                        color: 'gray',
+                        fontSize: 13,
+                        fontWeight: '600'
+                    }}
+                >
+                    Create a Tribe
+                </Text>
+            </TouchableOpacity>
+        </View>
+    )
   }
 
   renderListFooter() {
-    if (!this.props.loading) return null;
-    return (
-      <View
-        style={{
-          paddingVertical: 20,
-          borderTopWidth: 1,
-          borderColor: "#CED0CE",
-        }}
-      >
-        <ActivityIndicator animating size="small" />
-      </View>
-    );
-  }
+		if (!this.props.loading) return null;
+		return (
+			<View
+				style={{
+					paddingVertical: 20,
+					borderTopWidth: 1,
+					borderColor: "#CED0CE"
+				}}
+			>
+				<ActivityIndicator animating size="small" />
+			</View>
+		);
+	}
 
   render() {
     return (
@@ -124,7 +122,7 @@ class TribeTab extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const { data, loading, sortBy, refreshing } = state.tribeTab;
 
   return {
@@ -132,11 +130,14 @@ const mapStateToProps = (state) => {
     // data: [],
     refreshing,
     loading,
-    sortBy,
+    sortBy
   };
 };
 
-export default connect(mapStateToProps, {
-  refreshTribe,
-  loadMoreTribe,
-})(TribeTab);
+export default connect(
+  mapStateToProps,
+  {
+    refreshTribe,
+    loadMoreTribe
+  }
+)(TribeTab);

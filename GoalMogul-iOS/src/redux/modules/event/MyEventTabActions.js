@@ -1,6 +1,6 @@
 // This stores informations for events under my events
-import { Actions } from "react-native-router-flux";
-import _ from "lodash";
+import { Actions } from 'react-native-router-flux';
+import _ from 'lodash';
 import {
   MYEVENTTAB_REFRESH_DONE,
   MYEVENTTAB_LOAD_DONE,
@@ -9,23 +9,23 @@ import {
   MYEVENTTAB_UPDATE_FILTEROPTIONS,
   MYEVENTTAB_OPEN,
   MYEVENTTAB_CLOSE,
-  MYEVENTTAB_UPDATE_TAB,
-} from "./MyEventTabReducers";
+  MYEVENTTAB_UPDATE_TAB
+} from './MyEventTabReducers';
 
-import { api as API } from "../../middleware/api";
-import { queryBuilder, componentKeyByTab } from "../../middleware/utils";
-import { Logger } from "../../middleware/utils/Logger";
+import { api as API } from '../../middleware/api';
+import { queryBuilder, componentKeyByTab } from '../../middleware/utils';
+import { Logger } from '../../middleware/utils/Logger';
 
-const DEBUG_KEY = "[ Action MyEventTab ]";
-const BASE_ROUTE = "secure/event";
+const DEBUG_KEY = '[ Action MyEventTab ]';
+const BASE_ROUTE = 'secure/event';
 
 // Open my event tab
 export const openMyEventTab = () => (dispatch, getState) => {
   const { tab } = getState().navigation;
   dispatch({
-    type: MYEVENTTAB_OPEN,
+    type: MYEVENTTAB_OPEN
   });
-  const componentToOpen = componentKeyByTab(tab, "myEventTab");
+  const componentToOpen = componentKeyByTab(tab, 'myEventTab');
   Actions.push(componentToOpen);
   refreshEvent()(dispatch, getState);
 };
@@ -34,7 +34,7 @@ export const openMyEventTab = () => (dispatch, getState) => {
 export const closeMyEventTab = () => (dispatch) => {
   Actions.pop();
   dispatch({
-    type: MYEVENTTAB_CLOSE,
+    type: MYEVENTTAB_CLOSE
   });
 };
 
@@ -42,23 +42,21 @@ export const closeMyEventTab = () => (dispatch) => {
 export const updateSortBy = (value) => (dispatch, getState) => {
   dispatch({
     type: MYEVENTTAB_SORTBY,
-    payload: value,
+    payload: value
   });
 
   refreshEvent()(dispatch, getState);
 };
 
+
 // update filterOptions
-export const updateFilterOptions = ({ type, value }) => (
-  dispatch,
-  getState
-) => {
+export const updateFilterOptions = ({ type, value }) => (dispatch, getState) => {
   dispatch({
     type: MYEVENTTAB_UPDATE_FILTEROPTIONS,
     payload: {
       type,
-      value,
-    },
+      value
+    }
   });
 
   refreshEvent()(dispatch, getState);
@@ -69,8 +67,8 @@ export const myEventSelectTab = (index) => (dispatch, getState) => {
   dispatch({
     type: MYEVENTTAB_UPDATE_TAB,
     payload: {
-      index,
-    },
+      index
+    }
   });
 
   refreshEvent()(dispatch, getState);
@@ -90,114 +88,71 @@ export const refreshEvent = () => (dispatch, getState) => {
   const { limit, filterOptions, sortBy } = getState().myEventTab;
 
   dispatch({
-    type: MYEVENTTAB_LOAD,
+    type: MYEVENTTAB_LOAD
   });
-  loadEvent(
-    0,
-    limit,
-    token,
-    sortBy,
-    filterOptions,
-    (data) => {
-      dispatch({
-        type: MYEVENTTAB_REFRESH_DONE,
-        payload: {
-          type: "myeventtab",
-          data,
-          skip: data.length,
-          limit: 20,
-          pageId: "MYEVENTTAB",
-          hasNextPage: !(
-            data === undefined ||
-            data.length === 0 ||
-            data.length < limit
-          ),
-        },
-      });
-    },
-    () => {
-      // TODO: implement for onError
-    }
-  );
+  loadEvent(0, limit, token, sortBy, filterOptions, (data) => {
+    dispatch({
+      type: MYEVENTTAB_REFRESH_DONE,
+      payload: {
+        type: 'myeventtab',
+        data,
+        skip: data.length,
+        limit: 20,
+        pageId: 'MYEVENTTAB',
+        hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)
+      }
+    });
+  }, () => {
+    // TODO: implement for onError
+  });
 };
 
 // Load more for my event tab
 export const loadMoreEvent = () => (dispatch, getState) => {
   const { token } = getState().user;
-  const {
-    skip,
-    limit,
-    sortBy,
-    filterOptions,
-    hasNextPage,
-  } = getState().myEventTab;
+  const { skip, limit, sortBy, filterOptions, hasNextPage } = getState().myEventTab;
   if (hasNextPage === false) {
     return;
   }
 
   dispatch({
-    type: MYEVENTTAB_LOAD,
+    type: MYEVENTTAB_LOAD
   });
-  loadEvent(
-    skip,
-    limit,
-    token,
-    sortBy,
-    filterOptions,
-    (data) => {
-      dispatch({
-        type: MYEVENTTAB_LOAD_DONE,
-        payload: {
-          type: "myeventtab",
-          data,
-          pageId: "MYEVENTTAB",
-          skip: data.length,
-          limit: 20,
-          hasNextPage: !(
-            data === undefined ||
-            data.length === 0 ||
-            data.length < limit
-          ),
-        },
-      });
-    },
-    () => {
-      // TODO: implement for onError
-    }
-  );
+  loadEvent(skip, limit, token, sortBy, filterOptions, (data) => {
+    dispatch({
+      type: MYEVENTTAB_LOAD_DONE,
+      payload: {
+        type: 'myeventtab',
+        data,
+        pageId: 'MYEVENTTAB',
+        skip: data.length,
+        limit: 20,
+        hasNextPage: !(data === undefined || data.length === 0 || data.length < limit)
+      }
+    });
+  }, () => {
+    // TODO: implement for onError
+  });
 };
 
 /**
  * Basic API to load goals based on skip and limit
  */
-const loadEvent = (
-  skip,
-  limit,
-  token,
-  sortBy,
-  filterOptions,
-  callback,
-  onError
-) => {
+const loadEvent = (skip, limit, token, sortBy, filterOptions, callback, onError) => {
   let filterOptionsToUse = _.cloneDeep(filterOptions);
   console.log(`${DEBUG_KEY}: filterOptionsToUse is:`, filterOptionsToUse);
-  if (filterOptionsToUse.rsvp === "All") {
-    filterOptionsToUse = _.omit(filterOptionsToUse, "rsvp");
-    console.log(
-      `${DEBUG_KEY}: filterOptionsToUse after removal:`,
-      filterOptionsToUse
-    );
+  if (filterOptionsToUse.rsvp === 'All') {
+    filterOptionsToUse = _.omit(filterOptionsToUse, 'rsvp');
+    console.log(`${DEBUG_KEY}: filterOptionsToUse after removal:`, filterOptionsToUse);
   }
 
-  API.get(
-    `${BASE_ROUTE}?${queryBuilder(skip, limit, {
-      sortBy,
-      filterOptions: { ...filterOptionsToUse },
-    })}`,
-    token
-  )
+  API
+    .get(
+      `${BASE_ROUTE}?${queryBuilder(skip, limit, { sortBy, filterOptions: { ...filterOptionsToUse } })}`,
+      token
+    )
     .then((res) => {
-      Logger.log("loading events with res: ", res, 3);
+      Logger.log('loading events with res: ', res, 3);
       if (res && res.data) {
         // Right now return test data
         return callback(res.data);

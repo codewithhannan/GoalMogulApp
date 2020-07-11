@@ -1,27 +1,29 @@
-import React, { Component } from "react";
-import { View, Image, Text, Platform } from "react-native";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { View, Image, Text, Platform } from 'react-native';
+import { connect } from 'react-redux';
 
 /* Asset */
-import HeaderImage from "../../asset/header/header-logo.png";
-import HeaderLogo from "../../asset/header/header-logo-white.png";
+import HeaderImage from '../../asset/header/header-logo.png';
+import HeaderLogo from '../../asset/header/header-logo-white.png';
 
-import Pagination from "./Pagination";
-import { BackIcon } from "../../Utils/Icons";
+import Pagination from './Pagination';
+import { BackIcon } from '../../Utils/Icons';
 
-import { registrationBack, registrationLogin } from "../../actions";
-import DelayedButton from "../../Main/Common/Button/DelayedButton";
-import { IPHONE_MODELS, DEVICE_MODEL } from "../../Utils/Constants";
+import { registrationBack, registrationLogin } from '../../actions';
+import DelayedButton from '../../Main/Common/Button/DelayedButton';
+import { IPHONE_MODELS, DEVICE_MODEL } from '../../Utils/Constants';
 
 // const IMAGE_HEIGHT_SMALL = 60;
 // const IMAGE_HEIGHT = 80;
 // const VIEW_HEIGHT = 207;
 // const VIEW_AMOUNT = 20;
 
-const IS_SMALL_PHONE =
-  Platform.OS === "ios" && IPHONE_MODELS.includes(DEVICE_MODEL);
+
+const IS_SMALL_PHONE = Platform.OS === 'ios' &&
+  IPHONE_MODELS.includes(DEVICE_MODEL)
 
 class Header extends Component {
+
   // constructor(props) {
   //   super(props);
   //
@@ -68,15 +70,12 @@ class Header extends Component {
       return null;
     }
     return (
-      <DelayedButton
-        onPress={this.handleBackOnClick.bind(this)}
-        touchableWithoutFeedback
-      >
+      <DelayedButton onPress={this.handleBackOnClick.bind(this)} touchableWithoutFeedback>
         <View style={styles.navBarStyle}>
-          <BackIcon
+          <BackIcon 
             iconStyle={{
               ...styles.iconStyle,
-              tintColor: "white",
+              tintColor: 'white',
             }}
           />
           {/**
@@ -94,11 +93,11 @@ class Header extends Component {
 
   renderPagination(type) {
     switch (type) {
-      case "profile":
+      case 'profile':
         return <Pagination total={3} current={0} />;
-      case "intro":
+      case 'intro':
         return <Pagination total={3} current={1} />;
-      case "contact":
+      case 'contact':
         return <Pagination total={3} current={2} />;
       default:
         return null;
@@ -106,12 +105,10 @@ class Header extends Component {
   }
 
   render() {
-    const headerStyle = { ...styles.containerStyle };
+    const headerStyle = { ...styles.containerStyle }
     const { hasBackButton } = this.props;
 
-    const pagination = this.props.type
-      ? this.renderPagination(this.props.type)
-      : null;
+    const pagination = this.props.type ? this.renderPagination(this.props.type) : null;
 
     if (this.props.name) {
       headerStyle.height = 170;
@@ -139,7 +136,7 @@ class Header extends Component {
         </View>
       );
     }
-
+    
     // Added this case for uploading image should not go back to account creation
     if (hasBackButton === false) {
       return (
@@ -151,15 +148,12 @@ class Header extends Component {
 
     return (
       <View style={headerStyle}>
-        <DelayedButton
-          onPress={this.handleLoginBackOnClick.bind(this)}
-          touchableWithoutFeedback
-        >
+        <DelayedButton onPress={this.handleLoginBackOnClick.bind(this)} touchableWithoutFeedback>
           <View style={styles.navBarStyle}>
-            <BackIcon
+            <BackIcon 
               iconStyle={{
                 ...styles.iconStyle,
-                tintColor: "white",
+                tintColor: 'white',
               }}
             />
           </View>
@@ -172,20 +166,20 @@ class Header extends Component {
 
 const styles = {
   containerStyle: {
-    display: "flex",
-    backgroundColor: "#17B3EC",
+    display: 'flex',
+    backgroundColor: '#17B3EC',
     height: 207,
     paddingTop: 14,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   navBarStyle: {
-    alignSelf: "flex-start",
-    position: "absolute",
+    alignSelf: 'flex-start',
+    position: 'absolute',
     left: 20,
     top: IS_SMALL_PHONE ? 30 : 42,
-    display: "flex",
-    flexDirection: "row",
+    display: 'flex',
+    flexDirection: 'row'
   },
   iconStyle: {
     // justifyContent: 'flex-start'
@@ -193,23 +187,23 @@ const styles = {
   imageStyle: {
     height: 38,
     width: 38,
-    marginTop: 18,
+    marginTop: 18
   },
   introTextStyle: {
     fontSize: 19,
-    justifyContent: "center",
-    alignSelf: "center",
-    color: "#ffffff",
+    justifyContent: 'center',
+    alignSelf: 'center',
+    color: '#ffffff',
     marginTop: 8,
-    marginBottom: 6,
+    marginBottom: 6
   },
   headerNameStyle: {
     fontSize: 24,
-    fontWeight: "800",
-    justifyContent: "center",
-    alignSelf: "center",
-    color: "#ffffff",
-  },
+    fontWeight: '800',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    color: '#ffffff'
+  }
 };
 
 export default connect(null, { registrationBack, registrationLogin })(Header);

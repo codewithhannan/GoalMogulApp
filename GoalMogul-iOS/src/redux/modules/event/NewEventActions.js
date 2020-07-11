@@ -12,38 +12,44 @@
  *  picture
  *  }
  */
-// Actions to create a new event
-import { Actions } from "react-native-router-flux";
-import { Alert } from "react-native";
-import moment from "moment";
-import { SubmissionError } from "redux-form";
-import { api as API } from "../../middleware/api";
-import ImageUtils from "../../../Utils/ImageUtils";
+ // Actions to create a new event
+import { Actions } from 'react-native-router-flux';
+import { Alert } from 'react-native';
+import moment from 'moment';
+import {
+  SubmissionError
+} from 'redux-form';
+import { api as API } from '../../middleware/api';
+import ImageUtils from '../../../Utils/ImageUtils';
 
 import {
   EVENT_NEW_SUBMIT,
   EVENT_NEW_SUBMIT_SUCCESS,
   EVENT_NEW_SUBMIT_FAIL,
   EVENT_NEW_CANCEL,
-  EVENT_NEW_UPLOAD_PICTURE_SUCCESS,
-} from "./NewEventReducers";
+  EVENT_NEW_UPLOAD_PICTURE_SUCCESS
+} from './NewEventReducers';
 
-import { EVENT_EDIT_SUCCESS } from "./EventReducers";
+import {
+  EVENT_EDIT_SUCCESS
+} from './EventReducers';
 
-import { refreshEvent } from "./MyEventTabActions";
+import {
+  refreshEvent
+} from './MyEventTabActions';
 
-const BASE_ROUTE = "secure/event";
-const DEBUG_KEY = "[ Action New Event ]";
+const BASE_ROUTE = 'secure/event';
+const DEBUG_KEY = '[ Action New Event ]';
 
 // Open creating event modal
 export const openNewEventModal = () => (dispatch) => {
-  Actions.push("createEventStack");
+  Actions.push('createEventStack');
 };
 
 export const cancelCreatingNewEvent = () => (dispatch) => {
   Actions.pop();
   dispatch({
-    type: EVENT_NEW_CANCEL,
+    type: EVENT_NEW_CANCEL
   });
 };
 
@@ -58,22 +64,19 @@ export const cancelCreatingNewEvent = () => (dispatch) => {
  * @param options:
   {participantsCanInvite, isInviteOnly, participantLimit, location, description, picture}
  */
-export const createNewEvent = (values, needUpload, isEdit, eventId) => (
-  dispatch,
-  getState
-) => {
+export const createNewEvent = (values, needUpload, isEdit, eventId) => (dispatch, getState) => {
   const { token } = getState().user;
   const newEvent = formToEventAdapter(values, eventId, isEdit);
   console.log(`${DEBUG_KEY}: newEvent to submit is: `, newEvent);
 
   dispatch({
-    type: EVENT_NEW_SUBMIT,
+    type: EVENT_NEW_SUBMIT
   });
 
   const onSuccess = (res, event) => {
     dispatch({
       type: EVENT_NEW_SUBMIT_SUCCESS,
-      payload: res,
+      payload: res
     });
 
     if (isEdit) {
@@ -83,63 +86,51 @@ export const createNewEvent = (values, needUpload, isEdit, eventId) => (
         payload: {
           newEvent: {
             _id: event.eventId,
-            ...event.details,
-          },
-        },
+            ...event.details
+          }
+        }
       });
       refreshEvent()(dispatch, getState);
     }
     Actions.pop();
     Alert.alert(
-      "Success",
-      `Congrats! Your event is successfully ${isEdit ? "updated" : "created"}.`
+      'Success',
+      `Congrats! Your event is successfully ${isEdit ? 'updated' : 'created'}.`
     );
   };
 
   const onError = (err) => {
     dispatch({
-      type: EVENT_NEW_SUBMIT_FAIL,
+      type: EVENT_NEW_SUBMIT_FAIL
     });
     Alert.alert(
-      `Failed to ${isEdit ? "update" : "create"} new Event`,
-      "Please try again later"
+      `Failed to ${isEdit ? 'update' : 'create'} new Event`,
+      'Please try again later'
     );
-    console.log("Error submitting new Event with err: ", err);
+    console.log('Error submitting new Event with err: ', err);
   };
 
   const imageUri = isEdit ? newEvent.details.picture : newEvent.options.picture;
   if (!needUpload) {
     // If no mediaRef then directly submit the post
-    sendCreateEventRequest(
-      newEvent,
-      token,
-      isEdit,
-      dispatch,
-      onSuccess,
-      onError
-    );
+    sendCreateEventRequest(newEvent, token, isEdit, dispatch, onSuccess, onError);
   } else {
     ImageUtils.getImageSize(imageUri)
       .then(({ width, height }) => {
         // Resize image
-        console.log("width, height are: ", width, height);
+        console.log('width, height are: ', width, height);
         return ImageUtils.resizeImage(imageUri, width, height);
       })
       .then((image) => {
         // Upload image to S3 server
-        console.log("image to upload is: ", image);
-        return ImageUtils.getPresignedUrl(
-          image.uri,
-          token,
-          (objectKey) => {
-            // Obtain pre-signed url and store in getState().postDetail.newPost.mediaRef
-            dispatch({
-              type: EVENT_NEW_UPLOAD_PICTURE_SUCCESS,
-              payload: objectKey,
-            });
-          },
-          "PageImage"
-        );
+        console.log('image to upload is: ', image);
+        return ImageUtils.getPresignedUrl(image.uri, token, (objectKey) => {
+          // Obtain pre-signed url and store in getState().postDetail.newPost.mediaRef
+          dispatch({
+            type: EVENT_NEW_UPLOAD_PICTURE_SUCCESS,
+            payload: objectKey
+          });
+        }, 'PageImage');
       })
       .then(({ signedRequest, file }) => {
         return ImageUtils.uploadImage(file, signedRequest);
@@ -147,10 +138,7 @@ export const createNewEvent = (values, needUpload, isEdit, eventId) => (
       .then((res) => {
         if (res instanceof Error) {
           // uploading to s3 failed
-          console.log(
-            `${DEBUG_KEY}: error uploading image to s3 with res: `,
-            res
-          );
+          console.log(`${DEBUG_KEY}: error uploading image to s3 with res: `, res);
           throw res;
         }
         return getState().newEvent.tmpPicture;
@@ -159,14 +147,16 @@ export const createNewEvent = (values, needUpload, isEdit, eventId) => (
         // Use the presignedUrl as media string
         console.log(`${BASE_ROUTE}: presigned url sent is: `, image);
         const newEventObject = isEdit
-          ? {
-              ...newEvent,
-              details: { ...newEvent.details, picture: image },
-            }
-          : {
-              ...newEvent,
-              options: { ...newEvent.options, picture: image },
-            };
+          ?
+          {
+            ...newEvent,
+            details: { ...newEvent.details, picture: image }
+          }
+          :
+          {
+            ...newEvent,
+            options: { ...newEvent.options, picture: image }
+          };
         return sendCreateEventRequest(
           newEventObject,
           token,
@@ -190,16 +180,10 @@ export const createNewEvent = (values, needUpload, isEdit, eventId) => (
   }
 };
 
-const sendCreateEventRequest = (
-  newEvent,
-  token,
-  isEdit,
-  dispatch,
-  onSuccess,
-  onError
-) => {
+const sendCreateEventRequest = (newEvent, token, isEdit, dispatch, onSuccess, onError) => {
   if (isEdit) {
-    API.put(`${BASE_ROUTE}`, { ...newEvent }, token)
+    API
+      .put(`${BASE_ROUTE}`, { ...newEvent }, token)
       .then((res) => {
         if (res.data || res.status === 200) {
           return onSuccess(res, newEvent);
@@ -211,7 +195,8 @@ const sendCreateEventRequest = (
       });
     return;
   }
-  API.post(`${BASE_ROUTE}`, { ...newEvent }, token)
+  API
+    .post(`${BASE_ROUTE}`, { ...newEvent }, token)
     .then((res) => {
       if (res.data || res.status === 200) {
         return onSuccess(res);
@@ -241,13 +226,16 @@ const formToEventAdapter = (values, eventId, isEdit) => {
     participantLimit,
     location,
     description,
-    picture,
+    picture
   } = values;
 
   if (!title || !startTime.date || !endTime.date || !location || !description) {
-    Alert.alert("Missing field", "Please check all the fields are filled in.");
+    Alert.alert(
+      'Missing field',
+      'Please check all the fields are filled in.'
+    );
     throw new SubmissionError({
-      _error: "Missing field",
+      _error: 'Missing field'
     });
   }
 
@@ -257,11 +245,11 @@ const formToEventAdapter = (values, eventId, isEdit) => {
 
   if (duration <= 0) {
     Alert.alert(
-      "Incorrect format",
-      "Start time should be early than the end time."
+      'Incorrect format',
+      'Start time should be early than the end time.'
     );
     throw new SubmissionError({
-      _error: "Incorrect start time",
+      _error: 'Incorrect start time'
     });
   }
 
@@ -278,7 +266,7 @@ const formToEventAdapter = (values, eventId, isEdit) => {
         title,
         start: startTime.date,
         durationHours: duration.asHours(),
-      },
+      }
     };
   }
 
@@ -292,8 +280,8 @@ const formToEventAdapter = (values, eventId, isEdit) => {
       participantLimit,
       location,
       description,
-      picture,
-    },
+      picture
+    }
   };
 };
 
@@ -308,22 +296,22 @@ export const eventToFormAdapter = (event) => {
     participantLimit,
     location,
     description,
-    picture,
+    picture
   } = event;
 
   const cloneStartDate = new Date(start);
-  const end = moment(cloneStartDate).add(durationHours, "h").toDate();
+  const end = moment(cloneStartDate).add(durationHours, 'h').toDate();
   const hasTimeline = start && durationHours;
 
   return {
     title,
     startTime: {
       date: cloneStartDate,
-      picker: false,
+      picker: false
     },
     endTime: {
       date: end,
-      picker: false,
+      picker: false
     },
     participantsCanInvite,
     isInviteOnly,
@@ -331,6 +319,6 @@ export const eventToFormAdapter = (event) => {
     location,
     description,
     picture,
-    hasTimeline,
+    hasTimeline
   };
 };

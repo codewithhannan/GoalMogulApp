@@ -1,33 +1,36 @@
-import React, { Component } from "react";
-import { View, ScrollView, Alert } from "react-native";
-import { Actions } from "react-native-router-flux";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import {
+  View,
+  ScrollView,
+  Alert
+} from 'react-native';
+import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
 
 // Components
-import SettingCard from "../SettingCard";
+import SettingCard from '../SettingCard';
 
 // Actions
-import { fetchProfile, logout } from "../../../actions";
+import { fetchProfile, logout } from '../../../actions';
 
 // Utils
-import { componentKeyByTab } from "../../../redux/middleware/utils";
+import { componentKeyByTab } from '../../../redux/middleware/utils';
 
 class Account extends Component {
   render() {
     const { tab } = this.props;
     return (
-      <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
+      <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
         <ScrollView>
           <SettingCard
             title="Email address"
             key="emailaddress"
             explanation="Add or remove email addresses"
             onPress={() => {
-              const componentKeyToOpen = componentKeyByTab(tab, "email");
-              this.props.fetchProfile(this.props.userId, () =>
-                Actions.push(`${componentKeyToOpen}`, {
-                  userId: this.props.userId,
-                })
+              const componentKeyToOpen = componentKeyByTab(tab, 'email');
+              this.props.fetchProfile(
+                this.props.userId, 
+                () => Actions.push(`${componentKeyToOpen}`, { userId: this.props.userId })
               );
             }}
           />
@@ -36,10 +39,8 @@ class Account extends Component {
             key="phonenumbers"
             explanation="Manage your phone numbers"
             onPress={() => {
-              const componentKeyToOpen = componentKeyByTab(tab, "phone");
-              Actions.push(`${componentKeyToOpen}`, {
-                userId: this.props.userId,
-              });
+              const componentKeyToOpen = componentKeyByTab(tab, 'phone');
+              Actions.push(`${componentKeyToOpen}`, { userId: this.props.userId });
             }}
           />
           <SettingCard
@@ -47,19 +48,9 @@ class Account extends Component {
             key="notification"
             explanation="Manage your notification preferences"
             onPress={() => {
-              const componentKeyToOpen = componentKeyByTab(
-                tab,
-                "notification_setting"
-              );
-              const notificationPreferences = this.props.user
-                .notificationPreferences || {
-                pushDisabled: undefined,
-                emailDisabled: undefined,
-              };
-              Actions.push(`${componentKeyToOpen}`, {
-                initializeFromState: true,
-                notificationPreferences,
-              });
+              const componentKeyToOpen = componentKeyByTab(tab, 'notification_setting');
+              const notificationPreferences = this.props.user.notificationPreferences || { pushDisabled: undefined, emailDisabled: undefined };
+              Actions.push(`${componentKeyToOpen}`, { initializeFromState: true, notificationPreferences });
             }}
           />
           <SettingCard
@@ -67,13 +58,8 @@ class Account extends Component {
             key="password"
             explanation="Update your passwords"
             onPress={() => {
-              const componentKeyToOpen = componentKeyByTab(
-                tab,
-                "editPasswordForm"
-              );
-              Actions.push(`${componentKeyToOpen}`, {
-                userId: this.props.userId,
-              });
+              const componentKeyToOpen = componentKeyByTab(tab, 'editPasswordForm');
+              Actions.push(`${componentKeyToOpen}`, { userId: this.props.userId });
             }}
           />
           <SettingCard
@@ -81,13 +67,8 @@ class Account extends Component {
             key="blockedusers"
             explanation="Manage blocked users"
             onPress={() => {
-              const componentKeyToOpen = componentKeyByTab(
-                tab,
-                "friendsBlocked"
-              );
-              Actions.push(`${componentKeyToOpen}`, {
-                userId: this.props.userId,
-              });
+              const componentKeyToOpen = componentKeyByTab(tab, 'friendsBlocked');
+              Actions.push(`${componentKeyToOpen}`, { userId: this.props.userId });
             }}
           />
           <SettingCard
@@ -95,13 +76,11 @@ class Account extends Component {
             key="logout"
             explanation="Log out of current account"
             onPress={() => {
-              Alert.alert("Log out", "Are you sure to log out?", [
-                {
-                  text: "Cancel",
-                  onPress: () => console.log("user cancel logout"),
-                },
-                { text: "Confirm", onPress: () => this.props.logout() },
-              ]);
+              Alert.alert('Log out', 'Are you sure to log out?', [
+                  { text: 'Cancel', onPress: () => console.log('user cancel logout') },
+                  { text: 'Confirm', onPress: () => this.props.logout() }
+                ]
+              );
             }}
           />
         </ScrollView>
@@ -110,18 +89,21 @@ class Account extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const { userId, user } = state.user;
   const { tab } = state.navigation;
 
   return {
     userId,
     tab,
-    user,
+    user
   };
 };
 
-export default connect(mapStateToProps, {
-  fetchProfile,
-  logout,
-})(Account);
+export default connect(
+  mapStateToProps,
+  {
+    fetchProfile,
+    logout
+  }
+)(Account);

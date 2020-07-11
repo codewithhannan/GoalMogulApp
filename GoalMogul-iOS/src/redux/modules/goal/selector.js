@@ -1,18 +1,21 @@
-import { createSelector } from "reselect";
-import _ from "lodash";
-import { INITIAL_GOAL_PAGE } from "./Goals";
+import { createSelector } from 'reselect';
+import _ from 'lodash';
+import {
+  INITIAL_GOAL_PAGE
+} from './Goals';
 
-import { getCommentWithPageInfo } from "../feed/comment/CommentSelector";
+import { 
+  getCommentWithPageInfo
+} from '../feed/comment/CommentSelector';
 
-const DEBUG_KEY = "[ Selector Goal ]";
+const DEBUG_KEY = '[ Selector Goal ]';
 
 const getNeeds = (state) => state.goalDetail.goal.needs;
 const getSteps = (state) => state.goalDetail.goal.steps;
 
 const getComments = (state) => state.comment;
 
-const getCommentsV2 = (state, goalId, pageId) =>
-  getCommentWithPageInfo(state, goalId, pageId);
+const getCommentsV2 = (state, goalId, pageId) => getCommentWithPageInfo(state, goalId, pageId);
 
 const getPageId = (state, pageId) => pageId;
 
@@ -27,22 +30,17 @@ const getState = (state) => state.goalDetail;
 export const getGoalStepsAndNeeds = createSelector(
   [getState, getTab, getComments, getPageId],
   (goalDetails, tab, allComments, pageId) => {
-    const path =
-      !tab || tab === "homeTab" ? "goal" : `goal${capitalizeWord(tab)}`;
+    const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
     const goal = _.get(goalDetails, `${path}.goal`);
 
-    const page = pageId ? `${pageId}` : "default";
+    const page = pageId ? `${pageId}` : 'default';
     const commentPath = !tab ? `homeTab.${page}` : `${tab}.${page}`;
     const comments = _.get(allComments, `${commentPath}`);
 
     const { needs, steps } = goal;
     let res = [];
     if (steps && steps.length > 0) {
-      res.push({
-        sectionTitle: "steps",
-        count: steps.length,
-        _id: "step-title",
-      });
+      res.push({ sectionTitle: 'steps', count: steps.length, _id: 'step-title' });
     }
 
     // Transform needs to have a type
@@ -50,18 +48,16 @@ export const getGoalStepsAndNeeds = createSelector(
     if (steps && steps.length !== 0) {
       newSteps = steps.map((step) => {
         const stepComments = comments.transformedComments.filter((c) => {
-          if (
-            c.suggestion &&
-            c.suggestion.suggestionForRef &&
-            c.suggestion.suggestionForRef === step._id
-          ) {
-            return true;
+          if (c.suggestion &&
+              c.suggestion.suggestionForRef &&
+              c.suggestion.suggestionForRef === step._id) {
+                return true;
           }
           return false;
         });
-
+        
         let count = 0;
-        stepComments.forEach((c) => {
+        stepComments.forEach(c => {
           if (c.childComments && c.childComments.length > 0) {
             // Count all the childComments
             count += c.childComments.length;
@@ -73,8 +69,8 @@ export const getGoalStepsAndNeeds = createSelector(
         // console.log(`${DEBUG_KEY}: count is: `, count);
         return {
           ...step,
-          type: "step",
-          count,
+          type: 'step',
+          count
         };
       });
     }
@@ -82,29 +78,23 @@ export const getGoalStepsAndNeeds = createSelector(
     res = res.concat(newSteps);
 
     if (needs && needs.length > 0) {
-      res.push({
-        sectionTitle: "needs",
-        count: needs.length,
-        _id: "need-title",
-      });
+      res.push({ sectionTitle: 'needs', count: needs.length, _id: 'need-title' });
     }
     // Transform needs to have a type
     let newNeeds = [];
     if (needs && needs.length !== 0) {
       newNeeds = needs.map((need) => {
         const needComments = comments.transformedComments.filter((c) => {
-          if (
-            c.suggestion &&
-            c.suggestion.suggestionForRef &&
-            c.suggestion.suggestionForRef === need._id
-          ) {
-            return true;
+          if (c.suggestion &&
+              c.suggestion.suggestionForRef &&
+              c.suggestion.suggestionForRef === need._id) {
+                return true;
           }
           return false;
         });
 
         let count = 0;
-        needComments.forEach((c) => {
+        needComments.forEach(c => {
           if (c.childComments && c.childComments.length > 0) {
             // Count all the childComments
             count += c.childComments.length;
@@ -115,8 +105,8 @@ export const getGoalStepsAndNeeds = createSelector(
 
         return {
           ...need,
-          type: "need",
-          count,
+          type: 'need',
+          count
         };
       });
     }
@@ -126,16 +116,13 @@ export const getGoalStepsAndNeeds = createSelector(
   }
 );
 
-export const makeGetGoalStepsAndNeedsV2 = () =>
-  createSelector([getGoal, getCommentsV2], (goal, comments) => {
+export const makeGetGoalStepsAndNeedsV2 = () => createSelector(
+  [getGoal, getCommentsV2],
+  (goal, comments) => {
     const { needs, steps } = goal;
     let res = [];
     if (steps && steps.length > 0) {
-      res.push({
-        sectionTitle: "steps",
-        count: steps.length,
-        _id: "step-title",
-      });
+      res.push({ sectionTitle: 'steps', count: steps.length, _id: 'step-title' });
     }
 
     // Transform needs to have a type
@@ -143,20 +130,22 @@ export const makeGetGoalStepsAndNeedsV2 = () =>
     if (steps && steps.length !== 0) {
       newSteps = steps.map((step) => {
         const stepComments = comments.transformedComments.filter((c) => {
-          const isSuggestionForStep =
+
+          const isSuggestionForStep = (
             c.suggestion &&
             c.suggestion.suggestionForRef &&
-            c.suggestion.suggestionForRef === step._id;
+            c.suggestion.suggestionForRef === step._id
+          );
 
           const isCommentForStep = c.stepRef === step._id;
           if (isCommentForStep || isSuggestionForStep) {
-            return true;
+                return true;
           }
           return false;
         });
-
+        
         let count = 0;
-        stepComments.forEach((c) => {
+        stepComments.forEach(c => {
           if (c.childComments && c.childComments.length > 0) {
             // Count all the childComments
             count += c.childComments.length;
@@ -168,8 +157,8 @@ export const makeGetGoalStepsAndNeedsV2 = () =>
         // console.log(`${DEBUG_KEY}: count is: `, count);
         return {
           ...step,
-          type: "step",
-          count,
+          type: 'step',
+          count
         };
       });
     }
@@ -177,31 +166,28 @@ export const makeGetGoalStepsAndNeedsV2 = () =>
     res = res.concat(newSteps);
 
     if (needs && needs.length > 0) {
-      res.push({
-        sectionTitle: "needs",
-        count: needs.length,
-        _id: "need-title",
-      });
+      res.push({ sectionTitle: 'needs', count: needs.length, _id: 'need-title' });
     }
     // Transform needs to have a type
     let newNeeds = [];
     if (needs && needs.length !== 0) {
       newNeeds = needs.map((need) => {
         const needComments = comments.transformedComments.filter((c) => {
-          const isSuggestionForNeed =
+          const isSuggestionForNeed = (
             c.suggestion &&
             c.suggestion.suggestionForRef &&
-            c.suggestion.suggestionForRef === need._id;
+            c.suggestion.suggestionForRef === need._id
+          );
 
           const isCommentForNeed = c.needRef === need._id;
           if (isSuggestionForNeed || isCommentForNeed) {
-            return true;
+                return true;
           }
           return false;
         });
 
         let count = 0;
-        needComments.forEach((c) => {
+        needComments.forEach(c => {
           if (c.childComments && c.childComments.length > 0) {
             // Count all the childComments
             count += c.childComments.length;
@@ -212,22 +198,22 @@ export const makeGetGoalStepsAndNeedsV2 = () =>
 
         return {
           ...need,
-          type: "need",
-          count,
+          type: 'need',
+          count
         };
       });
     }
 
     res = res.concat(newNeeds);
     return res;
-  });
+  }
+);
 
 // Get goal detail by tabs
 export const getGoalDetailByTab = createSelector(
   [getState, getTab],
   (goalDetails, tab) => {
-    const path =
-      !tab || tab === "homeTab" ? "goal" : `goal${capitalizeWord(tab)}`;
+    const path = !tab || tab === 'homeTab' ? 'goal' : `goal${capitalizeWord(tab)}`;
     return _.get(goalDetails, `${path}`);
   }
 );
@@ -249,19 +235,26 @@ const getGoalPage = (state, goalId, pageId) => {
 };
 
 export const makeGetGoalDetailById = () => {
-  return createSelector([getGoal], (goal) => goal);
+  return createSelector(
+    [getGoal],
+    (goal) => goal
+  );
 };
 
 export const makeGetGoalPageDetailByPageId = () => {
-  return createSelector([getGoal, getGoalPage], (goal, goalPage) => {
-    return {
-      goal,
-      goalPage,
-    };
-  });
+  return createSelector(
+    [getGoal, getGoalPage],
+    (goal, goalPage) => {
+      return {
+        goal,
+        goalPage
+      };
+    }
+  );
 };
+  
 
 const capitalizeWord = (word) => {
-  if (!word) return "";
-  return word.replace(/^\w/, (c) => c.toUpperCase());
+  if (!word) return '';
+  return word.replace(/^\w/, c => c.toUpperCase());
 };

@@ -1,14 +1,22 @@
-import React from "react";
-import { View, Animated, Text, Image, Dimensions } from "react-native";
+import React from 'react';
+import {
+  View,
+  Animated,
+  Text,
+  Image,
+  Dimensions
+} from 'react-native';
 
 // Styles
-import { tutorial } from "../styles";
+import {
+  tutorial
+} from '../styles';
 
 // Assets
-import TribeIcon from "../../assets/tutorial/Tribe.png"; // Image used in version 1 tutorial
-import GoalCardScreenshot from "../../assets/tutorial/V2_3.png";
+import TribeIcon from '../../assets/tutorial/Tribe.png'; // Image used in version 1 tutorial
+import GoalCardScreenshot from '../../assets/tutorial/V2_3.png';
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get('window');
 
 class Tribe extends React.PureComponent {
   render() {
@@ -16,22 +24,18 @@ class Tribe extends React.PureComponent {
       subTitleTextStyle,
       textStyle,
       imageShadow,
-      containerStyle,
+      containerStyle
     } = tutorial;
 
     return (
       <Animated.View
         style={[
           containerStyle,
-          { ...styles.containerStyle, opacity: this.props.opacity, flex: 1 },
+          { ...styles.containerStyle, opacity: this.props.opacity, flex: 1 }
         ]}
       >
         <View style={[imageShadow, { flex: 1 }]}>
-          <Image
-            source={GoalCardScreenshot}
-            style={styles.imageStyle}
-            resizeMode="contain"
-          />
+          <Image source={GoalCardScreenshot} style={styles.imageStyle} resizeMode='contain' />
         </View>
 
         <View style={{ paddingLeft: 26, paddingRight: 26 }}>
@@ -50,13 +54,13 @@ class Tribe extends React.PureComponent {
 const styles = {
   containerStyle: {
     paddingTop: 30,
-    paddingBottom: 30,
+    paddingBottom: 30
   },
   imageStyle: {
     width: (width * 5) / 7,
     flex: 1,
-    alignSelf: "stretch",
-  },
+    alignSelf: 'stretch',
+  }
 };
 
 export default Tribe;

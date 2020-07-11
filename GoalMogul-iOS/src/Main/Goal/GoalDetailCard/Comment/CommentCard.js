@@ -1,19 +1,26 @@
-import React from "react";
-import { View, Image, Text, Keyboard } from "react-native";
-import { connect } from "react-redux";
+import React from 'react';
+import {
+  View,
+  Image,
+  Text,
+  Keyboard
+} from 'react-native';
+import { connect } from 'react-redux';
 
 // Components
-import CommentUserDetail from "./CommentUserDetail";
-import ChildCommentCard from "./ChildCommentCard";
+import CommentUserDetail from './CommentUserDetail';
+import ChildCommentCard from './ChildCommentCard';
 
 // Assets
-import ReplyIcon from "../../../../asset/utils/reply.png";
+import ReplyIcon from '../../../../asset/utils/reply.png';
 
 // Styles
-import { cardBoxBorder } from "../../../../styles";
-import DelayedButton from "../../../Common/Button/DelayedButton";
+import {
+  cardBoxBorder
+} from '../../../../styles';
+import DelayedButton from '../../../Common/Button/DelayedButton';
 
-const DEBUG_KEY = "[ UI CommentCard ]";
+const DEBUG_KEY = '[ UI CommentCard ]';
 
 class CommentCard extends React.Component {
   constructor(props) {
@@ -29,14 +36,8 @@ class CommentCard extends React.Component {
   }
 
   componentDidMount() {
-    this.keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      this._keyboardDidShow
-    );
-    this.keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      this._keyboardDidHide
-    );
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
     const { childComments } = this.props.item;
 
     if (!childComments) return;
@@ -47,7 +48,7 @@ class CommentCard extends React.Component {
     if (commentLength !== childComments.length) {
       this.setState({
         ...this.state,
-        commentLength: childComments.length,
+        commentLength: childComments.length
       });
     }
   }
@@ -60,18 +61,13 @@ class CommentCard extends React.Component {
       x: e.nativeEvent.layout.x,
       y: e.nativeEvent.layout.y,
     };
-    this.setState({
-      childCommentLayouts,
-      totalViewHeight: getTotalViewHeight(this.state),
-    });
-  };
+    this.setState({ childCommentLayouts, totalViewHeight: getTotalViewHeight(this.state) });
+  }
 
   showMoreChildComments = () => {
     const { numberOfChildrenShowing, showMoreCount } = this.state;
     const { item } = this.props;
-    const currentChildCommentLength = item.childComments
-      ? item.childComments.length
-      : 0;
+    const currentChildCommentLength = item.childComments ? item.childComments.length : 0;
 
     let newNumberOfChildrenShowing = numberOfChildrenShowing;
     if (numberOfChildrenShowing >= currentChildCommentLength - showMoreCount) {
@@ -82,9 +78,9 @@ class CommentCard extends React.Component {
     this.setState({
       ...this.state,
       commentLength: currentChildCommentLength,
-      numberOfChildrenShowing: newNumberOfChildrenShowing,
+      numberOfChildrenShowing: newNumberOfChildrenShowing
     });
-  };
+  }
 
   showLessChildComments = () => {
     const { numberOfChildrenShowing, showMoreCount } = this.state;
@@ -96,9 +92,9 @@ class CommentCard extends React.Component {
     }
     this.setState({
       ...this.state,
-      numberOfChildrenShowing: newNumberOfChildrenShowing,
+      numberOfChildrenShowing: newNumberOfChildrenShowing
     });
-  };
+  }
 
   componentWillUnMount() {
     this.keyboardDidHideListener.remove();
@@ -107,13 +103,13 @@ class CommentCard extends React.Component {
 
   _keyboardDidShow = (e) => {
     this.setState({
-      keyboardHeight: e.endCoordinates.height,
+      keyboardHeight: e.endCoordinates.height
     });
   };
 
   _keyboardDidHide = (e) => {
     this.setState({
-      keyboardHeight: e.endCoordinates.height,
+      keyboardHeight: e.endCoordinates.height
     });
   };
 
@@ -121,9 +117,9 @@ class CommentCard extends React.Component {
   updateUserDetailLayout = (layout) => {
     this.setState({
       userDetailLayout: layout,
-      totalViewHeight: getTotalViewHeight(this.state),
+      totalViewHeight: getTotalViewHeight(this.state)
     });
-  };
+  }
 
   // Render child comments if there are some.
   renderChildComments() {
@@ -136,12 +132,11 @@ class CommentCard extends React.Component {
     // For child comments, only load the first three
     const childCommentCards = childComments.map((comment, index) => {
       if (index < numberOfChildrenShowing) {
-        const viewOffset =
-          getTotalPrevHeight(this.state, index) - this.state.keyboardHeight;
+        const viewOffset = getTotalPrevHeight(this.state, index) - this.state.keyboardHeight;
         return (
           <View
             key={index}
-            style={{ flexDirection: "row", marginTop: 0.5 }}
+            style={{ flexDirection: 'row', marginTop: 0.5 }}
             onLayout={(e) => this.onLayout(e, `${index}`)}
           >
             <ChildCommentIcon />
@@ -161,7 +156,7 @@ class CommentCard extends React.Component {
 
     if (childComments.length > numberOfChildrenShowing) {
       childCommentCards.push(
-        <DelayedButton
+        <DelayedButton 
           activeOpacity={0.6}
           key={childComments.length}
           onPress={this.showMoreChildComments}
@@ -169,23 +164,24 @@ class CommentCard extends React.Component {
         >
           <Text
             style={{
-              alignSelf: "center",
-              color: "#4ec9f3",
-              padding: 2,
+              alignSelf: 'center',
+              color: '#4ec9f3',
+              padding: 2
             }}
-          >
-            Load more replies ({childComments.length - numberOfChildrenShowing})
-          </Text>
+          >Load more replies ({childComments.length - numberOfChildrenShowing})</Text>
         </DelayedButton>
       );
     }
 
-    return <View>{childCommentCards}</View>;
+    return (
+      <View>
+        {childCommentCards}
+      </View>
+    );
   }
 
   render() {
-    const viewOffset =
-      getTotalPrevHeight(this.state) - this.state.keyboardHeight;
+    const viewOffset = getTotalPrevHeight(this.state) - this.state.keyboardHeight;
     // console.log(`${DEBUG_KEY} item is: `, this.props.item);
     return (
       <View style={styles.cardContainerStyle}>
@@ -205,17 +201,14 @@ class CommentCard extends React.Component {
 
 const getTotalPrevHeight = (state, index) => {
   const { childCommentLayouts } = state;
-  const i = index === undefined ? -1 : index;
+  const i = index === undefined ? -1 : index
 
-  const totalHeights = Object.entries(childCommentLayouts).reduce(
-    (total, [key, value]) => {
-      if (parseInt(key, 10) > i) {
-        return total + parseInt(value.height, 10);
-      }
-      return total;
-    },
-    0
-  );
+  const totalHeights = Object.entries(childCommentLayouts).reduce((total, [key, value]) => {
+    if (parseInt(key, 10) > i) {
+      return total + parseInt(value.height, 10);
+    }
+    return total;
+  }, 0);
 
   return totalHeights;
 };
@@ -223,18 +216,15 @@ const getTotalPrevHeight = (state, index) => {
 const getTotalViewHeight = (state) => {
   const { userDetailLayout, childCommentLayouts } = state;
 
-  let totalHeights = Object.entries(childCommentLayouts).reduce(
-    (total, [key, value]) => {
+  let totalHeights = Object.entries(childCommentLayouts).reduce((total, [key, value]) => {
       return total + parseInt(value.height, 10);
-    },
-    0
-  );
+  }, 0);
   if (userDetailLayout && userDetailLayout.height) {
     totalHeights -= userDetailLayout.height;
   }
 
   return totalHeights;
-};
+}
 
 const ChildCommentIcon = () => {
   return (
@@ -247,29 +237,32 @@ const ChildCommentIcon = () => {
 const styles = {
   cardContainerStyle: {
     marginBottom: 0.5,
-    ...cardBoxBorder,
+    ...cardBoxBorder
   },
 
   // Styles related to child comments
   replyIconStyle: {
     height: 20,
     width: 20,
-    tintColor: "#d2d2d2",
+    tintColor: '#d2d2d2'
   },
   replyIconContainerStyle: {
-    backgroundColor: "#fafafa",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 44,
-  },
+    backgroundColor: '#fafafa',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 44
+  }
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const { userId } = state.user;
 
   return {
-    userId,
+    userId
   };
 };
 
-export default connect(mapStateToProps, null)(CommentCard);
+export default connect(
+  mapStateToProps,
+  null
+)(CommentCard);

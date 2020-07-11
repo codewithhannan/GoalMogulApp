@@ -1,25 +1,30 @@
 /**
- * This component provides an entry point for user to discover new friends. This view might be
+ * This component provides an entry point for user to discover new friends. This view might be 
  * duplicate to Suggested.
  */
-import React, { Component } from "react";
-import { ActivityIndicator, FlatList, View } from "react-native";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { ActivityIndicator, FlatList, View } from 'react-native';
+import { connect } from 'react-redux';
 // actions
-import { handleRefresh } from "../../../../actions";
+import { handleRefresh } from '../../../../actions';
 // Constants
-import { MEET_REQUEST_LIMIT } from "../../../../reducers/MeetReducers";
-import { loadMoreRequest } from "../../../../redux/modules/meet/MeetActions";
+import { MEET_REQUEST_LIMIT } from '../../../../reducers/MeetReducers';
+import { loadMoreRequest } from '../../../../redux/modules/meet/MeetActions';
 // Styles
-import { BACKGROUND_COLOR } from "../../../../styles";
-import SearchBarHeader from "../../../Common/Header/SearchBarHeader";
-import EmptyResult from "../../../Common/Text/EmptyResult";
+import { BACKGROUND_COLOR } from '../../../../styles';
+import SearchBarHeader from '../../../Common/Header/SearchBarHeader';
+import EmptyResult from '../../../Common/Text/EmptyResult';
 // Components
-import SuggestedCard from "../../Suggested/SuggestedCard";
+import SuggestedCard from '../../Suggested/SuggestedCard';
+
+
+
+
+
 
 // tab key
-const key = "suggested";
-const DEBUG_KEY = "[ Component DiscoverTabView ]";
+const key = 'suggested';
+const DEBUG_KEY = '[ Component DiscoverTabView ]';
 
 class DiscoverTabView extends Component {
   constructor(props) {
@@ -36,12 +41,12 @@ class DiscoverTabView extends Component {
   handleRefresh = () => {
     console.log(`${DEBUG_KEY} Refreshing tab: `, key);
     this.props.handleRefresh(key);
-  };
+  }
 
   handleOnLoadMore = () => {
     console.log(`${DEBUG_KEY} Loading more for tab: `, key);
     this.props.loadMoreRequest(key);
-  };
+  }
 
   renderItem = ({ item }) => <SuggestedCard item={item} />;
 
@@ -52,10 +57,10 @@ class DiscoverTabView extends Component {
       return (
         <View
           style={{
-            paddingVertical: 20,
+            paddingVertical: 20
           }}
         >
-          <ActivityIndicator size="small" />
+          <ActivityIndicator size='small' />
         </View>
       );
     }
@@ -64,7 +69,7 @@ class DiscoverTabView extends Component {
   render() {
     return (
       <View style={styles.containerStyle}>
-        <SearchBarHeader backButton title="Discover Friends" />
+        <SearchBarHeader backButton title='Discover Friends' />
         <FlatList
           data={this.props.data}
           renderItem={this.renderItem}
@@ -74,12 +79,8 @@ class DiscoverTabView extends Component {
           onRefresh={this.handleRefresh}
           refreshing={this.props.refreshing}
           ListEmptyComponent={
-            this.props.loading || this.props.refreshing ? null : (
-              <EmptyResult
-                text={"No Recommendations"}
-                textStyle={{ paddingTop: 230 }}
-              />
-            )
+            this.props.loading || this.props.refreshing ? null :
+            <EmptyResult text={'No Recommendations'} textStyle={{ paddingTop: 230 }} />
           }
           ListFooterComponent={this.renderListFooter()}
         />
@@ -90,29 +91,33 @@ class DiscoverTabView extends Component {
 
 const styles = {
   containerStyle: {
-    flex: 1,
+    flex: 1, 
     backgroundColor: BACKGROUND_COLOR,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: '#f8f8f8',
     // shadowColor: '#000',
     // shadowOffset: { width: 0, height: 1 },
     // shadowOpacity: 0.3,
     // shadowRadius: 6,
   },
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const { suggested } = state.meet;
   const { data, refreshing, loading } = suggested;
+
 
   return {
     suggested,
     data,
     refreshing,
-    loading,
+    loading
   };
 };
 
-export default connect(mapStateToProps, {
-  handleRefresh,
-  loadMoreRequest,
-})(DiscoverTabView);
+export default connect(
+  mapStateToProps,
+  {
+    handleRefresh,
+    loadMoreRequest
+  }
+)(DiscoverTabView);

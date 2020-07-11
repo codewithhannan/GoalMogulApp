@@ -1,18 +1,18 @@
-import React, { Component } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
-import { SearchBar } from "react-native-elements";
+import React, { Component } from 'react';
+import { View, Text, Image, StyleSheet } from 'react-native';
+import { SearchBar } from 'react-native-elements';
 
 /* Import icons */
-import LikeIcon from "../asset/utils/like.png";
-import BulbIcon from "../asset/utils/bulb.png";
-import ShareIcon from "../asset/utils/share.png";
+import LikeIcon from '../asset/utils/like.png';
+import BulbIcon from '../asset/utils/bulb.png';
+import ShareIcon from '../asset/utils/share.png';
 
-import profilePic from "../asset/utils/defaultUserProfile.png";
+import profilePic from '../asset/utils/defaultUserProfile.png';
 
 /* Component */
-import Card from "./Card";
-import ContentContainer from "./ContentContainer";
-import ProgressBar from "./ProgressBar";
+import Card from './Card';
+import ContentContainer from './ContentContainer';
+import ProgressBar from './ProgressBar';
 
 class PostCard extends Component {
   constructor(props) {
@@ -20,28 +20,31 @@ class PostCard extends Component {
     this.state = {
       buttons: [
         {
-          key: "like",
-          title: "",
+          key: 'like',
+          title: '',
           icon: LikeIcon,
-          data: 13,
+          data: 13
         },
         {
-          key: "share",
-          title: "",
+          key: 'share',
+          title: '',
           icon: ShareIcon,
-          data: 1000,
+          data: 1000
         },
         {
-          key: "bulk",
-          title: "",
+          key: 'bulk',
+          title: '',
           icon: BulbIcon,
-          data: 128,
+          data: 128
         },
-      ],
+      ]
     };
   }
 
-  handleButtonPressedRelease(event) {}
+  handleButtonPressedRelease(event) {
+
+  }
+
 
   renderButtonGroup() {
     return this.state.buttons.map((b) => {
@@ -68,61 +71,65 @@ class PostCard extends Component {
           <ContentContainer />
         </View>
 
-        <ProgressBar startTime="Mar 2013" endTime="Nov 2011" />
+        <ProgressBar startTime='Mar 2013' endTime='Nov 2011' />
 
-        <View style={styles.buttonGroupStyle}>{this.renderButtonGroup()}</View>
+        <View style={styles.buttonGroupStyle}>
+          {this.renderButtonGroup()}
+        </View>
       </Card>
     );
   }
 }
 
 const styles = StyleSheet.create({
+
   buttonGroupStyle: {
     borderTopWidth: 1,
-    borderTopColor: "#f4f4f4",
-    flexDirection: "row",
-    justifyContent: "space-around",
+    borderTopColor: '#f4f4f4',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 8,
-    paddingBottom: 8,
+    paddingBottom: 8
+
   },
   buttonContainerStyle: {
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row'
   },
   buttonStyle: {
-    marginRight: 8,
+    marginRight: 8
   },
   buttonCountStyle: {
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: 10,
-    fontWeight: "600",
+    fontWeight: '600'
   },
   bodyContainerStyle: {
     margin: 12,
-    flexDirection: "row",
+    flexDirection: 'row'
   },
   progressBarContainerStyle: {
-    display: "flex",
+    display: 'flex',
     marginLeft: 14,
     marginRight: 14,
-    marginBottom: 14,
+    marginBottom: 14
   },
   imageContainerStyle: {
     height: 60,
     width: 60,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: "#f4f4f4",
-    padding: 2,
+    borderColor: '#f4f4f4',
+    padding: 2
   },
   imageStyle: {
     height: 54,
     width: 54,
     borderRadius: 5,
-  },
+  }
 });
 
 export default PostCard;

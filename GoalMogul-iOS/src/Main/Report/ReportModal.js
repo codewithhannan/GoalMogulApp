@@ -1,7 +1,7 @@
 /**
  * This report modal is used in router
  */
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   View,
   KeyboardAvoidingView,
@@ -10,24 +10,26 @@ import {
   TextInput,
   Alert,
   TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
-import { Actions } from "react-native-router-flux";
-import { connect } from "react-redux";
-import _ from "lodash";
-import { DotIndicator } from "react-native-indicators";
+  Keyboard
+} from 'react-native';
+import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import _ from 'lodash';
+import {
+  DotIndicator
+} from 'react-native-indicators';
 
 // Components
-import ModalHeader from "../Common/Header/ModalHeader";
-import LoadingModal from "../Common/Modal/LoadingModal";
+import ModalHeader from '../Common/Header/ModalHeader';
+import LoadingModal from '../Common/Modal/LoadingModal';
 
 // Actions
 import {
   updateReportDetails,
   cancelReport,
   postingReport,
-  updateReportTitle,
-} from "../../redux/modules/report/ReportActions";
+  updateReportTitle
+} from '../../redux/modules/report/ReportActions';
 
 class ReportModal extends Component {
   renderTitleInput() {
@@ -36,20 +38,18 @@ class ReportModal extends Component {
     return (
       <View style={styles.inputContainerStyle}>
         <TextInput
-          title="title"
-          autoCapitalize={"none"}
+          title='title'
+          autoCapitalize={'none'}
           autoCorrect
           onChangeText={this.props.updateReportTitle}
-          returnKeyType="done"
+          returnKeyType='done'
           editable={!loading}
           style={{ height: 60, padding: 12, paddingTop: 12, fontSize: 18 }}
-          placeholder="Title of the report..."
-          value={_.isEmpty(title) ? "" : title}
+          placeholder='Title of the report...'
+          value={_.isEmpty(title) ? '' : title}
           onEndEditing={() => {
-            if (!title || title.length < 5)
-              Alert.alert("Title must be at least 5 characters");
-            if (title.length > 70)
-              Alert.alert("Title cannot be longer than 70 characters");
+            if (!title || title.length < 5) Alert.alert('Title must be at least 5 characters');
+            if (title.length > 70) Alert.alert('Title cannot be longer than 70 characters');
           }}
         />
       </View>
@@ -62,17 +62,17 @@ class ReportModal extends Component {
     return (
       <View style={styles.inputContainerStyle}>
         <TextInput
-          title="description"
-          autoCapitalize={"none"}
+          title='description'
+          autoCapitalize={'none'}
           autoCorrect
           onChangeText={this.props.updateReportDetails}
-          returnKeyType="done"
+          returnKeyType='done'
           multiline
           numberOfLines={5}
           editable={!loading}
           style={{ height: 150, padding: 12, paddingTop: 12, fontSize: 16 }}
-          placeholder="Your description here..."
-          value={_.isEmpty(details) ? "" : details}
+          placeholder='Your description here...'
+          value={_.isEmpty(details) ? '' : details}
         />
       </View>
     );
@@ -82,20 +82,22 @@ class ReportModal extends Component {
     const { title, details, loading } = this.props;
     return (
       <KeyboardAvoidingView
-        behavior="padding"
-        style={{ flex: 1, backgroundColor: "#ffffff" }}
+        behavior='padding'
+        style={{ flex: 1, backgroundColor: '#ffffff' }}
       >
-        <LoadingModal
-          visible={this.props.loading}
-          customIndicator={<DotIndicator size={12} color="white" />}
+        <LoadingModal 
+          visible={this.props.loading} 
+          customIndicator={<DotIndicator size={12} color='white' />}  
         />
-        <ScrollView style={{ borderTopColor: "#e9e9e9", borderTopWidth: 1 }}>
-          <View style={{ flex: 1, backgroundColor: "white" }}>
+        <ScrollView
+          style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
+        >
+          <View style={{ flex: 1, backgroundColor: 'white' }}>
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
               <View style={{ flex: 1 }}>
                 <ModalHeader
-                  title="Report abuse"
-                  actionText="Submit"
+                  title='Report abuse'
+                  actionText='Submit'
                   onCancel={() => {
                     Actions.pop();
                     this.props.cancelReport();
@@ -103,14 +105,13 @@ class ReportModal extends Component {
                   onAction={() => {
                     this.props.postingReport();
                   }}
-                  actionDisabled={
-                    !(title && details && title.length >= 5 && !loading)
-                  }
+                  actionDisabled={!(title && details && title.length >= 5 && !loading)}
                 />
                 <Text style={styles.subTitleTextStyle}>Title</Text>
                 {this.renderTitleInput()}
                 <Text style={styles.subTitleTextStyle}>Description</Text>
                 {this.renderInputField()}
+
               </View>
             </TouchableWithoutFeedback>
           </View>
@@ -138,9 +139,9 @@ const styles = {
   inputContainerStyle: {
     margin: 20,
     borderRadius: 5,
-    borderColor: "lightgray",
+    borderColor: 'lightgray',
     borderWidth: 1,
-    shadowColor: "lightgray",
+    shadowColor: 'lightgray',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 1,
     shadowRadius: 3,
@@ -149,24 +150,27 @@ const styles = {
   subTitleTextStyle: {
     padding: 20,
     paddingBottom: 0,
-    fontSize: 15,
-  },
+    fontSize: 15
+  }
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const { showingModal, details, loading, title } = state.report;
 
   return {
     showingModal,
     details,
     title,
-    loading,
+    loading
   };
 };
 
-export default connect(mapStateToProps, {
-  updateReportDetails,
-  updateReportTitle,
-  cancelReport,
-  postingReport,
-})(ReportModal);
+export default connect(
+  mapStateToProps,
+  {
+    updateReportDetails,
+    updateReportTitle,
+    cancelReport,
+    postingReport
+  }
+)(ReportModal);

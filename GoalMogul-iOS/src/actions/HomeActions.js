@@ -1,13 +1,13 @@
-import { Actions } from "react-native-router-flux";
-import { Image } from "react-native";
+import { Actions } from 'react-native-router-flux';
+import { Image } from 'react-native';
 
 import {
   PROFILE_FETCHING_SUCCESS,
   PROFILE_FETCHING_FAIL,
-  HOME_SWITCH_TAB,
-} from "./types";
+  HOME_SWITCH_TAB
+} from './types';
 
-const DEBUG_KEY = "[ HomeActions ]";
+const DEBUG_KEY = '[ HomeActions ]';
 
 // Fetching profile
 export const fetchProfile = (userId, callback) => {
@@ -15,48 +15,46 @@ export const fetchProfile = (userId, callback) => {
     const token = getState().user.token;
     const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/profile?userId=${userId}`;
     const headers = {
-      method: "GET",
+      method: 'GET',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "x-access-token": token,
-      },
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      }
     };
     fetch(url, headers)
-      .then((res) => res.json())
-      .then((res) => {
-        /* If message, it means error */
-        if (res.message) {
-          /* TODO: error handling */
-          console.log(`${DEBUG_KEY}: error fetching user profile: `, res);
-          dispatch({
-            type: PROFILE_FETCHING_FAIL,
-            payload: {
-              res: res.message,
-              userId,
-              pageId: "HOME",
-            },
-          });
-          return;
-        }
+    .then((res) => res.json())
+    .then((res) => {
+      /* If message, it means error */
+      if (res.message) {
+        /* TODO: error handling */
+        console.log(`${DEBUG_KEY}: error fetching user profile: `, res);
         dispatch({
-          type: PROFILE_FETCHING_SUCCESS,
+          type: PROFILE_FETCHING_FAIL,
           payload: {
-            user: res.data,
+            res: res.message,
             userId,
-            pageId: "HOME",
-          },
+            pageId: 'HOME'
+          }
         });
-
-        if (callback) {
-          callback();
-          return;
+        return;
+      }
+      dispatch({
+        type: PROFILE_FETCHING_SUCCESS,
+        payload: {
+          user: res.data,
+          userId,
+          pageId: 'HOME'
         }
-      })
-      /* TODO: error handling */
-      .catch((err) =>
-        console.log(`${DEBUG_KEY}: exception in loading user profile`, err)
-      );
+      });
+
+      if (callback) {
+        callback();
+        return;
+      }
+    })
+    /* TODO: error handling */
+    .catch((err) => console.log(`${DEBUG_KEY}: exception in loading user profile`, err));
   };
 };
 
@@ -65,7 +63,7 @@ export const homeSwitchTab = (index) => {
   return (dispatch) => {
     dispatch({
       type: HOME_SWITCH_TAB,
-      payload: index,
+      payload: index
     });
   };
 };

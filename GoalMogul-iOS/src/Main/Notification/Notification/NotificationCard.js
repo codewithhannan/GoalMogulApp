@@ -1,39 +1,38 @@
-import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
-import R from "ramda";
-import timeago from "timeago.js";
-import { connect } from "react-redux";
+import React from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity
+} from 'react-native';
+import R from 'ramda';
+import timeago from 'timeago.js';
+import { connect } from 'react-redux';
 
 // Component
-import {
-  actionSheet,
-  switchByButtonIndex,
-} from "../../Common/ActionSheetFactory";
-import ProfileImage from "../../Common/ProfileImage";
-import Timestamp from "../../Goal/Common/Timestamp";
-import DelayedButton from "../../Common/Button/DelayedButton";
+import { actionSheet, switchByButtonIndex } from '../../Common/ActionSheetFactory';
+import ProfileImage from '../../Common/ProfileImage';
+import Timestamp from '../../Goal/Common/Timestamp';
+import DelayedButton from '../../Common/Button/DelayedButton';
 
 // Asset
-import FriendsSettingIcon from "../../../asset/utils/friendsSettingIcon.png";
+import FriendsSettingIcon from '../../../asset/utils/friendsSettingIcon.png';
 
 // Actions
 import {
   openNotificationDetail,
-  removeNotification,
-} from "../../../redux/modules/notification/NotificationActions";
-import { Logger } from "../../../redux/middleware/utils/Logger";
+  removeNotification
+} from '../../../redux/modules/notification/NotificationActions';
+import { Logger } from '../../../redux/middleware/utils/Logger';
 
 // Constants
-const DEBUG_KEY = "[ UI NotificationCard ]";
+const DEBUG_KEY = '[ UI NotificationCard ]';
 
 class NotificationCard extends React.PureComponent {
   handleNotificationCardOnPress = (item) => {
     const { parsedNoti, _id } = item;
     if (!parsedNoti || !parsedNoti.path) {
-      console.warn(
-        `${DEBUG_KEY}: no parsedNoti or path is in notification:`,
-        item
-      );
+      console.warn(`${DEBUG_KEY}: no parsedNoti or path is in notification:`, item);
       return;
     }
 
@@ -45,60 +44,57 @@ class NotificationCard extends React.PureComponent {
     // TODO: open detail based on the path;
     Logger.log(`${DEBUG_KEY}: open notification detail for item: `, item, 2);
     this.props.openNotificationDetail(item);
-  };
+  }
 
   handleOptionsOnPress() {
     const { item } = this.props;
     const { _id } = item;
     const options = switchByButtonIndex([
-      [
-        R.equals(0),
-        () => {
-          console.log(`${DEBUG_KEY} User chooses to remove notification`);
-          return this.props.removeNotification(_id);
-        },
-      ],
+      [R.equals(0), () => {
+        console.log(`${DEBUG_KEY} User chooses to remove notification`);
+        return this.props.removeNotification(_id);
+      }]      
     ]);
 
-    const requestOptions = ["Remove this notification", "Cancel"];
+
+    const requestOptions = ['Remove this notification', 'Cancel'];
 
     const cancelIndex = 1;
 
-    const adminActionSheet = actionSheet(requestOptions, cancelIndex, options);
+    const adminActionSheet = actionSheet(
+      requestOptions,
+      cancelIndex,
+      options
+    );
     adminActionSheet();
   }
 
   renderProfileImage(item) {
     const { parsedNoti } = item;
-    const imageUrl =
-      parsedNoti && parsedNoti.icon ? parsedNoti.icon : undefined;
+    const imageUrl = parsedNoti && parsedNoti.icon
+      ? parsedNoti.icon
+      : undefined;
     return (
       <ProfileImage
         imageStyle={{ height: 50, width: 50, borderRadius: 5 }}
         defaultImageStyle={styles.defaultImageStyle}
         imageUrl={imageUrl}
         rounded
-        imageContainerStyle={styles.imageContainerStyle}
-        userId=""
+        imageContainerStyle={styles.imageContainerStyle}  
+        userId=''
       />
     );
   }
 
   renderOptions() {
     return (
-      <TouchableOpacity
+      <TouchableOpacity 
         activeOpacity={0.6}
         onPress={() => this.handleOptionsOnPress()}
-        style={{
-          alignSelf: "center",
-          justifyContent: "center",
-          padding: 5,
-          paddingTop: 10,
-          paddingBottom: 10,
-        }}
+        style={{ alignSelf: 'center', justifyContent: 'center', padding: 5, paddingTop: 10, paddingBottom: 10 }}
       >
         <Image
-          style={{ width: 23, height: 19, tintColor: "#21364C" }}
+          style={{ width: 23, height: 19, tintColor: '#21364C' }}
           source={FriendsSettingIcon}
         />
       </TouchableOpacity>
@@ -107,25 +103,19 @@ class NotificationCard extends React.PureComponent {
 
   renderContent(item, isInvalidCommentNotif) {
     const { created, parsedNoti } = item;
-    let text =
-      parsedNoti && parsedNoti.notificationMessage
-        ? parsedNoti.notificationMessage
-        : "";
+    let text = parsedNoti && parsedNoti.notificationMessage
+      ? parsedNoti.notificationMessage
+      : '';
 
-    if (text === "" && isInvalidCommentNotif) {
-      text = "Comment was removed by the owner";
+    if (text === '' && isInvalidCommentNotif) {
+      text = 'Comment was removed by the owner';
     }
     return (
       <View style={{ flex: 1, marginLeft: 10, marginRight: 18 }}>
         <Text
-          style={{
-            flexWrap: "wrap",
-            color: "black",
-            fontSize: 13,
-            marginTop: 2,
-          }}
+          style={{ flexWrap: 'wrap', color: 'black', fontSize: 13, marginTop: 2 }}
           numberOfLines={2}
-          ellipsizeMode="tail"
+          ellipsizeMode='tail'
         >
           {text}
         </Text>
@@ -144,19 +134,16 @@ class NotificationCard extends React.PureComponent {
     // Right now we do a hack to go around invalid commentRef
     const isInvalidCommentNotif = item.commentRef === null;
     if (item.parsedNoti.error && !isInvalidCommentNotif) {
-      console.warn(
-        `${DEBUG_KEY}: invalid notification with error: `,
-        item.parsedNoti.error
-      );
+      console.warn(`${DEBUG_KEY}: invalid notification with error: `, item.parsedNoti.error);
       return null;
     }
     // If read, backgroundColor is: '#eef8fb'
     const read = this.props.read;
     const cardContainerStyle = read
       ? { ...styles.cardContainerStyle }
-      : { ...styles.cardContainerStyle, backgroundColor: "#eef8fb" };
+      : { ...styles.cardContainerStyle, backgroundColor: '#eef8fb' };
     return (
-      <DelayedButton
+      <DelayedButton 
         delay={600}
         activeOpacity={0.6}
         style={cardContainerStyle}
@@ -172,30 +159,30 @@ class NotificationCard extends React.PureComponent {
 
 const styles = {
   cardContainerStyle: {
-    flexDirection: "row",
+    flexDirection: 'row',
     padding: 12,
     paddingTop: 10,
     paddingBottom: 10,
-    alignItems: "center",
+    alignItems: 'center'
   },
   imageContainerStyle: {
     borderWidth: 0.5,
     padding: 0.5,
-    borderColor: "lightgray",
-    alignItems: "center",
+    borderColor: 'lightgray',
+    alignItems: 'center',
     borderRadius: 6,
-    alignSelf: "center",
-    backgroundColor: "white",
+    alignSelf: 'center',
+    backgroundColor: 'white'
   },
   defaultImageStyle: {
-    width: 44,
-    height: 48,
-    borderRadius: 5,
-    marginLeft: 3,
-    marginRight: 3,
-    marginTop: 1,
-    marginBottom: 1,
-  },
+    width: 44, 
+    height: 48, 
+    borderRadius: 5, 
+    marginLeft: 3, 
+    marginRight: 3, 
+    marginTop: 1, 
+    marginBottom: 1
+  }
 };
 
 const mapStateToProps = (state, props) => {
@@ -203,15 +190,18 @@ const mapStateToProps = (state, props) => {
   const { item } = props;
   let read = true;
   if (item && item._id) {
-    read = !data.some((a) => a._id === item._id);
+    read = !data.some(a => a._id === item._id);
   }
 
   return {
-    read,
+    read
   };
 };
 
-export default connect(mapStateToProps, {
-  removeNotification,
-  openNotificationDetail,
-})(NotificationCard);
+export default connect(
+  mapStateToProps,
+  {
+    removeNotification,
+    openNotificationDetail
+  }
+)(NotificationCard);

@@ -1,41 +1,42 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   Text,
   View,
   TouchableOpacity,
   KeyboardAvoidingView,
-  ScrollView,
-} from "react-native";
-import { connect } from "react-redux";
-import { Field, reduxForm } from "redux-form";
-import { TextField } from "react-native-material-textfield-gm";
+  ScrollView
+} from 'react-native';
+import { connect } from 'react-redux';
+import { Field, reduxForm } from 'redux-form';
+import { TextField } from 'react-native-material-textfield-gm';
 
 /* Components */
-import SearchBarHeader from "../../Common/Header/SearchBarHeader";
-import Button from "../Button";
+import SearchBarHeader from '../../Common/Header/SearchBarHeader';
+import Button from '../Button';
 
 /* Styles */
-import Styles from "../Styles";
+import Styles from '../Styles';
 
 /* Actions */
 /* TODO: update actions needed */
-import { onUpdateEmailSubmit } from "../../../actions";
+import { onUpdateEmailSubmit } from '../../../actions';
 
 // Selector
-import { getUserData } from "../../../redux/modules/User/Selector";
+import { getUserData } from '../../../redux/modules/User/Selector';
 
-const validateEmail = (value) =>
+const validateEmail = value =>
   value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
-    ? "Invalid email address"
+    ? 'Invalid email address'
     : undefined;
 
 class EditEmailForm extends Component {
-  handleOnSubmitPress = (values) => {
+
+  handleOnSubmitPress = values => {
     // TODO: send code and show
     // update actions imported and used in connect()
-    console.log("values are: ", values);
+    console.log('values are: ', values);
     return this.props.onUpdateEmailSubmit(values, (message) => alert(message));
-  };
+  }
 
   /* Refactor error function out */
   renderError(error) {
@@ -57,13 +58,13 @@ class EditEmailForm extends Component {
         <TextField
           label={label}
           title={custom.title}
-          autoCapitalize={"none"}
+          autoCapitalize={'none'}
           autoCorrect={false}
           onChangeText={onChange}
           error={error}
           enablesReturnKeyAutomatically={false}
-          returnKeyType="done"
-          keyboardType="email-address"
+          returnKeyType='done'
+          keyboardType='email-address'
           {...custom}
           {...restInput}
         />
@@ -75,33 +76,37 @@ class EditEmailForm extends Component {
     const { handleSubmit, error } = this.props;
 
     return (
-      <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
-        <SearchBarHeader backButton rightIcon="empty" title="Email addresses" />
+      <KeyboardAvoidingView
+        behavior='padding'
+        style={{ flex: 1 }}
+      >
+        <SearchBarHeader backButton rightIcon='empty' title="Email addresses" />
         <ScrollView
           style={styles.scroll}
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ flexGrow: 1, backgroundColor: "#ffffff" }}
+          keyboardShouldPersistTaps='handled'
+          contentContainerStyle={{ flexGrow: 1, backgroundColor: '#ffffff' }}
         >
+
           <View style={Styles.titleSectionStyle}>
-            <Text style={Styles.titleTextStyle}>Update your email address</Text>
+            <Text style={Styles.titleTextStyle}>
+              Update your email address
+            </Text>
             <Text style={{ paddingBottom: 10 }}>
               We'll send a verification code to this email address.
             </Text>
           </View>
           {this.renderError(error)}
           <Field
-            name="email"
-            label="Email address"
+            name='email'
+            label='Email address'
             component={this.renderInput}
             validate={validateEmail}
           />
 
-          <TouchableOpacity
-            activeOpacity={0.6}
-            onPress={handleSubmit(this.handleOnSubmitPress)}
-          >
+          <TouchableOpacity activeOpacity={0.6} onPress={handleSubmit(this.handleOnSubmitPress)}>
             <Button text="Submit" />
           </TouchableOpacity>
+
         </ScrollView>
       </KeyboardAvoidingView>
     );
@@ -120,26 +125,29 @@ const styles = {
     marginBottom: 5,
   },
   errorStyle: {
-    color: "#ff0033",
-    justifyContent: "center",
-    alignSelf: "center",
-    fontSize: 15,
-  },
+    color: '#ff0033',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    fontSize: 15
+  }
 };
 
 const mapStateToProps = (state, props) => {
   const { userId } = props;
-  const user = getUserData(state, userId, "user");
+  const user = getUserData(state, userId, 'user');
   const { email } = user;
 
   return {
-    email,
+    email
   };
 };
 
 EditEmailForm = reduxForm({
-  form: "addPhoneNumberForm",
-  enableReinitialize: true,
+  form: 'addPhoneNumberForm',
+  enableReinitialize: true
 })(EditEmailForm);
 
-export default connect(mapStateToProps, { onUpdateEmailSubmit })(EditEmailForm);
+export default connect(
+  mapStateToProps,
+  { onUpdateEmailSubmit }
+)(EditEmailForm);
