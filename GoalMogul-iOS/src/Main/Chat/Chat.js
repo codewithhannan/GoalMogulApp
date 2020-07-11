@@ -178,6 +178,9 @@ class ChatTab extends React.Component {
             />
         )
     }
+    /**
+     * @deprecated
+     */
     _renderScene = ({ route }) => {
         switch (route.key) {
             case 'directMessages': {

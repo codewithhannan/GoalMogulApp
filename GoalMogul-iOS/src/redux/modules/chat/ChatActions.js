@@ -334,7 +334,6 @@ export const refreshChatRooms = (tab, pageSize, maybeSearchQuery) => (
                             'Error',
                             'Error loading data. Please try again.'
                         )
-                        console.log(err)
                         dispatch({
                             type: CHAT_REFRESH_DONE,
                             payload: { type: tab, data: [] },

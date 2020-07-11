@@ -95,12 +95,6 @@ class ChatRoomList extends React.Component {
 
     handleOnLoadMore = () => {
         if (!this.props.hasNextPage) return
-        console.log(
-            this.props.currentTabKey,
-            this.props.limit,
-            this.props.skip,
-            this.props.searchQuery
-        )
         this.props.loadMoreChatRooms(
             this.props.currentTabKey,
             this.props.limit,
@@ -249,6 +243,7 @@ class ChatRoomList extends React.Component {
                     ListFooterComponent={this.renderListFooter.bind(this)}
                     ListEmptyComponent={this.renderListEmptyState.bind(this)}
                     onEndThreshold={0}
+                    noBorder={true}
                     onEndReached={this.handleOnLoadMore.bind(this)}
                 />
             </View>

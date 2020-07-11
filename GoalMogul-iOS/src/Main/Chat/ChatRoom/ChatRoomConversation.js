@@ -18,12 +18,12 @@
  */
 
 import { Octicons } from '@expo/vector-icons'
-import Constants from 'expo-constants'
+import { Icon, Layout } from '@ui-kitten/components'
 import * as FileSystem from 'expo-file-system'
 import * as Permissions from 'expo-permissions'
+import _ from 'lodash'
 import R from 'ramda'
 import React from 'react'
-import _ from 'lodash'
 import {
     ActionSheetIOS,
     Alert,
@@ -32,20 +32,14 @@ import {
     Clipboard,
     Dimensions,
     FlatList,
+    Image,
     Platform,
     TextInput,
     TouchableOpacity,
     View,
-    Image,
-    Keyboard,
 } from 'react-native'
 import EmojiSelector from 'react-native-emoji-selector'
-import {
-    Avatar,
-    GiftedChat,
-    Message,
-    SystemMessage,
-} from 'react-native-gifted-chat'
+import { Avatar, GiftedChat, SystemMessage } from 'react-native-gifted-chat'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import UUID from 'uuid/v4'
@@ -54,6 +48,7 @@ import profilePic from '../../../asset/utils/defaultUserProfile.png'
 import NextButton from '../../../asset/utils/next.png'
 // Components
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 // Actions
 import {
     changeMessageMediaRef,
@@ -71,27 +66,22 @@ import MessageStorageService from '../../../services/chat/MessageStorageService'
 import LiveChatService, {
     OUTGOING_EVENT_NAMES,
 } from '../../../socketio/services/LiveChatService'
-import { GM_BLUE_LIGHT, GM_BLUE } from '../../../styles'
+import { GM_BLUE_LIGHT } from '../../../styles'
 import {
     GROUP_CHAT_DEFAULT_ICON_URL,
     IMAGE_BASE_URL,
-    IPHONE_MODELS_2,
-    DEVICE_MODEL,
 } from '../../../Utils/Constants'
 import { toHashCode } from '../../../Utils/ImageUtils'
 import {
     actionSheet,
     switchByButtonIndex,
 } from '../../Common/ActionSheetFactory'
+import DelayedButton from '../../Common/Button/DelayedButton'
 import ModalHeader from '../../Common/Header/ModalHeader'
 import ProfileImage from '../../Common/ProfileImage'
 import ChatRoomLoaderOverlay from '../Modals/ChatRoomLoaderOverlay'
-import GMGiftedMessage from './GiftedChat/GMGiftedMessage'
 import ChatRoomConversationInputToolbar from './GiftedChat/GMGiftedChatInputToolbar'
-import { Layout, Icon } from '@ui-kitten/components'
-import DelayedButton from '../../Common/Button/DelayedButton'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
+import GMGiftedMessage from './GiftedChat/GMGiftedMessage'
 import Send from './GiftedChat/GMGiftedSend'
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]'
@@ -516,6 +506,12 @@ class ChatRoomConversation extends React.Component {
         })
         this.props.openCameraRoll(callback, { disableEditing: true })
     }
+    onComposerFocus = () => {
+        this.setState({ composerFocus: true })
+    }
+    onComposerBlur = () => {
+        this.setState({ composerFocus: false })
+    }
     onMessageLongPress = (context, message) => {
         const options = ['Copy Text', 'Delete', 'Cancel']
         const cancelButtonIndex = options.length - 1
@@ -857,6 +853,8 @@ class ChatRoomConversation extends React.Component {
                     multiline={true}
                     placeholder={`${props.placeholder.slice(0, 42)}...`}
                     editable={!this.props.initializing}
+                    onFocus={this.onComposerFocus.bind(this)}
+                    onBlur={this.onComposerBlur.bind(this)}
                     style={{
                         fontSize: 16,
                         padding: 9,
@@ -998,13 +996,12 @@ class ChatRoomConversation extends React.Component {
                     // maxComposerHeight={120 - 18} // padding
                     maxComposerHeight={196}
                     minComposerHeight={108}
-                    minInputToolbarHeight={47}
                     renderMessage={this.renderMessage}
                     renderSystemMessage={this.renderSystemMessage}
                     renderInputToolbar={this.renderInputToolbar}
                     renderAvatar={this.renderAvatar}
                     bottomOffset={GIFTED_CHAT_BOTTOM_OFFSET}
-                    minInputToolbarHeight={this.props.messageMediaRef ? 90 : 60}
+                    minInputToolbarHeight={this.props.messageMediaRef ? 96 : 60}
                     deleteMessage={this.deleteMessage}
                     dismissGoalSuggestion={this.dismissGoalSuggestion}
                 />

@@ -209,7 +209,7 @@ class ChatRoomCard extends React.Component {
             <View
                 style={{
                     justifyContent: 'center',
-                    flexBasis: 90,
+                    flexBasis: 108,
                 }}
             >
                 <View
@@ -303,7 +303,6 @@ const styles = {
         paddingBottom: 15,
         paddingLeft: 12,
         paddingRight: 12,
-        marginTop: 1,
     },
     imageContainerStyle: {
         alignItems: 'center',

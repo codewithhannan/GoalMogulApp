@@ -7,11 +7,11 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import {
+    Dimensions,
+    Keyboard,
     StyleSheet,
     View,
-    Keyboard,
     ViewPropTypes,
-    Dimensions,
 } from 'react-native'
 
 const DEFAULT_ACCESSORY_HEIGHT = 70
@@ -27,6 +27,7 @@ export default class ChatRoomConversationInputToolbar extends React.Component {
 
         this.state = {
             position: 'absolute',
+            isFocussed: false,
         }
     }
 
@@ -98,6 +99,9 @@ export default class ChatRoomConversationInputToolbar extends React.Component {
             })
         }
     }
+    onFocusChange(isFocussed) {
+        this.setState({ isFocussed })
+    }
 
     renderActions() {
         if (this.props.renderActions) {
@@ -115,7 +119,10 @@ export default class ChatRoomConversationInputToolbar extends React.Component {
 
     renderComposer() {
         if (this.props.renderComposer) {
-            return this.props.renderComposer(this.props)
+            return this.props.renderComposer({
+                ...this.props,
+                onFocusChange: this.onFocusChange.bind(this),
+            })
         }
         return null
     }
