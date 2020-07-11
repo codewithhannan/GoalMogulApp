@@ -19,6 +19,10 @@ import {
     REGISTRATION_ACCOUNT_LOADING,
     REGISTRATION_ADDPROFILE,
     REGISTRATION_ACCOUNT_SUCCESS,
+    REGISTRATION_CONTACT_SYNC,
+    REGISTRATION_CONTACT_SYNC_UPLOAD_DONE,
+    REGISTRATION_CONTACT_SYNC_FETCH,
+    REGISTRATION_CONTACT_SYNC_FETCH_DONE,
 } from '../../../actions/types'
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal'
 import { api as API } from '../../middleware/api'
@@ -39,6 +43,7 @@ import {
     SENTRY_TAGS,
     SENTRY_CONTEXT,
 } from '../../../monitoring/sentry/Constants'
+import { CONTACT_SYNC_LOAD_CONTACT_DONE } from '../User/ContactSync/ContactSyncReducers'
 
 /**
  * Alter the state of registration text input
@@ -327,13 +332,22 @@ export const registrationAddProfilePhoto = (maybeOnSuccess) => (
     }
 }
 
-export const uploadContacts = () => async (dispatch, getState) => {
+/**
+ * Upload contacts and fetch matched contacts
+ * @param {*} param0
+ */
+export const uploadContacts = ({ onMatchFound, onMatchNotFound }) => async (
+    dispatch,
+    getState
+) => {
     const permission = await Permissions.askAsync(Permissions.CONTACTS)
     if (permission.status !== 'granted') {
         // Permission was denied and dispatch an action
         return
     }
-    const { token } = getState().user
+    // const { token } = getState().user
+    const token =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjgyZjQxYjE1ZjdkZjAwMWFhMDM2MzMiLCJpYXQiOjE1OTQ0NDk5MzEsImV4cCI6MTU5NDcwOTEzMX0._oR3Gwlf5VO67RIfA_rbREXKtMIIkTQZM0LqJp3QTcI'
     // Skip and limit for fetching matched contacts
     const { matchedContacts } = getState().registration
 
@@ -345,16 +359,20 @@ export const uploadContacts = () => async (dispatch, getState) => {
         },
     })
 
-    handleUploadContacts(token)
+    // Dispatch actions to fill ContactSyncReducers
+    // After contacts are loaded from the phone
+    const loadContactCallback = (contacts) => {
+        dispatch({
+            type: CONTACT_SYNC_LOAD_CONTACT_DONE,
+            payload: {
+                data: contacts,
+            },
+        })
+    }
+
+    handleUploadContacts(token, loadContactCallback)
         .then((res) => {
-            console.log(' response is: ', res)
-            // Uploading contacts done. Hide spinner
-            dispatch({
-                type: REGISTRATION_CONTACT_SYNC_UPLOAD_DONE,
-                payload: {
-                    uploading: false,
-                },
-            })
+            console.log('response is: ', res)
 
             // Fetching matched records. Show spinner
             dispatch({
@@ -381,6 +399,17 @@ export const uploadContacts = () => async (dispatch, getState) => {
                         refreshing: true,
                     },
                 })
+
+                if (res.data.length && onMatchFound) {
+                    onMatchFound()
+                    return
+                }
+
+                if (!res.data.length && onMatchNotFound) {
+                    onMatchNotFound()
+                    return
+                }
+
                 return
             }
             // TODO: error handling for fail to fetch contact cards
