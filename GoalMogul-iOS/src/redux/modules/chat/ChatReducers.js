@@ -1,7 +1,7 @@
 /**
- * /*
- * Chat Tab is a main page with two sub tabs including ChatRoomTab, MessageTab
  *
+ * Chat Tab is a main page with two sub tabs including ChatRoomTab, MessageTab
+ * July 2020: Chat Tab now only has one list rather than two tabs, w all chats
  * @format
  */
 
@@ -16,7 +16,7 @@ const INITIAL_STATE = {
             { key: 'chatRooms', title: 'GROUP CHATS' },
         ],
     },
-    selectedTab: 'directMessages',
+    selectedTab: 'allChats',
     showPlus: true,
     directMessages: {
         unreadCount: 0,
@@ -38,6 +38,16 @@ const INITIAL_STATE = {
         loading: false,
         refreshing: false,
     },
+    allChats: {
+        unreadCount: 0,
+        data: [],
+        searchQuery: '',
+        hasNextPage: true,
+        limit: 10,
+        skip: 0,
+        loading: false,
+        refreshing: false,
+    },
 }
 
 export const CHAT_SWITCH_TAB = 'chat_switch_tab'
@@ -54,6 +64,7 @@ export const CHAT_UPDATE_TAB_UNREAD_COUNT = 'chat_update_tab_unread_count'
 export const CHAT_LOAD_TYPES = {
     directMessages: 'directMessages',
     chatRooms: 'chatRooms',
+    allChats: 'allChats',
 }
 
 export default (state = INITIAL_STATE, action) => {

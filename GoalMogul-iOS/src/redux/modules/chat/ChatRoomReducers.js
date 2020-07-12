@@ -1,6 +1,7 @@
 /**
- * /*
+ *
  * Chat Tab is a main page with two sub tabs including ChatRoomTab, MessageTab
+ * July 2020: Chat Tab now only has one list rather than two tabs, w all chats
  *
  * @format
  */

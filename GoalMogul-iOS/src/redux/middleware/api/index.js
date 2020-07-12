@@ -1,9 +1,9 @@
 /** @format */
 
-import { Logger } from '../utils/Logger'
 import R from 'ramda'
 import getEnvVars from '../../../../environment'
 import { decode } from '../utils'
+import { Logger } from '../utils/Logger'
 
 const DEBUG_KEY = '[ API ]'
 const config = getEnvVars()

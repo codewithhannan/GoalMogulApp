@@ -5,16 +5,16 @@
  * @format
  */
 
+import * as Haptics from 'expo-haptics'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {
+    Clipboard,
+    StyleSheet,
+    TouchableHighlight,
     View,
     ViewPropTypes,
-    StyleSheet,
-    Clipboard,
-    TouchableHighlight,
 } from 'react-native'
-import * as Haptics from 'expo-haptics'
 import { Avatar, Day, utils } from 'react-native-gifted-chat'
 import Bubble from './GMGiftedChatBubbleSlack'
 
@@ -120,18 +120,24 @@ export default class Message extends React.Component {
             ? 2
             : 10
 
+        const marginTop =
+            isSameUser(this.props.currentMessage, this.props.previousMessage) &&
+            isSameDay(this.props.currentMessage, this.props.previousMessage)
+                ? 2
+                : 10
         return (
             <View>
                 {this.renderDay()}
                 <TouchableHighlight
                     onLongPress={this.onLongPress}
                     accessibilityTraits="text"
-                    underlayColor="#e1e4e8"
+                    underlayColor="#F1F1F1"
+                    activeOpacity={0.9}
                 >
                     <View
                         style={[
                             styles.container,
-                            { marginBottom },
+                            { marginBottom, marginTop },
                             this.props.containerStyle,
                         ]}
                     >
