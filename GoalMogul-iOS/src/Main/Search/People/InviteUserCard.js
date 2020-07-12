@@ -67,8 +67,9 @@ class InviteUserCard extends React.PureComponent {
         const button = this.getButtonStatus(status)
         if (!button) return null
         const { buttonStatus, text } = button
-        return (
+        return text == 'Invited' || text == 'Requested' ? (
             <Button
+                disabled
                 appearance="outline"
                 status={buttonStatus}
                 size="small"
@@ -76,6 +77,8 @@ class InviteUserCard extends React.PureComponent {
             >
                 {text}
             </Button>
+        ) : (
+            <Text style={styles.adminMemberTextStyle}>{text}</Text>
         )
     }
 
@@ -195,6 +198,11 @@ const styles = {
         height: 26,
         width: 26,
         borderRadius: 13,
+    },
+    adminMemberTextStyle: {
+        color: '#42C0F5',
+        fontWeight: 'bold',
+        textAlign: 'right',
     },
 }
 
