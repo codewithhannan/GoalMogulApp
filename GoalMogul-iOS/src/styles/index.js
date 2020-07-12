@@ -198,7 +198,7 @@ export const BUTTON_STYLE = {
             fontWeight: 'bold',
             lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
             color: 'white',
-            fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+            fontFamily: FONT_FAMILY_3,
         },
     },
     GM_WHITE_BG_BLUE_TEXT: {
@@ -214,11 +214,10 @@ export const BUTTON_STYLE = {
             borderRadius: 5,
         },
         textStyle: {
-            fontSize: GM_FONT_SIZE.FONT_2,
+            fontSize: GM_FONT_SIZE.FONT_3,
             lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
             color: GM_BLUE,
-            fontFamily: GM_FONT_FAMILY.GOTHAM,
-            fontWeight: '500',
+            fontFamily: FONT_FAMILY_3,
         },
     },
     /*
@@ -235,11 +234,10 @@ export const BUTTON_STYLE = {
             justifyContent: 'center',
         },
         textStyle: {
-            fontSize: GM_FONT_SIZE.FONT_2,
+            fontSize: GM_FONT_SIZE.FONT_3,
             lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
             color: '#828282',
-            fontFamily: GM_FONT_FAMILY.GOTHAM,
-            fontWeight: '500',
+            fontFamily: FONT_FAMILY_3,
         },
     },
 }

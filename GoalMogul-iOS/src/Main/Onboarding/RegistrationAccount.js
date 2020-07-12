@@ -20,6 +20,9 @@ import {
     GM_BLUE,
     GM_FONT_FAMILY,
     GM_FONT_LINE_HEIGHT,
+    FONT_FAMILY_3,
+    FONT_FAMILY_1,
+    BUTTON_STYLE,
 } from '../../styles'
 import { registrationLogin } from '../../actions'
 import {
@@ -31,6 +34,7 @@ import PhoneVerificationMoal from './PhoneVerificationModal'
 
 const NEXT_STEP = 'registration_add_photo'
 const FIELD_REQUIREMENTS = {
+    done: 'done',
     email: {
         invalid_email: 'Invalid Email',
         require_email: 'Email is required',
@@ -62,6 +66,13 @@ class RegistrationAccount extends React.Component {
             phoneStatus: undefined,
             passwordStatus: undefined,
         }
+    }
+
+    componentWillUnmount() {
+        this.props.registrationTextInputChange('name', undefined)
+        this.props.registrationTextInputChange('email', undefined)
+        this.props.registrationTextInputChange('phone', undefined)
+        this.props.registrationTextInputChange('password', undefined)
     }
 
     nextStep = () => {
@@ -140,7 +151,7 @@ class RegistrationAccount extends React.Component {
     }
 
     validateName = (name) => {
-        if (name.length <= 0) {
+        if (!name || !name.trim().length) {
             this.setState({
                 ...this.state,
                 nameStatus: FIELD_REQUIREMENTS.name.require_name,
@@ -178,7 +189,7 @@ class RegistrationAccount extends React.Component {
 
     renderLogin() {
         return (
-            <View style={styles.loginBoxStyle}>
+            <View style={[styles.loginBoxStyle, { opacity: 0 }]}>
                 <Text
                     style={{
                         fontSize: GM_FONT_SIZE.FONT_3,
@@ -239,13 +250,14 @@ class RegistrationAccount extends React.Component {
                             placeholder="Your Full Name"
                             onChangeText={(val) => {
                                 if (
-                                    this.state.nameStatus &&
+                                    this.state.nameStatus !=
+                                        FIELD_REQUIREMENTS.done &&
                                     val &&
                                     val.trim().length
                                 ) {
                                     this.setState({
                                         ...this.state,
-                                        nameStatus: undefined,
+                                        nameStatus: FIELD_REQUIREMENTS.done,
                                     })
                                 }
                                 this.props.registrationTextInputChange(
@@ -261,8 +273,19 @@ class RegistrationAccount extends React.Component {
                                 this.validateName(name)
                                 this.refs['email'].focus()
                             }}
-                            caption={this.state.nameStatus || ' '}
-                            status={this.state.nameStatus ? 'danger' : 'basic'}
+                            caption={
+                                !this.state.nameStatus ||
+                                this.state.nameStatus == FIELD_REQUIREMENTS.done
+                                    ? ' '
+                                    : this.state.nameStatus
+                            }
+                            status={
+                                this.state.nameStatus &&
+                                this.state.nameStatus !==
+                                    FIELD_REQUIREMENTS.done
+                                    ? 'danger'
+                                    : 'basic'
+                            }
                         />
                         <InputBox
                             key="email"
@@ -271,13 +294,14 @@ class RegistrationAccount extends React.Component {
                             placeholder="Your Email Address"
                             onChangeText={(val) => {
                                 if (
-                                    this.state.emailStatus &&
+                                    this.state.emailStatus !=
+                                        FIELD_REQUIREMENTS.done &&
                                     val &&
                                     val.trim().length
                                 ) {
                                     this.setState({
                                         ...this.state,
-                                        emailStatus: undefined,
+                                        emailStatus: FIELD_REQUIREMENTS.done,
                                     })
                                 }
                                 this.props.registrationTextInputChange(
@@ -295,8 +319,20 @@ class RegistrationAccount extends React.Component {
                                 this.validateEmail(email)
                                 this.refs['phone'].focus()
                             }}
-                            caption={this.state.emailStatus || ' '}
-                            status={this.state.emailStatus ? 'danger' : 'basic'}
+                            caption={
+                                !this.state.emailStatus ||
+                                this.state.emailStatus ==
+                                    FIELD_REQUIREMENTS.done
+                                    ? ' '
+                                    : this.state.emailStatus
+                            }
+                            status={
+                                this.state.emailStatus &&
+                                this.state.emailStatus !==
+                                    FIELD_REQUIREMENTS.done
+                                    ? 'danger'
+                                    : 'basic'
+                            }
                         />
                         <InputBox
                             key="phone"
@@ -333,13 +369,14 @@ class RegistrationAccount extends React.Component {
                             secureTextEntry
                             onChangeText={(val) => {
                                 if (
-                                    this.state.passwordStatus &&
+                                    this.state.passwordStatus !=
+                                        FIELD_REQUIREMENTS.done &&
                                     val &&
                                     val.trim().length
                                 ) {
                                     this.setState({
                                         ...this.state,
-                                        passwordStatus: undefined,
+                                        passwordStatus: FIELD_REQUIREMENTS.done,
                                     })
                                 }
                                 this.props.registrationTextInputChange(
@@ -350,7 +387,6 @@ class RegistrationAccount extends React.Component {
                             value={password}
                             textContentType="newPassword"
                             returnKeyType="done"
-                            caption={this.state.passwordStatus || ' '}
                             onBlur={() => {
                                 this.validatePassword(password)
                             }}
@@ -366,8 +402,19 @@ class RegistrationAccount extends React.Component {
                                     this.validatePassword(password)
                                 }
                             }}
+                            caption={
+                                !this.state.passwordStatus ||
+                                this.state.passwordStatus ==
+                                    FIELD_REQUIREMENTS.done
+                                    ? ' '
+                                    : this.state.passwordStatus
+                            }
                             status={
-                                this.state.passwordStatus ? 'danger' : 'basic'
+                                this.state.passwordStatus &&
+                                this.state.passwordStatus !==
+                                    FIELD_REQUIREMENTS.done
+                                    ? 'danger'
+                                    : 'basic'
                             }
                             disabled={this.props.loading}
                         />
@@ -394,11 +441,29 @@ class RegistrationAccount extends React.Component {
                         onButtonPress={this.onNext}
                         disabled={
                             this.props.loading ||
-                            this.state.nameStatus ||
-                            this.state.emailStatus ||
-                            this.state.passwordStatus
+                            (this.state.nameStatus !==
+                                FIELD_REQUIREMENTS.done &&
+                                this.state.emailStatus !==
+                                    FIELD_REQUIREMENTS.done &&
+                                this.state.passwordStatus !==
+                                    FIELD_REQUIREMENTS.done)
                         }
                     />
+                    <DelayedButton
+                        style={[
+                            BUTTON_STYLE.GM_WHITE_BG_GRAY_TEXT.containerStyle,
+                            { marginBottom: 20 },
+                        ]}
+                        onPress={() => Actions.pop()}
+                    >
+                        <Text
+                            style={[
+                                BUTTON_STYLE.GM_WHITE_BG_GRAY_TEXT.textStyle,
+                            ]}
+                        >
+                            Cancel
+                        </Text>
+                    </DelayedButton>
                 </View>
 
                 <PhoneVerificationMoal
