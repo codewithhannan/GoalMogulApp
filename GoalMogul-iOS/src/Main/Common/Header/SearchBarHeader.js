@@ -133,19 +133,19 @@ class SearchBarHeader extends Component {
 
     renderLeftIcon() {
         const { backButton } = this.props
-        const height = backButton ? 23 : 48
+        const height = backButton ? 23 : 38
+        const width = backButton ? 23 : 170
         return (
             <DelayedButton
                 activeOpacity={0.6}
                 onPress={
                     backButton ? this.handleBackOnClick.bind(this) : () => {}
                 }
-                style={{ flexDirection: 'row', alignItems: 'center' }}
             >
                 <Image
                     source={backButton ? BackButton : Logo}
                     resizeMode="contain"
-                    style={{ height, tintColor }}
+                    style={{ height, width, tintColor }}
                 />
             </DelayedButton>
         )
@@ -250,7 +250,7 @@ class SearchBarHeader extends Component {
                     <TouchableOpacity
                         activeOpacity={0.6}
                         onPress={menuOnPress || this.handleMenuIconOnClick}
-                        style={{ ...styles.headerRightContaner }}
+                        style={styles.headerRightContaner}
                     >
                         <Image
                             style={{
