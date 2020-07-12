@@ -1,27 +1,13 @@
 /** @format */
 
 import React from 'react'
-import {
-    View,
-    Text,
-    Dimensions,
-    Image,
-    FlatList,
-    ActivityIndicator,
-} from 'react-native'
-import * as WebBrowser from 'expo-web-browser'
-import { connect } from 'react-redux'
-import Carousel from 'react-native-snap-carousel'
-import OnboardingHeader from './OnboardingHeader'
-import OnboardingFooter from './OnboardingFooter'
+import _ from 'lodash'
+import { View, Text, ActivityIndicator } from 'react-native'
 import {
     BUTTON_STYLE as buttonStyle,
     TEXT_STYLE as textStyle,
+    FONT_FAMILY_2,
 } from '../../../styles'
-import { registrationTribeSelection } from '../../../redux/modules/registration/RegistrationActions'
-import { REGISTRATION_SYNC_CONTACT_NOTES } from '../../../redux/modules/registration/RegistrationReducers'
-import { TabView } from 'react-native-tab-view'
-import TabButtonGroup from '../../Common/TabButtonGroup'
 import ProfileImage from '../../Common/ProfileImage'
 import { getPhoneNumber, getEmail } from '../../../redux/middleware/utils'
 import { GM_BLUE, GM_FONT_SIZE, GM_FONT_FAMILY } from '../../../styles'
@@ -37,36 +23,34 @@ import DelayedButton from '../../Common/Button/DelayedButton'
  */
 class UserCard extends React.Component {
     getProfileImage(item) {
-        // TODO
-        // const { profile } = item;
-        return null
+        return _.get(item, 'profile.image', undefined)
     }
 
     /** Render user already on GoalMogul */
     renderAddButton(item, callback) {
-        const { maybeInvitationType, loading } = item
-        if (loading) {
+        const { invited, inviting } = item
+        if (inviting) {
             // Spinner on the add button to indicate request is being sent
             return (
                 <View
-                    onPress={() => callback(item.invited)}
                     style={[
                         styles.buttonStyle.containerStyle,
                         styles.inviteButtonContainerStyle,
                     ]}
                 >
-                    <ActivityIndicator animating={loading} size="small" />
+                    <ActivityIndicator animating={inviting} size="small" />
                 </View>
             )
         }
-        if (maybeInvitationType == 'outgoing') {
+        if (invited) {
+            // user has already invited
             return (
                 <DelayedButton
-                    onPress={() => callback(item.invited)}
                     style={[
                         styles.buttonStyle.containerStyle,
                         styles.addedButtonContainerStyle,
                     ]}
+                    disabled
                 >
                     <Text
                         style={[
@@ -81,7 +65,7 @@ class UserCard extends React.Component {
         }
         return (
             <DelayedButton
-                onPress={() => callback(item.invited)}
+                onPress={() => callback(item)}
                 style={[
                     styles.buttonStyle.containerStyle,
                     styles.addButtonContainerStyle,
@@ -113,7 +97,7 @@ class UserCard extends React.Component {
                 <Text
                     style={{
                         fontSize: GM_FONT_SIZE.FONT_3,
-                        fontFamily: GM_FONT_FAMILY.GOTHAM,
+                        fontFamily: FONT_FAMILY_2,
                     }}
                 >
                     {name}
@@ -168,14 +152,12 @@ class UserCard extends React.Component {
                 <Text
                     style={{
                         fontSize: GM_FONT_SIZE.FONT_2,
-                        fontFamily: GM_FONT_FAMILY.GOTHAM,
+                        fontFamily: FONT_FAMILY_2,
                     }}
                 >
                     {name}
                 </Text>
-                <Text
-                    style={{ fontSize: 12, fontFamily: GM_FONT_FAMILY.GOTHAM }}
-                >
+                <Text style={{ fontSize: 12, fontFamily: FONT_FAMILY_2 }}>
                     {infoToDisplay}
                 </Text>
             </View>
@@ -214,8 +196,9 @@ const styles = {
         flexDirection: 'row',
         paddingLeft: 20,
         paddingRight: 20,
-        paddingTop: 10,
-        paddingBottom: 10,
+        paddingVertical: 15,
+        backgroundColor: 'white',
+        marginVertical: 0.5,
     },
     imageContainerStyle: {
         height: 38,
@@ -244,7 +227,7 @@ const styles = {
         textStyle: {
             fontSize: GM_FONT_SIZE.FONT_1,
             fontWeight: 'bold',
-            fontFamily: GM_FONT_FAMILY.GOTHAM,
+            fontFamily: FONT_FAMILY_2,
         },
     },
     inviteButtonContainerStyle: {

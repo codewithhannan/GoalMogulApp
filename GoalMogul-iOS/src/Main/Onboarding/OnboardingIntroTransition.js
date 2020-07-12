@@ -65,19 +65,21 @@ class OnboardingIntroTransition extends React.Component {
                         <Text
                             style={[
                                 textStyle.onboardingTitleTextStyle,
-                                { marginTop: 50, marginBottom: 30 },
+                                {
+                                    marginTop: 50,
+                                    marginBottom: 30,
+                                    fontSize: 35,
+                                    lineHeight: 40,
+                                },
                             ]}
                         >
                             Hi, {name ? `${name}` : 'Jia'}
                         </Text>
                         <Text style={textStyle.onboardingPharagraphTextStyle}>
-                            We are going to ask you
+                            We are going to ask you three questions
                         </Text>
                         <Text style={textStyle.onboardingPharagraphTextStyle}>
-                            three questions to customize
-                        </Text>
-                        <Text style={textStyle.onboardingPharagraphTextStyle}>
-                            your experience
+                            to tailor your experience!
                         </Text>
                     </View>
                     <DelayedButton

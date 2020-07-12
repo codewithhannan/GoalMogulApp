@@ -14,6 +14,9 @@ import {
     REGISTRATION_USER_TARGETS,
     REGISTRATION_TRIBE_SELECT,
     REGISTRATION_TRIBE_FETCH,
+    REGISTRATION_USER_INVITE,
+    REGISTRATION_USER_INVITE_FAIL,
+    REGISTRATION_USER_INVITE_DONE,
 } from './RegistrationReducers'
 import {
     REGISTRATION_ACCOUNT_LOADING,
@@ -44,6 +47,7 @@ import {
     SENTRY_CONTEXT,
 } from '../../../monitoring/sentry/Constants'
 import { CONTACT_SYNC_LOAD_CONTACT_DONE } from '../User/ContactSync/ContactSyncReducers'
+import { updateFriendship } from '../../../actions'
 
 /**
  * Alter the state of registration text input
@@ -333,6 +337,50 @@ export const registrationAddProfilePhoto = (maybeOnSuccess) => (
 }
 
 /**
+ * Current user invites existing member after contact sync match
+ * @param {String} userId UserId for current user to invite
+ */
+export const inviteExistingUser = (userId) => async (dispatch, getState) => {
+    // Dispatch to update user status to loading indicator
+    dispatch({
+        type: REGISTRATION_USER_INVITE,
+        payload: {
+            userId,
+        },
+    })
+
+    const onFinish = (err) => {
+        if (err) {
+            // TODO: registration: dropdown alert to indicate try again
+            dispatch({
+                type: REGISTRATION_USER_INVITE_FAIL,
+                payload: {
+                    userId,
+                },
+            })
+            return
+        }
+
+        // Terminate loading indicator
+        dispatch({
+            type: REGISTRATION_USER_INVITE_DONE,
+            payload: {
+                userId,
+            },
+        })
+    }
+
+    // Send update friendship request
+    updateFriendship(
+        userId,
+        undefined,
+        'requestFriend',
+        undefined,
+        onFinish
+    )(dispatch, getState)
+}
+
+/**
  * Upload contacts and fetch matched contacts
  * @param {*} param0
  */
@@ -345,6 +393,7 @@ export const uploadContacts = ({ onMatchFound, onMatchNotFound }) => async (
         // Permission was denied and dispatch an action
         return
     }
+    // TODO: registration
     // const { token } = getState().user
     const token =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjgyZjQxYjE1ZjdkZjAwMWFhMDM2MzMiLCJpYXQiOjE1OTQ0NDk5MzEsImV4cCI6MTU5NDcwOTEzMX0._oR3Gwlf5VO67RIfA_rbREXKtMIIkTQZM0LqJp3QTcI'

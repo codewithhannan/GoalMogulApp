@@ -11,11 +11,10 @@ import {
     BUTTON_STYLE as buttonStyle,
     TEXT_STYLE as textStyle,
     GM_BLUE,
-    GM_FONT_FAMILY,
     GM_FONT_SIZE,
+    FONT_FAMILY_2,
 } from '../../styles'
-import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions'
-import { REGISTRATION_SYNC_CONTACT_NOTES } from '../../redux/modules/registration/RegistrationReducers'
+import { inviteExistingUser } from '../../redux/modules/registration/RegistrationActions'
 import { inviteUser } from '../../redux/modules/User/ContactSync/ContactSyncActions'
 import { TabView } from 'react-native-tab-view'
 import TabButtonGroup from '../Common/TabButtonGroup'
@@ -40,6 +39,8 @@ class SyncContactInvite extends React.Component {
             },
         }
     }
+
+    _keyExtractor = (item, index) => `${item.name}_${index}`
 
     switchTab = (index) => {
         let navigationState = _.cloneDeep(this.state.navigationState)
@@ -70,7 +71,8 @@ class SyncContactInvite extends React.Component {
         }
 
         if (type == 'matchedContacts') {
-            // TODO: send friend request
+            // Send friend request
+            this.props.inviteExistingUser(item._id)
             return
         }
 
@@ -96,8 +98,8 @@ class SyncContactInvite extends React.Component {
                                 this.inviteUser('matchedContacts')
                             )
                         }
+                        keyExtractor={this._keyExtractor}
                         refresing={this.props.matchedContacts.refreshing}
-                        contentContainerStyle={{ paddingTop: 20 }}
                     />
                 )
 
@@ -112,8 +114,8 @@ class SyncContactInvite extends React.Component {
                                 this.inviteUser('contacts')
                             )
                         }
+                        keyExtractor={this._keyExtractor}
                         refreshing={this.props.contacts.refreshing}
-                        contentContainerStyle={{ paddingTop: 20 }}
                     />
                 )
 
@@ -124,7 +126,15 @@ class SyncContactInvite extends React.Component {
 
     renderTabs = (props) => {
         return (
-            <View style={{ paddingLeft: 20, paddingRight: 20 }}>
+            <View
+                style={{
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                    backgroundColor: 'white',
+                    paddingBottom: 10,
+                    marginBottom: 10,
+                }}
+            >
                 <TabButtonGroup
                     buttons={props}
                     buttonStyle={{
@@ -133,24 +143,23 @@ class SyncContactInvite extends React.Component {
                             tintColor: 'white',
                             color: 'white',
                             fontWeight: '700',
-                            fontSize: GM_FONT_SIZE.FONT_1,
-                            fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
-                            paddingTop: 2,
+                            fontSize: GM_FONT_SIZE.FONT_2,
+                            fontFamily: FONT_FAMILY_2,
                         },
                         unselected: {
-                            backgroundColor: '#FCFCFC',
-                            tintColor: '#616161',
-                            color: '#616161',
+                            backgroundColor: '#F2F2F2',
+                            tintColor: '#828282',
+                            color: '#828282',
                             fontWeight: '600',
-                            fontSize: GM_FONT_SIZE.FONT_1,
-                            fontFamily: GM_FONT_FAMILY.GOTHAM,
-                            paddingTop: 2,
+                            fontSize: GM_FONT_SIZE.FONT_2,
+                            fontFamily: FONT_FAMILY_2,
                         },
                     }}
                     buttonGroupContainerStyle={{
                         marginLeft: 20,
                         marginRight: 20,
                     }}
+                    borderRadius={15}
                 />
             </View>
         )
@@ -161,8 +170,14 @@ class SyncContactInvite extends React.Component {
         return (
             <View style={styles.containerStyle}>
                 <OnboardingHeader />
-                <View style={{ flex: 1 }}>
-                    <View style={{ marginTop: 35, marginBottom: 20 }}>
+                <View style={{ flex: 1, backgroundColor: '#EAE8EA' }}>
+                    <View
+                        style={{
+                            paddingTop: 20,
+                            paddingBottom: 20,
+                            backgroundColor: 'white',
+                        }}
+                    >
                         {inviteOnly ? (
                             <Text style={textStyle.onboardingTitleTextStyle}>
                                 Invite friends to join!
@@ -193,8 +208,7 @@ class SyncContactInvite extends React.Component {
                                     this.inviteUser('contacts')
                                 )
                             }
-                            refreshing={this.props.contacts.refreshing}
-                            contentContainerStyle={{ paddingTop: 20 }}
+                            contentContainerStyle={{ marginTop: 20 }}
                         />
                     ) : (
                         <TabView
@@ -261,4 +275,5 @@ const testMatchedContacts = {
 
 export default connect(mapStateToProps, {
     inviteUser,
+    inviteExistingUser,
 })(SyncContactInvite)

@@ -7,7 +7,13 @@ import { connect } from 'react-redux'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import OnboardingHeader from './Common/OnboardingHeader'
 import DelayedButton from '../Common/Button/DelayedButton'
-import { GM_FONT_SIZE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT } from '../../styles'
+import {
+    GM_FONT_SIZE,
+    GM_FONT_FAMILY,
+    GM_FONT_LINE_HEIGHT,
+    FONT_FAMILY_2,
+    FONT_FAMILY_1,
+} from '../../styles'
 import {
     registrationTargetSelection,
     uploadSurvey,
@@ -79,7 +85,7 @@ class OnboardingSelectionTarget extends React.Component {
                     style={{
                         fontSize: GM_FONT_SIZE.FONT_1,
                         lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                        fontFamily: GM_FONT_FAMILY.GOTHAM,
+                        fontFamily: FONT_FAMILY_2,
                     }}
                 >
                     Others
@@ -97,7 +103,8 @@ class OnboardingSelectionTarget extends React.Component {
                         style={{
                             fontSize: GM_FONT_SIZE.FONT_3,
                             lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                            fontFamily: GM_FONT_FAMILY.GOTHAM,
+                            fontFamily: FONT_FAMILY_2,
+                            letterSpacing: 0.3,
                         }}
                         value={extra}
                         onChangeText={(val) =>
@@ -169,8 +176,10 @@ class OnboardingSelectionTarget extends React.Component {
                                 style={{
                                     fontSize: GM_FONT_SIZE.FONT_3,
                                     lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                                    fontFamily: GM_FONT_FAMILY.GOTHAM,
+                                    fontFamily: FONT_FAMILY_2,
+                                    letterSpacing: 0.6,
                                     flexWrap: 'wrap',
+                                    color: '#333333',
                                 }}
                             >
                                 {title}
@@ -250,12 +259,14 @@ const styles = {
     titleTextStyle: {
         fontSize: GM_FONT_SIZE.FONT_4,
         lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
-        fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+        fontFamily: FONT_FAMILY_1,
+        letterSpacing: 0.6,
     },
     subTitleTextStyle: {
         fontSize: GM_FONT_SIZE.FONT_1,
         lineHeight: GM_FONT_LINE_HEIGHT.FONT_1,
-        fontFamily: GM_FONT_FAMILY.GOTHAM,
+        fontFamily: FONT_FAMILY_2,
+        letterSpacing: 0.4,
         marginTop: 20,
         marginBottom: 10,
     },

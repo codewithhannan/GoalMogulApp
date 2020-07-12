@@ -37,6 +37,9 @@ export const REGISTRATION_USER_TARGETS = [
 ]
 export const REGISTRATION_TRIBE_FETCH = 'registration_tribe_fetch'
 export const REGISTRATION_TRIBE_SELECT = 'registration_tribe_select' // select a tribe to join during onboarding
+export const REGISTRATION_USER_INVITE = 'registration_user_invite' // invite user after contact sync find matches
+export const REGISTRATION_USER_INVITE_DONE = 'registration_user_invite_done' // invite user after contact sync find matches
+export const REGISTRATION_USER_INVITE_FAIL = 'registration_user_invite_fail' // invite user after contact sync find matches
 
 // Fake tribes rendered on network not available
 export const REGISTRATION_DEFAULT_TRIBES = [
@@ -44,6 +47,7 @@ export const REGISTRATION_DEFAULT_TRIBES = [
         _id: 0,
         name: 'Personal Development',
         picture: undefined,
+        description: 'This is a really long description',
     },
     {
         _id: 1,

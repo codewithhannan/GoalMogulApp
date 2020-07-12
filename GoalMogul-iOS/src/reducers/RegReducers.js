@@ -35,6 +35,9 @@ import {
     REGISTRATION_TRIBE_FETCH,
     REGISTRATION_TRIBE_SELECT,
     REGISTRATION_COMMUNITY_GUIDELINE,
+    REGISTRATION_USER_INVITE,
+    REGISTRATION_USER_INVITE_DONE,
+    REGISTRATION_USER_INVITE_FAIL,
 } from '../redux/modules/registration/RegistrationReducers'
 
 export function arrayUnique(array) {
@@ -92,6 +95,73 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
+        // Contact sync match found, user sent out invite
+        case REGISTRATION_USER_INVITE: {
+            const { userId } = action.payload
+            let newState = _.cloneDeep(state)
+
+            let matchedContactData = _.get(newState, 'matchedContacts.data')
+            matchedContactData = matchedContactData.map((userDoc) => {
+                if (_.isEqual(userDoc._id, userId)) {
+                    // set user doc inviting field to true
+                    return _.set(userDoc, 'inviting', true)
+                }
+                return userDoc
+            })
+
+            newState = _.set(
+                newState,
+                'matchedContacts.data',
+                matchedContactData
+            )
+            return newState
+        }
+
+        case REGISTRATION_USER_INVITE_DONE: {
+            const { userId } = action.payload
+            let newState = _.cloneDeep(state)
+
+            let matchedContactData = _.get(newState, 'matchedContacts.data')
+            matchedContactData = matchedContactData.map((userDoc) => {
+                if (_.isEqual(userDoc._id, userId)) {
+                    let newUserDoc
+                    // set user doc inviting field to true
+                    newUserDoc = _.set(userDoc, 'inviting', false)
+                    newUserDoc = _.set(userDoc, 'invited', true)
+                    return newUserDoc
+                }
+                return userDoc
+            })
+
+            newState = _.set(
+                newState,
+                'matchedContacts.data',
+                matchedContactData
+            )
+            return newState
+        }
+
+        case REGISTRATION_USER_INVITE_FAIL: {
+            const { userId } = action.payload
+            let newState = _.cloneDeep(state)
+
+            let matchedContactData = _.get(newState, 'matchedContacts.data')
+            matchedContactData = matchedContactData.map((userDoc) => {
+                if (_.isEqual(userDoc._id, userId)) {
+                    // set user doc inviting field to false
+                    return _.set(userDoc, 'inviting', false)
+                }
+                return userDoc
+            })
+
+            newState = _.set(
+                newState,
+                'matchedContacts.data',
+                matchedContactData
+            )
+            return newState
+        }
+
         case REGISTRATION_TEXT_CHANGE: {
             const { type, value } = action.payload
             let newState = _.cloneDeep(state)
