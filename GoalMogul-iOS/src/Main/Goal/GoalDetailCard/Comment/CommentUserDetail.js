@@ -292,19 +292,8 @@ class CommentUserDetail extends Component {
     }
 
     renderActionButtons() {
-        const {
-            item,
-            index,
-            scrollToIndex,
-            onCommentClicked,
-            viewOffset,
-            commentDetail,
-        } = this.props
-        const { childComments, _id, maybeLikeRef, parentRef } = item
-        const commentCounts =
-            childComments && childComments.length > 0
-                ? childComments.length
-                : undefined
+        const { item } = this.props
+        const { _id, maybeLikeRef, parentRef } = item
 
         const likeCount = item.likeCount || 0
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
