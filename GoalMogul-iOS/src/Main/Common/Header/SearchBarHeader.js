@@ -144,7 +144,8 @@ class SearchBarHeader extends Component {
             >
                 <Image
                     source={backButton ? BackButton : Logo}
-                    style={{ height, width: '75%', tintColor }}
+                    resizeMode="contain"
+                    style={{ height, tintColor }}
                 />
             </DelayedButton>
         )
