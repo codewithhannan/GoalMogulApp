@@ -1,29 +1,30 @@
 /** @format */
 
 import React from 'react'
-import _ from 'ramda'
-import { View, Image, TextInput, Text } from 'react-native'
+import _ from 'lodash'
+import { View, Text } from 'react-native'
 import CountryPicker, { Flag } from 'react-native-country-picker-modal'
-import dropDown from '../../../asset/utils/dropDown.png'
 import {
     GM_FONT_SIZE,
     GM_FONT_FAMILY,
     GM_FONT_LINE_HEIGHT,
+    FONT_FAMILY_3,
+    FONT_FAMILY_2,
 } from '../../../styles'
 import DelayedButton from '../../Common/Button/DelayedButton'
+import { Input } from '@ui-kitten/components'
 
-/**
- * Onboarding flow Input Box
- *
- * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
- */
-class InputBox extends React.Component {
-    focus() {
-        this.refs['textInput'].focus()
-    }
+class CountryFlagButton extends React.Component {
+    // TODO: improve the flag reloading
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     const { countryCode } = this.props
+    //     console.log('this.props: ', countryCode)
+    //     console.log('next props: ', nextProps.countryCode)
+    //     return !_.isEqual(countryCode, nextProps.countryCode)
+    // }
 
-    renderFlagButton(props, countryCode) {
-        const { onOpen } = props
+    render() {
+        const { countryCode, onOpen } = this.props
         const callingCode =
             countryCode.country &&
             countryCode.country.callingCode &&
@@ -55,8 +56,38 @@ class InputBox extends React.Component {
             </DelayedButton>
         )
     }
+}
 
-    renderInputTitle() {
+/**
+ * Onboarding flow Input Box
+ *
+ * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
+ */
+class InputBox extends React.Component {
+    shouldComponentUpdate(nextProps, nextState) {
+        const { value, caption, countryCode } = this.props
+
+        return (
+            !_.isEqual(value, nextProps.value) ||
+            !_.isEqual(caption, nextProps.caption) ||
+            !_.isEqual(countryCode, nextProps.countryCode)
+        )
+    }
+
+    focus() {
+        this.refs['textInput'].focus()
+    }
+
+    renderFlagButton(props, countryCode) {
+        return (
+            <CountryFlagButton
+                onOpen={props.onOpen}
+                countryCode={countryCode}
+            />
+        )
+    }
+
+    renderInputTitle = () => {
         const { inputTitle } = this.props
         if (this.props.optional) {
             return (
@@ -64,13 +95,14 @@ class InputBox extends React.Component {
                     style={{
                         fontSize: GM_FONT_SIZE.FONT_1,
                         lineHeight: GM_FONT_LINE_HEIGHT.FONT_1,
-                        fontFamily: GM_FONT_FAMILY.GOTHAM,
+                        fontFamily: FONT_FAMILY_2,
+                        marginBottom: 5,
                     }}
                 >
                     <Text
                         style={{
                             fontWeight: 'bold',
-                            fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+                            fontFamily: FONT_FAMILY_3,
                         }}
                     >
                         {inputTitle}
@@ -85,14 +117,15 @@ class InputBox extends React.Component {
                     style={{
                         fontSize: GM_FONT_SIZE.FONT_1,
                         lineHeight: GM_FONT_LINE_HEIGHT.FONT_1,
-                        fontFamily: GM_FONT_FAMILY.GOTHAM,
+                        fontFamily: FONT_FAMILY_3,
+                        marginBottom: 5,
                     }}
                 >
                     <Text style={{ color: 'red' }}>*</Text>
                     <Text
                         style={{
                             fontWeight: 'bold',
-                            fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+                            fontFamily: FONT_FAMILY_3,
                         }}
                     >
                         {inputTitle}
@@ -112,25 +145,24 @@ class InputBox extends React.Component {
         } = this.props
         return (
             <View style={styles.containerStyle}>
-                {this.renderInputTitle()}
-                <View style={styles.textInputContainerStylePhone}>
-                    {this.renderCountryCode(countryCode, onCountryCodeSelected)}
-                    <TextInput
-                        ref="textInput"
-                        style={styles.textInputStylePhone}
-                        placeholderTextColor={
-                            placeholderTextColor
-                                ? placeholderTextColor
-                                : '#D3D3D3'
-                        }
-                        {...custom}
-                    />
-                </View>
+                <Input
+                    ref="textInput"
+                    label={this.renderInputTitle}
+                    size="large"
+                    accessoryLeft={() =>
+                        this.renderCountryCode(
+                            countryCode,
+                            onCountryCodeSelected
+                        )
+                    }
+                    textStyle={{ fontSize: '16' }}
+                    {...custom}
+                />
             </View>
         )
     }
 
-    renderCountryCode(countryCode, onCountryCodeSelected) {
+    renderCountryCode = (countryCode, onCountryCodeSelected) => {
         return (
             <View
                 style={{
@@ -168,21 +200,17 @@ class InputBox extends React.Component {
         if (isPhoneNumber) {
             return this.renderPhoneInput()
         }
+
         return (
             <View style={styles.containerStyle}>
-                {this.renderInputTitle()}
-                <View style={styles.textInputContainerStyle}>
-                    <TextInput
-                        ref="textInput"
-                        style={styles.textInputStyle}
-                        placeholderTextColor={
-                            placeholderTextColor
-                                ? placeholderTextColor
-                                : '#D3D3D3'
-                        }
-                        {...custom}
-                    />
-                </View>
+                <Input
+                    ref="textInput"
+                    label={this.renderInputTitle}
+                    style={{ width: '100%' }}
+                    textStyle={{ fontSize: '16' }}
+                    size="large"
+                    {...custom}
+                />
             </View>
         )
     }
@@ -192,7 +220,7 @@ const styles = {
     containerStyle: {
         display: 'flex',
         width: '100%',
-        marginTop: 40,
+        marginTop: 20,
     },
     textInputContainerStyle: {
         flexDirection: 'row',

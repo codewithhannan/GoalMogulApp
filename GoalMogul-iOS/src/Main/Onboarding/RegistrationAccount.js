@@ -30,6 +30,20 @@ import {
 import PhoneVerificationMoal from './PhoneVerificationModal'
 
 const NEXT_STEP = 'registration_add_photo'
+const FIELD_REQUIREMENTS = {
+    email: {
+        invalid_email: 'Invalid Email',
+        require_email: 'Email is required',
+    },
+    name: {
+        require_name: 'Name is required',
+    },
+    phone: {},
+    password: {
+        password_too_short: 'Password should have at least 8 characters',
+        missing_password: 'Password is required',
+    },
+}
 
 /**
  * Onboarding flow account registration page.
@@ -43,6 +57,10 @@ class RegistrationAccount extends React.Component {
         super(props)
         this.state = {
             isModalOpen: false,
+            emailStatus: undefined,
+            nameStatus: undefined,
+            phoneStatus: undefined,
+            passwordStatus: undefined,
         }
     }
 
@@ -86,6 +104,20 @@ class RegistrationAccount extends React.Component {
     }
 
     onNext = () => {
+        // User attempts to click next when no fields have been set
+        if (
+            this.state.nameStatus == undefined &&
+            this.state.emailStatus == undefined &&
+            this.state.passwordStatus == undefined
+        ) {
+            this.setState({
+                ...this.state,
+                nameStatus: FIELD_REQUIREMENTS.name.require_name,
+                emailStatus: FIELD_REQUIREMENTS.email.require_email,
+                passwordStatus: FIELD_REQUIREMENTS.password.missing_password,
+            })
+            return
+        }
         const { phone } = this.props
         const onSuccess = () => {
             // If phone number is input, go through phone verification
@@ -99,20 +131,48 @@ class RegistrationAccount extends React.Component {
         onSuccess()
     }
 
-    validateEmail(email) {
+    isValidEmail = (email) => {
         const isValid = (email) => {
             var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             return re.test(String(email).toLowerCase())
         }
-        if (isValid(email)) {
-            // Go to phone number input
-            this.refs['phone'].focus()
-        } else {
-            Alert.alert(
-                'Invalid Email',
-                'Please make sure your email address is valid.'
-                // [{text: 'OK', onPress: () => this.refs["email"].focus()}]
-            )
+        return isValid(email)
+    }
+
+    validateName = (name) => {
+        if (name.length <= 0) {
+            this.setState({
+                ...this.state,
+                nameStatus: FIELD_REQUIREMENTS.name.require_name,
+            })
+        }
+    }
+
+    validateEmail = (email) => {
+        if (!email || !email.trim().length) {
+            this.setState({
+                ...this.state,
+                emailStatus: FIELD_REQUIREMENTS.email.require_email,
+            })
+        } else if (!this.isValidEmail(email)) {
+            this.setState({
+                ...this.state,
+                emailStatus: FIELD_REQUIREMENTS.email.invalid_email,
+            })
+        }
+    }
+
+    validatePassword = (password) => {
+        if (!password || !password.trim().length) {
+            this.setState({
+                ...this.state,
+                passwordStatus: FIELD_REQUIREMENTS.password.missing_password,
+            })
+        } else if (password.trim().length < 8) {
+            this.setState({
+                ...this.state,
+                passwordStatus: FIELD_REQUIREMENTS.password.password_too_short,
+            })
         }
     }
 
@@ -162,7 +222,7 @@ class RegistrationAccount extends React.Component {
                     justifyContent: 'center',
                     backgroundColor: 'transparent',
                     zIndex: 0,
-                    // flexGrow: 1, // this will fix scrollview scroll issue by passing parent view width and height to it
+                    flexGrow: 1, // this will fix scrollview scroll issue by passing parent view width and height to it
                 }}
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -177,34 +237,66 @@ class RegistrationAccount extends React.Component {
                             key="name"
                             inputTitle="Full Name"
                             placeholder="Your Full Name"
-                            onChangeText={(val) =>
+                            onChangeText={(val) => {
+                                if (
+                                    this.state.nameStatus &&
+                                    val &&
+                                    val.trim().length
+                                ) {
+                                    this.setState({
+                                        ...this.state,
+                                        nameStatus: undefined,
+                                    })
+                                }
                                 this.props.registrationTextInputChange(
                                     'name',
                                     val
                                 )
-                            }
+                            }}
                             value={name}
                             disabled={this.props.loading}
                             returnKeyType="next"
-                            onSubmitEditing={() => this.refs['email'].focus()}
+                            onBlur={() => this.validateName(name)}
+                            onSubmitEditing={() => {
+                                this.validateName(name)
+                                this.refs['email'].focus()
+                            }}
+                            caption={this.state.nameStatus || ' '}
+                            status={this.state.nameStatus ? 'danger' : 'basic'}
                         />
                         <InputBox
                             key="email"
                             inputTitle="Email"
                             ref="email"
                             placeholder="Your Email Address"
-                            onChangeText={(val) =>
+                            onChangeText={(val) => {
+                                if (
+                                    this.state.emailStatus &&
+                                    val &&
+                                    val.trim().length
+                                ) {
+                                    this.setState({
+                                        ...this.state,
+                                        emailStatus: undefined,
+                                    })
+                                }
                                 this.props.registrationTextInputChange(
                                     'email',
                                     val
                                 )
-                            }
+                            }}
                             value={email}
                             autoCompleteType="email"
                             keyboardType="email-address"
                             returnKeyType="next"
                             disabled={this.props.loading}
-                            onEndEditing={() => this.validateEmail(email)}
+                            onBlur={() => this.validateEmail(email)}
+                            onSubmitEditing={() => {
+                                this.validateEmail(email)
+                                this.refs['phone'].focus()
+                            }}
+                            caption={this.state.emailStatus || ' '}
+                            status={this.state.emailStatus ? 'danger' : 'basic'}
                         />
                         <InputBox
                             key="phone"
@@ -230,6 +322,7 @@ class RegistrationAccount extends React.Component {
                             optional
                             returnKeyType="next"
                             disabled={this.props.loading}
+                            caption=" "
                             onEndEditing={() => this.refs['password'].focus()}
                         />
                         <InputBox
@@ -238,15 +331,44 @@ class RegistrationAccount extends React.Component {
                             ref="password"
                             placeholder="Password"
                             secureTextEntry
-                            onChangeText={(val) =>
+                            onChangeText={(val) => {
+                                if (
+                                    this.state.passwordStatus &&
+                                    val &&
+                                    val.trim().length
+                                ) {
+                                    this.setState({
+                                        ...this.state,
+                                        passwordStatus: undefined,
+                                    })
+                                }
                                 this.props.registrationTextInputChange(
                                     'password',
                                     val
                                 )
-                            }
+                            }}
                             value={password}
                             textContentType="newPassword"
                             returnKeyType="done"
+                            caption={this.state.passwordStatus || ' '}
+                            onBlur={() => {
+                                this.validatePassword(password)
+                            }}
+                            onSubmitEditing={() => {
+                                this.validatePassword(password)
+                            }}
+                            onEndEditing={(event) => {
+                                if (event.nativeEvent.text.length === 0) {
+                                    this.props.registrationTextInputChange(
+                                        'password',
+                                        ''
+                                    )
+                                    this.validatePassword(password)
+                                }
+                            }}
+                            status={
+                                this.state.passwordStatus ? 'danger' : 'basic'
+                            }
                             disabled={this.props.loading}
                         />
                         {this.renderLogin()}
@@ -270,7 +392,12 @@ class RegistrationAccount extends React.Component {
                     <OnboardingFooter
                         buttonText="Continue"
                         onButtonPress={this.onNext}
-                        disabled={this.props.loading}
+                        disabled={
+                            this.props.loading ||
+                            this.state.nameStatus ||
+                            this.state.emailStatus ||
+                            this.state.passwordStatus
+                        }
                     />
                 </View>
 
