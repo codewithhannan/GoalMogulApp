@@ -17,6 +17,8 @@ import {
     GM_FONT_FAMILY,
     GM_FONT_LINE_HEIGHT,
     TEXT_STYLE as textStyle,
+    FONT_FAMILY_2,
+    DEFAULT_STYLE,
 } from '../../styles'
 import OnboardingFooter from './Common/OnboardingFooter'
 import { Actions } from 'react-native-router-flux'
@@ -66,7 +68,7 @@ class OnboardingCommunity extends React.Component {
                 }}
                 key={index}
             >
-                <View style={{ flex: 1 }}>
+                <View>
                     {picture ? (
                         <Image
                             style={{
@@ -91,26 +93,32 @@ class OnboardingCommunity extends React.Component {
                     )}
                 </View>
 
-                <View style={{ width: '90%' }}>
+                <View
+                    style={{ width: '70%', justifyContent: 'center', flex: 1 }}
+                >
                     <Text
-                        style={{
-                            fontSize: GM_FONT_SIZE.FONT_3_5,
-                            lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
-                            fontFamily: GM_FONT_FAMILY.GOTHAM,
-                            marginTop: 14,
-                            marginBottom: 14,
-                            textAlign: 'center',
-                        }}
+                        style={[
+                            DEFAULT_STYLE.titleText_1,
+                            {
+                                fontSize: GM_FONT_SIZE.FONT_3_5,
+                                lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
+                                fontFamily: FONT_FAMILY_2,
+                                marginTop: 14,
+                                marginBottom: 14,
+                                textAlign: 'center',
+                            },
+                        ]}
                     >
                         {title}
                     </Text>
                     {subTitle ? (
                         <Text
-                            style={{
-                                fontSize: GM_FONT_SIZE.FONT_1,
-                                fontFamily: GM_FONT_FAMILY.GOTHAM,
-                                textAlign: 'center',
-                            }}
+                            style={
+                                (DEFAULT_STYLE.normalText_1,
+                                {
+                                    textAlign: 'center',
+                                })
+                            }
                         >
                             {subTitle}
                         </Text>
