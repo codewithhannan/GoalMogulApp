@@ -3,14 +3,14 @@
 import React from 'react'
 import { Image, Text, View } from 'react-native'
 import Icons from '../../../asset/base64/Icons'
-import { DotIcon } from '../../../Utils/Icons'
 import { DEFAULT_STYLE } from '../../../styles'
+import { DotIcon } from '../../../Utils/Icons'
 
 const { ViewCountIcon } = Icons
 
 const Timestamp = (props) => {
     // TODO: format time
-    const { time, viewCount, priority, isCompleted } = props
+    const { time, viewCount, priority, isCompleted, textStyles } = props
     const viewCountComponent = viewCount ? (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <DotIcon
@@ -69,9 +69,13 @@ const Timestamp = (props) => {
         </View>
     ) : null
 
+    const textStylesProp = textStyles || {}
+
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={DEFAULT_STYLE.smallText_1}>{time}</Text>
+            <Text style={{ ...DEFAULT_STYLE.smallText_1, ...textStylesProp }}>
+                {time}
+            </Text>
             {priorityComponent}
             {viewCountComponent}
         </View>

@@ -7,11 +7,11 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import {
+    Dimensions,
+    Keyboard,
     StyleSheet,
     View,
-    Keyboard,
     ViewPropTypes,
-    Dimensions,
 } from 'react-native'
 
 const DEFAULT_ACCESSORY_HEIGHT = 70

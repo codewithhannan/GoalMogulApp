@@ -117,6 +117,26 @@ export const updateCurrentChatRoomsList = (
     const pageSize = Math.max(currentChatRoomsList.length, minPageSize)
     const { token } = getState().user
     switch (tab) {
+        case CHAT_LOAD_TYPES.allChats:
+            API.get(
+                `secure/chat/room/latest?roomType=All&limit=${pageSize}&skip=0`,
+                token
+            )
+                .then((res) => {
+                    const chatRooms = res.data
+                    transformChatRoomResultsAndDispatch(
+                        CHAT_REFRESH_DONE,
+                        {
+                            type: tab,
+                            data: chatRooms,
+                        },
+                        dispatch
+                    )
+                })
+                .catch((err) =>
+                    console.log(`Error live updating chat room list`, err)
+                )
+            break
         case CHAT_LOAD_TYPES.directMessages:
             API.get(
                 `secure/chat/room/latest?roomType=Direct&limit=${pageSize}&skip=0`,
@@ -178,6 +198,34 @@ export const refreshChatRooms = (tab, pageSize, maybeSearchQuery) => (
     })
     const { token } = getState().user
     switch (tab) {
+        case CHAT_LOAD_TYPES.allChats:
+            API.get(
+                `secure/chat/room/latest?roomType=All&limit=${pageSize}&skip=0`,
+                token
+            )
+                .then((res) => {
+                    const chatRooms = res.data
+                    transformChatRoomResultsAndDispatch(
+                        CHAT_REFRESH_DONE,
+                        {
+                            type: tab,
+                            data: chatRooms,
+                        },
+                        dispatch
+                    )
+                })
+                .catch((err) => {
+                    Alert.alert(
+                        'Error',
+                        'Error loading data. Please try again.'
+                    )
+                    console.log(err)
+                    dispatch({
+                        type: CHAT_REFRESH_DONE,
+                        payload: { type: tab, data: [] },
+                    })
+                })
+            break
         case CHAT_LOAD_TYPES.directMessages:
             if (maybeSearchQuery && maybeSearchQuery.trim().length) {
                 API.get(
@@ -286,7 +334,6 @@ export const refreshChatRooms = (tab, pageSize, maybeSearchQuery) => (
                             'Error',
                             'Error loading data. Please try again.'
                         )
-                        console.log(err)
                         dispatch({
                             type: CHAT_REFRESH_DONE,
                             payload: { type: tab, data: [] },
@@ -304,6 +351,7 @@ export const loadMoreChatRooms = (
     maybeSearchQuery
 ) => (dispatch, getState) => {
     const { loading } = _.get(getState().chat, tab)
+
     if (loading) return // Don't load more when there is a request on flight
     dispatch({
         type: CHAT_LOAD,
@@ -314,6 +362,39 @@ export const loadMoreChatRooms = (
     const { token } = getState().user
     const resultsOffset = prevResultsOffset + pageSize
     switch (tab) {
+        case CHAT_LOAD_TYPES.allChats:
+            API.get(
+                `secure/chat/room/latest?roomType=All&limit=${pageSize}&skip=${resultsOffset}`,
+                token
+            )
+                .then((res) => {
+                    const chatRooms = res.data
+                    transformChatRoomResultsAndDispatch(
+                        CHAT_LOAD_DONE,
+                        {
+                            type: tab,
+                            data: chatRooms,
+                            skip: resultsOffset,
+                            hasNextPage: !!chatRooms.length,
+                        },
+                        dispatch
+                    )
+                })
+                .catch((err) => {
+                    Alert.alert(
+                        'Error',
+                        'Error loading data. Please try again.'
+                    )
+                    dispatch({
+                        type: CHAT_LOAD_DONE,
+                        payload: {
+                            type: tab,
+                            data: [],
+                            skip: prevResultsOffset,
+                        },
+                    })
+                })
+            break
         case CHAT_LOAD_TYPES.directMessages:
             if (maybeSearchQuery && maybeSearchQuery.trim().length) {
                 API.get(
@@ -340,7 +421,6 @@ export const loadMoreChatRooms = (
                             'Error',
                             'Error loading data. Please try again.'
                         )
-                        console.log(err)
                         dispatch({
                             type: CHAT_LOAD_DONE,
                             payload: {
@@ -373,7 +453,6 @@ export const loadMoreChatRooms = (
                             'Error',
                             'Error loading data. Please try again.'
                         )
-                        console.log(err)
                         dispatch({
                             type: CHAT_LOAD_DONE,
                             payload: {
