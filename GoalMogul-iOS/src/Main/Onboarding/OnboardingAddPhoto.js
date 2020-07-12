@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
         marginVertical: 60,
     },
     buttonContainerStyles: {
-        marginBottom: 60,
+        marginBottom: 30,
         paddingHorizontal: 25,
     },
     buttonPrimaryStyles: {

@@ -247,14 +247,14 @@ export const TEXT_STYLE = {
     onboardingTitleTextStyle: {
         fontSize: GM_FONT_SIZE.FONT_4,
         lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
-        fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+        fontFamily: FONT_FAMILY_1,
         textAlign: 'center',
     },
     // Paragraph text style in an
     onboardingPharagraphTextStyle: {
         fontSize: GM_FONT_SIZE.FONT_3,
         lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
-        fontFamily: GM_FONT_FAMILY.GOTHAM,
+        fontFamily: FONT_FAMILY_2,
         fontWeight: '500',
         textAlign: 'center',
     },

@@ -138,6 +138,7 @@ class RegistrationAccount extends React.Component {
             }
             this.nextStep()
         }
+        // TODO: registration
         // return this.props.registerAccount(onSuccess);
         onSuccess()
     }
@@ -435,7 +436,7 @@ class RegistrationAccount extends React.Component {
                 <View style={{ flex: 1, zIndex: 0 }}>
                     {this.renderInputs()}
                 </View>
-                <View style={{ marginHorizontal: 16, marginBottom: 10 }}>
+                <View style={{ marginHorizontal: 16, marginBottom: 30 }}>
                     <OnboardingFooter
                         buttonText="Continue"
                         onButtonPress={this.onNext}
@@ -452,7 +453,6 @@ class RegistrationAccount extends React.Component {
                     <DelayedButton
                         style={[
                             BUTTON_STYLE.GM_WHITE_BG_GRAY_TEXT.containerStyle,
-                            { marginBottom: 20 },
                         ]}
                         onPress={() => Actions.pop()}
                     >

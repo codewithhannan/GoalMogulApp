@@ -121,8 +121,8 @@ class ImagePicker extends Component {
 
 const styles = StyleSheet.create({
     buttonStyles: {
-        width: 150,
-        height: 150,
+        width: 200,
+        height: 200,
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
@@ -145,8 +145,8 @@ const styles = StyleSheet.create({
         borderRadius: 180,
     },
     defaultImageStyle: {
-        height: 40,
-        width: 40,
+        height: 60,
+        width: 60,
     },
 })
 
