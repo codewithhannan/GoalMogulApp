@@ -196,7 +196,7 @@ export const BUTTON_STYLE = {
         textStyle: {
             fontSize: GM_FONT_SIZE.FONT_3,
             fontWeight: 'bold',
-            lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
+            lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
             color: 'white',
             fontFamily: FONT_FAMILY_3,
         },
@@ -215,7 +215,7 @@ export const BUTTON_STYLE = {
         },
         textStyle: {
             fontSize: GM_FONT_SIZE.FONT_3,
-            lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
+            lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
             color: GM_BLUE,
             fontFamily: FONT_FAMILY_3,
         },
@@ -235,7 +235,7 @@ export const BUTTON_STYLE = {
         },
         textStyle: {
             fontSize: GM_FONT_SIZE.FONT_3,
-            lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
+            lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
             color: '#828282',
             fontFamily: FONT_FAMILY_3,
         },

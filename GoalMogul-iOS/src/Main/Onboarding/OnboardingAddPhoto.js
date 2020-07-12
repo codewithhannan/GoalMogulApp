@@ -28,7 +28,6 @@ import ImagePicker from './Common/ImagePicker'
 import {
     TEXT_STYLE as textStyle,
     BUTTON_STYLE as buttonStyle,
-    DEFAULT_STYLE,
 } from '../../styles'
 import { openCamera, openCameraRoll } from '../../actions'
 import { registrationAddProfilePhoto } from '../../redux/modules/registration/RegistrationActions'
@@ -43,6 +42,7 @@ class OnboardingAddPhotos extends Component {
         // TODO process uploaded image
         const onSuccess = () => Actions.push('registration_contact_sync')
         onSuccess()
+        // TODO: registration
         // this.props.registrationAddProfilePhoto(onSuccess)
     }
 

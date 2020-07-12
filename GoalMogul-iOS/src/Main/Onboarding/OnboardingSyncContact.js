@@ -18,6 +18,8 @@ import {
     GM_FONT_LINE_HEIGHT,
     BUTTON_STYLE as buttonStyle,
     TEXT_STYLE as textStyle,
+    FONT_FAMILY_1,
+    FONT_FAMILY_2,
 } from '../../styles'
 import { PRIVACY_POLICY_URL } from '../../Utils/Constants'
 import {
@@ -116,12 +118,12 @@ class OnboardingSyncContact extends React.Component {
                 <DelayedButton
                     onPress={this.onNotNow}
                     style={[
-                        buttonStyle.GM_WHITE_BG_BLUE_TEXT.containerStyle,
+                        buttonStyle.GM_WHITE_BG_GRAY_TEXT.containerStyle,
                         { marginTop: 10 },
                     ]}
                 >
-                    <Text style={buttonStyle.GM_WHITE_BG_BLUE_TEXT.textStyle}>
-                        Not Now
+                    <Text style={buttonStyle.GM_WHITE_BG_GRAY_TEXT.textStyle}>
+                        Skip
                     </Text>
                 </DelayedButton>
             </View>
@@ -207,7 +209,7 @@ const styles = {
     noteTextStyle: {
         fontSize: GM_FONT_SIZE.FONT_1,
         lineHeight: GM_FONT_LINE_HEIGHT.FONT_3_5,
-        fontFamily: GM_FONT_FAMILY.GOTHAM,
+        fontFamily: FONT_FAMILY_2,
         color: '#333333',
         alignSelf: 'flex-end',
         paddingBottom: 20,
