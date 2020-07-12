@@ -92,7 +92,7 @@ class OnboardingWelcome extends React.Component {
                                 buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle
                             }
                         >
-                            Continue
+                            Let's get started!
                         </Text>
                     </DelayedButton>
                 </View>

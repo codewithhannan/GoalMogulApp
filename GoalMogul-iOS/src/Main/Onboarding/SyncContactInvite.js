@@ -13,6 +13,7 @@ import {
     GM_BLUE,
     GM_FONT_SIZE,
     FONT_FAMILY_2,
+    DEFAULT_STYLE,
 } from '../../styles'
 import { inviteExistingUser } from '../../redux/modules/registration/RegistrationActions'
 import { inviteUser } from '../../redux/modules/User/ContactSync/ContactSyncActions'
@@ -31,7 +32,7 @@ class SyncContactInvite extends React.Component {
         this.state = {
             // navigationState should be state to the page
             navigationState: {
-                index: 0,
+                index: props.inviteOnly ? 1 : 0,
                 routes: [
                     { key: 'matchedContacts', title: 'On GoalMogul' },
                     { key: 'contacts', title: 'Not on GoalMogul' },
@@ -60,6 +61,8 @@ class SyncContactInvite extends React.Component {
         Actions.push('registration_transition')
     }
 
+    handleLoadMoreMatchedContacts = () => {}
+
     /**
      * Invite user.
      * // TODO: type might not be needed
@@ -79,6 +82,16 @@ class SyncContactInvite extends React.Component {
         // TODO: add sentry logging
     }
 
+    renderEmptyMatchedContacts = () => {
+        return (
+            <View style={{ paddingTop: 50, alignItems: 'center' }}>
+                <Text style={[DEFAULT_STYLE.goalTitleText_1]}>
+                    No matched contacts found
+                </Text>
+            </View>
+        )
+    }
+
     renderUserCard = (props, type, callback) => {
         // Render user card based on props and type.
         // Callback is to invite and withdraw invitation
@@ -88,6 +101,7 @@ class SyncContactInvite extends React.Component {
     renderScene = ({ route }) => {
         switch (route.key) {
             case 'matchedContacts':
+                // Render matched contacts
                 return (
                     <FlatList
                         data={this.props.matchedContacts.data}
@@ -99,11 +113,14 @@ class SyncContactInvite extends React.Component {
                             )
                         }
                         keyExtractor={this._keyExtractor}
-                        refresing={this.props.matchedContacts.refreshing}
+                        onEndThreshold={0}
+                        onEndReached={this.handleLoadMoreMatchedContacts}
+                        ListFooterComponent={this.renderEmptyMatchedContacts}
                     />
                 )
 
             case 'contacts':
+                // Render contacts
                 return (
                     <FlatList
                         data={this.props.contacts.data}
@@ -179,7 +196,7 @@ class SyncContactInvite extends React.Component {
                         }}
                     >
                         {inviteOnly ? (
-                            <Text style={textStyle.onboardingTitleTextStyle}>
+                            <Text style={[textStyle.onboardingTitleTextStyle]}>
                                 Invite friends to join!
                             </Text>
                         ) : (
@@ -197,28 +214,13 @@ class SyncContactInvite extends React.Component {
                             ]
                         )}
                     </View>
-                    {inviteOnly ? (
-                        // Render user contact cards only for invitation
-                        <FlatList
-                            data={this.props.contacts.data}
-                            renderItem={(props) =>
-                                this.renderUserCard(
-                                    props,
-                                    'contacts',
-                                    this.inviteUser('contacts')
-                                )
-                            }
-                            contentContainerStyle={{ marginTop: 20 }}
-                        />
-                    ) : (
-                        <TabView
-                            navigationState={this.state.navigationState}
-                            renderScene={this.renderScene}
-                            renderTabBar={this.renderTabs}
-                            onIndexChange={this.switchTab}
-                            useNativeDriver
-                        />
-                    )}
+                    <TabView
+                        navigationState={this.state.navigationState}
+                        renderScene={this.renderScene}
+                        renderTabBar={this.renderTabs}
+                        onIndexChange={this.switchTab}
+                        useNativeDriver
+                    />
                 </View>
                 <OnboardingFooter
                     totalStep={0}
