@@ -385,7 +385,7 @@ class GoalCard extends React.PureComponent {
     // #FCB110
 
     render() {
-        const { item } = this.props
+        const { item, isSharedItem } = this.props
         if (!item) return
 
         return (
@@ -403,7 +403,7 @@ class GoalCard extends React.PureComponent {
                             }}
                         />
                     ) : null}
-                    <GoalCardHeader item={item} />
+                    {!isSharedItem && <GoalCardHeader item={item} />}
                     <View>
                         <DelayedButton
                             activeOpacity={0.6}
@@ -421,7 +421,7 @@ class GoalCard extends React.PureComponent {
                                 {this.renderCardContent(item)}
                             </View>
                         </DelayedButton>
-                        <View>{this.renderActionButtons(item)}</View>
+                        {!isSharedItem && this.renderActionButtons(item)}
                     </View>
                 </View>
             </View>

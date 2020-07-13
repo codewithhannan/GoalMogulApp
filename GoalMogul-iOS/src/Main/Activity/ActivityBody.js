@@ -8,14 +8,14 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native'
 import _ from 'lodash'
-import Modal from 'react-native-modal'
 
 // Components
 import ProgressBar from '../Goal/Common/ProgressBar'
 import ImageModal from '../Common/ImageModal'
-
-// Assets
 import RefPreview from '../Common/RefPreview'
+
+// Actions
+import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
 
 // Styles
 import { imagePreviewContainerStyle } from '../../styles'
@@ -23,6 +23,8 @@ import { imagePreviewContainerStyle } from '../../styles'
 // Constants
 import { IMAGE_BASE_URL, IS_ZOOMED } from '../../Utils/Constants'
 import SparkleBadgeView from '../Gamification/Badge/SparkleBadgeView'
+import GoalCard from '../Goal/GoalCard/GoalCard'
+import { connect } from 'react-redux'
 
 const DEBUG_KEY = '[ UI ActivityCard.ActivityBody ]'
 const { width } = Dimensions.get('window')
@@ -131,11 +133,25 @@ class ActivityBody extends React.Component {
             item = postRef.postRef
         }
 
-        return (
-            <View>
-                <RefPreview item={item} postType={postType} goalRef={goalRef} />
-            </View>
-        )
+        if (postType === 'ShareGoal') {
+            return (
+                <View
+                    style={{
+                        borderWidth: 1,
+                        borderColor: '#F2F2F2',
+                        borderRadius: 5,
+                    }}
+                >
+                    <GoalCard
+                        item={item}
+                        onPress={(goal) => this.props.openGoalDetail(goal)}
+                        isSharedItem={true}
+                    />
+                </View>
+            )
+        }
+
+        return <RefPreview item={item} postType={postType} goalRef={goalRef} />
     }
 
     // Render Activity Card body
@@ -208,4 +224,6 @@ const styles = {
     },
 }
 
-export default ActivityBody
+export default connect(null, {
+    openGoalDetail,
+})(ActivityBody)
