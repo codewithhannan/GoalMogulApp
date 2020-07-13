@@ -152,7 +152,7 @@ export const registrationFetchTribes = () => async (dispatch, getState) => {
     // const { token, userId } = getState().user
     const userId = 'test'
     const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjgyZjQxYjE1ZjdkZjAwMWFhMDM2MzMiLCJpYXQiOjE1OTQ0NDk5MzEsImV4cCI6MTU5NDcwOTEzMX0._oR3Gwlf5VO67RIfA_rbREXKtMIIkTQZM0LqJp3QTcI'
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjgyZjQxYjE1ZjdkZjAwMWFhMDM2MzMiLCJpYXQiOjE1OTQ2Njg4OTksImV4cCI6MTU5NDkyODA5OX0.08_X_GKpvyJ_JCfgWMf_qOuTxqBKxaEfvJ1LDo-wOFE'
 
     let tribesFetched = []
     const res = await API.get('secure/tribe/goalmogul-tribes', token)
@@ -180,7 +180,7 @@ export const uploadSelectedTribes = () => async (dispatch, getState) => {
     // const { token, userId } = getState().user
     const userId = 'test'
     const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjgyZjQxYjE1ZjdkZjAwMWFhMDM2MzMiLCJpYXQiOjE1OTQ0NDk5MzEsImV4cCI6MTU5NDcwOTEzMX0._oR3Gwlf5VO67RIfA_rbREXKtMIIkTQZM0LqJp3QTcI'
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjgyZjQxYjE1ZjdkZjAwMWFhMDM2MzMiLCJpYXQiOjE1OTQ2Njg4OTksImV4cCI6MTU5NDkyODA5OX0.08_X_GKpvyJ_JCfgWMf_qOuTxqBKxaEfvJ1LDo-wOFE'
 
     const tribes = getState().registration.tribes
 
@@ -189,7 +189,7 @@ export const uploadSelectedTribes = () => async (dispatch, getState) => {
     }
     const res = await API.post('secure/tribe/batch-join-tribes', body, token)
     if (res.status < 200 || res.status > 299) {
-        // console.log('update selected tribes: ', res)
+        console.log('update selected tribes: ', res)
         new SentryRequestBuilder(res.message, SENTRY_MESSAGE_TYPE.message)
             .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
             .withTag(SENTRY_TAGS.REGISTRATION.ACTION, 'uploadSelectedTribes')

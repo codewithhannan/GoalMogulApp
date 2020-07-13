@@ -3,6 +3,13 @@
 import React from 'react'
 import { MaterialIcons } from '@expo/vector-icons'
 import { View, Text, TextInput, Animated } from 'react-native'
+/**
+ * Page for user to select important things they want to achieve in GM
+ *
+ * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
+ * @format
+ */
+
 import { connect } from 'react-redux'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import OnboardingHeader from './Common/OnboardingHeader'
@@ -22,11 +29,6 @@ import OnboardingFooter from './Common/OnboardingFooter'
 import { CheckBox } from 'react-native-elements'
 import { Actions } from 'react-native-router-flux'
 
-/**
- * Page for user to select important things they want to achieve in GM
- *
- * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
- */
 class OnboardingSelectionTarget extends React.Component {
     constructor(props) {
         super(props)

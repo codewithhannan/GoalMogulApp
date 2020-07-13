@@ -359,10 +359,8 @@ export const updateFriendship = (userId, friendshipId, type, tab, callback) => (
                 return 'POST'
         }
     })(type)
-    // TODO: registration
-    // const { token } = getState().user
-    const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjgyZjQxYjE1ZjdkZjAwMWFhMDM2MzMiLCJpYXQiOjE1OTQ0NDk5MzEsImV4cCI6MTU5NDcwOTEzMX0._oR3Gwlf5VO67RIfA_rbREXKtMIIkTQZM0LqJp3QTcI'
+
+    const { token } = getState().user
     if (type === 'requestFriend' && requestType.data === undefined) {
         console.warn(
             '[ Meet Actions ] sending friend request with userId: ',

@@ -72,8 +72,8 @@ const INITIAL_STATE = {
     }, // country code for phone number
     phone: '',
     userTargets: [...REGISTRATION_USER_TARGETS],
-    // TODO: registration: uncomment
     tribes: [],
+    // Below are fake tribes when network is not available
     // tribes: [...REGISTRATION_DEFAULT_TRIBES],
     tribeLoading: false,
     communityGuidelines: [...REGISTRATION_COMMUNITY_GUIDELINE],

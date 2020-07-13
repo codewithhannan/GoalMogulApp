@@ -155,7 +155,7 @@ class InputBox extends React.Component {
                             onCountryCodeSelected
                         )
                     }
-                    textStyle={{ fontSize: '16' }}
+                    textStyle={{ fontSize: 16 }}
                     {...custom}
                 />
             </View>
@@ -207,7 +207,7 @@ class InputBox extends React.Component {
                     ref="textInput"
                     label={this.renderInputTitle}
                     style={{ width: '100%' }}
-                    textStyle={{ fontSize: '16' }}
+                    textStyle={{ fontSize: 16 }}
                     size="large"
                     {...custom}
                 />
