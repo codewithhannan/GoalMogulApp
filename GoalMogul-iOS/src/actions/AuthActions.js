@@ -74,7 +74,6 @@ const validateEmail = (email) => {
 }
 
 export const tryAutoLogin = () => async (dispatch, getState) => {
-    return
     await Auth.getKey().then((res) => {
         // auto-login with current token
         authenticate(res)(dispatch, getState)
