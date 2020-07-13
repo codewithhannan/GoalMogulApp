@@ -142,11 +142,47 @@ export const registrationTribeSelection = (_id, selected) => (dispatch) => {
 /**
  * Fetch tribes for user to select during onboarding flow
  */
-export const registrationFetchTribes = () => (dispatch, getState) => {
+export const registrationFetchTribes = () => async (dispatch, getState) => {
     dispatch({
         type: REGISTRATION_TRIBE_FETCH,
-        payload: { tribes: [], status: 'done' },
+        payload: { loading: true },
     })
+
+    const { token, userId } = getState().user
+
+    let tribesFetched = []
+    const res = await API.get('secure/tribes', token)
+    if (res.status < 200 || res.status > 299) {
+        new SentryRequestBuilder(res.message, SENTRY_MESSAGE_TYPE.message)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.REGISTRATION.ACTION, 'registrationFetchTribes')
+            .withExtraContext(SENTRY_CONTEXT.REGISTRATION.USER_ID, userId)
+            .send()
+    } else {
+        tribesFetched = res.data
+    }
+
+    dispatch({
+        type: REGISTRATION_TRIBE_FETCH,
+        payload: { loading: false, tribes: tribesFetched },
+    })
+}
+
+/**
+ * Upload selected tribes during onboarding
+ */
+export const uploadSelectedTribes = () => async (dispatch, getState) => {
+    const { token, userId } = getState().user
+    const res = await API.get('secure/tribes', token)
+    if (res.status < 200 || res.status > 299) {
+        new SentryRequestBuilder(res.message, SENTRY_MESSAGE_TYPE.message)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.REGISTRATION.ACTION, 'uploadSelectedTribes')
+            .withExtraContext(SENTRY_CONTEXT.REGISTRATION.USER_ID, userId)
+            .send()
+    } else {
+        tribesFetched = res.data
+    }
 }
 
 export const validatePhoneCode = async () => (dispatch) => {}
@@ -156,7 +192,7 @@ export const validatePhoneCode = async () => (dispatch) => {}
  * @param {*} countryCode
  * @param {*} phone
  */
-const phoneNumber = (countryCode, phone) => {
+export const constructPhoneNumber = (countryCode, phone) => {
     if (!phone) {
         // TODO: add sentry log info
         return undefined
@@ -200,7 +236,7 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
         name,
         password,
         email,
-        phone: phoneNumber(countryCode, phone),
+        phone: constructPhoneNumber(countryCode, phone),
     }
 
     dispatch({
