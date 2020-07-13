@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, FlatList } from 'react-native'
 import { connect } from 'react-redux'
 
 /* Components */
@@ -20,7 +20,6 @@ import { makeTribeFeedSelector } from '../../redux/modules/tribe/TribeSelector'
 // Styles
 import { DEFAULT_STYLE } from '../../styles'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
-import { FlatList } from 'react-native-gesture-handler'
 
 import { Actions } from 'react-native-router-flux'
 import { componentKeyByTab } from '../../redux/middleware/utils'
@@ -88,10 +87,7 @@ class TribeHub extends Component {
                         }
                         renderItem={this.renderItem}
                         refreshing={refreshing}
-                        onRefresh={() => {
-                            console.log('re')
-                            this.props.refreshTribeHubFeed()
-                        }}
+                        onRefresh={this.props.refreshTribeHubFeed}
                         onEndReached={this.props.loadMoreTribeHubFeed}
                         onEndReachedThreshold={2}
                         ListEmptyComponent={

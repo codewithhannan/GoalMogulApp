@@ -1,6 +1,5 @@
 /** @format */
 
-import Fuse from 'fuse.js'
 import R from 'ramda'
 import React from 'react'
 import {
