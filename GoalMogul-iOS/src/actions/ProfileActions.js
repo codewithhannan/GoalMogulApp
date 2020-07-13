@@ -20,7 +20,7 @@ import {
 } from '../redux/modules/User/Selector'
 
 import { Bronze3D, Silver3D, Gold3D } from '../asset/banner'
-import { trackWithProperties, EVENT as E } from '../monitoring/segment'
+import { trackWithProperties, EVENT as E, track } from '../monitoring/segment'
 import GreenBanner from '../asset/banner/green.png'
 
 import {
@@ -591,6 +591,10 @@ export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
                 token,
             })
         })
+
+        if (hasImageModified) {
+            track(E.PROFILE_PHOTO_UPDATED)
+        }
 
         let updatePasswordPromise = null
         if (oldPassword && newPassword) {

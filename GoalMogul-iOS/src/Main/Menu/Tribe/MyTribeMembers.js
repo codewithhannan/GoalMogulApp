@@ -94,7 +94,9 @@ class MyTribeMembers extends React.PureComponent {
         const { memberData, navigationState } = this.props
 
         const allMembers = memberData.filter((member) =>
-            member.memberRef.name.includes(this.state.searchContent)
+            member.memberRef.name
+                .toLowerCase()
+                .includes(this.state.searchContent.toLowerCase())
         )
         const admins = allMembers.filter(
             (member) => member.category === 'Admin'
@@ -110,9 +112,13 @@ class MyTribeMembers extends React.PureComponent {
                     <ScrollView
                         style={{ backgroundColor: 'white', marginTop: 8 }}
                     >
-                        <View style={styles.headerContainer}>
-                            <Text style={DEFAULT_STYLE.titleText_1}>Admin</Text>
-                        </View>
+                        {admins.length > 0 && (
+                            <View style={styles.headerContainer}>
+                                <Text style={DEFAULT_STYLE.titleText_1}>
+                                    Admin
+                                </Text>
+                            </View>
+                        )}
                         {admins.map((admin) => this.renderItem(admin))}
                         {members.length > 0 && (
                             <View style={styles.headerContainer}>

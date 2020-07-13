@@ -37,6 +37,7 @@ class ActivityBody extends React.Component {
 
         return (
             <ProgressBar
+                onPress={this.props.openCardContent}
                 startTime={start}
                 endTime={end}
                 steps={steps}

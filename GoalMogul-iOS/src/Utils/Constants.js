@@ -31,7 +31,7 @@ export const IPHONE_MODELS_2 = [
     'iphone xr',
     'iphone 11',
     'iphone 11 pro',
-    'ihpone 11 pro max',
+    'iphone 11 pro max',
     'simulator',
     'iphone' /* 11 */,
 ]

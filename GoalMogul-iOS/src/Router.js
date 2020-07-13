@@ -208,7 +208,7 @@ class RouterComponent extends Component {
             isFocused() &&
             state.routes.length > 1
         ) {
-            return Actions.popTo('profileTab_profile')
+            return Actions.popTo('mainProfile')
         }
 
         // Back to initial for notificationTab

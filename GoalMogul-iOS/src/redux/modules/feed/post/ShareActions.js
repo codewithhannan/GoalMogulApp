@@ -32,6 +32,7 @@ import { refreshComments } from '../../feed/comment/CommentActions'
 import { api as API } from '../../../middleware/api'
 import { DropDownHolder } from '../../../../Main/Common/Modal/DropDownModal'
 import { EMPTY_POST } from '../../../../Utils/Constants'
+import { trackWithProperties, EVENT } from '../../../../monitoring/segment'
 
 const DEBUG_KEY = '[ Action Share ]'
 
@@ -231,6 +232,18 @@ export const submitShare = (values, callback) => (dispatch, getState) => {
     const newShare = newShareAdaptor(getState().newShare, values)
 
     console.log(`${DEBUG_KEY}: new share to create is: `, newShare)
+
+    let dest = 'Feed'
+    if (newShare.belongsToEvent) {
+        dest = 'Event'
+    } else if (newShare.belongsToTribe) {
+        dest = 'Tribe'
+    }
+    trackWithProperties(EVENT.POST_SHARED, {
+        Type: newShare.postType,
+        Destination: dest,
+        Value: values,
+    })
 
     API.post(
         'secure/feed/post',

@@ -40,6 +40,8 @@ import {
     SENTRY_TAGS,
     SENTRY_TAG_VALUE,
 } from '../../../monitoring/sentry/Constants'
+import { trackWithProperties } from 'expo-analytics-segment'
+import { EVENT } from '../../../monitoring/segment'
 
 const DEBUG_KEY = '[ Action GoalDetail ]'
 
@@ -444,6 +446,12 @@ export const updateGoal = (itemId, type, updates, goal, pageId) => (
             payload.isNew = true
         }
 
+        if (type === 'step') {
+            trackWithProperties(EVENT.GOAL_STEP_ADDED, { Steps: itemsToUpdate })
+        } else {
+            trackWithProperties(EVENT.GOAL_NEED_ADDED, { Needs: itemsToUpdate })
+        }
+
         dispatch({
             type: GOAL_DETAIL_UPDATE_STEP_NEED_SUCCESS,
             payload,
@@ -523,6 +531,12 @@ export const markGoalAsComplete = (goalId, complete, pageId) => (
                 data,
             },
         })
+
+        trackWithProperties(
+            complete ? EVENT.GOAL_MARKED_DONE : EVENT.GOAL_MARKED_UNDONE,
+            { GoalId: goalId }
+        )
+
         // Alert.alert(
         //   'Success',
         //   `You have successfully marked this goal as ${complete ? 'complete' : 'incomplete'}.`

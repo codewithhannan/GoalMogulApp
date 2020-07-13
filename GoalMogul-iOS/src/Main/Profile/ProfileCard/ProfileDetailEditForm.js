@@ -224,7 +224,7 @@ class ProfileDetailEditForm extends Component {
             uploading,
         } = this.props
         const isValidValues = validValues({ headline, about, elevatorPitch })
-
+        console.log(this.props.initialValues)
         return (
             <SafeAreaView
                 forceInset={{ bottom: 'always' }}
@@ -297,7 +297,6 @@ class ProfileDetailEditForm extends Component {
                             autoCorrect
                         />
                         <Field
-                            ref="location"
                             name="profile.location"
                             label="Location"
                             component={this.renderInput}
@@ -419,6 +418,7 @@ const mapStateToProps = (state, props) => {
 
     const uploading = getUserDataByPageId(state, userId, pageId, 'uploading')
     const user = getUserData(state, userId, 'user')
+    user.profile.location = user.profile.location === ' ' && ''
 
     return {
         // uploading: state.profile.uploading,

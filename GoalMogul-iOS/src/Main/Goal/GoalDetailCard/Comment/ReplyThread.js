@@ -247,8 +247,9 @@ class ReplyThread extends React.Component {
     }
 
     renderStatus() {
-        const { likeCount, childComments } = this.props.item
+        const { likeCount, childComments, maybeLikeRef } = this.props.item
         const commentCount = childComments.length
+        const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
 
         return (
             <View
@@ -277,12 +278,12 @@ class ReplyThread extends React.Component {
                     style={[
                         DEFAULT_STYLE.normalIcon_1,
                         {
-                            tintColor: '#EB5757',
+                            tintColor: selfLiked ? '#EB5757' : '#828282',
                             marginLeft: 16,
                             marginRight: 4,
                         },
                     ]}
-                    name="heart"
+                    name={selfLiked ? 'heart' : 'heart-outline'}
                 />
                 <Text style={DEFAULT_STYLE.normalText_1}>{likeCount}</Text>
             </View>
@@ -340,6 +341,7 @@ class ReplyThread extends React.Component {
             <View style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8 }}>
                 <ChildCommentCard
                     item={item}
+                    pageId={this.props.pageId}
                     parentCommentId={this.props.item._id}
                     userId={this.props.userId}
                     openCommentLikeList={this.openCommentLikeList}

@@ -279,6 +279,11 @@ class SectionCardV2 extends Component {
             >
                 {isSelf === true && !isCommentFocused ? (
                     <TextInput
+                        placeholder={
+                            type === 'step'
+                                ? 'Add a step that takes you closer to your goal'
+                                : 'Add something you need help with'
+                        }
                         scrollEnabled={false}
                         ref={(ref) => (this.input = ref)}
                         style={{
