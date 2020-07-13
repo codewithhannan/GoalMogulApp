@@ -20,6 +20,7 @@ import { inviteUser } from '../../redux/modules/User/ContactSync/ContactSyncActi
 import { TabView } from 'react-native-tab-view'
 import TabButtonGroup from '../Common/TabButtonGroup'
 import UserCard from './Common/UserCard'
+import { contactSyncLoadMore } from '../../actions'
 
 /**
  * Sync Contact Invitation page
@@ -60,8 +61,6 @@ class SyncContactInvite extends React.Component {
     onNext = () => {
         Actions.push('registration_transition')
     }
-
-    handleLoadMoreMatchedContacts = () => {}
 
     /**
      * Invite user.
@@ -114,8 +113,8 @@ class SyncContactInvite extends React.Component {
                         }
                         keyExtractor={this._keyExtractor}
                         onEndThreshold={0}
-                        onEndReached={this.handleLoadMoreMatchedContacts}
-                        ListFooterComponent={this.renderEmptyMatchedContacts}
+                        onEndReached={() => this.props.contactSyncLoadMore()}
+                        ListEmptyComponent={this.renderEmptyMatchedContacts}
                     />
                 )
 
@@ -242,40 +241,19 @@ const styles = {
 
 const mapStateToProps = (state) => {
     return {
-        contacts: state.contactSync.contacts || testContacts,
-        matchedContacts:
-            state.registration.matchedContacts || testMatchedContacts,
-        // contacts: testContacts,
-        // matchedContacts: testMatchedContacts,
+        // NOTE: local contacts are fired by callback of
+        // redux/modules/registration/RegistrationActions#uploadContacts
+        // "loadContactCallback"
+        // It will store the local contacts in ContactSyncReducer
+        // As future improvement, we should refactor both into one places
+        // for registration + meet tab loading contacts
+        contacts: state.contactSync.contacts,
+        matchedContacts: state.registration.matchedContacts,
     }
-}
-
-const testContacts = {
-    data: [
-        {
-            name: 'Jia Zeng',
-            phoneNumbers: [{ label: 'mobile', number: '9194912504' }],
-        },
-        {
-            name: 'Jay Patel',
-            phoneNumbers: [{ label: 'mobile', number: '9194912504' }],
-        },
-    ],
-}
-
-const testMatchedContacts = {
-    data: [
-        {
-            name: 'Jia Zeng',
-            headline: 'I am so cool',
-            maybeInvitationType: '',
-            maybeInvitationId: '',
-            profile: {},
-        },
-    ],
 }
 
 export default connect(mapStateToProps, {
     inviteUser,
     inviteExistingUser,
+    contactSyncLoadMore,
 })(SyncContactInvite)

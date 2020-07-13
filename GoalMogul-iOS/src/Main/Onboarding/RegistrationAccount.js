@@ -1,4 +1,19 @@
-/** @format */
+/**
+ * Onboarding flow account registration page.
+ * Inputs are: Full Name, Email, Phone number, Password
+ *
+ * Currenty, we don't verify phone number during registration
+ * to minimize the effort. In this component, there are two approaches
+ * setup for phone verification. We can turn that on if phone verification
+ * is required during the signup
+ *
+ * 1. Verifying the phone number by re-redirecting user to web browser.
+ * 2. This method requires twillo integration. If twillo is integrated, we can then leverage
+ *    PhoneVerificationModal which is already implemented to perform such verification
+ *
+ * @format
+ * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
+ */
 
 import React from 'react'
 import {
@@ -10,6 +25,8 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native'
 import { connect } from 'react-redux'
+import * as WebBrowser from 'expo-web-browser'
+import * as Linking from 'expo-linking'
 import { Actions } from 'react-native-router-flux'
 import OnboardingHeader from './Common/OnboardingHeader'
 import OnboardingFooter from './Common/OnboardingFooter'
@@ -20,11 +37,10 @@ import {
     GM_BLUE,
     GM_FONT_FAMILY,
     GM_FONT_LINE_HEIGHT,
-    FONT_FAMILY_3,
-    FONT_FAMILY_1,
     BUTTON_STYLE,
+    TEXT_STYLE,
 } from '../../styles'
-import { registrationLogin } from '../../actions'
+import { registrationLogin, onVerifyPhoneNumber } from '../../actions'
 import {
     registrationTextInputChange,
     registerAccount,
@@ -49,18 +65,11 @@ const FIELD_REQUIREMENTS = {
     },
 }
 
-/**
- * Onboarding flow account registration page.
- * Inputs are: Full Name, Email, Phone number, Password
- * Additional actions are: Log In or Next
- *
- * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
- */
 class RegistrationAccount extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isModalOpen: false,
+            isModalOpen: false, // phone verification method 2
             emailStatus: undefined,
             nameStatus: undefined,
             phoneStatus: undefined,
@@ -79,17 +88,18 @@ class RegistrationAccount extends React.Component {
         Actions.replace(NEXT_STEP)
     }
 
-    // Open phone verification modal
+    /** Below are the phone verification method 2 **/
+    // Open phone verification modal. This is for future usage
     openModal() {
         this.setState({ ...this.state, isModalOpen: true })
     }
 
-    // Close phone verification modal
+    // Close phone verification modal. This is for future usage
     closeModal() {
         this.setState({ ...this.state, isModalOpen: false })
     }
 
-    // Invoked by the modal
+    // Invoked by the modal. This is for future usage
     phoneVerify = (code) => {
         // TODO: verify with endpoint and return the correct value
         return new Promise((resolve, reject) => {
@@ -113,10 +123,11 @@ class RegistrationAccount extends React.Component {
             this.nextStep()
         }, 150)
     }
+    /** Above are the phone verification method 2 **/
 
     onNext = () => {
         // User attempts to click next when no fields have been set
-        // TODO: registration
+        // TODO: registration uncomment
         // if (
         //     this.state.nameStatus == undefined &&
         //     this.state.emailStatus == undefined &&
@@ -133,15 +144,55 @@ class RegistrationAccount extends React.Component {
         const { phone } = this.props
         const onSuccess = () => {
             // If phone number is input, go through phone verification
-            if (phone) {
-                this.openModal()
-                return
-            }
+            // if (phone && phone.trim().length) {
+            // This is for future usage
+            // this.openModal()
+
+            // Open web browser to verify phone number
+            // this.handlePhoneVerification()
+            // return
+            // }
+
+            // Right now we only register the phone number
             this.nextStep()
         }
         // TODO: registration
         // return this.props.registerAccount(onSuccess);
         onSuccess()
+    }
+
+    /**
+     * Open web browser to log message
+     */
+    handlePhoneVerification = async () => {
+        this.props.onVerifyPhoneNumber(this.handleRedirect)
+    }
+
+    handleRedirect = (event) => {
+        WebBrowser.dismissBrowser()
+        // parse url and determine verification states
+        const { path, queryParams } = Linking.parse(event.url)
+        console.log('event is: ', event)
+        if (path === 'status=fail') {
+            Alert.alert(
+                'Phone verification failed',
+                'You can also verify your phone number in settings later on',
+                [
+                    {
+                        text: 'Try again',
+                        onPress: () => this.handlePhoneVerification(),
+                    },
+                    {
+                        text: 'Skip',
+                        style: 'cancel',
+                        onPress: () => this.nextStep(),
+                    },
+                ]
+            )
+            return
+        }
+
+        this.nextStep()
     }
 
     isValidEmail = (email) => {
@@ -441,7 +492,7 @@ class RegistrationAccount extends React.Component {
                     <OnboardingFooter
                         buttonText="Continue"
                         onButtonPress={this.onNext}
-                        // TODO: registration
+                        // TODO: registration uncomment
                         // disabled={
                         //     this.props.loading ||
                         //     (this.state.nameStatus !==
@@ -467,13 +518,13 @@ class RegistrationAccount extends React.Component {
                         </Text>
                     </DelayedButton>
                 </View>
-
+                {/* As documented in the header, this is for phone verification method 2
                 <PhoneVerificationMoal
                     isOpen={this.state.isModalOpen}
                     phoneVerify={(code) => this.phoneVerify(code)}
                     phoneVerifyCancel={() => this.phoneVerifyCancel()}
                     phoneVerifyPass={() => this.phoneVerifyPass()}
-                />
+                /> */}
             </View>
         )
     }
@@ -524,4 +575,5 @@ export default connect(mapStateToProps, {
     registerAccount,
     validatePhoneCode,
     registrationTextInputChange,
+    onVerifyPhoneNumber,
 })(RegistrationAccount)

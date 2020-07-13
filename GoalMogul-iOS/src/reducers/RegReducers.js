@@ -72,7 +72,10 @@ const INITIAL_STATE = {
     }, // country code for phone number
     phone: '',
     userTargets: [...REGISTRATION_USER_TARGETS],
+    // TODO: registration: uncomment
+    // tribes: [],
     tribes: [...REGISTRATION_DEFAULT_TRIBES],
+    tribeLoading: false,
     communityGuidelines: [...REGISTRATION_COMMUNITY_GUIDELINE],
     matchedContacts: {
         data: [],
@@ -189,11 +192,17 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         case REGISTRATION_TRIBE_FETCH: {
-            // status: [loading, error, done]
-            const { tribes, status } = action.payload
+            const { tribes, loading } = action.payload
             let newState = _.cloneDeep(state)
 
+            if (loading) {
+                // Set tribe loading to true
+                newState = _.set(newState, 'tribeLoading', true)
+                return newState
+            }
+
             newState = _.set(newState, 'tribes', tribes)
+            newState = _.set(newState, 'tribeLoading', false)
             return newState
         }
 
