@@ -379,7 +379,7 @@ class Home extends Component {
                         renderTabBar={this._renderHeader}
                         onIndexChange={this._handleIndexChange}
                     />
-                    <WelcomSreen
+                    {/* <WelcomSreen
                         isVisible={this.state.showWelcomeScreen}
                         name={this.props.user.name}
                         closeModal={() => {
@@ -401,7 +401,7 @@ class Home extends Component {
                                 }
                             )
                         }}
-                    />
+                    /> */}
                     <EarnBadgeModal
                         isVisible={this.state.showBadgeEarnModal}
                         closeModal={() => {

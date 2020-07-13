@@ -1,15 +1,9 @@
 /** @format */
 
 import React from 'react'
-import { Image, View, Text } from 'react-native'
+import { View, Text } from 'react-native'
 import { connect } from 'react-redux'
-
-/* Assets */
-import IconHome from '../../asset/footer/navigation/home.png'
-import IconBell from '../../asset/footer/navigation/bell.png'
-import IconProfile from '../../asset/footer/navigation/profile.png'
-import IconChat from '../../asset/footer/navigation/chat.png'
-import FlagIcon from '../../asset/footer/navigation/flag.png'
+import { Icon } from '@ui-kitten/components'
 
 /* Actions */
 import { updateChatCount } from '../../redux/modules/navigation/TabIconActions'
@@ -17,7 +11,6 @@ import { fetchUnreadCount } from '../../redux/modules/notification/NotificationT
 
 /* Utils */
 import { Logger } from '../../redux/middleware/utils/Logger'
-import { Icon } from '@ui-kitten/components'
 
 const CHAT_COUNT_UPDATE_INTERVAL = 1000
 const NOTIFICATION_COUNT_UPDATE_INTERVAL = 10000
