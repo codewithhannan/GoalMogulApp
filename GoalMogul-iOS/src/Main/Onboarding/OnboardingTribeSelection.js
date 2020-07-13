@@ -3,11 +3,12 @@
  *
  * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
  *
+ * TODO: ghost card: when there is no tribes to render
  * @format
  */
 
 import React from 'react'
-import { View, Text, FlatList, Animated, Image } from 'react-native'
+import { View, Text, FlatList, Animated, Image, Dimensions } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import right_arrow_icon from '../../asset/utils/right_arrow.png'
@@ -23,11 +24,17 @@ import {
     DEFAULT_STYLE,
     FONT_FAMILY_1,
 } from '../../styles'
-import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions'
+import {
+    registrationTribeSelection,
+    registrationFetchTribes,
+    uploadSelectedTribes,
+} from '../../redux/modules/registration/RegistrationActions'
 import OnboardingFooter from './Common/OnboardingFooter'
 import * as Animatable from 'react-native-animatable'
 import { Icon, CheckBox } from '@ui-kitten/components'
+import { getImageOrDefault } from '../../redux/middleware/utils'
 
+const { width } = Dimensions.get('window')
 const CATEGORY = {
     all: 'All',
     relationship: 'Relationship',
@@ -49,16 +56,15 @@ class OnboardingTribeSelection extends React.Component {
         setTimeout(() => {
             this.scrollView.bounce(1000)
         }, 1000)
+
+        this.props.registrationFetchTribes()
     }
 
     handleAnimatableTextRef = (ref) => (this.scrollView = ref)
 
     onNext = () => {
-        const screenTransitionCallback = () => {
-            Actions.push('registration_community_guideline')
-        }
-        screenTransitionCallback()
-        // TODO: pass callback to actions
+        Actions.push('registration_community_guideline')
+        this.props.uploadSelectedTribes()
     }
 
     onBack = () => {
@@ -88,7 +94,7 @@ class OnboardingTribeSelection extends React.Component {
                 onPress={() =>
                     this.props.registrationTribeSelection(item._id, !selected)
                 }
-                activeOpacity={0.8}
+                activeOpacity={0.9}
             >
                 <View
                     style={{
@@ -98,8 +104,13 @@ class OnboardingTribeSelection extends React.Component {
                     }}
                 >
                     <Image
-                        style={styles.tribeCardImageStyle}
-                        source={picture}
+                        style={{
+                            height: (width - 32) / 2.2,
+                            width: width - 32,
+                            borderTopLeftRadius: 5,
+                            borderTopRightRadius: 5,
+                        }}
+                        source={getImageOrDefault(picture)}
                     />
                 </View>
                 <View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
@@ -369,13 +380,12 @@ const styles = {
     },
     tribeCardContainerStyle: {
         backgroundColor: 'white',
-        borderRadius: 3,
+        borderRadius: 5,
         justifyContent: 'center',
         flex: 1,
         marginTop: 20,
-        height: 120,
-        marginLeft: 8,
-        marginRight: 8,
+        marginLeft: 16,
+        marginRight: 16,
         shadowOffset: {
             width: -2,
             height: 2,
@@ -383,18 +393,17 @@ const styles = {
         shadowRadius: 3,
         shadowOpacity: 0.9,
         shadowColor: 'rgba(0,0,0,0.1)',
+        borderWidth: 0.5,
+        borderColor: '#FAFAFA',
     },
     tribeCardSelectedContainerStyle: {
         backgroundColor: '#F6FDFF',
-        borderWidth: 1,
-        borderColor: GM_BLUE,
-        borderRadius: 3,
+        borderRadius: 5,
         justifyContent: 'center',
         flex: 1,
         marginTop: 20,
-        height: 120,
-        marginLeft: 8,
-        marginRight: 8,
+        marginLeft: 16,
+        marginRight: 16,
         shadowOffset: {
             width: -2,
             height: 2,
@@ -402,6 +411,8 @@ const styles = {
         shadowRadius: 3,
         shadowOpacity: 0.9,
         shadowColor: 'rgba(0,0,0,0.1)',
+        borderWidth: 0.5,
+        borderColor: GM_BLUE,
     },
     tribeCardImageStyle: {
         width: 42,
@@ -422,4 +433,6 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
     registrationTribeSelection,
+    registrationFetchTribes,
+    uploadSelectedTribes,
 })(OnboardingTribeSelection)

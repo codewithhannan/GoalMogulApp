@@ -73,8 +73,8 @@ const INITIAL_STATE = {
     phone: '',
     userTargets: [...REGISTRATION_USER_TARGETS],
     // TODO: registration: uncomment
-    // tribes: [],
-    tribes: [...REGISTRATION_DEFAULT_TRIBES],
+    tribes: [],
+    // tribes: [...REGISTRATION_DEFAULT_TRIBES],
     tribeLoading: false,
     communityGuidelines: [...REGISTRATION_COMMUNITY_GUIDELINE],
     matchedContacts: {

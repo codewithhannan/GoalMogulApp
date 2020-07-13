@@ -148,10 +148,14 @@ export const registrationFetchTribes = () => async (dispatch, getState) => {
         payload: { loading: true },
     })
 
-    const { token, userId } = getState().user
+    // TODO: registration
+    // const { token, userId } = getState().user
+    const userId = 'test'
+    const token =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjgyZjQxYjE1ZjdkZjAwMWFhMDM2MzMiLCJpYXQiOjE1OTQ0NDk5MzEsImV4cCI6MTU5NDcwOTEzMX0._oR3Gwlf5VO67RIfA_rbREXKtMIIkTQZM0LqJp3QTcI'
 
     let tribesFetched = []
-    const res = await API.get('secure/tribes', token)
+    const res = await API.get('secure/tribe/goalmogul-tribes', token)
     if (res.status < 200 || res.status > 299) {
         new SentryRequestBuilder(res.message, SENTRY_MESSAGE_TYPE.message)
             .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
@@ -172,16 +176,28 @@ export const registrationFetchTribes = () => async (dispatch, getState) => {
  * Upload selected tribes during onboarding
  */
 export const uploadSelectedTribes = () => async (dispatch, getState) => {
-    const { token, userId } = getState().user
-    const res = await API.get('secure/tribes', token)
+    // TODO: registration
+    // const { token, userId } = getState().user
+    const userId = 'test'
+    const token =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjgyZjQxYjE1ZjdkZjAwMWFhMDM2MzMiLCJpYXQiOjE1OTQ0NDk5MzEsImV4cCI6MTU5NDcwOTEzMX0._oR3Gwlf5VO67RIfA_rbREXKtMIIkTQZM0LqJp3QTcI'
+
+    const tribes = getState().registration.tribes
+
+    const body = {
+        tribeIds: tribes.filter((t) => t.selected).map((t) => t._id),
+    }
+    const res = await API.post('secure/tribe/batch-join-tribes', body, token)
     if (res.status < 200 || res.status > 299) {
+        // console.log('update selected tribes: ', res)
         new SentryRequestBuilder(res.message, SENTRY_MESSAGE_TYPE.message)
             .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
             .withTag(SENTRY_TAGS.REGISTRATION.ACTION, 'uploadSelectedTribes')
             .withExtraContext(SENTRY_CONTEXT.REGISTRATION.USER_ID, userId)
             .send()
     } else {
-        tribesFetched = res.data
+        // TODO: analytics
+        // console.log('update selected tribes: ', res)
     }
 }
 
