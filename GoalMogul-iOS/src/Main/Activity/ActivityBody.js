@@ -14,9 +14,6 @@ import ProgressBar from '../Goal/Common/ProgressBar'
 import ImageModal from '../Common/ImageModal'
 import RefPreview from '../Common/RefPreview'
 
-// Actions
-import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
-
 // Styles
 import { imagePreviewContainerStyle } from '../../styles'
 
@@ -24,7 +21,7 @@ import { imagePreviewContainerStyle } from '../../styles'
 import { IMAGE_BASE_URL, IS_ZOOMED } from '../../Utils/Constants'
 import SparkleBadgeView from '../Gamification/Badge/SparkleBadgeView'
 import GoalCard from '../Goal/GoalCard/GoalCard'
-import { connect } from 'react-redux'
+import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard'
 
 const DEBUG_KEY = '[ UI ActivityCard.ActivityBody ]'
 const { width } = Dimensions.get('window')
@@ -131,6 +128,21 @@ class ActivityBody extends React.Component {
 
         if (postType === 'SharePost') {
             item = postRef.postRef
+            return (
+                <View
+                    style={{
+                        borderWidth: 1,
+                        borderColor: '#F2F2F2',
+                        borderRadius: 5,
+                    }}
+                >
+                    <ProfilePostCard
+                        item={item}
+                        hasCaret={false}
+                        isSharedItem={true}
+                    />
+                </View>
+            )
         }
 
         if (postType === 'ShareGoal') {
@@ -142,11 +154,7 @@ class ActivityBody extends React.Component {
                         borderRadius: 5,
                     }}
                 >
-                    <GoalCard
-                        item={item}
-                        onPress={(goal) => this.props.openGoalDetail(goal)}
-                        isSharedItem={true}
-                    />
+                    <GoalCard item={item} isSharedItem={true} />
                 </View>
             )
         }
@@ -224,6 +232,4 @@ const styles = {
     },
 }
 
-export default connect(null, {
-    openGoalDetail,
-})(ActivityBody)
+export default ActivityBody

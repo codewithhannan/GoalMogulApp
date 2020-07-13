@@ -563,7 +563,7 @@ class MyTribe extends React.PureComponent {
                             this.setState({ showNameInTitle: true })
                         else this.setState({ showNameInTitle: false })
                     }}
-                    scrollEventThrottle={2}
+                    scrollEventThrottle={16}
                 />
                 {this.renderAddPostButton(item)}
                 <MyTribeDescription

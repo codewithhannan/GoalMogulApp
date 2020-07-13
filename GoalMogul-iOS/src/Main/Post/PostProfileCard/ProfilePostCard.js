@@ -127,48 +127,46 @@ class ProfilePostCard extends React.PureComponent {
         const isShare = item.postType !== 'General'
 
         return (
-            <View style={{ ...styles.containerStyle, marginTop: 1 }}>
-                <ActionButtonGroup>
-                    <ActionButton
-                        iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
-                        count={likeCount}
-                        unitText="Like"
-                        textStyle={{ color: selfLiked ? '#000' : '#828282' }}
-                        iconStyle={{
-                            tintColor: selfLiked ? '#EB5757' : '#828282',
-                        }}
-                        onPress={() => {
-                            if (maybeLikeRef && maybeLikeRef.length > 0) {
-                                return this.props.unLikeGoal(
-                                    'post',
-                                    _id,
-                                    maybeLikeRef
-                                )
-                            }
-                            this.props.likeGoal('post', _id)
-                        }}
-                    />
-                    <ActionButton
-                        iconSource={ShareIcon}
-                        count={shareCount}
-                        unitText="Share"
-                        textStyle={{ color: '#828282' }}
-                        iconStyle={{ tintColor: '#828282' }}
-                        onPress={() => this.handleShareOnClick(item)}
-                        disabled={isShare}
-                    />
-                    <ActionButton
-                        iconSource={CommentIcon}
-                        count={commentCount}
-                        unitText="Comment"
-                        textStyle={{ color: '#828282' }}
-                        iconStyle={{ tintColor: '#828282' }}
-                        onPress={() => {
-                            this.props.onPress(item)
-                        }}
-                    />
-                </ActionButtonGroup>
-            </View>
+            <ActionButtonGroup>
+                <ActionButton
+                    iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
+                    count={likeCount}
+                    unitText="Like"
+                    textStyle={{ color: selfLiked ? '#000' : '#828282' }}
+                    iconStyle={{
+                        tintColor: selfLiked ? '#EB5757' : '#828282',
+                    }}
+                    onPress={() => {
+                        if (maybeLikeRef && maybeLikeRef.length > 0) {
+                            return this.props.unLikeGoal(
+                                'post',
+                                _id,
+                                maybeLikeRef
+                            )
+                        }
+                        this.props.likeGoal('post', _id)
+                    }}
+                />
+                <ActionButton
+                    iconSource={ShareIcon}
+                    count={shareCount}
+                    unitText="Share"
+                    textStyle={{ color: '#828282' }}
+                    iconStyle={{ tintColor: '#828282' }}
+                    onPress={() => this.handleShareOnClick(item)}
+                    disabled={isShare}
+                />
+                <ActionButton
+                    iconSource={CommentIcon}
+                    count={commentCount}
+                    unitText="Comment"
+                    textStyle={{ color: '#828282' }}
+                    iconStyle={{ tintColor: '#828282' }}
+                    onPress={() => {
+                        this.props.onPress(item)
+                    }}
+                />
+            </ActionButtonGroup>
         )
     }
 
@@ -312,7 +310,7 @@ class ProfilePostCard extends React.PureComponent {
     }
 
     render() {
-        const { item, hasActionButton } = this.props
+        const { item, hasActionButton, isSharedItem } = this.props
         if (!item || _.isEmpty(item)) return null
         return (
             <View>
@@ -339,7 +337,7 @@ class ProfilePostCard extends React.PureComponent {
                     </View>
                 </View>
                 {this.renderActionButtons(item, hasActionButton)}
-                <View style={DEFAULT_STYLE.shadow} />
+                {!isSharedItem && <View style={DEFAULT_STYLE.shadow} />}
             </View>
         )
     }

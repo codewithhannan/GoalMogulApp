@@ -35,25 +35,17 @@ class TribeHub extends Component {
         this.props.refreshTribeHubFeed()
     }
 
-    renderItem = (props) => {
+    renderItem = ({ item }) => {
         return (
             <ProfilePostCard
-                item={props.item}
-                key={props.index}
-                hasActionButton
-                onPress={(item) => {
-                    // onPress is called by CommentIcon
-                    this.props.openPostDetail(item, {
-                        initialFocusCommentBox: true,
-                    })
-                }}
+                item={item}
+                hasActionButton={item.postType !== 'ShareGoal'}
             />
         )
     }
 
     render() {
         const { data, loading, refreshing } = this.props
-        // console.log(data)
         return (
             <MenuProvider>
                 <View style={{ backgroundColor: '#FAFAFA', flex: 1 }}>
@@ -96,7 +88,10 @@ class TribeHub extends Component {
                         }
                         renderItem={this.renderItem}
                         refreshing={refreshing}
-                        onRefresh={this.props.refreshTribeHubFeed}
+                        onRefresh={() => {
+                            console.log('re')
+                            this.props.refreshTribeHubFeed()
+                        }}
                         onEndReached={this.props.loadMoreTribeHubFeed}
                         onEndReachedThreshold={2}
                         ListEmptyComponent={

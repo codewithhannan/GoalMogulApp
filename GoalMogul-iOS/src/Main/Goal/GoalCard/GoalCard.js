@@ -129,6 +129,12 @@ class GoalCard extends React.PureComponent {
         }
     }
 
+    handleOnPress() {
+        this.props.onPress
+            ? this.props.onPress(this.props.item)
+            : this.props.openGoalDetail(this.props.item)
+    }
+
     handleShareOnClick = () => {
         const { item } = this.props
         const { _id } = item
@@ -293,6 +299,7 @@ class GoalCard extends React.PureComponent {
                             category={category}
                             user={owner}
                             isSelf={owner._id === this.props.userId}
+                            hasCaret={!this.props.isSharedItem}
                             caret={caret}
                             textStyle={DEFAULT_STYLE.titleText_2}
                         />
@@ -407,7 +414,7 @@ class GoalCard extends React.PureComponent {
                     <View>
                         <DelayedButton
                             activeOpacity={0.6}
-                            onPress={() => this.props.onPress(this.props.item)}
+                            onPress={this.handleOnPress.bind(this)}
                         >
                             <View
                                 style={{

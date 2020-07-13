@@ -292,7 +292,7 @@ class Mastermind extends Component {
                             />
                         )
                     }
-                    onEndThreshold={0}
+                    onEndThreshold={2}
                 />
                 {this.renderPlus()}
             </View>

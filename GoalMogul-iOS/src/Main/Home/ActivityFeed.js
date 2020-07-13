@@ -160,7 +160,7 @@ class ActivityFeed extends Component {
                         )
                     }
                     ListFooterComponent={this.renderListFooter()}
-                    onEndThreshold={0}
+                    onEndThreshold={2}
                 />
                 {this.renderPlus()}
             </View>
