@@ -642,50 +642,49 @@ class GoalDetailSection extends React.PureComponent {
         if (!item || _.isEmpty(item)) return null
 
         return (
-            <View
-                onLayout={this.handleOnLayout}
-                style={{ paddingHorizontal: 15 }}
-            >
-                <LikeListModal
-                    testID="like-list-modal"
-                    isVisible={this.state.showlikeListModal}
-                    closeModal={() => {
-                        this.setState({
-                            ...this.state,
-                            showlikeListModal: false,
-                        })
-                    }}
-                    parentId={item._id}
-                    parentType="Goal"
-                />
-                <ShareListModal
-                    testID="share-list-modal"
-                    isVisible={this.state.showShareListModal}
-                    closeModal={() => {
-                        this.setState({
-                            ...this.state,
-                            showShareListModal: false,
-                        })
-                    }}
-                    entityId={item._id}
-                    entityType="Goal"
-                />
-                <View style={{ ...styles.containerStyle }}>
-                    {item.isCompleted ? (
-                        <Image
-                            source={ConfettiFadedBackgroundTopHalf}
-                            style={{
-                                height: WINDOW_WIDTH * 0.6,
-                                width: WINDOW_WIDTH,
-                                position: 'absolute',
-                                resizeMode: 'cover',
-                                opacity: 0.55,
-                            }}
-                        />
-                    ) : null}
-                    <View style={{ marginTop: 15, marginBottom: 10 }}>
-                        {this.renderUserDetail(item)}
-                        {this.renderCardContent(item)}
+            <View onLayout={this.handleOnLayout}>
+                <View style={{ paddingHorizontal: 15 }}>
+                    <LikeListModal
+                        testID="like-list-modal"
+                        isVisible={this.state.showlikeListModal}
+                        closeModal={() => {
+                            this.setState({
+                                ...this.state,
+                                showlikeListModal: false,
+                            })
+                        }}
+                        parentId={item._id}
+                        parentType="Goal"
+                    />
+                    <ShareListModal
+                        testID="share-list-modal"
+                        isVisible={this.state.showShareListModal}
+                        closeModal={() => {
+                            this.setState({
+                                ...this.state,
+                                showShareListModal: false,
+                            })
+                        }}
+                        entityId={item._id}
+                        entityType="Goal"
+                    />
+                    <View style={{ ...styles.containerStyle }}>
+                        {item.isCompleted ? (
+                            <Image
+                                source={ConfettiFadedBackgroundTopHalf}
+                                style={{
+                                    height: WINDOW_WIDTH * 0.6,
+                                    width: WINDOW_WIDTH,
+                                    position: 'absolute',
+                                    resizeMode: 'cover',
+                                    opacity: 0.55,
+                                }}
+                            />
+                        ) : null}
+                        <View style={{ marginTop: 15, marginBottom: 10 }}>
+                            {this.renderUserDetail(item)}
+                            {this.renderCardContent(item)}
+                        </View>
                     </View>
                 </View>
                 {this.renderActionButtons(item)}

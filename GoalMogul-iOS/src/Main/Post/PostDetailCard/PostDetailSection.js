@@ -436,54 +436,52 @@ class PostDetailSection extends React.PureComponent {
         const isShare = item.postType !== 'General'
 
         return (
-            <View style={{ marginTop: 1 }}>
-                <ActionButtonGroup>
-                    <ActionButton
-                        iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
-                        count={likeCount}
-                        unitText="Like"
-                        textStyle={{ color: selfLiked ? '#000' : '#828282' }}
-                        iconStyle={{
-                            tintColor: selfLiked ? '#EB5757' : '#828282',
-                        }}
-                        onPress={() => {
-                            if (maybeLikeRef && maybeLikeRef.length > 0) {
-                                return this.props.unLikeGoal(
-                                    'post',
-                                    _id,
-                                    maybeLikeRef
-                                )
-                            }
-                            this.props.likeGoal('post', _id)
-                        }}
-                        onTextPress={() => {
-                            this.setState({ showlikeListModal: true })
-                        }}
-                    />
-                    <ActionButton
-                        iconSource={ShareIcon}
-                        count={shareCount}
-                        unitText="Share"
-                        textStyle={{ color: '#828282' }}
-                        iconStyle={{ tintColor: '#828282' }}
-                        onPress={() => this.handleShareOnClick(item)}
-                        disabled={isShare}
-                        onTextPress={() => {
-                            this.setState({ showShareListModal: true })
-                        }}
-                    />
-                    <ActionButton
-                        iconSource={CommentIcon}
-                        count={commentCount}
-                        unitText="Comment"
-                        textStyle={{ color: '#828282' }}
-                        iconStyle={{ tintColor: '#828282' }}
-                        onPress={() => {
-                            this.props.onSuggestion()
-                        }}
-                    />
-                </ActionButtonGroup>
-            </View>
+            <ActionButtonGroup>
+                <ActionButton
+                    iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
+                    count={likeCount}
+                    unitText="Like"
+                    textStyle={{ color: selfLiked ? '#000' : '#828282' }}
+                    iconStyle={{
+                        tintColor: selfLiked ? '#EB5757' : '#828282',
+                    }}
+                    onPress={() => {
+                        if (maybeLikeRef && maybeLikeRef.length > 0) {
+                            return this.props.unLikeGoal(
+                                'post',
+                                _id,
+                                maybeLikeRef
+                            )
+                        }
+                        this.props.likeGoal('post', _id)
+                    }}
+                    onTextPress={() => {
+                        this.setState({ showlikeListModal: true })
+                    }}
+                />
+                <ActionButton
+                    iconSource={ShareIcon}
+                    count={shareCount}
+                    unitText="Share"
+                    textStyle={{ color: '#828282' }}
+                    iconStyle={{ tintColor: '#828282' }}
+                    onPress={() => this.handleShareOnClick(item)}
+                    disabled={isShare}
+                    onTextPress={() => {
+                        this.setState({ showShareListModal: true })
+                    }}
+                />
+                <ActionButton
+                    iconSource={CommentIcon}
+                    count={commentCount}
+                    unitText="Comment"
+                    textStyle={{ color: '#828282' }}
+                    iconStyle={{ tintColor: '#828282' }}
+                    onPress={() => {
+                        this.props.onSuggestion()
+                    }}
+                />
+            </ActionButtonGroup>
         )
     }
 
@@ -498,34 +496,34 @@ class PostDetailSection extends React.PureComponent {
 
         // console.log(`${DEBUG_KEY}: render post detail section`);
         return (
-            <View style={{ ...styles.containerStyle, paddingHorizontal: 15 }}>
-                <LikeListModal
-                    isVisible={this.state.showlikeListModal}
-                    closeModal={() => {
-                        this.setState({
-                            showlikeListModal: false,
-                        })
-                    }}
-                    parentId={item._id}
-                    parentType="Post"
-                />
-                <ShareListModal
-                    isVisible={this.state.showShareListModal}
-                    closeModal={() => {
-                        this.setState({
-                            showShareListModal: false,
-                        })
-                    }}
-                    entityId={item._id}
-                    entityType="Post"
-                />
-                <View style={{ marginTop: 15, marginBottom: 10 }}>
-                    {this.renderUserDetail(item)}
-                    {this.renderCardContent(item)}
+            <View style={styles.containerStyle}>
+                <View style={{ paddingHorizontal: 15 }}>
+                    <LikeListModal
+                        isVisible={this.state.showlikeListModal}
+                        closeModal={() => {
+                            this.setState({
+                                showlikeListModal: false,
+                            })
+                        }}
+                        parentId={item._id}
+                        parentType="Post"
+                    />
+                    <ShareListModal
+                        isVisible={this.state.showShareListModal}
+                        closeModal={() => {
+                            this.setState({
+                                showShareListModal: false,
+                            })
+                        }}
+                        entityId={item._id}
+                        entityType="Post"
+                    />
+                    <View style={{ marginTop: 15, marginBottom: 10 }}>
+                        {this.renderUserDetail(item)}
+                        {this.renderCardContent(item)}
+                    </View>
                 </View>
-                <View style={styles.containerStyle}>
-                    {this.renderActionButtons(item)}
-                </View>
+                {this.renderActionButtons(item)}
             </View>
         )
     }

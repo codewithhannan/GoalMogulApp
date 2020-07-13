@@ -98,7 +98,6 @@ const styles = {
     containerStyle: {
         alignItems: 'center',
         justifyContent: 'center',
-        flex: 1,
         flexDirection: 'row',
     },
     iconContainerStyle: {
