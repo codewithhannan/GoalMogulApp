@@ -85,6 +85,7 @@ class ActivityHeader extends Component {
         actor,
         actedWith,
         created,
+        belongsToTribe,
     }) {
         const item = actedUponEntityType === 'Post' ? postRef : goalRef
 
@@ -233,6 +234,7 @@ class ActivityHeader extends Component {
                             user={userToRender}
                             isSelf={this.props.userId === userToRender._id}
                             textStyle={DEFAULT_STYLE.titleText_2}
+                            belongsToTribe={belongsToTribe}
                         />
                         <View style={{ marginTop: 2 }} />
                         <Timestamp
