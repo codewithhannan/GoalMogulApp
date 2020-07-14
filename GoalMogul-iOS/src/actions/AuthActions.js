@@ -345,7 +345,7 @@ export const fetchAppUserProfile = (token, userId) => async (
 
         return res.data
     } catch (error) {
-        new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
+        new SentryRequestBuilder(error, SENTRY_MESSAGE_TYPE.ERROR)
             .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
             .withTag(
                 SENTRY_TAGS.ACTION.FETCH_USER_PROFILE,

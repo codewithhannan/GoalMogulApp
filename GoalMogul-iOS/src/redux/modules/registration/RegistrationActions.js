@@ -48,9 +48,9 @@ import {
 } from '../../../monitoring/sentry/Constants'
 import { CONTACT_SYNC_LOAD_CONTACT_DONE } from '../User/ContactSync/ContactSyncReducers'
 import { updateFriendship } from '../../../actions'
-import { auth as Auth } from '../auth/Auth'
 import { Logger } from '../../middleware/utils/Logger'
 
+const DEBUG_KEY = '[ Action RegistrationActions ]'
 /**
  * Alter the state of registration text input
  * @param {String} type one of [name, email, phone, password]
