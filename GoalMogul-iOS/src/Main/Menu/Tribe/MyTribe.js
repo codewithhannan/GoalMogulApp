@@ -474,6 +474,7 @@ class MyTribe extends React.PureComponent {
         return (
             <ProfilePostCard
                 item={props.item}
+                isTribeDetailPost={true}
                 key={props.index}
                 hasActionButton
                 onPress={(item) => {

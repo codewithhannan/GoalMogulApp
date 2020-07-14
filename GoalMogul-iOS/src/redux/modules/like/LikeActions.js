@@ -171,7 +171,6 @@ export const likeGoal = (type, id, pageId, parentId) => (
         }
     })(type)
     console.log(`${DEBUG_KEY}: tmp.requestBody: `, tmp.requestBody)
-    tmp.action('testId')
 
     API.post(`${LIKE_BASE_ROUTE}`, { ...tmp.requestBody }, token)
         .then((res) => {

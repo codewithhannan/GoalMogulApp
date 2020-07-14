@@ -73,6 +73,8 @@ import {
 } from '../../../Utils/Constants'
 import LikeListModal from '../../Common/Modal/LikeListModal'
 import SparkleBadgeView from '../../Gamification/Badge/SparkleBadgeView'
+import GoalCard from '../../Goal/GoalCard/GoalCard'
+import ProfilePostCard from '../PostProfileCard/ProfilePostCard'
 
 const DEBUG_KEY = '[ UI ShareDetailCard.ShareDetailSection ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -178,6 +180,7 @@ class ShareDetailSection extends Component {
             category,
             maybeIsSubscribed,
             viewCount,
+            belongsToTribe,
         } = item
         const timeStamp =
             created === undefined || created.length === 0 ? new Date() : created
@@ -245,6 +248,7 @@ class ShareDetailSection extends Component {
                             user={owner}
                             pageId={this.props.pageId}
                             textStyle={DEFAULT_STYLE.titleText_2}
+                            belongsToTribe={belongsToTribe}
                         />
                         <View style={{ marginTop: 2 }} />
                         <Timestamp
@@ -375,6 +379,40 @@ class ShareDetailSection extends Component {
             )
         }
 
+        if (postType === 'ShareGoal') {
+            return (
+                <View
+                    style={{
+                        borderWidth: 1,
+                        borderColor: '#F2F2F2',
+                        borderRadius: 5,
+                        marginTop: 8,
+                    }}
+                >
+                    <GoalCard item={refPreview} isSharedItem={true} />
+                </View>
+            )
+        }
+
+        if (postType === 'SharePost') {
+            return (
+                <View
+                    style={{
+                        borderWidth: 1,
+                        borderColor: '#F2F2F2',
+                        borderRadius: 5,
+                        marginTop: 8,
+                    }}
+                >
+                    <ProfilePostCard
+                        item={refPreview}
+                        hasCaret={false}
+                        isSharedItem={true}
+                    />
+                </View>
+            )
+        }
+
         return (
             <View style={{ marginTop: 20 }}>
                 <RefPreview
@@ -459,25 +497,24 @@ class ShareDetailSection extends Component {
         if (!item || _.isEmpty(item) || !item.created) return null
 
         return (
-            <View style={{ ...styles.containerStyle, paddingHorizontal: 15 }}>
-                <LikeListModal
-                    isVisible={this.state.showlikeListModal}
-                    closeModal={() => {
-                        this.setState({
-                            ...this.state,
-                            showlikeListModal: false,
-                        })
-                    }}
-                    parentId={item._id}
-                    parentType="Post"
-                />
-                <View style={{ marginTop: 15, marginBottom: 10 }}>
-                    {this.renderUserDetail(item)}
-                    {this.renderCardContent(item)}
+            <View style={styles.containerStyle}>
+                <View style={{ paddingHorizontal: 15 }}>
+                    <LikeListModal
+                        isVisible={this.state.showlikeListModal}
+                        closeModal={() => {
+                            this.setState({
+                                showlikeListModal: false,
+                            })
+                        }}
+                        parentId={item._id}
+                        parentType="Post"
+                    />
+                    <View style={{ marginTop: 15, marginBottom: 10 }}>
+                        {this.renderUserDetail(item)}
+                        {this.renderCardContent(item)}
+                    </View>
                 </View>
-                <View style={styles.containerStyle}>
-                    {this.renderActionButtons(item)}
-                </View>
+                {this.renderActionButtons(item)}
             </View>
         )
     }

@@ -60,7 +60,7 @@ const CANCEL_INDEX = 3
 
 class ProfilePostCard extends React.PureComponent {
     handleCardOnPress = (item) => {
-        const action = () => this.props.openPostDetail({ ...item })
+        const action = () => this.props.openPostDetail(item)
         if (item) {
             if (this.props.actionDecorator) {
                 this.props.actionDecorator(action)
@@ -276,7 +276,11 @@ class ProfilePostCard extends React.PureComponent {
                             actionDecorator={this.props.actionDecorator}
                             hasCaret={this.props.hasCaret}
                             textStyle={DEFAULT_STYLE.titleText_2}
-                            belongsToTribe={belongsToTribe}
+                            belongsToTribe={
+                                this.props.isTribeDetailPost
+                                    ? undefined
+                                    : belongsToTribe
+                            }
                         />
                         <View style={{ marginTop: 2 }} />
                         <Timestamp time={timeago().format(timeStamp)} />
