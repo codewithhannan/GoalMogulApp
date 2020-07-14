@@ -1,6 +1,10 @@
 /**
- * This is the group chat info modal on create group chats
- * Design is at: https://app.zeplin.io/project/5d009c1e24480d5d9e3a7516/screen/5d09ba6095c353041690652a
+ * This is the group chat info modal on create group chats. This is currently
+ * a template that is not being used anywhere. But in the future, we would
+ * convert this to any modal in chat needed
+ *
+ * It uses the template of design at
+ * @see https://app.zeplin.io/project/5d009c1e24480d5d9e3a7516/screen/5d09ba6095c353041690652a
  *
  * @format
  */

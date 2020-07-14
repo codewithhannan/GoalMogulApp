@@ -16,7 +16,6 @@ import OnboardingHeader from './Common/OnboardingHeader'
 import DelayedButton from '../Common/Button/DelayedButton'
 import {
     GM_FONT_SIZE,
-    GM_FONT_FAMILY,
     GM_FONT_LINE_HEIGHT,
     FONT_FAMILY_2,
     FONT_FAMILY_1,
