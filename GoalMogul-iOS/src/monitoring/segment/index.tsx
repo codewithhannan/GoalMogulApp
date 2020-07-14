@@ -2,7 +2,11 @@
 
 import * as Segment from 'expo-analytics-segment'
 import getEnvVars from '../../../environment'
-import React, { Component } from 'react'
+import React from 'react'
+import LRUCache from 'lru-cache'
+
+const DEBUG = getEnvVars().segmentDebug;
+const TAG = '[Segment]'
 
 /**
  * All names of events tracked using Segment. Please only use the names here.
@@ -20,6 +24,11 @@ const EVENT = {
     EDIT_GOAL_MODAL_CANCELLED: 'EditGoalModal Cancelled',
     GOAL_UPDATED: 'Goal Updated',
     GOAL_DELETED: 'Goal Deleted',
+    GOAL_DEADLINE_ADDED: 'Goal Deadline Added',
+    GOAL_STEP_ADDED: 'Goal Step Added',
+    GOAL_NEED_ADDED: 'Goal Need Added',
+    GOAL_MARKED_DONE: 'Goal Marked Complete',
+    GOAL_MARKED_UNDONE: 'Goal Marked Incomplete',
     GOAL_LIKED: 'Goal Liked',
     GOAL_UNLIKED: 'Goal Unliked',
     GOAL_FOLLOWED: 'Goal Followed', //
@@ -38,6 +47,7 @@ const EVENT = {
     POST_OPENED: 'Post Opened',
     POST_FOLLOWED: 'Post Followed', //
     POST_UNFOLLOWED: 'Post Unfollowed', //
+    POST_SHARED: 'Post Shared',
 
     // Comment
     COMMENT_ADDED: 'Comment Added',
@@ -98,6 +108,7 @@ const EVENT = {
     USER_UNBLOCKED: 'User Unblocked',
     PROFILE_OPENED: 'Profile Opened',
     PROFILE_REFRESHED: 'Profile Refreshed',
+    PROFILE_PHOTO_UPDATED: 'Profile Photo Updated',
 
     // Registration
     REG_INTRO: 'Registration Intro Opened',
@@ -187,101 +198,174 @@ const SCREENS = {
     EXPLORE_PEOPLE_TAB: 'ExplorePeopleTab',
 }
 
-const allEventNames = new Set()
-const allScreenNames = new Set()
+const allEventNames = new Set<string>()
+const allScreenNames = new Set<string>()
+
+const eventsQueue = new LRUCache<string, number>(100)
+const screensQueue = new LRUCache<string, number>(100)
 
 const { SEGMENT_CONFIG } = getEnvVars()
 
-const initSegment = () => {
+/**
+ * Calls to initialize segment library. Must call when app starts.
+ */
+function initSegment() {
     Segment.initialize({ iosWriteKey: SEGMENT_CONFIG.IOS_WRITE_KEY })
     allEventNames.clear()
     for (const prop in EVENT) {
         if (EVENT.hasOwnProperty(prop)) {
-            allEventNames.add(EVENT[prop])
+            allEventNames.add((EVENT as Record<string, string>)[prop])
         }
     }
     allScreenNames.clear()
     for (const prop in SCREENS) {
         if (SCREENS.hasOwnProperty(prop)) {
-            allScreenNames.add(SCREENS[prop])
+            allScreenNames.add((SCREENS as Record<string, string>)[prop])
         }
     }
 }
 
-const identify = (userId, username) => {
+/**
+ * Identifies a user. Calls when user logs in, signs up, or otherwise changes its identity.
+ */
+function identify(userId: string, username: string) {
     Segment.identify(userId)
 }
 
-const identifyWithTraits = (userId, trait) => {
+/**
+ * Identifies a user with a list of traits.
+ */
+function identifyWithTraits(userId: string, trait: Record<string, unknown>) {
     Segment.identifyWithTraits(userId, trait)
 }
 
-const track = (event) => {
-    if (!allEventNames.has(event)) {
-        console.error(
-            `Don't use customized event name '${event}'. Define it first in src/monitoring/segment`
-        )
+function validateEventTracking(eventName: string): boolean {
+    if (!allEventNames.has(eventName)) {
+        if (DEBUG) {
+            console.warn(`${TAG} Don't use customized event name '${eventName}'. Define it first in src/monitoring/segment`)
+        }
+        return false
     }
-    // console.log(`>>>>>> track: ${event}`)
-    Segment.track(event)
+    const lastMs = eventsQueue.get(eventName) ?? 0
+    const nowMs = new Date().getTime()
+    if (nowMs - lastMs < 200) {
+        if (DEBUG) {
+            console.warn(`${TAG} '${eventName}' fired too frequent. Likely duplicate`)
+        }
+        return false
+    }
+    eventsQueue.set(eventName, nowMs, /* maxAge= */ 5000)
+    return true
 }
 
-const trackWithProperties = (event, properties) => {
-    if (!allEventNames.has(event)) {
-        console.error(
-            `Don't use customized event name '${event}'. Define it first in src/monitoring/segment`
-        )
-    }
-    // console.log(`>>>>>> trackWithProperties: ${event}:\n${JSON.stringify(properties)}`)
-    Segment.trackWithProperties(event, properties)
-}
-
-const trackViewScreen = (screenName) => {
+function validateScreenTracking(screenName: string): boolean {
     if (!allScreenNames.has(screenName)) {
-        console.error(
-            `Don't use customized screen name '${screenName}'. Define it first in src/monitoring/segment`
-        )
+        if (DEBUG) {
+            console.warn(`${TAG} Don't use customized screen name '${screenName}'. Define it first in src/monitoring/segment`)
+        }
+        return false
     }
-    //console.log(`>>>>>> trackViewScreen: ${screenName}`)
+    const lastMs = screensQueue.get(screenName) ?? 0
+    const nowMs = new Date().getTime()
+    if (nowMs - lastMs < 200) {
+        if (DEBUG) {
+            console.warn(`${TAG} '${screenName}' fired too frequent. Likely duplicate`)
+        }
+        return false
+    }
+    screensQueue.set(screenName, nowMs, /* maxAge= */ 5000)
+    return true
+}
+
+/** 
+ * Sends a tracking event with the supplied name to Segment. 
+ * 
+ * @param eventName name of the event defined in `EVENT`
+ */
+function track(eventName: string) {
+    if (!validateEventTracking(eventName)) { return }
+    if (DEBUG) {
+        console.log(`${TAG} track: ${eventName}`)
+    }
+    Segment.track(eventName)
+}
+
+/** 
+ * Sends a tracking event with the supplied name and a list of properties to Segment. 
+ * 
+ * @param eventName name of the event defined in `EVENT`
+ */
+function trackWithProperties(eventName: string, properties: Record<string, unknown>) {
+    if (!validateEventTracking(eventName)) { return }
+    if (DEBUG) { console.log(`${TAG} trackWithProperties: ${eventName}:\n${JSON.stringify(properties)}`) }
+    Segment.trackWithProperties(eventName, properties)
+}
+
+/** 
+ * Tracks when user views a screen, aka. impression. It should be called when the new component initializes.
+ * 
+ * @param screenName name of the screen defined in `SCREENS`
+ */
+function trackViewScreen(screenName: string) {
+    if (!validateScreenTracking(screenName)) { return }
+    if (DEBUG) { console.log(`${TAG} trackViewScreen: ${screenName}`) }
     Segment.track(`ScreenView ${screenName}`)
 }
 
-const trackScreenWithProps = (screenName, properties) => {
-    if (!allScreenNames.has(screenName)) {
-        console.error(
-            `Don't use customized screen name '${screenName}'. Define it first in src/monitoring/segment`
-        )
-    }
-    //console.log(`>>>>>> trackScreenWithProps: ${screenName}\n${JSON.stringify(properties)}`)
+/** 
+ * Tracks when user views a screen, aka. impression with a list of properties.
+ * 
+ * @param screenName name of the screen defined in `SCREENS`
+ */
+function trackScreenWithProps(screenName: string, properties: Record<string, unknown>) {
+    if (!validateScreenTracking(screenName)) { return }
+    if (DEBUG) { console.log(`${TAG} trackScreenWithProps: ${screenName}\n${JSON.stringify(properties)}`) }
     // Segment.screenWithProperties does not seem to work properly
     Segment.trackWithProperties(`ScreenView ${screenName}`, properties)
 }
 
-const trackScreenCloseWithProps = (screenName, properties) => {
-    if (!allScreenNames.has(screenName)) {
-        console.error(
-            `Don't use customized screen name '${screenName}'. Define it first in src/monitoring/segment`
-        )
-    }
-    //console.log(`>>>>>> trackScreenCloseWithProps: ${screenName}\n${JSON.stringify(properties)}`)
+/** 
+ * Tracks when user leaves a screen. 
+ * 
+ * Together with `trackViewScreen`, we can track when user enters / leaves
+ * a specific component / page, and how long they spend in that page. So usually, `trackViewScreen` and
+ * `trackScreenCloseWithProps` come in pairs.
+ * 
+ * @param screenName name of the screen defined in `SCREENS`
+ */
+function trackScreenCloseWithProps(screenName: string, properties: Record<string, unknown>) {
+    if (!validateScreenTracking(screenName)) { return }
+    if (DEBUG) { console.log(`${TAG} trackScreenCloseWithProps: ${screenName}\n${JSON.stringify(properties)}`) }
     // Segment.screenWithProperties does not seem to work properly
     Segment.trackWithProperties(`ScreenClose ${screenName}`, properties)
 }
 
-const resetUser = () => {
+/**
+ * Resets user identity. Should be called when the user logs out.
+ */
+function resetUser() {
     Segment.reset()
 }
 
-function wrapAnalytics(Comp, screenName) {
-    class AnalyticsWrapper extends Component {
+/**
+ * Empowers the given component with predefined analytics tracking.
+ * 
+ * Currently, it adds screen enter and leave tracking, as well as how long a user stays there.
+ */
+function wrapAnalytics(Comp: React.ComponentType<unknown>, screenName: string) {
+    class AnalyticsWrapper extends React.Component {
+        readonly _analyticsVars = {
+            startTime: new Date(),
+        };
+
         componentDidMount() {
-            this.startTime = new Date()
+            this._analyticsVars.startTime = new Date()
             trackViewScreen(screenName)
         }
 
         componentWillUnmount() {
             const duration =
-                (new Date().getTime() - this.startTime.getTime()) / 1000
+                (new Date().getTime() - this._analyticsVars.startTime.getTime()) / 1000
             trackScreenCloseWithProps(screenName, {
                 DurationSec: duration,
             })

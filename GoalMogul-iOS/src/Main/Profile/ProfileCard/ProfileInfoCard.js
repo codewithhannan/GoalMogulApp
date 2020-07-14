@@ -212,10 +212,16 @@ class ProfileInfoCard extends Component {
         return null
     }
 
-    renderAbout(about) {
+    renderAbout(about, elevatorPitch) {
         if (about) {
             return (
-                <View style={{ alignSelf: 'flex-start', marginTop: 24 }}>
+                <View
+                    style={
+                        elevatorPitch
+                            ? { alignSelf: 'flex-start', marginTop: 24 }
+                            : { alignSelf: 'flex-start', marginTop: 0 }
+                    }
+                >
                     <View style={profileStyles.subHeaderStyle}>
                         <Image
                             resizeMode="contain"
@@ -259,7 +265,7 @@ class ProfileInfoCard extends Component {
             <View>
                 <View style={styles.containerStyle}>
                     {this.renderElevatorPitch(elevatorPitch)}
-                    {this.renderAbout(about)}
+                    {this.renderAbout(about, elevatorPitch)}
                 </View>
                 <View style={DEFAULT_STYLE.shadow} />
                 <View style={styles.containerStyle}>

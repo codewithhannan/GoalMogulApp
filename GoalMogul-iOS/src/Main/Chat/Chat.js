@@ -5,7 +5,6 @@ import { AsyncStorage, View } from 'react-native'
 import { copilot } from 'react-native-copilot-gm'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
-import { TabView } from 'react-native-tab-view'
 import { connect } from 'react-redux'
 import direct_message_image from '../../asset/utils/direct_message.png'
 import next from '../../asset/utils/next.png'
@@ -32,6 +31,7 @@ import SearchBarHeader from '../Common/Header/SearchBarHeader'
 import TabButtonGroup from '../Common/TabButtonGroup'
 import Tooltip from '../Tutorial/Tooltip'
 import { svgMaskPath } from '../Tutorial/Utils'
+import ChatRoomList from './ChatRoomList/ChatRoomList'
 import ChatRoomTab from './ChatRoomList/ChatRoomTab'
 
 export const CHAT_TAB_LAST_INDEX = 'chat_tab_last_index'
@@ -164,6 +164,23 @@ class ChatTab extends React.Component {
         )
     }
 
+    renderScene() {
+        return (
+            <ChatRoomList
+                tabKey="allChats"
+                tutorialOn={{
+                    chatBot: {
+                        tutorialText: this.props.tutorialText[1],
+                        order: 1,
+                        name: 'chat_tab_flow_chat_tab_bot',
+                    },
+                }}
+            />
+        )
+    }
+    /**
+     * @deprecated
+     */
     _renderScene = ({ route }) => {
         switch (route.key) {
             case 'directMessages': {
@@ -252,13 +269,14 @@ class ChatTab extends React.Component {
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" />
-                    <TabView
+                    {this.renderScene()}
+                    {/* <TabView
                         navigationState={this.props.navigationState}
                         renderScene={this._renderScene}
                         renderTabBar={this._renderHeader}
                         onIndexChange={this.props.selectChatTab}
                         useNativeDriver
-                    />
+                    /> */}
                     {this.renderPlus()}
                 </View>
             </MenuProvider>
