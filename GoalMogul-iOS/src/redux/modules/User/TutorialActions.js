@@ -181,8 +181,15 @@ export const resetTutorial = (flow, page) => async (dispatch, getState) => {
 }
 
 /**
- * Mark user as onboarded
- * TODO: @Jia Tutorial to update Users.js reducer
+ * Mark user as onboarded. In V1, this means when user finishes registration + create goal tutorial.
+ * In V2, we have moved this to /redux/modules/registration/RegistrationActions.js.
+ *
+ * In V2, mark user as onboarded when user finishes all onboarding steps required without tutorial.
+ * Since it's not related to tutorial anymore, we move this function to the new location. This is
+ * to be cleaned up. Currently, it's used in home when copilot event reaches step 2 for tutorial.
+ *
+ * This is to be cleaned up during tutorial revamp.
+ * TODO: cleanup
  */
 export const markUserAsOnboarded = () => (dispatch, getState) => {
     const { userId, token } = getState().user

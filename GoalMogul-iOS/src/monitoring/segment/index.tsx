@@ -147,6 +147,7 @@ const EVENT = {
     TUTORIAL_STARTED: 'Tutorial Started',
     TUTORIAL_PAGE_VIEWED: 'Tutorial Page Viewed',
     TUTORIAL_DONE: 'Tutorial Done',
+    ONBOARDING_DONE: 'Onboarding Done',
     NOTIFICATION_SELECTED: 'Notification Selected',
     NOTIFICATION_DETAIL_OPENED: 'Notification Detail Opened',
 }

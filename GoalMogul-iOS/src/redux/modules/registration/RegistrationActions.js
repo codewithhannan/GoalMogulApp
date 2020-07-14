@@ -48,6 +48,8 @@ import {
 } from '../../../monitoring/sentry/Constants'
 import { CONTACT_SYNC_LOAD_CONTACT_DONE } from '../User/ContactSync/ContactSyncReducers'
 import { updateFriendship } from '../../../actions'
+import { auth as Auth } from '../auth/Auth'
+import { Logger } from '../../middleware/utils/Logger'
 
 /**
  * Alter the state of registration text input
@@ -556,4 +558,51 @@ export const uploadContacts = ({ onMatchFound, onMatchNotFound }) => async (
                 "We're sorry that some error happened. Please try again later."
             )
         })
+}
+
+/**
+ * Mark user as onboarded. In V1, this means when user finishes registration + create goal tutorial.
+ * In V2, we have moved the function from TutorialActions.js here.
+ *
+ * In V2, mark user as onboarded when user finishes all onboarding steps required without tutorial.
+ */
+export const markUserAsOnboarded = () => async (dispatch, getState) => {
+    const { userId, token } = getState().user
+    Logger.log(`${DEBUG_KEY}: [ markUserAsOnboarded ] for user: `, userId, 1)
+    track(E.ONBOARDING_DONE)
+
+    // Fire request to update server user state
+    try {
+        const res = await API.put(
+            'secure/user/account/mark-as-onboarded',
+            {},
+            token,
+            1
+        )
+        if (res.status < 200 || res.status > 299) {
+            // mark user as onboarded failed
+            new SentryRequestBuilder(res.message, SENTRY_MESSAGE_TYPE.MESSAGE)
+                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                .withTag(SENTRY_TAGS.REGISTRATION.ACTION, 'markUserAsOnboarded')
+                .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
+                .send()
+
+            // TODO: integrate this error message in SentryRequestBuilder
+            console.error(
+                `${DEBUG_KEY}: markUserAsOnboarded failed: `,
+                res.message
+            )
+            return
+        }
+    } catch (error) {
+        new SentryRequestBuilder(error, SENTRY_MESSAGE_TYPE.ERROR)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.REGISTRATION.ACTION, 'markUserAsOnboarded')
+            .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
+            .send()
+
+        // TODO: integrate this error message in SentryRequestBuilder
+        console.error(`${DEBUG_KEY}: markUserAsOnboarded failed: `, error)
+        return
+    }
 }

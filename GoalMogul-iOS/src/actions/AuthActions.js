@@ -50,6 +50,7 @@ import {
     SENTRY_MESSAGE_LEVEL,
     SENTRY_TAG_VALUE,
     SENTRY_MESSAGE_TYPE,
+    SENTRY_CONTEXT,
 } from '../monitoring/sentry/Constants'
 
 const DEBUG_KEY = '[ Action Auth ]'
@@ -263,11 +264,31 @@ const mountUserWithToken = ({
     // Segment track user
     identify(payload.userId, username)
 
-    // Fetch user profile using returned token and userId
-    fetchAppUserProfile(payload.token, payload.userId)(dispatch, getState)
+    // Refresh feed and all goals
     refreshFeed()(dispatch, getState)
     refreshGoals()(dispatch, getState)
     subscribeNotification()(dispatch, getState)
+
+    // Fetch user profile using returned token and userId
+    const userObject = await fetchAppUserProfile(payload.token, payload.userId)(
+        dispatch,
+        getState
+    )
+
+    // If navigate is set to false, it means user has already opened up the home page
+    // We only need to reload the profile and feed data
+    if (navigate === false) return
+
+    // Let the screen transition happen first
+    // before waiting on potential long duration operations
+    if (userObject && userObject.isOnBoarded == false) {
+        // Load profile success and user is marked as not onboarded
+        // Go to onboarding flow
+        Actions.replace('registration_add_photo')
+    } else {
+        // Go to home page
+        Actions.replace('drawer')
+    }
 
     // Load unread notification
     await loadUnreadNotification()(dispatch, getState)
@@ -277,15 +298,13 @@ const mountUserWithToken = ({
 
     // Load remote matches
     await loadRemoteMatches(payload.userId)(dispatch, getState)
-
-    // If navigate is set to false, it means user has already opened up the home page
-    // We only need to reload the profile and feed data
-    if (navigate === false) return
-    Actions.replace('drawer')
 }
 
 // We have the same action in Profile.js
-export const fetchAppUserProfile = (token, userId) => (dispatch, getState) => {
+export const fetchAppUserProfile = (token, userId) => async (
+    dispatch,
+    getState
+) => {
     let tokenToUse = token
     let userIdToUse = userId
     if (!token) {
@@ -296,32 +315,47 @@ export const fetchAppUserProfile = (token, userId) => (dispatch, getState) => {
         userIdToUse = getState().user.userId
     }
 
-    API.get(`secure/user/profile?userId=${userIdToUse}`, tokenToUse)
-        .then((res) => {
-            if (res.data) {
-                dispatch({
-                    type: USER_LOAD_PROFILE_DONE,
-                    payload: {
-                        user: res.data,
-                        pageId: 'LOGIN',
-                    },
-                })
-            }
-        })
-        .catch((err) => {
-            console.log('[ Auth Action ] fetch user profile fails: ', err)
-            new SentryRequestBuilder(
-                new Error(message),
-                SENTRY_MESSAGE_TYPE.ERROR
-            )
-                .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
+    try {
+        const res = await API.get(
+            `secure/user/profile?userId=${userIdToUse}`,
+            tokenToUse
+        )
+
+        // Profile fetch failed
+        if (res.status > 299 || res.status < 200) {
+            new SentryRequestBuilder(message, SENTRY_MESSAGE_TYPE.MESSAGE)
+                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
                 .withTag(
                     SENTRY_TAGS.ACTION.FETCH_USER_PROFILE,
                     SENTRY_TAG_VALUE.ACTIONS.FAILED
                 )
-                .withExtraContext(SENTRY_TAGS.ACTION.USERNAME, username)
+                .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
                 .send()
+            return undefined
+        }
+
+        // Dispatch events
+        dispatch({
+            type: USER_LOAD_PROFILE_DONE,
+            payload: {
+                user: res.data,
+                pageId: 'LOGIN',
+            },
         })
+
+        return res.data
+    } catch (error) {
+        new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(
+                SENTRY_TAGS.ACTION.FETCH_USER_PROFILE,
+                SENTRY_TAG_VALUE.ACTIONS.FAILED
+            )
+            .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
+            .send()
+
+        return undefined
+    }
 }
 
 export const registerUser = () => (dispatch) => {

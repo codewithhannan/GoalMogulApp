@@ -6,6 +6,7 @@
  */
 
 import React from 'react'
+import { connect } from 'react-redux'
 import { View, Text, Dimensions, Image } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import OnboardingHeader from './Common/OnboardingHeader'
@@ -15,15 +16,13 @@ import {
 } from '../../styles'
 import DelayedButton from '../Common/Button/DelayedButton'
 import Icons from '../../asset/base64/Icons'
+import { markUserAsOnboarded } from '../../redux/modules/registration/RegistrationActions'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 class OnboardingWelcome extends React.Component {
     continue = () => {
-        // TODO: analytics
-        const screenTransitionCallback = () => {
-            Actions.replace('drawer')
-        }
-        screenTransitionCallback()
+        Actions.replace('drawer')
+        this.props.markUserAsOnboarded()
     }
 
     /**
@@ -108,4 +107,6 @@ const styles = {
     },
 }
 
-export default OnboardingWelcome
+export default connect(null, {
+    markUserAsOnboarded,
+})(OnboardingWelcome)
