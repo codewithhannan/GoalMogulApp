@@ -159,6 +159,7 @@ class SplashScreen extends Component {
             require('./asset/header/header-logo-white.png'),
             require('./asset/header/header-logo.png'),
             require('./asset/header/logo.png'),
+            require('./asset/header/logoWithText.png'),
             // Banners
             require('./asset/banner/bronze.png'),
             require('./asset/banner/gold.png'),
