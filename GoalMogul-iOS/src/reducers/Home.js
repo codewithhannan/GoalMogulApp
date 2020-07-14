@@ -255,11 +255,12 @@ export default (state = INITIAL_STATE, action) => {
                 updateLike(oldActivityData, id, likeId, type, undo, action.type)
             )
             // Update goal feed
-            return _.set(
+            newState = _.set(
                 newState,
                 'mastermind.data',
                 updateLike(oldGoalFeedData, id, likeId, type, undo, action.type)
             )
+            return newState
         }
 
         // Comment delete success to update goalcard / activitycard commentCount
@@ -688,6 +689,32 @@ function updateLike(array, id, likeId, type, undo, likeType) {
                         newLikeCount
                     )
                     newItem = _.set(newItem, `${path}`, itemToUpdate)
+                }
+            } else {
+                if (item._id.toString() === id.toString()) {
+                    newItem = _.set(newItem, 'maybeLikeRef', likeId)
+
+                    const oldLikeCount = _.get(newItem, 'likeCount')
+                    let newLikeCount = oldLikeCount
+
+                    if (likeType === LIKE_GOAL || likeType === LIKE_POST) {
+                        if (undo) {
+                            newLikeCount = oldLikeCount - 1
+                        } else if (likeId === 'testId') {
+                            newLikeCount = oldLikeCount + 1
+                        }
+                    } else if (
+                        likeType === UNLIKE_GOAL ||
+                        likeType === UNLIKE_POST
+                    ) {
+                        if (undo) {
+                            newLikeCount = oldLikeCount + 1
+                        } else if (likeId === undefined) {
+                            newLikeCount = oldLikeCount - 1
+                        }
+                    }
+                    newItem = _.set(newItem, 'likeCount', newLikeCount)
+                    console.log(newItem)
                 }
             }
             return newItem

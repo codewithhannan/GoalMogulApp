@@ -340,52 +340,50 @@ class GoalCard extends React.PureComponent {
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
 
         return (
-            <View style={{ marginTop: 1 }}>
-                <ActionButtonGroup>
-                    <ActionButton
-                        iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
-                        count={likeCount}
-                        unitText="Like"
-                        textStyle={{ color: selfLiked ? '#000' : '#828282' }}
-                        iconStyle={{
-                            tintColor: selfLiked ? '#EB5757' : '#828282',
-                        }}
-                        onPress={() => {
-                            if (selfLiked) {
-                                return this.props.unLikeGoal(
-                                    'goal',
-                                    _id,
-                                    maybeLikeRef
-                                )
-                            }
-                            this.props.likeGoal('goal', _id)
-                        }}
-                    />
-                    <ActionButton
-                        iconSource={ShareIcon}
-                        count={shareCount}
-                        unitText="Share"
-                        textStyle={{ color: '#828282' }}
-                        iconStyle={{ tintColor: '#828282' }}
-                        onPress={() => this.handleShareOnClick(item)}
-                    />
-                    <ActionButton
-                        iconSource={CommentIcon}
-                        count={commentCount}
-                        unitText="Comment"
-                        textStyle={{ color: '#828282' }}
-                        iconStyle={{ tintColor: '#828282' }}
-                        onPress={() => {
-                            this.props.onPress(this.props.item, {
-                                type: 'comment',
-                                _id: undefined,
-                                initialShowSuggestionModal: false,
-                                initialFocusCommentBox: true,
-                            })
-                        }}
-                    />
-                </ActionButtonGroup>
-            </View>
+            <ActionButtonGroup>
+                <ActionButton
+                    iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
+                    count={likeCount}
+                    unitText="Like"
+                    textStyle={{ color: selfLiked ? '#000' : '#828282' }}
+                    iconStyle={{
+                        tintColor: selfLiked ? '#EB5757' : '#828282',
+                    }}
+                    onPress={() => {
+                        if (selfLiked) {
+                            return this.props.unLikeGoal(
+                                'goal',
+                                _id,
+                                maybeLikeRef
+                            )
+                        }
+                        this.props.likeGoal('goal', _id)
+                    }}
+                />
+                <ActionButton
+                    iconSource={ShareIcon}
+                    count={shareCount}
+                    unitText="Share"
+                    textStyle={{ color: '#828282' }}
+                    iconStyle={{ tintColor: '#828282' }}
+                    onPress={() => this.handleShareOnClick(item)}
+                />
+                <ActionButton
+                    iconSource={CommentIcon}
+                    count={commentCount}
+                    unitText="Comment"
+                    textStyle={{ color: '#828282' }}
+                    iconStyle={{ tintColor: '#828282' }}
+                    onPress={() => {
+                        this.props.onPress(this.props.item, {
+                            type: 'comment',
+                            _id: undefined,
+                            initialShowSuggestionModal: false,
+                            initialFocusCommentBox: true,
+                        })
+                    }}
+                />
+            </ActionButtonGroup>
         )
     }
     // Original color picked for comment icon
