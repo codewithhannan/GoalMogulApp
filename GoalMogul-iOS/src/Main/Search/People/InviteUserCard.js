@@ -18,6 +18,12 @@ import { EVENT, trackWithProperties } from '../../../monitoring/segment'
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png'
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import { Image, View } from 'react-native'
+import {
+    DEFAULT_STYLE,
+    GM_DOT_GRAY,
+    GM_BLUE,
+    FONT_FAMILY_1,
+} from '../../../styles'
 
 const DEBUG_KEY = '[ UI InviteUserCard ]'
 
@@ -67,15 +73,56 @@ class InviteUserCard extends React.PureComponent {
         const button = this.getButtonStatus(status)
         if (!button) return null
         const { buttonStatus, text } = button
-        return (
-            <Button
-                appearance="outline"
-                status={buttonStatus}
-                size="small"
-                activeOpacity={1}
+        return text == 'Invited' || text == 'Requested' ? (
+            <View
+                style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginTop: 0,
+                    width: 95,
+                }}
             >
-                {text}
-            </Button>
+                <Button
+                    style={{
+                        backgroundColor: 'white',
+                    }}
+                    disabled
+                    appearance="outline"
+                    status={buttonStatus}
+                    size="small"
+                    activeOpacity={1}
+                >
+                    <Text
+                        status={buttonStatus}
+                        style={{
+                            ...DEFAULT_STYLE.buttonText_2,
+                            color: GM_DOT_GRAY,
+                        }}
+                    >
+                        {text}
+                    </Text>
+                </Button>
+            </View>
+        ) : (
+            <View
+                style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginTop: 0,
+                    width: 95,
+                }}
+            >
+                <Text
+                    status={buttonStatus}
+                    style={{
+                        ...DEFAULT_STYLE.normalText_2,
+                        color: GM_BLUE,
+                        fontFamily: FONT_FAMILY_1,
+                    }}
+                >
+                    {text}
+                </Text>
+            </View>
         )
     }
 
@@ -195,6 +242,11 @@ const styles = {
         height: 26,
         width: 26,
         borderRadius: 13,
+    },
+    adminMemberTextStyle: {
+        color: '#42C0F5',
+        fontWeight: 'bold',
+        textAlign: 'right',
     },
 }
 
