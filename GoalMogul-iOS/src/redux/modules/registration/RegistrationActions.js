@@ -494,7 +494,7 @@ export const uploadContacts = ({
         })
     } catch (error) {
         if (onError) {
-            onError('upload')
+            return onError('upload')
         }
         // TODO: registration: SentryRequestBuilder
     }

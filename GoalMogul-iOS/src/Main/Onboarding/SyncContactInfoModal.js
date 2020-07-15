@@ -80,7 +80,7 @@ class SyncContactInfoModal extends React.Component {
                         : "We couldn't find any contact that is on GoalMogul."}
                 </Text>
                 <DelayedButton
-                    onPress={this.onInvite}
+                    onPress={errMessage ? this.onSyncContact : this.onInvite}
                     style={
                         buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle
                     }
@@ -92,7 +92,7 @@ class SyncContactInfoModal extends React.Component {
                     </Text>
                 </DelayedButton>
                 <DelayedButton
-                    onPress={this.onNotNow}
+                    onPress={errMessage ? this.onInvite : this.onNotNow}
                     style={[
                         buttonStyle.GM_WHITE_BG_BLUE_TEXT.containerStyle,
                         { marginTop: 10 },

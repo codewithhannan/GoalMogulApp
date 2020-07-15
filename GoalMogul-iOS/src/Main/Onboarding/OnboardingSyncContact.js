@@ -48,6 +48,7 @@ class OnboardingSyncContact extends React.Component {
             ...this.state,
             syncContactInfoModalVisible: true,
             errMessage: undefined,
+            loading: true,
         })
 
     closeModal = () =>
