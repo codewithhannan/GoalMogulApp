@@ -84,10 +84,12 @@ class OnboardingTribeSelection extends React.Component {
     keyExtractor = (item) => item._id
 
     renderItem = ({ item, index, separators }) => {
-        const { selected, name, picture, description } = item
+        const { selected, name, picture, description, memberCount } = item
         const containerStyle = selected
             ? styles.tribeCardSelectedContainerStyle
             : styles.tribeCardContainerStyle
+
+        console.log('tribes are: ', item.category)
         return (
             <DelayedButton
                 style={containerStyle}
@@ -137,10 +139,23 @@ class OnboardingTribeSelection extends React.Component {
                                 {
                                     paddingLeft: 8,
                                     letterSpacing: 0.2,
+                                    flex: 1,
                                 },
                             ]}
                         >
                             {name}
+                        </Text>
+                        <Text
+                            style={[
+                                DEFAULT_STYLE.normalText_1,
+                                {
+                                    color: '#828282',
+                                    letterSpacing: 0.2,
+                                },
+                            ]}
+                        >
+                            {memberCount}{' '}
+                            {memberCount > 1 ? 'members' : 'member'}
                         </Text>
                     </View>
                     <Text
@@ -275,6 +290,11 @@ class OnboardingTribeSelection extends React.Component {
     }
 
     render() {
+        const { tribes } = this.props
+        const tribesToRender = filterTribesByCategory({
+            tribes,
+            category: this.state.category,
+        })
         return (
             <View style={styles.containerStyle}>
                 <OnboardingHeader />
@@ -308,7 +328,7 @@ class OnboardingTribeSelection extends React.Component {
                                 },
                             },
                         ])}
-                        data={this.props.tribes}
+                        data={tribesToRender}
                         renderItem={(item, index) =>
                             this.renderItem(item, index)
                         }
@@ -335,6 +355,12 @@ class OnboardingTribeSelection extends React.Component {
     }
 }
 
+const filterTribesByCategory = ({ tribes, category }) => {
+    if (category == CATEGORY.all) return tribes
+
+    // TODO: registration filter out the tribes
+}
+
 const BUTTON_LIST = [
     {
         name: 'apps',
@@ -351,11 +377,11 @@ const BUTTON_LIST = [
         pack: 'material-community',
         title: CATEGORY.finance,
     },
-    {
-        name: 'account-multiple-outline',
-        pack: 'material-community',
-        title: CATEGORY.family,
-    },
+    // {
+    //     name: 'account-multiple-outline',
+    //     pack: 'material-community',
+    //     title: CATEGORY.family,
+    // },
     {
         name: 'brush',
         pack: 'material-community',

@@ -164,23 +164,27 @@ const ContactUtils = {
                     })
                 })
                 .then((res) => {
-                    // console.log(`${DEBUG_KEY}: original res is: `, res);
-                    if (res.status === 200 || res.data) {
-                        return resolve(res)
+                    if (res.status > 299 || res.status < 200) {
+                        reject(res.message)
+                    } else {
+                        resolve(res)
                     }
+                    // if (res.status === 200 || res.data) {
+                    //     return resolve(res)
+                    // }
 
-                    console.log(`${DEBUG_KEY}: failed headers: `, headers)
-                    console.log(`${DEBUG_KEY}: failed data: `, data)
-                    if (!res.message && res.success) {
-                        if (data) {
-                            return resolve(data)
-                        }
-                        return resolve(true)
-                    }
+                    // console.log(`${DEBUG_KEY}: failed headers: `, headers)
+                    // console.log(`${DEBUG_KEY}: failed data: `, data)
+                    // if (!res.message && res.success) {
+                    //     if (data) {
+                    //         return resolve(data)
+                    //     }
+                    //     return resolve(true)
+                    // }
 
-                    // Update fails
-                    // reject(res.message);
-                    return resolve(res)
+                    // // Update fails
+                    // // reject(res.message);
+                    // return resolve(res)
                 })
                 .catch((err) => {
                     reject(err)

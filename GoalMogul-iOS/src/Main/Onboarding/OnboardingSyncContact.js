@@ -39,11 +39,16 @@ class OnboardingSyncContact extends React.Component {
         this.state = {
             syncContactInfoModalVisible: false,
             loading: true, // test loading param
+            errMessage: undefined,
         }
     }
 
     openModal = () =>
-        this.setState({ ...this.state, syncContactInfoModalVisible: true })
+        this.setState({
+            ...this.state,
+            syncContactInfoModalVisible: true,
+            errMessage: undefined,
+        })
 
     closeModal = () =>
         this.setState({ ...this.state, syncContactInfoModalVisible: false })
@@ -90,7 +95,22 @@ class OnboardingSyncContact extends React.Component {
                 Actions.push('registration_contact_invite')
             }, 150)
         }
-        this.props.uploadContacts({ onMatchFound, onMatchNotFound })
+
+        const onError = (errType) => {
+            let errMessage = ''
+            if (errType == 'upload') {
+                errMessage =
+                    "We're sorry that some error happened. Please try again later."
+            }
+
+            this.setState({
+                ...this.state,
+                errMessage,
+                loading: false,
+            })
+        }
+
+        this.props.uploadContacts({ onMatchFound, onMatchNotFound, onError })
     }
 
     onNotNow = () => {
@@ -193,6 +213,8 @@ class OnboardingSyncContact extends React.Component {
                 <SyncContactInfoModal
                     isOpen={this.state.syncContactInfoModalVisible}
                     loading={this.state.loading}
+                    errMessage={this.state.errMessage}
+                    onSyncContact={this.onSyncContact} // Retry upload contacts
                     onNotNow={this.onModalNotNow}
                     onInvite={this.onModalInvite}
                 />

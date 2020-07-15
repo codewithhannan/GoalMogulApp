@@ -28,6 +28,8 @@ import ImagePicker from './Common/ImagePicker'
 import {
     TEXT_STYLE as textStyle,
     BUTTON_STYLE as buttonStyle,
+    GM_BLUE_LIGHT,
+    GM_BLUE,
 } from '../../styles'
 import { openCamera, openCameraRoll } from '../../actions'
 import { registrationAddProfilePhoto } from '../../redux/modules/registration/RegistrationActions'
@@ -80,8 +82,15 @@ class OnboardingAddPhotos extends Component {
                                 buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
                                     .containerStyle,
                                 styles.buttonPrimaryStyles,
+                                {
+                                    backgroundColor:
+                                        profilePic == undefined
+                                            ? GM_BLUE_LIGHT
+                                            : GM_BLUE,
+                                },
                             ]}
                             onPress={this.onContinue}
+                            disabled={profilePic == undefined}
                         >
                             <Text
                                 style={
@@ -89,7 +98,7 @@ class OnboardingAddPhotos extends Component {
                                         .textStyle
                                 }
                             >
-                                Continue
+                                Add Photo
                             </Text>
                         </DelayedButton>
                         <DelayedButton

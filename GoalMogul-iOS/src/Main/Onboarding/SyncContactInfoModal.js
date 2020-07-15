@@ -31,7 +31,11 @@ class SyncContactInfoModal extends React.Component {
         }
     }
 
-    renderUploading() {
+    onSyncContact = () => {
+        this.props.onSyncContact && this.props.onSyncContact()
+    }
+
+    renderUploading = () => {
         return (
             <View
                 style={{
@@ -59,7 +63,8 @@ class SyncContactInfoModal extends React.Component {
         )
     }
 
-    renderFailureResult() {
+    renderFailureResult = () => {
+        const { errMessage } = this.props
         return (
             <View style={{ zIndex: 2, opacity: this.props.loading ? 0 : 1 }}>
                 <Text
@@ -70,7 +75,9 @@ class SyncContactInfoModal extends React.Component {
                         marginBottom: 20,
                     }}
                 >
-                    We couldn't find any contact that is on GoalMogul.
+                    {errMessage
+                        ? errMessage
+                        : "We couldn't find any contact that is on GoalMogul."}
                 </Text>
                 <DelayedButton
                     onPress={this.onInvite}
@@ -81,7 +88,7 @@ class SyncContactInfoModal extends React.Component {
                     <Text
                         style={buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle}
                     >
-                        Invite
+                        {errMessage ? 'Try again' : 'Invite'}
                     </Text>
                 </DelayedButton>
                 <DelayedButton
@@ -92,7 +99,7 @@ class SyncContactInfoModal extends React.Component {
                     ]}
                 >
                     <Text style={buttonStyle.GM_WHITE_BG_BLUE_TEXT.textStyle}>
-                        Not Now
+                        {errMessage ? 'Invite Contacts' : 'Not Now'}
                     </Text>
                 </DelayedButton>
             </View>

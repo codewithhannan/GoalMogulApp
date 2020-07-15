@@ -83,7 +83,7 @@ class OnboardingWelcome extends React.Component {
                         style={[
                             buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
                                 .containerStyle,
-                            { marginBottom: 20 },
+                            { marginBottom: 30 },
                         ]}
                     >
                         <Text

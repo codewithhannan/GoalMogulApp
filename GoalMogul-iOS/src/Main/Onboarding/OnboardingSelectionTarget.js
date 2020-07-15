@@ -100,7 +100,7 @@ class OnboardingSelectionTarget extends React.Component {
                     }}
                 >
                     <TextInput
-                        placeholder="Others placeholder"
+                        placeholder="Why did you download goalmogul? What would you like to get out of it?"
                         style={{
                             fontSize: GM_FONT_SIZE.FONT_3,
                             lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
@@ -195,6 +195,16 @@ class OnboardingSelectionTarget extends React.Component {
     }
 
     render() {
+        const { userTargets } = this.props
+        const selectedTargets = userTargets.filter((i) => i.selected)
+        // Disabled next when no selection is made
+        // Or when other is selected with empty input
+        const disabled =
+            selectedTargets.length == 0 ||
+            (selectedTargets.length == 1 &&
+                selectedTargets[0].title == 'Other' &&
+                !selectedTargets[0].extra.trim())
+
         return (
             <View style={styles.containerStyle}>
                 <OnboardingHeader />
@@ -246,6 +256,7 @@ class OnboardingSelectionTarget extends React.Component {
                     currentStep={1}
                     onNext={this.onNext}
                     onPrev={this.onBack}
+                    nextDisabled={disabled}
                 />
             </View>
         )

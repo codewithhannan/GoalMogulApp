@@ -438,10 +438,11 @@ export const inviteExistingUser = (userId) => async (dispatch, getState) => {
  * Upload contacts and fetch matched contacts
  * @param {*} param0
  */
-export const uploadContacts = ({ onMatchFound, onMatchNotFound }) => async (
-    dispatch,
-    getState
-) => {
+export const uploadContacts = ({
+    onMatchFound,
+    onMatchNotFound,
+    onError,
+}) => async (dispatch, getState) => {
     const permission = await Permissions.askAsync(Permissions.CONTACTS)
     if (permission.status !== 'granted') {
         // Permission was denied and dispatch an action
@@ -462,102 +463,95 @@ export const uploadContacts = ({ onMatchFound, onMatchNotFound }) => async (
         },
     })
 
-    // Dispatch actions to fill ContactSyncReducers
-    // After contacts are loaded from the phone
-    const loadContactCallback = (contacts) => {
+    try {
+        // Dispatch actions to fill ContactSyncReducers
+        // After contacts are loaded from the phone
+        const loadContactCallback = (contacts) => {
+            dispatch({
+                type: CONTACT_SYNC_LOAD_CONTACT_DONE,
+                payload: {
+                    data: contacts,
+                },
+            })
+        }
+
+        // Upload contacts and store local contacts to ContactSyncReducers
+        const uploadContactRes = await handleUploadContacts(
+            token,
+            loadContactCallback
+        )
+
+        // uploadContactRes should either be success or throw exception
+        console.log(`${DEBUG_KEY}: contact upload res is: `, uploadContactRes)
+
+        // Fetching matched records. Show spinner
         dispatch({
-            type: CONTACT_SYNC_LOAD_CONTACT_DONE,
+            type: REGISTRATION_CONTACT_SYNC_FETCH,
             payload: {
-                data: contacts,
+                refreshing: true,
+                loading: false,
             },
         })
+    } catch (error) {
+        if (onError) {
+            onError('upload')
+        }
+        // TODO: registration: SentryRequestBuilder
     }
 
-    handleUploadContacts(token, loadContactCallback)
-        .then((res) => {
-            console.log('response is: ', res)
+    try {
+        const matchedContactsRes = await fetchMatchedContacts(
+            token,
+            0,
+            matchedContacts.limit
+        )
+        console.log(`${DEBUG_KEY}: matched contacts are`, matchedContactsRes)
 
-            // Fetching matched records. Show spinner
-            dispatch({
-                type: REGISTRATION_CONTACT_SYNC_FETCH,
-                payload: {
-                    refreshing: true,
-                    loading: false,
-                },
-            })
-
-            /* TODO: load matched contacts */
-            return fetchMatchedContacts(token, 0, matchedContacts.limit)
+        // User finish fetching
+        dispatch({
+            type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
+            payload: {
+                data: matchedContactsRes.data, // TODO: replaced with res
+                skip: matchedContactsRes.data.length,
+                limit: matchedContacts.limit,
+                refreshing: true,
+            },
         })
-        .then((res) => {
-            console.log('matched contacts are: ', res)
-            if (res.data) {
-                // User finish fetching
-                dispatch({
-                    type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
-                    payload: {
-                        data: res.data, // TODO: replaced with res
-                        skip: res.data.length,
-                        limit: matchedContacts.limit,
-                        refreshing: true,
-                    },
-                })
 
-                if (res.data.length && onMatchFound) {
-                    onMatchFound()
-                    return
-                }
+        if (matchedContactsRes.data.length && onMatchFound) {
+            onMatchFound()
+            return
+        }
 
-                if (!res.data.length && onMatchNotFound) {
-                    onMatchNotFound()
-                    return
-                }
-
-                return
-            }
-            // TODO: error handling for fail to fetch contact cards
-            // TODO: show toast for user to refresh
-
-            console.warn(
-                `${DEBUG_KEY}: failed to fetch contact cards with res:`,
-                res
-            )
-            dispatch({
-                type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
-                payload: {
-                    data: [], // TODO: replaced with res
-                    skip: 0,
-                    limit: matchedContacts.limit,
-                    refreshing: true,
-                },
-            })
+        if (!matchedContactsRes.data.length && onMatchNotFound) {
+            onMatchNotFound()
+            return
+        }
+    } catch (err) {
+        console.warn(`${DEBUG_KEY}: uploadContacts failed`, err)
+        // Error handling to clear both uploading and refreshing status
+        dispatch({
+            type: REGISTRATION_CONTACT_SYNC_UPLOAD_DONE,
+            payload: {
+                uploading: false,
+            },
         })
-        .catch((err) => {
-            console.warn('[ Action ContactSync Fail ]: ', err)
-            console.log('error is:', err)
-            // Error handling to clear both uploading and refreshing status
-            dispatch({
-                type: REGISTRATION_CONTACT_SYNC_UPLOAD_DONE,
-                payload: {
-                    uploading: false,
-                },
-            })
-
-            dispatch({
-                type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
-                payload: {
-                    data: [], // TODO: replaced with res
-                    skip: 0,
-                    limit: matchedContacts.limit,
-                    refreshing: true,
-                },
-            })
-            DropDownHolder.alert(
-                'error',
-                'Error',
-                "We're sorry that some error happened. Please try again later."
-            )
+        dispatch({
+            type: REGISTRATION_CONTACT_SYNC_FETCH_DONE,
+            payload: {
+                data: [], // TODO: replaced with res
+                skip: 0,
+                limit: matchedContacts.limit,
+                refreshing: true,
+            },
         })
+
+        // error happens when getting matches and directly go to invite user
+        if (onMatchNotFound) {
+            onMatchNotFound()
+        }
+        // TODO: registration: SentryRequestBuilder
+    }
 }
 
 /**

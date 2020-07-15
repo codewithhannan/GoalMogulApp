@@ -73,7 +73,7 @@ class OnboardingIntroTransition extends React.Component {
                                 },
                             ]}
                         >
-                            Hi, {name ? `${name}` : 'Jia'}
+                            Hi{name ? `, ${name}` : ''}
                         </Text>
                         <Text style={textStyle.onboardingPharagraphTextStyle}>
                             We are going to ask you three questions
@@ -121,8 +121,16 @@ const styles = {
 
 const mapStateToProps = (state) => {
     const { name } = state.registration
+    const { user } = state.user
+    let nameToUse = name
+
+    // User entered through login rather account registration
+    if (!name && user && user.name) {
+        nameToUse = user.name
+    }
+
     return {
-        name,
+        name: nameToUse,
     }
 }
 
