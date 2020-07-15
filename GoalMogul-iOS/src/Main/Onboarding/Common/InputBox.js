@@ -65,12 +65,22 @@ class CountryFlagButton extends React.Component {
  */
 class InputBox extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
-        const { value, caption, countryCode } = this.props
+        const {
+            value,
+            caption,
+            countryCode,
+            meta,
+            input,
+            disabled,
+        } = this.props
 
         return (
             !_.isEqual(value, nextProps.value) ||
             !_.isEqual(caption, nextProps.caption) ||
-            !_.isEqual(countryCode, nextProps.countryCode)
+            !_.isEqual(countryCode, nextProps.countryCode) ||
+            !_.isEqual(meta, nextProps.meta) || // meta is from redux form
+            !_.isEqual(input, nextProps.input) || // meta is from redux form
+            !_.isEqual(disabled, nextProps.disabled)
         )
     }
 
@@ -88,8 +98,8 @@ class InputBox extends React.Component {
     }
 
     renderInputTitle = () => {
-        const { inputTitle } = this.props
-        if (this.props.optional) {
+        const { inputTitle, optional } = this.props
+        if (optional) {
             return (
                 <Text
                     style={{
@@ -195,21 +205,52 @@ class InputBox extends React.Component {
     }
 
     render() {
-        const { inputTitle, placeholderTextColor, ...custom } = this.props
+        const { inputTitle, errorText, meta, input, ...custom } = this.props
         const isPhoneNumber = inputTitle == 'Phone Number'
         if (isPhoneNumber) {
             return this.renderPhoneInput()
         }
 
+        // Redux form adapter
+        if (input && meta) {
+            const { status, caption } = custom
+            const { onChange, ...restInput } = input
+            let statusToUse = status
+            let captionToUse = caption
+
+            if (meta && meta.error) {
+                statusToUse = 'danger'
+                captionToUse = meta.error
+            }
+
+            return (
+                <View style={styles.containerStyle}>
+                    <Input
+                        {...custom}
+                        {...restInput}
+                        onChangeText={onChange}
+                        status={statusToUse}
+                        caption={captionToUse}
+                        ref="textInput"
+                        label={this.renderInputTitle}
+                        style={{ width: '100%' }}
+                        textStyle={{ fontSize: 16 }}
+                        size="large"
+                    />
+                </View>
+            )
+        }
+
+        // Normal ui-kitten input
         return (
             <View style={styles.containerStyle}>
                 <Input
+                    {...custom}
                     ref="textInput"
                     label={this.renderInputTitle}
                     style={{ width: '100%' }}
                     textStyle={{ fontSize: 16 }}
                     size="large"
-                    {...custom}
                 />
             </View>
         )

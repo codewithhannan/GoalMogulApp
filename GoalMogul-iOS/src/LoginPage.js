@@ -10,14 +10,16 @@ import {
     Linking,
 } from 'react-native'
 import { connect } from 'react-redux'
-import { Field, reduxForm, SubmissionError } from 'redux-form'
+import {
+    Field,
+    reduxForm,
+    SubmissionError,
+    formValueSelector,
+} from 'redux-form'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 /* Components */
 import Header from './Registration/Common/Header'
-import Button from './Registration/Common/Button'
-import Divider from './Registration/Common/Divider'
-import Input from './Registration/Common/Input'
 
 /* Styles */
 import Styles from './Registration/Styles'
@@ -28,16 +30,27 @@ import { registerUser, loginUser } from './actions'
 import { RESET_PASSWORD_URL } from './Utils/Constants'
 import Recaptcha from './Main/Common/Recaptcha'
 import { SCREENS, wrapAnalytics } from './monitoring/segment'
+import InputBox from './Main/Onboarding/Common/InputBox'
+import { DEFAULT_STYLE, GM_BLUE, BUTTON_STYLE, FONT_FAMILY_3 } from './styles'
+import DelayedButton from './Main/Common/Button/DelayedButton'
 
-const validate = (values) => {
-    const errors = {}
-    if (!values.username) {
-        errors.username = 'Required'
+const FIELD_REQUIREMENT = {
+    username: {
+        required: 'Email is required',
+        invalid: 'Invalid Email',
+    },
+    password: {
+        required: 'Password is required',
+        too_short: 'Password is at least 8 characters',
+    },
+}
+
+const isValidEmail = (email) => {
+    const isValid = (email) => {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        return re.test(String(email).toLowerCase())
     }
-    if (!values.password) {
-        errors.password = 'Required'
-    }
-    return errors
+    return isValid(email)
 }
 
 class LoginPage extends Component {
@@ -50,6 +63,36 @@ class LoginPage extends Component {
             password: undefined,
             errMsg: undefined,
         }
+    }
+
+    validate = (values) => {
+        const { username, password } = values
+        const errors = {}
+        errors.username = this.validateUsername(username)
+        errors.password = this.validatePassword(password)
+        return errors
+    }
+
+    validateUsername = (username) => {
+        let error
+        // Validate email
+        if (!username) {
+            error = FIELD_REQUIREMENT.username.required
+        } else if (!isValidEmail(username)) {
+            error = FIELD_REQUIREMENT.username.invalid
+        }
+        return error
+    }
+
+    validatePassword = (password) => {
+        let error
+        // Validate password
+        if (!password) {
+            error = FIELD_REQUIREMENT.password.required
+        } else if (password.trim().length < 8) {
+            error = FIELD_REQUIREMENT.password.too_short
+        }
+        return error
     }
 
     openRecaptcha = () => {
@@ -107,13 +150,12 @@ class LoginPage extends Component {
         }
     }
 
-    handleSignUp() {
-        console.log('User try to register')
+    handleSignUp = () => {
         this.props.registerUser()
     }
 
     handleLoginPressed = (values) => {
-        const errors = validate(values)
+        const errors = this.validate(values)
         if (
             !(Object.keys(errors).length === 0 && errors.constructor === Object)
         ) {
@@ -171,41 +213,6 @@ class LoginPage extends Component {
         }, 100)
     }
 
-    renderResetPassword() {
-        return (
-            <TouchableWithoutFeedback
-                onPress={this.handleResetPassword.bind(this)}
-            >
-                <View>
-                    <Button text="Reset Password" arrow />
-                </View>
-            </TouchableWithoutFeedback>
-        )
-    }
-
-    renderSplitter() {
-        return (
-            <View style={styles.splitterStyle}>
-                <Divider horizontal width={80} />
-                <Text style={styles.splitterTextStyle}>OR</Text>
-                <Divider horizontal width={80} />
-            </View>
-        )
-    }
-
-    /**
-     * This is no longer used after reset password is added
-     */
-    renderCreateAccount() {
-        return (
-            <TouchableWithoutFeedback onPress={this.handleSignUp.bind(this)}>
-                <View>
-                    <Button text="Create a new account" onlyText />
-                </View>
-            </TouchableWithoutFeedback>
-        )
-    }
-
     renderError(error) {
         return error ? (
             <View style={{ height: 29 }}>
@@ -226,8 +233,50 @@ class LoginPage extends Component {
         )
     }
 
+    renderSignUp = () => {
+        return (
+            <View
+                style={{
+                    flexDirection: 'row',
+                    width: '100%',
+                    marginTop: 15,
+                    marginBottom: 30,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                <Text
+                    style={[
+                        DEFAULT_STYLE.subTitleText_1,
+                        {
+                            fontFamily: FONT_FAMILY_3,
+                            color: '#828282',
+                            fontWeight: '600',
+                        },
+                    ]}
+                >
+                    Don't have an account?
+                </Text>
+                <DelayedButton
+                    style={[{ padding: 10 }]}
+                    onPress={this.handleSignUp}
+                >
+                    <Text
+                        style={[
+                            DEFAULT_STYLE.subTitleText_1,
+                            { fontFamily: FONT_FAMILY_3, color: GM_BLUE },
+                        ]}
+                    >
+                        {' '}
+                        Sign Up
+                    </Text>
+                </DelayedButton>
+            </View>
+        )
+    }
+
     render() {
-        const { handleSubmit } = this.props
+        const { handleSubmit, username, password } = this.props
         return (
             <KeyboardAwareScrollView
                 bounces={false}
@@ -245,108 +294,101 @@ class LoginPage extends Component {
                     onPress={this.handleContainerOnPressed.bind(this)}
                 >
                     <View style={Styles.containerStyle}>
-                        <Header canBack={!this.props.loading} />
-                        <View style={Styles.bodyContainerStyle}>
+                        <Header
+                            canBack={!this.props.loading}
+                            hasBackButton={false}
+                        />
+                        <View style={styles.bodyContainerStyle}>
                             {this.renderError(this.state.errMsg)}
                             {/* <Text style={styles.titleTextStyle}>Get Started!</Text> */}
 
-                            <Field
-                                name="username"
-                                label="Email or Phone number"
-                                keyboardType="email-address"
-                                component={Input}
-                                disabled={this.props.loading}
-                                returnKeyType="next"
-                                onSubmitEditing={() => {
-                                    this.refs['password']
-                                        .getRenderedComponent()
-                                        .focus()
+                            <View
+                                style={{
+                                    flex: 1,
+                                    justifyContent: 'flex-start',
                                 }}
-                                textContentType="username"
-                            />
-                            <Field
-                                ref="password"
-                                name="password"
-                                label="Password"
-                                withRef
-                                component={Input}
-                                secure
-                                disabled={this.props.loading}
-                                onSubmitEditing={handleSubmit(
-                                    this.handleLoginPressed
-                                )}
-                                textContentType="password"
-                            />
+                            >
+                                <Field
+                                    name="username"
+                                    label="Email"
+                                    inputTitle="Email"
+                                    placeholder="Email"
+                                    keyboardType="email-address"
+                                    component={InputBox}
+                                    disabled={this.props.loading}
+                                    returnKeyType="next"
+                                    onSubmitEditing={() => {
+                                        this.refs['password']
+                                            .getRenderedComponent()
+                                            .focus()
+                                    }}
+                                    textContentType="username"
+                                    caption=" "
+                                />
+                                <Field
+                                    ref="password"
+                                    name="password"
+                                    label="Password"
+                                    inputTitle="Password"
+                                    placeholder="Password"
+                                    withRef
+                                    component={InputBox}
+                                    disabled={this.props.loading}
+                                    onSubmitEditing={handleSubmit(
+                                        this.handleLoginPressed
+                                    )}
+                                    textContentType="password"
+                                    secureTextEntry
+                                    caption=" "
+                                />
+                                <Text
+                                    style={[
+                                        DEFAULT_STYLE.smallTitle_1,
+                                        {
+                                            fontSize: 14,
+                                            color: GM_BLUE,
+                                            padding: 8,
+                                            alignSelf: 'flex-end',
+                                        },
+                                    ]}
+                                    onPress={this.handleResetPassword}
+                                >
+                                    Forgot password?
+                                </Text>
+                            </View>
                             <TouchableOpacity
                                 activeOpacity={0.6}
                                 onPress={handleSubmit(this.handleLoginPressed)}
+                                style={[
+                                    BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT
+                                        .containerStyle,
+                                ]}
                             >
-                                <View>
-                                    <Button text="Log In" />
-                                </View>
+                                <Text
+                                    style={[
+                                        BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT
+                                            .textStyle,
+                                    ]}
+                                >
+                                    Log In
+                                </Text>
                             </TouchableOpacity>
-                            {/* {this.renderCreateAccount()} */}
-                            {this.renderSplitter()}
-                            {this.renderResetPassword()}
+                            {this.renderSignUp()}
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
                 {this.renderRecaptcha()}
             </KeyboardAwareScrollView>
         )
-
-        // Original implementation
-        // return (
-        //   <KeyboardAvoidingView
-        //     behavior='padding'
-        //     style={{ flex: 1 }}
-        //   >
-        //     <ScrollView
-        //       contentContainerStyle={{ flexGrow: 1 }}
-        //       keyboardDismissMode='interactive'
-        //       keyboardShouldPersistTaps='never'
-        //       overScrollMode='never'
-        //       bounces={false}
-        //     >
-        //       <TouchableWithoutFeedback onPress={this.handleContainerOnPressed.bind(this)}>
-        //         <View style={Styles.containerStyle}>
-        //           <Header />
-        //           <View style={Styles.bodyContainerStyle}>
-        //             {this.renderError(error)}
-        //             {/* <Text style={styles.titleTextStyle}>Get Started!</Text> */}
-        //
-        //             <Field
-        //               name='username'
-        //               label='Email or Phone number'
-        //               keyboardType='email-address'
-        //               component={Input}
-        //               disabled={this.props.loading}
-        //             />
-        //             <Field
-        //               name='password'
-        //               label='Password'
-        //               component={Input}
-        //               secure
-        //               disabled={this.props.loading}
-        //               onSubmitEditing={handleSubmit(this.handleLoginPressed)}
-        //             />
-        //             <TouchableOpacity activeOpacity={0.6} onPress={handleSubmit(this.handleLoginPressed)}>
-        //               <View>
-        //                 <Button text='Log In' />
-        //               </View>
-        //             </TouchableOpacity>
-        //             {this.renderSplitter()}
-        //             {this.renderCreateAccount()}
-        //           </View>
-        //         </View>
-        //       </TouchableWithoutFeedback>
-        //     </ScrollView>
-        //   </KeyboardAvoidingView>
-        // );
     }
 }
 
 const styles = {
+    bodyContainerStyle: {
+        flex: 1,
+        backgroundColor: 'white',
+        padding: 16,
+    },
     titleTextStyle: {
         fontSize: 25,
         fontWeight: '700',
@@ -377,10 +419,13 @@ const styles = {
 }
 
 const mapStateToProps = (state) => {
+    const selector = formValueSelector('createChatRoomModal')
     const { loading } = state.auth
 
     return {
         loading,
+        username: selector(state, 'username'),
+        password: selector(state, 'password'),
     }
 }
 

@@ -14,6 +14,7 @@ import { BackIcon } from '../../Utils/Icons'
 import { registrationBack, registrationLogin } from '../../actions'
 import DelayedButton from '../../Main/Common/Button/DelayedButton'
 import { IPHONE_MODELS, DEVICE_MODEL } from '../../Utils/Constants'
+import { GM_BLUE } from '../../styles'
 
 // const IMAGE_HEIGHT_SMALL = 60;
 // const IMAGE_HEIGHT = 80;
@@ -181,7 +182,7 @@ class Header extends Component {
 const styles = {
     containerStyle: {
         display: 'flex',
-        backgroundColor: '#17B3EC',
+        backgroundColor: GM_BLUE,
         height: 207,
         paddingTop: 14,
         justifyContent: 'center',
