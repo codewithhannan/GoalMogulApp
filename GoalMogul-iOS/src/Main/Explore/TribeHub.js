@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, FlatList } from 'react-native'
 import { connect } from 'react-redux'
 
 /* Components */
@@ -20,7 +20,6 @@ import { makeTribeFeedSelector } from '../../redux/modules/tribe/TribeSelector'
 // Styles
 import { DEFAULT_STYLE } from '../../styles'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
-import { FlatList } from 'react-native-gesture-handler'
 
 import { Actions } from 'react-native-router-flux'
 import { componentKeyByTab } from '../../redux/middleware/utils'
@@ -35,25 +34,17 @@ class TribeHub extends Component {
         this.props.refreshTribeHubFeed()
     }
 
-    renderItem = (props) => {
+    renderItem = ({ item }) => {
         return (
             <ProfilePostCard
-                item={props.item}
-                key={props.index}
-                hasActionButton
-                onPress={(item) => {
-                    // onPress is called by CommentIcon
-                    this.props.openPostDetail(item, {
-                        initialFocusCommentBox: true,
-                    })
-                }}
+                item={item}
+                hasActionButton={item.postType !== 'ShareGoal'}
             />
         )
     }
 
     render() {
         const { data, loading, refreshing } = this.props
-        // console.log(data)
         return (
             <MenuProvider>
                 <View style={{ backgroundColor: '#FAFAFA', flex: 1 }}>

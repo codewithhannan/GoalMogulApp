@@ -43,6 +43,7 @@ class ActionButton extends React.PureComponent {
             textContainerStyle,
             unitText,
         } = this.props
+        if (disabled) return null
         const buttonDisabled = disabled === true || this.state.buttonDisabled
 
         const countText = (
@@ -98,7 +99,6 @@ const styles = {
     containerStyle: {
         alignItems: 'center',
         justifyContent: 'center',
-        flex: 1,
         flexDirection: 'row',
     },
     iconContainerStyle: {

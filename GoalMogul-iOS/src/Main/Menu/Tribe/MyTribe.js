@@ -1,6 +1,5 @@
 /** @format */
 
-import Fuse from 'fuse.js'
 import R from 'ramda'
 import React from 'react'
 import {
@@ -475,6 +474,7 @@ class MyTribe extends React.PureComponent {
         return (
             <ProfilePostCard
                 item={props.item}
+                isTribeDetailPost={true}
                 key={props.index}
                 hasActionButton
                 onPress={(item) => {
@@ -563,7 +563,7 @@ class MyTribe extends React.PureComponent {
                             this.setState({ showNameInTitle: true })
                         else this.setState({ showNameInTitle: false })
                     }}
-                    scrollEventThrottle={2}
+                    scrollEventThrottle={16}
                 />
                 {this.renderAddPostButton(item)}
                 <MyTribeDescription

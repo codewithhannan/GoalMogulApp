@@ -8,13 +8,10 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native'
 import _ from 'lodash'
-import Modal from 'react-native-modal'
 
 // Components
 import ProgressBar from '../Goal/Common/ProgressBar'
 import ImageModal from '../Common/ImageModal'
-
-// Assets
 import RefPreview from '../Common/RefPreview'
 
 // Styles
@@ -23,6 +20,8 @@ import { imagePreviewContainerStyle } from '../../styles'
 // Constants
 import { IMAGE_BASE_URL, IS_ZOOMED } from '../../Utils/Constants'
 import SparkleBadgeView from '../Gamification/Badge/SparkleBadgeView'
+import GoalCard from '../Goal/GoalCard/GoalCard'
+import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard'
 
 const DEBUG_KEY = '[ UI ActivityCard.ActivityBody ]'
 const { width } = Dimensions.get('window')
@@ -129,13 +128,37 @@ class ActivityBody extends React.Component {
 
         if (postType === 'SharePost') {
             item = postRef.postRef
+            return (
+                <View
+                    style={{
+                        borderWidth: 1,
+                        borderColor: '#F2F2F2',
+                    }}
+                >
+                    <ProfilePostCard
+                        item={item}
+                        hasCaret={false}
+                        isSharedItem={true}
+                    />
+                </View>
+            )
         }
 
-        return (
-            <View>
-                <RefPreview item={item} postType={postType} goalRef={goalRef} />
-            </View>
-        )
+        if (postType === 'ShareGoal') {
+            return (
+                <View
+                    style={{
+                        borderWidth: 1,
+                        borderColor: '#F2F2F2',
+                        borderRadius: 5,
+                    }}
+                >
+                    <GoalCard item={item} isSharedItem={true} />
+                </View>
+            )
+        }
+
+        return <RefPreview item={item} postType={postType} goalRef={goalRef} />
     }
 
     // Render Activity Card body

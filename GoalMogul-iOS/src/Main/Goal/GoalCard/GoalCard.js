@@ -129,6 +129,12 @@ class GoalCard extends React.PureComponent {
         }
     }
 
+    handleOnPress() {
+        this.props.onPress
+            ? this.props.onPress(this.props.item)
+            : this.props.openGoalDetail(this.props.item)
+    }
+
     handleShareOnClick = () => {
         const { item } = this.props
         const { _id } = item
@@ -293,6 +299,7 @@ class GoalCard extends React.PureComponent {
                             category={category}
                             user={owner}
                             isSelf={owner._id === this.props.userId}
+                            hasCaret={!this.props.isSharedItem}
                             caret={caret}
                             textStyle={DEFAULT_STYLE.titleText_2}
                         />
@@ -333,59 +340,57 @@ class GoalCard extends React.PureComponent {
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
 
         return (
-            <View style={{ marginTop: 1 }}>
-                <ActionButtonGroup>
-                    <ActionButton
-                        iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
-                        count={likeCount}
-                        unitText="Like"
-                        textStyle={{ color: selfLiked ? '#000' : '#828282' }}
-                        iconStyle={{
-                            tintColor: selfLiked ? '#EB5757' : '#828282',
-                        }}
-                        onPress={() => {
-                            if (selfLiked) {
-                                return this.props.unLikeGoal(
-                                    'goal',
-                                    _id,
-                                    maybeLikeRef
-                                )
-                            }
-                            this.props.likeGoal('goal', _id)
-                        }}
-                    />
-                    <ActionButton
-                        iconSource={ShareIcon}
-                        count={shareCount}
-                        unitText="Share"
-                        textStyle={{ color: '#828282' }}
-                        iconStyle={{ tintColor: '#828282' }}
-                        onPress={() => this.handleShareOnClick(item)}
-                    />
-                    <ActionButton
-                        iconSource={CommentIcon}
-                        count={commentCount}
-                        unitText="Comment"
-                        textStyle={{ color: '#828282' }}
-                        iconStyle={{ tintColor: '#828282' }}
-                        onPress={() => {
-                            this.props.onPress(this.props.item, {
-                                type: 'comment',
-                                _id: undefined,
-                                initialShowSuggestionModal: false,
-                                initialFocusCommentBox: true,
-                            })
-                        }}
-                    />
-                </ActionButtonGroup>
-            </View>
+            <ActionButtonGroup>
+                <ActionButton
+                    iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
+                    count={likeCount}
+                    unitText="Like"
+                    textStyle={{ color: selfLiked ? '#000' : '#828282' }}
+                    iconStyle={{
+                        tintColor: selfLiked ? '#EB5757' : '#828282',
+                    }}
+                    onPress={() => {
+                        if (selfLiked) {
+                            return this.props.unLikeGoal(
+                                'goal',
+                                _id,
+                                maybeLikeRef
+                            )
+                        }
+                        this.props.likeGoal('goal', _id)
+                    }}
+                />
+                <ActionButton
+                    iconSource={ShareIcon}
+                    count={shareCount}
+                    unitText="Share"
+                    textStyle={{ color: '#828282' }}
+                    iconStyle={{ tintColor: '#828282' }}
+                    onPress={() => this.handleShareOnClick(item)}
+                />
+                <ActionButton
+                    iconSource={CommentIcon}
+                    count={commentCount}
+                    unitText="Comment"
+                    textStyle={{ color: '#828282' }}
+                    iconStyle={{ tintColor: '#828282' }}
+                    onPress={() => {
+                        this.props.onPress(this.props.item, {
+                            type: 'comment',
+                            _id: undefined,
+                            initialShowSuggestionModal: false,
+                            initialFocusCommentBox: true,
+                        })
+                    }}
+                />
+            </ActionButtonGroup>
         )
     }
     // Original color picked for comment icon
     // #FCB110
 
     render() {
-        const { item } = this.props
+        const { item, isSharedItem } = this.props
         if (!item) return
 
         return (
@@ -403,11 +408,11 @@ class GoalCard extends React.PureComponent {
                             }}
                         />
                     ) : null}
-                    <GoalCardHeader item={item} />
+                    {!isSharedItem && <GoalCardHeader item={item} />}
                     <View>
                         <DelayedButton
                             activeOpacity={0.6}
-                            onPress={() => this.props.onPress(this.props.item)}
+                            onPress={this.handleOnPress.bind(this)}
                         >
                             <View
                                 style={{
@@ -421,7 +426,7 @@ class GoalCard extends React.PureComponent {
                                 {this.renderCardContent(item)}
                             </View>
                         </DelayedButton>
-                        <View>{this.renderActionButtons(item)}</View>
+                        {!isSharedItem && this.renderActionButtons(item)}
                     </View>
                 </View>
             </View>

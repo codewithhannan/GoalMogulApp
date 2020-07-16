@@ -16,12 +16,13 @@ import ImageModal from '../../Common/ImageModal'
 
 // Assets
 import RefPreview from '../../Common/RefPreview'
-// import TestImage from '../../../asset/TestEventImage.png';
 
 // Styles
 import { imagePreviewContainerStyle } from '../../../styles'
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import SparkleBadgeView from '../../Gamification/Badge/SparkleBadgeView'
+import GoalCard from '../../Goal/GoalCard/GoalCard'
+import ProfilePostCard from './ProfilePostCard'
 
 // Constants
 const DEBUG_KEY = '[ UI ProfilePostCard.ProfilePostBody ]'
@@ -57,32 +58,7 @@ class ProfilePostBody extends React.Component {
                             opacity: 0.8,
                             resizeMode: 'cover',
                         }}
-                    >
-                        {/*
-              <View style={{ alignSelf: 'center', justifyContent: 'center' }}>
-                <Image
-                  source={photoIcon}
-                  style={{
-                    alignSelf: 'center',
-                    justifyContent: 'center',
-                    height: 40,
-                    width: 50,
-                    tintColor: '#fafafa'
-                  }}
-                />
-              </View>
-
-              <TouchableOpacity activeOpacity={0.6}
-                onPress={() => this.setState({ mediaModal: true })}
-                style={{ position: 'absolute', top: 10, right: 15 }}
-              >
-                <Image
-                  source={expand}
-                  style={{ width: 15, height: 15, tintColor: '#fafafa' }}
-                />
-              </TouchableOpacity>
-            */}
-                    </ImageBackground>
+                    ></ImageBackground>
                     {this.renderPostImageModal(imageUrl)}
                 </View>
             </TouchableWithoutFeedback>
@@ -123,6 +99,38 @@ class ProfilePostBody extends React.Component {
 
         if (this.props.showRefPreview === false) return null
         const previewItem = switchItem(item, postType)
+
+        if (postType === 'ShareGoal') {
+            return (
+                <View
+                    style={{
+                        borderWidth: 1,
+                        borderColor: '#F2F2F2',
+                        borderRadius: 5,
+                    }}
+                >
+                    <GoalCard item={previewItem} isSharedItem={true} />
+                </View>
+            )
+        }
+
+        if (postType === 'SharePost') {
+            return (
+                <View
+                    style={{
+                        borderWidth: 1,
+                        borderColor: '#F2F2F2',
+                    }}
+                >
+                    <ProfilePostCard
+                        item={previewItem}
+                        hasCaret={false}
+                        isSharedItem={true}
+                    />
+                </View>
+            )
+        }
+
         return (
             <View>
                 <RefPreview

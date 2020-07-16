@@ -296,13 +296,11 @@ class ShareDetailCard extends Component {
 
     renderShareDetailSection(shareDetail) {
         return (
-            <View style={{ marginBottom: 1 }}>
-                <ShareDetailSection
-                    item={shareDetail}
-                    onSuggestion={() => this.dialogOnFocus()}
-                    pageId={this.props.pageId}
-                />
-            </View>
+            <ShareDetailSection
+                item={shareDetail}
+                onSuggestion={() => this.dialogOnFocus()}
+                pageId={this.props.pageId}
+            />
         )
     }
 
@@ -352,7 +350,6 @@ class ShareDetailCard extends Component {
                                 />
                             }
                         />
-
                         <Animated.View
                             style={[
                                 styles.composerContainer,

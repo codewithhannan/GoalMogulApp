@@ -75,9 +75,8 @@ class ActivityFeed extends Component {
     /**
      * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
      */
-    handleOnMenuChange = (type, value) => {
+    handleOnMenuChange = (type, value) =>
         this.props.changeFilter(TAB_KEY, type, value)
-    }
 
     _keyExtractor = (item) => item._id
 
@@ -97,7 +96,6 @@ class ActivityFeed extends Component {
                         }
                         return this.props.openGoalDetail(curItem, initialProps)
                     }
-
                     const initialProps = {
                         initialFocusCommentBox: true,
                     }
@@ -160,7 +158,7 @@ class ActivityFeed extends Component {
                         )
                     }
                     ListFooterComponent={this.renderListFooter()}
-                    onEndThreshold={0}
+                    onEndThreshold={2}
                 />
                 {this.renderPlus()}
             </View>
@@ -170,7 +168,6 @@ class ActivityFeed extends Component {
 
 const mapStateToProps = (state) => {
     const { loading, loadingMore, filter, data } = state.home.activityfeed
-
     return {
         data,
         loading,

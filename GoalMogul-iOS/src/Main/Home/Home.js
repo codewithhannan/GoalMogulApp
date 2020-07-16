@@ -421,7 +421,7 @@ class Home extends Component {
 const mapStateToProps = (state) => {
     const { userId } = state.user
     const { showingModal } = state.report
-    const { showPlus, data } = state.home.mastermind
+    const { showPlus } = state.home.mastermind
     const needRefreshMastermind = _.isEmpty(state.home.mastermind.data)
     const needRefreshActivity = _.isEmpty(state.home.activityfeed.data)
     const { user } = state.user
