@@ -224,7 +224,7 @@ class ProfileDetailEditForm extends Component {
             uploading,
         } = this.props
         const isValidValues = validValues({ headline, about, elevatorPitch })
-        console.log(this.props.initialValues)
+
         return (
             <SafeAreaView
                 forceInset={{ bottom: 'always' }}

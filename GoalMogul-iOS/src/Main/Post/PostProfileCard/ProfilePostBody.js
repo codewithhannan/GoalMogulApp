@@ -120,7 +120,6 @@ class ProfilePostBody extends React.Component {
                     style={{
                         borderWidth: 1,
                         borderColor: '#F2F2F2',
-                        borderRadius: 5,
                     }}
                 >
                     <ProfilePostCard
