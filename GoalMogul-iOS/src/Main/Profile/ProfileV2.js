@@ -389,7 +389,7 @@ class ProfileV2 extends Component {
                     renderFilter,
                 })}
                 {renderFilter ? this.renderFilterBar(props) : null}
-                <View style={DEFAULT_STYLE.shadow} />
+                <View style={DEFAULT_STYLE.cardSeparator} />
             </View>
         )
     }

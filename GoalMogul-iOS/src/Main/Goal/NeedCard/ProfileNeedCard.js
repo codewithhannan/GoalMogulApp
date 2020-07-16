@@ -140,7 +140,7 @@ class ProfileNeedCard extends React.Component {
                     </View>
                     {this.renderCardContent(item)}
                 </View>
-                <View style={DEFAULT_STYLE.shadow} />
+                <View style={DEFAULT_STYLE.cardSeparator} />
             </View>
         )
     }

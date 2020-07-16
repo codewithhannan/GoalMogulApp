@@ -125,7 +125,10 @@ class DraftsView extends Component {
                         }}
                         ItemSeparatorComponent={() => (
                             <View
-                                style={{ ...DEFAULT_STYLE.shadow, height: 1.5 }}
+                                style={{
+                                    ...DEFAULT_STYLE.cardSeparator,
+                                    height: 1.5,
+                                }}
                             />
                         )}
                         style={{

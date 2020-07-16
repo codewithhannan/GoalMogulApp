@@ -191,7 +191,7 @@ class ProfileGoalCard2 extends React.Component {
                     </View>
                     {this.renderStats(item)}
                 </DelayedButton>
-                <View style={DEFAULT_STYLE.shadow} />
+                <View style={DEFAULT_STYLE.cardSeparator} />
             </View>
         )
     }

@@ -341,7 +341,7 @@ class ProfilePostCard extends React.PureComponent {
                     </View>
                 </View>
                 {this.renderActionButtons(item, hasActionButton)}
-                {!isSharedItem && <View style={DEFAULT_STYLE.shadow} />}
+                {!isSharedItem && <View style={DEFAULT_STYLE.cardSeparator} />}
             </View>
         )
     }

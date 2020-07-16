@@ -148,7 +148,7 @@ export const DEFAULT_STYLE = {
         width: 20 * UI_SCALE,
         margin: 10 * UI_SCALE,
     },
-    shadow: {
+    cardSeparator: {
         width: '100%',
         height: 5 * UI_SCALE,
         backgroundColor: '#F2F2F2',

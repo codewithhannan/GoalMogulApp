@@ -267,7 +267,7 @@ class ProfileInfoCard extends Component {
                     {this.renderElevatorPitch(elevatorPitch)}
                     {this.renderAbout(about, elevatorPitch)}
                 </View>
-                <View style={DEFAULT_STYLE.shadow} />
+                <View style={DEFAULT_STYLE.cardSeparator} />
                 <View style={styles.containerStyle}>
                     {this.renderFriendInfo()}
                     {this.renderOccupation(occupation)}
@@ -281,7 +281,7 @@ class ProfileInfoCard extends Component {
                         }}
                     />
                 </View>
-                <View style={DEFAULT_STYLE.shadow} />
+                <View style={DEFAULT_STYLE.cardSeparator} />
             </View>
         )
     }
