@@ -108,6 +108,7 @@ import {
     SyncContactInvite,
     OnboardingAddPhotos,
     OnboardingFbPlugin,
+    UserAgreement,
 } from './Main/Onboarding'
 // import CardStackStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
 /* Auth */
@@ -332,6 +333,10 @@ class RouterComponent extends Component {
                                 <Scene
                                     key="registrationAccount"
                                     component={RegistrationAccount}
+                                />
+                                <Scene
+                                    key="user_agreement"
+                                    component={UserAgreement}
                                 />
                             </Stack>
 

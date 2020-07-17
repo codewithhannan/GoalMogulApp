@@ -84,6 +84,8 @@ const SENTRY_CONTEXT = {
     },
     REGISTRATION: {
         USER_ID: 'user id',
+        EMAIL: 'email',
+        PHONE_NUMBER: 'phone number',
     },
 }
 

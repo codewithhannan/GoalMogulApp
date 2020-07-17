@@ -39,6 +39,7 @@ import {
     GM_FONT_LINE_HEIGHT,
     BUTTON_STYLE,
     TEXT_STYLE,
+    DEFAULT_STYLE,
 } from '../../styles'
 import { registrationLogin, onVerifyPhoneNumber } from '../../actions'
 import {
@@ -48,6 +49,8 @@ import {
     cancelRegistration,
 } from '../../redux/modules/registration/RegistrationActions'
 import PhoneVerificationMoal from './PhoneVerificationModal'
+import { Button, CheckBox } from '@ui-kitten/components'
+import UserAgreementCheckBox from './UserAgreementCheckBox'
 
 const NEXT_STEP = 'registration_add_photo'
 const FIELD_REQUIREMENTS = {
@@ -75,6 +78,7 @@ class RegistrationAccount extends React.Component {
             nameStatus: undefined,
             phoneStatus: undefined,
             passwordStatus: undefined,
+            userAgreementChecked: false,
         }
     }
 
@@ -296,7 +300,7 @@ class RegistrationAccount extends React.Component {
                         style={{
                             flex: 1,
                             justifyContent: 'center',
-                            paddingBottom: 50,
+                            paddingBottom: 10,
                         }}
                     >
                         <View
@@ -486,6 +490,15 @@ class RegistrationAccount extends React.Component {
                             }
                             disabled={this.props.loading}
                         />
+                        <UserAgreementCheckBox
+                            onPress={(val) =>
+                                this.setState({
+                                    ...this.state,
+                                    userAgreementChecked: val,
+                                })
+                            }
+                            checked={this.state.userAgreementChecked}
+                        />
                         {this.renderLogin()}
                     </View>
                 </TouchableWithoutFeedback>
@@ -512,7 +525,8 @@ class RegistrationAccount extends React.Component {
                             this.state.emailStatus !==
                                 FIELD_REQUIREMENTS.done ||
                             this.state.passwordStatus !==
-                                FIELD_REQUIREMENTS.done
+                                FIELD_REQUIREMENTS.done ||
+                            !this.state.userAgreementChecked
                         }
                     />
                     <DelayedButton
