@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     Linking,
 } from 'react-native'
+import _ from 'lodash'
 import { connect } from 'react-redux'
 import {
     Field,
@@ -156,9 +157,14 @@ class LoginPage extends Component {
 
     handleLoginPressed = (values) => {
         const errors = this.validate(values)
-        if (
-            !(Object.keys(errors).length === 0 && errors.constructor === Object)
-        ) {
+
+        const hasErrors =
+            Object.keys(errors).length &&
+            _.filter(
+                _.map(Object.keys(errors), (key) => _.get(errors, key)),
+                (error) => error !== undefined
+            ).length > 0
+        if (hasErrors) {
             throw new SubmissionError(errors)
         }
         const { username, password } = values
