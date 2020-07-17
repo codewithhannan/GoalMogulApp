@@ -40,6 +40,7 @@ import {
     GM_BLUE_LIGHT,
 } from './styles'
 import DelayedButton from './Main/Common/Button/DelayedButton'
+import UserAgreementCheckBox from './Main/Onboarding/UserAgreementCheckBox'
 
 const FIELD_REQUIREMENT = {
     username: {
@@ -69,6 +70,7 @@ class LoginPage extends Component {
             username: undefined,
             password: undefined,
             errMsg: undefined,
+            userAgreementChecked: false,
         }
     }
 
@@ -367,6 +369,15 @@ class LoginPage extends Component {
                                 >
                                     Forgot password?
                                 </Text>
+                                <UserAgreementCheckBox
+                                    onPress={(val) =>
+                                        this.setState({
+                                            ...this.state,
+                                            userAgreementChecked: val,
+                                        })
+                                    }
+                                    checked={this.state.userAgreementChecked}
+                                />
                             </View>
                             <TouchableOpacity
                                 activeOpacity={0.6}
@@ -375,12 +386,17 @@ class LoginPage extends Component {
                                     BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT
                                         .containerStyle,
                                     {
-                                        backgroundColor: this.props.loading
-                                            ? GM_BLUE_LIGHT
-                                            : GM_BLUE,
+                                        backgroundColor:
+                                            this.props.loading ||
+                                            !this.state.userAgreementChecked
+                                                ? GM_BLUE_LIGHT
+                                                : GM_BLUE,
                                     },
                                 ]}
-                                disabled={this.props.loading}
+                                disabled={
+                                    this.props.loading ||
+                                    !this.state.userAgreementChecked
+                                }
                             >
                                 <Text
                                     style={[
