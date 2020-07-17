@@ -32,7 +32,13 @@ import { RESET_PASSWORD_URL } from './Utils/Constants'
 import Recaptcha from './Main/Common/Recaptcha'
 import { SCREENS, wrapAnalytics } from './monitoring/segment'
 import InputBox from './Main/Onboarding/Common/InputBox'
-import { DEFAULT_STYLE, GM_BLUE, BUTTON_STYLE, FONT_FAMILY_3 } from './styles'
+import {
+    DEFAULT_STYLE,
+    GM_BLUE,
+    BUTTON_STYLE,
+    FONT_FAMILY_3,
+    GM_BLUE_LIGHT,
+} from './styles'
 import DelayedButton from './Main/Common/Button/DelayedButton'
 
 const FIELD_REQUIREMENT = {
@@ -368,7 +374,13 @@ class LoginPage extends Component {
                                 style={[
                                     BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT
                                         .containerStyle,
+                                    {
+                                        backgroundColor: this.props.loading
+                                            ? GM_BLUE_LIGHT
+                                            : GM_BLUE,
+                                    },
                                 ]}
+                                disabled={this.props.loading}
                             >
                                 <Text
                                     style={[
