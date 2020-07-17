@@ -127,20 +127,19 @@ class RegistrationAccount extends React.Component {
 
     onNext = () => {
         // User attempts to click next when no fields have been set
-        // TODO: registration uncomment
-        // if (
-        //     this.state.nameStatus == undefined &&
-        //     this.state.emailStatus == undefined &&
-        //     this.state.passwordStatus == undefined
-        // ) {
-        //     this.setState({
-        //         ...this.state,
-        //         nameStatus: FIELD_REQUIREMENTS.name.require_name,
-        //         emailStatus: FIELD_REQUIREMENTS.email.require_email,
-        //         passwordStatus: FIELD_REQUIREMENTS.password.missing_password,
-        //     })
-        //     return
-        // }
+        if (
+            this.state.nameStatus == undefined &&
+            this.state.emailStatus == undefined &&
+            this.state.passwordStatus == undefined
+        ) {
+            this.setState({
+                ...this.state,
+                nameStatus: FIELD_REQUIREMENTS.name.require_name,
+                emailStatus: FIELD_REQUIREMENTS.email.require_email,
+                passwordStatus: FIELD_REQUIREMENTS.password.missing_password,
+            })
+            return
+        }
         const { phone } = this.props
         const onSuccess = () => {
             // If phone number is input, go through phone verification
@@ -156,9 +155,7 @@ class RegistrationAccount extends React.Component {
             // Right now we only register the phone number
             this.nextStep()
         }
-        // TODO: registration
-        // return this.props.registerAccount(onSuccess);
-        onSuccess()
+        return this.props.registerAccount(onSuccess)
     }
 
     /**
@@ -492,16 +489,14 @@ class RegistrationAccount extends React.Component {
                     <OnboardingFooter
                         buttonText="Continue"
                         onButtonPress={this.onNext}
-                        // TODO: registration uncomment
-                        // disabled={
-                        //     this.props.loading ||
-                        //     (this.state.nameStatus !==
-                        //         FIELD_REQUIREMENTS.done &&
-                        //         this.state.emailStatus !==
-                        //             FIELD_REQUIREMENTS.done &&
-                        //         this.state.passwordStatus !==
-                        //             FIELD_REQUIREMENTS.done)
-                        // }
+                        disabled={
+                            this.props.loading ||
+                            this.state.nameStatus !== FIELD_REQUIREMENTS.done ||
+                            this.state.emailStatus !==
+                                FIELD_REQUIREMENTS.done ||
+                            this.state.passwordStatus !==
+                                FIELD_REQUIREMENTS.done
+                        }
                     />
                     <DelayedButton
                         style={[

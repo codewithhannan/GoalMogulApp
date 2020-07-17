@@ -26,6 +26,7 @@ import {
     REGISTRATION_CONTACT_SYNC_UPLOAD_DONE,
     REGISTRATION_CONTACT_SYNC_FETCH,
     REGISTRATION_CONTACT_SYNC_FETCH_DONE,
+    REGISTRATION_ERROR,
 } from '../../../actions/types'
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal'
 import { api as API } from '../../middleware/api'
@@ -150,11 +151,7 @@ export const registrationFetchTribes = () => async (dispatch, getState) => {
         payload: { loading: true },
     })
 
-    // TODO: registration
-    // const { token, userId } = getState().user
-    const userId = 'test'
-    const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjgyZjQxYjE1ZjdkZjAwMWFhMDM2MzMiLCJpYXQiOjE1OTQ2Njg4OTksImV4cCI6MTU5NDkyODA5OX0.08_X_GKpvyJ_JCfgWMf_qOuTxqBKxaEfvJ1LDo-wOFE'
+    const { token, userId } = getState().user
 
     let tribesFetched = []
     const res = await API.get('secure/tribe/goalmogul-tribes', token)
@@ -178,11 +175,7 @@ export const registrationFetchTribes = () => async (dispatch, getState) => {
  * Upload selected tribes during onboarding
  */
 export const uploadSelectedTribes = () => async (dispatch, getState) => {
-    // TODO: registration
-    // const { token, userId } = getState().user
-    const userId = 'test'
-    const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjgyZjQxYjE1ZjdkZjAwMWFhMDM2MzMiLCJpYXQiOjE1OTQ2Njg4OTksImV4cCI6MTU5NDkyODA5OX0.08_X_GKpvyJ_JCfgWMf_qOuTxqBKxaEfvJ1LDo-wOFE'
+    const { token, userId } = getState().user
 
     const tribes = getState().registration.tribes
 
@@ -217,7 +210,7 @@ export const constructPhoneNumber = (countryCode, phone) => {
     }
 
     const callingCodeArr = _.get(countryCode, 'country.callingCode')
-    if (!callingCodeArr || callingCodeArr.length() == 0) {
+    if (!callingCodeArr || callingCodeArr.length == 0) {
         // TODO: add sentry log warning
         return phone
     }
@@ -448,10 +441,9 @@ export const uploadContacts = ({
         // Permission was denied and dispatch an action
         return
     }
-    // TODO: registration
-    // const { token } = getState().user
-    const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjgyZjQxYjE1ZjdkZjAwMWFhMDM2MzMiLCJpYXQiOjE1OTQ0NDk5MzEsImV4cCI6MTU5NDcwOTEzMX0._oR3Gwlf5VO67RIfA_rbREXKtMIIkTQZM0LqJp3QTcI'
+
+    const { token, userId } = getState().user
+
     // Skip and limit for fetching matched contacts
     const { matchedContacts } = getState().registration
 
@@ -496,7 +488,11 @@ export const uploadContacts = ({
         if (onError) {
             return onError('upload')
         }
-        // TODO: registration: SentryRequestBuilder
+        new SentryRequestBuilder(error, SENTRY_MESSAGE_TYPE.ERROR)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.REGISTRATION.ACTION, 'uploadContacts.upload')
+            .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
+            .send()
     }
 
     try {
@@ -550,7 +546,14 @@ export const uploadContacts = ({
         if (onMatchNotFound) {
             onMatchNotFound()
         }
-        // TODO: registration: SentryRequestBuilder
+        new SentryRequestBuilder(error, SENTRY_MESSAGE_TYPE.ERROR)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(
+                SENTRY_TAGS.REGISTRATION.ACTION,
+                'uploadContacts.fetchMatchedContacts'
+            )
+            .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
+            .send()
     }
 }
 

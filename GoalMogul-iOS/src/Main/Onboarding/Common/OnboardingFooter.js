@@ -25,6 +25,7 @@ import {
     GM_FONT_LINE_HEIGHT,
     GM_FONT_FAMILY,
     BUTTON_STYLE,
+    GM_BLUE_LIGHT,
 } from '../../../styles'
 import { Icon } from '@ui-kitten/components'
 import DelayedButton from '../../Common/Button/DelayedButton'
@@ -63,12 +64,15 @@ class OnboardingFooter extends React.Component {
     }
 
     renderButton(props) {
-        const { buttonText, ...otherProps } = props
+        const { disabled, buttonText, ...otherProps } = props
+        let disabledStyle = disabled ? { backgroundColor: GM_BLUE_LIGHT } : {}
         return (
             <DelayedButton
                 {...otherProps}
+                disabled={disabled}
                 style={[
                     BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle,
+                    disabledStyle,
                     { marginBottom: 20 },
                 ]}
                 onPress={this.props.onButtonPress}

@@ -41,11 +41,11 @@ class OnboardingAddPhotos extends Component {
     }
 
     onContinue = () => {
-        // TODO process uploaded image
-        const onSuccess = () => Actions.push('registration_contact_sync')
-        onSuccess()
-        // TODO: registration
-        // this.props.registrationAddProfilePhoto(onSuccess)
+        // Screen transition first
+        Actions.push('registration_contact_sync')
+
+        // Upload image
+        this.props.registrationAddProfilePhoto()
     }
 
     render() {

@@ -8,6 +8,7 @@
  */
 
 import React from 'react'
+import _ from 'lodash'
 import { View, Text, FlatList, Animated, Image, Dimensions } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
@@ -35,20 +36,37 @@ import { Icon, CheckBox } from '@ui-kitten/components'
 import { getImageOrDefault } from '../../redux/middleware/utils'
 
 const { width } = Dimensions.get('window')
+
+// TODO: when categories are cleaned, this mapping needs to be updated
+// https://app.asana.com/0/1179217829906631/1184987107432454
 const CATEGORY = {
-    all: 'All',
-    relationship: 'Relationship',
-    finance: 'Finance',
-    family: 'Family',
-    arts: 'Arts',
-    realEstate: 'Real Estate',
+    all: {
+        title: 'All',
+        category: 'General',
+    },
+    relationship: {
+        title: 'Relationship',
+        category: 'Family/Personal',
+    },
+    finance: {
+        title: 'Finance',
+        category: 'Financial',
+    },
+    arts: {
+        title: 'Arts',
+        category: 'Things',
+    },
+    realEstate: {
+        title: 'Real Estate',
+        category: 'Career/Business',
+    },
 }
 class OnboardingTribeSelection extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             scroll: new Animated.Value(1),
-            category: CATEGORY.all,
+            category: CATEGORY.all.title,
         }
     }
 
@@ -291,6 +309,7 @@ class OnboardingTribeSelection extends React.Component {
 
     render() {
         const { tribes } = this.props
+        console.log('tribe are: ', tribes)
         const tribesToRender = filterTribesByCategory({
             tribes,
             category: this.state.category,
@@ -356,41 +375,39 @@ class OnboardingTribeSelection extends React.Component {
 }
 
 const filterTribesByCategory = ({ tribes, category }) => {
-    if (category == CATEGORY.all) return tribes
+    if (category === CATEGORY.all.title) return tribes
 
-    // TODO: registration filter out the tribes
+    // Get the category by title from CATEGORY
+    const categoryToFilter = _.filter(CATEGORY, (c) => c.title === category)[0]
+        .category
+    return tribes.filter((tribeDoc) => tribeDoc.category === categoryToFilter)
 }
 
 const BUTTON_LIST = [
     {
         name: 'apps',
         pack: 'material',
-        title: CATEGORY.all,
+        title: CATEGORY.all.title,
     },
     {
         name: 'heart-outline',
         pack: 'material-community',
-        title: CATEGORY.relationship,
+        title: CATEGORY.relationship.title,
     },
     {
         name: 'cash-usd',
         pack: 'material-community',
-        title: CATEGORY.finance,
+        title: CATEGORY.finance.title,
     },
-    // {
-    //     name: 'account-multiple-outline',
-    //     pack: 'material-community',
-    //     title: CATEGORY.family,
-    // },
     {
         name: 'brush',
         pack: 'material-community',
-        title: CATEGORY.arts,
+        title: CATEGORY.arts.title,
     },
     {
         name: 'home-outline',
         pack: 'material-community',
-        title: CATEGORY.realEstate,
+        title: CATEGORY.realEstate.title,
     },
 ]
 
