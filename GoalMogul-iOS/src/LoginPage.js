@@ -164,6 +164,7 @@ class LoginPage extends Component {
     }
 
     handleLoginPressed = (values) => {
+        if (!this.state.userAgreementChecked) return
         const errors = this.validate(values)
 
         const hasErrors =
