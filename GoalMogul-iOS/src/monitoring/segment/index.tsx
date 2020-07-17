@@ -111,6 +111,7 @@ const EVENT = {
     PROFILE_PHOTO_UPDATED: 'Profile Photo Updated',
 
     // Registration
+    REG_ACCOUNT_CREATED: 'Registration Account Created',
     REG_INTRO: 'Registration Intro Opened',
     REG_INTRO_SKIP: 'Registration Intro Skiped',
     REG_PROFILE: 'Registration AddProfile Opened',
@@ -146,6 +147,7 @@ const EVENT = {
     TUTORIAL_STARTED: 'Tutorial Started',
     TUTORIAL_PAGE_VIEWED: 'Tutorial Page Viewed',
     TUTORIAL_DONE: 'Tutorial Done',
+    ONBOARDING_DONE: 'Onboarding Done',
     NOTIFICATION_SELECTED: 'Notification Selected',
     NOTIFICATION_DETAIL_OPENED: 'Notification Detail Opened',
 }

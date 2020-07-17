@@ -96,13 +96,20 @@ import ContactSync from './Registration/ContactSync'
 import IntroForm from './Registration/IntroForm'
 /* Registration */
 // import RegistrationAccount from './Registration/Account';
-import RegistrationAccount from './Registration/RegistrationAccount'
-// import { RegistrationAccount, OnboardingIntroTransition,
-//   OnboardingSelectionTarget, OnboardingTribeSelection,
-//   OnboardingCommunity, OnboardingSyncContact, OnboardingWelcome,
-//   SyncContactInvite
-// } from './Main/Onboarding';
-import { OnboardingFbPlugin } from './Main/Onboarding'
+// import RegistrationAccount from './Registration/RegistrationAccount';
+import {
+    RegistrationAccount,
+    OnboardingIntroTransition,
+    OnboardingSelectionTarget,
+    OnboardingTribeSelection,
+    OnboardingCommunity,
+    OnboardingSyncContact,
+    OnboardingWelcome,
+    SyncContactInvite,
+    OnboardingAddPhotos,
+    OnboardingFbPlugin,
+    UserAgreement,
+} from './Main/Onboarding'
 // import CardStackStyleInterpolator from "react-navigation-stack/src/views/StackView/StackViewStyleInterpolator";
 /* Auth */
 import SplashScreen from './SplashScreen'
@@ -327,10 +334,14 @@ class RouterComponent extends Component {
                                     key="registrationAccount"
                                     component={RegistrationAccount}
                                 />
+                                <Scene
+                                    key="user_agreement"
+                                    component={UserAgreement}
+                                />
                             </Stack>
 
                             {/** V1 implementation for registration process */}
-                            <Stack
+                            {/* <Stack
                                 key="registration"
                                 hideNavBar
                                 type={ActionConst.RESET}
@@ -352,16 +363,49 @@ class RouterComponent extends Component {
                                     key="registrationContactSync"
                                     component={ContactSync}
                                 />
-                            </Stack>
-                            {/* <Stack key="registration" hideNavBar type={ActionConst.RESET} drawerLockMode='locked-closed' gesturesEnabled={false} panHandlers={null}>
-                                <Scene key="registration_transition" component={OnboardingIntroTransition} initial />
-                                <Scene key="registration_target_selection" component={OnboardingSelectionTarget} />
-                                <Scene key="registration_tribe_selection" component={OnboardingTribeSelection} />
-                                <Scene key="registration_community_guideline" component={OnboardingCommunity} />
-                                <Scene key="registration_contact_sync" component={OnboardingSyncContact} />
-                                <Scene key="registration_contact_invite" component={SyncContactInvite} />
-                                <Scene key="registration_welcome" component={OnboardingWelcome} />
                             </Stack> */}
+                            <Stack
+                                key="registration"
+                                hideNavBar
+                                type={ActionConst.RESET}
+                                drawerLockMode="locked-closed"
+                                gesturesEnabled={false}
+                                panHandlers={null}
+                            >
+                                <Scene
+                                    key="registration_transition"
+                                    component={OnboardingIntroTransition}
+                                    initial
+                                />
+                                <Scene
+                                    key="registration_target_selection"
+                                    component={OnboardingSelectionTarget}
+                                />
+                                <Scene
+                                    key="registration_add_photo"
+                                    component={OnboardingAddPhotos}
+                                />
+                                <Scene
+                                    key="registration_tribe_selection"
+                                    component={OnboardingTribeSelection}
+                                />
+                                <Scene
+                                    key="registration_community_guideline"
+                                    component={OnboardingCommunity}
+                                />
+                                <Scene
+                                    key="registration_contact_sync"
+                                    component={OnboardingSyncContact}
+                                />
+                                <Scene
+                                    key="registration_contact_invite"
+                                    component={SyncContactInvite}
+                                />
+                                <Scene
+                                    key="registration_welcome"
+                                    component={OnboardingWelcome}
+                                />
+                            </Stack>
                             <Scene
                                 key="tutorial"
                                 component={Tutorial}

@@ -1,29 +1,45 @@
-/** @format */
+/**
+ * Last page in onboarding process to welcome user to GM.
+ *
+ * @see https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
+ * @format
+ */
 
 import React from 'react'
+import { connect } from 'react-redux'
 import { View, Text, Dimensions, Image } from 'react-native'
 import { Actions } from 'react-native-router-flux'
-import { connect } from 'react-redux'
 import OnboardingHeader from './Common/OnboardingHeader'
 import {
     BUTTON_STYLE as buttonStyle,
     TEXT_STYLE as textStyle,
 } from '../../styles'
-import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions'
 import DelayedButton from '../Common/Button/DelayedButton'
+import Icons from '../../asset/base64/Icons'
+import { markUserAsOnboarded } from '../../redux/modules/registration/RegistrationActions'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
-/**
- * Last page in onboarding process to welcome user to GM.
- *
- * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
- */
 class OnboardingWelcome extends React.Component {
     continue = () => {
-        const screenTransitionCallback = () => {
-            Actions.replace('drawer')
-        }
-        screenTransitionCallback()
+        Actions.replace('drawer')
+        this.props.markUserAsOnboarded()
+    }
+
+    /**
+     * Render Mascot
+     */
+    renderImage = () => {
+        return (
+            <View>
+                <Image
+                    source={Icons.LionMascotWelcome}
+                    style={{
+                        height: screenWidth * 0.7,
+                        width: screenWidth * 0.7,
+                    }}
+                />
+            </View>
+        )
     }
 
     render() {
@@ -41,14 +57,7 @@ class OnboardingWelcome extends React.Component {
                     <View
                         style={{ flex: 1, alignItems: 'center', width: '100%' }}
                     >
-                        {/** Image placeholder */}
-                        <View
-                            style={{
-                                height: screenWidth * 0.65,
-                                width: screenWidth * 0.65,
-                                backgroundColor: '#F2F2F2',
-                            }}
-                        />
+                        {this.renderImage()}
                         <View style={{ marginTop: 40 }}>
                             <Text style={textStyle.onboardingTitleTextStyle}>
                                 Welcome to GoalMogul!
@@ -74,7 +83,7 @@ class OnboardingWelcome extends React.Component {
                         style={[
                             buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
                                 .containerStyle,
-                            { marginBottom: 20 },
+                            { marginBottom: 30 },
                         ]}
                     >
                         <Text
@@ -82,7 +91,7 @@ class OnboardingWelcome extends React.Component {
                                 buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle
                             }
                         >
-                            Continue
+                            Let's get started!
                         </Text>
                     </DelayedButton>
                 </View>
@@ -98,8 +107,6 @@ const styles = {
     },
 }
 
-const mapStateToProps = (state) => {
-    return {}
-}
-
-export default connect(mapStateToProps, {})(OnboardingWelcome)
+export default connect(null, {
+    markUserAsOnboarded,
+})(OnboardingWelcome)

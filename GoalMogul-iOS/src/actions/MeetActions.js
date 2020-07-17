@@ -359,6 +359,7 @@ export const updateFriendship = (userId, friendshipId, type, tab, callback) => (
                 return 'POST'
         }
     })(type)
+
     const { token } = getState().user
     if (type === 'requestFriend' && requestType.data === undefined) {
         console.warn(

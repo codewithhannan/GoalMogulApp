@@ -79,7 +79,6 @@ class TabIcon extends React.PureComponent {
             tintColor,
             height: 25,
             width: 35,
-            resizeMode: 'contain',
         }
 
         switch (navigation.state.key) {

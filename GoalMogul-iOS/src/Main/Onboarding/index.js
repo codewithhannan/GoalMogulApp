@@ -7,6 +7,7 @@
 
 import RegistrationAccount from './RegistrationAccount'
 import OnboardingIntroTransition from './OnboardingIntroTransition'
+import OnboardingAddPhotos from './OnboardingAddPhoto'
 import OnboardingSelectionTarget from './OnboardingSelectionTarget'
 import OnboardingTribeSelection from './OnboardingTribeSelection'
 import OnboardingCommunity from './OnboardingCommunity'
@@ -14,9 +15,12 @@ import OnboardingSyncContact from './OnboardingSyncContact'
 import OnboardingWelcome from './OnboardingWelcome'
 import SyncContactInvite from './SyncContactInvite'
 import OnboardingFbPlugin from './OnboardingFbPlugin'
+import UserAgreement from './UserAgreement'
+
 export {
     RegistrationAccount,
     OnboardingIntroTransition,
+    OnboardingAddPhotos,
     OnboardingSelectionTarget,
     OnboardingTribeSelection,
     OnboardingCommunity,
@@ -24,4 +28,5 @@ export {
     OnboardingWelcome,
     SyncContactInvite,
     OnboardingFbPlugin,
+    UserAgreement,
 }

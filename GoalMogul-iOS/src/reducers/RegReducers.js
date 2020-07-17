@@ -35,6 +35,9 @@ import {
     REGISTRATION_TRIBE_FETCH,
     REGISTRATION_TRIBE_SELECT,
     REGISTRATION_COMMUNITY_GUIDELINE,
+    REGISTRATION_USER_INVITE,
+    REGISTRATION_USER_INVITE_DONE,
+    REGISTRATION_USER_INVITE_FAIL,
 } from '../redux/modules/registration/RegistrationReducers'
 
 export function arrayUnique(array) {
@@ -68,8 +71,12 @@ const INITIAL_STATE = {
         },
     }, // country code for phone number
     phone: '',
+    registerErrMsg: '', // registration top error message
     userTargets: [...REGISTRATION_USER_TARGETS],
-    tribes: [...REGISTRATION_DEFAULT_TRIBES],
+    tribes: [],
+    // Below are fake tribes when network is not available
+    // tribes: [...REGISTRATION_DEFAULT_TRIBES],
+    tribeLoading: false,
     communityGuidelines: [...REGISTRATION_COMMUNITY_GUIDELINE],
     matchedContacts: {
         data: [],
@@ -92,6 +99,73 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
+        // Contact sync match found, user sent out invite
+        case REGISTRATION_USER_INVITE: {
+            const { userId } = action.payload
+            let newState = _.cloneDeep(state)
+
+            let matchedContactData = _.get(newState, 'matchedContacts.data')
+            matchedContactData = matchedContactData.map((userDoc) => {
+                if (_.isEqual(userDoc._id, userId)) {
+                    // set user doc inviting field to true
+                    return _.set(userDoc, 'inviting', true)
+                }
+                return userDoc
+            })
+
+            newState = _.set(
+                newState,
+                'matchedContacts.data',
+                matchedContactData
+            )
+            return newState
+        }
+
+        case REGISTRATION_USER_INVITE_DONE: {
+            const { userId } = action.payload
+            let newState = _.cloneDeep(state)
+
+            let matchedContactData = _.get(newState, 'matchedContacts.data')
+            matchedContactData = matchedContactData.map((userDoc) => {
+                if (_.isEqual(userDoc._id, userId)) {
+                    let newUserDoc
+                    // set user doc inviting field to true
+                    newUserDoc = _.set(userDoc, 'inviting', false)
+                    newUserDoc = _.set(userDoc, 'invited', true)
+                    return newUserDoc
+                }
+                return userDoc
+            })
+
+            newState = _.set(
+                newState,
+                'matchedContacts.data',
+                matchedContactData
+            )
+            return newState
+        }
+
+        case REGISTRATION_USER_INVITE_FAIL: {
+            const { userId } = action.payload
+            let newState = _.cloneDeep(state)
+
+            let matchedContactData = _.get(newState, 'matchedContacts.data')
+            matchedContactData = matchedContactData.map((userDoc) => {
+                if (_.isEqual(userDoc._id, userId)) {
+                    // set user doc inviting field to false
+                    return _.set(userDoc, 'inviting', false)
+                }
+                return userDoc
+            })
+
+            newState = _.set(
+                newState,
+                'matchedContacts.data',
+                matchedContactData
+            )
+            return newState
+        }
+
         case REGISTRATION_TEXT_CHANGE: {
             const { type, value } = action.payload
             let newState = _.cloneDeep(state)
@@ -119,11 +193,17 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         case REGISTRATION_TRIBE_FETCH: {
-            // status: [loading, error, done]
-            const { tribes, status } = action.payload
+            const { tribes, loading } = action.payload
             let newState = _.cloneDeep(state)
 
+            if (loading) {
+                // Set tribe loading to true
+                newState = _.set(newState, 'tribeLoading', true)
+                return newState
+            }
+
             newState = _.set(newState, 'tribes', tribes)
+            newState = _.set(newState, 'tribeLoading', false)
             return newState
         }
 
@@ -141,8 +221,14 @@ export default (state = INITIAL_STATE, action) => {
             return newState
         }
 
-        case REGISTRATION_ERROR:
-            return { ...state, error: action.payload, loading: false }
+        case REGISTRATION_ERROR: {
+            const { error } = action.payload
+            let newState = _.cloneDeep(state)
+            newState = _.set(newState, 'loading', false)
+            newState = _.set(newState, 'registerErrMsg', error)
+
+            return newState
+        }
 
         // User pressed back button on nav bar
         case REGISTRATION_BACK:

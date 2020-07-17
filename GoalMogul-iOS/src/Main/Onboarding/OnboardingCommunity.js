@@ -1,4 +1,10 @@
-/** @format */
+/**
+ * Fanout page for community guideline during onboard
+ *
+ * @see https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
+ *
+ * @format
+ */
 
 import React from 'react'
 import { View, Text, Dimensions, Image } from 'react-native'
@@ -11,17 +17,13 @@ import {
     GM_FONT_FAMILY,
     GM_FONT_LINE_HEIGHT,
     TEXT_STYLE as textStyle,
+    FONT_FAMILY_2,
+    DEFAULT_STYLE,
 } from '../../styles'
-import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions'
 import OnboardingFooter from './Common/OnboardingFooter'
 import { Actions } from 'react-native-router-flux'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
-/**
- * Fanout page for community guideline during onboard
- *
- * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
- */
 class OnboardingCommunity extends React.Component {
     constructor(props) {
         super(props)
@@ -30,12 +32,16 @@ class OnboardingCommunity extends React.Component {
         }
     }
 
-    onContinue = () => {
+    onBack = () => {
+        Actions.pop()
+    }
+
+    onNext = () => {
         const screenTransitionCallback = () => {
-            Actions.push('registration_contact_sync')
+            // TODO: analytics track
+            Actions.push('registration_welcome')
         }
         screenTransitionCallback()
-        // TODO: pass screen transition to action
     }
 
     onSwipedAll = (index) => {
@@ -56,44 +62,63 @@ class OnboardingCommunity extends React.Component {
                     alignItems: 'center',
                     margin: 10,
                     borderWidth: 1,
-                    borderColor: 'lightgray',
+                    borderColor: 'white',
                     borderRadius: 10,
                     ...styles.shadow,
                 }}
+                key={index}
             >
-                <View style={{ flex: 1 }}>
-                    {/* <Image source={picture} style={{ width: "100%", height: 280 }} resizeMode="cover" /> */}
-                    <View
-                        style={{
-                            width: screenWidth - 32 - 10 - 10,
-                            height: screenWidth - 32 - 10,
-                            backgroundColor: 'gray',
-                            borderTopLeftRadius: 10,
-                            borderTopRightRadius: 10,
-                        }}
-                    />
+                <View>
+                    {picture ? (
+                        <Image
+                            style={{
+                                width: screenWidth - 32 - 10 - 10,
+                                height: screenWidth - 32 - 10,
+                                backgroundColor: 'white',
+                                borderTopLeftRadius: 10,
+                                borderTopRightRadius: 10,
+                            }}
+                            source={picture}
+                        />
+                    ) : (
+                        <View
+                            style={{
+                                width: screenWidth - 32 - 10 - 10,
+                                height: screenWidth - 32 - 10,
+                                backgroundColor: 'gray',
+                                borderTopLeftRadius: 10,
+                                borderTopRightRadius: 10,
+                            }}
+                        />
+                    )}
                 </View>
 
-                <View style={{ width: '90%' }}>
+                <View
+                    style={{ width: '70%', justifyContent: 'center', flex: 1 }}
+                >
                     <Text
-                        style={{
-                            fontSize: GM_FONT_SIZE.FONT_3_5,
-                            lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
-                            fontFamily: GM_FONT_FAMILY.GOTHAM,
-                            marginTop: 14,
-                            marginBottom: 14,
-                            textAlign: 'center',
-                        }}
+                        style={[
+                            DEFAULT_STYLE.titleText_1,
+                            {
+                                fontSize: GM_FONT_SIZE.FONT_3_5,
+                                lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
+                                fontFamily: FONT_FAMILY_2,
+                                marginTop: 14,
+                                marginBottom: 14,
+                                textAlign: 'center',
+                            },
+                        ]}
                     >
                         {title}
                     </Text>
                     {subTitle ? (
                         <Text
-                            style={{
-                                fontSize: GM_FONT_SIZE.FONT_1,
-                                fontFamily: GM_FONT_FAMILY.GOTHAM,
-                                textAlign: 'center',
-                            }}
+                            style={
+                                (DEFAULT_STYLE.normalText_1,
+                                {
+                                    textAlign: 'center',
+                                })
+                            }
                         >
                             {subTitle}
                         </Text>
@@ -139,13 +164,14 @@ class OnboardingCommunity extends React.Component {
                             onSnapToItem={this.onSwipedAll}
                         />
                     </View>
-                    <View style={{ opacity: this.state.swipeAll ? 1 : 0 }}>
-                        <OnboardingFooter
-                            buttonText="Continue"
-                            onButtonPress={this.onContinue}
-                        />
-                    </View>
                 </View>
+                <OnboardingFooter
+                    totalStep={3}
+                    currentStep={3}
+                    onNext={this.onNext}
+                    onPrev={this.onBack}
+                    nextDisabled={!this.state.swipeAll}
+                />
             </View>
         )
     }
@@ -164,7 +190,7 @@ const styles = {
         elevation: 6,
         shadowRadius: 6,
         shadowOpacity: 1,
-        shadowColor: 'rgba(0,0,0,0.06)',
+        shadowColor: 'rgba(0,0,0,0.3)',
     },
 }
 

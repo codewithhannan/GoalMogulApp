@@ -11,15 +11,16 @@ import {
     BUTTON_STYLE as buttonStyle,
     TEXT_STYLE as textStyle,
     GM_BLUE,
-    GM_FONT_FAMILY,
     GM_FONT_SIZE,
+    FONT_FAMILY_2,
+    DEFAULT_STYLE,
 } from '../../styles'
-import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions'
-import { REGISTRATION_SYNC_CONTACT_NOTES } from '../../redux/modules/registration/RegistrationReducers'
+import { inviteExistingUser } from '../../redux/modules/registration/RegistrationActions'
 import { inviteUser } from '../../redux/modules/User/ContactSync/ContactSyncActions'
 import { TabView } from 'react-native-tab-view'
 import TabButtonGroup from '../Common/TabButtonGroup'
 import UserCard from './Common/UserCard'
+import { contactSyncLoadMore } from '../../actions'
 
 /**
  * Sync Contact Invitation page
@@ -32,7 +33,7 @@ class SyncContactInvite extends React.Component {
         this.state = {
             // navigationState should be state to the page
             navigationState: {
-                index: 0,
+                index: props.inviteOnly ? 1 : 0,
                 routes: [
                     { key: 'matchedContacts', title: 'On GoalMogul' },
                     { key: 'contacts', title: 'Not on GoalMogul' },
@@ -40,6 +41,8 @@ class SyncContactInvite extends React.Component {
             },
         }
     }
+
+    _keyExtractor = (item, index) => `${item.name}_${index}`
 
     switchTab = (index) => {
         let navigationState = _.cloneDeep(this.state.navigationState)
@@ -56,7 +59,7 @@ class SyncContactInvite extends React.Component {
     }
 
     onNext = () => {
-        Actions.push('registration_welcome')
+        Actions.push('registration_transition')
     }
 
     /**
@@ -70,11 +73,22 @@ class SyncContactInvite extends React.Component {
         }
 
         if (type == 'matchedContacts') {
-            // TODO: send friend request
+            // Send friend request
+            this.props.inviteExistingUser(item._id)
             return
         }
 
         // TODO: add sentry logging
+    }
+
+    renderEmptyMatchedContacts = () => {
+        return (
+            <View style={{ paddingTop: 50, alignItems: 'center' }}>
+                <Text style={[DEFAULT_STYLE.goalTitleText_1]}>
+                    No matched contacts found
+                </Text>
+            </View>
+        )
     }
 
     renderUserCard = (props, type, callback) => {
@@ -86,6 +100,7 @@ class SyncContactInvite extends React.Component {
     renderScene = ({ route }) => {
         switch (route.key) {
             case 'matchedContacts':
+                // Render matched contacts
                 return (
                     <FlatList
                         data={this.props.matchedContacts.data}
@@ -96,12 +111,15 @@ class SyncContactInvite extends React.Component {
                                 this.inviteUser('matchedContacts')
                             )
                         }
-                        refresing={this.props.matchedContacts.refreshing}
-                        contentContainerStyle={{ paddingTop: 20 }}
+                        keyExtractor={this._keyExtractor}
+                        onEndThreshold={0}
+                        onEndReached={() => this.props.contactSyncLoadMore()}
+                        ListEmptyComponent={this.renderEmptyMatchedContacts}
                     />
                 )
 
             case 'contacts':
+                // Render contacts
                 return (
                     <FlatList
                         data={this.props.contacts.data}
@@ -112,8 +130,8 @@ class SyncContactInvite extends React.Component {
                                 this.inviteUser('contacts')
                             )
                         }
+                        keyExtractor={this._keyExtractor}
                         refreshing={this.props.contacts.refreshing}
-                        contentContainerStyle={{ paddingTop: 20 }}
                     />
                 )
 
@@ -124,7 +142,15 @@ class SyncContactInvite extends React.Component {
 
     renderTabs = (props) => {
         return (
-            <View style={{ paddingLeft: 20, paddingRight: 20 }}>
+            <View
+                style={{
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                    backgroundColor: 'white',
+                    paddingBottom: 10,
+                    marginBottom: 10,
+                }}
+            >
                 <TabButtonGroup
                     buttons={props}
                     buttonStyle={{
@@ -133,41 +159,59 @@ class SyncContactInvite extends React.Component {
                             tintColor: 'white',
                             color: 'white',
                             fontWeight: '700',
-                            fontSize: GM_FONT_SIZE.FONT_1,
-                            fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
-                            paddingTop: 2,
+                            fontSize: GM_FONT_SIZE.FONT_2,
+                            fontFamily: FONT_FAMILY_2,
                         },
                         unselected: {
-                            backgroundColor: '#FCFCFC',
-                            tintColor: '#616161',
-                            color: '#616161',
+                            backgroundColor: '#F2F2F2',
+                            tintColor: '#828282',
+                            color: '#828282',
                             fontWeight: '600',
-                            fontSize: GM_FONT_SIZE.FONT_1,
-                            fontFamily: GM_FONT_FAMILY.GOTHAM,
-                            paddingTop: 2,
+                            fontSize: GM_FONT_SIZE.FONT_2,
+                            fontFamily: FONT_FAMILY_2,
                         },
                     }}
                     buttonGroupContainerStyle={{
                         marginLeft: 20,
                         marginRight: 20,
                     }}
+                    borderRadius={15}
                 />
             </View>
         )
     }
 
     render() {
+        const { inviteOnly } = this.props
         return (
             <View style={styles.containerStyle}>
                 <OnboardingHeader />
-                <View style={{ flex: 1 }}>
-                    <View style={{ marginTop: 35, marginBottom: 20 }}>
-                        <Text style={textStyle.onboardingTitleTextStyle}>
-                            Add some friends or
-                        </Text>
-                        <Text style={textStyle.onboardingTitleTextStyle}>
-                            invite friends to join!
-                        </Text>
+                <View style={{ flex: 1, backgroundColor: '#EAE8EA' }}>
+                    <View
+                        style={{
+                            paddingTop: 20,
+                            paddingBottom: 20,
+                            backgroundColor: 'white',
+                        }}
+                    >
+                        {inviteOnly ? (
+                            <Text style={[textStyle.onboardingTitleTextStyle]}>
+                                Invite friends to join!
+                            </Text>
+                        ) : (
+                            [
+                                <Text
+                                    style={textStyle.onboardingTitleTextStyle}
+                                >
+                                    Add some friends or
+                                </Text>,
+                                <Text
+                                    style={textStyle.onboardingTitleTextStyle}
+                                >
+                                    invite friends to join!
+                                </Text>,
+                            ]
+                        )}
                     </View>
                     <TabView
                         navigationState={this.state.navigationState}
@@ -178,8 +222,8 @@ class SyncContactInvite extends React.Component {
                     />
                 </View>
                 <OnboardingFooter
-                    totalStep={4}
-                    currentStep={4}
+                    totalStep={0}
+                    currentStep={0}
                     onNext={this.onNext}
                     onPrev={this.onBack}
                 />
@@ -197,38 +241,19 @@ const styles = {
 
 const mapStateToProps = (state) => {
     return {
-        // contacts: state.contactSync.contacts || testContacts,
-        // matchedContacts: state.registration.matchedContacts || testMatchedContacts
-        contacts: testContacts,
-        matchedContacts: testMatchedContacts,
+        // NOTE: local contacts are fired by callback of
+        // redux/modules/registration/RegistrationActions#uploadContacts
+        // "loadContactCallback"
+        // It will store the local contacts in ContactSyncReducer
+        // As future improvement, we should refactor both into one places
+        // for registration + meet tab loading contacts
+        contacts: state.contactSync.contacts,
+        matchedContacts: state.registration.matchedContacts,
     }
-}
-
-const testContacts = {
-    data: [
-        {
-            name: 'Jia Zeng',
-            phoneNumbers: [{ label: 'mobile', number: '9194912504' }],
-        },
-        {
-            name: 'Jay Patel',
-            phoneNumbers: [{ label: 'mobile', number: '9194912504' }],
-        },
-    ],
-}
-
-const testMatchedContacts = {
-    data: [
-        {
-            name: 'Jia Zeng',
-            headline: 'I am so cool',
-            maybeInvitationType: '',
-            maybeInvitationId: '',
-            profile: {},
-        },
-    ],
 }
 
 export default connect(mapStateToProps, {
     inviteUser,
+    inviteExistingUser,
+    contactSyncLoadMore,
 })(SyncContactInvite)

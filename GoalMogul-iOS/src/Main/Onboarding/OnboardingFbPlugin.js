@@ -1,4 +1,9 @@
-/** @format */
+/**
+ * Right now we decide to move the fb plug in for connect with messenger to web
+ * This is for legacy reference in case we need to plug this in later on
+ *
+ * @format
+ */
 
 import React from 'react'
 import { View } from 'react-native'

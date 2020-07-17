@@ -1,18 +1,3 @@
-/** @format */
-
-import React from 'react'
-import { View, Image, Text } from 'react-native'
-import {
-    GM_BLUE,
-    GM_DOT_GRAY,
-    GM_BLUE_LIGHT_LIGHT,
-    GM_FONT_SIZE,
-    GM_FONT_LINE_HEIGHT,
-    GM_FONT_FAMILY,
-} from '../../../styles'
-import right_arrow_icon from '../../../asset/utils/right_arrow.png'
-import DelayedButton from '../../Common/Button/DelayedButton'
-
 /**
  * Onboarding footer to show the progress on registration and onboarding.
  *
@@ -26,7 +11,25 @@ import DelayedButton from '../../Common/Button/DelayedButton'
  *      onNext,
  *      onPrev // can be undefined if currentStep = 1
  * }
+ *
+ * @format
  */
+
+import React from 'react'
+import { View, Text } from 'react-native'
+import {
+    GM_BLUE,
+    GM_DOT_GRAY,
+    GM_BLUE_LIGHT_LIGHT,
+    GM_FONT_SIZE,
+    GM_FONT_LINE_HEIGHT,
+    GM_FONT_FAMILY,
+    BUTTON_STYLE,
+    GM_BLUE_LIGHT,
+} from '../../../styles'
+import { Icon } from '@ui-kitten/components'
+import DelayedButton from '../../Common/Button/DelayedButton'
+
 class OnboardingFooter extends React.Component {
     renderProgressBar() {
         const { totalStep, currentStep } = this.props
@@ -60,37 +63,56 @@ class OnboardingFooter extends React.Component {
         )
     }
 
-    renderButton(buttonText) {
+    renderButton(props) {
+        const { disabled, buttonText, ...otherProps } = props
+        let disabledStyle = disabled ? { backgroundColor: GM_BLUE_LIGHT } : {}
         return (
             <DelayedButton
-                style={styles.buttonContainerStyle}
+                {...otherProps}
+                disabled={disabled}
+                style={[
+                    BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle,
+                    disabledStyle,
+                    { marginBottom: 20 },
+                ]}
                 onPress={this.props.onButtonPress}
             >
-                <Text style={styles.buttonTextStyle}>{buttonText}</Text>
+                <Text
+                    style={[BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle]}
+                >
+                    {buttonText}
+                </Text>
             </DelayedButton>
         )
     }
 
     render() {
-        const { buttonText } = this.props
+        const {
+            buttonText,
+            onNext,
+            onPrev,
+            nextDisabled,
+            ...otherProps
+        } = this.props
         if (buttonText) {
-            return this.renderButton(buttonText)
+            return this.renderButton(this.props)
         }
         return (
             <View style={styles.containerStyle}>
                 {/** Only render back button if not the first component */}
                 <Circle
+                    {...otherProps}
                     size={styles.circleSize}
-                    image={right_arrow_icon}
                     rotate
                     isFirst={this.props.currentStep == 1}
                     onPress={this.props.onPrev}
                 />
                 {this.renderProgressBar()}
                 <Circle
+                    {...otherProps}
                     size={styles.circleSize}
-                    image={right_arrow_icon}
                     onPress={this.props.onNext}
+                    disabled={nextDisabled == undefined ? false : nextDisabled}
                 />
             </View>
         )
@@ -135,27 +157,36 @@ const styles = {
     circle: {
         imageRatio: 28 / 100, // scale down to 28/100 of the height
         // Asusming the icon is pointing right
-        containerStyle: (size, rotate) => ({
+        containerStyle: (size, rotate, disabled) => ({
             height: size,
             width: size,
             borderRadius: size / 2,
-            backgroundColor: rotate ? GM_BLUE_LIGHT_LIGHT : GM_BLUE,
+            backgroundColor: rotate
+                ? '#F2F2F2'
+                : disabled
+                ? GM_BLUE_LIGHT_LIGHT
+                : GM_BLUE,
             marginLeft: size / 2,
             marginRight: size / 2,
             alignItems: 'center',
             justifyContent: 'center',
             padding: 5,
         }),
-        // Assuming the icon is pointing right
+        // rotate refers to if it's right pointing or left pointing
+        // rotate == true means it's right pointing
         imageStyle: (size, rotate) => {
             if (rotate) {
                 return {
-                    height: (size * 28) / 100,
-                    width: (size * 28) / 100 + 1,
-                    transform: [{ rotate: '180deg' }],
+                    height: (size * 52) / 100,
+                    width: (size * 52) / 100,
+                    tintColor: 'black',
                 }
             }
-            return { height: (size * 28) / 100, width: (size * 28) / 100 + 1 }
+            return {
+                height: (size * 60) / 100,
+                width: (size * 60) / 100,
+                tintColor: 'white',
+            }
         },
     },
     dotStyleEmpty: (size) => {
@@ -187,19 +218,22 @@ const styles = {
  * @param {*} size: height or width of the circle
  * @param {*} image: image source to render at the center of the Cycle
  */
-const Circle = ({ size, image, rotate, isFirst, onPress }) => {
+const Circle = ({ size, image, rotate, isFirst, onPress, disabled }) => {
     const containerStyle = styles.circle.containerStyle(size, rotate)
     if (isFirst) {
         return <View style={{ ...containerStyle, opacity: 0 }} />
     }
+    const name = rotate ? 'chevron-left' : 'chevron-right'
     return (
         <DelayedButton
-            style={styles.circle.containerStyle(size, rotate)}
+            style={styles.circle.containerStyle(size, rotate, disabled)}
             onPress={onPress}
+            disabled={disabled}
         >
-            {/** Image should scale along the cycle size */}
-            <Image
-                source={image}
+            {/** Icon should scale along the cycle size */}
+            <Icon
+                name={name}
+                pack="material"
                 style={styles.circle.imageStyle(size, rotate)}
             />
         </DelayedButton>

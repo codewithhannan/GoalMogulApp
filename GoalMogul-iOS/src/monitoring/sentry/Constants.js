@@ -36,6 +36,9 @@ const SENTRY_TAGS = {
         REDUCER: 'chat reducer',
         SELECTOR: 'chat seletor',
     },
+    REGISTRATION: {
+        ACTION: 'registration action',
+    },
 }
 
 const SENTRY_TAG_VALUE = {
@@ -78,6 +81,11 @@ const SENTRY_CONTEXT = {
         PROMOTEE_ID: 'chat promotee id',
         DEMOTEE_ID: 'chat demotee id',
         MEMBER_ID: 'chat member id',
+    },
+    REGISTRATION: {
+        USER_ID: 'user id',
+        EMAIL: 'email',
+        PHONE_NUMBER: 'phone number',
     },
 }
 

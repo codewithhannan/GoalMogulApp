@@ -3,21 +3,31 @@
 import React from 'react'
 import { MaterialIcons } from '@expo/vector-icons'
 import { View, Text, TextInput, Animated } from 'react-native'
-import { connect } from 'react-redux'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import OnboardingHeader from './Common/OnboardingHeader'
-import DelayedButton from '../Common/Button/DelayedButton'
-import { GM_FONT_SIZE, GM_FONT_FAMILY, GM_FONT_LINE_HEIGHT } from '../../styles'
-import { registrationTargetSelection } from '../../redux/modules/registration/RegistrationActions'
-import OnboardingFooter from './Common/OnboardingFooter'
-import { CheckBox } from 'react-native-elements'
-import { Actions } from 'react-native-router-flux'
-
 /**
  * Page for user to select important things they want to achieve in GM
  *
  * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
+ * @format
  */
+
+import { connect } from 'react-redux'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import OnboardingHeader from './Common/OnboardingHeader'
+import DelayedButton from '../Common/Button/DelayedButton'
+import {
+    GM_FONT_SIZE,
+    GM_FONT_LINE_HEIGHT,
+    FONT_FAMILY_2,
+    FONT_FAMILY_1,
+} from '../../styles'
+import {
+    registrationTargetSelection,
+    uploadSurvey,
+} from '../../redux/modules/registration/RegistrationActions'
+import OnboardingFooter from './Common/OnboardingFooter'
+import { CheckBox } from 'react-native-elements'
+import { Actions } from 'react-native-router-flux'
+
 class OnboardingSelectionTarget extends React.Component {
     constructor(props) {
         super(props)
@@ -30,12 +40,11 @@ class OnboardingSelectionTarget extends React.Component {
     }
 
     onNext = () => {
-        // Sent api request to register targets
         // Transition to next screen
-        const screenTransitionCallback = () => {
-            Actions.push('registration_tribe_selection')
-        }
-        screenTransitionCallback()
+        Actions.push('registration_tribe_selection')
+
+        // Sent api request to upload survey
+        this.props.uploadSurvey()
     }
 
     onBack = () => {
@@ -77,7 +86,7 @@ class OnboardingSelectionTarget extends React.Component {
                     style={{
                         fontSize: GM_FONT_SIZE.FONT_1,
                         lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                        fontFamily: GM_FONT_FAMILY.GOTHAM,
+                        fontFamily: FONT_FAMILY_2,
                     }}
                 >
                     Others
@@ -91,11 +100,12 @@ class OnboardingSelectionTarget extends React.Component {
                     }}
                 >
                     <TextInput
-                        placeholder="Others placeholder"
+                        placeholder="Why did you download goalmogul? What would you like to get out of it?"
                         style={{
                             fontSize: GM_FONT_SIZE.FONT_3,
                             lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                            fontFamily: GM_FONT_FAMILY.GOTHAM,
+                            fontFamily: FONT_FAMILY_2,
+                            letterSpacing: 0.3,
                         }}
                         value={extra}
                         onChangeText={(val) =>
@@ -167,8 +177,10 @@ class OnboardingSelectionTarget extends React.Component {
                                 style={{
                                     fontSize: GM_FONT_SIZE.FONT_3,
                                     lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                                    fontFamily: GM_FONT_FAMILY.GOTHAM,
+                                    fontFamily: FONT_FAMILY_2,
+                                    letterSpacing: 0.6,
                                     flexWrap: 'wrap',
+                                    color: '#333333',
                                 }}
                             >
                                 {title}
@@ -183,6 +195,16 @@ class OnboardingSelectionTarget extends React.Component {
     }
 
     render() {
+        const { userTargets } = this.props
+        const selectedTargets = userTargets.filter((i) => i.selected)
+        // Disabled next when no selection is made
+        // Or when other is selected with empty input
+        const disabled =
+            selectedTargets.length == 0 ||
+            (selectedTargets.length == 1 &&
+                selectedTargets[0].title == 'Other' &&
+                !selectedTargets[0].extra.trim())
+
         return (
             <View style={styles.containerStyle}>
                 <OnboardingHeader />
@@ -230,10 +252,11 @@ class OnboardingSelectionTarget extends React.Component {
                     </KeyboardAwareScrollView>
                 </View>
                 <OnboardingFooter
-                    totalStep={4}
-                    currentStep={2}
+                    totalStep={3}
+                    currentStep={1}
                     onNext={this.onNext}
                     onPrev={this.onBack}
+                    nextDisabled={disabled}
                 />
             </View>
         )
@@ -248,12 +271,14 @@ const styles = {
     titleTextStyle: {
         fontSize: GM_FONT_SIZE.FONT_4,
         lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
-        fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+        fontFamily: FONT_FAMILY_1,
+        letterSpacing: 0.6,
     },
     subTitleTextStyle: {
         fontSize: GM_FONT_SIZE.FONT_1,
         lineHeight: GM_FONT_LINE_HEIGHT.FONT_1,
-        fontFamily: GM_FONT_FAMILY.GOTHAM,
+        fontFamily: FONT_FAMILY_2,
+        letterSpacing: 0.4,
         marginTop: 20,
         marginBottom: 10,
     },
@@ -281,4 +306,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
     registrationTargetSelection,
+    uploadSurvey,
 })(OnboardingSelectionTarget)

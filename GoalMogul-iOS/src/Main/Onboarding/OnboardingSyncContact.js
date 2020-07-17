@@ -1,4 +1,9 @@
-/** @format */
+/**
+ * Onboarding flow Sync Contact page.
+ *
+ * @see https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
+ * @format
+ */
 
 import React from 'react'
 import { View, Text, Dimensions, Image } from 'react-native'
@@ -13,30 +18,38 @@ import {
     GM_FONT_LINE_HEIGHT,
     BUTTON_STYLE as buttonStyle,
     TEXT_STYLE as textStyle,
+    FONT_FAMILY_1,
+    FONT_FAMILY_2,
 } from '../../styles'
 import { PRIVACY_POLICY_URL } from '../../Utils/Constants'
-import { registrationTribeSelection } from '../../redux/modules/registration/RegistrationActions'
+import {
+    registrationTribeSelection,
+    uploadContacts,
+} from '../../redux/modules/registration/RegistrationActions'
 import { REGISTRATION_SYNC_CONTACT_NOTES } from '../../redux/modules/registration/RegistrationReducers'
 import DelayedButton from '../Common/Button/DelayedButton'
 import SyncContactInfoModal from './SyncContactInfoModal'
+import Icons from '../../asset/base64/Icons'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
-/**
- * Onboarding flow Sync Contact page.
- *
- * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
- */
+
 class OnboardingSyncContact extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             syncContactInfoModalVisible: false,
             loading: true, // test loading param
+            errMessage: undefined,
         }
     }
 
     openModal = () =>
-        this.setState({ ...this.state, syncContactInfoModalVisible: true })
+        this.setState({
+            ...this.state,
+            syncContactInfoModalVisible: true,
+            errMessage: undefined,
+            loading: true,
+        })
 
     closeModal = () =>
         this.setState({ ...this.state, syncContactInfoModalVisible: false })
@@ -65,14 +78,45 @@ class OnboardingSyncContact extends React.Component {
      */
     onSyncContact = () => {
         this.openModal()
-        setTimeout(() => {
-            this.setState({ ...this.state, loading: false })
-        }, 6000)
+
+        // Match is not found
+        // Render failure result in modal
+        // by setting loading to false
+        const onMatchNotFound = () => {
+            this.setState({
+                ...this.state,
+                loading: false,
+            })
+        }
+
+        // close modal and go to invite page
+        const onMatchFound = () => {
+            this.closeModal()
+            setTimeout(() => {
+                Actions.push('registration_contact_invite')
+            }, 150)
+        }
+
+        const onError = (errType) => {
+            let errMessage = ''
+            if (errType == 'upload') {
+                errMessage =
+                    "We're sorry that some error happened. Please try again later."
+            }
+
+            this.setState({
+                ...this.state,
+                errMessage,
+                loading: false,
+            })
+        }
+
+        this.props.uploadContacts({ onMatchFound, onMatchNotFound, onError })
     }
 
     onNotNow = () => {
         const screenTransitionCallback = () => {
-            Actions.push('registration_welcome')
+            Actions.push('registration_transition')
         }
         screenTransitionCallback()
     }
@@ -95,14 +139,31 @@ class OnboardingSyncContact extends React.Component {
                 <DelayedButton
                     onPress={this.onNotNow}
                     style={[
-                        buttonStyle.GM_WHITE_BG_BLUE_TEXT.containerStyle,
+                        buttonStyle.GM_WHITE_BG_GRAY_TEXT.containerStyle,
                         { marginTop: 10 },
                     ]}
                 >
-                    <Text style={buttonStyle.GM_WHITE_BG_BLUE_TEXT.textStyle}>
-                        Not Now
+                    <Text style={buttonStyle.GM_WHITE_BG_GRAY_TEXT.textStyle}>
+                        Skip
                     </Text>
                 </DelayedButton>
+            </View>
+        )
+    }
+
+    /**
+     * Render image impression for sync contact
+     */
+    renderImage = () => {
+        return (
+            <View>
+                <Image
+                    source={Icons.ContactBook}
+                    style={{
+                        height: screenWidth * 0.7,
+                        width: screenWidth * 0.7,
+                    }}
+                />
             </View>
         )
     }
@@ -122,13 +183,7 @@ class OnboardingSyncContact extends React.Component {
                     <View
                         style={{ flex: 1, alignItems: 'center', width: '100%' }}
                     >
-                        <View
-                            style={{
-                                height: screenWidth * 0.65,
-                                width: screenWidth * 0.65,
-                                backgroundColor: '#F2F2F2',
-                            }}
-                        />
+                        {this.renderImage()}
                         <View style={{ marginTop: 40 }}>
                             <Text style={textStyle.onboardingTitleTextStyle}>
                                 Find friends who
@@ -146,7 +201,9 @@ class OnboardingSyncContact extends React.Component {
                             onPress={() =>
                                 WebBrowser.openBrowserAsync(
                                     PRIVACY_POLICY_URL,
-                                    { showTitle: true }
+                                    {
+                                        showTitle: true,
+                                    }
                                 )
                             }
                         >
@@ -157,6 +214,8 @@ class OnboardingSyncContact extends React.Component {
                 <SyncContactInfoModal
                     isOpen={this.state.syncContactInfoModalVisible}
                     loading={this.state.loading}
+                    errMessage={this.state.errMessage}
+                    onSyncContact={this.onSyncContact} // Retry upload contacts
                     onNotNow={this.onModalNotNow}
                     onInvite={this.onModalInvite}
                 />
@@ -173,7 +232,7 @@ const styles = {
     noteTextStyle: {
         fontSize: GM_FONT_SIZE.FONT_1,
         lineHeight: GM_FONT_LINE_HEIGHT.FONT_3_5,
-        fontFamily: GM_FONT_FAMILY.GOTHAM,
+        fontFamily: FONT_FAMILY_2,
         color: '#333333',
         alignSelf: 'flex-end',
         paddingBottom: 20,
@@ -184,4 +243,6 @@ const mapStateToProps = (state) => {
     return {}
 }
 
-export default connect(mapStateToProps, {})(OnboardingSyncContact)
+export default connect(mapStateToProps, {
+    uploadContacts,
+})(OnboardingSyncContact)

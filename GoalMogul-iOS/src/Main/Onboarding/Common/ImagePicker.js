@@ -20,9 +20,12 @@ import {
     StyleSheet,
     ActionSheetIOS,
 } from 'react-native'
-
-import { GM_DOT_GRAY } from '../../styles'
 import { Icon, withStyles } from '@ui-kitten/components'
+
+import { GM_DOT_GRAY } from '../../../styles'
+
+// Resources
+const TAKE_PIC_ICON = require('../../../asset/image/takePictureIcon.png')
 
 // Action sheet specific
 //TODO: abstract out as util function
@@ -45,7 +48,7 @@ const CANCEL_INDEX = 2
  * Please see documentation for details.
  */
 class ImagePicker extends Component {
-    /** Prompt user for an image selection */
+    /**Prompt user for an image selection */
     onAddImagePressed = () => {
         const { handleTakingPicture, handleCameraRoll } = this.props
 
@@ -79,7 +82,7 @@ class ImagePicker extends Component {
             imageStyle.push(styles.imageStyles)
             if (rounded) imageStyle.push(styles.roundedImageStyles)
         } else if (icon) {
-            imageSource = icon
+            imageSource = TAKE_PIC_ICON
         } else {
             imageStyle.push(styles.defaultImageStyle)
             imageStyle.push(eva.style.icon)
@@ -97,7 +100,7 @@ class ImagePicker extends Component {
     }
 
     render() {
-        const { rounded, bordered, imageUri, icon } = this.props
+        const { rounded, bordered } = this.props
         const buttonStyle = [styles.buttonStyles]
 
         if (rounded) buttonStyle.push(styles.roundedButtonStyles)
@@ -111,16 +114,6 @@ class ImagePicker extends Component {
                 >
                     {this.renderImage()}
                 </TouchableOpacity>
-                {/* Only render edit icon if there is existing images */}
-                {imageUri || icon ? (
-                    <View style={styles.iconContainerStyle}>
-                        <Icon
-                            name="edit"
-                            pack="material"
-                            style={styles.editIconStyle}
-                        />
-                    </View>
-                ) : null}
             </View>
         )
     }
@@ -128,8 +121,8 @@ class ImagePicker extends Component {
 
 const styles = StyleSheet.create({
     buttonStyles: {
-        width: '100%',
-        height: '100%',
+        width: 200,
+        height: 200,
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
@@ -148,41 +141,12 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         justifyContent: 'center',
     },
-    defaultImageStyle: {
-        height: 40,
-        width: 40,
-    },
     roundedImageStyles: {
         borderRadius: 180,
     },
-    // Image related styles
-    iconContainerStyle: {
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        borderColor: '#DDD',
-        borderWidth: 0.5,
-
-        alignItems: 'center',
-        justifyContent: 'center',
-
-        backgroundColor: 'white',
-        shadowColor: '#DDD',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 1,
-        shadowRadius: 1,
-        elevation: 1,
-        zIndex: 2,
-    },
-    editIconStyle: {
-        width: 20,
-        height: 20,
-        borderRadius: 10,
-        tintColor: '#BBB',
+    defaultImageStyle: {
+        height: 60,
+        width: 60,
     },
 })
 
@@ -200,5 +164,4 @@ const mapThemeToStyles = (theme) => ({
 })
 
 const StyledImagePicker = withStyles(ImagePicker, mapThemeToStyles)
-
 export default StyledImagePicker

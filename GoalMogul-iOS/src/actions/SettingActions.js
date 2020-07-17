@@ -2,7 +2,8 @@
 
 import { Actions } from 'react-native-router-flux'
 import { SubmissionError } from 'redux-form'
-import Expo, { WebBrowser, Notifications } from 'expo'
+import { Notifications, Linking } from 'expo'
+import * as WebBrowser from 'expo-web-browser'
 import * as Permissions from 'expo-permissions'
 import { Alert, Platform } from 'react-native'
 
@@ -209,7 +210,7 @@ export const onUpdatePhoneNumberSubmit = (values, callback) => {
 }
 
 export const onAddVerifyPhone = (handleRedirect) => async (dispatch) => {
-    const returnUrl = Expo.Linking.makeUrl('/')
+    const returnUrl = Linking.makeUrl('/')
     addLinkingListener(handleRedirect)
     const result = await WebBrowser.openBrowserAsync(
         `https://goalmogul-web.herokuapp.com/phone-verification?returnURL=${returnUrl}`
@@ -229,7 +230,7 @@ export const onVerifyPhoneNumber = (handleRedirect) => {
             .then(async (res) => {
                 console.log('verify phone number successfully: ', res)
                 trackWithProperties(E.PHONE_VERIFIED, { UserId: userId })
-                let returnUrl = Expo.Linking.makeUrl('/')
+                let returnUrl = Linking.makeUrl('/')
                 addLinkingListener(handleRedirect)
                 let result = await WebBrowser.openBrowserAsync(
                     `https://goalmogul-web.herokuapp.com/phone-verification?returnURL=${returnUrl}`
@@ -284,11 +285,11 @@ export const onVerifyPhoneNumber = (handleRedirect) => {
 }
 
 const addLinkingListener = (handleRedirect) => {
-    Expo.Linking.addEventListener('url', handleRedirect)
+    Linking.addEventListener('url', handleRedirect)
 }
 
 const removeLinkingListener = (handleRedirect) => {
-    Expo.Linking.removeEventListener('url', handleRedirect)
+    Linking.removeEventListener('url', handleRedirect)
 }
 
 export const verifyPhoneNumberSuccess = () => (dispatch, getState) => {

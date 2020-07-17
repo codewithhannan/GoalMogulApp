@@ -8,7 +8,8 @@ import {
     TouchableWithoutFeedback,
     Image,
 } from 'react-native'
-import Expo, { WebBrowser } from 'expo'
+import Expo from 'expo'
+import * as WebBrowser from 'expo-web-browser'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 

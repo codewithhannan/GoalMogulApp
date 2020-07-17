@@ -3,6 +3,7 @@
  *
  * @format
  */
+import Icons from '../../../asset/base64/Onboarding'
 
 export const REGISTRATION_TEXT_CHANGE = 'registration_text_change'
 export const REGISTRATION_TARGET_SELECTION = 'registration_target_selection'
@@ -36,6 +37,9 @@ export const REGISTRATION_USER_TARGETS = [
 ]
 export const REGISTRATION_TRIBE_FETCH = 'registration_tribe_fetch'
 export const REGISTRATION_TRIBE_SELECT = 'registration_tribe_select' // select a tribe to join during onboarding
+export const REGISTRATION_USER_INVITE = 'registration_user_invite' // invite user after contact sync find matches
+export const REGISTRATION_USER_INVITE_DONE = 'registration_user_invite_done' // invite user after contact sync find matches
+export const REGISTRATION_USER_INVITE_FAIL = 'registration_user_invite_fail' // invite user after contact sync find matches
 
 // Fake tribes rendered on network not available
 export const REGISTRATION_DEFAULT_TRIBES = [
@@ -43,6 +47,7 @@ export const REGISTRATION_DEFAULT_TRIBES = [
         _id: 0,
         name: 'Personal Development',
         picture: undefined,
+        description: 'This is a really long description',
     },
     {
         _id: 1,
@@ -85,26 +90,26 @@ export const REGISTRATION_COMMUNITY_GUIDELINE = [
     {
         title: "We're a positive, safe & judgement-free community",
         subTitle: '(NO NEGATIVITY AND NO TROLLING)',
-        picture: undefined,
+        picture: Icons.SafeCommunity,
     },
     {
         title: 'Post goals often & stay committed',
         subTitle: '',
-        picture: undefined,
+        picture: Icons.StayCommited,
     },
     {
-        title: 'Inspare others with supportive comments',
+        title: 'Inspire others with supportive comments',
         subTitle: '',
-        picture: undefined,
+        picture: Icons.InspireOthers,
     },
     {
         title: 'Give & get suggestions, achieve more together!',
         subTitle: '',
-        picture: undefined,
+        picture: Icons.AchieveTogether,
     },
 ]
 
 export const REGISTRATION_SYNC_CONTACT_NOTES =
     'Contacts from your address book will be uploaded to GoalMogul on an ongoing ' +
-    'basis to help connect you with your friends and personalize content, such as making suggestions for you and others. You can' +
+    'basis to help connect you with your friends and personalize content, such as making suggestions for you and others. You can ' +
     'turn off syncing and remove previously uploaded contacts in your settings.'
