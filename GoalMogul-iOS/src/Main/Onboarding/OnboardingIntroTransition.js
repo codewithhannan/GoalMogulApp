@@ -18,9 +18,23 @@ import {
     BUTTON_STYLE as buttonStyle,
 } from '../../styles'
 import Icons from '../../asset/base64/Icons'
+import { fetchAppUserProfile } from '../../actions'
+import { refreshGoals } from '../../redux/modules/home/mastermind/actions'
+import { refreshFeed } from '../../redux/modules/home/feed/actions'
 
 const { width } = Dimensions.get('window')
 class OnboardingIntroTransition extends React.Component {
+    componentDidMount() {
+        // We try to prefetch user profile at this step of onboarding
+        this.props.fetchAppUserProfile()
+
+        // Refresh home goals
+        this.props.refreshGoals()
+
+        // Refresh home feed
+        this.props.refreshFeed()
+    }
+
     onContinue = () => {
         const screenTransitionCallback = () => {
             Actions.push('registration_target_selection')
@@ -134,4 +148,8 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {})(OnboardingIntroTransition)
+export default connect(mapStateToProps, {
+    fetchAppUserProfile,
+    refreshGoals,
+    refreshFeed,
+})(OnboardingIntroTransition)

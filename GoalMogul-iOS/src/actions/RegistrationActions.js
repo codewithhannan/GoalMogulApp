@@ -168,7 +168,9 @@ export const registrationNextAddProfile = (value) => {
         if (message) {
             dispatch({
                 type: REGISTRATION_ERROR,
-                error: message,
+                payload: {
+                    error: message,
+                },
             })
             throw new SubmissionError({
                 _error: message,

@@ -50,8 +50,12 @@ export default (state = INITIAL_STATE, action) => {
         case REGISTRATION_ACCOUNT:
             return { ...state, ...INITIAL_STATE, registration: true }
 
-        case REGISTRATION_ACCOUNT_SUCCESS:
-            return { ...state }
+        case REGISTRATION_ACCOUNT_SUCCESS: {
+            return {
+                ...state,
+                user: action.payload,
+            }
+        }
 
         case USER_LOG_OUT: {
             return { ...INITIAL_STATE }

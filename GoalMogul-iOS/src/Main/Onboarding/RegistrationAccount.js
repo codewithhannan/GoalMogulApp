@@ -45,6 +45,7 @@ import {
     registrationTextInputChange,
     registerAccount,
     validatePhoneCode,
+    cancelRegistration,
 } from '../../redux/modules/registration/RegistrationActions'
 import PhoneVerificationMoal from './PhoneVerificationModal'
 
@@ -78,10 +79,7 @@ class RegistrationAccount extends React.Component {
     }
 
     componentWillUnmount() {
-        this.props.registrationTextInputChange('name', undefined)
-        this.props.registrationTextInputChange('email', undefined)
-        this.props.registrationTextInputChange('phone', undefined)
-        this.props.registrationTextInputChange('password', undefined)
+        this.props.cancelRegistration()
     }
 
     nextStep = () => {
@@ -271,8 +269,15 @@ class RegistrationAccount extends React.Component {
         )
     }
 
-    renderInputs() {
-        const { phone, email, password, name, countryCode } = this.props
+    renderInputs = () => {
+        const {
+            phone,
+            email,
+            password,
+            name,
+            countryCode,
+            registerErrMsg,
+        } = this.props
         return (
             <KeyboardAvoidingView
                 behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
@@ -291,9 +296,22 @@ class RegistrationAccount extends React.Component {
                         style={{
                             flex: 1,
                             justifyContent: 'center',
-                            paddingBottom: 20,
+                            paddingBottom: 50,
                         }}
                     >
+                        <View
+                            style={{
+                                height: 29,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        >
+                            {registerErrMsg ? (
+                                <Text style={styles.errorStyle}>
+                                    {registerErrMsg}
+                                </Text>
+                            ) : null}
+                        </View>
                         <InputBox
                             key="name"
                             inputTitle="Full Name"
@@ -481,7 +499,6 @@ class RegistrationAccount extends React.Component {
                 <View style={{ zIndex: 1 }}>
                     <OnboardingHeader />
                 </View>
-
                 <View style={{ flex: 1, zIndex: 0 }}>
                     {this.renderInputs()}
                 </View>
@@ -541,6 +558,12 @@ const styles = {
         flexDirection: 'row',
         marginTop: 40,
     },
+    errorStyle: {
+        marginTop: 5,
+        color: '#ff0033',
+        justifyContent: 'center',
+        alignSelf: 'center',
+    },
 }
 
 const mapStateToProps = (state) => {
@@ -552,6 +575,7 @@ const mapStateToProps = (state) => {
         loading,
         countryCode,
         phone,
+        registerErrMsg,
     } = state.registration
 
     return {
@@ -562,6 +586,7 @@ const mapStateToProps = (state) => {
         loading,
         countryCode,
         phone,
+        registerErrMsg,
     }
 }
 
@@ -571,4 +596,5 @@ export default connect(mapStateToProps, {
     validatePhoneCode,
     registrationTextInputChange,
     onVerifyPhoneNumber,
+    cancelRegistration,
 })(RegistrationAccount)

@@ -71,6 +71,7 @@ const INITIAL_STATE = {
         },
     }, // country code for phone number
     phone: '',
+    registerErrMsg: '', // registration top error message
     userTargets: [...REGISTRATION_USER_TARGETS],
     tribes: [],
     // Below are fake tribes when network is not available
@@ -220,8 +221,14 @@ export default (state = INITIAL_STATE, action) => {
             return newState
         }
 
-        case REGISTRATION_ERROR:
-            return { ...state, error: action.payload, loading: false }
+        case REGISTRATION_ERROR: {
+            const { error } = action.payload
+            let newState = _.cloneDeep(state)
+            newState = _.set(newState, 'loading', false)
+            newState = _.set(newState, 'registerErrMsg', error)
+
+            return newState
+        }
 
         // User pressed back button on nav bar
         case REGISTRATION_BACK:

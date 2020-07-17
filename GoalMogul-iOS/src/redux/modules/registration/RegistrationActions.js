@@ -27,6 +27,8 @@ import {
     REGISTRATION_CONTACT_SYNC_FETCH,
     REGISTRATION_CONTACT_SYNC_FETCH_DONE,
     REGISTRATION_ERROR,
+    REGISTRATION_LOGIN,
+    REGISTRATION_ADDPROFILE_UPLOAD_SUCCESS,
 } from '../../../actions/types'
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal'
 import { api as API } from '../../middleware/api'
@@ -50,6 +52,9 @@ import {
 import { CONTACT_SYNC_LOAD_CONTACT_DONE } from '../User/ContactSync/ContactSyncReducers'
 import { updateFriendship } from '../../../actions'
 import { Logger } from '../../middleware/utils/Logger'
+import LiveChatService from '../../../socketio/services/LiveChatService'
+import MessageStorageService from '../../../services/chat/MessageStorageService'
+import { auth as Auth } from '../auth/Auth'
 
 const DEBUG_KEY = '[ Action RegistrationActions ]'
 /**
@@ -219,6 +224,15 @@ export const constructPhoneNumber = (countryCode, phone) => {
 }
 
 /**
+ * return to login page from registration and clear registration states
+ */
+export const cancelRegistration = () => (dispatch) => {
+    dispatch({
+        type: REGISTRATION_LOGIN,
+    })
+}
+
+/**
  * Action triggered when user clicks on next step in RegistrationAccount.
  * 1. Massage data for the request format
  * 2. Hit endpoint /pub/user to register
@@ -234,40 +248,44 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
         phone,
     } = getState().registration
 
-    // TODO: phone might not exist
-
-    // const data = validateEmail(email) ?
-    // {
-    //   name, email, password, phoneNumber
-    // } :
-    // {
-    //   name, phone: email, password
-    // };
+    const phoneNumber = constructPhoneNumber(countryCode, phone)
     const data = {
         name,
         password,
         email,
-        phone: constructPhoneNumber(countryCode, phone),
+        phone: phoneNumber,
     }
 
     dispatch({
         type: REGISTRATION_ACCOUNT_LOADING,
     })
 
-    const message = await API.post('pub/user/', { ...data }) // use default log level
-        .then((res) => {
-            if (res.message) {
-                return res.message
-            }
-            dispatch({
-                type: REGISTRATION_ADDPROFILE,
-            })
+    let message = ''
+    try {
+        const res = await API.post('pub/user/', { ...data })
+
+        if (res.status >= 200 && res.status <= 299 && !res.message) {
+            // Save token for auto login
+            await Auth.saveKey(
+                email,
+                password,
+                JSON.stringify({
+                    token: res.token,
+                    userId: res.userId,
+                    created: Date.now(),
+                })
+            )
+
             // AuthReducers record user token
             const payload = {
                 token: res.token,
                 userId: res.userId,
                 name,
             }
+
+            // Mark loading status as false and setup Auth reducer
+            // to mount main profile page.
+            // This chain might need some refactoring
             dispatch({
                 type: REGISTRATION_ACCOUNT_SUCCESS,
                 payload,
@@ -291,17 +309,40 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
                 userId: res.userId,
                 authToken: res.token,
             })
-            // Actions.reset('auth');
-        })
-        .catch((err) => {
-            // TODO: add sentry log error
-            console.log(err)
-        })
+            return
+        } else {
+            // fail to register account
+            new SentryRequestBuilder(res.message, SENTRY_MESSAGE_TYPE.MESSAGE)
+                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                .withTag(SENTRY_TAGS.REGISTRATION.ACTION, 'registerAccount')
+                .withExtraContext(SENTRY_CONTEXT.REGISTRATION.EMAIL, email)
+                .withExtraContext(
+                    SENTRY_CONTEXT.REGISTRATION.PHONE_NUMBER,
+                    phoneNumber
+                )
+                .send()
+            message = res.message
+        }
+    } catch (err) {
+        console.error(err)
+        new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.REGISTRATION.ACTION, 'registerAccount')
+            .withExtraContext(SENTRY_CONTEXT.REGISTRATION.EMAIL, email)
+            .withExtraContext(
+                SENTRY_CONTEXT.REGISTRATION.PHONE_NUMBER,
+                phoneNumber
+            )
+            .send()
+        message = 'Failed to register account. Please try again later'
+    }
 
     if (message) {
         dispatch({
             type: REGISTRATION_ERROR,
-            error: message,
+            payload: {
+                error: message,
+            },
         })
     }
 }
