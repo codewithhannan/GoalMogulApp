@@ -67,7 +67,7 @@ class SplashScreen extends Component {
     }
 
     // Functions to preload static assets
-    async _loadAssetsAsync(callback = async () => {}) {
+    _loadAssetsAsync() {
         const imageAssets = cacheImages([
             require('./asset/utils/badge.png'),
             require('./asset/utils/dropDown.png'),
@@ -198,7 +198,7 @@ class SplashScreen extends Component {
             Image.prefetch(image[k])
         )
 
-        await Promise.all([
+        return Promise.all([
             ...imageAssets,
             ...fontAssets,
             ...loadBase64Icons,
@@ -208,8 +208,6 @@ class SplashScreen extends Component {
         ]).catch((err) => {
             console.log(`${DEBUG_KEY}: [ _loadAssetsAsync ]: err`, err)
         })
-
-        console.log('finish loading images')
     }
 
     handleGetStartedOnPress() {
@@ -274,8 +272,9 @@ class SplashScreen extends Component {
             return (
                 <AppLoading
                     startAsync={() => {
-                        this._loadAssetsAsync()
-                        this.props.tryAutoLogin({ hideSplashScreen: true })
+                        this._loadAssetsAsync().then(() =>
+                            this.props.tryAutoLogin({ hideSplashScreen: true })
+                        )
                     }}
                     onFinish={() => this.setState({ appReady: true })}
                     onError={console.warn}
