@@ -14,13 +14,11 @@ class UserTopGoals extends React.PureComponent {
         const { topGoals, headline } = user
         let title // title to display
         let text // text to display
-        if (topGoals && topGoals.length !== 0) {
+        if (topGoals && topGoals.length) {
             text = topGoals[0]
             title = 'Top Goal: '
-        }
-
-        if (headline) {
-            title = 'Headline: '
+        } else if (headline && headline.trim().length) {
+            title = '' // Don't render Headline: for headline
             text = headline
         }
 
@@ -37,8 +35,8 @@ class UserTopGoals extends React.PureComponent {
         }
 
         const { text, title } = this.getText(user)
-        if (!title || !text) {
-            return <View style={{ marginTop: 20 }} />
+        if (!title && !text) {
+            return null
         }
 
         return (
@@ -46,9 +44,11 @@ class UserTopGoals extends React.PureComponent {
                 <Text
                     numberOfLines={2}
                     ellipsizeMode="tail"
-                    style={[DEFAULT_STYLE.normalText_1, { marginBottom: 2 }]}
+                    style={[DEFAULT_STYLE.normalText_1]}
                 >
-                    <Text style={{ fontWeight: 'bold', color: GM_BLUE }}>
+                    <Text
+                        style={[DEFAULT_STYLE.titleText_2, { color: GM_BLUE }]}
+                    >
                         {title}
                     </Text>
                     {text}
@@ -63,7 +63,7 @@ const styles = {
         flexDirection: 'row',
         flex: 1,
         marginTop: 8,
-        marginBottom: 9,
+        marginLeft: 49, // image width 42 + name margin left 7 from UserCardHeader.js
     },
 }
 

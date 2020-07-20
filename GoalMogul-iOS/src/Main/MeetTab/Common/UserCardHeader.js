@@ -23,13 +23,13 @@ class UserCardHeader extends React.PureComponent {
         this.props.openProfileDetail(this.props.user._id)
     }
 
-    renderHeader(item) {
-        const { name, profile, headline, mutualFriendCount } = item
+    renderHeader(user) {
+        const { name, profile, mutualFriendCount, _id } = user
         if (!profile) {
             // TODO: add sentry error logging
             return null
         }
-        const detailText = headline || profile.occupation
+        const detailText = profile.occupation || '' // If occupation is not there, then don't
 
         return (
             <View
@@ -37,7 +37,7 @@ class UserCardHeader extends React.PureComponent {
             >
                 <ProfileImage
                     imageUrl={profile ? profile.image : undefined}
-                    userId={item._id}
+                    userId={_id}
                 />
                 <View style={{ marginLeft: 7, flex: 1 }}>
                     <View
@@ -52,7 +52,7 @@ class UserCardHeader extends React.PureComponent {
                             textStyle={DEFAULT_STYLE.titleText_2}
                         />
                         <UserBanner
-                            user={item}
+                            user={user}
                             iconStyle={{ marginLeft: 5, height: 18, width: 15 }}
                         />
                         <View

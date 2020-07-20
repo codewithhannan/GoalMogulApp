@@ -60,7 +60,9 @@ class PYMKCard extends React.Component {
         }
 
         return (
-            <View style={{ flexDirection: 'row' }}>
+            <View
+                style={{ flexDirection: 'row', marginLeft: 49, marginTop: 10 }}
+            >
                 {button}
                 <View style={{ flex: 1 }} />
             </View>
@@ -68,7 +70,7 @@ class PYMKCard extends React.Component {
     }
 
     renderInvitedButton = (userId) => {
-        const text = 'Added'
+        const text = 'Request Sent'
         return (
             <DelayedButton
                 style={[
@@ -80,8 +82,8 @@ class PYMKCard extends React.Component {
             >
                 <Text
                     style={[
-                        DEFAULT_STYLE.buttonText_2,
-                        { color: 'white', fontWeight: '500' },
+                        DEFAULT_STYLE.buttonText_1,
+                        { color: 'white', fontSize: 12 },
                     ]}
                 >
                     {text}
@@ -103,8 +105,8 @@ class PYMKCard extends React.Component {
             >
                 <Text
                     style={[
-                        DEFAULT_STYLE.buttonText_2,
-                        { color: 'white', fontWeight: '500' },
+                        DEFAULT_STYLE.buttonText_1,
+                        { color: 'white', fontSize: 12 },
                     ]}
                 >
                     {text}

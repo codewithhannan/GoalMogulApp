@@ -146,7 +146,14 @@ class FriendRequestCardView extends React.PureComponent {
 
     renderButtonOutgoing(item) {
         return (
-            <View style={{ flex: 1, flexDirection: 'row' }}>
+            <View
+                style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    marginLeft: 49,
+                    marginTop: 10,
+                }}
+            >
                 <DelayedButton
                     onPress={() => this.handleWithdrawInvite(item)}
                     activeOpacity={0.6}
@@ -155,7 +162,11 @@ class FriendRequestCardView extends React.PureComponent {
                         { backgroundColor: '#E0E0E0' },
                     ]}
                 >
-                    <Text style={[DEFAULT_STYLE.buttonText_2]}>Withdraw</Text>
+                    <Text
+                        style={[DEFAULT_STYLE.buttonText_1, { fontSize: 12 }]}
+                    >
+                        Withdraw
+                    </Text>
                 </DelayedButton>
                 <View style={{ flex: 1 }} />
             </View>
@@ -166,7 +177,14 @@ class FriendRequestCardView extends React.PureComponent {
         const { friendshipId, user } = item
         const userId = user._id
         return (
-            <View style={{ flex: 1, flexDirection: 'row' }}>
+            <View
+                style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    marginLeft: 49,
+                    marginTop: 10,
+                }}
+            >
                 <DelayedButton
                     onPress={() =>
                         this.handleAcceptFriendRequest(userId, friendshipId)
@@ -178,7 +196,10 @@ class FriendRequestCardView extends React.PureComponent {
                     ]}
                 >
                     <Text
-                        style={[DEFAULT_STYLE.buttonText_2, { color: 'white' }]}
+                        style={[
+                            DEFAULT_STYLE.buttonText_1,
+                            { color: 'white', fontSize: 12 },
+                        ]}
                     >
                         Accept
                     </Text>
@@ -193,7 +214,11 @@ class FriendRequestCardView extends React.PureComponent {
                         { backgroundColor: '#E0E0E0' },
                     ]}
                 >
-                    <Text style={[DEFAULT_STYLE.buttonText_2]}>Delete</Text>
+                    <Text
+                        style={[DEFAULT_STYLE.buttonText_1, { fontSize: 12 }]}
+                    >
+                        Unfriend
+                    </Text>
                 </DelayedButton>
                 <View style={{ flex: 1 }} />
             </View>
