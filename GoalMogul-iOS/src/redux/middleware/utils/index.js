@@ -209,7 +209,7 @@ export const nFormatter = (num, digits) => {
 }
 
 export const generateInvitationLink = (inviteCode) => {
-    const BASE_CODE = 'https://web.goalmogul.com/invite?inviteCode='
+    const BASE_CODE = 'https://web.goalmogul.com/invite/'
     return `${BASE_CODE}${inviteCode}`
 }
 
