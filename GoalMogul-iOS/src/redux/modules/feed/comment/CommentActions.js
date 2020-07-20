@@ -214,7 +214,6 @@ export const createEmptyComment = (commentDetail, pageId) => (
     dispatch,
     getState
 ) => {
-    const { userId } = getState().user
     const { tab } = getState().navigation
 
     dispatch({

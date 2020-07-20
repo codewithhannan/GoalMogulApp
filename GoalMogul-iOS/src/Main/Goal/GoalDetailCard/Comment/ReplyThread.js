@@ -90,10 +90,6 @@ class ReplyThread extends React.Component {
         )
     }
 
-    componentWillUnmount() {
-        this.handleOnClose()
-    }
-
     openCommentLikeList = (likeListParentType, likeListParentId) => {
         this.setState({
             showCommentLikeList: true,
@@ -130,19 +126,6 @@ class ReplyThread extends React.Component {
         commentToReturn = _.set(commentToReturn, 'replyToRef', itemId)
         commentToReturn = _.set(commentToReturn, 'commentType', 'Reply')
         this.props.updateNewComment(commentToReturn, this.props.pageId)
-    }
-
-    handleOnClose() {
-        this.props.createEmptyComment(
-            {
-                commentType: 'Comment',
-                replyToRef: undefined,
-                parentType: this.props.newComment.parentType,
-                parentRef: this.props.newComment.parentRef,
-                owner: this.props.newComment.owner,
-            },
-            this.props.pageId
-        )
     }
 
     /**
@@ -377,13 +360,7 @@ class ReplyThread extends React.Component {
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     style={styles.cardContainerStyle}
                 >
-                    <ModalHeader
-                        onCancel={() => {
-                            this.handleOnClose.bind(this)
-                            Actions.pop()
-                        }}
-                        back
-                    />
+                    <ModalHeader back />
                     <View
                         style={{
                             flex: 1,
@@ -432,11 +409,15 @@ const makeMapStateToProps = () => {
 
     const mapStateToProps = (state, props) => {
         const { userId } = state.user
-        const { itemId, entityId, pageId } = props
+        const { itemId, entityId } = props
+        const pageId = `${props.pageId}.${itemId}`
         const { item } = getRepliesById(state, itemId, entityId)
-        const newComment = getNewCommentByTab(state, pageId)
+        const newComment =
+            getNewCommentByTab(state, pageId) ||
+            getNewCommentByTab(state, props.pageId)
 
         return {
+            pageId,
             userId,
             item,
             newComment,
