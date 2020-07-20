@@ -39,6 +39,7 @@ import { openPostDetail } from '../../../../redux/modules/feed/post/PostActions'
 
 import {
     createComment,
+    createEmptyComment,
     updateNewComment,
 } from '../../../../redux/modules/feed/comment/CommentActions'
 import {
@@ -55,6 +56,7 @@ import ChildCommentCard from './ChildCommentCard'
 import { Icon } from '@ui-kitten/components'
 import { Text } from 'react-native-animatable'
 import LikeListModal from '../../../Common/Modal/LikeListModal'
+import { Actions } from 'react-native-router-flux'
 
 const DEBUG_KEY = '[ UI CommentCard ]'
 
@@ -76,25 +78,20 @@ class ReplyThread extends React.Component {
     }
 
     componentDidMount() {
-        this.props.createComment(
+        this.props.createEmptyComment(
             {
-                ...this.props.newComment,
                 commentType: 'Reply',
                 replyToRef: this.props.itemId,
+                parentType: this.props.newComment.parentType,
+                parentRef: this.props.newComment.parentRef,
+                owner: this.props.newComment.owner,
             },
             this.props.pageId
         )
     }
 
     componentWillUnmount() {
-        this.props.createComment(
-            {
-                ...this.props.newComment,
-                commentType: 'Comment',
-                replyToRef: undefined,
-            },
-            this.props.pageId
-        )
+        this.handleOnClose()
     }
 
     openCommentLikeList = (likeListParentType, likeListParentId) => {
@@ -133,6 +130,19 @@ class ReplyThread extends React.Component {
         commentToReturn = _.set(commentToReturn, 'replyToRef', itemId)
         commentToReturn = _.set(commentToReturn, 'commentType', 'Reply')
         this.props.updateNewComment(commentToReturn, this.props.pageId)
+    }
+
+    handleOnClose() {
+        this.props.createEmptyComment(
+            {
+                commentType: 'Comment',
+                replyToRef: undefined,
+                parentType: this.props.newComment.parentType,
+                parentRef: this.props.newComment.parentRef,
+                owner: this.props.newComment.owner,
+            },
+            this.props.pageId
+        )
     }
 
     /**
@@ -367,7 +377,13 @@ class ReplyThread extends React.Component {
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     style={styles.cardContainerStyle}
                 >
-                    <ModalHeader back />
+                    <ModalHeader
+                        onCancel={() => {
+                            this.handleOnClose.bind(this)
+                            Actions.pop()
+                        }}
+                        back
+                    />
                     <View
                         style={{
                             flex: 1,
@@ -433,5 +449,6 @@ const makeMapStateToProps = () => {
 export default connect(makeMapStateToProps, {
     openPostDetail,
     createComment,
+    createEmptyComment,
     updateNewComment,
 })(ReplyThread)

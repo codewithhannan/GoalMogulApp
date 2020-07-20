@@ -64,10 +64,6 @@ const ModalHeader = (props) => {
         <Text style={styles.cancelTextStyle}>{cancel}</Text>
     )
 
-    if (cancelText === null) {
-        leftComponent = null
-    }
-
     const extraContainerStyles = containerStyles || {}
     const extraActionTextStyle = actionTextStyle || {}
     const extraTitleTextStyle = titleTextStyle || {}
