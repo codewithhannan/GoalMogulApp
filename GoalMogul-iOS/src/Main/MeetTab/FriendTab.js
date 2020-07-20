@@ -14,6 +14,7 @@ import {
     GM_FONT_FAMILY,
     GM_FONT_LINE_HEIGHT,
     DEFAULT_STYLE,
+    FONT_FAMILY_3,
 } from '../../styles'
 import PYMKCard from './PYMKCard'
 import {
@@ -131,13 +132,18 @@ class FriendTab extends React.Component {
                     width: '100%',
                     paddingBottom: styles.padding,
                     paddingLeft: styles.padding,
-                    padingRight: styles.padding,
+                    paddingRight: styles.padding,
                 }}
             >
-                <View style={{ flexDirection: 'row' }}>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                    }}
+                >
                     <RequestCard user={incomingRequests[0]} />
                     {requestCount < 2 ? null : (
-                        <RequestCard user={incomingRequests[0]} />
+                        <RequestCard user={incomingRequests[1]} />
                     )}
                 </View>
                 {requestCount <= 2 ? null : (
@@ -147,9 +153,18 @@ class FriendTab extends React.Component {
                             backgroundColor: '#F2F2F2',
                             borderRadius: 3,
                             padding: 10,
+                            alignItems: 'center',
+                            marginTop: 16,
                         }}
                     >
-                        <Text>Show all ({`${requestCount}`} Invites)</Text>
+                        <Text
+                            style={[
+                                DEFAULT_STYLE.normalText_1,
+                                { fontFamily: FONT_FAMILY_3, color: '#4F4F4F' },
+                            ]}
+                        >
+                            Show all ({`${requestCount}`} Invites)
+                        </Text>
                     </DelayedButton>
                 )}
             </View>
