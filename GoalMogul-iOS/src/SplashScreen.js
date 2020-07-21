@@ -271,10 +271,11 @@ class SplashScreen extends Component {
         if (!this.state.appReady) {
             return (
                 <AppLoading
-                    startAsync={() => {
-                        this._loadAssetsAsync().then(() =>
-                            this.props.tryAutoLogin({ hideSplashScreen: true })
-                        )
+                    startAsync={async () => {
+                        await this._loadAssetsAsync()
+                        await this.props.tryAutoLogin({
+                            hideSplashScreen: true,
+                        })
                     }}
                     onFinish={() => this.setState({ appReady: true })}
                     onError={console.warn}

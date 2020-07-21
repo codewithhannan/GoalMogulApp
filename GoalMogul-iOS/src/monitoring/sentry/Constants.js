@@ -16,6 +16,10 @@ const SENTRY_TAGS = {
             'unsubscribe notifications (expo push token deletion)',
         GOAL_UPDATE: 'goal update',
     },
+    AUTH: {
+        EXPO_SECURE_STORE_FETCH: 'expo secure store fetch',
+        AUTO_AUTHENTICATE: 'auto login',
+    },
     TRIBE: {
         ACTION: 'tribe action',
         REDUCER: 'tribe reducer',

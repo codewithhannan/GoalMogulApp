@@ -76,11 +76,25 @@ const validateEmail = (email) => {
     return re.test(String(email).toLowerCase())
 }
 
-export const tryAutoLogin = (flags) => (dispatch, getState) => {
-    Auth.getKey().then((res) => {
+export const tryAutoLogin = (flags) => async (dispatch, getState) => {
+    let res
+    try {
+        res = await Auth.getKey()
+    } catch (error) {
+        new SentryRequestBuilder(message, SENTRY_MESSAGE_TYPE.MESSAGE)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(
+                SENTRY_TAGS.AUTH.EXPO_SECURE_STORE_FETCH,
+                SENTRY_TAG_VALUE.ACTIONS.FAILED
+            )
+            .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
+            .send()
+        return
+    }
+
+    try {
         // auto-login with current token
         authenticate(res, flags)(dispatch, getState)
-
         // refresh token 30s after app load
         setTimeout(async () => {
             const { username, password } = res
@@ -89,7 +103,16 @@ export const tryAutoLogin = (flags) => (dispatch, getState) => {
                 getState
             )
         }, MINUTE_IN_MS / 2)
-    })
+    } catch (error) {
+        new SentryRequestBuilder(message, SENTRY_MESSAGE_TYPE.MESSAGE)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(
+                SENTRY_TAGS.AUTH.AUTO_AUTHENTICATE,
+                SENTRY_TAG_VALUE.ACTIONS.FAILED
+            )
+            .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
+            .send()
+    }
 }
 
 export const loginUser = ({ username, password, onError, onSuccess }) => (
