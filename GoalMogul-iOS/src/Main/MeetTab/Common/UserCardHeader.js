@@ -4,7 +4,7 @@ import React from 'react'
 import { View, Text, Image } from 'react-native'
 import { connect } from 'react-redux'
 import { FONT_FAMILY_1, DEFAULT_STYLE } from '../../../styles'
-import { UserBanner, openProfileDetail } from '../../../actions'
+import { UserBanner, openProfile } from '../../../actions'
 import Icons from '../../../asset/base64/Icons'
 import ProfileImage from '../../Common/ProfileImage'
 import Name from '../../Common/Name'
@@ -20,7 +20,7 @@ import FriendsSettingIcon from '../../../asset/utils/friendsSettingIcon.png'
  */
 class UserCardHeader extends React.PureComponent {
     handleOpenProfile = () => {
-        this.props.openProfileDetail(this.props.user._id)
+        this.props.openProfile(this.props.user._id)
     }
 
     renderHeader(item) {
@@ -124,7 +124,7 @@ class UserCardHeader extends React.PureComponent {
         return (
             <DelayedButton
                 style={styles.containerStyle}
-                activeOpacity={1}
+                activeOpacity={0.8}
                 onPress={this.handleOpenProfile}
             >
                 {this.renderHeader(user)}
@@ -175,5 +175,5 @@ const styles = {
 }
 
 export default connect(null, {
-    openProfileDetail,
+    openProfile,
 })(UserCardHeader)
