@@ -17,7 +17,6 @@
  * @format
  */
 
-import { Octicons } from '@expo/vector-icons'
 import { Icon, Layout } from '@ui-kitten/components'
 import * as FileSystem from 'expo-file-system'
 import * as Permissions from 'expo-permissions'
@@ -27,7 +26,6 @@ import React from 'react'
 import {
     ActionSheetIOS,
     Alert,
-    Animated,
     CameraRoll,
     Clipboard,
     Dimensions,
@@ -38,9 +36,9 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native'
-import EmojiSelector from 'react-native-emoji-selector'
-import { Avatar, GiftedChat, SystemMessage } from 'react-native-gifted-chat'
+import { Avatar, SystemMessage } from 'react-native-gifted-chat'
 import { Actions } from 'react-native-router-flux'
+import { TypingAnimation } from 'react-native-typing-animation'
 import { connect } from 'react-redux'
 import UUID from 'uuid/v4'
 import { openCamera, openCameraRoll, openProfile } from '../../../actions'
@@ -68,8 +66,11 @@ import LiveChatService, {
 } from '../../../socketio/services/LiveChatService'
 import { GM_BLUE_LIGHT } from '../../../styles'
 import {
+    DEVICE_MODEL,
     GROUP_CHAT_DEFAULT_ICON_URL,
     IMAGE_BASE_URL,
+    IPHONE_MODELS_2,
+    IPHONE_MODELS_3,
 } from '../../../Utils/Constants'
 import { toHashCode } from '../../../Utils/ImageUtils'
 import {
@@ -80,6 +81,7 @@ import DelayedButton from '../../Common/Button/DelayedButton'
 import ModalHeader from '../../Common/Header/ModalHeader'
 import ProfileImage from '../../Common/ProfileImage'
 import ChatRoomLoaderOverlay from '../Modals/ChatRoomLoaderOverlay'
+import { GMGiftedChat } from './GiftedChat/GMGiftedChat'
 import ChatRoomConversationInputToolbar from './GiftedChat/GMGiftedChatInputToolbar'
 import GMGiftedMessage from './GiftedChat/GMGiftedMessage'
 import Send from './GiftedChat/GMGiftedSend'
@@ -89,10 +91,11 @@ const LISTENER_KEY = 'ChatRoomConversation'
 const MAX_TYPING_INDICATORS_TO_DISPLAY = 3
 const CHAT_ROOM_DOCUMENT_REFRESH_INTERVAL = 3000 // milliseconds
 
-// const GIFTED_CHAT_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(DEVICE_MODEL)
-//     ? 102
-//     : 66
-const GIFTED_CHAT_BOTTOM_OFFSET = 102
+const GIFTED_CHAT_BOTTOM_OFFSET = IPHONE_MODELS_3.includes(DEVICE_MODEL)
+    ? 90
+    : IPHONE_MODELS_2.includes(DEVICE_MODEL)
+    ? 84
+    : 52
 
 /**
  * Remove button for image preview in chat inputbox
@@ -188,12 +191,6 @@ class ChatRoomConversation extends React.Component {
                     }
                 }
             )
-        }
-
-        this.animations = {
-            emojiSelectorSlideAnim: new Animated.Value(
-                Dimensions.get('window').height
-            ),
         }
     }
 
@@ -462,39 +459,6 @@ class ChatRoomConversation extends React.Component {
         )
         return addMediaRefActionSheet()
     }
-    onOpenEmojiKeyboard = () => {
-        const showEmojiSelector = !this.state.showEmojiSelector
-        if (showEmojiSelector) {
-            this._textInput.blur()
-            this.setState({ showEmojiSelector }, () => {
-                Animated.timing(this.animations.emojiSelectorSlideAnim, {
-                    toValue: 0,
-                    duration: 400,
-                    useNativeDriver: true,
-                }).start()
-            })
-        } else {
-            Animated.timing(this.animations.emojiSelectorSlideAnim, {
-                toValue: Dimensions.get('window').height,
-                duration: 400,
-                useNativeDriver: true,
-            }).start(() => {
-                this._textInput.focus()
-                this.setState({ showEmojiSelector })
-            })
-        }
-    }
-    onEmojiSelected = (emoji) => {
-        this._giftedChat.onInputTextChanged(this._giftedChat.state.text + emoji)
-        Animated.timing(this.animations.emojiSelectorSlideAnim, {
-            toValue: Dimensions.get('window').height,
-            duration: 400,
-            useNativeDriver: true,
-        }).start(() => {
-            this._textInput.focus()
-            this.setState({ showEmojiSelector: false })
-        })
-    }
     handleOpenCamera = () => {
         this.props.openCamera((result) => {
             this.props.changeMessageMediaRef(result.uri)
@@ -679,14 +643,14 @@ class ChatRoomConversation extends React.Component {
                                     marginLeft: 3,
                                 }}
                             />
-                            <Octicons
-                                name="ellipsis"
-                                size={48}
-                                style={{
-                                    color: '#CCC',
-                                    flex: 2,
-                                    marginLeft: 12,
-                                }}
+                            <TypingAnimation
+                                dotColor="#595b5e"
+                                dotMargin={9}
+                                dotAmplitude={3}
+                                dotSpeed={0.15}
+                                dotRadius={2.5}
+                                dotX={24}
+                                dotY={0}
                             />
                         </View>
                     )}
@@ -726,23 +690,6 @@ class ChatRoomConversation extends React.Component {
                     ]}
                 />
             </TouchableOpacity>
-        )
-    }
-    renderEmojiSelector() {
-        return (
-            <View>
-                <TouchableOpacity
-                    activeOpacity={0.6}
-                    style={styles.iconContainerStyle}
-                    onPress={this.onOpenEmojiKeyboard}
-                >
-                    <Icon
-                        name="tag-faces"
-                        pack="material"
-                        style={[styles.iconStyle, { tintColor: '#4F4F4F' }]}
-                    />
-                </TouchableOpacity>
-            </View>
         )
     }
 
@@ -803,7 +750,6 @@ class ChatRoomConversation extends React.Component {
                             {messageMediaRef
                                 ? null
                                 : this.renderSendImageButton()}
-                            {this.renderEmojiSelector()}
                             {this.renderShareContentButton()}
                         </View>
                         <View
@@ -842,18 +788,15 @@ class ChatRoomConversation extends React.Component {
                         props.onTextChanged(text)
                         props.onInputTextChanged(text)
                     }}
-                    onContentSizeChange={(e) => {}}
                     value={props.text}
                     multiline={true}
                     placeholder={`${props.placeholder.slice(0, 42)}...`}
-                    editable={!this.props.initializing}
+                    autoFocus={false}
                     style={{
                         fontSize: 16,
                         padding: 9,
-                        paddingTop: 10,
-                        borderColor: '#F1F1F1',
-                        borderRadius: 6,
-                        borderWidth: 1,
+                        paddingTop: 6,
+                        paddingBottom: 6,
                         minHeight: 15 + 18,
                         maxHeight: 18 * 5 + 23,
                     }}
@@ -956,7 +899,7 @@ class ChatRoomConversation extends React.Component {
                         color: '#fff',
                     }}
                 />
-                <GiftedChat
+                <GMGiftedChat
                     ref={(chatRef) => (this._giftedChat = chatRef)}
                     messages={(this.props.ghostMessages || []).concat(
                         (this.props.messages || []).sort(
@@ -997,49 +940,6 @@ class ChatRoomConversation extends React.Component {
                     deleteMessage={this.deleteMessage}
                     dismissGoalSuggestion={this.dismissGoalSuggestion}
                 />
-                {this.state.showEmojiSelector && (
-                    <Animated.View
-                        style={{
-                            position: 'absolute',
-                            width: Dimensions.get('window').width,
-                            height: Dimensions.get('window').height,
-                            backgroundColor: '#fff',
-                            zIndex: 5,
-                            transform: [
-                                {
-                                    translateY: this.animations
-                                        .emojiSelectorSlideAnim,
-                                },
-                            ],
-                        }}
-                    >
-                        <ModalHeader
-                            actionDisabled={true}
-                            actionHidden={true}
-                            title={'Select an Emoji'}
-                            cancelText={'Close'}
-                            onCancel={this.onOpenEmojiKeyboard}
-                            containerStyles={{
-                                elevation: 1,
-                                shadowColor: '#666',
-                                shadowOffset: { width: 0, height: -3 },
-                                shadowOpacity: 0.3,
-                                shadowRadius: 1,
-                            }}
-                        />
-                        <View
-                            style={{
-                                paddingTop: 18,
-                                paddingBottom: 24,
-                                flexGrow: 1,
-                            }}
-                        >
-                            <EmojiSelector
-                                onEmojiSelected={this.onEmojiSelected}
-                            />
-                        </View>
-                    </Animated.View>
-                )}
             </Layout>
         )
     }

@@ -1,13 +1,12 @@
 /** @format */
 
-import React from 'react'
-import { View, Image, Dimensions, Text } from 'react-native'
 import Constants from 'expo-constants'
+import React from 'react'
+import { Dimensions, Image, Text, View } from 'react-native'
 import Modal from 'react-native-modal'
 import cancel from '../../../../asset/utils/cancel_no_background.png'
 import profilePic from '../../../../asset/utils/defaultUserProfile.png'
 import { IMAGE_BASE_URL } from '../../../../Utils/Constants'
-
 import DelayedButton from '../../../Common/Button/DelayedButton'
 
 const { width } = Dimensions.get('window')
@@ -129,7 +128,6 @@ const styles = {
         height: 24,
         width: 24,
         padding: 1,
-        border: '1px solid #F1F1F1',
         backgroundColor: '#fff',
     },
     headerTextStyle: {

@@ -1,40 +1,35 @@
 /** @format */
 
+import { AppLoading } from 'expo'
+import { Asset } from 'expo-asset'
+import Constants from 'expo-constants'
+import * as Font from 'expo-font'
+import { LinearGradient } from 'expo-linear-gradient'
 import React, { Component } from 'react'
 import {
-    View,
-    Text,
-    Image,
-    TouchableOpacity,
     Dimensions,
+    Image,
     Platform,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native'
-import { Asset } from 'expo-asset'
-import * as Font from 'expo-font'
-import { connect } from 'react-redux'
-import { AppLoading } from 'expo'
-import Constants from 'expo-constants'
-import { LinearGradient } from 'expo-linear-gradient'
 import { Actions } from 'react-native-router-flux'
-import _ from 'lodash'
-
+import { connect } from 'react-redux'
 // Actions
 import { tryAutoLogin } from './actions'
-
+import background from './asset/background'
+import banner from './asset/banner'
+import Icons from './asset/base64/Icons'
 /* Asset */
 import HeaderLogo from './asset/header/header-logo-white.png'
-import Helpfulness from './asset/utils/help.png'
-import Icons from './asset/base64/Icons'
-
-// Components
-import { RightArrowIcon } from './Utils/Icons'
-
-import { IPHONE_MODELS, IS_ZOOMED, DEVICE_MODEL } from './Utils/Constants'
-import banner from './asset/banner'
-import background from './asset/background'
 import image from './asset/image'
+import Helpfulness from './asset/utils/help.png'
 import { trackViewScreen } from './monitoring/segment'
 import { Screen } from './monitoring/segment/Constants'
+import { DEVICE_MODEL, IPHONE_MODELS, IS_ZOOMED } from './Utils/Constants'
+// Components
+import { RightArrowIcon } from './Utils/Icons'
 
 const IS_SMALL_PHONE =
     Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL)
@@ -174,7 +169,6 @@ class SplashScreen extends Component {
             require('./asset/utils/direct_message.png'),
             require('./asset/utils/profile_people.png'),
             require('./asset/utils/sendButton.png'),
-            require('./asset/utils/emoji.png'),
         ])
 
         const fontAssets = cacheFonts({

@@ -24,24 +24,27 @@ export const DEVICE_STANDARD_HEIGHTS = {
     'iphone 8': 667,
 }
 
+export const IPHONE_MODELS_3 = ['iphone 11 pro max']
+
 export const IPHONE_MODELS_2 = [
-    'iphone 7 plus',
     'iphone x',
     'iphone xs',
     'iphone xr',
     'iphone 11',
     'iphone 11 pro',
-    'iphone 11 pro max',
-    'simulator',
     'iphone' /* 11 */,
+    'simulator',
 ]
 export const IPHONE_MODELS = [
     'iphone se',
-    'iphone 7',
-    'iphone 6',
-    'iphone 6s',
-    'iphone 5',
+    'iphone 8 plus',
+    'iphone 7 plus',
     'iphone 6 plus',
+    'iphone 8',
+    'iphone 7',
+    'iphone 6s',
+    'iphone 6',
+    'iphone 5',
     'iphone 4',
     'iphone 5s',
 ]

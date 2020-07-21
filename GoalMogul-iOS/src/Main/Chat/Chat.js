@@ -98,12 +98,15 @@ class ChatTab extends React.Component {
                 if (!this.props.hasShown) {
                     // Force private message tab
                     this.props.selectChatTab(0)
+                    /*
+                    NOTE: We're removing the tutorial for now since it bugs out and needs to be overhauled
                     setTimeout(() => {
                         console.log(
                             `${DEBUG_KEY}: [ onFocus ]: [ startTutorial ]`
                         )
                         this.props.startTutorial('chat_tab_flow', 'chat_tab')
                     }, 300)
+                    */
                 }
             }
         )
