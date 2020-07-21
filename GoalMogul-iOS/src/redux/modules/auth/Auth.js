@@ -1,10 +1,7 @@
 /** @format */
 
 // Authantication actions
-import { SplashScreen } from 'expo'
 import * as SecureStore from 'expo-secure-store'
-
-import { SPLASHSCREEN_HIDE } from '../../../reducers/AuthReducers'
 
 const USERNAME = 'username'
 const PASSWORD = 'password'
@@ -120,13 +117,4 @@ export const auth = {
             throw e
         }
     },
-}
-
-export const hideSplashScreen = () => async (dispatch, getState) => {
-    setTimeout(async () => {
-        SplashScreen.hide()
-        dispatch({
-            type: SPLASHSCREEN_HIDE,
-        })
-    }, 100)
 }

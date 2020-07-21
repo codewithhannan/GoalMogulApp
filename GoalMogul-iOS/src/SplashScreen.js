@@ -19,8 +19,7 @@ import { Actions } from 'react-native-router-flux'
 import _ from 'lodash'
 
 // Actions
-import { hideSplashScreen } from './redux/modules/auth/Auth'
-import { tryAutoLogin, loginUser } from './actions'
+import { tryAutoLogin } from './actions'
 
 /* Asset */
 import HeaderLogo from './asset/header/header-logo-white.png'
@@ -68,7 +67,7 @@ class SplashScreen extends Component {
     }
 
     // Functions to preload static assets
-    async _loadAssetsAsync(callback = async () => {}) {
+    _loadAssetsAsync() {
         const imageAssets = cacheImages([
             require('./asset/utils/badge.png'),
             require('./asset/utils/dropDown.png'),
@@ -199,7 +198,7 @@ class SplashScreen extends Component {
             Image.prefetch(image[k])
         )
 
-        await Promise.all([
+        return Promise.all([
             ...imageAssets,
             ...fontAssets,
             ...loadBase64Icons,
@@ -209,14 +208,6 @@ class SplashScreen extends Component {
         ]).catch((err) => {
             console.log(`${DEBUG_KEY}: [ _loadAssetsAsync ]: err`, err)
         })
-
-        console.log('finish loading images')
-
-        await callback()
-        console.log('finish loading keys')
-        this.props.hideSplashScreen()
-
-        return
     }
 
     handleGetStartedOnPress() {
@@ -280,9 +271,12 @@ class SplashScreen extends Component {
         if (!this.state.appReady) {
             return (
                 <AppLoading
-                    startAsync={() =>
-                        this._loadAssetsAsync(this.props.tryAutoLogin)
-                    }
+                    startAsync={async () => {
+                        await this._loadAssetsAsync()
+                        await this.props.tryAutoLogin({
+                            hideSplashScreen: true,
+                        })
+                    }}
                     onFinish={() => this.setState({ appReady: true })}
                     onError={console.warn}
                     autoHideSplash={false}
@@ -547,9 +541,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         registration: () => Actions.push('registrationAccount'),
         login: () => Actions.push('login'),
-        loginUser: (val) => dispatch(loginUser(val)),
-        tryAutoLogin: () => dispatch(tryAutoLogin()),
-        hideSplashScreen: () => dispatch(hideSplashScreen()),
+        tryAutoLogin: (params) => dispatch(tryAutoLogin(params)),
     }
 }
 
