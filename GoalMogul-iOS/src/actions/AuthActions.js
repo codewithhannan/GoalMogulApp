@@ -83,6 +83,7 @@ export const tryAutoLogin = (flags) => async (dispatch, getState) => {
     } catch (error) {
         new SentryRequestBuilder(message, SENTRY_MESSAGE_TYPE.MESSAGE)
             .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.AUTH.ACTION, 'tryAutoLogin')
             .withTag(
                 SENTRY_TAGS.AUTH.EXPO_SECURE_STORE_FETCH,
                 SENTRY_TAG_VALUE.ACTIONS.FAILED
@@ -106,6 +107,7 @@ export const tryAutoLogin = (flags) => async (dispatch, getState) => {
     } catch (error) {
         new SentryRequestBuilder(message, SENTRY_MESSAGE_TYPE.MESSAGE)
             .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.AUTH.ACTION, 'tryAutoLogin')
             .withTag(
                 SENTRY_TAGS.AUTH.AUTO_AUTHENTICATE,
                 SENTRY_TAG_VALUE.ACTIONS.FAILED

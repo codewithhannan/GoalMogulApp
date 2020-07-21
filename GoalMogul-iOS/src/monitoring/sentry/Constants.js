@@ -17,6 +17,7 @@ const SENTRY_TAGS = {
         GOAL_UPDATE: 'goal update',
     },
     AUTH: {
+        ACTION: 'AuthActions',
         EXPO_SECURE_STORE_FETCH: 'expo secure store fetch',
         AUTO_AUTHENTICATE: 'auto login',
     },
