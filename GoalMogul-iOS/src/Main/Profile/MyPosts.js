@@ -73,18 +73,7 @@ class MyPosts extends Component {
 
     renderItem = ({ item }) => {
         // TODO: render item
-        return (
-            <ProfilePostCard
-                item={item}
-                onPress={(item) => {
-                    const initialProps = {
-                        initialFocusCommentBox: true,
-                    }
-                    this.props.openPostDetail(item, initialProps)
-                }}
-                hasActionButton
-            />
-        )
+        return <ProfilePostCard item={item} hasActionButton />
     }
 
     render() {
