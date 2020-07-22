@@ -104,7 +104,7 @@ class GoalDetailCard2 extends Component {
     dialogOnFocus = () => this.commentBox.focus()
 
     handleReplyTo = () => {
-        this.commentBox.focusForReply()
+        this.commentBox.focus()
     }
 
     renderItem = (props) => {

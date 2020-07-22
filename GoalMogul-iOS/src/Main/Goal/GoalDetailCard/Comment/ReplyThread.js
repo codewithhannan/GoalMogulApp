@@ -73,20 +73,35 @@ class ReplyThread extends React.Component {
         this.openCommentLikeList = this.openCommentLikeList.bind(this)
         this.closeCommentLikeList = this.closeCommentLikeList.bind(this)
 
+        this.clearCommentBox = this.clearCommentBox.bind(this)
         this.resetCommentBox = this.resetCommentBox.bind(this)
         this.renderItem = this.renderItem.bind(this)
     }
 
     componentDidMount() {
+        this.clearCommentBox()
+        if (this.props.focusCommentBox)
+            setTimeout(() => this.commentBox.focus(), 700)
+    }
+
+    componentWillUnmount() {
+        // This is second tome resetCommentBox is called because sometimes
+        // due to auto correct text persists from reply thread as comment boxes are
+        // using same redux area
+        this.resetCommentBox()
+    }
+
+    resetCommentBox = () => {
+        const { newComment, pageId } = this.props
         this.props.createEmptyComment(
             {
-                commentType: 'Reply',
-                replyToRef: this.props.itemId,
-                parentType: this.props.newComment.parentType,
-                parentRef: this.props.newComment.parentRef,
-                owner: this.props.newComment.owner,
+                commentType: 'Comment',
+                replyToRef: undefined,
+                parentType: newComment.parentType,
+                parentRef: newComment.parentRef,
+                owner: newComment.owner,
             },
-            this.props.pageId
+            pageId
         )
     }
 
@@ -106,26 +121,18 @@ class ReplyThread extends React.Component {
         })
     }
 
-    resetCommentBox = () => {
-        const { newComment, itemId } = this.props
-        if (
-            newComment &&
-            newComment.contentText &&
-            newComment.contentText === ''
+    clearCommentBox = () => {
+        const { newComment, itemId, pageId } = this.props
+        this.props.createEmptyComment(
+            {
+                commentType: 'Reply',
+                replyToRef: itemId,
+                parentType: newComment.parentType,
+                parentRef: newComment.parentRef,
+                owner: newComment.owner,
+            },
+            pageId
         )
-            return
-
-        if (!newComment) {
-            console.warn(
-                `${DEBUG_KEY}: [ resetCommentBox ]: newComment is undefined. Something is wrong.`
-            )
-        }
-        // Since the contentText is empty, reset the replyToRef and commentType
-        // Update new comment
-        let commentToReturn = _.cloneDeep(newComment)
-        commentToReturn = _.set(commentToReturn, 'replyToRef', itemId)
-        commentToReturn = _.set(commentToReturn, 'commentType', 'Reply')
-        this.props.updateNewComment(commentToReturn, this.props.pageId)
     }
 
     /**
@@ -360,7 +367,14 @@ class ReplyThread extends React.Component {
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     style={styles.cardContainerStyle}
                 >
-                    <ModalHeader back />
+                    <ModalHeader
+                        onCancel={() => {
+                            // reset comment box redux area on close
+                            this.resetCommentBox()
+                            Actions.pop()
+                        }}
+                        back
+                    />
                     <View
                         style={{
                             flex: 1,
@@ -374,11 +388,11 @@ class ReplyThread extends React.Component {
                         />
                     </View>
                     <CommentBox
+                        onRef={(ref) => (this.commentBox = ref)}
                         hasSuggestion={!!this.props.goalId}
                         pageId={this.props.pageId}
                         goalId={this.props.goalId}
-                        onSubmitEditing={this.resetCommentBox}
-                        resetToDefault={this.resetCommentBox}
+                        onPost={this.clearCommentBox}
                         isReplyCommentBox={true}
                     />
                 </KeyboardAvoidingView>
@@ -410,15 +424,13 @@ const makeMapStateToProps = () => {
 
     const mapStateToProps = (state, props) => {
         const { userId } = state.user
-        const { itemId, entityId } = props
-        const pageId = `${props.pageId}.${itemId}`
+        const { itemId, entityId, pageId } = props
         const { item } = getRepliesById(state, itemId, entityId)
         const newComment =
             getNewCommentByTab(state, pageId) ||
             getNewCommentByTab(state, props.pageId)
 
         return {
-            pageId,
             userId,
             item,
             newComment,
