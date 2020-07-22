@@ -51,7 +51,6 @@ class ShareDetailCard extends Component {
         this.state = {
             position: 'absolute',
             commentBoxPadding: new Animated.Value(0),
-            keyboardDidShow: false,
         }
         this.handleScrollToCommentItem = this.handleScrollToCommentItem.bind(
             this
@@ -129,9 +128,6 @@ class ShareDetailCard extends Component {
 
     keyboardWillShow = (e) => {
         console.log(`${DEBUG_KEY}: [ keyboardWillShow ]`)
-        if (!this.state.keyboardDidShow) {
-            this.dialogOnFocus()
-        }
         const timeout = (TOTAL_HEIGHT * 210) / e.endCoordinates.height
         Animated.sequence([
             Animated.delay(timeout),
@@ -155,10 +151,6 @@ class ShareDetailCard extends Component {
                 duration: 210,
             }),
         ]).start()
-        this.setState({
-            ...this.state,
-            keyboardDidShow: false,
-        })
     }
 
     /**
@@ -262,10 +254,6 @@ class ShareDetailCard extends Component {
             )
             return
         }
-        this.setState({
-            ...this.state,
-            keyboardDidShow: true,
-        })
         this.commentBox.focusForReply(type)
     }
 

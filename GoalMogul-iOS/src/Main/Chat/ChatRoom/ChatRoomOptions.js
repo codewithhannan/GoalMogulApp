@@ -13,25 +13,23 @@
  * @see https://akveo.github.io/react-native-ui-kitten/docs/
  */
 
-import React from 'react'
 import {
-    Text,
+    Icon,
     Layout,
-    withStyles,
     Menu,
     MenuItem,
-    Icon,
+    Text,
+    withStyles,
 } from '@ui-kitten/components'
 import _ from 'lodash'
-import R from 'ramda'
 import moment from 'moment'
-import { connect } from 'react-redux'
-import { Actions } from 'react-native-router-flux'
-import { StyleSheet, Alert, View } from 'react-native'
+import R from 'ramda'
+import React from 'react'
+import { Alert, StyleSheet, View } from 'react-native'
 import DateTimePicker from 'react-native-modal-datetime-picker'
-
-import ModalHeader from '../../Common/Header/ModalHeader'
-import Spacer from '../../Common/Spacer'
+import { Actions } from 'react-native-router-flux'
+import { connect } from 'react-redux'
+import { loadFriends, openProfile, openProfileDetail } from '../../../actions'
 import {
     deleteConversationMessages,
     refreshChatRoom,
@@ -39,10 +37,13 @@ import {
 import { removeChatMember } from '../../../redux/modules/chat/ChatRoomMembersActions'
 import {
     addMemberToChatRoom,
-    muteChatRoom,
     changeChatRoomMute,
+    muteChatRoom,
 } from '../../../redux/modules/chat/ChatRoomOptionsActions'
-import { openProfile, loadFriends, openProfileDetail } from '../../../actions'
+import {
+    openMultiUserInviteModal,
+    searchFriend,
+} from '../../../redux/modules/search/SearchActions'
 import {
     GROUP_CHAT_DEFAULT_ICON_URL,
     IMAGE_BASE_URL,
@@ -51,10 +52,7 @@ import {
     actionSheet,
     switchByButtonIndex,
 } from '../../Common/ActionSheetFactory'
-import {
-    openMultiUserInviteModal,
-    searchFriend,
-} from '../../../redux/modules/search/SearchActions'
+import ModalHeader from '../../Common/Header/ModalHeader'
 import ToggleField from '../../Common/ToggleField'
 
 // Icons
@@ -344,7 +342,7 @@ class ChatRoomOptions extends React.Component {
                     )}
                     accessoryRight={ForwardIcon}
                     accessoryLeft={(props) =>
-                        makeAccessoryIcon(props, 'search', styles.accessoryLeft)
+                        makeAccessoryIcon(props, 'person', styles.accessoryLeft)
                     }
                     onPress={() => this.props.openProfile(otherUser._id)}
                     style={styles.menuItem}
@@ -715,7 +713,7 @@ const mapStateToProps = (state) => {
                 chatRoomImage =
                     otherUser.profile && otherUser.profile.image
                         ? { uri: `${IMAGE_BASE_URL}${otherUser.profile.image}` }
-                        : profilePic
+                        : undefined
             }
         } else {
             chatRoomName = chatRoom.name

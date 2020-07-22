@@ -3,6 +3,8 @@
 import { Actions } from 'react-native-router-flux'
 import { AppState, Image } from 'react-native'
 import { api as API } from '../redux/middleware/api'
+import { SplashScreen } from 'expo'
+import { SPLASHSCREEN_HIDE } from '../reducers/AuthReducers'
 
 import {
     USERNAME_CHANGED,
@@ -74,44 +76,61 @@ const validateEmail = (email) => {
     return re.test(String(email).toLowerCase())
 }
 
-export const tryAutoLogin = () => async (dispatch, getState) => {
-    await Auth.getKey().then((res) => {
-        // auto-login with current token
-        authenticate(res)(dispatch, getState)
+export const tryAutoLogin = (flags) => async (dispatch, getState) => {
+    let res
+    try {
+        res = await Auth.getKey()
+    } catch (error) {
+        new SentryRequestBuilder(message, SENTRY_MESSAGE_TYPE.MESSAGE)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.AUTH.ACTION, 'tryAutoLogin')
+            .withTag(
+                SENTRY_TAGS.AUTH.EXPO_SECURE_STORE_FETCH,
+                SENTRY_TAG_VALUE.ACTIONS.FAILED
+            )
+            .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
+            .send()
+        return
+    }
 
+    try {
+        // auto-login with current token
+        authenticate(res, flags)(dispatch, getState)
         // refresh token 30s after app load
         setTimeout(async () => {
             const { username, password } = res
-            authenticate({ username, password, tokenRefresh: true })(
+            authenticate({ username, password }, { tokenRefresh: true })(
                 dispatch,
                 getState
             )
         }, MINUTE_IN_MS / 2)
-    })
+    } catch (error) {
+        new SentryRequestBuilder(message, SENTRY_MESSAGE_TYPE.MESSAGE)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.AUTH.ACTION, 'tryAutoLogin')
+            .withTag(
+                SENTRY_TAGS.AUTH.AUTO_AUTHENTICATE,
+                SENTRY_TAG_VALUE.ACTIONS.FAILED
+            )
+            .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
+            .send()
+    }
 }
 
-export const loginUser = ({
-    username,
-    password,
-    navigate,
-    onError,
-    onSuccess,
-}) => (dispatch, getState) => {
-    return authenticate({ username, password, navigate, onError, onSuccess })(
+export const loginUser = ({ username, password, onError, onSuccess }) => (
+    dispatch,
+    getState
+) => {
+    return authenticate({ username, password, onError, onSuccess })(
         dispatch,
         getState
     )
 }
 
-const authenticate = ({
-    username,
-    password,
-    token,
-    tokenRefresh,
-    navigate,
-    onError,
-    onSuccess,
-}) => {
+const authenticate = (
+    { username, password, token, onError, onSuccess },
+    flags
+) => {
     // Call the endpoint to use username and password to signin
     // Obtain the credential
     const data = validateEmail(username)
@@ -152,13 +171,15 @@ const authenticate = ({
                 const minTokenCreationLimit = Date.now() - 2 * DAY_IN_MS
 
                 if (payload.created > minTokenCreationLimit) {
-                    await mountUserWithToken({
-                        payload,
-                        username,
-                        password,
-                        navigate,
-                        onSuccess,
-                    })(dispatch, getState)
+                    await mountUserWithToken(
+                        {
+                            payload,
+                            username,
+                            password,
+                            onSuccess,
+                        },
+                        flags
+                    )(dispatch, getState)
                     return
                 }
             }
@@ -189,14 +210,15 @@ const authenticate = ({
                     created: Date.now(),
                 }
 
-                await mountUserWithToken({
-                    payload,
-                    username,
-                    password,
-                    navigate,
-                    onSuccess,
-                    tokenRefresh,
-                })(dispatch, getState)
+                await mountUserWithToken(
+                    {
+                        payload,
+                        username,
+                        password,
+                        onSuccess,
+                    },
+                    flags
+                )(dispatch, getState)
             })
             .catch((err) => err.message || 'Please try again later')
 
@@ -226,17 +248,16 @@ const authenticate = ({
 /**
  * Dispaches required actions and set's the app state to mount user
  * and content after login is successful
- * @param { payload: { userId, token }, username, password, navigate, onSuccess, tokenRefresh } param0
+ * @param { payload: { userId, token }, username, password, onSuccess } param0
  * payload: { userId, token } and username is required for a successful user mount
+ * @param { hideSplashScreen, tokenRefresh } param1
+ * if tokenRefresh then token will be mounted but user wont be mounted
+ * if hideSplashScreen then function will the hide SplashScreen on end
  */
-const mountUserWithToken = ({
-    payload,
-    username,
-    password,
-    navigate,
-    onSuccess,
-    tokenRefresh,
-}) => async (dispatch, getState) => {
+const mountUserWithToken = (
+    { payload, username, password, onSuccess },
+    { hideSplashScreen, tokenRefresh }
+) => async (dispatch, getState) => {
     dispatch({
         type: LOGIN_USER_SUCCESS,
         payload,
@@ -275,10 +296,6 @@ const mountUserWithToken = ({
         getState
     )
 
-    // If navigate is set to false, it means user has already opened up the home page
-    // We only need to reload the profile and feed data
-    if (navigate === false) return
-
     // Let the screen transition happen first
     // before waiting on potential long duration operations
     if (userObject && userObject.isOnBoarded == false) {
@@ -298,6 +315,13 @@ const mountUserWithToken = ({
 
     // Load remote matches
     await loadRemoteMatches(payload.userId)(dispatch, getState)
+
+    if (hideSplashScreen) {
+        SplashScreen.hide()
+        dispatch({
+            type: SPLASHSCREEN_HIDE,
+        })
+    }
 }
 
 // We have the same action in Profile.js

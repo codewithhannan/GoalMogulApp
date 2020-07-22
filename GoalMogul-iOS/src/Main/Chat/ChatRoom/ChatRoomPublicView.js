@@ -17,6 +17,7 @@ import Icons from '../../../asset/base64/Icons'
 import profilePic from '../../../asset/utils/defaultUserProfile.png'
 import leaveIcon from '../../../asset/utils/logout.png'
 import plusIcon from '../../../asset/utils/plus.png'
+import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 import {
     cancelJoinRequest,
     sendJoinRequest,
@@ -32,7 +33,6 @@ import ModalHeader from '../../Common/Header/ModalHeader'
 import LoadingModal from '../../Common/Modal/LoadingModal'
 import { StackedAvatarsV2 } from '../../Common/StackedAvatars'
 import SettingCard from '../../Setting/SettingCard'
-import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 const windowWidth = Dimensions.get('window').width
 
@@ -375,7 +375,6 @@ const styles = {
         borderRadius: 3,
         overflow: 'hidden',
         padding: 1,
-        border: '1px solid #F1F1F1',
     },
 
     // Event info related styles

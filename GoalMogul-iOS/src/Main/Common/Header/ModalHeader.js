@@ -2,23 +2,20 @@
 
 import React from 'react'
 import {
-    Text,
-    View,
-    TouchableOpacity,
-    Image,
-    StatusBar,
-    Platform,
     ActivityIndicator,
+    Image,
+    Platform,
+    StatusBar,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native'
-import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
-
-import { GM_BLUE, DEFAULT_STYLE } from '../../../styles'
-
-import { IPHONE_MODELS, DEVICE_MODEL } from '../../../Utils/Constants'
-
-import BackButton from '../../../asset/utils/back.png'
-import DelayedButton from '../Button/DelayedButton'
+import { CopilotStep, walkthroughable } from 'react-native-copilot-gm'
 import { Actions } from 'react-native-router-flux'
+import BackButton from '../../../asset/utils/back.png'
+import { DEFAULT_STYLE, GM_BLUE } from '../../../styles'
+import { DEVICE_MODEL, IPHONE_MODELS } from '../../../Utils/Constants'
+import DelayedButton from '../Button/DelayedButton'
 
 const WalkableView = walkthroughable(View)
 
@@ -183,7 +180,6 @@ const styles = {
         marginTop: 4,
         marginRight: 6,
         padding: 1,
-        border: '1px solid #F1F1F1',
         backgroundColor: '#fff',
     },
     titleTextContainerStyle: {
