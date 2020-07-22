@@ -70,13 +70,16 @@ const INITIAL_TAG_SEARCH = {
     loading: false,
 }
 
+const DEFAULT_WRITE_COMMENT_PLACEHOLDER = 'Write a Comment...'
+const DEFAULT_REPLY_TO_PLACEHOLDER = 'Reply to...'
+
 class CommentBoxV2 extends Component {
     constructor(props) {
         super(props)
         this.state = {
             newValue: '',
             height: 34,
-            defaultValue: 'Write a Comment...',
+            defaultValue: DEFAULT_WRITE_COMMENT_PLACEHOLDER,
             keyword: '',
             tagSearchData: { ...INITIAL_TAG_SEARCH },
             testTaggingSuggestionData: [
@@ -109,7 +112,9 @@ class CommentBoxV2 extends Component {
 
         this.setState({
             ...this.state,
-            defaultValue: 'Write a Comment...',
+            defaultValue: this.props.isReplyCommentBox
+                ? DEFAULT_REPLY_TO_PLACEHOLDER
+                : DEFAULT_WRITE_COMMENT_PLACEHOLDER,
         })
         console.log(`${DEBUG_KEY}: componentDidMount: `)
     }
@@ -320,7 +325,9 @@ class CommentBoxV2 extends Component {
         if (!contentText || contentText === '' || contentText.trim() === '') {
             this.setState({
                 ...this.state,
-                defaultValue: 'Write a Comment...',
+                defaultValue: this.props.isReplyCommentBox
+                    ? DEFAULT_REPLY_TO_PLACEHOLDER
+                    : DEFAULT_WRITE_COMMENT_PLACEHOLDER,
             })
             if (resetCommentType) {
                 resetCommentType()
@@ -344,6 +351,7 @@ class CommentBoxV2 extends Component {
 
     focusForReply(type) {
         console.log(`${DEBUG_KEY}: [ focusForReply ]: with type: `, type)
+
         if (this.textInput) {
             this.textInput.focus()
         } else {
@@ -356,7 +364,7 @@ class CommentBoxV2 extends Component {
         if (type === 'Reply') {
             this.setState({
                 ...this.state,
-                defaultValue: 'Reply to...',
+                defaultValue: DEFAULT_REPLY_TO_PLACEHOLDER,
             })
         }
     }

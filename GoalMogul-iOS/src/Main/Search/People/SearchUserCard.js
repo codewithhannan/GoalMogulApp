@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import { connect } from 'react-redux'
+import { Button } from '@ui-kitten/components'
 
 // Components
 
@@ -34,11 +35,7 @@ class SearchUserCard extends Component {
         this.setState({ isLoggedIn: false })
     }
 
-    state = {
-        imageLoading: false,
-    }
-
-    onButtonClicked = (_id) => {
+    onButtonClicked = (_id, itemIsSelected) => {
         console.log(`${DEBUG_KEY} open profile with id: `, _id)
         trackWithProperties(EVENT.SEARCH_RESULT_CLICKED, {
             Type: 'people',
@@ -48,6 +45,11 @@ class SearchUserCard extends Component {
             return this.props.onSelect(_id, this.props.item)
         }
         this.props.openProfile(_id)
+        if (itemIsSelected) {
+            this.handleSelectClick()
+        } else {
+            this.handleRemoveClick()
+        }
     }
 
     renderProfileImage() {
@@ -134,11 +136,34 @@ class SearchUserCard extends Component {
         )
     }
 
-    render() {
-        const { item } = this.props
-        if (!item) return null
+    renderStatusButton(text, _id) {
+        return (
+            <View
+                style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginTop: 0,
+                    width: 95,
+                }}
+            >
+                <Button
+                    style={styles.buttonText}
+                    appearance="outline"
+                    size="small"
+                    activeOpacity={1}
+                    onPress={() => {
+                        this.onButtonClicked(_id, itemIsSelected)
+                    }}
+                >
+                    <Text>{text}</Text>
+                </Button>
+            </View>
+        )
+    }
 
-        const itemIsSelected = this.props.itemIsSelected
+    render() {
+        const { item, itemIsSelected } = this.props
+        if (!item) return null
 
         const { _id } = item
         let { cardContainerStyles } = this.props
@@ -146,40 +171,23 @@ class SearchUserCard extends Component {
             cardContainerStyles = {}
         }
 
-        let button
-        if (!itemIsSelected) {
-            button = (
-                <TouchableOpacity
-                    style={styles.buttonStyleAdd}
-                    underlayColor="#fff"
-                    onPress={() => {
-                        this.onButtonClicked(_id)
-                        this.handleRemoveClick()
-                    }}
-                >
-                    <Text style={styles.buttonText}>Added</Text>
-                </TouchableOpacity>
-            )
-        } else {
-            button = (
-                <TouchableOpacity
-                    style={styles.buttonStyle}
-                    underlayColor="#fff"
-                    onPress={() => {
-                        this.onButtonClicked(_id)
-                        this.handleSelectClick()
-                    }}
-                >
-                    <Text style={styles.buttonText}>Add</Text>
-                </TouchableOpacity>
-            )
-        }
         return (
-            <View style={{ ...styles.containerStyle, ...cardContainerStyles }}>
-                {this.renderProfileImage(item)}
-                {this.renderCardContent(item)}
-                {button}
-            </View>
+            <DelayedButton
+                activeOpacity={0.8}
+                onPress={() => {
+                    this.onButtonClicked(_id, itemIsSelected)
+                }}
+            >
+                <View style={[styles.containerStyle, cardContainerStyles]}>
+                    {this.renderProfileImage(item)}
+                    {this.renderCardContent(item)}
+                    {/*
+                    This section is commented out until we get "status" (friend, close friend, non-friend) from data,
+                    so that we can render the correct UI icon/text.
+                    {this.renderStatusButton("Add", _id)}
+                    */}
+                </View>
+            </DelayedButton>
         )
     }
 }

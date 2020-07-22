@@ -386,6 +386,7 @@ class ReplyThread extends React.Component {
                         goalId={this.props.goalId}
                         onSubmitEditing={this.resetCommentBox}
                         resetToDefault={this.resetCommentBox}
+                        isReplyCommentBox={true}
                     />
                 </KeyboardAvoidingView>
             </MenuProvider>

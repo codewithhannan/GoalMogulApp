@@ -23,7 +23,6 @@ export const ModalHeaderStyle = {
         height: 24,
         width: 24,
         padding: 1,
-        border: '1px solid #F1F1F1',
         backgroundColor: '#fff',
     },
 }

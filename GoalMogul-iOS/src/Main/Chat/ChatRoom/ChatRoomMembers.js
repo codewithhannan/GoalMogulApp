@@ -9,7 +9,6 @@
  */
 
 import { MaterialIcons } from '@expo/vector-icons'
-import Constants from 'expo-constants'
 import React from 'react'
 import {
     Dimensions,
@@ -33,7 +32,7 @@ import {
     selectChatMembersTab,
 } from '../../../redux/modules/chat/ChatRoomMembersActions'
 import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../../styles'
-import { IPHONE_MODELS, DEVICE_MODEL } from '../../../Utils/Constants'
+import { DEVICE_MODEL, IPHONE_MODELS } from '../../../Utils/Constants'
 // Actions
 import ModalHeader from '../../Common/Header/ModalHeader'
 import ProfileImage from '../../Common/ProfileImage'
@@ -355,7 +354,6 @@ const styles = {
         borderRadius: 3,
         overflow: 'hidden',
         padding: 1,
-        border: '1px solid #F1F1F1',
     },
 
     // Event info related styles

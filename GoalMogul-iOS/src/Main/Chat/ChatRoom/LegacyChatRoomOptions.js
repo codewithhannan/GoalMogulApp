@@ -562,7 +562,6 @@ const styles = {
         borderRadius: 3,
         overflow: 'hidden',
         padding: 1,
-        border: '1px solid #F1F1F1',
     },
 
     // Event info related styles
