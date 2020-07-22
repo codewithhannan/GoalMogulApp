@@ -232,7 +232,7 @@ class FriendRequestCardView extends React.PureComponent {
         // console.log(`${DEBUG_KEY}: item is: `, item);
         return (
             <DelayedButton
-                activeOpacity={0.6}
+                activeOpacity={0.8}
                 style={[styles.containerStyle, styles.shadow]}
                 onPress={this.handleOnOpenProfile}
             >

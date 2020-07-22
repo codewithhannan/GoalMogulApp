@@ -78,6 +78,7 @@ class FriendTab extends React.Component {
 
     /** Render top card for inviting friends */
     renderInviteFriendCard() {
+        const { width } = Dimensions.get('window')
         return (
             <View
                 style={{
@@ -88,8 +89,7 @@ class FriendTab extends React.Component {
                     marginBottom: 8,
                 }}
             >
-                <View style={{ marginRight: 18, width: '56%' }}>
-                    {/* <Text style={{ fontSize: GM_FONT_SIZE.FONT_3, lineHeight: GM_FONT_LINE_HEIGHT.FONT_4, fontFamily: GM_FONT_FAMILY.GOTHAM, marginBottom: styles.padding }}> */}
+                <View style={{ marginRight: 18, flex: 1, paddingVertical: 31 }}>
                     <Text
                         style={[
                             DEFAULT_STYLE.titleText_1,
@@ -100,22 +100,26 @@ class FriendTab extends React.Component {
                     </Text>
                     <DelayedButton
                         onPress={() => this.openInviteFriendModal()}
-                        style={
+                        style={[
                             BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT
-                                .containerStyle
-                        }
+                                .containerStyle,
+                            { width: width / 2 },
+                        ]}
                     >
                         <Text
                             style={[
                                 DEFAULT_STYLE.titleText_1,
-                                { color: 'white' },
+                                { color: 'white', fontFamily: FONT_FAMILY_3 },
                             ]}
                         >
                             Invite your Friends
                         </Text>
                     </DelayedButton>
                 </View>
-                <Image source={Icons.Delivery} style={{ width: 150 }} />
+                <Image
+                    source={Icons.LionMascotShadow}
+                    style={{ width: width * 0.2, marginHorizontal: 20 }}
+                />
             </View>
         )
     }
@@ -234,7 +238,6 @@ class FriendTab extends React.Component {
                                 DEFAULT_STYLE.titleText_2,
                                 {
                                     color: GM_BLUE,
-                                    textDecorationLine: 'underline',
                                 },
                             ]}
                         >

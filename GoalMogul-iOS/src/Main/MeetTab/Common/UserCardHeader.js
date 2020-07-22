@@ -122,11 +122,7 @@ class UserCardHeader extends React.PureComponent {
             return null
         }
         return (
-            <DelayedButton
-                style={styles.containerStyle}
-                activeOpacity={0.8}
-                onPress={this.handleOpenProfile}
-            >
+            <View style={styles.containerStyle}>
                 {this.renderHeader(user)}
                 {optionsOnPress ? (
                     <DelayedButton
@@ -149,7 +145,7 @@ class UserCardHeader extends React.PureComponent {
                         />
                     </DelayedButton>
                 ) : null}
-            </DelayedButton>
+            </View>
         )
     }
 }
