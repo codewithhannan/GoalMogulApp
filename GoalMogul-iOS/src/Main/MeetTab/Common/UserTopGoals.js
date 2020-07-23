@@ -18,7 +18,7 @@ class UserTopGoals extends React.PureComponent {
             text = topGoals[0]
             title = 'Top Goal: '
         } else if (headline && headline.trim().length) {
-            title = '' // Don't render Headline: for headline
+            title = '' // Don't render the prefix "Headline: ..." for headline
             text = headline
         }
 

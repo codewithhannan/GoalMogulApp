@@ -117,7 +117,7 @@ class FriendTab extends React.Component {
                     </DelayedButton>
                 </View>
                 <Image
-                    source={Icons.LionMascotShadow}
+                    source={Icons.LionMascotWithShadow}
                     style={{ width: width * 0.2, marginHorizontal: 20 }}
                 />
             </View>

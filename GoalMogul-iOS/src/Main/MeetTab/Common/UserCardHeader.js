@@ -29,7 +29,8 @@ class UserCardHeader extends React.PureComponent {
             // TODO: add sentry error logging
             return null
         }
-        const detailText = profile.occupation || '' // If occupation is not there, then don't
+        // Only render occupation in header if it exists
+        const detailText = profile.occupation || ''
 
         return (
             <View

@@ -121,7 +121,7 @@ export const loginUser = ({ username, password, onError, onSuccess }) => (
     dispatch,
     getState
 ) => {
-    return authenticate({ username, password, onError, onSuccess })(
+    return authenticate({ username, password, onError, onSuccess }, {})(
         dispatch,
         getState
     )
