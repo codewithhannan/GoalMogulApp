@@ -6,7 +6,7 @@ import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
 
 import TabButton from './Button/TabButton'
 import SubTabButton from './Button/SubTabButton'
-import { DEFAULT_STYLE, GM_BLUE } from '../../styles'
+import { DEFAULT_STYLE, GM_BLUE, FONT_FAMILY_2 } from '../../styles'
 
 const WalkableView = walkthroughable(View)
 
@@ -36,9 +36,13 @@ class TabButtonGroup extends Component {
                       ...DEFAULT_STYLE.buttonText_1,
                       backgroundColor: GM_BLUE,
                       color: 'white',
+                      tintColor: 'white',
                   }
                 : (buttonStyle && buttonStyle.unselected) || {
                       ...DEFAULT_STYLE.buttonText_1,
+                      fontFamily: FONT_FAMILY_2,
+                      color: '#828282',
+                      tintColor: '#828282',
                       backgroundColor: '#F2F2F2',
                   }
             const iconSource = tabIconMap
@@ -52,14 +56,9 @@ class TabButtonGroup extends Component {
                 : { tintColor: selectedStyle.tintColor }
             const containerStyle = {
                 backgroundColor: selectedStyle.backgroundColor,
-                borderRadius: borderRadius === undefined ? 3 : borderRadius,
+                borderRadius: borderRadius === undefined ? 100 : borderRadius,
             }
-            const textStyle = {
-                color: selectedStyle.color,
-                fontWeight: selectedStyle.fontWeight,
-                fontSize: selectedStyle.fontSize,
-                fontFamily: selectedStyle.fontFamily,
-            }
+            const textStyle = selectedStyle
             const button = subTab ? (
                 <SubTabButton
                     key={b.key}
@@ -135,7 +134,7 @@ class TabButtonGroup extends Component {
                         DEFAULT_STYLE.uiScale,
                     borderRadius:
                         this.props.borderRadius === undefined
-                            ? 3
+                            ? 100
                             : this.props.borderRadius,
                     backgroundColor: this.props.buttonStyle
                         ? this.props.buttonStyle.unselected.backgroundColor
@@ -158,6 +157,7 @@ const styles = {
         alignItems: 'center',
         padding: 2 * DEFAULT_STYLE.uiScale,
         height: 33 * DEFAULT_STYLE.uiScale,
+        margin: 8,
     },
 }
 

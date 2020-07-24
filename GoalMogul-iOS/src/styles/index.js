@@ -15,7 +15,7 @@ export const APP_DEEP_BLUE = '#0397CB'
  *
  * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=1%3A626
  */
-export const GM_BLUE = '#45C9F6'
+export const GM_BLUE = '#42C0F5'
 export const GM_BLUE_LIGHT = '#9EE6FF'
 export const GM_BLUE_LIGHT_LIGHT = '#DEF7FF'
 export const GM_DOT_GRAY = '#E0E0E0'
@@ -30,7 +30,7 @@ export const FONT_FAMILY_1 = 'SFProDisplay-Bold'
 export const FONT_FAMILY_2 = 'SFProDisplay-Regular'
 export const FONT_FAMILY_3 = 'SFProDisplay-Semibold'
 
-const LETTER_SPACING = 0.2
+const LETTER_SPACING = 0.27
 const LETTER_SPACING_TITLE = 0.5
 
 export const DEFAULT_STYLE = {
@@ -112,7 +112,7 @@ export const DEFAULT_STYLE = {
         fontSize: 15 * UI_SCALE,
         fontWeight: '700',
         color: TEXT_COLOR_1,
-        letterSpacing: LETTER_SPACING,
+        letterSpacing: LETTER_SPACING_TITLE,
     },
     buttonText_2: {
         fontFamily: FONT_FAMILY_1,
@@ -151,7 +151,7 @@ export const DEFAULT_STYLE = {
     cardSeparator: {
         width: '100%',
         height: 5 * UI_SCALE,
-        backgroundColor: '#F2F2F2',
+        backgroundColor: '#E4E8EA',
     },
 }
 

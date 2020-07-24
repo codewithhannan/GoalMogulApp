@@ -7,7 +7,6 @@ import * as WebBrowser from 'expo-web-browser'
 import { Actions } from 'react-native-router-flux'
 import R from 'ramda'
 
-import { GM_BLUE } from '../../styles'
 // Components
 import DelayedButton from '../Common/Button/DelayedButton'
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
@@ -27,10 +26,6 @@ import {
 } from '../../redux/modules/User/TutorialActions'
 
 // Assets
-import TribeIcon from '../../asset/explore/tribe.png'
-import EventIcon from '../../asset/suggestion/event.png'
-import BugReportIcon from '../../asset/utils/bug_report.png'
-import LogoutIcon from '../../asset/utils/logout.png'
 import Setting from '../../asset/header/setting.png'
 import Icons from '../../asset/base64/Icons'
 import {
@@ -42,14 +37,12 @@ import {
 import { DEFAULT_STYLE } from '../../styles'
 
 const DEBUG_KEY = '[ UI Menu ]'
-const { TutorialIcon, PrivacyIcon, AccountMultiple, MessageIcon } = Icons
+const { AccountMultiple, MessageIcon } = Icons
 
 const IS_SMALL_PHONE =
     Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL)
 
-const padding = IS_SMALL_PHONE ? 10 : 15
-
-console.log(padding)
+const marginBottom = IS_SMALL_PHONE ? 10 : 40
 
 class Menu extends React.PureComponent {
     constructor(props) {
@@ -235,9 +228,12 @@ class Menu extends React.PureComponent {
                         style={styles.logOutButtonStyle}
                     >
                         <Text
-                            style={[styles.titleTextStyle, { color: 'white' }]}
+                            style={[
+                                styles.titleTextStyle,
+                                { color: '#FF2B2C' },
+                            ]}
                         >
-                            Log Out
+                            Sign out
                         </Text>
                     </DelayedButton>
                 </View>
@@ -272,20 +268,17 @@ const styles = {
         height: 20,
         width: 20,
     },
-    titleTextStyle: DEFAULT_STYLE.subTitleText_1,
+    titleTextStyle: DEFAULT_STYLE.buttonText_1,
     bottomContainer: {
         bottom: 0,
         position: 'absolute',
         width: '100%',
     },
-    bottomText: {
-        fontWeight: '600',
-        fontSize: 16,
-    },
+    bottomText: DEFAULT_STYLE.buttonText_1,
     logOutButtonStyle: {
-        backgroundColor: GM_BLUE,
-        padding: padding,
-        alignItems: 'center',
+        // backgroundColor: '#F2F2F2',
+        paddingLeft: 20,
+        marginBottom: marginBottom,
     },
 }
 

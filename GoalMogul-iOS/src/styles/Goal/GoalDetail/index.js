@@ -2,6 +2,6 @@
 
 import { DEFAULT_STYLE } from '../..'
 
-export const DEFAULT_STYLE = {
+export const GOAL_STYLE = {
     ...DEFAULT_STYLE,
 }
