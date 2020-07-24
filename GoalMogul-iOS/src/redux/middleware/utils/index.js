@@ -9,7 +9,7 @@ import EditIcon from '../../../asset/utils/edit.png'
 import UndoIcon from '../../../asset/utils/undo.png'
 import TrashIcon from '../../../asset/utils/trash.png'
 import Icons from '../../../asset/base64/Icons'
-import { IMAGE_BASE_URL } from '../../../Utils/Constants'
+import { IMAGE_BASE_URL, USER_INVITE_URL } from '../../../Utils/Constants'
 import DEFAULT_PROFILE_IMAGE from '../../../asset/utils/defaultUserProfile.png'
 
 const { CheckIcon } = Icons
@@ -209,8 +209,7 @@ export const nFormatter = (num, digits) => {
 }
 
 export const generateInvitationLink = (inviteCode) => {
-    const BASE_CODE = 'https://web.goalmogul.com/invite?inviteCode='
-    return `${BASE_CODE}${inviteCode}`
+    return `${USER_INVITE_URL}${inviteCode}`
 }
 
 export const PAGE_TYPE_MAP = {

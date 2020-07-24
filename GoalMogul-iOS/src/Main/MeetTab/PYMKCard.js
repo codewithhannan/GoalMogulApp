@@ -14,7 +14,7 @@ import {
 } from '../../styles'
 import UserCardHeader from './Common/UserCardHeader'
 import UserTopGoals from './Common/UserTopGoals'
-import { updateFriendship } from '../../actions'
+import { updateFriendship, openProfile } from '../../actions'
 
 const { width } = Dimensions.get('window')
 
@@ -60,7 +60,9 @@ class PYMKCard extends React.Component {
         }
 
         return (
-            <View style={{ flexDirection: 'row' }}>
+            <View
+                style={{ flexDirection: 'row', marginLeft: 49, marginTop: 10 }}
+            >
                 {button}
                 <View style={{ flex: 1 }} />
             </View>
@@ -68,7 +70,7 @@ class PYMKCard extends React.Component {
     }
 
     renderInvitedButton = (userId) => {
-        const text = 'Added'
+        const text = 'Request Sent'
         return (
             <DelayedButton
                 style={[
@@ -80,8 +82,8 @@ class PYMKCard extends React.Component {
             >
                 <Text
                     style={[
-                        DEFAULT_STYLE.buttonText_2,
-                        { color: 'white', fontWeight: '500' },
+                        DEFAULT_STYLE.buttonText_1,
+                        { color: 'white', fontSize: 12 },
                     ]}
                 >
                     {text}
@@ -103,8 +105,8 @@ class PYMKCard extends React.Component {
             >
                 <Text
                     style={[
-                        DEFAULT_STYLE.buttonText_2,
-                        { color: 'white', fontWeight: '500' },
+                        DEFAULT_STYLE.buttonText_1,
+                        { color: 'white', fontSize: 12 },
                     ]}
                 >
                     {text}
@@ -155,11 +157,15 @@ class PYMKCard extends React.Component {
         }
 
         return (
-            <View style={[styles.containerStyle, { padding: 20 }]}>
+            <DelayedButton
+                style={[styles.containerStyle, { padding: 20 }]}
+                activeOpacity={0.8}
+                onPress={() => this.props.openProfile(user._id)}
+            >
                 <UserCardHeader user={user} />
                 <UserTopGoals user={user} />
                 {this.renderButton(user._id)}
-            </View>
+            </DelayedButton>
         )
     }
 }
@@ -195,4 +201,5 @@ const styles = {
 
 export default connect(null, {
     updateFriendship,
+    openProfile,
 })(PYMKCard)

@@ -165,7 +165,7 @@ class FriendTabCardView extends React.PureComponent {
             <DelayedButton
                 style={styles.containerStyle}
                 onPress={() => this.props.openProfile(item._id)}
-                activeOpacity={0.6}
+                activeOpacity={0.8}
             >
                 {this.renderHeader(item)}
                 <UserTopGoals user={item} />

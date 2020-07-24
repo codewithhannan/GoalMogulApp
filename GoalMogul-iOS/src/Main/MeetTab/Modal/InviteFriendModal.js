@@ -230,7 +230,6 @@ class InviteFriendModal extends React.PureComponent {
     }
 
     render() {
-        const link = 'web.goalmogul.com/invite/abc123'
         const { width } = Dimensions.get('window')
         const inviteLink = this.getInviteLink()
 

@@ -47,7 +47,7 @@ class DelayedButton extends React.PureComponent {
     }
 
     handleOnPress = () => {
-        const delay = this.props.delay || 300
+        const delay = this.props.delay || 500
         const { onPress } = this.props
         onPress()
         this.setState({

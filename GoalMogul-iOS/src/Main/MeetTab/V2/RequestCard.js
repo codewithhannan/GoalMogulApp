@@ -9,6 +9,7 @@ import { openProfileDetail, updateFriendship } from '../../../actions'
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import Icons from '../../../asset/base64/Icons'
 import { handleRefresh } from '../../../redux/modules/meet/MeetActions'
+import { Icon } from '@ui-kitten/components'
 
 /**
  * Component that display condensed request info in FriendTab
@@ -20,6 +21,16 @@ class RequestCard extends React.PureComponent {
             userId,
             friendshipId,
             'acceptFriend',
+            'requests.incoming',
+            () => this.props.handleRefresh()
+        )
+    }
+
+    handleDismissOnPress = (userId, friendshipId) => {
+        this.props.updateFriendship(
+            userId,
+            friendshipId,
+            'deleteFriend',
             'requests.incoming',
             () => this.props.handleRefresh()
         )
@@ -42,7 +53,26 @@ class RequestCard extends React.PureComponent {
         return undefined
     }
 
-    renderProfileImage(user) {
+    renderDismissButton = (user, friendshipId) => {
+        return (
+            <DelayedButton
+                style={[
+                    { position: 'absolute', top: 0, right: 0, padding: 10 },
+                ]}
+                onPress={() =>
+                    this.handleDismissOnPress(user._id, friendshipId)
+                }
+            >
+                <Icon
+                    name="close"
+                    pack="material"
+                    style={{ height: 20, width: 20, tintColor: '#333' }}
+                />
+            </DelayedButton>
+        )
+    }
+
+    renderProfileImage = (user) => {
         const { profile } = user
         let source = Icons.Account
         const hasProfileImage = profile && profile.image
@@ -88,6 +118,7 @@ class RequestCard extends React.PureComponent {
                 onPress={() => this.handleOpenProfile(user._id)}
                 activeOpacity={0.9}
             >
+                {this.renderDismissButton(user, friendshipId)}
                 {this.renderProfileImage(user)}
                 <Text numberOfLines={1} style={[DEFAULT_STYLE.titleText_2]}>
                     {name}
