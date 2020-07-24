@@ -117,7 +117,6 @@ class FriendTabView extends React.Component {
                                 fontWeight: '500',
                                 fontSize: 13,
                                 color: GM_BLUE,
-                                textDecorationLine: 'underline',
                             }}
                         >
                             Manage Invitations

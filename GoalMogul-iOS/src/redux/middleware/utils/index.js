@@ -2,6 +2,8 @@
 
 // This is a utils functions
 import _ from 'lodash'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import * as Localization from 'expo-localization'
 
 // Assets
 import ShareIcon from '../../../asset/utils/forward.png'
@@ -9,7 +11,7 @@ import EditIcon from '../../../asset/utils/edit.png'
 import UndoIcon from '../../../asset/utils/undo.png'
 import TrashIcon from '../../../asset/utils/trash.png'
 import Icons from '../../../asset/base64/Icons'
-import { IMAGE_BASE_URL } from '../../../Utils/Constants'
+import { IMAGE_BASE_URL, USER_INVITE_URL } from '../../../Utils/Constants'
 import DEFAULT_PROFILE_IMAGE from '../../../asset/utils/defaultUserProfile.png'
 
 const { CheckIcon } = Icons
@@ -209,8 +211,7 @@ export const nFormatter = (num, digits) => {
 }
 
 export const generateInvitationLink = (inviteCode) => {
-    const BASE_CODE = 'https://web.goalmogul.com/invite?inviteCode='
-    return `${BASE_CODE}${inviteCode}`
+    return `${USER_INVITE_URL}${inviteCode}`
 }
 
 export const PAGE_TYPE_MAP = {
@@ -457,3 +458,92 @@ export const getProfileImageOrDefaultFromUser = (user, defaultSource) =>
 
 export const getProfileImageOrDefault = (imageSource) =>
     getImageOrDefault(imageSource, DEFAULT_PROFILE_IMAGE)
+
+/**
+ * Validate if a string is a valid phone number
+ * @see https://gitlab.com/catamphetamine/libphonenumber-js#isvalid-boolean
+ * @param {String} pn Phone number to verify
+ */
+export const isValidPhoneNumber = (pn) => {
+    try {
+        const parsedPhoneNumber = parsePhoneNumberFromString(
+            pn,
+            Localization.region
+        )
+        if (parsedPhoneNumber && parsedPhoneNumber.isValid()) {
+            return true
+        }
+    } catch (err) {
+        // Ignore error
+        console.log(
+            `${DEBUG_KEY}: failed to validate phone number: ${pn}, `,
+            err
+        )
+    }
+    if (pn && !pn.startsWith('+')) {
+        return isValidPhoneNumber(`+${pn}`)
+    }
+    return false
+}
+
+/**
+ * Use libphonenumber.js to check if a string can be a phone number
+ * @see https://gitlab.com/catamphetamine/libphonenumber-js#ispossible-boolean
+ * @param {String} pn Phone number to check if it's possible a phone number
+ */
+export const isPossiblePhoneNumber = (pn) => {
+    try {
+        const parsedPhoneNumber = parsePhoneNumberFromString(
+            pn,
+            Localization.region
+        )
+        if (parsedPhoneNumber && parsedPhoneNumber.isPossible()) {
+            return true
+        }
+    } catch (err) {
+        // Ignore error
+        console.log(
+            `${DEBUG_KEY}: failed to check possible phone number: ${pn}, `,
+            err
+        )
+    }
+
+    if (pn && !pn.startsWith('+')) {
+        return isPossiblePhoneNumber(`+${pn}`)
+    }
+
+    return false
+}
+
+export const EMAIL_VALIDATION_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+export const isValidEmail = (email) =>
+    EMAIL_VALIDATION_REGEX.test(String(email).toLowerCase())
+
+/**
+ * Parse a phone number string to E164 phone number string "+19190192883"
+ * @see https://gitlab.com/catamphetamine/libphonenumber-js#parsephonenumberfromstringstring-options-or-defaultcountry-phonenumber
+ * @param {String} pn Phone number string to parse
+ */
+export const getE164PhoneNumber = (pn) => {
+    try {
+        const parsedPhoneNumber = parsePhoneNumberFromString(
+            pn,
+            Localization.region
+        )
+        if (parsedPhoneNumber && parsedPhoneNumber.isValid()) {
+            return parsedPhoneNumber.number
+        }
+    } catch (err) {
+        // Ignore error
+        console.log(`${DEBUG_KEY}: failed to get phone number: ${pn}, `, err)
+    }
+
+    if (pn && !pn.startsWith('+')) {
+        return getE164PhoneNumber(`+${pn}`)
+    }
+    return undefined
+}
+
+export const is2xxRespose = (status) => status >= 200 && status < 300
+export const is4xxResponse = (status) => status >= 400 && status < 500
+export const is5xxResponse = (status) => status >= 500 && status < 600

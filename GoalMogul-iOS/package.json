@@ -97,6 +97,7 @@
         "fuse.js": "^3.4.4",
         "html-entities": "^1.2.1",
         "import": "0.0.6",
+        "libphonenumber-js": "^1.7.55",
         "lodash": "^4.17.15",
         "lru-cache": "^5.1.1",
         "moment": "^2.22.2",
@@ -151,6 +152,7 @@
         "unescape": "^1.0.1",
         "uuid": "^3.4.0",
         "validate.js": "^0.12.0",
-        "validator": "^10.11.0"
+        "validator": "^10.11.0",
+        "expo-localization": "~8.1.0"
     }
 }

@@ -14,6 +14,7 @@ import {
     GM_FONT_FAMILY,
     GM_FONT_LINE_HEIGHT,
     DEFAULT_STYLE,
+    FONT_FAMILY_3,
 } from '../../styles'
 import PYMKCard from './PYMKCard'
 import {
@@ -77,6 +78,7 @@ class FriendTab extends React.Component {
 
     /** Render top card for inviting friends */
     renderInviteFriendCard() {
+        const { width } = Dimensions.get('window')
         return (
             <View
                 style={{
@@ -87,8 +89,7 @@ class FriendTab extends React.Component {
                     marginBottom: 8,
                 }}
             >
-                <View style={{ marginRight: 18, width: '56%' }}>
-                    {/* <Text style={{ fontSize: GM_FONT_SIZE.FONT_3, lineHeight: GM_FONT_LINE_HEIGHT.FONT_4, fontFamily: GM_FONT_FAMILY.GOTHAM, marginBottom: styles.padding }}> */}
+                <View style={{ marginRight: 18, flex: 1, paddingVertical: 31 }}>
                     <Text
                         style={[
                             DEFAULT_STYLE.titleText_1,
@@ -99,22 +100,26 @@ class FriendTab extends React.Component {
                     </Text>
                     <DelayedButton
                         onPress={() => this.openInviteFriendModal()}
-                        style={
+                        style={[
                             BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT
-                                .containerStyle
-                        }
+                                .containerStyle,
+                            { width: width / 2 },
+                        ]}
                     >
                         <Text
                             style={[
                                 DEFAULT_STYLE.titleText_1,
-                                { color: 'white' },
+                                { color: 'white', fontFamily: FONT_FAMILY_3 },
                             ]}
                         >
                             Invite your Friends
                         </Text>
                     </DelayedButton>
                 </View>
-                <Image source={Icons.Delivery} style={{ width: 150 }} />
+                <Image
+                    source={Icons.LionMascotWithShadow}
+                    style={{ width: width * 0.2, marginHorizontal: 20 }}
+                />
             </View>
         )
     }
@@ -131,13 +136,18 @@ class FriendTab extends React.Component {
                     width: '100%',
                     paddingBottom: styles.padding,
                     paddingLeft: styles.padding,
-                    padingRight: styles.padding,
+                    paddingRight: styles.padding,
                 }}
             >
-                <View style={{ flexDirection: 'row' }}>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                    }}
+                >
                     <RequestCard user={incomingRequests[0]} />
                     {requestCount < 2 ? null : (
-                        <RequestCard user={incomingRequests[0]} />
+                        <RequestCard user={incomingRequests[1]} />
                     )}
                 </View>
                 {requestCount <= 2 ? null : (
@@ -147,9 +157,18 @@ class FriendTab extends React.Component {
                             backgroundColor: '#F2F2F2',
                             borderRadius: 3,
                             padding: 10,
+                            alignItems: 'center',
+                            marginTop: 16,
                         }}
                     >
-                        <Text>Show all ({`${requestCount}`} Invites)</Text>
+                        <Text
+                            style={[
+                                DEFAULT_STYLE.normalText_1,
+                                { fontFamily: FONT_FAMILY_3, color: '#4F4F4F' },
+                            ]}
+                        >
+                            Show all ({`${requestCount}`} Invites)
+                        </Text>
                     </DelayedButton>
                 )}
             </View>
@@ -219,7 +238,6 @@ class FriendTab extends React.Component {
                                 DEFAULT_STYLE.titleText_2,
                                 {
                                     color: GM_BLUE,
-                                    textDecorationLine: 'underline',
                                 },
                             ]}
                         >

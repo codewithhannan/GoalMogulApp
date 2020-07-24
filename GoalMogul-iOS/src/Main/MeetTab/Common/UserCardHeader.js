@@ -23,13 +23,14 @@ class UserCardHeader extends React.PureComponent {
         this.props.openProfile(this.props.user._id)
     }
 
-    renderHeader(item) {
-        const { name, profile, headline, mutualFriendCount } = item
+    renderHeader(user) {
+        const { name, profile, mutualFriendCount, _id } = user
         if (!profile) {
             // TODO: add sentry error logging
             return null
         }
-        const detailText = headline || profile.occupation
+        // Only render occupation in header if it exists
+        const detailText = profile.occupation || ''
 
         return (
             <View
@@ -37,7 +38,7 @@ class UserCardHeader extends React.PureComponent {
             >
                 <ProfileImage
                     imageUrl={profile ? profile.image : undefined}
-                    userId={item._id}
+                    userId={_id}
                 />
                 <View style={{ marginLeft: 7, flex: 1 }}>
                     <View
@@ -52,7 +53,7 @@ class UserCardHeader extends React.PureComponent {
                             textStyle={DEFAULT_STYLE.titleText_2}
                         />
                         <UserBanner
-                            user={item}
+                            user={user}
                             iconStyle={{ marginLeft: 5, height: 18, width: 15 }}
                         />
                         <View
@@ -122,11 +123,7 @@ class UserCardHeader extends React.PureComponent {
             return null
         }
         return (
-            <DelayedButton
-                style={styles.containerStyle}
-                activeOpacity={0.8}
-                onPress={this.handleOpenProfile}
-            >
+            <View style={styles.containerStyle}>
                 {this.renderHeader(user)}
                 {optionsOnPress ? (
                     <DelayedButton
@@ -149,7 +146,7 @@ class UserCardHeader extends React.PureComponent {
                         />
                     </DelayedButton>
                 ) : null}
-            </DelayedButton>
+            </View>
         )
     }
 }

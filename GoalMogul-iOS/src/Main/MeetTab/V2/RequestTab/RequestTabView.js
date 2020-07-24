@@ -64,7 +64,7 @@ class RequestTabView extends Component {
                             fontWeight: '600',
                         },
                     }}
-                    borderRadius={3}
+                    borderRadius={100}
                 />
                 {/* <SearchBar 
             ref={searchBar => this.searchBar = searchBar}
