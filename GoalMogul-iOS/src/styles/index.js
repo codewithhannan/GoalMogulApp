@@ -30,8 +30,8 @@ export const FONT_FAMILY_1 = 'SFProDisplay-Bold'
 export const FONT_FAMILY_2 = 'SFProDisplay-Regular'
 export const FONT_FAMILY_3 = 'SFProDisplay-Semibold'
 
-const LETTER_SPACING = 0.27
-const LETTER_SPACING_TITLE = 0.5
+export const LETTER_SPACING = 0.27
+export const LETTER_SPACING_TITLE = 0.5
 
 export const DEFAULT_STYLE = {
     // Headers
