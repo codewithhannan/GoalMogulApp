@@ -92,6 +92,9 @@ const SENTRY_CONTEXT = {
         EMAIL: 'email',
         PHONE_NUMBER: 'phone number',
     },
+    LOGIN: {
+        USERNAME: 'username',
+    },
 }
 
 // Based on the document, exception / message level can be one of:

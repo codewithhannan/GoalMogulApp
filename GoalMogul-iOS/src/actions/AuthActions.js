@@ -54,6 +54,14 @@ import {
     SENTRY_MESSAGE_TYPE,
     SENTRY_CONTEXT,
 } from '../monitoring/sentry/Constants'
+import {
+    isPossiblePhoneNumber,
+    isValidPhoneNumber,
+    getE164PhoneNumber,
+    is4xxResponse,
+    is5xxResponse,
+    is2xxRespose,
+} from '../redux/middleware/utils'
 
 const DEBUG_KEY = '[ Action Auth ]'
 
@@ -90,6 +98,10 @@ export const tryAutoLogin = (flags) => async (dispatch, getState) => {
             )
             .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
             .send()
+
+        if (flags && flags.hideSplashScreen) {
+            SplashScreen.hide()
+        }
         return
     }
 
@@ -114,6 +126,10 @@ export const tryAutoLogin = (flags) => async (dispatch, getState) => {
             )
             .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
             .send()
+
+        if (flags && flags.hideSplashScreen) {
+            SplashScreen.hide()
+        }
     }
 }
 
@@ -121,10 +137,24 @@ export const loginUser = ({ username, password, onError, onSuccess }) => (
     dispatch,
     getState
 ) => {
-    return authenticate({ username, password, onError, onSuccess }, {})(
-        dispatch,
-        getState
-    )
+    let usernameToUse
+
+    // if this is a possible and valid phone number, then get E163 phone number
+    if (isPossiblePhoneNumber(username) && isValidPhoneNumber(username)) {
+        usernameToUse = getE164PhoneNumber(username)
+    } else {
+        usernameToUse = username
+    }
+
+    return authenticate(
+        {
+            username: usernameToUse,
+            password,
+            onError,
+            onSuccess,
+        },
+        {}
+    )(dispatch, getState)
 }
 
 const authenticate = (
@@ -185,64 +215,120 @@ const authenticate = (
             }
         } catch (error) {
             new SentryRequestBuilder(error, SENTRY_MESSAGE_TYPE.ERROR)
-                .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
+                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
                 .withTag(
                     SENTRY_TAGS.ACTION.LOGIN_IN,
                     SENTRY_TAG_VALUE.ACTIONS.FAILED
                 )
-                .withExtraContext(SENTRY_TAGS.ACTION.TOKEN, { username, token })
+                .withExtraContext(SENTRY_CONTEXT.LOGIN.USERNAME, username)
                 .send()
         }
 
-        const message = await API.post(
-            'pub/user/authenticate/',
-            { ...data },
-            undefined
-        )
-            .then(async (res) => {
-                // User Login Failed
-                if (!res.token) return res.message
-
-                // User Login Successfully
-                const payload = {
-                    token: res.token,
-                    userId: res.userId,
-                    created: Date.now(),
-                }
-
-                await mountUserWithToken(
-                    {
-                        payload,
-                        username,
-                        password,
-                        onSuccess,
-                    },
-                    flags
-                )(dispatch, getState)
+        const onAuthenticationError = ({ response, error }) => {
+            // Error message for authentication
+            const errorMessage = getLoginErrorMessage({
+                response,
+                error,
+                username,
             })
-            .catch((err) => err.message || 'Please try again later')
 
-        if (message) {
             dispatch({
                 type: LOGIN_USER_FAIL,
             })
 
-            if (onError) onError(message)
+            // Invoke onError callback
+            if (onError) {
+                onError(errorMessage, username)
+            }
 
-            // Record failure message in Sentry
-            new SentryRequestBuilder(
-                new Error(message),
-                SENTRY_MESSAGE_TYPE.ERROR
+            // Hide SplashScreen
+            if (flags && flags.hideSplashScreen) {
+                SplashScreen.hide()
+            }
+        }
+
+        try {
+            const res = await API.post(
+                'pub/user/authenticate/',
+                { ...data },
+                undefined
             )
-                .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
+            if (!res.token || !is2xxRespose(res.status)) {
+                if (!is4xxResponse(res.status)) {
+                    // Record failure in Sentry excluding user behavior
+                    new SentryRequestBuilder(
+                        res.message,
+                        SENTRY_MESSAGE_TYPE.MESSAGE
+                    )
+                        .withLevel(SENTRY_MESSAGE_LEVEL.WARNING)
+                        .withTag(
+                            SENTRY_TAGS.ACTION.LOGIN_IN,
+                            SENTRY_TAG_VALUE.ACTIONS.FAILED
+                        )
+                        .withExtraContext(
+                            SENTRY_CONTEXT.LOGIN.USERNAME,
+                            username
+                        )
+                        .send()
+                }
+                return onAuthenticationError({ response: res })
+            }
+
+            // User Login Successfully
+            const payload = {
+                token: res.token,
+                userId: res.userId,
+                created: Date.now(),
+            }
+
+            await mountUserWithToken(
+                {
+                    payload,
+                    username,
+                    password,
+                    onSuccess,
+                },
+                flags
+            )(dispatch, getState)
+        } catch (err) {
+            new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
+                .withLevel(SENTRY_MESSAGE_LEVEL.WARNING)
                 .withTag(
                     SENTRY_TAGS.ACTION.LOGIN_IN,
                     SENTRY_TAG_VALUE.ACTIONS.FAILED
                 )
-                .withExtraContext(SENTRY_TAGS.ACTION.USERNAME, username)
+                .withExtraContext(SENTRY_CONTEXT.LOGIN.USERNAME, username)
                 .send()
+            onAuthenticationError({ error: err })
         }
     }
+}
+
+/**
+ * Get error message from error, response and username
+ * @param {*} param0
+ */
+export const getLoginErrorMessage = ({ username, error, response }) => {
+    // default message
+    let message = 'Could not find an account matching those credential.'
+
+    // Server error
+    if (response && is5xxResponse(response.status)) {
+        return "Sorry we're having trouble logging you in. Please try again later or contact support."
+    }
+
+    // Account not exist
+    if (response && is4xxResponse(response.status)) {
+        if (response.message && response.message.includes('Wrong password')) {
+            // Invalid password
+            return 'Could not find an account matching those credential.'
+        }
+        // If it's a phone number
+        if (isPossiblePhoneNumber(username)) {
+            return "That account could not be found.\n Make sure you've entered the right country code."
+        }
+    }
+    return message
 }
 
 /**

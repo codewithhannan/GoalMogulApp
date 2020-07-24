@@ -41,24 +41,22 @@ import {
 } from './styles'
 import DelayedButton from './Main/Common/Button/DelayedButton'
 import UserAgreementCheckBox from './Main/Onboarding/UserAgreementCheckBox'
+import {
+    isValidEmail,
+    isPossiblePhoneNumber,
+    isValidPhoneNumber,
+} from './redux/middleware/utils'
 
 const FIELD_REQUIREMENT = {
     username: {
-        required: 'Email is required',
-        invalid: 'Invalid Email',
+        required: 'Email or Phone number is required',
+        invalid_username: 'Invalid Email or Phone number',
+        invalid_phone_num: 'Invalid Phone number',
     },
     password: {
         required: 'Password is required',
         too_short: 'Password is at least 8 characters',
     },
-}
-
-const isValidEmail = (email) => {
-    const isValid = (email) => {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        return re.test(String(email).toLowerCase())
-    }
-    return isValid(email)
 }
 
 class LoginPage extends Component {
@@ -70,7 +68,8 @@ class LoginPage extends Component {
             username: undefined,
             password: undefined,
             errMsg: undefined,
-            userAgreementChecked: false,
+            // Disable user agreement
+            // userAgreementChecked: false,
         }
     }
 
@@ -82,15 +81,27 @@ class LoginPage extends Component {
         return errors
     }
 
+    /**
+     * This validation only checks for if username exists.
+     * @param {*} username
+     */
     validateUsername = (username) => {
-        let error
-        // Validate email
-        if (!username) {
-            error = FIELD_REQUIREMENT.username.required
-        } else if (!isValidEmail(username)) {
-            error = FIELD_REQUIREMENT.username.invalid
+        // Missing username
+        if (!username || !username.trim()) {
+            return FIELD_REQUIREMENT.username.required
         }
-        return error
+
+        const possiblePhoneNumber = isPossiblePhoneNumber(username)
+        const validPhoneNumber = isValidPhoneNumber(username)
+        const validEmail = isValidEmail(username)
+
+        // valid email or valid phone number
+        if (validEmail || validPhoneNumber) return undefined // pass email or phone number check
+
+        if (possiblePhoneNumber) {
+            return FIELD_REQUIREMENT.username.invalid_phone_num
+        }
+        return FIELD_REQUIREMENT.username.invalid_username
     }
 
     validatePassword = (password) => {
@@ -164,7 +175,8 @@ class LoginPage extends Component {
     }
 
     handleLoginPressed = (values) => {
-        if (!this.state.userAgreementChecked) return
+        // Disable user agreement
+        // if (!this.state.userAgreementChecked) return
         const errors = this.validate(values)
 
         const hasErrors =
@@ -194,9 +206,14 @@ class LoginPage extends Component {
             this.props.loginUser({
                 username,
                 password,
-                onError: (errMsg) => {
+                onError: (errMsg, username) => {
                     this.increaseNumFailLoginAttempt()
                     this.setErrorMessage(errMsg)
+                    // Set username to the one we applied
+                    // This is for phone number when user
+                    // doesn't enter country code so that it's
+                    // clear which country code we are using / assuming
+                    this.props.change('username', username)
                 },
                 onSuccess: () => {
                     this.resetNumFailLoginAttempt()
@@ -230,11 +247,19 @@ class LoginPage extends Component {
 
     renderError(error) {
         return error ? (
-            <View style={{ height: 29 }}>
-                <Text style={styles.errorStyle}>{error}</Text>
+            <View
+                style={{
+                    height: 50,
+                    paddingHorizontal: 20,
+                    justifyContent: 'center',
+                }}
+            >
+                <Text style={[DEFAULT_STYLE.normalText_1, styles.errorStyle]}>
+                    {error}
+                </Text>
             </View>
         ) : (
-            <View style={{ height: 29 }} />
+            <View style={{ height: 50 }} />
         )
     }
 
@@ -325,10 +350,9 @@ class LoginPage extends Component {
                             >
                                 <Field
                                     name="username"
-                                    label="Email"
-                                    inputTitle="Email"
-                                    placeholder="Email"
-                                    keyboardType="email-address"
+                                    label="Email or Phone number"
+                                    inputTitle="Email or Phone number"
+                                    placeholder="Email or Phone number"
                                     component={InputBox}
                                     disabled={this.props.loading}
                                     returnKeyType="next"
@@ -370,6 +394,8 @@ class LoginPage extends Component {
                                 >
                                     Forgot password?
                                 </Text>
+                                {/* 
+                                Disable user agreement check
                                 <UserAgreementCheckBox
                                     onPress={(val) =>
                                         this.setState({
@@ -378,7 +404,7 @@ class LoginPage extends Component {
                                         })
                                     }
                                     checked={this.state.userAgreementChecked}
-                                />
+                                /> */}
                             </View>
                             <TouchableOpacity
                                 activeOpacity={0.6}
@@ -387,16 +413,17 @@ class LoginPage extends Component {
                                     BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT
                                         .containerStyle,
                                     {
-                                        backgroundColor:
-                                            this.props.loading ||
-                                            !this.state.userAgreementChecked
-                                                ? GM_BLUE_LIGHT
-                                                : GM_BLUE,
+                                        backgroundColor: this.props.loading
+                                            ? // Disable user agreement check
+                                              // || !this.state.userAgreementChecked
+                                              GM_BLUE_LIGHT
+                                            : GM_BLUE,
                                     },
                                 ]}
                                 disabled={
-                                    this.props.loading ||
-                                    !this.state.userAgreementChecked
+                                    this.props.loading
+                                    // Disable user agreement check
+                                    // || !this.state.userAgreementChecked
                                 }
                             >
                                 <Text
@@ -446,10 +473,10 @@ const styles = {
         marginRight: 10,
     },
     errorStyle: {
-        paddingTop: 12,
         color: '#ff0033',
         justifyContent: 'center',
         alignSelf: 'center',
+        textAlign: 'center',
     },
 }
 
