@@ -56,7 +56,12 @@ import Logo from '../../asset/header/logo.png'
 import Activity from '../../asset/utils/activity.png'
 
 // Styles
-import { GM_BLUE, BACKGROUND_COLOR, DEFAULT_STYLE } from '../../styles'
+import {
+    GM_BLUE,
+    BACKGROUND_COLOR,
+    DEFAULT_STYLE,
+    FONT_FAMILY_2,
+} from '../../styles'
 
 // Utils
 import { Logger } from '../../redux/middleware/utils/Logger'
@@ -87,8 +92,8 @@ class Home extends Component {
             navigationState: {
                 index: 0,
                 routes: [
-                    { key: 'activity', title: 'ALL POSTS' },
-                    { key: 'goals', title: 'JUST GOALS' },
+                    { key: 'activity', title: 'All Posts' },
+                    { key: 'goals', title: 'Just Goals' },
                 ],
             },
             appState: AppState.currentState,
@@ -307,25 +312,7 @@ class Home extends Component {
     _renderHeader = (props) => {
         return (
             <View style={styles.tabContainer}>
-                <TabButtonGroup
-                    buttons={props}
-                    tabIconMap={TabIconMap}
-                    borderRadius={3}
-                    padding={0}
-                    buttonStyle={{
-                        selected: {
-                            ...DEFAULT_STYLE.buttonText_1,
-                            backgroundColor: GM_BLUE,
-                            tintColor: 'white',
-                            color: 'white',
-                        },
-                        unselected: {
-                            ...DEFAULT_STYLE.buttonText_1,
-                            backgroundColor: '#F2F2F2',
-                            tintColor: DEFAULT_STYLE.buttonIcon_1.tintColor,
-                        },
-                    }}
-                />
+                <TabButtonGroup buttons={props} />
             </View>
         )
     }
@@ -448,13 +435,12 @@ const mapStateToProps = (state) => {
 
 const styles = {
     homeContainerStyle: {
-        backgroundColor: '#f8f8f8',
+        backgroundColor: '#E4E8EA',
         flex: 1,
     },
     tabContainer: {
-        padding: 16,
-        paddingTop: 8,
-        paddingBottom: 8,
+        paddingLeft: 8,
+        paddingRight: 8,
         backgroundColor: BACKGROUND_COLOR,
     },
     backdrop: {

@@ -27,7 +27,6 @@ import people_globe from '../../asset/explore/PeopleGlobe.png'
 import IconChat from '../../asset/footer/navigation/chat.png'
 
 // Styles
-import { DEFAULT_STYLE, GM_BLUE } from '../../styles'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 const { width } = Dimensions.get('window')
@@ -140,25 +139,7 @@ class Explore extends Component {
                         </Text>
                     </View>
                 </View>
-                <TabButtonGroup
-                    buttons={props}
-                    tabIconMap={TabIconMap}
-                    borderRadius={3}
-                    padding={0}
-                    buttonStyle={{
-                        selected: {
-                            ...DEFAULT_STYLE.titleText_2,
-                            backgroundColor: GM_BLUE,
-                            tintColor: 'white',
-                            color: 'white',
-                        },
-                        unselected: {
-                            ...DEFAULT_STYLE.titleText_2,
-                            backgroundColor: '#F2F2F2',
-                            tintColor: DEFAULT_STYLE.buttonIcon_1.tintColor,
-                        },
-                    }}
-                />
+                <TabButtonGroup buttons={props} tabIconMap={TabIconMap} />
             </Animated.View>
         )
     }

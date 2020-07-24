@@ -161,7 +161,6 @@ class ChatTab extends React.Component {
         return (
             <TabButtonGroup
                 buttons={props}
-                borderRadius={3}
                 tabNotificationMap={tabNotificationMap}
             />
         )

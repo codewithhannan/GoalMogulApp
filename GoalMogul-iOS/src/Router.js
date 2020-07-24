@@ -115,7 +115,6 @@ import {
 import SplashScreen from './SplashScreen'
 import Tutorial from './Tutorial/Tutorial'
 import MultiUserInvitePage from './Main/Common/MultiUserInvitePage'
-import { GM_BLUE } from './styles'
 import TribeHub from './Main/Explore/TribeHub'
 import MyTribeGoalShare from './Main/Menu/Tribe/MyTribeGoalShare'
 import MainProfile from './Main/Profile/MainProfile'
@@ -431,8 +430,6 @@ class RouterComponent extends Component {
                                         hideNavBar
                                         swipeEnabled={false}
                                         tabBarStyle={styles.tabBarStyle}
-                                        activeTintColor={GM_BLUE}
-                                        inactiveTintColor="#DCE4E6"
                                         tabs
                                         showLabel={false}
                                         tabBarOnPress={this.onTabPress}
@@ -544,7 +541,7 @@ class RouterComponent extends Component {
                                                     ) {
                                                         /* case yourKeyScene:
                                                         return theAnimationYouWant(props)*/
-                                                        case 'profileTab_profile':
+                                                        case 'mainProfile':
                                                             return this.rootTransitionConfig().screenInterpolator(
                                                                 props
                                                             )
@@ -809,10 +806,6 @@ class RouterComponent extends Component {
 }
 
 const styles = {
-    navBarStyle: {
-        backgroundColor: '#34c0dd',
-        borderBottomColor: 'transparent',
-    },
     tabBarStyle: {
         backgroundColor: 'white',
         borderTopColor: 'transparent',

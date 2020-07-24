@@ -231,26 +231,7 @@ class Event extends Component {
     }
 
     _renderHeader = (props, noBorder) => {
-        return (
-            <TabButtonGroup
-                buttons={props}
-                noBorder={noBorder}
-                buttonStyle={{
-                    selected: {
-                        backgroundColor: APP_DEEP_BLUE,
-                        tintColor: 'white',
-                        color: 'white',
-                        fontWeight: '700',
-                    },
-                    unselected: {
-                        backgroundColor: '#FCFCFC',
-                        tintColor: '#616161',
-                        color: '#616161',
-                        fontWeight: '600',
-                    },
-                }}
-            />
-        )
+        return <TabButtonGroup buttons={props} />
     }
 
     // If feed is loading and feed tab is selected, then render the spinner
