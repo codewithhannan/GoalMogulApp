@@ -306,7 +306,6 @@ const styles = {
     },
     imageContainerStyle: {
         alignItems: 'center',
-        borderRadius: 6,
         alignSelf: 'center',
         backgroundColor: 'white',
     },
