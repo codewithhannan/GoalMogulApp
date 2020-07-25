@@ -233,7 +233,7 @@ class Menu extends React.PureComponent {
                                 { color: '#FF2B2C' },
                             ]}
                         >
-                            Sign out
+                            Log out
                         </Text>
                     </DelayedButton>
                 </View>

@@ -83,6 +83,7 @@ import SuggestionModal from './SuggestionModal3'
 import CentralTab from './V3/CentralTab'
 import FocusTab from './V3/FocusTab'
 import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
+import { Icon } from '@ui-kitten/components'
 
 const initialLayout = {
     height: 0,
@@ -673,6 +674,7 @@ export class GoalDetailCardV3 extends Component {
                         contentContainerStyle={{
                             paddingTop: this.state.cardHeight,
                             flexGrow: 1,
+                            backgroundColor: '#F2F2F2',
                         }}
                         bottomOffset={this.state.contentBottomPadding}
                         isSelf={this.props.isSelf}
@@ -862,9 +864,22 @@ export class GoalDetailCardV3 extends Component {
                     <TouchableOpacity
                         activeOpacity={0.6}
                         onPress={this.onViewCommentPress}
-                        style={styles.nextIconContainer}
+                        style={{
+                            marginRight: 16,
+                            backgroundColor: GM_BLUE,
+                            borderRadius: 100,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
                     >
-                        <Image source={next} style={styles.nextIcon} />
+                        <Icon
+                            name="chevron-right"
+                            pack="material-community"
+                            style={{
+                                ...DEFAULT_STYLE.buttonIcon_1,
+                                tintColor: 'white',
+                            }}
+                        />
                     </TouchableOpacity>
                 </View>
             </TouchableOpacity>
@@ -983,19 +998,8 @@ const styles = StyleSheet.create({
         backgroundColor: BACKGROUND_COLOR,
         flex: 1,
     },
-    nextIconContainer: {
-        marginRight: 16,
-        padding: 4,
-        backgroundColor: GM_BLUE,
-        borderRadius: 100,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    nextIcon: {
-        ...DEFAULT_STYLE.smallIcon_1,
-        transform: [{ rotateY: '180deg' }],
-        tintColor: 'white',
-    },
+    nextIconContainer: {},
+    nextIcon: {},
     iconStyle: {
         alignSelf: 'center',
         fontSize: 20,

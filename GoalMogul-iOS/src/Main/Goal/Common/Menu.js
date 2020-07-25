@@ -26,6 +26,8 @@ import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
 
 /* Asset */
 import dropDown from '../../../asset/utils/dropDown.png'
+import { Icon } from '@ui-kitten/components'
+import { DEFAULT_STYLE } from '../../../styles'
 
 const { width } = Dimensions.get('window')
 const DEBUG_KEY = '[ UI Menu ]'
@@ -154,9 +156,13 @@ class MenuFactory extends React.Component {
                 >
                     <View style={triggerContainerStyle}>
                         {triggerTextView}
-                        <Image
-                            source={dropDown}
-                            style={{ height: 12, width: 12 }}
+                        <Icon
+                            name="dots-horizontal"
+                            pack="material-community"
+                            style={[
+                                DEFAULT_STYLE.buttonIcon_1,
+                                { tintColor: '#828282' },
+                            ]}
                         />
                     </View>
                 </MenuTrigger>

@@ -180,7 +180,7 @@ class GoalCard extends React.PureComponent {
         const { start, end, needs, steps } = item
 
         return (
-            <View style={{ marginTop: 16 }}>
+            <View style={{ marginTop: 14 }}>
                 <ProgressBar
                     startTime={start}
                     endTime={end}
@@ -394,7 +394,7 @@ class GoalCard extends React.PureComponent {
         if (!item) return
 
         return (
-            <View style={{ marginTop: 10 }}>
+            <View>
                 <View style={{ backgroundColor: 'white' }}>
                     {item.isCompleted ? (
                         <Image
@@ -437,12 +437,6 @@ class GoalCard extends React.PureComponent {
 const styles = {
     containerStyle: {
         backgroundColor: 'white',
-    },
-    viewGoalTextStyle: {
-        fontSize: 13,
-        fontWeight: '800',
-        color: '#17B3EC',
-        alignSelf: 'center',
     },
     iconStyle: {
         alignSelf: 'center',

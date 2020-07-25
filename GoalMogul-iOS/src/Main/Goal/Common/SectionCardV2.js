@@ -185,7 +185,7 @@ class SectionCardV2 extends Component {
             return (
                 <DelayedButton
                     activeOpacity={0.6}
-                    style={iconContainerStyle}
+                    style={{ padding: 4, paddingLeft: 0 }}
                     onPress={() =>
                         this.props.updateGoal(
                             _id,
@@ -197,7 +197,9 @@ class SectionCardV2 extends Component {
                     }
                     disabled={disabled}
                 >
-                    <Image style={iconStyle} source={checkIcon} />
+                    <View style={iconContainerStyle}>
+                        <Image style={iconStyle} source={checkIcon} />
+                    </View>
                 </DelayedButton>
             )
         }
@@ -288,9 +290,10 @@ class SectionCardV2 extends Component {
                         ref={(ref) => (this.input = ref)}
                         style={{
                             ...textStyle,
-                            padding: 4,
+                            padding: 8,
+                            paddingTop: 8,
                             backgroundColor: this.state.isInputFocused
-                                ? '#F2F2F2'
+                                ? '#FAFAFA'
                                 : styles.backgroundColor,
                         }}
                         value={this.state.textValue}
@@ -418,7 +421,7 @@ class SectionCardV2 extends Component {
                 disabled={isCreateCard}
             >
                 {this.renderBackIcon()}
-                <View style={{ justifyContent: 'flex-start' }}>
+                <View style={{ justifyContent: 'center' }}>
                     {this.renderCheckBox(isCompleted, isCreateCard)}
                 </View>
                 <View style={{ flex: 1 }}>
