@@ -64,7 +64,7 @@ export default class ChatRoomConversationInputToolbar extends React.Component {
 const styles = StyleSheet.create({
     container: {
         borderTopWidth: StyleSheet.hairlineWidth,
-        borderTopColor: '#b2b2b2',
+        borderTopColor: '#CCC',
         backgroundColor: 'white',
         bottom: 0,
         left: 0,

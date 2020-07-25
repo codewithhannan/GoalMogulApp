@@ -13,11 +13,10 @@
  * @format
  */
 
+import { Icon } from '@ui-kitten/components'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { Icon } from '@ui-kitten/components'
-import _ from 'lodash'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { GM_BLUE } from '../../../../styles'
 
 const styles = StyleSheet.create({
@@ -75,16 +74,13 @@ export default class Send extends Component {
     }
 
     renderSend = () => {
-        const { text, messageMediaRef } = this.props
-        let tintColor = allowSend(text, messageMediaRef) ? GM_BLUE : 'lightgray'
+        const { text, messageMediaRef, disabled } = this.props
+        let tintColor =
+            allowSend(text, messageMediaRef) && !disabled
+                ? GM_BLUE
+                : 'lightgray'
         return (
-            <View
-                style={{
-                    paddingRight: 15,
-                    paddingBottom: 15,
-                    position: 'relative',
-                }}
-            >
+            <View>
                 <Icon
                     name="send"
                     pack="material-community"
@@ -115,7 +111,7 @@ export default class Send extends Component {
                     style={[styles.container, containerStyle]}
                     onPress={this.handleOnPress}
                     accessibilityTraits="button"
-                    disabled={!allowSend(text, messageMediaRef) || disabled}
+                    disabled={!allowSend(text, messageMediaRef) && disabled}
                     {...sendButtonProps}
                 >
                     <View>{children || this.renderSend()}</View>

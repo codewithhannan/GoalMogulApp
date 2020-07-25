@@ -46,7 +46,7 @@ import profilePic from '../../../asset/utils/defaultUserProfile.png'
 import NextButton from '../../../asset/utils/next.png'
 // Components
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal'
-import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
+import { getProfileImageOrDefault } from '../../../redux/middleware/utils'
 // Actions
 import {
     changeMessageMediaRef,
@@ -588,7 +588,7 @@ class ChatRoomConversation extends React.Component {
     }
     onChatTextInputChanged = (text) => {
         const { userId, chatRoomId } = this.props
-        const typingStatus = text.length != 0
+        const typingStatus = text.length > 0
         if (this.state.lastEmittedTypingIndicatorStatus != typingStatus) {
             LiveChatService.emitEvent(
                 OUTGOING_EVENT_NAMES.updateTypingStatus,
@@ -630,17 +630,15 @@ class ChatRoomConversation extends React.Component {
                         >
                             <ProfileImage
                                 imageStyle={{
-                                    height: 39,
-                                    width: 39,
-                                    borderRadius: 4,
+                                    height: 40,
+                                    width: 40,
                                     flex: 1,
                                 }}
                                 imageUrl={item.profile && item.profile.image}
                                 imageContainerStyle={{
                                     ...styles.imageContainerStyle,
-                                    height: 42,
-                                    width: 42,
-                                    marginLeft: 3,
+                                    height: 40,
+                                    width: 40,
                                 }}
                             />
                             <TypingAnimation
@@ -663,7 +661,11 @@ class ChatRoomConversation extends React.Component {
         return (
             <TouchableOpacity
                 activeOpacity={0.6}
-                style={styles.iconContainerStyle}
+                style={{
+                    // use padding instead of margin to space buttons so it increases tapable area
+                    paddingRight: 12,
+                    ...styles.iconContainerStyle,
+                }}
                 onPress={this.onSendImageButtonPress}
             >
                 <Icon
@@ -678,7 +680,12 @@ class ChatRoomConversation extends React.Component {
         return (
             <TouchableOpacity
                 activeOpacity={0.6}
-                style={styles.iconContainerStyle}
+                style={{
+                    // use padding instead of margin to space buttons so it increases tapable area
+                    paddingLeft: 6,
+                    paddingRight: 6,
+                    ...styles.iconContainerStyle,
+                }}
                 onPress={this.onShareContentButtonPress}
             >
                 <Icon
@@ -686,7 +693,11 @@ class ChatRoomConversation extends React.Component {
                     pack="material-community"
                     style={[
                         styles.iconStyle,
-                        { marginBottom: 2, tintColor: '#F2C94C' },
+                        {
+                            position: 'relative',
+                            bottom: 2,
+                            tintColor: '#F2C94C',
+                        },
                     ]}
                 />
             </TouchableOpacity>
@@ -737,14 +748,17 @@ class ChatRoomConversation extends React.Component {
                         style={{
                             alignItems: 'center',
                             flexDirection: 'row',
+                            paddingLeft: 12,
+                            paddingRight: 12,
+                            paddingBottom: 15,
                         }}
                     >
                         <View
                             style={{
                                 flexDirection: 'row',
                                 flexGrow: 2,
-                                alignItems: 'center',
-                                paddingLeft: 15,
+                                alignItems: 'flex-end',
+                                justifyContent: 'flex-start',
                             }}
                         >
                             {messageMediaRef
@@ -754,7 +768,7 @@ class ChatRoomConversation extends React.Component {
                         </View>
                         <View
                             style={{
-                                alignItems: 'center',
+                                justifyContent: 'flex-end',
                             }}
                         >
                             {this.renderSendButton(props)}
@@ -766,8 +780,17 @@ class ChatRoomConversation extends React.Component {
     }
 
     renderSendButton = (props) => {
-        const { messageMediaRef } = this.props
-        return <Send {...props} messageMediaRef={messageMediaRef} />
+        const { messageMediaRef, initializing } = this.props
+        return (
+            <Send
+                {...props}
+                containerStyle={{
+                    height: 30,
+                }}
+                messageMediaRef={messageMediaRef}
+                disabled={initializing}
+            />
+        )
     }
 
     renderComposer = (props) => {
@@ -777,7 +800,6 @@ class ChatRoomConversation extends React.Component {
                     flexGrow: 2,
                     paddingLeft: 6,
                     paddingRight: 12,
-                    paddingTop: 9,
                     paddingBottom: 9,
                     width: Dimensions.get('window').width - 108, // icons and padding
                 }}
@@ -793,10 +815,10 @@ class ChatRoomConversation extends React.Component {
                     placeholder={`${props.placeholder.slice(0, 42)}...`}
                     autoFocus={false}
                     style={{
-                        fontSize: 16,
+                        fontSize: 15,
                         padding: 9,
-                        paddingTop: 6,
-                        paddingBottom: 6,
+                        paddingTop: 12,
+                        paddingBottom: 4,
                         minHeight: 15 + 18,
                         maxHeight: 18 * 5 + 23,
                     }}
@@ -909,9 +931,7 @@ class ChatRoomConversation extends React.Component {
                     user={{
                         _id,
                         name,
-                        avatar: getProfileImageOrDefaultFromUser(
-                            this.props.user
-                        ),
+                        avatar: getProfileImageOrDefault(profile.image),
                     }}
                     placeholder={`Send a message to '${this.props.chatRoomName}'`}
                     isAnimated={true}
@@ -1057,12 +1077,8 @@ const styles = {
         opacity: 0.5,
     },
     imageContainerStyle: {
-        height: 60,
-        width: 60,
-        borderRadius: 5,
-        borderWidth: 1,
-        borderColor: '#f4f4f4',
-        padding: 2,
+        marginBottom: 9,
+        marginLeft: 9,
     },
     messageImage: {
         height: 100,
@@ -1073,10 +1089,7 @@ const styles = {
         minWidth: 150,
     },
     iconContainerStyle: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 38,
-        paddingBottom: 15,
+        width: 30,
     },
     iconStyle: {
         height: 30,

@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
         // The bottom should roughly line up with the first line of message text.
         height: 40,
         width: 40,
-        borderRadius: 20,
+        borderRadius: 100,
     },
 })
 
