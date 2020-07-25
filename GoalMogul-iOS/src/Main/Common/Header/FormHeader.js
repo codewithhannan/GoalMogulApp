@@ -1,4 +1,9 @@
-/** @format */
+/**
+ * @format
+ * --------------------------------------------------------
+ * This components should be placed outise of SafeViewArea
+ * --------------------------------------------------------
+ * */
 
 import React, { Component } from 'react'
 import { View, Text } from 'react-native'

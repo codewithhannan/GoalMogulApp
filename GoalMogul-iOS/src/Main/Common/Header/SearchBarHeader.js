@@ -1,4 +1,8 @@
 /**
+ * --------------------------------------------------------
+ * This components should be placed outise of SafeViewArea
+ * --------------------------------------------------------
+ *
  * TODO: add prop types for this component. Start documenting from version 0.4.1
  *
  * props
