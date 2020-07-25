@@ -18,18 +18,14 @@
  */
 
 import React, { Component } from 'react'
-import { View, Image, Text, TouchableOpacity, Platform } from 'react-native'
+import { View, Image, Text, TouchableOpacity } from 'react-native'
 import R from 'ramda'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
 
 /* Asset */
-import Logo from '../../../asset/header/logoWithText.png'
-import IconMenu from '../../../asset/header/menu.png'
-import IconSearch from '../../../asset/header/search.png'
-import BackButton from '../../../asset/utils/back.png'
-import FriendsSettingIcon from '../../../asset/utils/friendsSettingIcon.png'
+import Logo from '../../../asset/header/GMText.png'
 
 import { actionSheet, switchByButtonIndex } from '../ActionSheetFactory'
 
@@ -46,22 +42,17 @@ import { openMyTribeTab } from '../../../redux/modules/tribe/MyTribeTabActions'
 import { createReport } from '../../../redux/modules/report/ReportActions'
 
 // styles
-import { GM_BLUE, GM_BLUE_LIGHT_LIGHT, DEFAULT_STYLE } from '../../../styles'
+import { HEADER_STYLES } from '../../../styles/Header'
 
-import { IPHONE_MODELS, DEVICE_MODEL } from '../../../Utils/Constants'
 import { getUserData } from '../../../redux/modules/User/Selector'
+import { Icon } from '@ui-kitten/components'
 
-const tintColor = 'white'
-const rightIconColor = '#333'
 // For profile friend setting ActionSheetIOS
 const FRIENDSHIP_SETTING_BUTTONS = ['Block', 'Report', 'Cancel']
 const CANCEL_INDEX = 2
 
 const DEBUG_KEY = '[ Component SearchBarHeader ]'
 const WalkableView = walkthroughable(View)
-
-const paddingTop =
-    Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL) ? 40 : 55
 
 /**
   TODO: refactor element to have consistent behavior
@@ -133,20 +124,27 @@ class SearchBarHeader extends Component {
 
     renderLeftIcon() {
         const { backButton } = this.props
-        const height = backButton ? 23 : 38
-        const width = backButton ? 23 : 170
         return (
             <DelayedButton
                 activeOpacity={0.6}
                 onPress={
                     backButton ? this.handleBackOnClick.bind(this) : () => {}
                 }
+                style={{ justifyContent: 'center' }}
             >
-                <Image
-                    source={backButton ? BackButton : Logo}
-                    resizeMode="contain"
-                    style={{ height, width, tintColor }}
-                />
+                {backButton ? (
+                    <Icon
+                        name="chevron-left"
+                        pack="material-community"
+                        style={HEADER_STYLES.nakedButton}
+                    />
+                ) : (
+                    <Image
+                        source={Logo}
+                        resizeMode="contain"
+                        style={HEADER_STYLES.logo}
+                    />
+                )}
             </DelayedButton>
         )
     }
@@ -169,25 +167,19 @@ class SearchBarHeader extends Component {
         ) {
             const { handlePageSetting } = this.props
             return (
-                <DelayedButton
+                <TouchableOpacity
                     onPress={
                         handlePageSetting ||
                         this.handleFriendsSettingOnClick.bind(this)
                     }
-                    touchableWithoutFeedback
+                    style={{ padding: 5 }}
                 >
-                    <View
-                        style={{
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Image
-                            style={{ height: 30, width: 35, tintColor }}
-                            source={FriendsSettingIcon}
-                        />
-                    </View>
-                </DelayedButton>
+                    <Icon
+                        name="dots-horizontal"
+                        pack="material-community"
+                        style={HEADER_STYLES.nakedButton}
+                    />
+                </TouchableOpacity>
             )
         }
 
@@ -210,15 +202,12 @@ class SearchBarHeader extends Component {
                                 onPress={
                                     menuOnPress || this.handleMenuIconOnClick
                                 }
-                                style={{ ...styles.headerRightContaner }}
+                                style={styles.headerRightContaner}
                             >
-                                <Image
-                                    style={{
-                                        height: 24,
-                                        width: 24,
-                                        tintColor: rightIconColor,
-                                    }}
-                                    source={IconMenu}
+                                <Icon
+                                    name="menu"
+                                    pack="material-community"
+                                    style={HEADER_STYLES.button}
                                 />
                             </TouchableOpacity>
                         </WalkableView>
@@ -238,13 +227,10 @@ class SearchBarHeader extends Component {
                         }}
                         style={styles.headerRightContaner}
                     >
-                        <Image
-                            style={{
-                                height: 18,
-                                width: 18,
-                                tintColor: rightIconColor,
-                            }}
-                            source={IconSearch}
+                        <Icon
+                            name="magnify"
+                            pack="material-community"
+                            style={HEADER_STYLES.button}
                         />
                     </DelayedButton>
                     <TouchableOpacity
@@ -252,13 +238,10 @@ class SearchBarHeader extends Component {
                         onPress={menuOnPress || this.handleMenuIconOnClick}
                         style={styles.headerRightContaner}
                     >
-                        <Image
-                            style={{
-                                height: 24,
-                                width: 24,
-                                tintColor: rightIconColor,
-                            }}
-                            source={IconMenu}
+                        <Icon
+                            name="menu"
+                            pack="material-community"
+                            style={HEADER_STYLES.button}
                         />
                     </TouchableOpacity>
                 </View>
@@ -271,7 +254,6 @@ class SearchBarHeader extends Component {
 
     renderTitle() {
         if (this.props.title) {
-            const titleColor = tintColor
             return (
                 <View
                     style={{
@@ -280,14 +262,7 @@ class SearchBarHeader extends Component {
                         alignItems: 'center',
                     }}
                 >
-                    <Text
-                        style={{
-                            ...DEFAULT_STYLE.titleText_1,
-                            color: titleColor,
-                        }}
-                    >
-                        {this.props.title}
-                    </Text>
+                    <Text style={HEADER_STYLES.title}>{this.props.title}</Text>
                 </View>
             )
         }
@@ -296,7 +271,7 @@ class SearchBarHeader extends Component {
 
     render() {
         return (
-            <View style={{ ...styles.headerStyle, paddingTop }}>
+            <View style={styles.headerStyle}>
                 {this.renderLeftIcon()}
                 {this.renderTitle()}
                 {this.renderRightIcons()}
@@ -307,19 +282,11 @@ class SearchBarHeader extends Component {
 
 const styles = {
     headerStyle: {
-        flexDirection: 'row',
-        backgroundColor: GM_BLUE,
-        padding: 15,
+        ...HEADER_STYLES.headerContainer,
         justifyContent: 'center',
-        alignItems: 'center',
     },
     headerRightContaner: {
-        width: 38,
-        height: 38,
-        borderRadius: 19,
-        backgroundColor: GM_BLUE_LIGHT_LIGHT,
-        justifyContent: 'center',
-        alignItems: 'center',
+        ...HEADER_STYLES.buttonWrapper,
         marginLeft: 8,
     },
 }
