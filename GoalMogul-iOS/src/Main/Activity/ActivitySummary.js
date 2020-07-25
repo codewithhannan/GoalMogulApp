@@ -6,7 +6,7 @@ import React from 'react'
 import _ from 'lodash'
 import { Text, View } from 'react-native'
 import { switchCase } from '../../redux/middleware/utils'
-import { DEFAULT_STYLE } from '../../styles'
+import { DEFAULT_STYLE, FONT_FAMILY_3 } from '../../styles'
 
 class ActivitySummary extends React.Component {
     renderText(item) {
@@ -123,10 +123,10 @@ class ActivitySummary extends React.Component {
             <View
                 style={{
                     marginBottom: 0.5,
-                    padding: 5,
+                    padding: 7,
                     paddingLeft: 15,
                     paddingRight: 15,
-                    borderBottomColor: '#F8F8F8',
+                    borderBottomColor: '#F2F2F2',
                     borderBottomWidth: 1,
                 }}
             >
@@ -181,10 +181,11 @@ const switchPostType = (postType) =>
 
 const styles = {
     boldTextStyle: {
-        ...DEFAULT_STYLE.smallTitle_1,
+        ...DEFAULT_STYLE.buttonText_2,
+        fontFamily: FONT_FAMILY_3,
     },
     textStyle: {
-        ...DEFAULT_STYLE.smallText_1,
+        ...DEFAULT_STYLE.normalText_2,
     },
 }
 

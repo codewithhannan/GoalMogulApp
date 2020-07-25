@@ -144,39 +144,14 @@ class SyncContactInvite extends React.Component {
         return (
             <View
                 style={{
-                    paddingLeft: 20,
-                    paddingRight: 20,
+                    paddingLeft: 12,
+                    paddingRight: 12,
                     backgroundColor: 'white',
-                    paddingBottom: 10,
+                    paddingBottom: 2,
                     marginBottom: 10,
                 }}
             >
-                <TabButtonGroup
-                    buttons={props}
-                    buttonStyle={{
-                        selected: {
-                            backgroundColor: GM_BLUE,
-                            tintColor: 'white',
-                            color: 'white',
-                            fontWeight: '700',
-                            fontSize: GM_FONT_SIZE.FONT_2,
-                            fontFamily: FONT_FAMILY_2,
-                        },
-                        unselected: {
-                            backgroundColor: '#F2F2F2',
-                            tintColor: '#828282',
-                            color: '#828282',
-                            fontWeight: '600',
-                            fontSize: GM_FONT_SIZE.FONT_2,
-                            fontFamily: FONT_FAMILY_2,
-                        },
-                    }}
-                    buttonGroupContainerStyle={{
-                        marginLeft: 20,
-                        marginRight: 20,
-                    }}
-                    borderRadius={15}
-                />
+                <TabButtonGroup buttons={props} />
             </View>
         )
     }
@@ -190,7 +165,7 @@ class SyncContactInvite extends React.Component {
                     <View
                         style={{
                             paddingTop: 20,
-                            paddingBottom: 20,
+                            paddingBottom: 12,
                             backgroundColor: 'white',
                         }}
                     >

@@ -271,21 +271,7 @@ class ProfileV2 extends Component {
             : styles.tabContainer.padding
         return (
             <View style={{ ...styles.tabContainer, paddingBottom }}>
-                <TabButtonGroup
-                    buttons={props}
-                    borderRadius={3}
-                    buttonStyle={{
-                        selected: {
-                            ...DEFAULT_STYLE.buttonText_1,
-                            backgroundColor: GM_BLUE,
-                            color: 'white',
-                        },
-                        unselected: {
-                            ...DEFAULT_STYLE.buttonText_1,
-                            backgroundColor: '#F2F2F2',
-                        },
-                    }}
-                />
+                <TabButtonGroup buttons={props} />
             </View>
         )
     }
@@ -490,7 +476,7 @@ const styles = {
         backgroundColor: BACKGROUND_COLOR,
     },
     tabContainer: {
-        padding: 16,
+        padding: 8,
         backgroundColor: BACKGROUND_COLOR,
     },
     backdrop: {

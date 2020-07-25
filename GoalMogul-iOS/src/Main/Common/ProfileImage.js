@@ -1,16 +1,14 @@
 /** @format */
 
-import React from 'react'
-import { Image, View, TouchableWithoutFeedback } from 'react-native'
 import _ from 'lodash'
+import React from 'react'
+import { Image, TouchableWithoutFeedback, View } from 'react-native'
 import { connect } from 'react-redux'
-
 // actions
 import { openProfile } from '../../actions'
-
+import { getImageOrDefault } from '../../redux/middleware/utils'
 // Constants
 import { DEFAULT_STYLE } from '../../styles'
-import { getImageOrDefault } from '../../redux/middleware/utils'
 
 const DEBUG_KEY = '[ UI ProfileImage ]'
 /*
@@ -47,10 +45,11 @@ class ProfileImage extends React.Component {
         )
 
         let defaultImageStyle
-        if (this.props.defaultImageStyle)
+        if (imageStyle) defaultImageStyle = { ...imageStyle }
+        if (this.props.defaultImageStyle && !imageUrl)
             defaultImageStyle = { ...this.props.defaultImageStyle }
-        else if (imageStyle) defaultImageStyle = { ...imageStyle }
-        else defaultImageStyle = DEFAULT_STYLE.profileImage_2
+        if (!imageStyle && !this.props.defaultImageStyle)
+            defaultImageStyle = DEFAULT_STYLE.profileImage_2
 
         const defaultImageContainerStyle =
             this.props.defaultImageContainerStyle ||
@@ -62,19 +61,26 @@ class ProfileImage extends React.Component {
                 <View
                     style={
                         imageUrl
-                            ? { ...imageContainerStyle, borderRadius: 100 }
-                            : defaultImageContainerStyle
+                            ? { borderRadius: 100, ...imageContainerStyle }
+                            : {
+                                  borderRadius: 100,
+                                  ...defaultImageContainerStyle,
+                              }
                     }
                 >
                     <Image
                         style={
                             imageUrl
-                                ? (imageStyle && {
-                                      ...imageStyle,
+                                ? imageStyle
+                                    ? {
+                                          borderRadius: 100,
+                                          ...imageStyle,
+                                      }
+                                    : DEFAULT_STYLE.profileImage_1
+                                : {
                                       borderRadius: 100,
-                                  }) ||
-                                  DEFAULT_STYLE.profileImage_1
-                                : defaultImageStyle
+                                      ...defaultImageStyle,
+                                  }
                         }
                         source={getImageOrDefault(imageUrl, defaultImageSource)}
                         resizeMode={resizeMode}

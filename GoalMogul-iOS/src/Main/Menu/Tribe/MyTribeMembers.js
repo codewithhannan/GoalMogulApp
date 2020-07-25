@@ -168,7 +168,7 @@ class MyTribeMembers extends React.PureComponent {
                     // pageSetting
                     // handlePageSetting={() => (this.handlePageSetting(item))}
                 />
-                <View style={{ padding: 16, backgroundColor: 'white' }}>
+                <View style={{ padding: 8, backgroundColor: 'white' }}>
                     {navigation && <TabButtonGroup buttons={navigation} />}
                     <SearchBar
                         round
@@ -176,7 +176,7 @@ class MyTribeMembers extends React.PureComponent {
                         placeholderTextColor="#D3D3D3"
                         containerStyle={[
                             styles.searchBar.container,
-                            { marginTop: navigation ? 16 : 0 },
+                            { margin: 8, marginTop: navigation ? 8 : 0 },
                         ]}
                         inputContainerStyle={styles.searchBar.inputContainer}
                         searchIcon={() => (

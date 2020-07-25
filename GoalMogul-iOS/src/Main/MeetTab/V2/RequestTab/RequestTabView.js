@@ -22,8 +22,6 @@ import SearchBarHeader from '../../../Common/Header/SearchBarHeader'
 import TabButtonGroup from '../../../Common/TabButtonGroup'
 import IncomingRequestTabView from './IncomingRequestTabView'
 import OutgoingRequestTabView from './OutgoingRequestTabView'
-import { SearchBar } from 'react-native-elements'
-import { SearchIcon } from '../../../../Utils/Icons'
 import { SCREENS, wrapAnalytics } from '../../../../monitoring/segment'
 
 class RequestTabView extends Component {
@@ -42,30 +40,12 @@ class RequestTabView extends Component {
         return (
             <View
                 style={{
-                    padding: 16,
+                    padding: 8,
                     backgroundColor: 'white',
                     marginBottom: 8,
                 }}
             >
-                <TabButtonGroup
-                    buttons={props}
-                    noBorder
-                    buttonStyle={{
-                        selected: {
-                            backgroundColor: GM_BLUE,
-                            tintColor: 'white',
-                            color: 'white',
-                            fontWeight: '700',
-                        },
-                        unselected: {
-                            backgroundColor: '#F2F2F2',
-                            tintColor: '#616161',
-                            color: '#616161',
-                            fontWeight: '600',
-                        },
-                    }}
-                    borderRadius={100}
-                />
+                <TabButtonGroup buttons={props} />
                 {/* <SearchBar 
             ref={searchBar => this.searchBar = searchBar}
             platform="default"

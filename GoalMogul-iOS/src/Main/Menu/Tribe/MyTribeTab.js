@@ -57,25 +57,7 @@ class MyTribeTab extends React.Component {
     }
 
     renderTabs = (props) => {
-        return (
-            <TabButtonGroup
-                buttons={props}
-                borderRadius={3}
-                buttonStyle={{
-                    selected: {
-                        ...DEFAULT_STYLE.titleText_2,
-                        backgroundColor: GM_BLUE,
-                        tintColor: 'white',
-                        color: 'white',
-                    },
-                    unselected: {
-                        ...DEFAULT_STYLE.titleText_2,
-                        backgroundColor: '#F2F2F2',
-                        tintColor: DEFAULT_STYLE.buttonIcon_1.tintColor,
-                    },
-                }}
-            />
-        )
+        return <TabButtonGroup buttons={props} />
     }
 
     renderListHeader() {
