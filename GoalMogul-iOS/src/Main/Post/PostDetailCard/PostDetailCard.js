@@ -259,7 +259,7 @@ class PostDetailCard extends React.PureComponent {
             )
             return
         }
-        this.commentBox.focusForReply(type)
+        this.commentBox.focus(type)
     }
 
     renderItem = (props) => {

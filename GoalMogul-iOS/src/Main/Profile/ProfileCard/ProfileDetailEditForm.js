@@ -249,7 +249,6 @@ class ProfileDetailEditForm extends Component {
                         innerRef={(ref) => {
                             this.scrollview = ref
                         }}
-                        style={{}}
                         extraScrollHeight={13}
                         contentContainerStyle={{
                             backgroundColor: 'white',
