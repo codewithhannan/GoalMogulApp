@@ -6,6 +6,8 @@ import { DEFAULT_STYLE, GM_BLUE, GM_BLUE_LIGHT_LIGHT, FONT_FAMILY_3 } from '..'
 import { IPHONE_MODELS, DEVICE_MODEL } from '../../Utils/Constants'
 
 export const CONTENT_COLOR = 'white'
+export const PADDING_TOP =
+    Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL) ? 25 : 40
 
 export const HEADER_STYLES = {
     headerContainer: {
@@ -15,10 +17,7 @@ export const HEADER_STYLES = {
         paddingLeft: 16,
         paddingRight: 16,
         alignItems: 'center',
-        paddingTop:
-            Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL)
-                ? 25
-                : 40,
+        paddingTop: PADDING_TOP,
     },
     nakedButton: {
         height: 30,
