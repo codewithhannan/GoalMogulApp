@@ -254,7 +254,7 @@ class ShareDetailCard extends Component {
             )
             return
         }
-        this.commentBox.focusForReply(type)
+        this.commentBox.focus(type)
     }
 
     renderItem = (props) => {

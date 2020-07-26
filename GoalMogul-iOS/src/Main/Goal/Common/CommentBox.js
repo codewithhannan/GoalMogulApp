@@ -142,7 +142,7 @@ class CommentBox extends Component {
         this.handleOnBlur(newComment)
     }
 
-    focusForReply() {
+    focus() {
         this.refs['textInput'].focus()
         this.setState({
             ...this.state,

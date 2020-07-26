@@ -163,7 +163,9 @@ class ProfilePostCard extends React.PureComponent {
                     textStyle={{ color: '#828282' }}
                     iconStyle={{ tintColor: '#828282' }}
                     onPress={() => {
-                        this.props.onPress(item)
+                        this.props.openPostDetail(item, {
+                            initialFocusCommentBox: true,
+                        })
                     }}
                 />
             </ActionButtonGroup>

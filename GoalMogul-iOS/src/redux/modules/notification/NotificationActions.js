@@ -303,19 +303,23 @@ export const openNotificationDetail = (item) => (dispatch, getState) => {
             }
         }
 
-        if (isValidItem(item.postRef)) {
-            return openPostDetail(item.postRef, initialProps)(
-                dispatch,
-                getState
-            )
-        }
-
-        if (checkIfShare(p)) {
+        if (
+            checkIfShare(p) ||
+            (item.postRef &&
+                item.postRef.postType &&
+                item.postRef.postType.startsWith('Share'))
+        ) {
             return openShareDetailById(entityId, initialProps)(
                 dispatch,
                 getState
             )
         } else {
+            if (isValidItem(item.postRef)) {
+                return openPostDetail(item.postRef, initialProps)(
+                    dispatch,
+                    getState
+                )
+            }
             return openPostDetailById(entityId, initialProps)(
                 dispatch,
                 getState

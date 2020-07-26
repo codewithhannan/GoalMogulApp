@@ -18,6 +18,7 @@ import {
 
 import {
     COMMENT_NEW,
+    COMMENT_EMPTY,
     COMMENT_NEW_UPDATE,
     COMMENT_NEW_UPDATE_COMMENT_TYPE,
     COMMENT_NEW_TEXT_ON_CHANGE,
@@ -197,16 +198,28 @@ export const createComment = (commentDetail, pageId) => (
     const { userId } = getState().user
     const { tab } = getState().navigation
     console.log('Creating comment with commentDetail: ', commentDetail)
-    trackWithProperties(E.COMMENT_ADDED, {
-        CommentDetail: commentDetail,
-        UserId: userId,
-    })
 
     dispatch({
         type: COMMENT_NEW,
         payload: {
             ...commentDetail,
             owner: userId,
+            tab,
+            pageId,
+        },
+    })
+}
+
+export const createEmptyComment = (commentDetail, pageId) => (
+    dispatch,
+    getState
+) => {
+    const { tab } = getState().navigation
+
+    dispatch({
+        type: COMMENT_EMPTY,
+        payload: {
+            commentDetail,
             tab,
             pageId,
         },
@@ -353,6 +366,10 @@ export const postComment = (pageId, callback) => (dispatch, getState) => {
     // If succeed, COMMENT_NEW_POST_SUCCESS, otherwise, COMMENT_NEW_POST_FAIL
     const onSuccess = (data) => {
         const { commentType } = newComment
+        trackWithProperties(E.COMMENT_ADDED, {
+            CommentDetail: newComment,
+            UserId: user.userId,
+        })
         dispatch({
             type: COMMENT_NEW_POST_SUCCESS,
             payload: {

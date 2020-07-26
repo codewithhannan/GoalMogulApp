@@ -12,8 +12,9 @@ import {
 import { POST_DETAIL_OPEN, POST_DETAIL_CLOSE } from '../post/PostReducers'
 
 import { SHARE_DETAIL_OPEN, SHARE_DETAIL_CLOSE } from '../post/ShareReducers'
+import { INITIAL_COMMENT_OBJECT } from './Comments'
 
-const NEW_COMMENT_INITIAL_STATE = {
+export const NEW_COMMENT_INITIAL_STATE = {
     contentText: '',
     contentTags: [], // { user, startIndex, endIndex, tagReg, tagText } //start index
     owner: undefined,
@@ -79,6 +80,7 @@ const INITIAL_SUGGESETION = {
 const DEBUG_KEY = '[ Reducers NewComment ]'
 
 export const COMMENT_NEW = 'comment_new'
+export const COMMENT_EMPTY = 'comment_empty'
 export const COMMENT_NEW_UPDATE = 'comment_new_update'
 export const COMMENT_NEW_UPDATE_COMMENT_TYPE = 'comment_new_update_comment_type'
 export const COMMENT_NEW_TEXT_ON_CHANGE = 'comment_new_text_on_change'
@@ -289,6 +291,17 @@ export default (state = INITIAL_STATE, action) => {
 
             // console.log(`${DEBUG_KEY}: new state for newcomment: `, newState);
             return newState
+        }
+
+        case COMMENT_EMPTY: {
+            const newState = _.cloneDeep(state)
+            const { commentDetail, tab, pageId } = action.payload
+            const page = pageId ? `${pageId}` : 'default'
+            const path = !tab ? `homeTab.${page}` : `${tab}.${page}`
+            return _.set(newState, `${path}`, {
+                ...NEW_COMMENT_INITIAL_STATE,
+                ...commentDetail,
+            })
         }
 
         case COMMENT_NEW_UPDATE: {

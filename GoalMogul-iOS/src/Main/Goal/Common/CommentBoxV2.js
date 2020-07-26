@@ -96,27 +96,18 @@ class CommentBoxV2 extends Component {
         }
         this.updateSearchRes = this.updateSearchRes.bind(this)
         this.focus = this.focus.bind(this)
-        this.focusForReply = this.focusForReply.bind(this)
+        this.focus = this.focus.bind(this)
         this.handleOnSubmitEditing = this.handleOnSubmitEditing.bind(this)
     }
 
     componentDidMount() {
-        if (this.props.onRef) {
-            this.props.onRef(this)
-        }
-
-        const { initial } = this.props
-        if (initial && initial.commentBox) {
-            this.focus()
-        }
+        if (this.props.onRef) this.props.onRef(this)
 
         this.setState({
-            ...this.state,
             defaultValue: this.props.isReplyCommentBox
                 ? DEFAULT_REPLY_TO_PLACEHOLDER
                 : DEFAULT_WRITE_COMMENT_PLACEHOLDER,
         })
-        console.log(`${DEBUG_KEY}: componentDidMount: `)
     }
 
     componentWillUnmount() {
@@ -273,7 +264,7 @@ class CommentBoxV2 extends Component {
     handleOnPost = (uploading) => {
         // Ensure we only create comment once
         if (uploading) return
-        this.props.postComment(this.props.pageId, this.props.resetToDefault)
+        this.props.postComment(this.props.pageId, this.props.onPost)
     }
 
     handleOpenCamera = () => {
@@ -349,28 +340,8 @@ class CommentBoxV2 extends Component {
         this.handleOnBlur(newComment)
     }
 
-    focusForReply(type) {
-        console.log(`${DEBUG_KEY}: [ focusForReply ]: with type: `, type)
-
-        if (this.textInput) {
-            this.textInput.focus()
-        } else {
-            console.warn(
-                `${DEBUG_KEY}: [ focusForReply ]: textInput is undefined`
-            )
-        }
-
-        // Only update the defaultValue if comment button is clicked through comment card / child comment card
-        if (type === 'Reply') {
-            this.setState({
-                ...this.state,
-                defaultValue: DEFAULT_REPLY_TO_PLACEHOLDER,
-            })
-        }
-    }
-
     focus() {
-        this.textInput.focus()
+        if (this.textInput) this.textInput.focus()
     }
 
     updateSize = (height) => {

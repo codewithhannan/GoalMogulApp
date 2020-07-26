@@ -562,7 +562,7 @@ export class GoalDetailCardV3 extends Component {
             console.log(
                 `${DEBUG_KEY}: [ ${this.props.pageId} ]: [ handleReplyTo ]`
             )
-            this.commentBox.focusForReply(type)
+            this.commentBox.focus(type)
         } else {
             console.warn(
                 `${DEBUG_KEY}: [ handleReplyTo ] this.commentBox is undefined!`

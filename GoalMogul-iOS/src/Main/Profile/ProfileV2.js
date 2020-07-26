@@ -300,18 +300,7 @@ class ProfileV2 extends Component {
                 return <ProfileGoalCard item={item} pageId={pageId} />
             }
             case 'posts': {
-                return (
-                    <ProfilePostCard
-                        item={item}
-                        onPress={(item) => {
-                            const initialProps = {
-                                initialFocusCommentBox: true,
-                            }
-                            this.props.openPostDetail(item, initialProps)
-                        }}
-                        hasActionButton
-                    />
-                )
+                return <ProfilePostCard item={item} hasActionButton />
             }
             case 'needs': {
                 return <ProfileNeedCard item={item} pageId={pageId} />

@@ -477,12 +477,6 @@ class MyTribe extends React.PureComponent {
                 isTribeDetailPost={true}
                 key={props.index}
                 hasActionButton
-                onPress={(item) => {
-                    // onPress is called by CommentIcon
-                    this.props.openPostDetail(item, {
-                        initialFocusCommentBox: true,
-                    })
-                }}
             />
         )
     }

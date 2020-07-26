@@ -86,12 +86,12 @@ class CommentUserDetail extends Component {
 
     getLayout = () => this.state.layout
 
-    openReplyThread(itemId) {
+    openReplyThread(itemId, focusCommentBox) {
         const { pageId, entityId, goalId } = this.props
 
         Actions.push(
             componentKeyByTab(this.props.navigationTab, 'replyThread'),
-            { itemId, pageId, entityId, goalId }
+            { itemId, pageId, entityId, goalId, focusCommentBox }
         )
     }
 
@@ -347,7 +347,7 @@ class CommentUserDetail extends Component {
                     textStyle={styles.actionText}
                     iconStyle={styles.actionIcon}
                     onPress={() => {
-                        this.openReplyThread(_id)
+                        this.openReplyThread(_id, true)
                     }}
                     containerStyle={{ ...buttonContainerStyle, marginLeft: 16 }}
                 />
