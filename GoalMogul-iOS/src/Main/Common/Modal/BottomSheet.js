@@ -14,20 +14,10 @@ import {
 } from 'react-native'
 import { IPHONE_MODELS, DEVICE_MODEL } from '../../../Utils/Constants'
 
-const DEFAULT_HEIGHT = 150
-const ANIMATION_DURATION = 250
 const PADDING_TOP =
     Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL) ? 25 : 40
 const FULL_SCREEN_HEIGHT = Dimensions.get('window').height - PADDING_TOP
-const SWIP_GESTURE_LENGTH = 100
-
-const SUPPORTED_ORIENTATIONS = [
-    'portrait',
-    'portrait-upside-down',
-    'landscape',
-    'landscape-left',
-    'landscape-right',
-]
+const SUPPORTED_ORIENTATIONS = ['portrait', 'portrait-upside-down']
 
 /**
  * This bottom sheet uses https://github.com/nysamnang/react-native-raw-bottom-sheet#readme
@@ -100,50 +90,57 @@ class BottomSheet extends React.PureComponent {
     }
 
     createPanResponder(props) {
-        const { fullScreenEnabled, closeOnDragDown, height } = props
+        const {
+            fullScreenEnabled,
+            closeOnDragDown,
+            height,
+            swipeGestureMinLength,
+        } = props
         const { pan, animatedHeight } = this.state
         this.panResponder = PanResponder.create({
             onStartShouldSetPanResponder: () => closeOnDragDown,
             onPanResponderMove: (e, gestureState) => {
+                // Swiping down
                 if (gestureState.dy > 0) {
-                    // Swiping down
                     let toValue = FULL_SCREEN_HEIGHT - gestureState.dy
                     if (!this.state.isFullScreen)
-                        toValue = this.props.height - gestureState.dy
+                        toValue = height - gestureState.dy
                     Animated.timing(animatedHeight, {
                         useNativeDriver: false,
                         toValue,
                         duration: 1,
                     }).start()
-                } else if (!this.state.isFullScreen) {
+                }
+                // Swiping up: only registered if not full screen
+                else if (!this.state.isFullScreen) {
                     console.log(gestureState.dy)
                     Animated.timing(animatedHeight, {
                         useNativeDriver: false,
-                        toValue: this.props.height - gestureState.dy,
+                        toValue: height - gestureState.dy,
                         duration: 1,
                     }).start()
                 }
             },
             onPanResponderRelease: (e, gestureState) => {
                 if (
-                    gestureState.dy < -SWIP_GESTURE_LENGTH &&
+                    gestureState.dy < -swipeGestureMinLength &&
                     fullScreenEnabled &&
                     !this.state.isFullScreen
                 ) {
                     this.fullScreen()
                 } else if (
                     this.state.isFullScreen &&
-                    gestureState.dy > SWIP_GESTURE_LENGTH
+                    gestureState.dy > swipeGestureMinLength
                 ) {
                     this.minimize()
                 } else if (
                     !this.state.isFullScreen &&
-                    gestureState.dy > SWIP_GESTURE_LENGTH
+                    gestureState.dy > swipeGestureMinLength
                 ) {
                     this.setModalVisible(false)
                 } else {
                     Animated.spring(animatedHeight, {
-                        toValue: this.props.height,
+                        toValue: height,
                         useNativeDriver: false,
                     }).start()
                 }
@@ -261,6 +258,7 @@ BottomSheet.propTypes = {
     animationType: PropTypes.oneOf(['none', 'slide', 'fade']),
     height: PropTypes.number,
     minClosingHeight: PropTypes.number,
+    swipeGestureMinLength: PropTypes.number,
     openDuration: PropTypes.number,
     closeDuration: PropTypes.number,
     fullScreenEnabled: PropTypes.bool,
@@ -277,10 +275,11 @@ BottomSheet.propTypes = {
 
 BottomSheet.defaultProps = {
     animationType: 'none',
-    height: DEFAULT_HEIGHT,
+    height: 150,
     minClosingHeight: 0,
-    openDuration: ANIMATION_DURATION,
-    closeDuration: ANIMATION_DURATION,
+    swipeGestureMinLength: 150,
+    openDuration: 250,
+    closeDuration: 250,
     fullScreenEnabled: false,
     closeOnDragDown: true,
     dragFromTopOnly: false,
