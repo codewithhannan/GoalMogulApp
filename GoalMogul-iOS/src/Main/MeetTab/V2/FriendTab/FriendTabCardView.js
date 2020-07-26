@@ -11,11 +11,11 @@ import React from 'react'
 import { ActionSheetIOS } from 'react-native'
 import { connect } from 'react-redux'
 import DelayedButton from '../../../Common/Button/DelayedButton'
-import BottomSheet from '../../../Common/Modal/BottomSheet'
 import { updateFriendship, blockUser, openProfile } from '../../../../actions'
 import UserCardHeader from '../../Common/UserCardHeader'
 import UserTopGoals from '../../Common/UserTopGoals'
 import Icons from '../../../../asset/base64/Icons'
+import BottomButtonsSheet from '../../../Common/Modal/BottomButtonsSheet'
 
 const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel']
 const BLOCK_INDEX = 0
@@ -143,9 +143,10 @@ class FriendTabCardView extends React.PureComponent {
     renderBottomSheet = (item) => {
         const options = this.makeFriendCardOptions(item)
         return (
-            <BottomSheet
+            <BottomButtonsSheet
                 ref={(r) => (this.bottomSheetRef = r)}
                 buttons={options}
+                height={150}
             />
         )
     }
