@@ -226,7 +226,7 @@ class ActivityHeader extends Component {
                         }
                         userId={userToRender._id}
                     />
-                    <View style={{ marginLeft: 12, marginTop: 2, flex: 1 }}>
+                    <View style={{ marginLeft: 12, flex: 1 }}>
                         <Headline
                             name={userToRender.name || ''}
                             category={category}
@@ -236,7 +236,6 @@ class ActivityHeader extends Component {
                             textStyle={DEFAULT_STYLE.titleText_2}
                             belongsToTribe={belongsToTribe}
                         />
-                        <View style={{ marginTop: 2 }} />
                         <Timestamp
                             time={timeago().format(timeStamp)}
                             viewCount={viewCount}
@@ -253,7 +252,7 @@ class ActivityHeader extends Component {
                         ...(actedUponEntityType === 'Post'
                             ? DEFAULT_STYLE.normalText_1
                             : DEFAULT_STYLE.goalTitleText_1),
-                        marginTop: 12,
+                        marginTop: 10,
                         flex: 1,
                         flexWrap: 'wrap',
                         color: 'black',

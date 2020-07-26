@@ -56,16 +56,9 @@ import Logo from '../../asset/header/logo.png'
 import Activity from '../../asset/utils/activity.png'
 
 // Styles
-import {
-    GM_BLUE,
-    BACKGROUND_COLOR,
-    DEFAULT_STYLE,
-    FONT_FAMILY_2,
-} from '../../styles'
+import { BACKGROUND_COLOR, DEFAULT_STYLE } from '../../styles'
 
 // Utils
-import { Logger } from '../../redux/middleware/utils/Logger'
-import PlusButton from '../Common/Button/PlusButton'
 import Tooltip from '../Tutorial/Tooltip'
 import { svgMaskPath } from '../Tutorial/Utils'
 import WelcomSreen from './WelcomeScreen'

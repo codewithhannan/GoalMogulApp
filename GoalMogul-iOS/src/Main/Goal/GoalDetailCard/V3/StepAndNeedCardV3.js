@@ -58,6 +58,7 @@ const styles = {
             backgroundColor: '#F2F2F2',
             height: 38,
             paddingLeft: 15,
+            paddingTop: 4,
         },
         iconStyle: {
             ...DEFAULT_STYLE.smallIcon_1,

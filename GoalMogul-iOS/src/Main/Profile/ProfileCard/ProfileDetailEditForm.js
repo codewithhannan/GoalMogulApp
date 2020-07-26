@@ -38,7 +38,7 @@ import {
 
 /** Constants */
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
-import { GM_BLUE_LIGHT_LIGHT, GM_BLUE, DEFAULT_STYLE } from '../../../styles'
+import { GM_BLUE_LIGHT_LIGHT, DEFAULT_STYLE } from '../../../styles'
 import { Icon } from '@ui-kitten/components'
 
 const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel']
@@ -226,24 +226,24 @@ class ProfileDetailEditForm extends Component {
         const isValidValues = validValues({ headline, about, elevatorPitch })
 
         return (
-            <SafeAreaView
-                forceInset={{ bottom: 'always' }}
-                style={{ backgroundColor: GM_BLUE }}
-                onPress={() => {
-                    Keyboard.dismiss()
-                }}
-            >
-                <View style={{ paddingBottom: 150, backgroundColor: 'white' }}>
+            <View>
+                <FormHeader
+                    title="Profile"
+                    onSubmit={handleSubmit(this.submit)}
+                    actionDisabled={!isValidValues || uploading}
+                />
+                <SafeAreaView
+                    forceInset={{ bottom: 'always' }}
+                    style={{ backgroundColor: 'white' }}
+                    onPress={() => {
+                        Keyboard.dismiss()
+                    }}
+                >
                     <LoadingModal
                         visible={this.props.uploading}
                         customIndicator={
                             <DotIndicator size={12} color="white" />
                         }
-                    />
-                    <FormHeader
-                        title="Profile"
-                        onSubmit={handleSubmit(this.submit)}
-                        actionDisabled={!isValidValues || uploading}
                     />
                     <KeyboardAwareScrollView
                         innerRef={(ref) => {
@@ -324,8 +324,8 @@ class ProfileDetailEditForm extends Component {
                             returnKeyType="Enter"
                         />
                     </KeyboardAwareScrollView>
-                </View>
-            </SafeAreaView>
+                </SafeAreaView>
+            </View>
         )
     }
 }

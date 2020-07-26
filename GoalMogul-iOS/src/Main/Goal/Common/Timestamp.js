@@ -20,7 +20,6 @@ const Timestamp = (props) => {
                     height: 3,
                     marginLeft: 4,
                     marginRight: 5,
-                    marginTop: 1,
                 }}
             />
             <Image
@@ -28,7 +27,6 @@ const Timestamp = (props) => {
                 style={{
                     height: 7,
                     width: 11,
-                    marginTop: 1,
                     tintColor: '#636363',
                 }}
             />
@@ -62,7 +60,6 @@ const Timestamp = (props) => {
                     height: 3,
                     marginLeft: 4,
                     marginRight: 5,
-                    marginTop: 1,
                 }}
             />
             <Text style={DEFAULT_STYLE.smallText_1}>{priorityText}</Text>

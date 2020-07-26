@@ -241,7 +241,7 @@ class ActivityCard extends React.PureComponent {
                 style={{
                     flexDirection: 'row',
                     padding: 16,
-                    marginTop: 1,
+                    flex: 1,
                     backgroundColor: 'white',
                 }}
             >
@@ -261,7 +261,7 @@ class ActivityCard extends React.PureComponent {
                 <DelayedButton
                     activeOpacity={0.6}
                     style={{
-                        padding: 8,
+                        padding: 12,
                         backgroundColor: '#F9F9F9',
                         borderRadius: 8,
                         marginLeft: 10,

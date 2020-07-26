@@ -400,7 +400,7 @@ class GoalDetailSection extends React.PureComponent {
                         }
                         userId={owner._id}
                     />
-                    <View style={{ marginLeft: 12, marginTop: 2, flex: 1 }}>
+                    <View style={{ marginLeft: 12, flex: 1 }}>
                         <Headline
                             onRef={(ref) => {
                                 this.headline = ref
@@ -416,7 +416,6 @@ class GoalDetailSection extends React.PureComponent {
                             menuName={this.props.menuName}
                             textStyle={DEFAULT_STYLE.titleText_2}
                         />
-                        <View style={{ marginTop: 2 }} />
                         <Timestamp
                             time={timeago().format(timeStamp)}
                             viewCount={viewCount}
@@ -643,7 +642,7 @@ class GoalDetailSection extends React.PureComponent {
 
         return (
             <View onLayout={this.handleOnLayout}>
-                <View style={{ paddingHorizontal: 15 }}>
+                <View style={{ paddingHorizontal: 16 }}>
                     <LikeListModal
                         testID="like-list-modal"
                         isVisible={this.state.showlikeListModal}
@@ -681,7 +680,7 @@ class GoalDetailSection extends React.PureComponent {
                                 }}
                             />
                         ) : null}
-                        <View style={{ marginTop: 15, marginBottom: 10 }}>
+                        <View style={{ marginTop: 16 }}>
                             {this.renderUserDetail(item)}
                             {this.renderCardContent(item)}
                         </View>

@@ -119,7 +119,6 @@ class Headline extends React.PureComponent {
                 options={[{ option: 'Delete' }]}
                 callback={() => this.props.caretOnDelete()}
                 triggerText={''}
-                triggerContainerStyle={styles.caretContainer}
                 animationCallback={() => console.log('Report Modal is opened')}
                 shouldExtendOptionLength={false}
                 menuName={menuName}
@@ -150,7 +149,6 @@ class Headline extends React.PureComponent {
                 ]}
                 callback={(val) => this.handleSelfCaretOnPress(val)}
                 triggerText={''}
-                triggerContainerStyle={styles.caretContainer}
                 animationCallback={() => console.log('Report Modal is opened')}
                 shouldExtendOptionLength
                 menuName={menuName}
@@ -189,7 +187,6 @@ class Headline extends React.PureComponent {
                     options={options}
                     callback={onPress}
                     triggerText={''}
-                    triggerContainerStyle={styles.caretContainer}
                     animationCallback={() =>
                         console.log(
                             `${DEBUG_KEY}: menu is opened for options with shouldExtendOptionLength: ${shouldExtendOptionLength}. `
@@ -209,7 +206,6 @@ class Headline extends React.PureComponent {
                         options={[{ option: 'Report' }]}
                         callback={() => caretOnPress()}
                         triggerText={''}
-                        triggerContainerStyle={styles.caretContainer}
                         animationCallback={() =>
                             console.log('Report Modal is opened')
                         }
@@ -274,12 +270,6 @@ const styles = {
     containerStyle: {
         flexDirection: 'row',
         alignItems: 'center',
-    },
-    caretContainer: {
-        paddingBottom: 8,
-        paddingRight: 8,
-        paddingLeft: 10,
-        paddingTop: 1,
     },
 }
 

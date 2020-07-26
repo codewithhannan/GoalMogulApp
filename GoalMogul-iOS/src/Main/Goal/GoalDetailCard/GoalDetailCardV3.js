@@ -19,8 +19,7 @@ import { getBottomSpace } from 'react-native-iphone-x-helper'
 import { MenuProvider } from 'react-native-popup-menu'
 import { TabView } from 'react-native-tab-view'
 import { connect } from 'react-redux'
-// Assets
-import next from '../../../asset/utils/back.png'
+
 import {
     constructMenuName,
     getParentCommentId,
@@ -39,7 +38,6 @@ import {
     updateNewComment,
 } from '../../../redux/modules/feed/comment/CommentActions'
 import {
-    // getCommentByTab,
     getNewCommentByTab,
     makeGetCommentByEntityId,
 } from '../../../redux/modules/feed/comment/CommentSelector'
@@ -83,6 +81,7 @@ import SuggestionModal from './SuggestionModal3'
 import CentralTab from './V3/CentralTab'
 import FocusTab from './V3/FocusTab'
 import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
+import { Icon } from '@ui-kitten/components'
 
 const initialLayout = {
     height: 0,
@@ -673,6 +672,7 @@ export class GoalDetailCardV3 extends Component {
                         contentContainerStyle={{
                             paddingTop: this.state.cardHeight,
                             flexGrow: 1,
+                            backgroundColor: '#F2F2F2',
                         }}
                         bottomOffset={this.state.contentBottomPadding}
                         isSelf={this.props.isSelf}
@@ -721,10 +721,6 @@ export class GoalDetailCardV3 extends Component {
         }
     }
 
-    // _renderScene = SceneMap({
-    //   centralTab: CentralTab,
-    //   focusTab: FocusTab
-    // })
     _renderTabBar = (props) => {
         const translateY = this.state.scroll.interpolate({
             inputRange: [0, this.state.cardHeight - COLLAPSED_HEIGHT],
@@ -862,9 +858,22 @@ export class GoalDetailCardV3 extends Component {
                     <TouchableOpacity
                         activeOpacity={0.6}
                         onPress={this.onViewCommentPress}
-                        style={styles.nextIconContainer}
+                        style={{
+                            marginRight: 16,
+                            backgroundColor: GM_BLUE,
+                            borderRadius: 100,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
                     >
-                        <Image source={next} style={styles.nextIcon} />
+                        <Icon
+                            name="chevron-right"
+                            pack="material-community"
+                            style={{
+                                ...DEFAULT_STYLE.buttonIcon_1,
+                                tintColor: 'white',
+                            }}
+                        />
                     </TouchableOpacity>
                 </View>
             </TouchableOpacity>
@@ -983,19 +992,8 @@ const styles = StyleSheet.create({
         backgroundColor: BACKGROUND_COLOR,
         flex: 1,
     },
-    nextIconContainer: {
-        marginRight: 16,
-        padding: 4,
-        backgroundColor: GM_BLUE,
-        borderRadius: 100,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    nextIcon: {
-        ...DEFAULT_STYLE.smallIcon_1,
-        transform: [{ rotateY: '180deg' }],
-        tintColor: 'white',
-    },
+    nextIconContainer: {},
+    nextIcon: {},
     iconStyle: {
         alignSelf: 'center',
         fontSize: 20,

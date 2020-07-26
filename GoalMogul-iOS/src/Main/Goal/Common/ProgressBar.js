@@ -3,7 +3,7 @@
 import React from 'react'
 import { Text, View } from 'react-native'
 
-import { GM_BLUE, DEFAULT_STYLE } from '../../../styles'
+import { DEFAULT_STYLE } from '../../../styles'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
 const DEBUG_KEY = '[ UI ProgressBar ]'
@@ -119,22 +119,24 @@ const ProgressBar = (props) => {
         )
 
     const progressBar = (
-        <View style={styles.containerStyle}>
-            <View
-                style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginBottom: 10,
-                    marginLeft: 2,
-                    marginRight: 2,
-                }}
-            >
-                {startTimeTextView}
-                {endTimeTextView}
-            </View>
+        <View>
+            {startTimeTextView && endTimeTextView && (
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginBottom: 10,
+                        marginLeft: 2,
+                        marginRight: 2,
+                    }}
+                >
+                    {startTimeTextView}
+                    {endTimeTextView}
+                </View>
+            )}
             {renderProgressBar({
                 percentage,
-                backgroundColor: props.color || GM_BLUE,
+                backgroundColor: props.color || '#27AE60',
                 height: props.barHeight || 11,
                 sections: props.sections || sections,
             })}
@@ -151,9 +153,6 @@ const ProgressBar = (props) => {
 }
 
 const styles = {
-    containerStyle: {
-        marginTop: 2,
-    },
     barContainerStyle: {
         flexDirection: 'row',
         alignSelf: 'center',
