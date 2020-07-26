@@ -19,8 +19,7 @@ import { getBottomSpace } from 'react-native-iphone-x-helper'
 import { MenuProvider } from 'react-native-popup-menu'
 import { TabView } from 'react-native-tab-view'
 import { connect } from 'react-redux'
-// Assets
-import next from '../../../asset/utils/back.png'
+
 import {
     constructMenuName,
     getParentCommentId,
@@ -39,7 +38,6 @@ import {
     updateNewComment,
 } from '../../../redux/modules/feed/comment/CommentActions'
 import {
-    // getCommentByTab,
     getNewCommentByTab,
     makeGetCommentByEntityId,
 } from '../../../redux/modules/feed/comment/CommentSelector'
@@ -723,10 +721,6 @@ export class GoalDetailCardV3 extends Component {
         }
     }
 
-    // _renderScene = SceneMap({
-    //   centralTab: CentralTab,
-    //   focusTab: FocusTab
-    // })
     _renderTabBar = (props) => {
         const translateY = this.state.scroll.interpolate({
             inputRange: [0, this.state.cardHeight - COLLAPSED_HEIGHT],

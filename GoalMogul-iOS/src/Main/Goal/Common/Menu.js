@@ -25,7 +25,6 @@ import _ from 'lodash'
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
 
 /* Asset */
-import dropDown from '../../../asset/utils/dropDown.png'
 import { Icon } from '@ui-kitten/components'
 import { DEFAULT_STYLE } from '../../../styles'
 

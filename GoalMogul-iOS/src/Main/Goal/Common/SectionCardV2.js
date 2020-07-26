@@ -11,7 +11,6 @@ import bulb from '../../../asset/utils/bulb.png'
 import forward from '../../../asset/utils/forward.png'
 import Icons from '../../../asset/base64/Icons'
 import back from '../../../asset/utils/back.png'
-import menu from '../../../asset/utils/drag_indicator.png'
 
 // Components
 import {
