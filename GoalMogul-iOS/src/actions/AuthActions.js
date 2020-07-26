@@ -84,6 +84,13 @@ const validateEmail = (email) => {
     return re.test(String(email).toLowerCase())
 }
 
+const dispatchHideSplashScreen = (dispatch) => {
+    SplashScreen.hide()
+    dispatch({
+        type: SPLASHSCREEN_HIDE,
+    })
+}
+
 export const tryAutoLogin = (flags) => async (dispatch, getState) => {
     let res
     try {
@@ -100,7 +107,7 @@ export const tryAutoLogin = (flags) => async (dispatch, getState) => {
             .send()
 
         if (flags && flags.hideSplashScreen) {
-            SplashScreen.hide()
+            dispatchHideSplashScreen(dispatch)
         }
         return
     }
@@ -128,7 +135,7 @@ export const tryAutoLogin = (flags) => async (dispatch, getState) => {
             .send()
 
         if (flags && flags.hideSplashScreen) {
-            SplashScreen.hide()
+            dispatchHideSplashScreen(dispatch)
         }
     }
 }
@@ -243,7 +250,7 @@ const authenticate = (
 
             // Hide SplashScreen
             if (flags && flags.hideSplashScreen) {
-                SplashScreen.hide()
+                dispatchHideSplashScreen(dispatch)
             }
         }
 
@@ -402,12 +409,7 @@ const mountUserWithToken = (
     // Load remote matches
     await loadRemoteMatches(payload.userId)(dispatch, getState)
 
-    if (hideSplashScreen) {
-        SplashScreen.hide()
-        dispatch({
-            type: SPLASHSCREEN_HIDE,
-        })
-    }
+    if (hideSplashScreen) dispatchHideSplashScreen(dispatch)
 }
 
 // We have the same action in Profile.js
