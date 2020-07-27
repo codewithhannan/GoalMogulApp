@@ -88,17 +88,14 @@ class BottomSheet extends React.PureComponent {
     createPanResponder(props) {
         const {
             fullScreenEnabled,
-            closeOnDragDown,
+            enableGestures,
             height,
             swipeGestureMinLength,
         } = props
-
         this.panResponder = PanResponder.create({
-            onStartShouldSetPanResponder: () => closeOnDragDown,
+            onStartShouldSetPanResponder: () => enableGestures,
             onPanResponderMove: (e, gestureState) => {
-                const { isFullScreen, animatedHeight } = this.state
-                console.log(gestureState.dy, isFullScreen)
-
+                let { isFullScreen, animatedHeight } = this.state
                 // Swiping down
                 if (gestureState.dy > 0) {
                     let toValue = FULL_SCREEN_HEIGHT - gestureState.dy
@@ -119,9 +116,7 @@ class BottomSheet extends React.PureComponent {
                 }
             },
             onPanResponderRelease: (e, gestureState) => {
-                const { isFullScreen, animatedHeight } = this.state
-                console.log(gestureState, isFullScreen)
-
+                let { isFullScreen, animatedHeight } = this.state
                 if (
                     gestureState.dy < -swipeGestureMinLength &&
                     fullScreenEnabled &&
@@ -131,7 +126,7 @@ class BottomSheet extends React.PureComponent {
                 } else if (gestureState.dy > swipeGestureMinLength) {
                     if (
                         !isFullScreen ||
-                        gestureState.dy > swipeGestureMinLength * 3 ||
+                        gestureState.dy > swipeGestureMinLength * 4 ||
                         gestureState.vy > 3
                     )
                         this.setModalVisible(false)
@@ -157,7 +152,7 @@ class BottomSheet extends React.PureComponent {
     render() {
         const {
             animationType,
-            closeOnDragDown,
+            enableGestures,
             dragFromTopOnly,
             closeOnPressMask,
             closeOnPressBack,
@@ -195,7 +190,7 @@ class BottomSheet extends React.PureComponent {
                             customStyles.container,
                         ]}
                     >
-                        {closeOnDragDown && (
+                        {enableGestures && (
                             <View
                                 {...(dragFromTopOnly &&
                                     this.panResponder.panHandlers)}
@@ -256,7 +251,7 @@ BottomSheet.propTypes = {
     openDuration: PropTypes.number,
     closeDuration: PropTypes.number,
     fullScreenEnabled: PropTypes.bool,
-    closeOnDragDown: PropTypes.bool,
+    enableGestures: PropTypes.bool,
     closeOnPressMask: PropTypes.bool,
     dragFromTopOnly: PropTypes.bool,
     closeOnPressBack: PropTypes.bool,
@@ -275,7 +270,7 @@ BottomSheet.defaultProps = {
     openDuration: 250,
     closeDuration: 250,
     fullScreenEnabled: false,
-    closeOnDragDown: true,
+    enableGestures: true,
     dragFromTopOnly: false,
     closeOnPressMask: true,
     closeOnPressBack: true,
