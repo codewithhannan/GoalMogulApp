@@ -113,7 +113,6 @@ class BottomSheet extends React.PureComponent {
                 }
                 // Swiping up: only registered if not full screen
                 else if (!this.state.isFullScreen) {
-                    console.log(gestureState.dy)
                     Animated.timing(animatedHeight, {
                         useNativeDriver: false,
                         toValue: height - gestureState.dy,
