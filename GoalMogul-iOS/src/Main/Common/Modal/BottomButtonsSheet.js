@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { View, Image, Text } from 'react-native'
-import RBSheet from 'react-native-raw-bottom-sheet'
 import { DEFAULT_STYLE } from '../../../styles'
 import DelayedButton from '../Button/DelayedButton'
 import BottomSheet from './BottomSheet'
@@ -12,13 +11,9 @@ import BottomSheet from './BottomSheet'
  * and follows the pattern https://developer.apple.com/design/human-interface-guidelines/ios/app-architecture/modality/
  */
 class BottomButtonsSheet extends React.PureComponent {
-    open = () => {
-        this.bottomSheetRef.open()
-    }
+    open = () => this.bottomSheetRef.open()
 
-    close = () => {
-        this.bottomSheetRef.close()
-    }
+    close = () => this.bottomSheetRef.close()
 
     renderContent() {
         let items = this.props.buttons.map((item) => {

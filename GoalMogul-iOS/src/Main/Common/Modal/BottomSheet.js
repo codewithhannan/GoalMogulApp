@@ -30,7 +30,6 @@ class BottomSheet extends React.PureComponent {
             modalVisible: false,
             isFullScreen: false,
             animatedHeight: new Animated.Value(0),
-            pan: new Animated.ValueXY(),
         }
 
         this.createPanResponder(props)
@@ -41,8 +40,7 @@ class BottomSheet extends React.PureComponent {
             toValue: FULL_SCREEN_HEIGHT,
             duration: this.props.openDuration,
             useNativeDriver: false,
-        }).start()
-        this.setState({ isFullScreen: true })
+        }).start(() => this.setState({ isFullScreen: true }))
     }
 
     minimize() {
@@ -50,8 +48,7 @@ class BottomSheet extends React.PureComponent {
             toValue: this.props.height,
             duration: this.props.closeDuration,
             useNativeDriver: false,
-        }).start()
-        this.setState({ isFullScreen: false })
+        }).start(() => this.setState({ isFullScreen: false }))
     }
 
     setModalVisible(visible, props) {
@@ -63,7 +60,7 @@ class BottomSheet extends React.PureComponent {
             onClose,
             onOpen,
         } = this.props
-        const { animatedHeight, pan } = this.state
+        const { animatedHeight } = this.state
         if (visible) {
             this.setState({ modalVisible: visible })
             if (typeof onOpen === 'function') onOpen(props)
@@ -78,7 +75,6 @@ class BottomSheet extends React.PureComponent {
                 toValue: minClosingHeight,
                 duration: closeDuration,
             }).start(() => {
-                pan.setValue({ x: 0, y: 0 })
                 this.setState({
                     modalVisible: visible,
                     animatedHeight: new Animated.Value(0),
@@ -96,15 +92,17 @@ class BottomSheet extends React.PureComponent {
             height,
             swipeGestureMinLength,
         } = props
-        const { pan, animatedHeight } = this.state
+
         this.panResponder = PanResponder.create({
             onStartShouldSetPanResponder: () => closeOnDragDown,
             onPanResponderMove: (e, gestureState) => {
+                const { isFullScreen, animatedHeight } = this.state
+                console.log(gestureState.dy, isFullScreen)
+
                 // Swiping down
                 if (gestureState.dy > 0) {
                     let toValue = FULL_SCREEN_HEIGHT - gestureState.dy
-                    if (!this.state.isFullScreen)
-                        toValue = height - gestureState.dy
+                    if (!isFullScreen) toValue = height - gestureState.dy
                     Animated.timing(animatedHeight, {
                         useNativeDriver: false,
                         toValue,
@@ -112,7 +110,7 @@ class BottomSheet extends React.PureComponent {
                     }).start()
                 }
                 // Swiping up: only registered if not full screen
-                else if (!this.state.isFullScreen) {
+                else if (!isFullScreen) {
                     Animated.timing(animatedHeight, {
                         useNativeDriver: false,
                         toValue: height - gestureState.dy,
@@ -121,22 +119,23 @@ class BottomSheet extends React.PureComponent {
                 }
             },
             onPanResponderRelease: (e, gestureState) => {
+                const { isFullScreen, animatedHeight } = this.state
+                console.log(gestureState, isFullScreen)
+
                 if (
                     gestureState.dy < -swipeGestureMinLength &&
                     fullScreenEnabled &&
-                    !this.state.isFullScreen
+                    !isFullScreen
                 ) {
                     this.fullScreen()
-                } else if (
-                    this.state.isFullScreen &&
-                    gestureState.dy > swipeGestureMinLength
-                ) {
-                    this.minimize()
-                } else if (
-                    !this.state.isFullScreen &&
-                    gestureState.dy > swipeGestureMinLength
-                ) {
-                    this.setModalVisible(false)
+                } else if (gestureState.dy > swipeGestureMinLength) {
+                    if (
+                        !isFullScreen ||
+                        gestureState.dy > swipeGestureMinLength * 3 ||
+                        gestureState.vy > 3
+                    )
+                        this.setModalVisible(false)
+                    else this.minimize()
                 } else {
                     Animated.spring(animatedHeight, {
                         toValue: height,
@@ -166,10 +165,7 @@ class BottomSheet extends React.PureComponent {
             customStyles,
             keyboardAvoidingViewEnabled,
         } = this.props
-        const { animatedHeight, pan, modalVisible } = this.state
-        const panStyle = {
-            transform: pan.getTranslateTransform(),
-        }
+        const { animatedHeight, modalVisible } = this.state
 
         return (
             <Modal
@@ -194,7 +190,6 @@ class BottomSheet extends React.PureComponent {
                     <Animated.View
                         {...(!dragFromTopOnly && this.panResponder.panHandlers)}
                         style={[
-                            panStyle,
                             styles.container,
                             { height: animatedHeight },
                             customStyles.container,
@@ -276,7 +271,7 @@ BottomSheet.defaultProps = {
     animationType: 'none',
     height: 150,
     minClosingHeight: 0,
-    swipeGestureMinLength: 150,
+    swipeGestureMinLength: 65,
     openDuration: 250,
     closeDuration: 250,
     fullScreenEnabled: false,
