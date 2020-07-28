@@ -121,13 +121,14 @@ class BottomSheet extends React.PureComponent {
                 let { isFullScreen, animatedHeight } = this.state
                 // Close/fullscreen/minimize when gesture velocity or distance hits the thereashold
                 if (
-                    (swipeToCloseGestureEnabled &&
-                        !isFullScreen &&
+                    swipeToCloseGestureEnabled &&
+                    ((!isFullScreen &&
                         (height - gestureState.dy < height / 2 ||
                             gestureState.vy > 1.5 * swipeGestureSenstivity)) ||
-                    (isFullScreen &&
-                        (FULL_SCREEN_HEIGHT - gestureState.dy < height / 2 ||
-                            gestureState.vy > 3 * swipeGestureSenstivity))
+                        (isFullScreen &&
+                            (FULL_SCREEN_HEIGHT - gestureState.dy <
+                                height / 2 ||
+                                gestureState.vy > 3 * swipeGestureSenstivity)))
                 ) {
                     this.setModalVisible(false)
                 } else if (
