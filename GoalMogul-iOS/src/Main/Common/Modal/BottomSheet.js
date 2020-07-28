@@ -78,6 +78,7 @@ class BottomSheet extends React.PureComponent {
                 this.setState({
                     modalVisible: visible,
                     animatedHeight: new Animated.Value(0),
+                    isFullScreen: false,
                 })
 
                 if (typeof onClose === 'function') onClose(props)
