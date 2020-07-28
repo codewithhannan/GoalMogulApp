@@ -17,29 +17,33 @@
  * @format
  */
 
+import { Button, List, Text, withStyles } from '@ui-kitten/components'
 import React, { Component } from 'react'
 import {
     Animated,
     Image,
+    StyleSheet,
     TouchableOpacity,
     TouchableWithoutFeedback,
     View,
 } from 'react-native'
-import { Button, Text, List, withStyles } from '@ui-kitten/components'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
-import { StyleSheet } from 'react-native'
-
 /* asset */
 import cancel from '../../../asset/utils/cancel_no_background.png'
 /* actions */
 import { closeCreateOverlay } from '../../../redux/modules/home/mastermind/actions'
-import { IPHONE_MODELS_2, DEVICE_MODEL } from '../../../Utils/Constants'
-import DelayedButton from './DelayedButton'
-import style from '../../Tutorial/style'
 import { GM_BLUE } from '../../../styles'
+import {
+    DEVICE_MODEL,
+    IPHONE_MODELS_2,
+    IPHONE_MODELS_3,
+} from '../../../Utils/Constants'
+import DelayedButton from './DelayedButton'
 
-const BUTTON_GROUP_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(DEVICE_MODEL)
+const BUTTON_GROUP_BOTTOM_OFFSET = IPHONE_MODELS_3.includes(DEVICE_MODEL)
+    ? 106
+    : IPHONE_MODELS_2.includes(DEVICE_MODEL)
     ? 106
     : 71
 

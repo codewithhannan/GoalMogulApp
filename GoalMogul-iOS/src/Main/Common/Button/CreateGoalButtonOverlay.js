@@ -2,27 +2,31 @@
 
 import React, { Component } from 'react'
 import {
-    View,
-    Text,
+    Animated,
     Image,
+    Text,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    Animated,
+    View,
 } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
-
+import goal from '../../../asset/header/home-logo.png'
 /* asset */
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import post from '../../../asset/utils/post.png'
-import goal from '../../../asset/header/home-logo.png'
-
 /* actions */
 import { closeCreateOverlay } from '../../../redux/modules/home/mastermind/actions'
-import { IPHONE_MODELS_2, DEVICE_MODEL } from '../../../Utils/Constants'
 import { GM_BLUE } from '../../../styles'
+import {
+    DEVICE_MODEL,
+    IPHONE_MODELS_2,
+    IPHONE_MODELS_3,
+} from '../../../Utils/Constants'
 
-const BUTTON_GROUP_BOTTOM_OFFSET = IPHONE_MODELS_2.includes(DEVICE_MODEL)
+const BUTTON_GROUP_BOTTOM_OFFSET = IPHONE_MODELS_3.includes(DEVICE_MODEL)
+    ? 119
+    : IPHONE_MODELS_2.includes(DEVICE_MODEL)
     ? 119
     : 84
 

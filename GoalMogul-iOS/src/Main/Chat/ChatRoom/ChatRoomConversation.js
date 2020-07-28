@@ -194,11 +194,11 @@ class ChatRoomConversation extends React.Component {
         }
     }
 
-    componentDidUpdate(prevPros) {
+    componentDidUpdate(prevProps) {
         const { userId } = this.props
         // if we change chat rooms, switch rooms accordingly and re-initialize the component
         const newChatRoomId = this.props.chatRoomId
-        const oldChatRoomId = prevPros.chatRoomId
+        const oldChatRoomId = prevProps.chatRoomId
         if (newChatRoomId != oldChatRoomId) {
             this.props.initialLoad(newChatRoomId, this.props.limit)
             MessageStorageService.markConversationMessagesAsRead(newChatRoomId)

@@ -1,7 +1,7 @@
 /**
  * {@link GMGiftedChat} is a slight rewrite of {@link GiftedChat} v0.16.3
  *
- * Changes are:
+ * Initial changes are:
  * 1. In {@function renderMessages}, the {@var fragment}'s top <View> used to have a 'style' prop with
  *      > height = this.state.messagesContainerHeight
  *    The new code has 'style' prop set to
@@ -14,6 +14,9 @@
  * 3. This has allowed us to remove the {@function onLayout}, {@function onKeyboardWillShow} and {@function onKeyboardWillHide}
  *    handlers from {@link GMGiftedChatInputToolbar}
  * See diff here: https://www.diffchecker.com/o6HiFF2m
+ * 
+ * Second set of changes are to slide in new messages via native animation driver
+ * 1. Also animating the slide up for messages
  */
 
 import { ActionSheetOptions, ActionSheetProvider } from '@expo/react-native-action-sheet'
@@ -42,6 +45,7 @@ import Time from 'react-native-gifted-chat/lib/Time'
 import * as utils from 'react-native-gifted-chat/lib/utils'
 import { getBottomSpace } from 'react-native-iphone-x-helper'
 import uuid from 'uuid'
+import GMGiftedChatMessagesWrapper from './GMGiftedChatMessagesWrapper'
 
 
 dayjs.extend(localizedFormat)
@@ -444,9 +448,11 @@ class GMGiftedChat<TMessage extends IMessage = IMessage> extends React.Component
 
     if (
       inverted === false &&
-      messages &&
-      prevProps.messages &&
-      messages.length !== prevProps.messages.length
+      (
+        messages &&
+        prevProps.messages &&
+        messages.length !== prevProps.messages.length
+      )
     ) {
       setTimeout(() => this.scrollToBottom(false), 200)
     }
@@ -674,8 +680,30 @@ class GMGiftedChat<TMessage extends IMessage = IMessage> extends React.Component
     }
   }
 
+  renderMessageListWithWrapper(messagesContainerProps, messages, renderMessage) {
+    const props = {
+      messages, messagesContainerProps,
+      renderMessage,
+      renderMessagesList: () => (
+        <MessageContainer<TMessage>
+          {...messagesContainerProps}
+          invertibleScrollViewProps={this.invertibleScrollViewProps}
+          messages={messages}
+          forwardRef={this._messageContainerRef}
+          isTyping={this.props.isTyping}
+        />
+      )
+    }
+
+    return <GMGiftedChatMessagesWrapper
+      {...props}
+    />
+  }
+
   renderMessages() {
     const { messagesContainerStyle, ...messagesContainerProps } = this.props
+    const messages = this.getMessages() || []
+
     const fragment = (
       <View
         style={[
@@ -686,13 +714,7 @@ class GMGiftedChat<TMessage extends IMessage = IMessage> extends React.Component
           messagesContainerStyle,
         ]}
       >
-        <MessageContainer<TMessage>
-          {...messagesContainerProps}
-          invertibleScrollViewProps={this.invertibleScrollViewProps}
-          messages={this.getMessages()}
-          forwardRef={this._messageContainerRef}
-          isTyping={this.props.isTyping}
-        />
+        {this.renderMessageListWithWrapper(messagesContainerProps, messages, this.props.renderMessage)}
         {this.renderChatFooter()}
       </View>
     )

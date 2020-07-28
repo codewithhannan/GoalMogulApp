@@ -2,11 +2,12 @@
 
 import _ from 'lodash'
 import React from 'react'
-import { Text, TouchableHighlight, View } from 'react-native'
+import { Text, View } from 'react-native'
 import { connect } from 'react-redux'
 import timeago from 'timeago.js'
 import profilePic from '../../../asset/utils/defaultUserProfile.png'
 import { GROUP_CHAT_DEFAULT_ICON_URL } from '../../../Utils/Constants'
+import DelayedButton from '../../Common/Button/DelayedButton'
 // Components
 import ProfileImage from '../../Common/ProfileImage'
 import Timestamp from '../../Goal/Common/Timestamp'
@@ -271,9 +272,9 @@ class ChatRoomCard extends React.Component {
                 : {}
 
         return (
-            <TouchableHighlight
+            <DelayedButton
+                touchableHighlight
                 underlayColor="#F1F1F1"
-                activeOpacity={0.9}
                 style={{
                     ...styles.cardContainerStyle,
                     ...maybeUnreadHighlight,
@@ -290,7 +291,7 @@ class ChatRoomCard extends React.Component {
                     {this.renderCardContent(item)}
                     {this.renderTimestamp(item)}
                 </View>
-            </TouchableHighlight>
+            </DelayedButton>
         )
     }
 }

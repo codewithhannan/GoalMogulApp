@@ -9,7 +9,6 @@ import * as Haptics from 'expo-haptics'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {
-    Animated,
     Clipboard,
     StyleSheet,
     TouchableHighlight,
@@ -29,21 +28,9 @@ function isSameUser(currentMessage = {}, diffMessage = {}) {
     )
 }
 
-export default class Message extends React.Component {
+export default class GMGiftedMessage extends React.Component {
     constructor(props) {
         super(props)
-
-        this.state = {
-            // Start the message at a lower offset, and animate it into view
-            posOffsetForSlideAnim: new Animated.Value(-24),
-        }
-    }
-
-    componentDidMount() {
-        Animated.timing(this.state.posOffsetForSlideAnim, {
-            toValue: 0,
-            duration: 400,
-        }).start()
     }
 
     getInnerComponentProps() {
@@ -130,31 +117,16 @@ export default class Message extends React.Component {
     }
 
     render() {
-        const hasNextMessage = Object.keys(this.props.nextMessage).length
-        const isSentByThisAppUser = this.props.currentMessage.isLocal
-        const marginBottom = isSameUser(
-            this.props.currentMessage,
-            this.props.nextMessage
-        )
-            ? 2
-            : 10
+        const { currentMessage, nextMessage, previousMessage } = this.props
+        const marginBottom = isSameUser(currentMessage, nextMessage) ? 2 : 10
 
         const marginTop =
-            isSameUser(this.props.currentMessage, this.props.previousMessage) &&
-            isSameDay(this.props.currentMessage, this.props.previousMessage)
+            isSameUser(currentMessage, previousMessage) &&
+            isSameDay(currentMessage, previousMessage)
                 ? 2
                 : 10
         return (
-            <Animated.View
-                style={
-                    // slide up if this is the latest message in the list, and it's sent by the app user
-                    !hasNextMessage && isSentByThisAppUser
-                        ? {
-                              top: this.state.posOffsetForSlideAnim,
-                          }
-                        : {}
-                }
-            >
+            <View>
                 {this.renderDay()}
                 <TouchableHighlight
                     onLongPress={this.onLongPress}
@@ -173,7 +145,7 @@ export default class Message extends React.Component {
                         {this.renderBubble()}
                     </View>
                 </TouchableHighlight>
-            </Animated.View>
+            </View>
         )
     }
 }
@@ -194,11 +166,11 @@ const styles = StyleSheet.create({
     },
 })
 
-Message.contextTypes = {
+GMGiftedMessage.contextTypes = {
     actionSheet: PropTypes.func,
 }
 
-Message.defaultProps = {
+GMGiftedMessage.defaultProps = {
     renderAvatar: undefined,
     renderBubble: null,
     renderDay: null,
@@ -209,7 +181,7 @@ Message.defaultProps = {
     containerStyle: {},
 }
 
-Message.propTypes = {
+GMGiftedMessage.propTypes = {
     renderAvatar: PropTypes.func,
     renderBubble: PropTypes.func,
     renderDay: PropTypes.func,

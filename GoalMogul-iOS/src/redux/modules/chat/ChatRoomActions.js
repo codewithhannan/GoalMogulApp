@@ -2,12 +2,15 @@
 
 import _ from 'lodash'
 import { Alert } from 'react-native'
+import { MESSAGE_SLIDE_IN_ANIMATION_MS } from '../../../Main/Chat/ChatRoom/GiftedChat/GMGiftedChatMessagesWrapper'
+import { EVENT as E, trackWithProperties } from '../../../monitoring/segment'
 // import Decode from 'unescape'; TODO: removed once new decode is good to go
 import MessageStorageService from '../../../services/chat/MessageStorageService'
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import ImageUtils from '../../../Utils/ImageUtils'
 import { MemberDocumentFetcher } from '../../../Utils/UserUtils'
 import { api as API } from '../../middleware/api'
+import { decode, getProfileImageOrDefault } from '../../middleware/utils'
 import {
     CHAT_ROOM_CLOSE_ACTIVE_ROOM,
     CHAT_ROOM_LOAD_INITIAL,
@@ -19,8 +22,6 @@ import {
     CHAT_ROOM_UPDATE_MESSAGES,
     CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF,
 } from './ChatRoomReducers'
-import { decode } from '../../middleware/utils'
-import { trackWithProperties, EVENT as E } from '../../../monitoring/segment'
 
 const LOADING_RIPPLE_URL = 'https://i.imgur.com/EhwxDDf.gif'
 
@@ -424,50 +425,53 @@ export const sendMessage = (
                         true
                     )(dispatch, getState)
 
-                    // send the message
-                    const { text, sharedEntity } = messageToSend
-                    let body = {
-                        created: insertedDoc.created,
-                        chatRoomRef: chatRoom._id,
-                        content: {
-                            message: text,
-                        },
-                        customIdentifier: insertedDoc._id,
-                    }
-                    if (sharedEntity) {
-                        body.sharedEntity = sharedEntity
-                    }
-                    if (uploadedMediaRef) {
-                        body.media = uploadedMediaRef
-                    }
-                    const handleRequestFailure = (failure) => {
-                        Alert.alert(
-                            'Error',
-                            'Could not send message to others.'
-                        )
-                        MessageStorageService.deleteMessage(
-                            insertedDoc._id,
-                            (err) => {
-                                if (err) return
-                                updateMessageList(chatRoom, currentMessageList)(
-                                    dispatch,
-                                    getState
-                                )
-                            }
-                        )
-                    }
-                    trackWithProperties(E.CHATROOM_MESSAGE_SENT, {
-                        Message: text,
-                        UserId: userId,
-                        ChatroomId: chatRoom._id,
-                    })
-                    API.post(`secure/chat/message`, body, token)
-                        .then((resp) => {
-                            if (resp.status != 200) {
-                                handleRequestFailure()
-                            }
+                    // send the message after the slide in animation for the placeholder message is completed
+                    // saves the UI thread some resources - will eventually want to shift to native driver though : )
+                    setTimeout(() => {
+                        const { text, sharedEntity } = messageToSend
+                        let body = {
+                            created: insertedDoc.created,
+                            chatRoomRef: chatRoom._id,
+                            content: {
+                                message: text,
+                            },
+                            customIdentifier: insertedDoc._id,
+                        }
+                        if (sharedEntity) {
+                            body.sharedEntity = sharedEntity
+                        }
+                        if (uploadedMediaRef) {
+                            body.media = uploadedMediaRef
+                        }
+                        const handleRequestFailure = (failure) => {
+                            Alert.alert(
+                                'Error',
+                                'Could not send message to others.'
+                            )
+                            MessageStorageService.deleteMessage(
+                                insertedDoc._id,
+                                (err) => {
+                                    if (err) return
+                                    updateMessageList(
+                                        chatRoom,
+                                        currentMessageList
+                                    )(dispatch, getState)
+                                }
+                            )
+                        }
+                        trackWithProperties(E.CHATROOM_MESSAGE_SENT, {
+                            Message: text,
+                            UserId: userId,
+                            ChatroomId: chatRoom._id,
                         })
-                        .catch(handleRequestFailure)
+                        API.post(`secure/chat/message`, body, token)
+                            .then((resp) => {
+                                if (resp.status != 200) {
+                                    handleRequestFailure()
+                                }
+                            })
+                            .catch(handleRequestFailure)
+                    }, MESSAGE_SLIDE_IN_ANIMATION_MS + 100)
                 }
             )
         })
@@ -650,7 +654,11 @@ async function fetchEvent(eventId, token) {
 }
 export function _transformUserForGiftedChat(userDoc) {
     const { _id, name, profile } = userDoc
-    const profileImage =
-        profile && profile.image && `${IMAGE_BASE_URL}${profile.image}`
-    return { _id, name, avatar: profileImage }
+    const profileImage = getProfileImageOrDefault(profile && profile.image)
+    return {
+        _id,
+        name,
+        avatar:
+            typeof profileImage == 'object' ? profileImage.uri : profileImage,
+    }
 }

@@ -5,25 +5,24 @@
  * @format
  */
 
+import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {
-    Text,
+    Alert,
+    Animated,
+    Platform,
     StyleSheet,
+    Text,
     TouchableOpacity,
     View,
     ViewPropTypes,
-    Platform,
-    Animated,
-    Alert,
 } from 'react-native'
-import _ from 'lodash'
-import { Layout, Text as KittenText } from '@ui-kitten/components'
 import { MessageText, Time, utils } from 'react-native-gifted-chat'
-import { MemberDocumentFetcher } from '../../../../Utils/UserUtils'
-import ChatMessageImage from '../../Modals/ChatMessageImage'
 import { GM_BLUE } from '../../../../styles'
+import { MemberDocumentFetcher } from '../../../../Utils/UserUtils'
 import CommentRef from '../../../Goal/GoalDetailCard/Comment/CommentRef'
+import ChatMessageImage from '../../Modals/ChatMessageImage'
 
 const { isSameDay } = utils
 
@@ -297,7 +296,10 @@ export default class Bubble extends React.Component {
         if (this.props.renderTicks) {
             return this.props.renderTicks(currentMessage)
         }
-        if (currentMessage.user._id !== this.props.user._id) {
+        if (
+            !currentMessage.user ||
+            currentMessage.user._id !== this.props.user._id
+        ) {
             return null
         }
         if (currentMessage.sent || currentMessage.received) {

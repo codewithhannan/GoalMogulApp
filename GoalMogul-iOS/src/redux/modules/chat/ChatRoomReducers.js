@@ -17,7 +17,7 @@ const INITIAL_STATE = {
     messageMediaRef: null, // for attaching media to message to send
     messages: [],
     ghostMessages: null,
-    limit: 10,
+    limit: 15,
     skip: 0,
     hasNextPage: false,
     loading: false,
