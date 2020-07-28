@@ -88,13 +88,14 @@ class BottomSheet extends React.PureComponent {
 
     createPanResponder(props) {
         const {
-            fullScreenEnabled,
-            enableGestures,
+            fullScreenGesturesEnabled,
+            swipeToCloseGestureEnabled,
             height,
-            swipeGestureMinLength,
+            swipeGestureSenstivity,
         } = props
         this.panResponder = PanResponder.create({
-            onStartShouldSetPanResponder: () => enableGestures,
+            onStartShouldSetPanResponder: () =>
+                swipeToCloseGestureEnabled || fullScreenGesturesEnabled,
             onPanResponderMove: (e, gestureState) => {
                 let { isFullScreen, animatedHeight } = this.state
                 // Swiping down
@@ -118,23 +119,36 @@ class BottomSheet extends React.PureComponent {
             },
             onPanResponderRelease: (e, gestureState) => {
                 let { isFullScreen, animatedHeight } = this.state
+                // Close/fullscreen/minimize when gesture velocity or distance hits the thereashold
                 if (
-                    gestureState.dy < -swipeGestureMinLength &&
-                    fullScreenEnabled &&
-                    !isFullScreen
+                    (swipeToCloseGestureEnabled &&
+                        !isFullScreen &&
+                        (height - gestureState.dy < height / 2 ||
+                            gestureState.vy > 1.5 * swipeGestureSenstivity)) ||
+                    (isFullScreen &&
+                        (FULL_SCREEN_HEIGHT - gestureState.dy < height / 2 ||
+                            gestureState.vy > 3 * swipeGestureSenstivity))
+                ) {
+                    this.setModalVisible(false)
+                } else if (
+                    fullScreenGesturesEnabled &&
+                    !isFullScreen &&
+                    (gestureState.dy < -height / 2 ||
+                        gestureState.dy < -(FULL_SCREEN_HEIGHT - height) / 2 ||
+                        gestureState.vy < -1.5 * swipeGestureSenstivity)
                 ) {
                     this.fullScreen()
-                } else if (gestureState.dy > swipeGestureMinLength) {
-                    if (
-                        !isFullScreen ||
-                        gestureState.dy > swipeGestureMinLength * 4 ||
-                        gestureState.vy > 3
-                    )
-                        this.setModalVisible(false)
-                    else this.minimize()
+                } else if (
+                    fullScreenGesturesEnabled &&
+                    isFullScreen &&
+                    (gestureState.dy > height / 2 ||
+                        gestureState.dy > (FULL_SCREEN_HEIGHT - height) / 2 ||
+                        gestureState.vy > 0.75 * swipeGestureSenstivity)
+                ) {
+                    this.minimize()
                 } else {
                     Animated.spring(animatedHeight, {
-                        toValue: height,
+                        toValue: isFullScreen ? FULL_SCREEN_HEIGHT : height,
                         useNativeDriver: false,
                     }).start()
                 }
@@ -153,7 +167,7 @@ class BottomSheet extends React.PureComponent {
     render() {
         const {
             animationType,
-            enableGestures,
+            swipeToCloseGestureEnabled,
             dragFromTopOnly,
             closeOnPressMask,
             closeOnPressBack,
@@ -191,7 +205,7 @@ class BottomSheet extends React.PureComponent {
                             customStyles.container,
                         ]}
                     >
-                        {enableGestures && (
+                        {swipeToCloseGestureEnabled && (
                             <View
                                 {...(dragFromTopOnly &&
                                     this.panResponder.panHandlers)}
@@ -248,11 +262,11 @@ BottomSheet.propTypes = {
     animationType: PropTypes.oneOf(['none', 'slide', 'fade']),
     height: PropTypes.number,
     minClosingHeight: PropTypes.number,
-    swipeGestureMinLength: PropTypes.number,
+    swipeGestureSenstivity: PropTypes.number,
     openDuration: PropTypes.number,
     closeDuration: PropTypes.number,
-    fullScreenEnabled: PropTypes.bool,
-    enableGestures: PropTypes.bool,
+    fullScreenGesturesEnabled: PropTypes.bool,
+    swipeToCloseGestureEnabled: PropTypes.bool,
     closeOnPressMask: PropTypes.bool,
     dragFromTopOnly: PropTypes.bool,
     closeOnPressBack: PropTypes.bool,
@@ -267,11 +281,11 @@ BottomSheet.defaultProps = {
     animationType: 'none',
     height: 150,
     minClosingHeight: 0,
-    swipeGestureMinLength: 65,
+    swipeGestureSenstivity: 1,
     openDuration: 250,
     closeDuration: 250,
-    fullScreenEnabled: false,
-    enableGestures: true,
+    fullScreenGesturesEnabled: false,
+    swipeToCloseGestureEnabled: true,
     dragFromTopOnly: false,
     closeOnPressMask: true,
     closeOnPressBack: true,
