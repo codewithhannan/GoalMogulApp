@@ -32,7 +32,7 @@ export const default_style = {
         letterSpacing: text.LETTER_SPACING.WIDE,
     },
     goalTitleText_1: {
-        fontFamily: text.FONT_FAMILY.BOLD,
+        fontFamily: text.FONT_FAMILY.REGULAR,
         fontSize: 19 * UI_SCALE,
         fontWeight: '400',
         color: color.TEXT_COLOR.DARK,

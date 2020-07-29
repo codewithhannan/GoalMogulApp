@@ -25,7 +25,7 @@ import {
 import { markUserViewGoal } from '../../redux/modules/goal/GoalDetailActions'
 import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
 
-import { GM_BLUE } from '../../styles'
+import { color } from '../../styles/basic'
 import DelayedButton from '../Common/Button/DelayedButton'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
@@ -187,7 +187,7 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 3,
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
     },
     iconStyle: {
         height: 26,
