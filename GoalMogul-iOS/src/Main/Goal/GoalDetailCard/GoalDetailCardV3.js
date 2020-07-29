@@ -721,7 +721,7 @@ export class GoalDetailCardV3 extends Component {
         }
     }
 
-    _renderTabBar = (props) => {
+    _renderTabBar = () => {
         const translateY = this.state.scroll.interpolate({
             inputRange: [0, this.state.cardHeight - COLLAPSED_HEIGHT],
             outputRange: [0, -(this.state.cardHeight - COLLAPSED_HEIGHT)],
