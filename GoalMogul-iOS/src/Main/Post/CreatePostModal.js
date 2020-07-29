@@ -872,7 +872,7 @@ class CreatePostModal extends Component {
         return (
             <KeyboardAvoidingView
                 behavior="padding"
-                style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}
+                style={{ flex: 1, backgroundColor: color.GM_CARD_BACKGROUND }}
             >
                 <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                     <ModalHeader
