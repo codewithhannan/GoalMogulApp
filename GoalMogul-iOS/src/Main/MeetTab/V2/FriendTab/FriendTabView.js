@@ -6,7 +6,6 @@
  */
 
 import _ from 'lodash'
-import { MaterialIcons } from '@expo/vector-icons'
 import React from 'react'
 import { ActivityIndicator, FlatList, View, Text, Image } from 'react-native'
 import { connect } from 'react-redux'
@@ -18,7 +17,7 @@ import {
     loadMoreRequest,
 } from '../../../../redux/modules/meet/MeetActions'
 /* Styles */
-import { color } from '../../../../styles/basic'
+import { color, text } from '../../../../styles/basic'
 import SearchBarHeader from '../../../Common/Header/SearchBarHeader'
 /* Components */
 import EmptyResult from '../../../Common/Text/EmptyResult'
@@ -90,7 +89,7 @@ class FriendTabView extends React.Component {
                 <View style={{ flexDirection: 'row' }}>
                     <Text
                         style={{
-                            fontFamily: GM_text.FONT_FAMILY.BOLD,
+                            fontFamily: text.FONT_FAMILY.BOLD,
                             fontSize: 16,
                             marginTop: 2,
                         }}
@@ -104,7 +103,7 @@ class FriendTabView extends React.Component {
                     >
                         <Text
                             style={{
-                                fontFamily: GM_text.FONT_FAMILY.SEMI_BOLD,
+                                fontFamily: text.FONT_FAMILY.SEMI_BOLD,
                                 fontWeight: '500',
                                 fontSize: 13,
                                 color: color.GM_BLUE,
@@ -166,7 +165,7 @@ class FriendTabView extends React.Component {
             <View style={styles.containerStyle}>
                 <SearchBarHeader backButton title={modalTitle} />
                 {/* <Text style={{
-                    fontFamily: GM_text.FONT_FAMILY.BOLD,
+                    fontFamily: text.FONT_FAMILY.BOLD,
                     fontWeight: 'bold',
                     fontSize: GM_FONT_2,
                     letterSpacing: 0.3,

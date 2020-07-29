@@ -8,15 +8,12 @@ import React, { Component } from 'react'
 import { View } from 'react-native'
 import { SceneMap, TabView } from 'react-native-tab-view'
 import { connect } from 'react-redux'
-import { MaterialIcons } from '@expo/vector-icons'
 // actions
 import { handleRefresh } from '../../../../actions'
 import {
     handleRequestTabSwitchTab,
     loadMoreRequest,
 } from '../../../../redux/modules/meet/MeetActions'
-// Styles
-import { color, text } from '../../../../styles/basic'
 // Components
 import SearchBarHeader from '../../../Common/Header/SearchBarHeader'
 import TabButtonGroup from '../../../Common/TabButtonGroup'

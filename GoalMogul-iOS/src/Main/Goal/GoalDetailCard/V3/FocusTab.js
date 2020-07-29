@@ -7,18 +7,11 @@ import _ from 'lodash'
 
 // Components
 import EmptyResult from '../../../Common/Text/EmptyResult'
-// import CommentBox from '../../Common/CommentBoxV2';
 import CommentCard from '../Comment/CommentCard'
-
-// Assets
 
 // Actions
 import { goalDetailSwitchTabV2ByKey } from '../../../../redux/modules/goal/GoalDetailActions'
-
 import { resetCommentType } from '../../../../redux/modules/feed/comment/CommentActions'
-
-// Styles
-import { color } from '../../../../styles/basic'
 
 // Utils
 import { switchCase } from '../../../../redux/middleware/utils'
@@ -35,10 +28,6 @@ import LikeListModal from '../../../Common/Modal/LikeListModal'
 // Constants
 const DEBUG_KEY = '[ UI FocusTab ]'
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList)
-
-const TABBAR_HEIGHT = 48.5
-const COMMENTBOX_HEIGHT = 43
-const TOTAL_HEIGHT = TABBAR_HEIGHT
 
 class FocusTab extends React.PureComponent {
     constructor(props) {

@@ -1,17 +1,11 @@
 /** @format */
 
 import React from 'react'
-import { View, Text, Keyboard } from 'react-native'
+import { View, Keyboard } from 'react-native'
 import { connect } from 'react-redux'
 
 // Components
 import CommentUserDetail from './CommentUserDetail'
-import ChildCommentCard from './ChildCommentCard'
-import DelayedButton from '../../../Common/Button/DelayedButton'
-
-// Assets
-import { color, default_style } from '../../../../styles/basic'
-import ProfileImage from '../../../Common/ProfileImage'
 
 const DEBUG_KEY = '[ UI CommentCard ]'
 

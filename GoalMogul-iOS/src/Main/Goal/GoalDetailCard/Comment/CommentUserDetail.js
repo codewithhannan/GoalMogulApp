@@ -47,10 +47,8 @@ import {
 } from '../../../../redux/modules/notification/NotificationActions'
 
 // Styles
-import {
-    imagePreviewContainerStyle,
-    default_style,
-} from '../../../../styles/basic'
+import { default_style } from '../../../../styles/basic'
+import { imagePreviewContainerStyle } from '../../../../styles'
 
 // Constants
 import {

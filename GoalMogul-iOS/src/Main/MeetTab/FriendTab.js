@@ -4,12 +4,11 @@ import React from 'react'
 import { View, FlatList, Text, Image, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
-import { GM_CONTAINER_BACKGROUND, color } from '../../styles/basic/color'
 import SearchBarHeader from '../Common/Header/SearchBarHeader'
 import DelayedButton from '../Common/Button/DelayedButton'
 import Icons from '../../asset/base64/Icons'
 import { BUTTON_STYLE } from '../../styles'
-import { text, default_style } from '../../styles/basic'
+import { text, default_style, color } from '../../styles/basic'
 import PYMKCard from './PYMKCard'
 import {
     handleRefreshFriend,
@@ -317,7 +316,7 @@ class FriendTab extends React.Component {
                     ListHeaderComponent={this.renderListHeader}
                     renderItem={this.renderPYMK}
                     contentContainerStyle={{
-                        backgroundColor: GM_CONTAINER_BACKGROUND,
+                        backgroundColor: color.GM_BACKGROUND,
                     }}
                     loading={this.props.loading}
                     onEndReached={() => this.props.meetOnLoadMore('suggested')}
@@ -335,7 +334,7 @@ class FriendTab extends React.Component {
 const styles = {
     padding: 16,
     containerStyle: {
-        backgroundColor: GM_CONTAINER_BACKGROUND,
+        backgroundColor: color.GM_BACKGROUND,
         flex: 1,
     },
     requestListContainerStyle: {
@@ -364,7 +363,7 @@ const testData = [
 
 const mapStateToProps = (state) => {
     const { suggested } = state.meet
-    const { data, refreshing, loading } = suggested
+    const { data, loading } = suggested
     return {
         incomingRequests: getIncomingUserFromFriendship(state),
         pymkData: data,
