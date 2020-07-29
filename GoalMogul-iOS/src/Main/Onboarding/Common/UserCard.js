@@ -3,15 +3,9 @@
 import React from 'react'
 import _ from 'lodash'
 import { View, Text, ActivityIndicator } from 'react-native'
-import {
-    BUTTON_STYLE as buttonStyle,
-    TEXT_STYLE as textStyle,
-    FONT_FAMILY_2,
-} from '../../../styles'
 import ProfileImage from '../../Common/ProfileImage'
 import { getPhoneNumber, getEmail } from '../../../redux/middleware/utils'
-import { GM_BLUE, GM_FONT_SIZE, GM_FONT_FAMILY } from '../../../styles'
-import Spinner from '../../Common/Modal/LoadingModal'
+import { color, text } from '../../../styles/basic'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
 /**
@@ -96,8 +90,8 @@ class UserCard extends React.Component {
             >
                 <Text
                     style={{
-                        fontSize: GM_FONT_SIZE.FONT_3,
-                        fontFamily: FONT_FAMILY_2,
+                        fontSize: text.TEXT_FONT_SIZE.FONT_3,
+                        fontFamily: text.FONT_FAMILY.REGULAR,
                     }}
                 >
                     {name}
@@ -151,13 +145,18 @@ class UserCard extends React.Component {
             >
                 <Text
                     style={{
-                        fontSize: GM_FONT_SIZE.FONT_2,
-                        fontFamily: FONT_FAMILY_2,
+                        fontSize: text.TEXT_FONT_SIZE.FONT_2,
+                        fontFamily: text.FONT_FAMILY.REGULAR,
                     }}
                 >
                     {name}
                 </Text>
-                <Text style={{ fontSize: 12, fontFamily: FONT_FAMILY_2 }}>
+                <Text
+                    style={{
+                        fontSize: 12,
+                        fontFamily: text.FONT_FAMILY.REGULAR,
+                    }}
+                >
                     {infoToDisplay}
                 </Text>
             </View>
@@ -225,18 +224,18 @@ const styles = {
             borderRadius: 3,
         },
         textStyle: {
-            fontSize: GM_FONT_SIZE.FONT_1,
+            fontSize: text.TEXT_FONT_SIZE.FONT_1,
             fontWeight: 'bold',
-            fontFamily: FONT_FAMILY_2,
+            fontFamily: text.FONT_FAMILY.REGULAR,
         },
     },
     inviteButtonContainerStyle: {
         backgroundColor: 'white',
         borderWidth: 1,
-        borderColor: GM_BLUE,
+        borderColor: color.GM_BLUE,
     },
-    inviteButtonTextStyle: { color: GM_BLUE },
-    addButtonContainerStyle: { backgroundColor: GM_BLUE },
+    inviteButtonTextStyle: { color: color.GM_BLUE },
+    addButtonContainerStyle: { backgroundColor: color.GM_BLUE },
     addButtonTextStyle: { color: 'white' },
     addedButtonContainerStyle: { backgroundColor: '#BDBDBD' },
     addedTextStyle: { color: '#F2F2F2' },

@@ -6,7 +6,7 @@
 
 import React from 'react'
 import { View, Text } from 'react-native'
-import { DEFAULT_STYLE, GM_BLUE } from '../../styles'
+import { default_style, color } from '../../styles/basic'
 import { CheckBox } from '@ui-kitten/components'
 import { Actions } from 'react-native-router-flux'
 
@@ -27,7 +27,7 @@ const UserAgreementCheckBox = ({ checked, onPress }) => {
             <CheckBox checked={checked} onChange={onPress} />
             <Text
                 style={[
-                    DEFAULT_STYLE.subTitleText_1,
+                    default_style.subTitleText_1,
                     { fontSize: 15, paddingLeft: 15 },
                 ]}
             >
@@ -35,12 +35,12 @@ const UserAgreementCheckBox = ({ checked, onPress }) => {
             </Text>
             <Text
                 style={[
-                    DEFAULT_STYLE.subTitleText_1,
+                    default_style.subTitleText_1,
                     {
                         fontSize: 15,
                         paddingVertical: 15,
                         paddingHorizontal: 4,
-                        color: GM_BLUE,
+                        color: color.GM_BLUE,
                     },
                 ]}
                 onPress={() => {

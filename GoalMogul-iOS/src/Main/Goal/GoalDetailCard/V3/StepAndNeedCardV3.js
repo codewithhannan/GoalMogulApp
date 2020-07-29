@@ -12,7 +12,7 @@ import HelpIcon from '../../../../asset/utils/help.png'
 import StepIcon from '../../../../asset/utils/steps.png'
 
 // Styles
-import { DEFAULT_STYLE } from '../../../../styles'
+import { default_style } from '../../../../styles/basic'
 
 class StepAndNeedCardV3 extends Component {
     renderSectionTitle(item) {
@@ -21,7 +21,7 @@ class StepAndNeedCardV3 extends Component {
                 <SectionTitle
                     iconSource={HelpIcon}
                     iconStyle={{
-                        ...DEFAULT_STYLE.normalIcon_1,
+                        ...default_style.normalIcon_1,
                         tintColor: '#333',
                     }}
                     text="Needs"
@@ -32,7 +32,7 @@ class StepAndNeedCardV3 extends Component {
         return (
             <SectionTitle
                 iconSource={StepIcon}
-                iconStyle={{ ...DEFAULT_STYLE.normalIcon_1, tintColor: '#333' }}
+                iconStyle={{ ...default_style.normalIcon_1, tintColor: '#333' }}
                 text="Steps"
                 count={item.count}
             />
@@ -61,11 +61,11 @@ const styles = {
             paddingTop: 4,
         },
         iconStyle: {
-            ...DEFAULT_STYLE.smallIcon_1,
+            ...default_style.smallIcon_1,
             tintColor: '#616161',
         },
         textStyle: {
-            ...DEFAULT_STYLE.smallTitle_1,
+            ...default_style.smallTitle_1,
             marginTop: 2,
             marginLeft: 8,
         },

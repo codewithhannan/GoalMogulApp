@@ -15,7 +15,7 @@ import SettingIcon from '../../../asset/utils/friendsSettingIcon.png'
 import { generateInvitationLink } from '../../../redux/middleware/utils'
 // Actions
 // Styles
-import { BACKGROUND_COLOR } from '../../../styles'
+import { color } from '../../../styles/basic'
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
 import SettingCard from '../../Setting/SettingCard'
@@ -87,7 +87,7 @@ class FriendInvitationView extends React.PureComponent {
 const styles = {
     containerStyle: {
         flex: 1,
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
         backgroundColor: '#f8f8f8',
         //   shadowColor: '#000',
         //   shadowOffset: { width: 0, height: 1 },

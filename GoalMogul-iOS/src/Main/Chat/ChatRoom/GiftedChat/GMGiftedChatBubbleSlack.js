@@ -19,7 +19,7 @@ import {
     ViewPropTypes,
 } from 'react-native'
 import { MessageText, Time, utils } from 'react-native-gifted-chat'
-import { GM_BLUE } from '../../../../styles'
+import { color } from '../../../../styles/basic'
 import { MemberDocumentFetcher } from '../../../../Utils/UserUtils'
 import CommentRef from '../../../Goal/GoalDetailCard/Comment/CommentRef'
 import ChatMessageImage from '../../Modals/ChatMessageImage'
@@ -138,7 +138,7 @@ export default class Bubble extends React.Component {
                     <Text
                         style={{
                             fontSize: 18,
-                            color: GM_BLUE,
+                            color: color.GM_BLUE,
                             fontWeight: '600',
                         }}
                     >
@@ -172,7 +172,7 @@ export default class Bubble extends React.Component {
                             paddingBottom: 9,
                             marginBottom: 9,
                             borderRadius: 6,
-                            backgroundColor: GM_BLUE,
+                            backgroundColor: color.GM_BLUE,
                         }}
                         onPress={this.openCreateGoal.bind(this)}
                     >

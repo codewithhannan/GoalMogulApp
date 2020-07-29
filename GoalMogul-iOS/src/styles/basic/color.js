@@ -9,4 +9,9 @@ export const GM_BLUE = '#45C9F6'
 export const GM_BLUE_LIGHT = '#9EE6FF'
 export const GM_BLUE_LIGHT_LIGHT = '#DEF7FF'
 export const GM_DOT_GRAY = '#E0E0E0'
-export const GM_CONTAINER_BACKGROUND = '#FAFAFA'
+export const GM_BACKGROUND = '#E4E8EA'
+export const GM_CARD_BACKGROUND = 'white'
+export const TEXT_COLOR = {
+    DARK: '#333',
+    LIGHT: 'white',
+}

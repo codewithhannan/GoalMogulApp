@@ -10,7 +10,7 @@ import ChildCommentCard from './ChildCommentCard'
 import DelayedButton from '../../../Common/Button/DelayedButton'
 
 // Assets
-import { GM_BLUE, DEFAULT_STYLE } from '../../../../styles'
+import { color, default_style } from '../../../../styles/basic'
 import ProfileImage from '../../../Common/ProfileImage'
 
 const DEBUG_KEY = '[ UI CommentCard ]'

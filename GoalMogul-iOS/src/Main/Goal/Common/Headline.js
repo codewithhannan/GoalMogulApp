@@ -29,7 +29,7 @@ import EditIcon from '../../../asset/utils/edit.png'
 import UndoIcon from '../../../asset/utils/undo.png'
 import TrashIcon from '../../../asset/utils/trash.png'
 import Icons from '../../../asset/base64/Icons'
-import { DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 import { Icon } from '@ui-kitten/components'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
@@ -233,7 +233,7 @@ class Headline extends React.PureComponent {
                 {belongsToTribe && [
                     <Icon
                         pack="material-community"
-                        style={[DEFAULT_STYLE.buttonIcon_1, { margin: -4 }]}
+                        style={[default_style.buttonIcon_1, { margin: -4 }]}
                         name="menu-right"
                     />,
                     <DelayedButton
@@ -244,7 +244,7 @@ class Headline extends React.PureComponent {
                         <Text
                             style={[
                                 textStyle,
-                                { maxWidth: 150 * DEFAULT_STYLE.uiScale },
+                                { maxWidth: 150 * default_style.uiScale },
                             ]}
                             numberOfLines={1}
                         >

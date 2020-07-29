@@ -14,7 +14,7 @@ import dropDown from '../../asset/utils/dropDown.png'
 import profilePeople from '../../asset/utils/profile_people.png'
 
 // Actions
-import { DEFAULT_STYLE } from '../../styles'
+import { default_style } from '../../styles/basic'
 import { PRIVACY_OPTIONS } from '../../Utils/Constants'
 
 const DEBUG_KEY = '[ ViewableSettingMenu Component ]'
@@ -84,7 +84,7 @@ class ViewableSettingMenu extends Component {
 
         return (
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={DEFAULT_STYLE.smallText_1}>Share To: </Text>
+                <Text style={default_style.smallText_1}>Share To: </Text>
                 <TouchableOpacity
                     activeOpacity={0.6}
                     style={{
@@ -96,14 +96,14 @@ class ViewableSettingMenu extends Component {
                     <Image
                         resizeMode="contain"
                         style={{
-                            ...DEFAULT_STYLE.smallIcon_1,
+                            ...default_style.smallIcon_1,
                             margin: 5,
                             tintColor: 'rgb(155,155,155)',
                         }}
                         source={profilePeople}
                     />
                     <Text
-                        style={{ ...DEFAULT_STYLE.smallText_1, marginTop: 2 }}
+                        style={{ ...default_style.smallText_1, marginTop: 2 }}
                     >
                         {PRIVACY_OPTIONS.map(({ text, value }) => {
                             if (this.props.viewableSetting === value)
@@ -131,10 +131,10 @@ const styles = {
         tintColor: '#20485f',
     },
     informationIconStyle: {
-        ...DEFAULT_STYLE.smallIcon_1,
+        ...default_style.smallIcon_1,
     },
     profileIconStyle: {
-        ...DEFAULT_STYLE.smallIcon_1,
+        ...default_style.smallIcon_1,
         margin: 3,
         marginLeft: 6,
         tintColor: 'rgb(155,155,155)',

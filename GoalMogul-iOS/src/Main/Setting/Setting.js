@@ -15,7 +15,6 @@ import TabButtonGroup from '../Common/TabButtonGroup'
 import { settingSwitchTab } from '../../redux/modules/setting/SettingActions'
 
 /* Styles */
-import { APP_DEEP_BLUE } from '../../styles'
 import { SCREENS, wrapAnalytics } from '../../monitoring/segment'
 
 class Setting extends Component {

@@ -15,16 +15,8 @@ import { connect } from 'react-redux'
 import right_arrow_icon from '../../asset/utils/right_arrow.png'
 import OnboardingHeader from './Common/OnboardingHeader'
 import DelayedButton from '../Common/Button/DelayedButton'
-import {
-    GM_FONT_SIZE,
-    GM_BLUE,
-    GM_FONT_FAMILY,
-    GM_FONT_LINE_HEIGHT,
-    TEXT_STYLE as textStyle,
-    FONT_FAMILY_2,
-    DEFAULT_STYLE,
-    FONT_FAMILY_1,
-} from '../../styles'
+import { TEXT_STYLE as textStyle } from '../../styles'
+import { text, color, default_style } from '../../styles/basic'
 import {
     registrationTribeSelection,
     registrationFetchTribes,
@@ -32,7 +24,7 @@ import {
 } from '../../redux/modules/registration/RegistrationActions'
 import OnboardingFooter from './Common/OnboardingFooter'
 import * as Animatable from 'react-native-animatable'
-import { Icon, CheckBox } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 import { getImageOrDefault } from '../../redux/middleware/utils'
 
 const { width } = Dimensions.get('window')
@@ -146,14 +138,14 @@ class OnboardingTribeSelection extends React.Component {
                             name="check-circle-outline"
                             pack="material-community"
                             style={{
-                                tintColor: selected ? GM_BLUE : '#E0E0E0',
+                                tintColor: selected ? color.GM_BLUE : '#E0E0E0',
                                 height: 23,
                                 width: 23,
                             }}
                         />
                         <Text
                             style={[
-                                DEFAULT_STYLE.titleText_1,
+                                default_style.titleText_1,
                                 {
                                     paddingLeft: 8,
                                     letterSpacing: 0.2,
@@ -165,7 +157,7 @@ class OnboardingTribeSelection extends React.Component {
                         </Text>
                         <Text
                             style={[
-                                DEFAULT_STYLE.normalText_1,
+                                default_style.normalText_1,
                                 {
                                     color: '#828282',
                                     letterSpacing: 0.2,
@@ -178,7 +170,7 @@ class OnboardingTribeSelection extends React.Component {
                     </View>
                     <Text
                         style={[
-                            DEFAULT_STYLE.normalText_1,
+                            default_style.normalText_1,
                             {
                                 color: '#828282',
                                 letterSpacing: 0.2,
@@ -234,8 +226,8 @@ class OnboardingTribeSelection extends React.Component {
                     />
                     <Text
                         style={{
-                            fontSize: GM_FONT_SIZE.FONT_2,
-                            fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+                            fontSize: text.TEXT_FONT_SIZE.FONT_2,
+                            fontFamily: text.FONT_FAMILY.BOLD,
                             color: '#2F80ED',
                             paddingTop: 2,
                             textAlign: 'center',
@@ -282,17 +274,17 @@ class OnboardingTribeSelection extends React.Component {
                                     width: 20,
                                     tintColor:
                                         this.state.category == title
-                                            ? GM_BLUE
+                                            ? color.GM_BLUE
                                             : '#828282',
                                 }}
                             />
                             <Text
                                 style={[
-                                    DEFAULT_STYLE.normalText_2,
+                                    default_style.normalText_2,
                                     {
                                         color:
                                             this.state.category == title
-                                                ? GM_BLUE
+                                                ? color.GM_BLUE
                                                 : '#333333',
                                         marginTop: 5,
                                     },
@@ -417,9 +409,9 @@ const styles = {
         backgroundColor: '#EAE8EA',
     },
     subTitleTextStyle: {
-        fontSize: GM_FONT_SIZE.FONT_3,
-        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-        fontFamily: FONT_FAMILY_2,
+        fontSize: text.TEXT_FONT_SIZE.FONT_3,
+        lineHeight: text.TEXT_FONT_SIZE.FONT_3,
+        fontFamily: text.FONT_FAMILY.REGULAR,
     },
     tribeCardContainerStyle: {
         backgroundColor: 'white',
@@ -455,7 +447,7 @@ const styles = {
         shadowOpacity: 0.9,
         shadowColor: 'rgba(0,0,0,0.1)',
         borderWidth: 0.5,
-        borderColor: GM_BLUE,
+        borderColor: color.GM_BLUE,
     },
     tribeCardImageStyle: {
         width: 42,

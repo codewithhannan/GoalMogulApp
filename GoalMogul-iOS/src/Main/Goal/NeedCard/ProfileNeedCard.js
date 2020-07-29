@@ -26,7 +26,7 @@ import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
 } from '../../../Utils/Constants'
-import { DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 
 import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
@@ -103,13 +103,13 @@ class ProfileNeedCard extends React.Component {
                         isSelf={this.props.userId === owner._id}
                         caret={caret}
                         user={owner}
-                        textStyle={DEFAULT_STYLE.titleText_2}
+                        textStyle={default_style.titleText_2}
                     />
                     <Timestamp time={timeago().format(timeStamp)} />
                     <View style={{ flexDirection: 'row', marginTop: 10 }}>
                         <Text
                             style={[
-                                DEFAULT_STYLE.normalText_1,
+                                default_style.normalText_1,
                                 styles.textStyle,
                             ]}
                             numberOfLines={3}
@@ -140,7 +140,7 @@ class ProfileNeedCard extends React.Component {
                     </View>
                     {this.renderCardContent(item)}
                 </View>
-                <View style={DEFAULT_STYLE.cardSeparator} />
+                <View style={default_style.cardSeparator} />
             </View>
         )
     }

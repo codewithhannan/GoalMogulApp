@@ -66,7 +66,7 @@ import {
 } from '../../../redux/modules/User/TutorialActions'
 
 // Styles
-import { BACKGROUND_COLOR, DEFAULT_STYLE, GM_BLUE } from '../../../styles'
+import { default_style, color } from '../../../styles/basic'
 import { TABBAR_HEIGHT } from '../../../styles/Goal'
 
 // Component
@@ -822,7 +822,7 @@ export class GoalDetailCardV3 extends Component {
             <TouchableOpacity
                 activeOpacity={0.6}
                 style={{
-                    backgroundColor: BACKGROUND_COLOR,
+                    backgroundColor: color.GM_CARD_BACKGROUND,
                     borderTopWidth: 0.5,
                     borderBottomWidth: 0.5,
                     borderColor: '#e5e5e5',
@@ -845,7 +845,7 @@ export class GoalDetailCardV3 extends Component {
                 >
                     <Text
                         style={{
-                            ...DEFAULT_STYLE.smallTitle_1,
+                            ...default_style.smallTitle_1,
                             flex: 1,
                             color: 'black',
                             marginTop: 4,
@@ -860,7 +860,7 @@ export class GoalDetailCardV3 extends Component {
                         onPress={this.onViewCommentPress}
                         style={{
                             marginRight: 16,
-                            backgroundColor: GM_BLUE,
+                            backgroundColor: color.GM_BLUE,
                             borderRadius: 100,
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -870,7 +870,7 @@ export class GoalDetailCardV3 extends Component {
                             name="chevron-right"
                             pack="material-community"
                             style={{
-                                ...DEFAULT_STYLE.buttonIcon_1,
+                                ...default_style.buttonIcon_1,
                                 tintColor: 'white',
                             }}
                         />
@@ -989,7 +989,7 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
     containerStyle: {
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
         flex: 1,
     },
     nextIconContainer: {},

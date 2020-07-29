@@ -38,7 +38,7 @@ import {
 
 /** Constants */
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
-import { GM_BLUE_LIGHT_LIGHT, DEFAULT_STYLE } from '../../../styles'
+import { color, default_style } from '../../../styles/basic'
 import { Icon } from '@ui-kitten/components'
 
 const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel']
@@ -121,7 +121,7 @@ class ProfileDetailEditForm extends Component {
             : {
                   width: 30,
                   height: 30,
-                  margin: 40 * DEFAULT_STYLE.uiScale,
+                  margin: 40 * default_style.uiScale,
               }
         const imageWrapperStyle = [
             styles.imageWrapperStyle,
@@ -136,8 +136,8 @@ class ProfileDetailEditForm extends Component {
             <View style={{ width: '100%' }}>
                 <View
                     style={{
-                        height: 90 * DEFAULT_STYLE.uiScale,
-                        backgroundColor: GM_BLUE_LIGHT_LIGHT,
+                        height: 90 * default_style.uiScale,
+                        backgroundColor: color.GM_BLUE_LIGHT_LIGHT,
                     }}
                 />
                 <TouchableOpacity
@@ -359,17 +359,17 @@ const styles = {
         marginBottom: 5,
     },
     imageStyle: {
-        width: 120 * DEFAULT_STYLE.uiScale,
-        height: 120 * DEFAULT_STYLE.uiScale,
-        borderRadius: 60 * DEFAULT_STYLE.uiScale,
+        width: 120 * default_style.uiScale,
+        height: 120 * default_style.uiScale,
+        borderRadius: 60 * default_style.uiScale,
     },
     imageContainerStyle: {
-        height: 60 * DEFAULT_STYLE.uiScale,
+        height: 60 * default_style.uiScale,
         backgroundColor: 'white',
     },
     imageWrapperStyle: {
         alignItems: 'center',
-        borderRadius: 60 * DEFAULT_STYLE.uiScale,
+        borderRadius: 60 * default_style.uiScale,
         position: 'absolute',
         bottom: 10,
         alignSelf: 'center',
@@ -378,8 +378,8 @@ const styles = {
     iconContainerStyle: {
         alignSelf: 'center',
         position: 'absolute',
-        bottom: 10 * DEFAULT_STYLE.uiScale,
-        right: width * 0.5 - 40 * DEFAULT_STYLE.uiScale - 20,
+        bottom: 10 * default_style.uiScale,
+        right: width * 0.5 - 40 * default_style.uiScale - 20,
 
         width: 40,
         height: 40,

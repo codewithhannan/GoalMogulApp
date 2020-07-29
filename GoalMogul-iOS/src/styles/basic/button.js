@@ -4,8 +4,6 @@
  * @format
  */
 
-import { GM_BLUE } from './color'
-
 /** Basic button style */
 export const BUTTON_BORDER_RADIUS_BASE = 5 // TODO: this is determined by phone screen ratio and zoom mode
 export const BUTTON_BORDER_REDIUS_INCREMENT = 2 // TODO: this is determined by phone screen ratio and zoom mode

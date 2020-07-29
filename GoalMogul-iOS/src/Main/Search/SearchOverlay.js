@@ -27,13 +27,7 @@ import {
 } from '../../redux/modules/search/SearchActions'
 
 // Styles
-import {
-    APP_DEEP_BLUE,
-    APP_BLUE,
-    GM_BLUE,
-    GM_BLUE_LIGHT,
-    DEFAULT_STYLE,
-} from '../../styles'
+import { color, default_style } from '../../styles/basic'
 
 // Constants
 import { IPHONE_MODELS, DEVICE_MODEL } from '../../Utils/Constants'
@@ -208,7 +202,7 @@ class SearchOverlay extends Component {
                             onChangeText={this.handleChangeText}
                             clearIcon={null}
                             showLoading={this.props.loading}
-                            placeholderTextColor={GM_BLUE}
+                            placeholderTextColor={color.GM_BLUE}
                             cancelButtonProps={{
                                 buttonTextStyle: {
                                     color: '#21364C',
@@ -221,7 +215,7 @@ class SearchOverlay extends Component {
                                         marginTop: 1,
                                     }}
                                     iconStyle={{
-                                        tintColor: GM_BLUE,
+                                        tintColor: color.GM_BLUE,
                                         height: 15,
                                         width: 15,
                                     }}
@@ -248,29 +242,29 @@ class SearchOverlay extends Component {
 const styles = {
     headerContainerStyle: {
         paddingTop: 45,
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
         justifyContent: 'center',
         alignItems: 'center',
     },
     searchContainerStyle: {
         padding: 0,
         marginRight: 3,
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
         borderTopColor: '#ffffff',
         borderBottomColor: '#ffffff',
         alignItems: 'center',
     },
     searchInputContainerStyle: {
-        backgroundColor: GM_BLUE_LIGHT,
+        backgroundColor: color.GM_BLUE_LIGHT,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 16,
     },
     searchInputStyle: {
-        ...DEFAULT_STYLE.normalText_1,
+        ...default_style.normalText_1,
     },
     searchIconStyle: {
-        ...DEFAULT_STYLE.normalText_1,
+        ...default_style.normalText_1,
         top: 15,
     },
     backdrop: {

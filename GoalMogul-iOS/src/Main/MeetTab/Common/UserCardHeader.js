@@ -3,7 +3,7 @@
 import React from 'react'
 import { View, Text, Image } from 'react-native'
 import { connect } from 'react-redux'
-import { FONT_FAMILY_1, DEFAULT_STYLE } from '../../../styles'
+import { text, default_style } from '../../../styles/basic'
 import { UserBanner, openProfile } from '../../../actions'
 import Icons from '../../../asset/base64/Icons'
 import ProfileImage from '../../Common/ProfileImage'
@@ -50,7 +50,7 @@ class UserCardHeader extends React.PureComponent {
                     >
                         <Name
                             text={name}
-                            textStyle={DEFAULT_STYLE.titleText_2}
+                            textStyle={default_style.titleText_2}
                         />
                         <UserBanner
                             user={user}
@@ -97,7 +97,7 @@ class UserCardHeader extends React.PureComponent {
                         </View>
                         <Text
                             style={[
-                                DEFAULT_STYLE.smallText_1,
+                                default_style.smallText_1,
                                 { color: '#555555' },
                             ]}
                         >
@@ -166,7 +166,7 @@ const styles = {
     infoTextStyle: {
         color: '#9B9B9B',
         fontSize: 11,
-        fontFamily: FONT_FAMILY_1,
+        fontFamily: text.FONT_FAMILY.BOLD,
         marginLeft: 5,
     },
 }

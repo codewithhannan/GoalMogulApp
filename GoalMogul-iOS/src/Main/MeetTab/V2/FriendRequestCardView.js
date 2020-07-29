@@ -23,7 +23,7 @@ import {
 
 import { handleRefresh } from '../../../redux/modules/meet/MeetActions'
 import UserCardHeader from '../Common/UserCardHeader'
-import { DEFAULT_STYLE, GM_BLUE } from '../../../styles'
+import { default_style, color } from '../../../styles/basic'
 import { SentryRequestBuilder } from '../../../monitoring/sentry'
 import {
     SENTRY_MESSAGE_LEVEL,
@@ -163,7 +163,7 @@ class FriendRequestCardView extends React.PureComponent {
                     ]}
                 >
                     <Text
-                        style={[DEFAULT_STYLE.buttonText_1, { fontSize: 12 }]}
+                        style={[default_style.buttonText_1, { fontSize: 12 }]}
                     >
                         Withdraw
                     </Text>
@@ -192,12 +192,12 @@ class FriendRequestCardView extends React.PureComponent {
                     activeOpacity={0.6}
                     style={[
                         styles.buttonTextContainerStyle,
-                        { backgroundColor: GM_BLUE },
+                        { backgroundColor: color.GM_BLUE },
                     ]}
                 >
                     <Text
                         style={[
-                            DEFAULT_STYLE.buttonText_1,
+                            default_style.buttonText_1,
                             { color: 'white', fontSize: 12 },
                         ]}
                     >
@@ -215,7 +215,7 @@ class FriendRequestCardView extends React.PureComponent {
                     ]}
                 >
                     <Text
-                        style={[DEFAULT_STYLE.buttonText_1, { fontSize: 12 }]}
+                        style={[default_style.buttonText_1, { fontSize: 12 }]}
                     >
                         Unfriend
                     </Text>

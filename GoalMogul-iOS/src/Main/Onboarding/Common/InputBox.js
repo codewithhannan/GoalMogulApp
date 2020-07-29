@@ -4,13 +4,7 @@ import React from 'react'
 import _ from 'lodash'
 import { View, Text } from 'react-native'
 import CountryPicker, { Flag } from 'react-native-country-picker-modal'
-import {
-    GM_FONT_SIZE,
-    GM_FONT_FAMILY,
-    GM_FONT_LINE_HEIGHT,
-    FONT_FAMILY_3,
-    FONT_FAMILY_2,
-} from '../../../styles'
+import { text } from '../../../styles/basic'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { Input } from '@ui-kitten/components'
 
@@ -37,17 +31,17 @@ class CountryFlagButton extends React.Component {
                 <Flag countryCode={countryCode.cca2} flagSize={14} />
                 <Text
                     style={{
-                        fontSize: GM_FONT_SIZE.FONT_3,
-                        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                        fontFamily: GM_FONT_FAMILY.GOTHAM,
+                        fontSize: text.TEXT_FONT_SIZE.FONT_3,
+                        lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
+                        fontFamily: text.FONT_FAMILY.REGULAR,
                         paddingTop: 2,
                     }}
                 >{`${countryCode.cca2} `}</Text>
                 <Text
                     style={{
-                        fontSize: GM_FONT_SIZE.FONT_3,
-                        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                        fontFamily: GM_FONT_FAMILY.GOTHAM,
+                        fontSize: text.TEXT_FONT_SIZE.FONT_3,
+                        lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
+                        fontFamily: text.FONT_FAMILY.REGULAR,
                         paddingTop: 1,
                     }}
                 >
@@ -103,16 +97,16 @@ class InputBox extends React.Component {
             return (
                 <Text
                     style={{
-                        fontSize: GM_FONT_SIZE.FONT_1,
-                        lineHeight: GM_FONT_LINE_HEIGHT.FONT_1,
-                        fontFamily: FONT_FAMILY_2,
+                        fontSize: text.TEXT_FONT_SIZE.FONT_1,
+                        lineHeight: text.TEXT_LINE_HEIGHT.FONT_1,
+                        fontFamily: text.FONT_FAMILY.REGULAR,
                         marginBottom: 5,
                     }}
                 >
                     <Text
                         style={{
                             fontWeight: 'bold',
-                            fontFamily: FONT_FAMILY_3,
+                            fontFamily: text.FONT_FAMILY.SEMI_BOLD,
                         }}
                     >
                         {inputTitle}
@@ -125,9 +119,9 @@ class InputBox extends React.Component {
             <View style={{ flexDirection: 'row' }}>
                 <Text
                     style={{
-                        fontSize: GM_FONT_SIZE.FONT_1,
-                        lineHeight: GM_FONT_LINE_HEIGHT.FONT_1,
-                        fontFamily: FONT_FAMILY_3,
+                        fontSize: text.TEXT_FONT_SIZE.FONT_1,
+                        lineHeight: text.TEXT_LINE_HEIGHT.FONT_1,
+                        fontFamily: text.FONT_FAMILY.SEMI_BOLD,
                         marginBottom: 5,
                     }}
                 >
@@ -135,7 +129,7 @@ class InputBox extends React.Component {
                     <Text
                         style={{
                             fontWeight: 'bold',
-                            fontFamily: FONT_FAMILY_3,
+                            fontFamily: text.FONT_FAMILY.SEMI_BOLD,
                         }}
                     >
                         {inputTitle}
@@ -294,16 +288,16 @@ const styles = {
     },
     textInputStyle: {
         width: '100%',
-        fontSize: GM_FONT_SIZE.FONT_3,
-        fontFamily: GM_FONT_FAMILY.GOTHAM,
-        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
+        fontSize: text.TEXT_FONT_SIZE.FONT_3,
+        fontFamily: text.FONT_FAMILY.REGULAR,
+        lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
         marginTop: 0,
     },
     textInputStylePhone: {
         width: '60%',
-        fontSize: GM_FONT_SIZE.FONT_3,
-        fontFamily: GM_FONT_FAMILY.GOTHAM,
-        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
+        fontSize: text.TEXT_FONT_SIZE.FONT_3,
+        fontFamily: text.FONT_FAMILY.REGULAR,
+        lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
         marginTop: 0,
     },
 }

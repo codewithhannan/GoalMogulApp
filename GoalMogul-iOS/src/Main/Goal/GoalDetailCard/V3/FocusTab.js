@@ -18,7 +18,7 @@ import { goalDetailSwitchTabV2ByKey } from '../../../../redux/modules/goal/GoalD
 import { resetCommentType } from '../../../../redux/modules/feed/comment/CommentActions'
 
 // Styles
-import { BACKGROUND_COLOR } from '../../../../styles'
+import { color } from '../../../../styles/basic'
 
 // Utils
 import { switchCase } from '../../../../redux/middleware/utils'

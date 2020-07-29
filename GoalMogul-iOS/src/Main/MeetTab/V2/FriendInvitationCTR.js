@@ -9,7 +9,7 @@ import { View, Image, Text, Dimensions } from 'react-native'
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
 
 /* Styles */
-import { APP_BLUE_BRIGHT, APP_BLUE } from '../../../styles'
+import { color } from '../../../styles/basic'
 
 /* Assets */
 import Friends from '../../../asset/utils/Friends.png'
@@ -108,9 +108,9 @@ const styles = {
         backgroundColor: 'white',
     },
     buttonContainerStyle: {
-        backgroundColor: APP_BLUE,
+        backgroundColor: color.GM_BLUE,
         borderRadius: 8,
-        borderColor: APP_BLUE_BRIGHT,
+        borderColor: color.GM_BLUE,
         borderWidth: 0.5,
         alignItems: 'center',
         justifyContent: 'center',

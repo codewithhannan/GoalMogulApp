@@ -14,12 +14,7 @@ import { connect } from 'react-redux'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import OnboardingHeader from './Common/OnboardingHeader'
 import DelayedButton from '../Common/Button/DelayedButton'
-import {
-    GM_FONT_SIZE,
-    GM_FONT_LINE_HEIGHT,
-    FONT_FAMILY_2,
-    FONT_FAMILY_1,
-} from '../../styles'
+import { text } from '../../styles/basic'
 import {
     registrationTargetSelection,
     uploadSurvey,
@@ -84,9 +79,9 @@ class OnboardingSelectionTarget extends React.Component {
             <View style={{ marginTop: 10 }} key="Other TextInput">
                 <Text
                     style={{
-                        fontSize: GM_FONT_SIZE.FONT_1,
-                        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                        fontFamily: FONT_FAMILY_2,
+                        fontSize: text.TEXT_FONT_SIZE.FONT_1,
+                        lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
+                        fontFamily: text.FONT_FAMILY.REGULAR,
                     }}
                 >
                     Others
@@ -102,9 +97,9 @@ class OnboardingSelectionTarget extends React.Component {
                     <TextInput
                         placeholder="Why did you download goalmogul? What would you like to get out of it?"
                         style={{
-                            fontSize: GM_FONT_SIZE.FONT_3,
-                            lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                            fontFamily: FONT_FAMILY_2,
+                            fontSize: text.TEXT_FONT_SIZE.FONT_3,
+                            lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
+                            fontFamily: text.FONT_FAMILY.REGULAR,
                             letterSpacing: 0.3,
                         }}
                         value={extra}
@@ -175,9 +170,9 @@ class OnboardingSelectionTarget extends React.Component {
                         >
                             <Text
                                 style={{
-                                    fontSize: GM_FONT_SIZE.FONT_3,
-                                    lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                                    fontFamily: FONT_FAMILY_2,
+                                    fontSize: text.TEXT_FONT_SIZE.FONT_3,
+                                    lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
+                                    fontFamily: text.FONT_FAMILY.REGULAR,
                                     letterSpacing: 0.6,
                                     flexWrap: 'wrap',
                                     color: '#333333',
@@ -269,15 +264,15 @@ const styles = {
         backgroundColor: 'white',
     },
     titleTextStyle: {
-        fontSize: GM_FONT_SIZE.FONT_4,
-        lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
-        fontFamily: FONT_FAMILY_1,
+        fontSize: text.TEXT_FONT_SIZE.FONT_4,
+        lineHeight: text.TEXT_LINE_HEIGHT.FONT_4,
+        fontFamily: text.FONT_FAMILY.BOLD,
         letterSpacing: 0.6,
     },
     subTitleTextStyle: {
-        fontSize: GM_FONT_SIZE.FONT_1,
-        lineHeight: GM_FONT_LINE_HEIGHT.FONT_1,
-        fontFamily: FONT_FAMILY_2,
+        fontSize: text.TEXT_FONT_SIZE.FONT_1,
+        lineHeight: text.TEXT_LINE_HEIGHT.FONT_1,
+        fontFamily: text.FONT_FAMILY.REGULAR,
         letterSpacing: 0.4,
         marginTop: 20,
         marginBottom: 10,

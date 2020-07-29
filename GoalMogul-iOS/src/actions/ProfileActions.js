@@ -65,7 +65,7 @@ import {
 // Constants
 import { IMAGE_BASE_URL } from '../Utils/Constants'
 import { Logger } from '../redux/middleware/utils/Logger'
-import { DEFAULT_STYLE } from '../styles'
+import { default_style } from '../styles/basic'
 import { loadUserGoals } from '../redux/modules/goal/GoalActions'
 
 const DEBUG_KEY = '[ Action Profile ]'
@@ -1076,8 +1076,8 @@ export const UserBanner = (props) => {
         alignSelf: 'center',
         marginLeft: 4,
         marginRight: 4,
-        height: 14 * DEFAULT_STYLE.uiScale,
-        width: 10 * DEFAULT_STYLE.uiScale,
+        height: 14 * default_style.uiScale,
+        width: 10 * default_style.uiScale,
     }
 
     return (

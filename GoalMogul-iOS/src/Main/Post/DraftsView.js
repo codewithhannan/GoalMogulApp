@@ -17,7 +17,7 @@ import {
     renderers,
 } from 'react-native-popup-menu'
 
-import { DEFAULT_STYLE, GM_BLUE } from '../../styles'
+import { default_style, color } from '../../styles/basic'
 import DelayedButton from '../Common/Button/DelayedButton'
 
 import cancelImage from '../../asset/utils/cancel_no_background.png'
@@ -29,7 +29,7 @@ import cancelImage from '../../asset/utils/cancel_no_background.png'
 class DraftsView extends Component {
     render() {
         const { width, height } = Dimensions.get('window')
-        const textWidth = width - 3 * 16 - DEFAULT_STYLE.buttonIcon_1.width - 30
+        const textWidth = width - 3 * 16 - default_style.buttonIcon_1.width - 30
         return (
             <Menu
                 rendererProps={{ placement: 'bottom' }}
@@ -43,7 +43,7 @@ class DraftsView extends Component {
                 >
                     <Text
                         style={{
-                            ...DEFAULT_STYLE.subTitleText_1,
+                            ...default_style.subTitleText_1,
                             textDecorationLine: 'underline',
                         }}
                     >
@@ -54,7 +54,7 @@ class DraftsView extends Component {
                     <View style={styles.headerWrapper}>
                         <Text
                             style={{
-                                ...DEFAULT_STYLE.titleText_1,
+                                ...default_style.titleText_1,
                                 color: 'white',
                             }}
                         >
@@ -81,7 +81,7 @@ class DraftsView extends Component {
                                                 width: mediaRef
                                                     ? textWidth -
                                                       75 *
-                                                          DEFAULT_STYLE.uiScale -
+                                                          default_style.uiScale -
                                                       16
                                                     : textWidth,
                                             }}
@@ -112,7 +112,7 @@ class DraftsView extends Component {
                                             >
                                                 <Image
                                                     style={{
-                                                        ...DEFAULT_STYLE.buttonIcon_1,
+                                                        ...default_style.buttonIcon_1,
                                                         tintColor: '#EB5757',
                                                     }}
                                                     source={cancelImage}
@@ -126,7 +126,7 @@ class DraftsView extends Component {
                         ItemSeparatorComponent={() => (
                             <View
                                 style={{
-                                    ...DEFAULT_STYLE.cardSeparator,
+                                    ...default_style.cardSeparator,
                                     height: 1.5,
                                 }}
                             />
@@ -145,7 +145,7 @@ class DraftsView extends Component {
 
 const styles = {
     headerWrapper: {
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
@@ -155,13 +155,13 @@ const styles = {
         alignItems: 'center',
     },
     media: {
-        height: 50 * DEFAULT_STYLE.uiScale,
-        width: 75 * DEFAULT_STYLE.uiScale,
+        height: 50 * default_style.uiScale,
+        width: 75 * default_style.uiScale,
         borderRadius: 5,
         marginRight: 16,
     },
     bodyText: {
-        ...DEFAULT_STYLE.subTitleText_1,
+        ...default_style.subTitleText_1,
         margin: 16,
     },
     cancelWrapper: {

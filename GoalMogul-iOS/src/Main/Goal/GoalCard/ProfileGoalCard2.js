@@ -25,7 +25,7 @@ import ShareIcon from '../../../asset/utils/forward.png'
 
 // Actions
 import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions'
-import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles'
+import { default_style, color } from '../../../styles/basic'
 import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 class ProfileGoalCard2 extends React.Component {
@@ -52,7 +52,7 @@ class ProfileGoalCard2 extends React.Component {
                 <View style={{ alignSelf: 'center', alignItems: 'center' }}>
                     <Text
                         style={{
-                            ...DEFAULT_STYLE.smallTitle_1,
+                            ...default_style.smallTitle_1,
                             letterSpacing: 0.7,
                             alignSelf: 'center',
                         }}
@@ -80,7 +80,7 @@ class ProfileGoalCard2 extends React.Component {
         return (
             <Text
                 style={{
-                    ...DEFAULT_STYLE.goalTitleText_1,
+                    ...default_style.goalTitleText_1,
                     flex: 1,
                     flexWrap: 'wrap',
                 }}
@@ -139,7 +139,7 @@ class ProfileGoalCard2 extends React.Component {
                         textStyle={{ color: '#828282' }}
                         text={shareCount}
                         containerStyle={{
-                            marginLeft: 18 * DEFAULT_STYLE.uiScale,
+                            marginLeft: 18 * default_style.uiScale,
                         }}
                     />
                 </View>
@@ -161,7 +161,7 @@ class ProfileGoalCard2 extends React.Component {
         const { priority } = item
         return (
             <View style={{ alignItems: 'center', marginLeft: 16 }}>
-                <Text style={DEFAULT_STYLE.smallText_2}>Priority</Text>
+                <Text style={default_style.smallText_2}>Priority</Text>
                 <PriorityBar priority={priority} />
             </View>
         )
@@ -171,7 +171,9 @@ class ProfileGoalCard2 extends React.Component {
         const { item } = this.props
         if (!item || _.isEmpty(item)) return null
 
-        const backgroundColor = item.isCompleted ? '#F6F6F6' : BACKGROUND_COLOR
+        const backgroundColor = item.isCompleted
+            ? '#F6F6F6'
+            : color.GM_CARD_BACKGROUND
         return (
             <View>
                 <DelayedButton
@@ -191,7 +193,7 @@ class ProfileGoalCard2 extends React.Component {
                     </View>
                     {this.renderStats(item)}
                 </DelayedButton>
-                <View style={DEFAULT_STYLE.cardSeparator} />
+                <View style={default_style.cardSeparator} />
             </View>
         )
     }
@@ -213,11 +215,11 @@ const StatsComponent = (props) => {
             <Image
                 resizeMode="contain"
                 source={iconSource}
-                style={{ ...DEFAULT_STYLE.smallIcon_1, ...iconStyle }}
+                style={{ ...default_style.smallIcon_1, ...iconStyle }}
             />
             <Text
                 style={{
-                    ...DEFAULT_STYLE.smallTitle_1,
+                    ...default_style.smallTitle_1,
                     marginLeft: 7,
                     ...textStyle,
                 }}

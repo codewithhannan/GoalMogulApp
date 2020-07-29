@@ -30,6 +30,7 @@ import { Screen } from './monitoring/segment/Constants'
 import { DEVICE_MODEL, IPHONE_MODELS, IS_ZOOMED } from './Utils/Constants'
 // Components
 import { RightArrowIcon } from './Utils/Icons'
+import { color } from './styles/basic'
 
 const IS_SMALL_PHONE =
     Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL)
@@ -380,7 +381,7 @@ const zoomedStyles = {
     highlightContainerStyle: {
         marginTop: 30,
         marginBottom: 20,
-        backgroundColor: '#4ccbf5',
+        backgroundColor: color.GM_BLUE,
         height: 56,
         width: 230,
         alignItems: 'center',
@@ -460,7 +461,7 @@ const styles = {
     highlightContainerStyle: {
         marginTop: 50,
         marginBottom: 40,
-        backgroundColor: '#4ccbf5',
+        backgroundColor: color.GM_BLUE,
         height: 56,
         width: 230,
         alignItems: 'center',
@@ -476,7 +477,7 @@ const styles = {
     },
     // Footer style
     loginHighlightContainerStyle: {
-        backgroundColor: '#4ccbf5',
+        backgroundColor: color.GM_BLUE,
         flexDirection: 'row',
         height: 60,
         width,

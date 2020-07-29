@@ -59,11 +59,8 @@ import ImageModal from '../../Common/ImageModal'
 import RichText from '../../Common/Text/RichText'
 
 // Styles
-import {
-    imagePreviewContainerStyle,
-    APP_BLUE,
-    DEFAULT_STYLE,
-} from '../../../styles'
+import { imagePreviewContainerStyle } from '../../../styles'
+import { color, default_style } from '../../../styles/basic'
 
 // Constants
 import {
@@ -247,7 +244,7 @@ class ShareDetailSection extends Component {
                             caret={caret}
                             user={owner}
                             pageId={this.props.pageId}
-                            textStyle={DEFAULT_STYLE.titleText_2}
+                            textStyle={default_style.titleText_2}
                             belongsToTribe={belongsToTribe}
                         />
                         <View style={{ marginTop: 2 }} />
@@ -262,7 +259,7 @@ class ShareDetailSection extends Component {
                     contentTags={content ? content.tags : []}
                     contentLinks={content ? content.links : []}
                     textStyle={{
-                        ...DEFAULT_STYLE.normalText_1,
+                        ...default_style.normalText_1,
                         flex: 1,
                         flexWrap: 'wrap',
                         color: 'black',
@@ -583,7 +580,7 @@ const styles = {
     },
     seeMoreTextStyle: {
         fontSize: 12,
-        color: APP_BLUE,
+        color: color.GM_BLUE,
     },
     statsContainerStyle: {
         borderTopWidth: 0.5,

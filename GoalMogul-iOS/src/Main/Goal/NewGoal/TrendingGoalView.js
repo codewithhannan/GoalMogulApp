@@ -17,7 +17,7 @@ import {
 } from '../../../redux/modules/goal/CreateGoalActions'
 
 // Assets
-import { BACKGROUND_COLOR } from '../../../styles'
+import { color } from '../../../styles/basic'
 import ModalHeader from '../../Common/Header/ModalHeader'
 import { Actions } from 'react-native-router-flux'
 import { CATEGORY_OPTIONS } from '../../../Utils/Constants'
@@ -61,7 +61,12 @@ class TrendingGoalView extends React.PureComponent {
                         Actions.pop()
                     }}
                 />
-                <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
+                <View
+                    style={{
+                        flex: 1,
+                        backgroundColor: color.GM_CARD_BACKGROUND,
+                    }}
+                >
                     <GoalFilterBar
                         onMenuChange={(type, value) =>
                             this.handleOnMenuSelect(value)
@@ -136,7 +141,7 @@ const styles = {
         marginLeft: 5,
     },
     anchorStyle: {
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
     },
     menuOptionsStyles: {
         optionsContainer: {

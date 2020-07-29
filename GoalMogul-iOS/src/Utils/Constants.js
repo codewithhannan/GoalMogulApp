@@ -32,11 +32,10 @@ export const IPHONE_MODELS_2 = [
     'iphone xr',
     'iphone 11',
     'iphone 11 pro',
-    'iphone' /* 11 */,
     'simulator',
 ]
 export const IPHONE_MODELS = [
-    'iphone se',
+    'iphone' /* se */,
     'iphone 8 plus',
     'iphone 7 plus',
     'iphone 6 plus',

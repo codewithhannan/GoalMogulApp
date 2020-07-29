@@ -12,9 +12,8 @@ import {
     modalContainerStyle,
     modalCancelIconContainerStyle,
     modalCancelIconStyle,
-    modalHeaderBadgeShadow,
-    APP_BLUE,
 } from '../../../styles'
+import { color } from '../../../styles/basic'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import cancel from '../../../asset/utils/cancel_no_background.png'
 
@@ -182,7 +181,7 @@ const styles = {
         lineHeight: 17,
     },
     emailTextStyle: {
-        color: APP_BLUE,
+        color: color.GM_BLUE,
         textDecorationLine: 'underline',
     },
 }

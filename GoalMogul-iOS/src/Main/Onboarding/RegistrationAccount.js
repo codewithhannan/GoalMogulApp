@@ -32,15 +32,8 @@ import OnboardingHeader from './Common/OnboardingHeader'
 import OnboardingFooter from './Common/OnboardingFooter'
 import InputBox from './Common/InputBox'
 import DelayedButton from '../Common/Button/DelayedButton'
-import {
-    GM_FONT_SIZE,
-    GM_BLUE,
-    GM_FONT_FAMILY,
-    GM_FONT_LINE_HEIGHT,
-    BUTTON_STYLE,
-    TEXT_STYLE,
-    DEFAULT_STYLE,
-} from '../../styles'
+import { BUTTON_STYLE } from '../../styles'
+import { color, text } from '../../styles/basic'
 import { registrationLogin, onVerifyPhoneNumber } from '../../actions'
 import {
     registrationTextInputChange,
@@ -48,8 +41,6 @@ import {
     validatePhoneCode,
     cancelRegistration,
 } from '../../redux/modules/registration/RegistrationActions'
-import PhoneVerificationMoal from './PhoneVerificationModal'
-import { Button, CheckBox } from '@ui-kitten/components'
 import UserAgreementCheckBox from './UserAgreementCheckBox'
 
 const NEXT_STEP = 'registration_add_photo'
@@ -244,11 +235,11 @@ class RegistrationAccount extends React.Component {
             <View style={[styles.loginBoxStyle, { opacity: 0 }]}>
                 <Text
                     style={{
-                        fontSize: GM_FONT_SIZE.FONT_3,
-                        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
+                        fontSize: text.TEXT_FONT_SIZE.FONT_3,
+                        lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
                         fontWeight: 'bold',
                         color: '#BDBDBD',
-                        fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+                        fontFamily: text.FONT_FAMILY.BOLD,
                     }}
                 >
                     Already user GoalMogul?
@@ -256,13 +247,13 @@ class RegistrationAccount extends React.Component {
                 <DelayedButton onPress={this.props.registrationLogin}>
                     <Text
                         style={{
-                            fontSize: GM_FONT_SIZE.FONT_3,
-                            lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
+                            fontSize: text.TEXT_FONT_SIZE.FONT_3,
+                            lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
                             textAlign: 'center',
                             alignItems: 'flex-end',
                             fontWeight: 'bold',
-                            color: GM_BLUE,
-                            fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+                            color: color.GM_BLUE,
+                            fontFamily: text.FONT_FAMILY.BOLD,
                         }}
                     >
                         {' '}

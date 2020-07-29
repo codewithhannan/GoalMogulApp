@@ -18,7 +18,7 @@ import * as SMS from 'expo-sms'
 import { connect } from 'react-redux'
 import Modal from 'react-native-modalbox'
 import ModalHeader from '../../Common/Header/ModalHeader'
-import { GM_BLUE, DEFAULT_STYLE } from '../../../styles'
+import { color, default_style } from '../../../styles/basic'
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { generateInvitationLink } from '../../../redux/middleware/utils'
@@ -210,7 +210,7 @@ class InviteFriendModal extends React.PureComponent {
                 >
                     <Text
                         style={[
-                            DEFAULT_STYLE.titleText_2,
+                            default_style.titleText_2,
                             { fontWeight: '300' },
                         ]}
                     >
@@ -267,7 +267,7 @@ class InviteFriendModal extends React.PureComponent {
                             },
                         ]}
                     >
-                        <Text style={[DEFAULT_STYLE.titleText_1]}>Share</Text>
+                        <Text style={[default_style.titleText_1]}>Share</Text>
                         <View style={{ flex: 1, alignItems: 'center' }} />
                         <DelayedButton
                             activeOpacity={0.85}
@@ -321,7 +321,7 @@ class InviteFriendModal extends React.PureComponent {
                                         this.updateDescription(text)
                                     }
                                     style={[
-                                        DEFAULT_STYLE.subTitleText_1,
+                                        default_style.subTitleText_1,
                                         {
                                             letterSpacing: 0,
                                             fontSize: 18,
@@ -335,10 +335,10 @@ class InviteFriendModal extends React.PureComponent {
                                 />
                                 <Text
                                     style={[
-                                        DEFAULT_STYLE.titleText_1,
+                                        default_style.titleText_1,
                                         {
                                             fontWeight: '400',
-                                            color: GM_BLUE,
+                                            color: color.GM_BLUE,
                                             textDecorationLine: 'underline',
                                         },
                                     ]}
@@ -353,7 +353,7 @@ class InviteFriendModal extends React.PureComponent {
                                 >
                                     <Text
                                         style={[
-                                            DEFAULT_STYLE.smallTitle_1,
+                                            default_style.smallTitle_1,
                                             { fontSize: 14, padding: 10 },
                                         ]}
                                     >
@@ -363,7 +363,7 @@ class InviteFriendModal extends React.PureComponent {
                                     </Text>
                                 </DelayedButton>
                                 {/* <DelayedButton>
-                                        <Text style={[DEFAULT_STYLE.smallTitle_1, { fontSize: 14, padding: 10 }]}>Customize Username</Text>
+                                        <Text style={[default_style.smallTitle_1, { fontSize: 14, padding: 10 }]}>Customize Username</Text>
                                     </DelayedButton> */}
                             </View>
                         </View>
@@ -390,7 +390,7 @@ const styles = {
     },
     buttonContainerStyle: {
         paddingVertical: 10,
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
         alignItems: 'center',
         borderRadius: 5,
     },

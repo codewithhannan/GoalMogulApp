@@ -9,7 +9,7 @@ import _ from 'lodash'
 
 /* asset */
 import plus from '../../../asset/utils/plus.png'
-import { GM_BLUE } from '../../../styles'
+import { color } from '../../../styles/basic'
 
 const DEBUG_KEY = '[ UI PlusButton ]'
 const WalkableView = walkthroughable(View)
@@ -185,7 +185,7 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 3,
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.4,

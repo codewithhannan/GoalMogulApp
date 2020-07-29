@@ -52,7 +52,7 @@ import {
     makeGetMyTribeFeedSelector,
 } from '../../../redux/modules/tribe/TribeSelector'
 // Styles
-import { DEFAULT_STYLE, GM_BLUE } from '../../../styles'
+import { default_style, color } from '../../../styles/basic'
 // Constants
 import {
     IMAGE_BASE_URL,
@@ -399,13 +399,13 @@ class MyTribe extends React.PureComponent {
                             <Image
                                 source={flagIcon}
                                 style={[
-                                    DEFAULT_STYLE.smallIcon_1,
+                                    default_style.smallIcon_1,
                                     { marginRight: 10 },
                                 ]}
                             />
-                            <Text style={DEFAULT_STYLE.titleText_1}>About</Text>
+                            <Text style={default_style.titleText_1}>About</Text>
                         </View>
-                        <Text style={DEFAULT_STYLE.normalText_1}>
+                        <Text style={default_style.normalText_1}>
                             {description}
                         </Text>
                     </View>
@@ -426,7 +426,7 @@ class MyTribe extends React.PureComponent {
                     >
                         {this.renderTribeImage(picture)}
                         <View style={styles.generalInfoContainerStyle}>
-                            <Text style={DEFAULT_STYLE.titleText_1}>
+                            <Text style={default_style.titleText_1}>
                                 {decode(name)}
                             </Text>
                             <Text
@@ -589,7 +589,7 @@ const styles = {
         alignItems: 'center',
         padding: 16,
     },
-    tribeSizeTextStyle: DEFAULT_STYLE.smallText_1,
+    tribeSizeTextStyle: default_style.smallText_1,
     backdrop: {
         backgroundColor: 'white',
         opacity: 0.5,
@@ -606,11 +606,11 @@ const styles = {
     },
     buttonStyleInvite: {
         flex: 4,
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
         borderRadius: 3,
     },
     buttonText: {
-        ...DEFAULT_STYLE.buttonText_1,
+        ...default_style.buttonText_1,
         textAlign: 'center',
         margin: 7,
     },
@@ -624,7 +624,7 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 3,
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
     },
     iconStyle: {
         height: 26,

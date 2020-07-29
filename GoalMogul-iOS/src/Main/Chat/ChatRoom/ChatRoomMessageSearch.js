@@ -28,7 +28,7 @@ import {
     refreshChatMessageSearch,
     searchQueryUpdated,
 } from '../../../redux/modules/chat/ChatRoomMessageSearchActions'
-import { APP_BLUE_BRIGHT } from '../../../styles'
+import { color } from '../../../styles/basic'
 import { SearchIcon } from '../../../Utils/Icons'
 import ModalHeader from '../../Common/Header/ModalHeader'
 import ProfileImage from '../../Common/ProfileImage'
@@ -260,7 +260,7 @@ class ChatRoomMessageSearch extends React.Component {
                         actionDisabled={true}
                         actionHidden={true}
                         containerStyles={{
-                            backgroundColor: APP_BLUE_BRIGHT,
+                            backgroundColor: color.GM_BLUE,
                         }}
                         backButtonStyle={{
                             tintColor: '#21364C',

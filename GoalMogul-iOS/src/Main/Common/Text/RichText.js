@@ -10,7 +10,7 @@ import _ from 'lodash'
 import Hyperlink from 'react-native-hyperlink'
 
 // Styles
-import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../../styles'
+import { color } from '../../../styles/basic'
 
 // Utils
 import { URL_REGEX } from '../../../Utils/Constants'
@@ -163,10 +163,10 @@ class RichText extends React.Component {
 
 const styles = {
     url: {
-        color: APP_BLUE_BRIGHT,
+        color: color.GM_BLUE,
     },
     userTag: {
-        color: APP_DEEP_BLUE,
+        color: color.GM_BLUE,
         // textDecorationLine: 'underline',
     },
 }

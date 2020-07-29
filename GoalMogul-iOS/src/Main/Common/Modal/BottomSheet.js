@@ -12,10 +12,9 @@ import {
     Platform,
     Dimensions,
 } from 'react-native'
-import { IPHONE_MODELS, DEVICE_MODEL } from '../../../Utils/Constants'
+import { IS_SMALL_PHONE } from '../../../styles'
 
-const PADDING_TOP =
-    Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL) ? 25 : 40
+const PADDING_TOP = IS_SMALL_PHONE ? 20 : 40
 const FULL_SCREEN_HEIGHT = Dimensions.get('window').height - PADDING_TOP
 const SUPPORTED_ORIENTATIONS = ['portrait', 'portrait-upside-down']
 

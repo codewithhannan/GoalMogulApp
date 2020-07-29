@@ -5,7 +5,7 @@ import { Image, Text, View } from 'react-native'
 
 // Components
 import DelayedButton from '../../Common/Button/DelayedButton'
-import { DEFAULT_STYLE, FONT_FAMILY_2 } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 
 const DEBUG_KEY = '[ UI ActionButton ]'
 
@@ -57,7 +57,7 @@ class ActionButton extends React.PureComponent {
             >
                 <Text
                     style={{
-                        ...DEFAULT_STYLE.buttonText_1,
+                        ...default_style.buttonText_1,
                         ...styles.textStyle,
                         ...this.props.textStyle,
                     }}
@@ -84,7 +84,7 @@ class ActionButton extends React.PureComponent {
                         resizeMode="contain"
                         source={this.props.iconSource}
                         style={{
-                            ...DEFAULT_STYLE.buttonIcon_1,
+                            ...default_style.buttonIcon_1,
                             ...this.props.iconStyle,
                         }}
                     />
@@ -106,7 +106,7 @@ const styles = {
         alignItems: 'center',
     },
     textStyle: {
-        ...DEFAULT_STYLE.smallTitle_1,
+        ...default_style.smallTitle_1,
         marginLeft: 8,
     },
 }

@@ -14,7 +14,7 @@ import cancel from '../../../asset/utils/cancel_no_background.png'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
 import flagIcon from '../../../asset/icons/flag.png'
-import { DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 
 class MyTribeDescription extends React.PureComponent {
     constructor(props) {
@@ -92,13 +92,13 @@ class MyTribeDescription extends React.PureComponent {
                             >
                                 <Image
                                     source={cancel}
-                                    style={DEFAULT_STYLE.normalIcon_1}
+                                    style={default_style.normalIcon_1}
                                 />
                             </DelayedButton>
                         </View>
                     </View>
                     <View style={styles.aboutContainer}>
-                        <Text style={DEFAULT_STYLE.normalText_1}>
+                        <Text style={default_style.normalText_1}>
                             {this.props.item.description}
                         </Text>
                     </View>
@@ -121,7 +121,7 @@ const styles = {
         paddingBottom: 60,
     },
     aboutTitle: {
-        ...DEFAULT_STYLE.titleText_1,
+        ...default_style.titleText_1,
     },
     header: {
         flexDirection: 'row',
@@ -131,7 +131,7 @@ const styles = {
         borderBottomColor: '#DADADA',
     },
     imageIcon: {
-        ...DEFAULT_STYLE.smallIcon_1,
+        ...default_style.smallIcon_1,
         marginRight: 10,
     },
     modalContainerStyle: {

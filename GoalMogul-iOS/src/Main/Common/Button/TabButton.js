@@ -4,7 +4,7 @@ import React from 'react'
 import { View, Text, Animated, Image } from 'react-native'
 import _ from 'lodash'
 import { DotIcon } from '../../../Utils/Icons'
-import { DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 
 const renderNotificationIndicator = (props) => {
     const { tabNotificationMap, tabKey, isSelected } = props
@@ -103,7 +103,7 @@ const styles = {
         color: '#696969',
     },
     iconStyle: {
-        ...DEFAULT_STYLE.smallIcon_1,
+        ...default_style.smallIcon_1,
         alignSelf: 'center',
         justifyContent: 'center',
         marginRight: 9,

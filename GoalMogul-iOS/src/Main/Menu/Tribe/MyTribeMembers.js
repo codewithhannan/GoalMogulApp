@@ -24,7 +24,7 @@ import {
 } from '../../../redux/modules/tribe/TribeSelector'
 import { SearchBar } from 'react-native-elements'
 import { SearchIcon } from '../../../Utils/Icons'
-import { DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 import { ALL_MEMBERS_FILTER_INDEX } from '../../../redux/modules/tribe/Tribes'
 
 function Item({ title }) {
@@ -114,7 +114,7 @@ class MyTribeMembers extends React.PureComponent {
                     >
                         {admins.length > 0 && (
                             <View style={styles.headerContainer}>
-                                <Text style={DEFAULT_STYLE.titleText_1}>
+                                <Text style={default_style.titleText_1}>
                                     Admin
                                 </Text>
                             </View>
@@ -122,7 +122,7 @@ class MyTribeMembers extends React.PureComponent {
                         {admins.map((admin) => this.renderItem(admin))}
                         {members.length > 0 && (
                             <View style={styles.headerContainer}>
-                                <Text style={DEFAULT_STYLE.titleText_1}>
+                                <Text style={default_style.titleText_1}>
                                     Members
                                 </Text>
                             </View>
@@ -187,7 +187,7 @@ class MyTribeMembers extends React.PureComponent {
                                 iconStyle={styles.searchBar.icon.style}
                             />
                         )}
-                        inputStyle={DEFAULT_STYLE.subTitleText_1}
+                        inputStyle={default_style.subTitleText_1}
                         onChangeText={(text) =>
                             this.setState({ searchContent: text })
                         }
@@ -243,7 +243,7 @@ const styles = {
                 marginTop: 1,
             },
             style: {
-                ...DEFAULT_STYLE.normalIcon_1,
+                ...default_style.normalIcon_1,
                 tintColor: '#828282',
             },
         },

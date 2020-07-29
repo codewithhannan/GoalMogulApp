@@ -25,7 +25,6 @@ import EmptyResult from '../../Common/Text/EmptyResult'
 import plus from '../../../asset/utils/plus.png'
 
 // Styles
-import { APP_DEEP_BLUE } from '../../../styles'
 import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 const DEBUG_KEY = '[ UI MyEventTab ]'

@@ -32,7 +32,7 @@ import {
 } from '../../redux/modules/User/Selector'
 import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users'
 /* Styles */
-import { BACKGROUND_COLOR, GM_BLUE, DEFAULT_STYLE } from '../../styles'
+import { color, default_style } from '../../styles/basic'
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
 import PlusButton from '../Common/Button/PlusButton'
 import GoalFilterBar from '../Common/GoalFilterBar'
@@ -364,7 +364,7 @@ class ProfileV2 extends Component {
                     renderFilter,
                 })}
                 {renderFilter ? this.renderFilterBar(props) : null}
-                <View style={DEFAULT_STYLE.cardSeparator} />
+                <View style={default_style.cardSeparator} />
             </View>
         )
     }
@@ -473,11 +473,11 @@ class ProfileV2 extends Component {
 const styles = {
     containerStyle: {
         flex: 1,
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
     },
     tabContainer: {
         padding: 8,
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
     },
     backdrop: {
         backgroundColor: 'gray',

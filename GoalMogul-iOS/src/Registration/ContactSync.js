@@ -28,7 +28,7 @@ import {
     contactSyncLoadMore,
     meetContactSyncLoadMore,
 } from '../actions'
-import { APP_BLUE } from '../styles'
+import { color } from '../styles/basic'
 
 class ContactSync extends Component {
     constructor(props) {
@@ -102,7 +102,7 @@ class ContactSync extends Component {
                         text={'Uploading Contacts'}
                         textStyle={{ marginBottom: 20 }}
                     />
-                    <DotIndicator size={10} color={APP_BLUE} />
+                    <DotIndicator size={10} color={color.GM_BLUE} />
                 </View>
             )
         }
@@ -152,7 +152,7 @@ class ContactSync extends Component {
                     </Text>
                     <View style={{ height: 30 }} />
                     <View style={{ position: 'absolute', bottom: 44 }}>
-                        <DotIndicator size={10} color={APP_BLUE} />
+                        <DotIndicator size={10} color={color.GM_BLUE} />
                     </View>
                 </View>
             </Modal>
@@ -218,7 +218,7 @@ class ContactSync extends Component {
                         shadowOffset: { width: 0, height: 1 },
                         shadowOpacity: 0.15,
                         shadowRadius: 3,
-                        backgroundColor: APP_BLUE,
+                        backgroundColor: color.GM_BLUE,
                     }}
                     backButtonStyle={{
                         tintColor: '#21364C',

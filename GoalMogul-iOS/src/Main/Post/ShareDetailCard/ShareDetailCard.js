@@ -31,7 +31,7 @@ import {
 // Actions
 import { closeShareDetail } from '../../../redux/modules/feed/post/ShareActions'
 // Styles
-import { BACKGROUND_COLOR } from '../../../styles'
+import { color } from '../../../styles/basic'
 // Component
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
 import LikeListModal from '../../Common/Modal/LikeListModal'
@@ -367,7 +367,7 @@ class ShareDetailCard extends Component {
 
 const styles = {
     containerStyle: {
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
         flex: 1,
     },
     iconStyle: {

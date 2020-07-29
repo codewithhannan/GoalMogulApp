@@ -47,7 +47,10 @@ import {
 } from '../../../../redux/modules/notification/NotificationActions'
 
 // Styles
-import { imagePreviewContainerStyle, DEFAULT_STYLE } from '../../../../styles'
+import {
+    imagePreviewContainerStyle,
+    default_style,
+} from '../../../../styles/basic'
 
 // Constants
 import {
@@ -195,7 +198,7 @@ class CommentUserDetail extends Component {
                 textStyle={{
                     flex: 1,
                     flexWrap: 'wrap',
-                    ...DEFAULT_STYLE.normalText_1,
+                    ...default_style.normalText_1,
                     marginTop: 3,
                 }}
                 multiline
@@ -376,7 +379,7 @@ class CommentUserDetail extends Component {
                 }}
             >
                 <ProfileImage
-                    imageStyle={DEFAULT_STYLE.profileImage_2}
+                    imageStyle={default_style.profileImage_2}
                     imageContainerStyle={{
                         margin: -10,
                         marginTop: -12,
@@ -385,10 +388,10 @@ class CommentUserDetail extends Component {
                     imageUrl={imageUrl}
                     disabled
                 />
-                <Text style={DEFAULT_STYLE.smallTitle_1}>{owner.name} </Text>
+                <Text style={default_style.smallTitle_1}>{owner.name} </Text>
                 <Text
                     style={{
-                        ...DEFAULT_STYLE.smallText_1,
+                        ...default_style.smallText_1,
                         color: '#6D6D6D',
                     }}
                 >
@@ -424,11 +427,11 @@ const styles = {
         flexDirection: 'row',
     },
     actionIcon: {
-        ...DEFAULT_STYLE.normalIcon_1,
+        ...default_style.normalIcon_1,
         tintColor: '#828282',
     },
     actionText: {
-        ...DEFAULT_STYLE.smallText_1,
+        ...default_style.smallText_1,
         color: '#828282',
     },
     mediaStyle: {

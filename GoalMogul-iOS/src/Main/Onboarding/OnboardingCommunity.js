@@ -11,15 +11,8 @@ import { View, Text, Dimensions, Image } from 'react-native'
 import { connect } from 'react-redux'
 import Carousel from 'react-native-snap-carousel'
 import OnboardingHeader from './Common/OnboardingHeader'
-import {
-    GM_FONT_SIZE,
-    GM_BLUE,
-    GM_FONT_FAMILY,
-    GM_FONT_LINE_HEIGHT,
-    TEXT_STYLE as textStyle,
-    FONT_FAMILY_2,
-    DEFAULT_STYLE,
-} from '../../styles'
+import { TEXT_STYLE as textStyle } from '../../styles'
+import { text, default_style } from '../../styles/basic'
 import OnboardingFooter from './Common/OnboardingFooter'
 import { Actions } from 'react-native-router-flux'
 
@@ -98,11 +91,11 @@ class OnboardingCommunity extends React.Component {
                 >
                     <Text
                         style={[
-                            DEFAULT_STYLE.titleText_1,
+                            default_style.titleText_1,
                             {
-                                fontSize: GM_FONT_SIZE.FONT_3_5,
-                                lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
-                                fontFamily: FONT_FAMILY_2,
+                                fontSize: text.TEXT_FONT_SIZE.FONT_3_5,
+                                lineHeight: text.TEXT_LINE_HEIGHT.FONT_4,
+                                fontFamily: text.FONT_FAMILY.REGULAR,
                                 marginTop: 14,
                                 marginBottom: 14,
                                 textAlign: 'center',
@@ -114,7 +107,7 @@ class OnboardingCommunity extends React.Component {
                     {subTitle ? (
                         <Text
                             style={
-                                (DEFAULT_STYLE.normalText_1,
+                                (default_style.normalText_1,
                                 {
                                     textAlign: 'center',
                                 })

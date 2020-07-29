@@ -3,7 +3,7 @@
 import React from 'react'
 import { View, Text, Dimensions, Image } from 'react-native'
 import { connect } from 'react-redux'
-import { DEFAULT_STYLE, GM_BLUE } from '../../../styles'
+import { default_style, color } from '../../../styles/basic'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { openProfileDetail, updateFriendship } from '../../../actions'
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
@@ -120,13 +120,13 @@ class RequestCard extends React.PureComponent {
             >
                 {this.renderDismissButton(user, friendshipId)}
                 {this.renderProfileImage(user)}
-                <Text numberOfLines={1} style={[DEFAULT_STYLE.titleText_2]}>
+                <Text numberOfLines={1} style={[default_style.titleText_2]}>
                     {name}
                 </Text>
                 <Text
                     numberOfLines={1}
                     style={[
-                        DEFAULT_STYLE.smallText_1,
+                        default_style.smallText_1,
                         { opacity: detailText ? 1 : 0, color: '#9B9B9B' },
                     ]}
                 >
@@ -134,7 +134,7 @@ class RequestCard extends React.PureComponent {
                 </Text>
                 <Text
                     numberOfLines={1}
-                    style={[DEFAULT_STYLE.smallText_1, { color: '#555' }]}
+                    style={[default_style.smallText_1, { color: '#555' }]}
                 >
                     <Text></Text>mutual{' '}
                     {mutualFriendCount > 1 ? 'friends' : 'friend'}
@@ -145,7 +145,7 @@ class RequestCard extends React.PureComponent {
                     }
                     style={{
                         borderRadius: 3,
-                        borderColor: GM_BLUE,
+                        borderColor: color.GM_BLUE,
                         borderWidth: 1,
                         width: '100%',
                         alignItems: 'center',
@@ -154,7 +154,10 @@ class RequestCard extends React.PureComponent {
                     }}
                 >
                     <Text
-                        style={[DEFAULT_STYLE.buttonText_1, { color: GM_BLUE }]}
+                        style={[
+                            default_style.buttonText_1,
+                            { color: color.GM_BLUE },
+                        ]}
                     >
                         Accept
                     </Text>

@@ -24,7 +24,7 @@ import {
     startTutorial,
     updateNextStepNumber,
 } from '../../redux/modules/User/TutorialActions'
-import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../styles'
+import { color } from '../../styles/basic'
 import PlusButton from '../Common/Button/PlusButton'
 import SearchBarHeader from '../Common/Header/SearchBarHeader'
 /* Components */
@@ -225,7 +225,7 @@ class ChatTab extends React.Component {
                         const searchFor = {
                             type: 'directChat',
                         }
-                        const cardIconStyle = { tintColor: APP_BLUE_BRIGHT }
+                        const cardIconStyle = { tintColor: color.GM_BLUE }
                         const cardIconSource = next
                         const callback = (selectedUserId) => {
                             this.props.createOrGetDirectMessage(selectedUserId)
@@ -334,7 +334,7 @@ const styles = {
         borderRadius: 27,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: APP_DEEP_BLUE,
+        backgroundColor: color.GM_BLUE,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.4,

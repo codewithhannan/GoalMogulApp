@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { openProfile } from '../../actions'
 import { getImageOrDefault } from '../../redux/middleware/utils'
 // Constants
-import { DEFAULT_STYLE } from '../../styles'
+import { default_style } from '../../styles/basic'
 
 const DEBUG_KEY = '[ UI ProfileImage ]'
 /*
@@ -49,7 +49,7 @@ class ProfileImage extends React.Component {
         if (this.props.defaultImageStyle && !imageUrl)
             defaultImageStyle = { ...this.props.defaultImageStyle }
         if (!imageStyle && !this.props.defaultImageStyle)
-            defaultImageStyle = DEFAULT_STYLE.profileImage_2
+            defaultImageStyle = default_style.profileImage_2
 
         const defaultImageContainerStyle =
             this.props.defaultImageContainerStyle ||
@@ -76,7 +76,7 @@ class ProfileImage extends React.Component {
                                           borderRadius: 100,
                                           ...imageStyle,
                                       }
-                                    : DEFAULT_STYLE.profileImage_1
+                                    : default_style.profileImage_1
                                 : {
                                       borderRadius: 100,
                                       ...defaultImageStyle,

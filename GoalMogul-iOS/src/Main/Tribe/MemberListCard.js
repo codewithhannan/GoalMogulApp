@@ -20,7 +20,7 @@ import { switchCase } from '../../redux/middleware/utils'
 
 // Actions
 import { openProfile } from '../../actions'
-import { DEFAULT_STYLE, GM_BLUE } from '../../styles'
+import { default_style, color } from '../../styles/basic'
 
 // Constants
 const DEBUG_KEY = '[ UI MemberListCard ]'
@@ -172,7 +172,7 @@ class MemberListCard extends Component {
         const { profile } = item
         if (profile && profile.occupation) {
             return (
-                <Text style={DEFAULT_STYLE.normalText_2}>
+                <Text style={default_style.normalText_2}>
                     {profile.occupation}
                 </Text>
             )
@@ -252,8 +252,8 @@ const styles = {
         flexDirection: 'row',
     },
     jobTitleTextStyle: {
-        ...DEFAULT_STYLE.smallTitle_1,
-        color: GM_BLUE,
+        ...default_style.smallTitle_1,
+        color: color.GM_BLUE,
         paddingTop: 5,
         paddingBottom: 3,
     },

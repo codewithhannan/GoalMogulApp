@@ -4,18 +4,10 @@ import React from 'react'
 import _ from 'ramda'
 import { View, Text } from 'react-native'
 import Modal from 'react-native-modal'
-import OTPInputView from '@twotalltotems/react-native-otp-input'
 import DelayedButton from '../Common/Button/DelayedButton'
-import EmptyResult from '../Common/Text/EmptyResult'
-import {
-    GM_BLUE,
-    GM_FONT_SIZE,
-    GM_FONT_FAMILY,
-    GM_FONT_LINE_HEIGHT,
-    BUTTON_STYLE as buttonStyle,
-} from '../../styles'
+import { color, text } from '../../styles/basic'
+import { BUTTON_STYLE as buttonStyle } from '../../styles'
 import { DotIndicator } from 'react-native-indicators'
-import { Actions } from 'react-native-router-flux'
 
 class SyncContactInfoModal extends React.Component {
     onNotNow = () => {
@@ -52,13 +44,13 @@ class SyncContactInfoModal extends React.Component {
             >
                 <Text
                     style={{
-                        fontSize: GM_FONT_SIZE.FONT_3_5,
-                        fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+                        fontSize: text.TEXT_FONT_SIZE.FONT_3_5,
+                        fontFamily: text.FONT_FAMILY.BOLD,
                     }}
                 >
                     Uploading Contacts
                 </Text>
-                <DotIndicator size={10} color={GM_BLUE} />
+                <DotIndicator size={10} color={color} />
             </View>
         )
     }
@@ -69,8 +61,8 @@ class SyncContactInfoModal extends React.Component {
             <View style={{ zIndex: 2, opacity: this.props.loading ? 0 : 1 }}>
                 <Text
                     style={{
-                        fontSize: GM_FONT_SIZE.FONT_3_5,
-                        fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+                        fontSize: text.TEXT_FONT_SIZE.FONT_3_5,
+                        fontFamily: text.FONT_FAMILY.BOLD,
                         textAlign: 'center',
                         marginBottom: 20,
                     }}

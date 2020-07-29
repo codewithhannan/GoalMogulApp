@@ -12,7 +12,8 @@ import {
 import { Actions } from 'react-native-router-flux'
 
 // Styles
-import { tutorial, APP_BLUE } from '../styles'
+import { tutorial } from '../styles'
+import { color } from '../styles/basic'
 
 // Assets
 import MoreIcon from '../../assets/tutorial/More.png'
@@ -125,7 +126,7 @@ const styles = {
         marginBottom: 20,
     },
     buttonContainerStyle: {
-        backgroundColor: APP_BLUE,
+        backgroundColor: color.GM_BLUE,
         borderRadius: 5,
         marginTop: 20,
         alignItems: 'center',

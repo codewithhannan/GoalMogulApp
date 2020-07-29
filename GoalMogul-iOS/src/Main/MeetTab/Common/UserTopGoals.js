@@ -3,7 +3,7 @@
 import React from 'react'
 import { View, Text } from 'react-native'
 import DelayedButton from '../../Common/Button/DelayedButton'
-import { GM_BLUE, DEFAULT_STYLE } from '../../../styles'
+import { color, default_style } from '../../../styles/basic'
 
 class UserTopGoals extends React.PureComponent {
     /**
@@ -44,10 +44,13 @@ class UserTopGoals extends React.PureComponent {
                 <Text
                     numberOfLines={2}
                     ellipsizeMode="tail"
-                    style={[DEFAULT_STYLE.normalText_1]}
+                    style={[default_style.normalText_1]}
                 >
                     <Text
-                        style={[DEFAULT_STYLE.titleText_2, { color: GM_BLUE }]}
+                        style={[
+                            default_style.titleText_2,
+                            { color: color.GM_BLUE },
+                        ]}
                     >
                         {title}
                     </Text>

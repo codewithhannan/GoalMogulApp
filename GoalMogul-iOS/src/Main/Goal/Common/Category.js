@@ -2,14 +2,14 @@
 
 import React from 'react'
 import { Text, View } from 'react-native'
-import { GM_FONT_FAMILY_2, DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 
 const Category = (props) => {
     // TODO: format time
     return (
         <View style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap' }}>
             <Text
-                style={[DEFAULT_STYLE.smallText_1, styles.containerStyle]}
+                style={[default_style.smallText_1, styles.containerStyle]}
                 ellipsizeMode="tail"
                 numberOfLines={1}
             >

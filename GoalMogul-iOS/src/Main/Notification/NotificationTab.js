@@ -30,10 +30,8 @@ import {
 } from '../../redux/modules/notification/NotificationSelector'
 
 // Styles
-import { APP_BLUE } from '../../styles'
+import { color } from '../../styles/basic'
 
-import { Notifications } from 'expo'
-import MessageStorageService from '../../services/chat/MessageStorageService'
 // Constants
 const DEBUG_KEY = '[ UI NotificationTab ]'
 
@@ -277,7 +275,7 @@ const styles = {
         justifyContent: 'center',
     },
     seeAllTextStyle: {
-        color: APP_BLUE,
+        color: color.GM_BLUE,
         fontSize: 12,
         fontWeight: '700',
     },

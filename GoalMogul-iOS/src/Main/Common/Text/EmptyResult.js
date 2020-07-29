@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Text, View } from 'react-native'
-import { DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 
 const EmptyResult = (props) => {
     const { textStyle, containerStyle } = props
@@ -20,7 +20,7 @@ const styles = {
         alignItems: 'center',
     },
     textStyle: {
-        ...DEFAULT_STYLE.subTitleText_1,
+        ...default_style.subTitleText_1,
         paddingTop: 150,
         color: '#818181',
     },

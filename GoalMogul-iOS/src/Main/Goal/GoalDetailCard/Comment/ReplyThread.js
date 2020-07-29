@@ -48,7 +48,7 @@ import {
 } from '../../../../redux/modules/feed/comment/CommentSelector'
 
 // Assets
-import { DEFAULT_STYLE } from '../../../../styles'
+import { default_style } from '../../../../styles/basic'
 import ProfileImage from '../../../Common/ProfileImage'
 import { IMAGE_BASE_URL } from '../../../../Utils/Constants'
 import expand from '../../../../asset/utils/expand.png'
@@ -227,7 +227,7 @@ class ReplyThread extends React.Component {
                 contentLinks={links}
                 textStyle={{
                     flexWrap: 'wrap',
-                    ...DEFAULT_STYLE.normalText_1,
+                    ...default_style.normalText_1,
                 }}
                 multiline
                 onUserTagPressed={(user) => {
@@ -267,16 +267,16 @@ class ReplyThread extends React.Component {
                 <Icon
                     pack="material-community"
                     style={[
-                        DEFAULT_STYLE.normalIcon_1,
+                        default_style.normalIcon_1,
                         { tintColor: '#828282', marginRight: 4 },
                     ]}
                     name="message-outline"
                 />
-                <Text style={DEFAULT_STYLE.normalText_1}>{commentCount}</Text>
+                <Text style={default_style.normalText_1}>{commentCount}</Text>
                 <Icon
                     pack="material-community"
                     style={[
-                        DEFAULT_STYLE.normalIcon_1,
+                        default_style.normalIcon_1,
                         {
                             tintColor: selfLiked ? '#EB5757' : '#828282',
                             marginLeft: 16,
@@ -285,7 +285,7 @@ class ReplyThread extends React.Component {
                     ]}
                     name={selfLiked ? 'heart' : 'heart-outline'}
                 />
-                <Text style={DEFAULT_STYLE.normalText_1}>{likeCount}</Text>
+                <Text style={default_style.normalText_1}>{likeCount}</Text>
             </View>
         )
     }
@@ -321,7 +321,7 @@ class ReplyThread extends React.Component {
                                 name={owner.name || ''}
                                 user={owner}
                                 hasCaret={false}
-                                textStyle={DEFAULT_STYLE.titleText_2}
+                                textStyle={default_style.titleText_2}
                             />
                             <View style={{ marginTop: 2 }} />
                             <Timestamp time={timeago().format(timeStamp)} />

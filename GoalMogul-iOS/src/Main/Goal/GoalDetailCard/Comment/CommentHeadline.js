@@ -17,7 +17,7 @@ import {
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
 } from '../../../../Utils/Constants'
 import DelayedButton from '../../../Common/Button/DelayedButton'
-import { DEFAULT_STYLE } from '../../../../styles'
+import { default_style } from '../../../../styles/basic'
 
 const DEBUG_KEY = '[ UI CommentHeadline ]'
 /**
@@ -108,7 +108,7 @@ const CommentHeadline = (props) => {
                     <Name
                         text={owner.name}
                         onPress={onNamePress}
-                        textStyle={DEFAULT_STYLE.smallTitle_1}
+                        textStyle={default_style.smallTitle_1}
                     />
                     <UserBanner user={owner} />
                     <Timestamp time={timeago().format(timeStamp)} />
@@ -168,7 +168,7 @@ const CommentHeadV2 = (props) => {
                     <Text
                         onPress={onNamePress}
                         style={{
-                            ...DEFAULT_STYLE.smallTitle_1,
+                            ...default_style.smallTitle_1,
                             maxWidth: 150,
                         }}
                         numberOfLines={1}
@@ -267,7 +267,7 @@ const SuggestionHeadlineV2 = (props) => {
             <View style={styles.containerStyle}>
                 <Name
                     text={owner.name}
-                    textStyle={DEFAULT_STYLE.smallTitle_1}
+                    textStyle={default_style.smallTitle_1}
                     onPress={onNamePress}
                 />
                 <UserBanner user={owner} />
@@ -381,7 +381,7 @@ const styles = {
         marginRight: 3,
     },
     suggestionTextStyle: {
-        ...DEFAULT_STYLE.smallText_1,
+        ...default_style.smallText_1,
         flex: 1,
         flexWrap: 'wrap',
         alignSelf: 'center',
@@ -406,7 +406,7 @@ const styles = {
         width: 13,
     },
     suggestionDetailTextStyle: {
-        ...DEFAULT_STYLE.smallTitle_1,
+        ...default_style.smallTitle_1,
         color: '#6bc6f0',
         flexWrap: 'wrap',
         paddingRight: 15,

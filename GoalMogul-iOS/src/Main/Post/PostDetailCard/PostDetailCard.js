@@ -25,7 +25,7 @@ import {
 } from '../../../redux/modules/feed/post/PostActions'
 import { makeGetPostById } from '../../../redux/modules/feed/post/PostSelector'
 // Styles
-import { BACKGROUND_COLOR } from '../../../styles'
+import { color } from '../../../styles/basic'
 // Component
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
 import LikeListModal from '../../Common/Modal/LikeListModal'
@@ -375,7 +375,7 @@ class PostDetailCard extends React.PureComponent {
 
 const styles = {
     containerStyle: {
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
         flex: 1,
         // shadowColor: '#000',
         // shadowOffset: { width: 0, height: 1 },

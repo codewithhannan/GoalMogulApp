@@ -2,12 +2,12 @@
 
 import React from 'react'
 import { View, Text, TouchableWithoutFeedback } from 'react-native'
-import { DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 
 const styles = {
     containerStyle: {
-        ...DEFAULT_STYLE.titleText_1,
-        maxWidth: 150 * DEFAULT_STYLE.uiScale,
+        ...default_style.titleText_1,
+        maxWidth: 150 * default_style.uiScale,
     },
 }
 

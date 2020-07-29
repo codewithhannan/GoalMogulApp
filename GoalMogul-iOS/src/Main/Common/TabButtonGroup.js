@@ -6,7 +6,7 @@ import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
 
 import TabButton from './Button/TabButton'
 import SubTabButton from './Button/SubTabButton'
-import { DEFAULT_STYLE, GM_BLUE, FONT_FAMILY_2 } from '../../styles'
+import { default_style, color, text } from '../../styles/basic'
 
 const WalkableView = walkthroughable(View)
 
@@ -33,14 +33,15 @@ class TabButtonGroup extends Component {
 
             const selectedStyle = isSelected
                 ? (buttonStyle && buttonStyle.selected) || {
-                      ...DEFAULT_STYLE.buttonText_1,
-                      backgroundColor: GM_BLUE,
+                      ...default_style.buttonText_1,
+                      backgroundColor: color.GM_BLUE,
                       color: 'white',
                       tintColor: 'white',
                   }
                 : (buttonStyle && buttonStyle.unselected) || {
-                      ...DEFAULT_STYLE.buttonText_1,
-                      fontFamily: FONT_FAMILY_2,
+                      ...default_style.buttonText_1,
+                      fontFamily: text.FONT_FAMILY.REGULAR,
+                      fontWight: '500',
                       color: '#828282',
                       tintColor: '#828282',
                       backgroundColor: '#F2F2F2',
@@ -70,7 +71,7 @@ class TabButtonGroup extends Component {
                     textStyle={textStyle}
                     statTextStyle={{
                         ...textStyle,
-                        fontSize: DEFAULT_STYLE.smallText_1.fontSize,
+                        fontSize: default_style.smallText_1.fontSize,
                     }}
                     tabNotificationMap={tabNotificationMap}
                 />
@@ -85,7 +86,7 @@ class TabButtonGroup extends Component {
                     textStyle={textStyle}
                     statTextStyle={{
                         ...textStyle,
-                        fontSize: DEFAULT_STYLE.smallText_1.fontSize,
+                        fontSize: default_style.smallText_1.fontSize,
                     }}
                     tabNotificationMap={tabNotificationMap}
                 />
@@ -128,10 +129,10 @@ class TabButtonGroup extends Component {
                     ...styles.containerStyle,
                     padding:
                         (padding !== undefined ? padding : 2) *
-                        DEFAULT_STYLE.uiScale,
+                        default_style.uiScale,
                     height:
                         (padding !== undefined ? 36 - padding : 34) *
-                        DEFAULT_STYLE.uiScale,
+                        default_style.uiScale,
                     borderRadius:
                         this.props.borderRadius === undefined
                             ? 100
@@ -155,8 +156,8 @@ const styles = {
         backgroundColor: 'white',
         justifyContent: 'space-around',
         alignItems: 'center',
-        padding: 2 * DEFAULT_STYLE.uiScale,
-        height: 33 * DEFAULT_STYLE.uiScale,
+        padding: 2 * default_style.uiScale,
+        height: 33 * default_style.uiScale,
         margin: 8,
     },
 }

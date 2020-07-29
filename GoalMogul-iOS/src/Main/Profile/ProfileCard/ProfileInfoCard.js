@@ -24,7 +24,7 @@ import profileStyles from './Styles'
 import { getUserData } from '../../../redux/modules/User/Selector'
 import Icons from '../../../asset/base64/Icons'
 import CoinProfileInfoModal from '../../Gamification/Coin/CoinProfileInfoModal'
-import { DEFAULT_STYLE, FONT_FAMILY_1, GM_BLUE } from '../../../styles'
+import { default_style, text, color } from '../../../styles/basic'
 import { componentKeyByTab } from '../../../redux/middleware/utils'
 
 const { CoinSackIcon, InfoIcon } = Icons
@@ -85,11 +85,11 @@ class ProfileInfoCard extends Component {
                 >
                     <Text
                         style={{
-                            ...DEFAULT_STYLE.normalText_1,
+                            ...default_style.normalText_1,
                             alignSelf: 'center',
                         }}
                     >
-                        <Text style={{ fontFamily: FONT_FAMILY_1 }}>
+                        <Text style={{ fontFamily: text.FONT_FAMILY.BOLD }}>
                             {coins}{' '}
                         </Text>
                         Coins
@@ -106,7 +106,7 @@ class ProfileInfoCard extends Component {
                     >
                         <Image
                             source={InfoIcon}
-                            style={DEFAULT_STYLE.infoIcon}
+                            style={default_style.infoIcon}
                         />
                     </DelayedButton>
                 </View>
@@ -131,11 +131,11 @@ class ProfileInfoCard extends Component {
                 >
                     <Text
                         style={{
-                            ...DEFAULT_STYLE.normalText_1,
+                            ...default_style.normalText_1,
                             alignSelf: 'center',
                         }}
                     >
-                        <Text style={{ fontFamily: FONT_FAMILY_1 }}>
+                        <Text style={{ fontFamily: text.FONT_FAMILY.BOLD }}>
                             {data === undefined ? 0 : data}{' '}
                         </Text>
                         {title}
@@ -151,9 +151,9 @@ class ProfileInfoCard extends Component {
                     >
                         <Text
                             style={{
-                                ...DEFAULT_STYLE.normalText_1,
-                                fontFamily: FONT_FAMILY_1,
-                                color: GM_BLUE,
+                                ...default_style.normalText_1,
+                                fontFamily: text.FONT_FAMILY.BOLD,
+                                color: color.GM_BLUE,
                             }}
                         >
                             View friends
@@ -172,7 +172,7 @@ class ProfileInfoCard extends Component {
                     <Text
                         style={[
                             profileStyles.headerTextStyle,
-                            DEFAULT_STYLE.normalText_1,
+                            default_style.normalText_1,
                         ]}
                         numberOfLines={1}
                         ellipsizeMode="tail"
@@ -194,16 +194,16 @@ class ProfileInfoCard extends Component {
                             resizeMode="contain"
                             source={ElevatorPitchIcon}
                             style={{
-                                ...DEFAULT_STYLE.normalIcon_1,
+                                ...default_style.normalIcon_1,
                                 tintColor: '#828282',
                                 marginRight: 10,
                             }}
                         />
-                        <Text style={DEFAULT_STYLE.titleText_1}>
+                        <Text style={default_style.titleText_1}>
                             Elevator Pitch
                         </Text>
                     </View>
-                    <Text style={[DEFAULT_STYLE.normalText_1]}>
+                    <Text style={[default_style.normalText_1]}>
                         {elevatorPitch}
                     </Text>
                 </View>
@@ -227,14 +227,14 @@ class ProfileInfoCard extends Component {
                             resizeMode="contain"
                             source={AboutIcon}
                             style={{
-                                ...DEFAULT_STYLE.normalIcon_1,
+                                ...default_style.normalIcon_1,
                                 tintColor: '#828282',
                                 marginRight: 10,
                             }}
                         />
-                        <Text style={DEFAULT_STYLE.titleText_1}>About</Text>
+                        <Text style={default_style.titleText_1}>About</Text>
                     </View>
-                    <Text style={[DEFAULT_STYLE.normalText_1]}>{about}</Text>
+                    <Text style={[default_style.normalText_1]}>{about}</Text>
                 </View>
             )
         }
@@ -267,7 +267,7 @@ class ProfileInfoCard extends Component {
                     {this.renderElevatorPitch(elevatorPitch)}
                     {this.renderAbout(about, elevatorPitch)}
                 </View>
-                <View style={DEFAULT_STYLE.cardSeparator} />
+                <View style={default_style.cardSeparator} />
                 <View style={styles.containerStyle}>
                     {this.renderFriendInfo()}
                     {this.renderOccupation(occupation)}
@@ -281,7 +281,7 @@ class ProfileInfoCard extends Component {
                         }}
                     />
                 </View>
-                <View style={DEFAULT_STYLE.cardSeparator} />
+                <View style={default_style.cardSeparator} />
             </View>
         )
     }
@@ -313,7 +313,7 @@ const styles = {
         justifyContent: 'center',
     },
     infoIconContainerStyle: {
-        ...DEFAULT_STYLE.buttonIcon_1,
+        ...default_style.buttonIcon_1,
         borderRadius: 100,
         alignItems: 'center',
         justifyContent: 'center',

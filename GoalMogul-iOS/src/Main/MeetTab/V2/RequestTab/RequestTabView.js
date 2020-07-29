@@ -16,7 +16,7 @@ import {
     loadMoreRequest,
 } from '../../../../redux/modules/meet/MeetActions'
 // Styles
-import { GM_BLUE, FONT_FAMILY_1 } from '../../../../styles'
+import { color, text } from '../../../../styles/basic'
 // Components
 import SearchBarHeader from '../../../Common/Header/SearchBarHeader'
 import TabButtonGroup from '../../../Common/TabButtonGroup'
@@ -63,7 +63,7 @@ class RequestTabView extends Component {
                 borderBottomWidth: 0
             }}
             inputContainerStyle={{ backgroundColor: "white", borderRadius: 3, borderColor: '#E0E0E0', borderWidth: 1, minHeight: 36, borderBottomWidth: 1 }}
-            inputStyle={{ fontSize: 16, fontFamily: FONT_FAMILY_1, minHeight: 36 }}
+            inputStyle={{ fontSize: 16, fontFamily: text.FONT_FAMILY.BOLD, minHeight: 36 }}
             placeholder="Search"
             onChangeText={this.handleSearchUpdate.bind(this)}
             onClear={this.handleSearchUpdate.bind(this)}

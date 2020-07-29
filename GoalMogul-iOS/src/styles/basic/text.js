@@ -5,8 +5,8 @@
  */
 
 /** Basic text style */
-export const TEXT_BASE_SIZE = 14 // TODO: this is determined by phone screen ratio and zoom mode
-export const TEXT_BASE_INCREMENT = 2 // TODO: this is determined by phone screen ratio and zoom mode
+const TEXT_BASE_SIZE = 14 // TODO: this is determined by phone screen ratio and zoom mode
+const TEXT_BASE_INCREMENT = 2 // TODO: this is determined by phone screen ratio and zoom mode
 
 export const TEXT_FONT_SIZE = {
     FONT_1: TEXT_BASE_SIZE,
@@ -24,9 +24,13 @@ export const TEXT_LINE_HEIGHT = {
     FONT_4: TEXT_BASE_SIZE + TEXT_BASE_INCREMENT * 5,
 }
 
-export const TEXT_FONT_FAMILY = {
-    default: {
-        GOTHAM_BOLD: 'gotham-pro-bold',
-        GOTHAM: 'gotham-pro',
-    },
+export const FONT_FAMILY = {
+    BOLD: 'SFProDisplay-Bold',
+    REGULAR: 'SFProDisplay-Regular',
+    SEMI_BOLD: 'SFProDisplay-Semibold',
+}
+
+export const LETTER_SPACING = {
+    REGULAR: 0.35,
+    WIDE: 0.5,
 }

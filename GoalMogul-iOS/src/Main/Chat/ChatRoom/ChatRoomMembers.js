@@ -31,7 +31,7 @@ import {
     removeChatMember,
     selectChatMembersTab,
 } from '../../../redux/modules/chat/ChatRoomMembersActions'
-import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../../../styles'
+import { color } from '../../../styles/basic'
 import { DEVICE_MODEL, IPHONE_MODELS } from '../../../Utils/Constants'
 // Actions
 import ModalHeader from '../../Common/Header/ModalHeader'
@@ -252,7 +252,7 @@ class ChatRoomMembers extends React.Component {
                         back={true}
                         onCancel={this.closeMembers}
                         containerStyles={{
-                            backgroundColor: APP_BLUE_BRIGHT,
+                            backgroundColor: color.GM_BLUE,
                         }}
                         backButtonStyle={{
                             tintColor: '#21364C',

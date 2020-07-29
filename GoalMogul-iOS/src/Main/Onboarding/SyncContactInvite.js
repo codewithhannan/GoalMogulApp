@@ -7,14 +7,8 @@ import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import OnboardingHeader from './Common/OnboardingHeader'
 import OnboardingFooter from './Common/OnboardingFooter'
-import {
-    BUTTON_STYLE as buttonStyle,
-    TEXT_STYLE as textStyle,
-    GM_BLUE,
-    GM_FONT_SIZE,
-    FONT_FAMILY_2,
-    DEFAULT_STYLE,
-} from '../../styles'
+import { TEXT_STYLE as textStyle } from '../../styles'
+import { default_style } from '../../styles/basic'
 import { inviteExistingUser } from '../../redux/modules/registration/RegistrationActions'
 import { inviteUser } from '../../redux/modules/User/ContactSync/ContactSyncActions'
 import { TabView } from 'react-native-tab-view'
@@ -84,7 +78,7 @@ class SyncContactInvite extends React.Component {
     renderEmptyMatchedContacts = () => {
         return (
             <View style={{ paddingTop: 50, alignItems: 'center' }}>
-                <Text style={[DEFAULT_STYLE.goalTitleText_1]}>
+                <Text style={[default_style.goalTitleText_1]}>
                     No matched contacts found
                 </Text>
             </View>

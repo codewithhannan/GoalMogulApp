@@ -24,7 +24,7 @@ import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions'
 import { updateGoal } from '../../../redux/modules/goal/GoalDetailActions'
 
 import { decode } from '../../../redux/middleware/utils'
-import { GM_BLUE, DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles'
+import { color, default_style } from '../../../styles/basic'
 import { TABBAR_HEIGHT } from '../../../styles/Goal'
 
 // Constants
@@ -124,7 +124,7 @@ class SectionCardV2 extends Component {
                 <Image
                     source={bulb}
                     style={{
-                        ...DEFAULT_STYLE.smallIcon_1,
+                        ...default_style.smallIcon_1,
                         tintColor: '#FCB110',
                     }}
                 />
@@ -142,7 +142,7 @@ class SectionCardV2 extends Component {
                 >
                     <Image
                         style={{
-                            ...DEFAULT_STYLE.smallIcon_1,
+                            ...default_style.smallIcon_1,
                             tintColor: '#828282',
                         }}
                         source={forward}
@@ -221,7 +221,7 @@ class SectionCardV2 extends Component {
                     style={{
                         padding: 4,
                         backgroundColor:
-                            type === 'comment' ? GM_BLUE : '#BFBFBF',
+                            type === 'comment' ? color.GM_BLUE : '#BFBFBF',
                         borderRadius: 100,
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -230,7 +230,7 @@ class SectionCardV2 extends Component {
                     <Image
                         source={back}
                         style={{
-                            ...DEFAULT_STYLE.smallIcon_1,
+                            ...default_style.smallIcon_1,
                             tintColor: 'white',
                         }}
                     />
@@ -269,8 +269,8 @@ class SectionCardV2 extends Component {
             sectionText === undefined ? 'No content' : sectionText
         )
         const textStyle = isCommentFocused
-            ? [DEFAULT_STYLE.smallTitle_1, { color: 'black', marginTop: 4 }]
-            : [DEFAULT_STYLE.normalText_1, { marginLeft: 4 }]
+            ? [default_style.smallTitle_1, { color: 'black', marginTop: 4 }]
+            : [default_style.normalText_1, { marginLeft: 4 }]
 
         return (
             <View
@@ -341,7 +341,7 @@ class SectionCardV2 extends Component {
                                 this.setState({ textValue: description })
                             }
                         >
-                            <Text style={DEFAULT_STYLE.normalText_2}>
+                            <Text style={default_style.normalText_2}>
                                 Cancel
                             </Text>
                         </DelayedButton>
@@ -349,7 +349,7 @@ class SectionCardV2 extends Component {
                             <DelayedButton
                                 activeOpacity={0.6}
                                 style={{
-                                    backgroundColor: GM_BLUE,
+                                    backgroundColor: color.GM_BLUE,
                                     borderRadius: 3,
                                     padding: 2,
                                     paddingRight: 8,
@@ -370,7 +370,7 @@ class SectionCardV2 extends Component {
                             >
                                 <Text
                                     style={{
-                                        ...DEFAULT_STYLE.normalText_2,
+                                        ...default_style.normalText_2,
                                         color: 'white',
                                     }}
                                 >
@@ -461,7 +461,7 @@ const renderEmptyState = (text) => {
 }
 
 const styles = {
-    backgroundColor: BACKGROUND_COLOR,
+    backgroundColor: color.GM_CARD_BACKGROUND,
     sectionContainerStyle: {
         padding: 16,
         flexDirection: 'row',
@@ -472,7 +472,7 @@ const styles = {
         borderBottomColor: '#F2F2F2',
     },
     actionTextStyle: {
-        ...DEFAULT_STYLE.normalText_2,
+        ...default_style.normalText_2,
         marginLeft: 6,
         marginTop: 2,
     },
@@ -485,7 +485,7 @@ const styles = {
         marginRight: 10,
     },
     checkIconStyle: {
-        ...DEFAULT_STYLE.normalIcon_1,
+        ...default_style.normalIcon_1,
         tintColor: 'white',
     },
     gestureHandlerContainer: {
