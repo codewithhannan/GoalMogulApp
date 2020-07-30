@@ -17,7 +17,7 @@ import cancel from '../../../asset/utils/cancel_no_background.png'
 import post from '../../../asset/utils/post.png'
 /* actions */
 import { closeCreateOverlay } from '../../../redux/modules/home/mastermind/actions'
-import { GM_BLUE } from '../../../styles'
+import { color } from '../../../styles/basic'
 import {
     DEVICE_MODEL,
     IPHONE_MODELS_2,
@@ -264,7 +264,7 @@ const ActionButton = (props) => {
 
 const actionButtonStyles = {
     containerStyle: {
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
         height: 35,
         width: 80,
         borderRadius: 6,

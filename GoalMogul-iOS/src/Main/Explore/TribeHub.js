@@ -18,7 +18,7 @@ import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
 import { makeTribeFeedSelector } from '../../redux/modules/tribe/TribeSelector'
 
 // Styles
-import { DEFAULT_STYLE } from '../../styles'
+import { default_style } from '../../styles/basic'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 import { Actions } from 'react-native-router-flux'
@@ -80,7 +80,7 @@ class TribeHub extends Component {
                         keyExtractor={(i) => i._id}
                         ListHeaderComponent={
                             <View style={{ padding: 16 }}>
-                                <Text style={DEFAULT_STYLE.titleText_1}>
+                                <Text style={default_style.titleText_1}>
                                     All Tribe Activity
                                 </Text>
                             </View>
@@ -129,9 +129,9 @@ const RoundedButton = (props) => {
         >
             <Icon
                 name={icon}
-                style={{ ...DEFAULT_STYLE.smallIcon_1, marginRight: 8 }}
+                style={{ ...default_style.smallIcon_1, marginRight: 8 }}
             />
-            <Text style={DEFAULT_STYLE.titleText_2}>{text}</Text>
+            <Text style={default_style.titleText_2}>{text}</Text>
         </TouchableOpacity>
     )
 }

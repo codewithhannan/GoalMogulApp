@@ -17,7 +17,7 @@ import {
 } from 'react-native-popup-menu'
 
 import { SORT_BY_OPTIONS, CATEGORY_OPTIONS } from '../../Utils/Constants'
-import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../styles'
+import { default_style, color } from '../../styles/basic'
 
 const { width, height } = Dimensions.get('window')
 
@@ -67,7 +67,7 @@ class GoalFilterBar extends Component {
                         >
                             <Text
                                 style={{
-                                    ...DEFAULT_STYLE.buttonText_1,
+                                    ...default_style.buttonText_1,
                                     fontWeight: isCategorySelected
                                         ? '700'
                                         : '500',
@@ -81,7 +81,7 @@ class GoalFilterBar extends Component {
                         {/* SortBy Header */}
                         {sortBy && (
                             <View style={styles.sortByHeaderWrapper}>
-                                <Text style={DEFAULT_STYLE.titleText_1}>
+                                <Text style={default_style.titleText_1}>
                                     Sort By
                                 </Text>
                             </View>
@@ -92,7 +92,7 @@ class GoalFilterBar extends Component {
                                 style={{
                                     flexDirection: 'row',
                                     flexWrap: 'wrap',
-                                    padding: 10 * DEFAULT_STYLE.uiScale,
+                                    padding: 10 * default_style.uiScale,
                                 }}
                             >
                                 {SORT_BY_OPTIONS.map((option) => {
@@ -117,7 +117,7 @@ class GoalFilterBar extends Component {
                                             >
                                                 <Text
                                                     style={{
-                                                        ...DEFAULT_STYLE.normalText_1,
+                                                        ...default_style.normalText_1,
                                                         color: isSelected
                                                             ? '#333'
                                                             : '#828282',
@@ -135,7 +135,7 @@ class GoalFilterBar extends Component {
                         {/* Catrgory header */}
                         {categories && (
                             <View style={styles.categoryHeaderWrapper}>
-                                <Text style={DEFAULT_STYLE.normalText_1}>
+                                <Text style={default_style.normalText_1}>
                                     Category
                                 </Text>
                             </View>
@@ -161,7 +161,7 @@ class GoalFilterBar extends Component {
                                             >
                                                 <Text
                                                     style={
-                                                        DEFAULT_STYLE.subTitleText_1
+                                                        default_style.subTitleText_1
                                                     }
                                                 >
                                                     {text}
@@ -172,7 +172,7 @@ class GoalFilterBar extends Component {
                                                     }
                                                     size={
                                                         10 *
-                                                        DEFAULT_STYLE.uiScale
+                                                        default_style.uiScale
                                                     }
                                                     borderWidth={1}
                                                 />
@@ -218,7 +218,7 @@ const RadioButton = (props) => {
 
 const styles = {
     containerStyle: {
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
         padding: 16,
         paddingTop: 9,
     },
@@ -227,16 +227,16 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
-        height: 30 * DEFAULT_STYLE.uiScale,
+        height: 30 * default_style.uiScale,
         borderColor: '#E0E0E0',
-        borderRadius: 15 * DEFAULT_STYLE.uiScale,
+        borderRadius: 15 * default_style.uiScale,
     },
     selectedContainerStyle: {
         borderColor: '#828282',
         backgroundColor: '#F2F2F2',
     },
     anchorStyle: {
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
     },
     menuOptionsStyles: {
         optionsContainer: {
@@ -248,7 +248,7 @@ const styles = {
         },
     },
     sortByHeaderWrapper: {
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
@@ -271,7 +271,7 @@ const styles = {
         paddingLeft: 16,
     },
     categoryOptionWrapper: {
-        height: 34 * DEFAULT_STYLE.uiScale,
+        height: 34 * default_style.uiScale,
         paddingLeft: 16,
         paddingRight: 16,
         flex: 1,

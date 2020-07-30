@@ -25,7 +25,8 @@ import ShareIcon from '../../asset/utils/forward.png'
 import LoveIcon from '../../asset/utils/love.png'
 import LoveOutlineIcon from '../../asset/utils/love-outline.png'
 // Styles
-import { imagePreviewContainerStyle, DEFAULT_STYLE } from '../../styles'
+import { imagePreviewContainerStyle } from '../../styles'
+import { default_style } from '../../styles/basic'
 // Constants
 import { IMAGE_BASE_URL } from '../../Utils/Constants'
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
@@ -247,8 +248,8 @@ class ActivityCard extends React.PureComponent {
             >
                 <ProfileImage
                     imageStyle={{
-                        height: 35 * DEFAULT_STYLE.uiScale,
-                        width: 35 * DEFAULT_STYLE.uiScale,
+                        height: 35 * default_style.uiScale,
+                        width: 35 * default_style.uiScale,
                         borderRadius: 100,
                     }}
                     imageUrl={profile ? profile.image : undefined}
@@ -276,14 +277,14 @@ class ActivityCard extends React.PureComponent {
                         user={actor}
                         hasCaret={false}
                         isSelf={this.props.userId === _id}
-                        textStyle={DEFAULT_STYLE.titleText_2}
+                        textStyle={default_style.titleText_2}
                     />
                     <RichText
                         contentText={text}
                         contentTags={tags}
                         contentLinks={links}
                         textStyle={{
-                            ...DEFAULT_STYLE.normalText_1,
+                            ...default_style.normalText_1,
                             flex: 1,
                             flexWrap: 'wrap',
                         }}

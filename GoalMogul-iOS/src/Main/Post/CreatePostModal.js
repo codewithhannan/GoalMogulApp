@@ -55,7 +55,7 @@ import {
 } from '../../redux/modules/feed/post/PostActions'
 import { searchUser } from '../../redux/modules/search/SearchActions'
 import { IMAGE_BASE_URL, PRIVACY_FRIENDS } from '../../Utils/Constants'
-import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from '../../styles'
+import { default_style, color } from '../../styles/basic'
 import DraftsView from './DraftsView'
 import { MenuProvider } from 'react-native-popup-menu'
 
@@ -358,7 +358,7 @@ class CreatePostModal extends Component {
      *
      * Synchronize validate form values, contains simple check
      */
-    handleCreate = (values) => {
+    handleCreate = () => {
         // Delete from drafts
         this.handleDeleteDraft(this.state.draftIndex)
 
@@ -577,7 +577,7 @@ class CreatePostModal extends Component {
                 >
                     <Text
                         style={{
-                            ...DEFAULT_STYLE.titleText_2,
+                            ...default_style.titleText_2,
                             marginBottom: 2,
                         }}
                     >
@@ -744,7 +744,7 @@ class CreatePostModal extends Component {
         // these icons would show up to attach another image
         const { post, mediaRef, uploading } = this.props
         const actionIconStyle = {
-            ...DEFAULT_STYLE.buttonIcon_1,
+            ...default_style.buttonIcon_1,
             marginRight: 8,
         }
         const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle }
@@ -767,10 +767,10 @@ class CreatePostModal extends Component {
                 >
                     <Text
                         style={{
-                            ...DEFAULT_STYLE.titleText_2,
+                            ...default_style.titleText_2,
                             color: saveDraftDisabled
-                                ? BACKGROUND_COLOR
-                                : GM_BLUE,
+                                ? color.GM_CARD_BACKGROUND
+                                : color.GM_BLUE,
                         }}
                     >
                         Save Draft
@@ -790,7 +790,7 @@ class CreatePostModal extends Component {
                         />
                         <Text
                             style={{
-                                ...DEFAULT_STYLE.titleText_2,
+                                ...default_style.titleText_2,
                                 color: '#828282',
                                 marginTop: 2,
                             }}
@@ -811,7 +811,7 @@ class CreatePostModal extends Component {
                         />
                         <Text
                             style={{
-                                ...DEFAULT_STYLE.titleText_2,
+                                ...default_style.titleText_2,
                                 color: '#828282',
                                 marginTop: 2,
                             }}
@@ -829,7 +829,7 @@ class CreatePostModal extends Component {
             <View style={styles.draftsHeader}>
                 <Text
                     style={{
-                        ...DEFAULT_STYLE.subTitleText_1,
+                        ...default_style.subTitleText_1,
                         color: '#D39F00',
                     }}
                 >
@@ -865,14 +865,14 @@ class CreatePostModal extends Component {
             mediaRef,
             uploading,
         } = this.props
-        const modalActionText = initializeFromState ? 'Update' : 'Create'
+        const modalActionText = initializeFromState ? 'Update' : 'Publish'
         const actionDisabled =
             uploading || ((!post || post.trim() === '') && !mediaRef)
 
         return (
             <KeyboardAvoidingView
                 behavior="padding"
-                style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}
+                style={{ flex: 1, backgroundColor: color.GM_CARD_BACKGROUND }}
             >
                 <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                     <ModalHeader
@@ -923,20 +923,20 @@ const styles = {
         padding: 12,
     },
     goalInputStyle: {
-        ...DEFAULT_STYLE.subTitleText_1,
+        ...default_style.subTitleText_1,
         paddingTop: 15,
         padding: 15,
         width: '100%',
         height: 'auto',
-        maxHeight: 200 * DEFAULT_STYLE.uiScale,
+        maxHeight: 200 * default_style.uiScale,
         minHeight: 90,
     },
     titleTextStyle: {
-        ...DEFAULT_STYLE.smallTitle_1,
+        ...default_style.smallTitle_1,
         padding: 2,
     },
     mediaStyle: {
-        height: 150 * DEFAULT_STYLE.uiScale,
+        height: 150 * default_style.uiScale,
         alignItems: 'center',
         justifyContent: 'center',
     },

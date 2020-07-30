@@ -14,14 +14,10 @@ import { connect } from 'react-redux'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import OnboardingHeader from './Common/OnboardingHeader'
 import DelayedButton from '../Common/Button/DelayedButton'
-import {
-    GM_FONT_SIZE,
-    GM_FONT_LINE_HEIGHT,
-    FONT_FAMILY_2,
-    FONT_FAMILY_1,
-    GM_BLUE,
-} from '../../styles'
+
+import { text, color } from '../../styles/basic'
 import OnboardingStyles from '../../styles/Onboarding'
+
 import {
     registrationTargetSelection,
     uploadSurvey,
@@ -87,9 +83,9 @@ class OnboardingSelectionTarget extends React.Component {
             <View style={{ marginTop: 12 }} key="Other TextInput">
                 <Text
                     style={{
-                        fontSize: GM_FONT_SIZE.FONT_1,
-                        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                        fontFamily: FONT_FAMILY_2,
+                        fontSize: text.TEXT_FONT_SIZE.FONT_1,
+                        lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
+                        fontFamily: text.FONT_FAMILY.REGULAR,
                         marginBottom: 4,
                     }}
                 >
@@ -104,7 +100,7 @@ class OnboardingSelectionTarget extends React.Component {
                     }}
                 >
                     <TextInput
-                        placeholder="What would you like to get out of this ap?"
+                        placeholder="What would you like to get out of this app?"
                         style={[OnboardingStyles.input.text]}
                         value={extra}
                         onChangeText={(val) =>
@@ -152,17 +148,17 @@ class OnboardingSelectionTarget extends React.Component {
                                 height: 24,
                                 width: 24,
                                 borderWidth: 1,
-                                backgroundColor: selected ? GM_BLUE : 'white',
+                                backgroundColor: selected ? color.GM_BLUE : color.GM_CARD_BACKGROUND,
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                borderColor: selected ? GM_BLUE : '#8C8C8C',
+                                borderColor: selected ? color.GM_BLUE : '#8C8C8C',
                             }}
                         >
                             <Icon
                                 name="check"
                                 pack="material-community"
                                 style={{
-                                    tintColor: selected ? 'white' : '#8C8C8C',
+                                    tintColor: selected ? color.GM_CARD_BACKGROUND : '#8C8C8C',
                                     height: 20,
                                     width: 20,
                                 }}

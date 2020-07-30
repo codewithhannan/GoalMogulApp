@@ -13,7 +13,7 @@ import _ from 'lodash'
 
 // Assets
 import menu from '../../../asset/utils/drag_indicator.png'
-import { DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles'
+import { default_style, color } from '../../../styles/basic'
 
 const { width } = Dimensions.get('window')
 const DEBUG_KEY = '[ UI InputField ]'
@@ -154,7 +154,7 @@ class InputField extends Component {
                 <Image
                     source={menu}
                     resizeMode="contain"
-                    style={{ ...DEFAULT_STYLE.buttonIcon_1, tintColor: '#AAA' }}
+                    style={{ ...default_style.buttonIcon_1, tintColor: '#AAA' }}
                 />
             </TouchableOpacity>
         ) : null
@@ -212,7 +212,7 @@ const styles = {
         borderWidth: 1,
         borderRadius: 3,
         borderColor: '#DFE0E1',
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
     },
     gestureHandlerContainer: {
         backgroundColor: '#F5F7FA',

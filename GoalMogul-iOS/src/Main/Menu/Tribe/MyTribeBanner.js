@@ -11,7 +11,7 @@ import { View, Image, Text } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 import bulbIcon from '../../../asset/icons/bulb.png'
-import { DEFAULT_STYLE, GM_BLUE } from '../../../styles'
+import { default_style, color } from '../../../styles/basic'
 import { Actions } from 'react-native-router-flux'
 
 class MyTribeBanner extends React.PureComponent {
@@ -68,13 +68,13 @@ const styles = {
         padding: 20,
     },
     header: {
-        ...DEFAULT_STYLE.titleText_1,
+        ...default_style.titleText_1,
         marginBottom: 8,
     },
-    copy: DEFAULT_STYLE.normalText_1,
+    copy: default_style.normalText_1,
     imageStyle: {
-        width: 40 * DEFAULT_STYLE.uiScale,
-        height: 40 * DEFAULT_STYLE.uiScale,
+        width: 40 * default_style.uiScale,
+        height: 40 * default_style.uiScale,
     },
     imageContainer: {
         alignItems: 'center',
@@ -83,6 +83,6 @@ const styles = {
     },
     link: {
         marginTop: 12,
-        color: GM_BLUE,
+        color: color.GM_BLUE,
     },
 }

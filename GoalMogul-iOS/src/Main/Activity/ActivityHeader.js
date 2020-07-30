@@ -41,7 +41,7 @@ import {
     SHOW_SEE_MORE_TEXT_LENGTH,
 } from '../../Utils/Constants'
 
-import { APP_BLUE, DEFAULT_STYLE, GM_BLUE } from '../../styles'
+import { default_style, color } from '../../styles/basic'
 
 const DEBUG_KEY = '[ UI ActivityHeader ]'
 
@@ -67,8 +67,8 @@ class ActivityHeader extends Component {
             >
                 <Text
                     style={{
-                        ...DEFAULT_STYLE.smallText_1,
-                        color: GM_BLUE,
+                        ...default_style.smallText_1,
+                        color: color.GM_BLUE,
                     }}
                 >
                     See more
@@ -233,7 +233,7 @@ class ActivityHeader extends Component {
                             caret={caret}
                             user={userToRender}
                             isSelf={this.props.userId === userToRender._id}
-                            textStyle={DEFAULT_STYLE.titleText_2}
+                            textStyle={default_style.titleText_2}
                             belongsToTribe={belongsToTribe}
                         />
                         <Timestamp
@@ -250,8 +250,8 @@ class ActivityHeader extends Component {
                     contentLinks={links || []}
                     textStyle={{
                         ...(actedUponEntityType === 'Post'
-                            ? DEFAULT_STYLE.normalText_1
-                            : DEFAULT_STYLE.goalTitleText_1),
+                            ? default_style.normalText_1
+                            : default_style.goalTitleText_1),
                         marginTop: 10,
                         flex: 1,
                         flexWrap: 'wrap',

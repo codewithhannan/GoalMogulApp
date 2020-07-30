@@ -46,7 +46,7 @@ import {
     SHOW_SEE_MORE_TEXT_LENGTH,
 } from '../../../Utils/Constants'
 
-import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from '../../../styles'
+import { default_style, color } from '../../../styles/basic'
 import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]'
@@ -192,8 +192,8 @@ class ProfilePostCard extends React.PureComponent {
             >
                 <Text
                     style={{
-                        ...DEFAULT_STYLE.smallText_1,
-                        color: GM_BLUE,
+                        ...default_style.smallText_1,
+                        color: color.GM_BLUE,
                     }}
                 >
                     See more
@@ -277,7 +277,7 @@ class ProfilePostCard extends React.PureComponent {
                             user={owner}
                             actionDecorator={this.props.actionDecorator}
                             hasCaret={this.props.hasCaret}
-                            textStyle={DEFAULT_STYLE.titleText_2}
+                            textStyle={default_style.titleText_2}
                             belongsToTribe={
                                 this.props.isTribeDetailPost
                                     ? undefined
@@ -292,7 +292,7 @@ class ProfilePostCard extends React.PureComponent {
                     contentText={text}
                     contentTags={tags}
                     contentLinks={links || []}
-                    textStyle={DEFAULT_STYLE.normalText_1}
+                    textStyle={default_style.normalText_1}
                     textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
                     numberOfLines={3}
                     ellipsizeMode="tail"
@@ -343,7 +343,7 @@ class ProfilePostCard extends React.PureComponent {
                     </View>
                 </View>
                 {this.renderActionButtons(item, hasActionButton)}
-                {!isSharedItem && <View style={DEFAULT_STYLE.cardSeparator} />}
+                {!isSharedItem && <View style={default_style.cardSeparator} />}
             </View>
         )
     }

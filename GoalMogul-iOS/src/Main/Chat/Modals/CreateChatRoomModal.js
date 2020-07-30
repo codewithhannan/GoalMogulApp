@@ -33,11 +33,7 @@ import {
     trackWithProperties,
     EVENT as E,
 } from '../../../monitoring/segment'
-import {
-    GM_BLUE_LIGHT_LIGHT,
-    DEFAULT_STYLE,
-    BACKGROUND_COLOR,
-} from '../../../styles'
+import { color, default_style } from '../../../styles/basic'
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 
 import ToggleField from '../../Common/ToggleField'
@@ -375,8 +371,9 @@ class CreateChatroomModal extends React.Component {
                             <View style={{ flex: 1, paddingTop: 0 }}>
                                 <View
                                     style={{
-                                        height: 90 * DEFAULT_STYLE.uiScale,
-                                        backgroundColor: GM_BLUE_LIGHT_LIGHT,
+                                        height: 90 * default_style.uiScale,
+                                        backgroundColor:
+                                            color.GM_BLUE_LIGHT_LIGHT,
                                     }}
                                 />
                                 <View style={styles.topWrapperStyle}>
@@ -493,30 +490,26 @@ const styles = {
     homeContainerStyle: {
         backgroundColor: '#f8f8f8',
         flex: 1,
-        // shadowColor: '#000',
-        // shadowOffset: { width: 0, height: 1 },
-        // shadowOpacity: 0.3,
-        // shadowRadius: 6,
     },
     topWrapperStyle: {
-        height: DEFAULT_STYLE.uiScale * 60,
-        backgroundColor: BACKGROUND_COLOR,
+        height: default_style.uiScale * 60,
+        backgroundColor: color.GM_CARD_BACKGROUND,
         padding: 16,
     },
     imageContainerStyle: {
         alignItems: 'center',
-        borderRadius: DEFAULT_STYLE.uiScale * 120,
+        borderRadius: default_style.uiScale * 120,
         borderColor: '#BDBDBD',
         position: 'absolute',
         bottom: 10,
         left: 20,
         alignSelf: 'center',
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
     },
     imageStyle: {
-        width: DEFAULT_STYLE.uiScale * 120,
-        height: DEFAULT_STYLE.uiScale * 120,
-        borderRadius: DEFAULT_STYLE.uiScale * 60,
+        width: default_style.uiScale * 120,
+        height: default_style.uiScale * 120,
+        borderRadius: default_style.uiScale * 60,
     },
     inputStyle: {
         paddingVertical: 6,

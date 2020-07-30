@@ -16,7 +16,7 @@ import {
 } from 'react-native'
 import { CopilotStep, walkthroughable } from 'react-native-copilot-gm'
 import { Actions } from 'react-native-router-flux'
-import { DEFAULT_STYLE, GM_BLUE } from '../../../styles'
+import { default_style, color } from '../../../styles/basic'
 import DelayedButton from '../Button/DelayedButton'
 import { HEADER_STYLES } from '../../../styles/Header'
 import { Icon } from '@ui-kitten/components'
@@ -133,7 +133,7 @@ const styles = {
     actionTextStyle: HEADER_STYLES.buttonText,
     titleTextStyle: HEADER_STYLES.title,
     titleTextIconStyle: {
-        ...DEFAULT_STYLE.buttonIcon_1,
+        ...default_style.buttonIcon_1,
         tintColor: null,
         borderRadius: 100,
         marginTop: 4,
@@ -154,7 +154,7 @@ const styles = {
         bottom: 0,
         right: 0,
         left: 0,
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
         alignItems: 'center',
         justifyContent: 'center',
     },

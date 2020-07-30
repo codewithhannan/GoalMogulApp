@@ -20,7 +20,7 @@ import {
 } from '../../../redux/modules/notification/NotificationTabActions'
 
 // Styles
-import { BACKGROUND_COLOR } from '../../../styles'
+import { color } from '../../../styles/basic'
 
 class NotificationNeedListView extends React.PureComponent {
     handleRefresh = () => {
@@ -55,7 +55,9 @@ class NotificationNeedListView extends React.PureComponent {
 
     render() {
         return (
-            <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
+            <View
+                style={{ flex: 1, backgroundColor: color.GM_CARD_BACKGROUND }}
+            >
                 <SearchBarHeader backButton title="Need feed" />
                 <FlatList
                     data={this.props.data}

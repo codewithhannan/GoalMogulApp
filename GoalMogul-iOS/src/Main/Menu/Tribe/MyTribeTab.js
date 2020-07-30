@@ -26,7 +26,7 @@ import EmptyResult from '../../Common/Text/EmptyResult'
 import plus from '../../../asset/utils/plus.png'
 
 // Styles
-import { DEFAULT_STYLE, GM_BLUE } from '../../../styles'
+import { default_style, color } from '../../../styles/basic'
 import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 const DEBUG_KEY = '[ UI MyTribeTab ]'
@@ -162,7 +162,7 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 3,
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
     },
     iconStyle: {
         height: 26,

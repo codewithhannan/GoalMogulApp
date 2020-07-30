@@ -56,7 +56,7 @@ import PhotoIcon from '../../../asset/utils/cameraRoll.png'
 import LightBulb from '../../../asset/utils/makeSuggestion.png'
 import DefaultUserProfile from '../../../asset/utils/defaultUserProfile.png'
 import DelayedButton from '../../Common/Button/DelayedButton'
-import { DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 
 // Consts
 const maxHeight = 120
@@ -482,7 +482,7 @@ class CommentBoxV2 extends Component {
             >
                 <Text
                     style={{
-                        ...DEFAULT_STYLE.titleText_2,
+                        ...default_style.titleText_2,
                         color,
                         padding: 13,
                         letterSpacing: 0.5,
@@ -705,14 +705,14 @@ const styles = {
         paddingTop: 4,
     },
     inputStyle: {
-        ...DEFAULT_STYLE.normalText_1,
+        ...default_style.normalText_1,
         paddingLeft: 15,
         paddingRight: 15,
         backgroundColor: 'white',
         borderRadius: 22,
     },
     iconStyle: {
-        ...DEFAULT_STYLE.buttonIcon_1,
+        ...default_style.buttonIcon_1,
         margin: 4,
     },
     // Media preview styles

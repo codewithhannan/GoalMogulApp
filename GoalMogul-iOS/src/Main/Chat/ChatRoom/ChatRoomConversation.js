@@ -64,7 +64,7 @@ import MessageStorageService from '../../../services/chat/MessageStorageService'
 import LiveChatService, {
     OUTGOING_EVENT_NAMES,
 } from '../../../socketio/services/LiveChatService'
-import { GM_BLUE_LIGHT } from '../../../styles'
+import { color } from '../../../styles/basic'
 import {
     DEVICE_MODEL,
     GROUP_CHAT_DEFAULT_ICON_URL,
@@ -511,7 +511,7 @@ class ChatRoomConversation extends React.Component {
                         const searchFor = {
                             type: 'directChat',
                         }
-                        const cardIconStyle = { tintColor: GM_BLUE_LIGHT }
+                        const cardIconStyle = { tintColor: color.GM_BLUE_LIGHT }
                         const cardIconSource = NextButton
                         const callback = (selectedUserId) =>
                             this.props.sendMessage(

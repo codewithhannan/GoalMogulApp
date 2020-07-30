@@ -43,7 +43,7 @@ import {
 } from '../../../redux/modules/notification/NotificationActions'
 // Actions
 import { createReport } from '../../../redux/modules/report/ReportActions'
-import { GM_BLUE, DEFAULT_STYLE } from '../../../styles'
+import { color, default_style } from '../../../styles/basic'
 // Constants
 import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
@@ -414,7 +414,7 @@ class GoalDetailSection extends React.PureComponent {
                             pageId={this.props.pageId}
                             goalId={this.props.goalId}
                             menuName={this.props.menuName}
-                            textStyle={DEFAULT_STYLE.titleText_2}
+                            textStyle={default_style.titleText_2}
                         />
                         <Timestamp
                             time={timeago().format(timeStamp)}
@@ -425,7 +425,7 @@ class GoalDetailSection extends React.PureComponent {
                 <View style={{ flexDirection: 'row', marginTop: 16 }}>
                     <Text
                         style={{
-                            ...DEFAULT_STYLE.goalTitleText_1,
+                            ...default_style.goalTitleText_1,
                             flexWrap: 'wrap',
                             color: 'black',
                         }}
@@ -441,7 +441,7 @@ class GoalDetailSection extends React.PureComponent {
                     contentTags={tags}
                     textContainerStyle={{ flexDirection: 'row' }}
                     textStyle={{
-                        ...DEFAULT_STYLE.normalText_1,
+                        ...default_style.normalText_1,
                         color: '#828282',
                         flexWrap: 'wrap',
                         marginTop: 5,
@@ -726,7 +726,7 @@ const styles = {
     },
     seeMoreTextStyle: {
         fontSize: 12,
-        color: GM_BLUE,
+        color: color.GM_BLUE,
     },
     statsContainerStyle: {
         borderTopWidth: 0.5,

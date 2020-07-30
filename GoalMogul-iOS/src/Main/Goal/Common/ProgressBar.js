@@ -3,7 +3,7 @@
 import React from 'react'
 import { Text, View } from 'react-native'
 
-import { DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
 const DEBUG_KEY = '[ UI ProgressBar ]'
@@ -110,12 +110,12 @@ const ProgressBar = (props) => {
 
     const startTimeTextView =
         startTimeText === 'undefined NaN' ? null : (
-            <Text style={DEFAULT_STYLE.smallText_2}>{startTimeText}</Text>
+            <Text style={default_style.smallText_2}>{startTimeText}</Text>
         )
 
     const endTimeTextView =
         endTimeText === 'undefined NaN' ? null : (
-            <Text style={DEFAULT_STYLE.smallText_2}>{endTimeText}</Text>
+            <Text style={default_style.smallText_2}>{endTimeText}</Text>
         )
 
     const progressBar = (

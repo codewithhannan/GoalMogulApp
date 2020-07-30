@@ -14,7 +14,7 @@ import { BackIcon } from '../../Utils/Icons'
 import { registrationBack, registrationLogin } from '../../actions'
 import DelayedButton from '../../Main/Common/Button/DelayedButton'
 import { IPHONE_MODELS, DEVICE_MODEL } from '../../Utils/Constants'
-import { GM_BLUE } from '../../styles'
+import { color } from '../../styles/basic'
 
 // const IMAGE_HEIGHT_SMALL = 60;
 // const IMAGE_HEIGHT = 80;
@@ -48,7 +48,7 @@ class Header extends Component {
                     <BackIcon
                         iconStyle={{
                             ...styles.iconStyle,
-                            tintColor: 'white',
+                            tintColor: color.GM_CARD_BACKGROUND,
                         }}
                     />
                     {/**
@@ -146,7 +146,7 @@ class Header extends Component {
                         <BackIcon
                             iconStyle={{
                                 ...styles.iconStyle,
-                                tintColor: 'white',
+                                tintColor: color.GM_CARD_BACKGROUND,
                             }}
                         />
                     </View>
@@ -159,7 +159,7 @@ class Header extends Component {
 const styles = {
     containerStyle: {
         display: 'flex',
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
         height: 150,
         paddingTop: 14,
         justifyContent: 'center',

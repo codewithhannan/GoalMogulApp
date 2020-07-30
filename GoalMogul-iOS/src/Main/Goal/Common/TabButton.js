@@ -4,11 +4,11 @@ import React from 'react'
 import { TouchableOpacity, Image, Text, View } from 'react-native'
 import { DotIcon } from '../../../Utils/Icons'
 
-import { APP_BLUE, BACKGROUND_COLOR } from '../../../styles'
+import { color } from '../../../styles/basic'
 
 const defaultStyle = {
     selected: {
-        backgroundColor: APP_BLUE,
+        backgroundColor: color.GM_BLUE,
         tintColor: 'white',
         color: 'white',
         fontWeight: '700',

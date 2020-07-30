@@ -32,10 +32,10 @@ import { RESET_PASSWORD_URL } from './Utils/Constants'
 import Recaptcha from './Main/Common/Recaptcha'
 import { SCREENS, wrapAnalytics } from './monitoring/segment'
 import InputBox from './Main/Onboarding/Common/InputBox'
-import { DEFAULT_STYLE, GM_BLUE, FONT_FAMILY_3, GM_BLUE_LIGHT } from './styles'
+import { default_style, color, text } from './styles/basic'
 import OnboardingStyles from './styles/Onboarding'
+
 import DelayedButton from './Main/Common/Button/DelayedButton'
-import UserAgreementCheckBox from './Main/Onboarding/UserAgreementCheckBox'
 import {
     isValidEmail,
     isPossiblePhoneNumber,
@@ -249,7 +249,7 @@ class LoginPage extends Component {
                     justifyContent: 'center',
                 }}
             >
-                <Text style={[DEFAULT_STYLE.normalText_1, styles.errorStyle]}>
+                <Text style={[default_style.normalText_1, styles.errorStyle]}>
                     {error}
                 </Text>
             </View>
@@ -281,11 +281,11 @@ class LoginPage extends Component {
             >
                 <Text
                     style={[
-                        DEFAULT_STYLE.subTitleText_1,
+                        default_style.subTitleText_1,
                         {
-                            fontFamily: FONT_FAMILY_3,
+                            fontFamily: text.FONT_FAMILY.SEMI_BOLD,
                             color: '#828282',
-                            fontWeight: '600',
+                            fontWeight: '700',
                         },
                     ]}
                 >
@@ -297,8 +297,11 @@ class LoginPage extends Component {
                 >
                     <Text
                         style={[
-                            DEFAULT_STYLE.subTitleText_1,
-                            { fontFamily: FONT_FAMILY_3, color: GM_BLUE },
+                            default_style.subTitleText_1,
+                            {
+                                fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                                color: color.GM_BLUE,
+                            },
                         ]}
                     >
                         {' '}
@@ -323,7 +326,7 @@ class LoginPage extends Component {
                     extraScrollHeight={13}
                     contentContainerStyle={[
                         {
-                            backgroundColor: 'white',
+                            backgroundColor: color.GM_CARD_BACKGROUND,
                             flexGrow: 1, // this will fix scrollview scroll issue by passing parent view width and height to it
                         },
                     ]}
@@ -373,9 +376,9 @@ class LoginPage extends Component {
                                 />
                                 <Text
                                     style={[
-                                        DEFAULT_STYLE.buttonText_1,
+                                        default_style.smallTitle_1,
                                         {
-                                            color: GM_BLUE,
+                                            color: color.GM_BLUE,
                                             padding: 8,
                                             alignSelf: 'flex-end',
                                         },

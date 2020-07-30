@@ -14,7 +14,7 @@ import { handleRefresh } from '../../../../actions'
 import { MEET_REQUEST_LIMIT } from '../../../../reducers/MeetReducers'
 import { loadMoreRequest } from '../../../../redux/modules/meet/MeetActions'
 // Styles
-import { BACKGROUND_COLOR } from '../../../../styles'
+import { color } from '../../../../styles/basic'
 import SearchBarHeader from '../../../Common/Header/SearchBarHeader'
 import EmptyResult from '../../../Common/Text/EmptyResult'
 // Components
@@ -95,7 +95,7 @@ class DiscoverTabView extends Component {
 const styles = {
     containerStyle: {
         flex: 1,
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
         backgroundColor: '#f8f8f8',
         // shadowColor: '#000',
         // shadowOffset: { width: 0, height: 1 },

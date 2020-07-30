@@ -18,12 +18,7 @@ import { EVENT, trackWithProperties } from '../../../monitoring/segment'
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png'
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import { Image, View } from 'react-native'
-import {
-    DEFAULT_STYLE,
-    GM_DOT_GRAY,
-    GM_BLUE,
-    FONT_FAMILY_1,
-} from '../../../styles'
+import { default_style, color } from '../../../styles/basic'
 
 const DEBUG_KEY = '[ UI InviteUserCard ]'
 
@@ -95,8 +90,8 @@ class InviteUserCard extends React.PureComponent {
                     <Text
                         status={buttonStatus}
                         style={{
-                            ...DEFAULT_STYLE.buttonText_2,
-                            color: GM_DOT_GRAY,
+                            ...default_style.buttonText_2,
+                            color: color.GM_DOT_GRAY,
                         }}
                     >
                         {text}
@@ -115,9 +110,9 @@ class InviteUserCard extends React.PureComponent {
                 <Text
                     status={buttonStatus}
                     style={{
-                        ...DEFAULT_STYLE.normalText_2,
-                        color: GM_BLUE,
-                        fontFamily: FONT_FAMILY_1,
+                        ...default_style.normalText_2,
+                        color: color.GM_BLUE,
+                        fontFamily: text.FONT_FAMILY.BOLD,
                     }}
                 >
                     {text}

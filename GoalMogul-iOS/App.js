@@ -25,6 +25,8 @@ import { initSentry } from './src/monitoring/sentry'
 
 // UI theme provider
 import ThemeProvider from './theme/ThemeProvider'
+import { IS_SMALL_PHONE } from './src/styles'
+import { color } from './src/styles/basic'
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
@@ -73,7 +75,8 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: color.GM_BLUE,
+        paddingTop: IS_SMALL_PHONE ? 20 : 40,
     },
     toastCustomContainerStyle: {
         backgroundColor: '#2B73B6',

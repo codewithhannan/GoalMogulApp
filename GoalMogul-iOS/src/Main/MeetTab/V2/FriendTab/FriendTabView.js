@@ -6,7 +6,6 @@
  */
 
 import _ from 'lodash'
-import { MaterialIcons } from '@expo/vector-icons'
 import React from 'react'
 import { ActivityIndicator, FlatList, View, Text, Image } from 'react-native'
 import { connect } from 'react-redux'
@@ -18,14 +17,7 @@ import {
     loadMoreRequest,
 } from '../../../../redux/modules/meet/MeetActions'
 /* Styles */
-import {
-    BACKGROUND_COLOR,
-    GM_FONT_FAMILY_1,
-    GM_FONT_FAMILY_3,
-    GM_BLUE,
-    DEFAULT_STYLE,
-    cardBoxShadow,
-} from '../../../../styles'
+import { color, text } from '../../../../styles/basic'
 import SearchBarHeader from '../../../Common/Header/SearchBarHeader'
 /* Components */
 import EmptyResult from '../../../Common/Text/EmptyResult'
@@ -34,8 +26,6 @@ import Icons from '../../../../asset/base64/Icons'
 import DelayedButton from '../../../Common/Button/DelayedButton'
 import { Actions } from 'react-native-router-flux'
 import { componentKeyByTab } from '../../../../redux/middleware/utils'
-import { SearchBar } from 'react-native-elements'
-import { SearchIcon } from '../../../../Utils/Icons'
 import { SCREENS, wrapAnalytics } from '../../../../monitoring/segment'
 
 const KEY = 'friends'
@@ -91,7 +81,7 @@ class FriendTabView extends React.Component {
                 style={[
                     {
                         padding: 16,
-                        backgroundColor: BACKGROUND_COLOR,
+                        backgroundColor: color.GM_CARD_BACKGROUND,
                         marginBottom: 8,
                     },
                 ]}
@@ -99,7 +89,7 @@ class FriendTabView extends React.Component {
                 <View style={{ flexDirection: 'row' }}>
                     <Text
                         style={{
-                            fontFamily: GM_FONT_FAMILY_1,
+                            fontFamily: text.FONT_FAMILY.BOLD,
                             fontSize: 16,
                             marginTop: 2,
                         }}
@@ -113,10 +103,10 @@ class FriendTabView extends React.Component {
                     >
                         <Text
                             style={{
-                                fontFamily: GM_FONT_FAMILY_3,
+                                fontFamily: text.FONT_FAMILY.SEMI_BOLD,
                                 fontWeight: '500',
                                 fontSize: 13,
-                                color: GM_BLUE,
+                                color: color.GM_BLUE,
                             }}
                         >
                             Manage Invitations
@@ -127,7 +117,7 @@ class FriendTabView extends React.Component {
                                 style={{
                                     height: 8,
                                     width: 5,
-                                    tintColor: GM_BLUE,
+                                    tintColor: color.GM_BLUE,
                                     transform: [{ rotate: '180deg' }],
                                 }}
                                 resizeMode="cover"
@@ -152,7 +142,7 @@ class FriendTabView extends React.Component {
                         borderBottomWidth: 0
                     }}
                     inputContainerStyle={{ backgroundColor: "white", borderRadius: 3, borderColor: '#E0E0E0', borderWidth: 1, minHeight: 40, borderBottomWidth: 1 }}
-                    inputStyle={{ fontSize: 16, fontFamily: FONT_FAMILY_1 }}
+                    inputStyle={{ fontSize: 16, fontFamily: text.FONT_FAMILY.BOLD }}
                     placeholder="Search"
                     onChangeText={this.handleSearchUpdate.bind(this)}
                     onClear={this.handleSearchUpdate.bind(this)}
@@ -175,7 +165,7 @@ class FriendTabView extends React.Component {
             <View style={styles.containerStyle}>
                 <SearchBarHeader backButton title={modalTitle} />
                 {/* <Text style={{
-                    fontFamily: GM_FONT_FAMILY_1,
+                    fontFamily: text.FONT_FAMILY.BOLD,
                     fontWeight: 'bold',
                     fontSize: GM_FONT_2,
                     letterSpacing: 0.3,

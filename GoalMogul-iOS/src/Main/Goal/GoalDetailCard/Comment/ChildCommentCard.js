@@ -44,7 +44,10 @@ import {
 } from '../../../../redux/modules/notification/NotificationActions'
 
 // Styles
-import { imagePreviewContainerStyle, DEFAULT_STYLE } from '../../../../styles'
+import {
+    imagePreviewContainerStyle,
+    default_style,
+} from '../../../../styles/basic'
 
 // Constants
 // Constants
@@ -89,7 +92,7 @@ class ChildCommentCard extends Component {
                 contentLinks={links}
                 textStyle={{
                     flexWrap: 'wrap',
-                    ...DEFAULT_STYLE.normalText_1,
+                    ...default_style.normalText_1,
                     marginTop: 3,
                 }}
                 multiline
@@ -321,11 +324,11 @@ const styles = {
         marginTop: 10,
     },
     actionIcon: {
-        ...DEFAULT_STYLE.normalIcon_1,
+        ...default_style.normalIcon_1,
         tintColor: '#828282',
     },
     actionText: {
-        ...DEFAULT_STYLE.smallText_1,
+        ...default_style.smallText_1,
         color: '#828282',
     },
     mediaStyle: {

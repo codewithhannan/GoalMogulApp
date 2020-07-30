@@ -11,7 +11,7 @@ import { fetchUnreadCount } from '../../redux/modules/notification/NotificationT
 
 /* Utils */
 import { Logger } from '../../redux/middleware/utils/Logger'
-import { GM_BLUE } from '../../styles'
+import { color } from '../../styles/basic'
 
 const CHAT_COUNT_UPDATE_INTERVAL = 1000
 const NOTIFICATION_COUNT_UPDATE_INTERVAL = 10000
@@ -73,7 +73,7 @@ class TabIcon extends React.PureComponent {
         } = this.props
         // if (chatConversationOpen) return null;
 
-        const tintColor = focused ? GM_BLUE : '#BDBDBD'
+        const tintColor = focused ? color.GM_BLUE : '#BDBDBD'
         const style = {
             tintColor,
             height: 25,

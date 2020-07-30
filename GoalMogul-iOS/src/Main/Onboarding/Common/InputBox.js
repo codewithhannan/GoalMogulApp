@@ -4,8 +4,9 @@ import React from 'react'
 import _ from 'lodash'
 import { View, Text } from 'react-native'
 import CountryPicker from 'react-native-country-picker-modal'
-import { FONT_FAMILY_3 } from '../../../styles'
+import { text, color } from '../../../styles/basic'
 import OnboardingStyles from '../../../styles/Onboarding'
+
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { Input } from '@ui-kitten/components'
 
@@ -29,10 +30,6 @@ class CountryFlagButton extends React.Component {
 
         return (
             <DelayedButton style={{ flexDirection: 'row' }} onPress={onOpen}>
-                {/* <Flag countryCode={countryCode.cca2} flagSize={14} /> */}
-                {/* <Text
-                    style={[DEFAULT_STYLE.titleText_2]}
-                >{`${countryCode.cca2} `}</Text> */}
                 <Text style={[OnboardingStyles.text.subTitle_2]}>
                     +{`${callingCode}`}
                 </Text>
@@ -90,7 +87,7 @@ class InputBox extends React.Component {
                     <Text
                         style={{
                             fontWeight: 'bold',
-                            fontFamily: FONT_FAMILY_3,
+                            fontFamily: text.FONT_FAMILY.SEMI_BOLD,
                         }}
                     >
                         {inputTitle}
@@ -108,7 +105,7 @@ class InputBox extends React.Component {
                     <Text
                         style={{
                             fontWeight: 'bold',
-                            fontFamily: FONT_FAMILY_3,
+                            fontFamily: text.FONT_FAMILY.SEMI_BOLD,
                         }}
                     >
                         {inputTitle}
@@ -138,7 +135,7 @@ class InputBox extends React.Component {
                             onCountryCodeSelected
                         )
                     }
-                    style={{ backgroundColor: 'white' }}
+                    style={{ backgroundColor: color.GM_CARD_BACKGROUND }}
                     textStyle={[OnboardingStyles.input.text]}
                     {...custom}
                 />
@@ -207,7 +204,7 @@ class InputBox extends React.Component {
                         caption={captionToUse}
                         ref="textInput"
                         label={this.renderInputTitle}
-                        style={{ width: '100%', backgroundColor: 'white' }}
+                        style={{ width: '100%', backgroundColor: color.GM_CARD_BACKGROUND }}
                         textStyle={[OnboardingStyles.input.text]}
                         size="large"
                     />
@@ -222,7 +219,7 @@ class InputBox extends React.Component {
                     {...custom}
                     ref="textInput"
                     label={this.renderInputTitle}
-                    style={{ width: '100%', backgroundColor: 'white' }}
+                    style={{ width: '100%', backgroundColor: color.GM_CARD_BACKGROUND }}
                     textStyle={[OnboardingStyles.input.text]}
                     size="large"
                 />

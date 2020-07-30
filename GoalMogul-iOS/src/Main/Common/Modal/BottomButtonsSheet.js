@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { View, Image, Text } from 'react-native'
-import { DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 import DelayedButton from '../Button/DelayedButton'
 import BottomSheet from './BottomSheet'
 
@@ -46,7 +46,7 @@ class BottomButtonsSheet extends React.PureComponent {
                         />
                     ) : null}
                     {/* <Image /> */}
-                    <Text style={[DEFAULT_STYLE.goalTitleText_1, textStyle]}>
+                    <Text style={[default_style.goalTitleText_1, textStyle]}>
                         {text}
                     </Text>
                 </DelayedButton>

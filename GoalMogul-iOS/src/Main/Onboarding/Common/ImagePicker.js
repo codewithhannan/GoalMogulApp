@@ -22,7 +22,7 @@ import {
 } from 'react-native'
 import { Icon, withStyles } from '@ui-kitten/components'
 
-import { GM_DOT_GRAY } from '../../../styles'
+import { color } from '../../../styles/basic'
 
 // Resources
 const TAKE_PIC_ICON = require('../../../asset/image/takePictureIcon.png')
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     },
     borderedButtonStyles: {
         borderWidth: 2,
-        borderColor: GM_DOT_GRAY,
+        borderColor: color.GM_DOT_GRAY,
     },
     imageStyles: {
         width: '100%',

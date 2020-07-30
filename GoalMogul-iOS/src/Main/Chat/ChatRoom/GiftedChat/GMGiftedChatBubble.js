@@ -20,7 +20,7 @@ import {
 import { Layout, Text as KittenText } from '@ui-kitten/components'
 import { MessageText, MessageVideo } from 'react-native-gifted-chat'
 import { Actions } from 'react-native-router-flux'
-import { APP_DEEP_BLUE } from '../../../../styles'
+import { color } from '../../../../styles/basic'
 import { MemberDocumentFetcher } from '../../../../Utils/UserUtils'
 import CommentRef from '../../../Goal/GoalDetailCard/Comment/CommentRef'
 import ChatMessageImage from '../../Modals/ChatMessageImage'
@@ -429,7 +429,7 @@ export default class ChatRoomConversationBubble extends React.Component {
                     <Text
                         style={{
                             fontSize: 18,
-                            color: APP_DEEP_BLUE,
+                            color: color.GM_BLUE,
                             fontWeight: '600',
                         }}
                     >
@@ -463,7 +463,7 @@ export default class ChatRoomConversationBubble extends React.Component {
                             paddingBottom: 9,
                             marginBottom: 9,
                             borderRadius: 6,
-                            backgroundColor: APP_DEEP_BLUE,
+                            backgroundColor: color.GM_BLUE,
                         }}
                         onPress={this.openCreateGoal.bind(this)}
                     >

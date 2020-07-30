@@ -33,14 +33,7 @@ import {
 import DelayedButton from '../../Common/Button/DelayedButton'
 
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
-import {
-    GM_BLUE_LIGHT_LIGHT,
-    GM_BLUE,
-    GM_BLUE_LIGHT,
-    DEFAULT_STYLE,
-    TEXT_COLOR_1,
-    BACKGROUND_COLOR,
-} from '../../../styles'
+import { default_style, color } from '../../../styles/basic'
 import { Actions } from 'react-native-router-flux'
 import RichText from '../../Common/Text/RichText'
 
@@ -249,7 +242,7 @@ class ProfileDetailCard extends Component {
                     onPress={() => this.handleMessageButtonOnPress()}
                     containerStyle={styles.buttonContainerStyle}
                     iconStyle={{
-                        ...DEFAULT_STYLE.buttonIcon_1,
+                        ...default_style.buttonIcon_1,
                         tintColor: 'white',
                     }}
                 />
@@ -259,8 +252,8 @@ class ProfileDetailCard extends Component {
 
     renderProfileActionButton() {
         const containerStyle = styles.buttonContainerStyle
-        const textStyle = { ...DEFAULT_STYLE.buttonText_1, color: 'white' }
-        const iconStyle = { ...DEFAULT_STYLE.buttonIcon_1, tintColor: 'white' }
+        const textStyle = { ...default_style.buttonText_1, color: 'white' }
+        const iconStyle = { ...default_style.buttonIcon_1, tintColor: 'white' }
 
         if (this.props.self) {
             return (
@@ -300,7 +293,7 @@ class ProfileDetailCard extends Component {
                         iconStyle={iconStyle}
                         containerStyle={{
                             ...containerStyle,
-                            backgroundColor: GM_BLUE_LIGHT,
+                            backgroundColor: color.GM_BLUE_LIGHT,
                         }}
                     />
                 )
@@ -318,7 +311,7 @@ class ProfileDetailCard extends Component {
                         iconStyle={iconStyle}
                         containerStyle={{
                             ...containerStyle,
-                            backgroundColor: GM_BLUE_LIGHT,
+                            backgroundColor: color.GM_BLUE_LIGHT,
                         }}
                     />
                 )
@@ -334,7 +327,7 @@ class ProfileDetailCard extends Component {
                         )}
                         containerStyle={{
                             ...containerStyle,
-                            backgroundColor: GM_BLUE_LIGHT,
+                            backgroundColor: color.GM_BLUE_LIGHT,
                         }}
                         textStyle={textStyle}
                         iconStyle={iconStyle}
@@ -412,9 +405,9 @@ class ProfileDetailCard extends Component {
         const style = image
             ? styles.imageStyle
             : {
-                  width: 30 * DEFAULT_STYLE.uiScale,
-                  height: 30 * DEFAULT_STYLE.uiScale,
-                  margin: 40 * DEFAULT_STYLE.uiScale,
+                  width: 30 * default_style.uiScale,
+                  height: 30 * default_style.uiScale,
+                  margin: 40 * default_style.uiScale,
               }
         const containerStyle = [
             styles.imageContainerStyle,
@@ -453,8 +446,8 @@ class ProfileDetailCard extends Component {
             <View onLayout={this.onLayout}>
                 <View
                     style={{
-                        height: 90 * DEFAULT_STYLE.uiScale,
-                        backgroundColor: GM_BLUE_LIGHT_LIGHT,
+                        height: 90 * default_style.uiScale,
+                        backgroundColor: color.GM_BLUE_LIGHT_LIGHT,
                     }}
                 />
                 <View style={styles.topWrapperStyle}>
@@ -472,7 +465,7 @@ class ProfileDetailCard extends Component {
                         <Text
                             style={[
                                 styles.marginStyle,
-                                DEFAULT_STYLE.titleText_1,
+                                default_style.titleText_1,
                             ]}
                         >
                             {name}
@@ -481,8 +474,8 @@ class ProfileDetailCard extends Component {
                             user={this.props.user}
                             iconStyle={{
                                 ...styles.marginStyle,
-                                height: 20 * DEFAULT_STYLE.uiScale,
-                                width: 17 * DEFAULT_STYLE.uiScale,
+                                height: 20 * default_style.uiScale,
+                                width: 17 * default_style.uiScale,
                             }}
                         />
                         {this.props.self && (
@@ -496,7 +489,7 @@ class ProfileDetailCard extends Component {
                             >
                                 <Image
                                     source={InfoIcon}
-                                    style={DEFAULT_STYLE.infoIcon}
+                                    style={default_style.infoIcon}
                                 />
                             </DelayedButton>
                         )}
@@ -504,7 +497,7 @@ class ProfileDetailCard extends Component {
                     <RichText
                         textStyle={[
                             styles.marginStyle,
-                            DEFAULT_STYLE.subTitleText_1,
+                            default_style.subTitleText_1,
                         ]}
                         contentText={headline}
                         textContainerStyle={{ flexDirection: 'row' }}
@@ -514,7 +507,7 @@ class ProfileDetailCard extends Component {
                         <RichText
                             textStyle={[
                                 styles.marginStyle,
-                                DEFAULT_STYLE.normalText_1,
+                                default_style.normalText_1,
                             ]}
                             contentText={location}
                             textContainerStyle={{ flexDirection: 'row' }}
@@ -538,28 +531,28 @@ const styles = {
         paddingRight: 20,
     },
     topWrapperStyle: {
-        height: DEFAULT_STYLE.uiScale * 60,
-        backgroundColor: BACKGROUND_COLOR,
+        height: default_style.uiScale * 60,
+        backgroundColor: color.GM_CARD_BACKGROUND,
         padding: 16,
     },
     imageContainerStyle: {
         alignItems: 'center',
-        borderRadius: DEFAULT_STYLE.uiScale * 60,
+        borderRadius: default_style.uiScale * 60,
         borderColor: '#BDBDBD',
         position: 'absolute',
         bottom: 10,
         left: 20,
         alignSelf: 'center',
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
     },
     imageStyle: {
-        width: DEFAULT_STYLE.uiScale * 120,
-        height: DEFAULT_STYLE.uiScale * 120,
-        borderRadius: DEFAULT_STYLE.uiScale * 60,
+        width: default_style.uiScale * 120,
+        height: default_style.uiScale * 120,
+        borderRadius: default_style.uiScale * 60,
     },
     buttonContainerStyle: {
         color: 'white',
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
         borderRadius: 100,
         alignItems: 'center',
         justifyContent: 'center',
@@ -570,7 +563,7 @@ const styles = {
     infoIconContainerStyle: {
         borderRadius: 100,
         borderWidth: 1,
-        borderColor: TEXT_COLOR_1,
+        borderColor: color.TEXT_COLOR.DARK,
         alignItems: 'center',
         justifyContent: 'center',
         padding: 2,

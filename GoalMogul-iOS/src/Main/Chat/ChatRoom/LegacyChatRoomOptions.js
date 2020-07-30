@@ -31,7 +31,7 @@ import {
     addMemberToChatRoom,
     changeChatRoomMute,
 } from '../../../redux/modules/chat/ChatRoomOptionsActions'
-import { APP_BLUE_BRIGHT } from '../../../styles'
+import { color } from '../../../styles/basic'
 import {
     GROUP_CHAT_DEFAULT_ICON_URL,
     IMAGE_BASE_URL,
@@ -85,7 +85,7 @@ class ChatRoomOptions extends React.Component {
         const searchFor = {
             type: 'addChatMember',
         }
-        const cardIconStyle = { tintColor: APP_BLUE_BRIGHT }
+        const cardIconStyle = { tintColor: color.GM_BLUE }
         const cardIconSource = plusIcon
         const callback = (selectedUserId) => {
             if (
@@ -328,7 +328,7 @@ class ChatRoomOptions extends React.Component {
                                 shadowOffset: { width: 0, height: 1 },
                                 shadowOpacity: 0.3,
                                 shadowRadius: 3,
-                                backgroundColor: APP_BLUE_BRIGHT,
+                                backgroundColor: color.GM_BLUE,
                             }}
                             backButtonStyle={{
                                 tintColor: '#21364C',
@@ -367,7 +367,7 @@ class ChatRoomOptions extends React.Component {
                             shadowOffset: { width: 0, height: 1 },
                             shadowOpacity: 0.3,
                             shadowRadius: 3,
-                            backgroundColor: APP_BLUE_BRIGHT,
+                            backgroundColor: color.GM_BLUE,
                         }}
                         backButtonStyle={{
                             tintColor: '#21364C',

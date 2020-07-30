@@ -3,7 +3,7 @@
 import React from 'react'
 import { Image, Text, View } from 'react-native'
 import Icons from '../../../asset/base64/Icons'
-import { DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 import { DotIcon } from '../../../Utils/Icons'
 
 const { ViewCountIcon } = Icons
@@ -30,7 +30,7 @@ const Timestamp = (props) => {
                     tintColor: '#636363',
                 }}
             />
-            <Text style={{ ...DEFAULT_STYLE.smallText_1, marginLeft: 3 }}>
+            <Text style={{ ...default_style.smallText_1, marginLeft: 3 }}>
                 {viewCount}
             </Text>
         </View>
@@ -62,7 +62,7 @@ const Timestamp = (props) => {
                     marginRight: 5,
                 }}
             />
-            <Text style={DEFAULT_STYLE.smallText_1}>{priorityText}</Text>
+            <Text style={default_style.smallText_1}>{priorityText}</Text>
         </View>
     ) : null
 
@@ -70,7 +70,7 @@ const Timestamp = (props) => {
 
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ ...DEFAULT_STYLE.smallText_1, ...textStylesProp }}>
+            <Text style={{ ...default_style.smallText_1, ...textStylesProp }}>
                 {time}
             </Text>
             {priorityComponent}

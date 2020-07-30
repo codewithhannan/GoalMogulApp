@@ -5,11 +5,13 @@ import _ from 'ramda'
 import { View, Text } from 'react-native'
 import Modal from 'react-native-modal'
 import DelayedButton from '../Common/Button/DelayedButton'
-import { GM_BLUE, GM_FONT_SIZE, GM_FONT_FAMILY } from '../../styles'
+
+import { color, text } from '../../styles/basic'
 import OnboardingStyles from '../../styles/Onboarding'
 import { DotIndicator } from 'react-native-indicators'
 
 const { button: buttonStyle } = OnboardingStyles
+
 
 class SyncContactInfoModal extends React.Component {
     onNotNow = () => {
@@ -46,13 +48,13 @@ class SyncContactInfoModal extends React.Component {
             >
                 <Text
                     style={{
-                        fontSize: GM_FONT_SIZE.FONT_3_5,
-                        fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+                        fontSize: text.TEXT_FONT_SIZE.FONT_3_5,
+                        fontFamily: text.FONT_FAMILY.BOLD,
                     }}
                 >
                     Uploading Contacts
                 </Text>
-                <DotIndicator size={10} color={GM_BLUE} />
+                <DotIndicator size={10} color={color} />
             </View>
         )
     }
@@ -63,8 +65,8 @@ class SyncContactInfoModal extends React.Component {
             <View style={{ zIndex: 2, opacity: this.props.loading ? 0 : 1 }}>
                 <Text
                     style={{
-                        fontSize: GM_FONT_SIZE.FONT_3_5,
-                        fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+                        fontSize: text.TEXT_FONT_SIZE.FONT_3_5,
+                        fontFamily: text.FONT_FAMILY.BOLD,
                         textAlign: 'center',
                         marginBottom: 20,
                     }}
@@ -115,7 +117,7 @@ class SyncContactInfoModal extends React.Component {
                     style={{
                         borderRadius: 14,
                         padding: 23,
-                        backgroundColor: 'white',
+                        backgroundColor: color.GM_CARD_BACKGROUND,
                     }}
                 >
                     {this.renderFailureResult()}

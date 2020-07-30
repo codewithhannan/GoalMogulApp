@@ -21,7 +21,7 @@ import { loadMoreRequest } from '../../../../redux/modules/meet/MeetActions'
 import { getOutgoingUserFromFriendship } from '../../../../redux/modules/meet/selector'
 
 // Styles
-import { BACKGROUND_COLOR } from '../../../../styles'
+import { color } from '../../../../styles/basic'
 
 // Constants
 import { MEET_REQUEST_LIMIT } from '../../../../reducers/MeetReducers'
@@ -85,7 +85,9 @@ class OutgoingRequestTabView extends Component {
 
     render() {
         return (
-            <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
+            <View
+                style={{ flex: 1, backgroundColor: color.GM_CARD_BACKGROUND }}
+            >
                 <FlatList
                     data={this.props.data}
                     renderItem={this.renderItem}

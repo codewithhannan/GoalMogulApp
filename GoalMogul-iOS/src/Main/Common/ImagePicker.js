@@ -21,7 +21,7 @@ import {
     ActionSheetIOS,
 } from 'react-native'
 
-import { GM_DOT_GRAY } from '../../styles'
+import { color } from '../../styles/basic'
 import { Icon, withStyles } from '@ui-kitten/components'
 
 // Action sheet specific
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     },
     borderedButtonStyles: {
         borderWidth: 2,
-        borderColor: GM_DOT_GRAY,
+        borderColor: color.GM_DOT_GRAY,
     },
     imageStyles: {
         width: '100%',

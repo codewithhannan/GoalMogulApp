@@ -4,14 +4,7 @@ import React from 'react'
 import { View, Text, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import DelayedButton from '../Common/Button/DelayedButton'
-import {
-    BUTTON_STYLE,
-    GM_FONT_SIZE,
-    GM_FONT_FAMILY,
-    GM_FONT_LINE_HEIGHT,
-    GM_BLUE,
-    DEFAULT_STYLE,
-} from '../../styles'
+import { text, color, default_style } from '../../styles/basic'
 import UserCardHeader from './Common/UserCardHeader'
 import UserTopGoals from './Common/UserTopGoals'
 import { updateFriendship, openProfile } from '../../actions'
@@ -82,7 +75,7 @@ class PYMKCard extends React.Component {
             >
                 <Text
                     style={[
-                        DEFAULT_STYLE.buttonText_1,
+                        default_style.buttonText_1,
                         { color: 'white', fontSize: 12 },
                     ]}
                 >
@@ -98,14 +91,14 @@ class PYMKCard extends React.Component {
             <DelayedButton
                 style={[
                     styles.buttonTextContainerStyle,
-                    { backgroundColor: GM_BLUE },
+                    { backgroundColor: color.GM_BLUE },
                 ]}
                 onPress={() => this.handleRequestFriend(userId)}
                 activeOpacity={0.6}
             >
                 <Text
                     style={[
-                        DEFAULT_STYLE.buttonText_1,
+                        default_style.buttonText_1,
                         { color: 'white', fontSize: 12 },
                     ]}
                 >
@@ -142,7 +135,7 @@ class PYMKCard extends React.Component {
                         ellipsizeMode="tail"
                         style={styles.topGoalTextStyle}
                     >
-                        <Text style={{ color: GM_BLUE }}>Top Goal: </Text>
+                        <Text style={{ color: color }}>Top Goal: </Text>
                         <Text>{topGoalText}</Text>
                     </Text>
                 </View>
@@ -183,9 +176,9 @@ const styles = {
         borderRadius: width * 0.07,
     },
     topGoalTextStyle: {
-        fontSize: GM_FONT_SIZE.FONT_1,
-        lineHeight: GM_FONT_LINE_HEIGHT.FONT_2,
-        fontFamily: GM_FONT_FAMILY.GOTHAM,
+        fontSize: text.TEXT_FONT_SIZE.FONT_1,
+        lineHeight: text.TEXT_LINE_HEIGHT.FONT_2,
+        fontFamily: text.FONT_FAMILY.REGULAR,
     },
     buttonTextContainerStyle: {
         marginRight: 8,

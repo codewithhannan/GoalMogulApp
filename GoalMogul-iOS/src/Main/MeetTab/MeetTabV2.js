@@ -50,7 +50,7 @@ import {
 } from '../../redux/modules/meet/selector'
 
 /* Styles */
-import { APP_BLUE } from '../../styles'
+import { color } from '../../styles/basic'
 
 /* Constants */
 import {
@@ -478,7 +478,7 @@ const styles = {
         padding: 7,
     },
     seeAllTextStyle: {
-        color: APP_BLUE,
+        color: color.GM_BLUE,
         fontSize: 12,
         fontWeight: '700',
     },

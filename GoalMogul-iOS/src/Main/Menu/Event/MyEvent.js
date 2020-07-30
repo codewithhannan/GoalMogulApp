@@ -57,7 +57,7 @@ import {
     searchFriend,
 } from '../../../redux/modules/search/SearchActions'
 // Styles
-import { APP_DEEP_BLUE } from '../../../styles'
+import { color } from '../../../styles/basic'
 // Constants
 import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
@@ -435,7 +435,7 @@ class MyEvent extends Component {
                 noBorder={noBorder}
                 buttonStyle={{
                     selected: {
-                        backgroundColor: APP_DEEP_BLUE,
+                        backgroundColor: color.GM_BLUE,
                         tintColor: 'white',
                         color: 'white',
                         fontWeight: '700',
@@ -928,7 +928,7 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         // backgroundColor: '#17B3EC',
-        backgroundColor: APP_DEEP_BLUE,
+        backgroundColor: color.GM_BLUE,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.4,

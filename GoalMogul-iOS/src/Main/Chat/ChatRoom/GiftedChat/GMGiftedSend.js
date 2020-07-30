@@ -17,7 +17,7 @@ import { Icon } from '@ui-kitten/components'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
-import { GM_BLUE } from '../../../../styles'
+import { color } from '../../../../styles/basic'
 
 const styles = StyleSheet.create({
     container: {
@@ -77,7 +77,7 @@ export default class Send extends Component {
         const { text, messageMediaRef, disabled } = this.props
         let tintColor =
             allowSend(text, messageMediaRef) && !disabled
-                ? GM_BLUE
+                ? color.GM_BLUE
                 : 'lightgray'
         return (
             <View>

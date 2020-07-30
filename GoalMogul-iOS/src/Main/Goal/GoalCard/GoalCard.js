@@ -61,7 +61,7 @@ import GoalCardHeader from '../Common/GoalCardHeader'
 import Headline from '../Common/Headline'
 import ProgressBar from '../Common/ProgressBar'
 import Timestamp from '../Common/Timestamp'
-import { DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 
 const { height, width } = Dimensions.get('window')
 const WINDOW_WIDTH = width
@@ -301,7 +301,7 @@ class GoalCard extends React.PureComponent {
                             isSelf={owner._id === this.props.userId}
                             hasCaret={!this.props.isSharedItem}
                             caret={caret}
-                            textStyle={DEFAULT_STYLE.titleText_2}
+                            textStyle={default_style.titleText_2}
                         />
                         <View style={{ marginTop: 2 }} />
                         <Timestamp
@@ -314,7 +314,7 @@ class GoalCard extends React.PureComponent {
                 </View>
                 <Text
                     style={{
-                        ...DEFAULT_STYLE.goalTitleText_1,
+                        ...default_style.goalTitleText_1,
                         marginTop: 16,
                         flex: 1,
                         flexWrap: 'wrap',

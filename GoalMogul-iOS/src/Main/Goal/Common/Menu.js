@@ -26,7 +26,7 @@ import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
 
 /* Asset */
 import { Icon } from '@ui-kitten/components'
-import { DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 
 const { width } = Dimensions.get('window')
 const DEBUG_KEY = '[ UI Menu ]'
@@ -159,7 +159,7 @@ class MenuFactory extends React.Component {
                             name="dots-horizontal"
                             pack="material-community"
                             style={[
-                                DEFAULT_STYLE.buttonIcon_1,
+                                default_style.buttonIcon_1,
                                 { tintColor: '#828282' },
                             ]}
                         />

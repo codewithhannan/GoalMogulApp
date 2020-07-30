@@ -15,7 +15,7 @@ import plus from '../../../asset/utils/plus.png'
 import { nFormatter } from '../../../redux/middleware/utils'
 
 // Styles
-import { GM_BLUE, DEFAULT_STYLE, BACKGROUND_COLOR } from '../../../styles'
+import { color, default_style } from '../../../styles/basic'
 
 class TrendingGoalCard extends React.PureComponent {
     onPress = (title) => {
@@ -31,7 +31,7 @@ class TrendingGoalCard extends React.PureComponent {
             >
                 <Image
                     source={plus}
-                    style={{ ...DEFAULT_STYLE.smallIcon_1, tintColor: 'white' }}
+                    style={{ ...default_style.smallIcon_1, tintColor: 'white' }}
                 />
             </TouchableOpacity>
         )
@@ -49,14 +49,14 @@ class TrendingGoalCard extends React.PureComponent {
                 }}
             >
                 <Text
-                    style={{ ...DEFAULT_STYLE.titleText_2, flex: 1 }}
+                    style={{ ...default_style.titleText_2, flex: 1 }}
                     ellipsizeMode="tail"
                     numberOfLines={3}
                 >
                     {title}
                 </Text>
                 <Text
-                    style={{ ...DEFAULT_STYLE.smallText_1, color: '#9B9B9B' }}
+                    style={{ ...default_style.smallText_1, color: '#9B9B9B' }}
                 >
                     {nFormatter(frequency) + ' '}users have this goal in common
                 </Text>
@@ -73,7 +73,7 @@ class TrendingGoalCard extends React.PureComponent {
                     justifyContent: 'center',
                 }}
             >
-                <Text style={DEFAULT_STYLE.titleText_2}>#{index}</Text>
+                <Text style={default_style.titleText_2}>#{index}</Text>
             </View>
         )
     }
@@ -99,7 +99,7 @@ class TrendingGoalCard extends React.PureComponent {
 const styles = {
     containerStyle: {
         flex: 1,
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
         flexDirection: 'row',
         alignItems: 'stretch',
 
@@ -111,7 +111,7 @@ const styles = {
         marginBottom: 5,
     },
     plusIconContainerStyle: {
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
         margin: 12,
         padding: 8,
         borderRadius: 100,

@@ -21,7 +21,7 @@ import {
 } from '../../../redux/modules/notification/NotificationTabActions'
 
 // Styles
-import { BACKGROUND_COLOR } from '../../../styles'
+import { color } from '../../../styles/basic'
 
 const DEBUG_KEY = '[ UI NotificationListView ]'
 
@@ -58,7 +58,9 @@ class NotificationListView extends React.PureComponent {
 
     render() {
         return (
-            <View style={{ flex: 1, backgroundColor: BACKGROUND_COLOR }}>
+            <View
+                style={{ flex: 1, backgroundColor: color.GM_CARD_BACKGROUND }}
+            >
                 <SearchBarHeader backButton title="Notifications" />
                 <FlatList
                     data={this.props.data}

@@ -9,7 +9,7 @@
 import React from 'react'
 import { View, Image } from 'react-native'
 import HeaderImage from '../../../asset/header/header-logo.png'
-import { GM_BLUE } from '../../../styles'
+import { color } from '../../../styles/basic'
 
 class OnboardingHeader extends React.Component {
     render() {
@@ -37,7 +37,7 @@ class OnboardingHeader extends React.Component {
 const styles = {
     containerStyle: {
         display: 'flex',
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',

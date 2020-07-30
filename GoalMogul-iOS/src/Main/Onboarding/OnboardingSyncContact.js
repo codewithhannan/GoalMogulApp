@@ -11,13 +11,12 @@ import * as WebBrowser from 'expo-web-browser'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import OnboardingHeader from './Common/OnboardingHeader'
-import { GM_BLUE, FONT_FAMILY_2 } from '../../styles'
+
+import { text, color } from '../../styles/basic'
 import OnboardingStyles from '../../styles/Onboarding'
+
 import { PRIVACY_POLICY_URL } from '../../Utils/Constants'
-import {
-    registrationTribeSelection,
-    uploadContacts,
-} from '../../redux/modules/registration/RegistrationActions'
+import { uploadContacts } from '../../redux/modules/registration/RegistrationActions'
 import { REGISTRATION_SYNC_CONTACT_NOTES } from '../../redux/modules/registration/RegistrationReducers'
 import DelayedButton from '../Common/Button/DelayedButton'
 import SyncContactInfoModal from './SyncContactInfoModal'
@@ -183,7 +182,7 @@ class OnboardingSyncContact extends React.Component {
                         <Text style={styles.noteTextStyle}>
                             {REGISTRATION_SYNC_CONTACT_NOTES}
                             <Text
-                                style={{ color: GM_BLUE }}
+                                style={{ color: color.GM_BLUE }}
                                 onPress={() =>
                                     WebBrowser.openBrowserAsync(
                                         PRIVACY_POLICY_URL,
@@ -214,9 +213,9 @@ class OnboardingSyncContact extends React.Component {
 
 const styles = {
     noteTextStyle: {
-        fontSize: 14,
-        lineHeight: 20,
-        fontFamily: FONT_FAMILY_2,
+        fontSize: text.TEXT_FONT_SIZE.FONT_1,
+        lineHeight: text.TEXT_LINE_HEIGHT.FONT_3_5,
+        fontFamily: text.FONT_FAMILY.REGULAR,
         color: '#333333',
         alignSelf: 'flex-end',
         marginTop: 8,

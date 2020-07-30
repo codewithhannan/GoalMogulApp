@@ -4,18 +4,11 @@ import React from 'react'
 import { View, FlatList, Text, Image, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
-import { GM_CONTAINER_BACKGROUND, GM_BLUE } from '../../styles/basic/color'
 import SearchBarHeader from '../Common/Header/SearchBarHeader'
 import DelayedButton from '../Common/Button/DelayedButton'
 import Icons from '../../asset/base64/Icons'
-import {
-    BUTTON_STYLE,
-    GM_FONT_SIZE,
-    GM_FONT_FAMILY,
-    GM_FONT_LINE_HEIGHT,
-    DEFAULT_STYLE,
-    FONT_FAMILY_3,
-} from '../../styles'
+import { BUTTON_STYLE } from '../../styles'
+import { text, default_style, color } from '../../styles/basic'
 import PYMKCard from './PYMKCard'
 import {
     handleRefreshFriend,
@@ -92,7 +85,7 @@ class FriendTab extends React.Component {
                 <View style={{ marginRight: 18, flex: 1, paddingVertical: 31 }}>
                     <Text
                         style={[
-                            DEFAULT_STYLE.titleText_1,
+                            default_style.titleText_1,
                             { marginBottom: styles.padding },
                         ]}
                     >
@@ -108,8 +101,11 @@ class FriendTab extends React.Component {
                     >
                         <Text
                             style={[
-                                DEFAULT_STYLE.titleText_1,
-                                { color: 'white', fontFamily: FONT_FAMILY_3 },
+                                default_style.titleText_1,
+                                {
+                                    color: 'white',
+                                    fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                                },
                             ]}
                         >
                             Invite your Friends
@@ -163,8 +159,11 @@ class FriendTab extends React.Component {
                     >
                         <Text
                             style={[
-                                DEFAULT_STYLE.normalText_1,
-                                { fontFamily: FONT_FAMILY_3, color: '#4F4F4F' },
+                                default_style.normalText_1,
+                                {
+                                    fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                                    color: '#4F4F4F',
+                                },
                             ]}
                         >
                             Show all ({`${requestCount}`} Invites)
@@ -195,9 +194,9 @@ class FriendTab extends React.Component {
                 />
                 <Text
                     style={{
-                        fontSize: GM_FONT_SIZE.FONT_1,
-                        lineHeight: GM_FONT_LINE_HEIGHT.FONT_2,
-                        fontFamily: GM_FONT_FAMILY.GOTHAM,
+                        fontSize: text.TEXT_FONT_SIZE.FONT_1,
+                        lineHeight: text.TEXT_LINE_HEIGHT.FONT_2,
+                        fontFamily: text.FONT_FAMILY.REGULAR,
                         color: '#9B9B9B',
                         marginTop: 16,
                     }}
@@ -224,7 +223,7 @@ class FriendTab extends React.Component {
                         padding: styles.padding,
                     }}
                 >
-                    <Text style={[DEFAULT_STYLE.titleText_1]}>
+                    <Text style={[default_style.titleText_1]}>
                         Friend Requests
                     </Text>
                     <View style={{ flex: 1 }} />
@@ -235,9 +234,9 @@ class FriendTab extends React.Component {
                     >
                         <Text
                             style={[
-                                DEFAULT_STYLE.titleText_2,
+                                default_style.titleText_2,
                                 {
-                                    color: GM_BLUE,
+                                    color: color.GM_BLUE,
                                 },
                             ]}
                         >
@@ -249,7 +248,7 @@ class FriendTab extends React.Component {
                                 style={{
                                     height: 8,
                                     width: 5,
-                                    tintColor: GM_BLUE,
+                                    tintColor: color.GM_BLUE,
                                     transform: [{ rotate: '180deg' }],
                                 }}
                                 resizeMode="cover"
@@ -275,7 +274,7 @@ class FriendTab extends React.Component {
                         backgroundColor: 'white',
                     }}
                 >
-                    <Text style={[DEFAULT_STYLE.titleText_1]}>
+                    <Text style={[default_style.titleText_1]}>
                         People You May Know
                     </Text>
                 </View>
@@ -317,7 +316,7 @@ class FriendTab extends React.Component {
                     ListHeaderComponent={this.renderListHeader}
                     renderItem={this.renderPYMK}
                     contentContainerStyle={{
-                        backgroundColor: GM_CONTAINER_BACKGROUND,
+                        backgroundColor: color.GM_BACKGROUND,
                     }}
                     loading={this.props.loading}
                     onEndReached={() => this.props.meetOnLoadMore('suggested')}
@@ -335,7 +334,7 @@ class FriendTab extends React.Component {
 const styles = {
     padding: 16,
     containerStyle: {
-        backgroundColor: GM_CONTAINER_BACKGROUND,
+        backgroundColor: color.GM_BACKGROUND,
         flex: 1,
     },
     requestListContainerStyle: {
@@ -364,7 +363,7 @@ const testData = [
 
 const mapStateToProps = (state) => {
     const { suggested } = state.meet
-    const { data, refreshing, loading } = suggested
+    const { data, loading } = suggested
     return {
         incomingRequests: getIncomingUserFromFriendship(state),
         pymkData: data,

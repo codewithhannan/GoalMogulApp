@@ -56,7 +56,7 @@ import Logo from '../../asset/header/logo.png'
 import Activity from '../../asset/utils/activity.png'
 
 // Styles
-import { BACKGROUND_COLOR, DEFAULT_STYLE } from '../../styles'
+import { color, default_style } from '../../styles/basic'
 
 // Utils
 import Tooltip from '../Tutorial/Tooltip'
@@ -68,11 +68,11 @@ import { track, EVENT as E } from '../../monitoring/segment'
 const TabIconMap = {
     goals: {
         iconSource: Logo,
-        iconStyle: DEFAULT_STYLE.normalIcon_1,
+        iconStyle: default_style.normalIcon_1,
     },
     activity: {
         iconSource: Activity,
-        iconStyle: DEFAULT_STYLE.normalIcon_1,
+        iconStyle: default_style.normalIcon_1,
     },
 }
 
@@ -434,7 +434,7 @@ const styles = {
     tabContainer: {
         paddingLeft: 8,
         paddingRight: 8,
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
     },
     backdrop: {
         backgroundColor: 'gray',

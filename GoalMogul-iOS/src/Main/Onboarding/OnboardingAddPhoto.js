@@ -25,8 +25,9 @@ import OnboardingHeader from './Common/OnboardingHeader'
 import DelayedButton from '../Common/Button/DelayedButton'
 import ImagePicker from './Common/ImagePicker'
 
-import { GM_BLUE_LIGHT, GM_BLUE } from '../../styles'
+import { color } from '../../styles/basic'
 import OnboardingStyles from '../../styles/Onboarding'
+
 import { openCamera, openCameraRoll } from '../../actions'
 import { registrationAddProfilePhoto } from '../../redux/modules/registration/RegistrationActions'
 
@@ -95,8 +96,8 @@ class OnboardingAddPhotos extends Component {
                                     marginBottom: 8,
                                     backgroundColor:
                                         profilePic == undefined
-                                            ? GM_BLUE_LIGHT
-                                            : GM_BLUE,
+                                            ? color.GM_BLUE_LIGHT
+                                            : color.GM_BLUE,
                                 },
                             ]}
                             onPress={this.onContinue}

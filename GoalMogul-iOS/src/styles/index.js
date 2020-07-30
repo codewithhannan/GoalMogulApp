@@ -3,202 +3,42 @@
  *
  * @format
  */
-
+import { Platform } from 'react-native'
 import Constants from 'expo-constants'
-
-export const APP_BLUE_BRIGHT = '#17B3EC'
-export const APP_BLUE = '#23B7E9'
-export const APP_DEEP_BLUE = '#0397CB'
+import { IPHONE_MODELS, DEVICE_MODEL } from '../Utils/Constants'
 
 /**
  * Following is the new blue for V2
  *
  * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=1%3A626
  */
-export const GM_BLUE = '#42C0F5'
-export const GM_BLUE_LIGHT = '#9EE6FF'
-export const GM_BLUE_LIGHT_LIGHT = '#DEF7FF'
-export const GM_DOT_GRAY = '#E0E0E0'
 
-export const BACKGROUND_COLOR = 'white'
-
-const UI_SCALE =
+export const IS_SMALL_PHONE =
+    Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL)
+export const UI_SCALE =
     Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.3 : 1
-export const TEXT_COLOR_1 = '#333'
-
-export const FONT_FAMILY_1 = 'SFProDisplay-Bold'
-export const FONT_FAMILY_2 = 'SFProDisplay-Regular'
-export const FONT_FAMILY_3 = 'SFProDisplay-Semibold'
-
-export const LETTER_SPACING = 0.35
-export const LETTER_SPACING_TITLE = 0.5
-
-export const DEFAULT_STYLE = {
-    // Headers
-    titleText_1: {
-        fontFamily: FONT_FAMILY_1,
-        fontSize: 17 * UI_SCALE,
-        color: TEXT_COLOR_1,
-        fontWeight: 'bold',
-        letterSpacing: LETTER_SPACING_TITLE,
-    },
-    titleText_2: {
-        fontFamily: FONT_FAMILY_1,
-        fontSize: 14 * UI_SCALE,
-        fontWeight: 'bold',
-        color: TEXT_COLOR_1,
-        letterSpacing: LETTER_SPACING,
-    },
-    subTitleText_1: {
-        fontFamily: FONT_FAMILY_2,
-        fontSize: 17 * UI_SCALE,
-        fontWeight: '400',
-        color: TEXT_COLOR_1,
-        letterSpacing: LETTER_SPACING_TITLE,
-    },
-    goalTitleText_1: {
-        fontFamily: FONT_FAMILY_2,
-        fontSize: 19 * UI_SCALE,
-        fontWeight: '400',
-        color: TEXT_COLOR_1,
-        letterSpacing: LETTER_SPACING_TITLE,
-    },
-    // Normal texts
-    normalText_1: {
-        fontFamily: FONT_FAMILY_2,
-        fontSize: 14 * UI_SCALE,
-        color: TEXT_COLOR_1,
-        fontWeight: '500',
-        letterSpacing: LETTER_SPACING,
-    },
-    normalText_2: {
-        fontFamily: FONT_FAMILY_2,
-        fontSize: 12 * UI_SCALE,
-        color: TEXT_COLOR_1,
-        fontWeight: '500',
-        letterSpacing: LETTER_SPACING,
-    },
-    normalIcon_1: {
-        height: 16 * UI_SCALE,
-        width: 16 * UI_SCALE,
-    },
-    // Detailing texts
-    smallTitle_1: {
-        fontFamily: FONT_FAMILY_1,
-        fontSize: 11 * UI_SCALE,
-        fontWeight: 'bold',
-        color: TEXT_COLOR_1,
-        letterSpacing: LETTER_SPACING_TITLE,
-    },
-    smallText_1: {
-        fontFamily: FONT_FAMILY_2,
-        fontSize: 11 * UI_SCALE,
-        color: TEXT_COLOR_1,
-        letterSpacing: LETTER_SPACING,
-    },
-    smallText_2: {
-        fontFamily: FONT_FAMILY_2,
-        fontSize: 9 * UI_SCALE,
-        color: TEXT_COLOR_1,
-        letterSpacing: LETTER_SPACING,
-    },
-    smallIcon_1: {
-        height: 13 * UI_SCALE,
-        width: 13 * UI_SCALE,
-    },
-    // Button styles
-    buttonText_1: {
-        fontFamily: FONT_FAMILY_3,
-        fontSize: 15 * UI_SCALE,
-        fontWeight: '700',
-        color: TEXT_COLOR_1,
-        letterSpacing: LETTER_SPACING_TITLE,
-    },
-    buttonText_2: {
-        fontFamily: FONT_FAMILY_1,
-        fontSize: 12 * UI_SCALE,
-        fontWeight: '500',
-        color: TEXT_COLOR_1,
-        letterSpacing: LETTER_SPACING,
-    },
-    buttonIcon_1: {
-        height: 24 * UI_SCALE,
-        width: 24 * UI_SCALE,
-        tintColor: TEXT_COLOR_1,
-    },
-    // Misc
-    uiScale: UI_SCALE,
-    infoIcon: {
-        height: 8 * UI_SCALE,
-        width: 8 * UI_SCALE,
-        tintColor: TEXT_COLOR_1,
-    },
-    priortyBar: {
-        height: 4 * UI_SCALE,
-        width: 30 * UI_SCALE,
-        marginTop: 4 * UI_SCALE,
-    },
-    profileImage_1: {
-        height: 42 * UI_SCALE,
-        width: 42 * UI_SCALE,
-        borderRadius: 21 * UI_SCALE,
-    },
-    profileImage_2: {
-        height: 20 * UI_SCALE,
-        width: 20 * UI_SCALE,
-        margin: 10 * UI_SCALE,
-    },
-    cardSeparator: {
-        width: '100%',
-        height: 5 * UI_SCALE,
-        backgroundColor: '#E4E8EA',
-    },
-}
 
 /**
- * Standardized font size for GM V2
- *
- * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=1%3A626
+ * DEPRECATED use use default styles
  */
-export const GM_FONT_SIZE = {
-    FONT_1: 14,
-    FONT_2: 16,
-    FONT_3: 18,
-    FONT_3_5: 20,
-    FONT_4: 24,
-}
-
-export const GM_FONT_LINE_HEIGHT = {
-    FONT_1: 14,
-    FONT_2: 16,
-    FONT_3: 18,
-    FONT_3_5: 20,
-    FONT_4: 24,
-}
-
-export const GM_FONT_FAMILY = {
-    GOTHAM_BOLD: 'gotham-pro-bold',
-    GOTHAM: 'gotham-pro',
-}
-
-// Button style
+import { color, text } from './basic'
 export const BUTTON_STYLE = {
     GM_BLUE_BG_WHITE_BOLD_TEXT: {
         containerStyle: {
             height: 45,
             width: '100%',
-            backgroundColor: GM_BLUE,
+            backgroundColor: color.GM_BLUE,
             borderRadius: 3,
             alignItems: 'center',
             justifyContent: 'center',
             borderRadius: 5,
         },
         textStyle: {
-            fontSize: GM_FONT_SIZE.FONT_3,
+            fontSize: text.TEXT_FONT_SIZE.FONT_3,
             fontWeight: 'bold',
-            lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
+            lineHeight: text.TEXT_LINE_HEIGHT.FONT_4,
             color: 'white',
-            fontFamily: FONT_FAMILY_3,
+            fontFamily: text.FONT_FAMILY.SEMI_BOLD,
         },
     },
     GM_WHITE_BG_BLUE_TEXT: {
@@ -214,10 +54,10 @@ export const BUTTON_STYLE = {
             borderRadius: 5,
         },
         textStyle: {
-            fontSize: GM_FONT_SIZE.FONT_3,
-            lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
-            color: GM_BLUE,
-            fontFamily: FONT_FAMILY_3,
+            fontSize: text.TEXT_FONT_SIZE.FONT_3,
+            lineHeight: text.TEXT_LINE_HEIGHT.FONT_4,
+            color: color.GM_BLUE,
+            fontFamily: text.FONT_FAMILY.SEMI_BOLD,
         },
     },
     /*
@@ -234,10 +74,10 @@ export const BUTTON_STYLE = {
             justifyContent: 'center',
         },
         textStyle: {
-            fontSize: GM_FONT_SIZE.FONT_3,
-            lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
+            fontSize: text.TEXT_FONT_SIZE.FONT_3,
+            lineHeight: text.TEXT_LINE_HEIGHT.FONT_4,
             color: '#828282',
-            fontFamily: FONT_FAMILY_3,
+            fontFamily: text.FONT_FAMILY.SEMI_BOLD,
         },
     },
 }
@@ -245,24 +85,20 @@ export const BUTTON_STYLE = {
 // Text style
 export const TEXT_STYLE = {
     onboardingTitleTextStyle: {
-        fontSize: GM_FONT_SIZE.FONT_4,
-        lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
-        fontFamily: FONT_FAMILY_1,
+        fontSize: text.TEXT_FONT_SIZE.FONT_4,
+        lineHeight: text.TEXT_LINE_HEIGHT.FONT_4,
+        fontFamily: text.FONT_FAMILY.BOLD,
         textAlign: 'center',
     },
     // Paragraph text style in an
     onboardingPharagraphTextStyle: {
-        fontSize: GM_FONT_SIZE.FONT_3,
-        lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
-        fontFamily: FONT_FAMILY_2,
+        fontSize: text.TEXT_FONT_SIZE.FONT_3,
+        lineHeight: text.TEXT_LINE_HEIGHT.FONT_4,
+        fontFamily: text.FONT_FAMILY.REGULAR,
         fontWeight: '500',
         textAlign: 'center',
     },
 }
-
-export const GM_FONT_FAMILY_1 = 'gotham-pro-bold'
-export const GM_FONT_FAMILY_2 = 'gotham-pro'
-export const GM_FONT_FAMILY_3 = 'Helvetica'
 
 export const imagePreviewContainerStyle = {
     shadowColor: '#ddd',

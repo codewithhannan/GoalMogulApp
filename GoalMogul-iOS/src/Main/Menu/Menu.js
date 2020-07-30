@@ -34,7 +34,7 @@ import {
     PRIVACY_POLICY_URL,
     DEVICE_MODEL,
 } from '../../Utils/Constants'
-import { DEFAULT_STYLE } from '../../styles'
+import { default_style } from '../../styles/basic'
 
 const DEBUG_KEY = '[ UI Menu ]'
 const { AccountMultiple, MessageIcon } = Icons
@@ -268,13 +268,13 @@ const styles = {
         height: 20,
         width: 20,
     },
-    titleTextStyle: DEFAULT_STYLE.buttonText_1,
+    titleTextStyle: default_style.buttonText_1,
     bottomContainer: {
         bottom: 0,
         position: 'absolute',
         width: '100%',
     },
-    bottomText: DEFAULT_STYLE.buttonText_1,
+    bottomText: default_style.buttonText_1,
     logOutButtonStyle: {
         // backgroundColor: '#F2F2F2',
         paddingLeft: 20,

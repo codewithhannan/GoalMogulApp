@@ -25,7 +25,7 @@ import {
     markNeedAsComplete,
 } from '../../../redux/modules/goal/GoalDetailActions'
 import { decode } from '../../../redux/middleware/utils'
-import { DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 
 // Constants
 const { CheckIcon: checkIcon } = Icons
@@ -269,7 +269,7 @@ const styles = {
         backgroundColor: 'white',
     },
     sectionTextStyle: {
-        ...DEFAULT_STYLE.normalText_1,
+        ...default_style.normalText_1,
         color: '#909090',
     },
     textContainerStyle: {
@@ -281,29 +281,29 @@ const styles = {
         flex: 20,
     },
     iconContainerStyle: {
-        height: 36 * DEFAULT_STYLE.uiScale,
-        width: 36 * DEFAULT_STYLE.uiScale,
-        borderRadius: 18 * DEFAULT_STYLE.uiScale,
+        height: 36 * default_style.uiScale,
+        width: 36 * default_style.uiScale,
+        borderRadius: 18 * default_style.uiScale,
         backgroundColor: '#efefef',
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: 15,
     },
     iconStyle: {
-        ...DEFAULT_STYLE.normalIcon_1,
+        ...default_style.normalIcon_1,
         tintColor: '#a4a7a7',
     },
     checkIconContainerStyle: {
-        height: 28 * DEFAULT_STYLE.uiScale,
-        width: 28 * DEFAULT_STYLE.uiScale,
-        borderRadius: 14 * DEFAULT_STYLE.uiScale,
+        height: 28 * default_style.uiScale,
+        width: 28 * default_style.uiScale,
+        borderRadius: 14 * default_style.uiScale,
         backgroundColor: '#a5e5c0',
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: 10,
     },
     checkIconStyle: {
-        ...DEFAULT_STYLE.normalIcon_1,
+        ...default_style.normalIcon_1,
         tintColor: 'black',
     },
 }

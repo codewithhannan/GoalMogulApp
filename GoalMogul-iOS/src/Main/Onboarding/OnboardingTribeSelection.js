@@ -15,15 +15,10 @@ import { connect } from 'react-redux'
 import right_arrow_icon from '../../asset/utils/right_arrow.png'
 import OnboardingHeader from './Common/OnboardingHeader'
 import DelayedButton from '../Common/Button/DelayedButton'
-import {
-    GM_FONT_SIZE,
-    GM_BLUE,
-    GM_FONT_FAMILY,
-    FONT_FAMILY_2,
-    DEFAULT_STYLE,
-    LETTER_SPACING,
-} from '../../styles'
+
+import { text, color, default_style } from '../../styles/basic'
 import OnboardingStyles from '../../styles/Onboarding'
+
 import {
     registrationTribeSelection,
     registrationFetchTribes,
@@ -31,6 +26,7 @@ import {
 } from '../../redux/modules/registration/RegistrationActions'
 import OnboardingFooter from './Common/OnboardingFooter'
 import * as Animatable from 'react-native-animatable'
+
 import { Icon, CheckBox } from '@ui-kitten/components'
 import { getImageOrDefault, decode } from '../../redux/middleware/utils'
 
@@ -130,17 +126,17 @@ class OnboardingTribeSelection extends React.Component {
                             zIndex: 2,
                             borderRadius: 10,
                             borderWidth: 0.5,
-                            backgroundColor: selected ? GM_BLUE : 'white',
+                            backgroundColor: selected ? color.GM_BLUE : color.GM_CARD_BACKGROUND,
                             justifyContent: 'center',
                             alignItems: 'center',
-                            borderColor: selected ? GM_BLUE : '#8C8C8C',
+                            borderColor: selected ? color.GM_BLUE : '#8C8C8C',
                         }}
                     >
                         <Icon
                             name="check"
                             pack="material-community"
                             style={{
-                                tintColor: selected ? 'white' : '#8C8C8C',
+                                tintColor: selected ? color.GM_CARD_BACKGROUND : '#8C8C8C',
                                 height: 20,
                                 width: 20,
                             }}
@@ -167,9 +163,9 @@ class OnboardingTribeSelection extends React.Component {
                     >
                         <Text
                             style={[
-                                DEFAULT_STYLE.titleText_1,
+                                default_style.titleText_1,
                                 {
-                                    letterSpacing: LETTER_SPACING,
+                                    letterSpacing: text.LETTER_SPACING.REGULAR,
                                     flex: 1,
                                 },
                             ]}
@@ -178,10 +174,10 @@ class OnboardingTribeSelection extends React.Component {
                         </Text>
                         <Text
                             style={[
-                                DEFAULT_STYLE.normalText_1,
+                                default_style.normalText_1,
                                 {
                                     color: '#828282',
-                                    letterSpacing: LETTER_SPACING,
+                                    letterSpacing: text.LETTER_SPACING.REGULAR,
                                 },
                             ]}
                         >
@@ -191,10 +187,10 @@ class OnboardingTribeSelection extends React.Component {
                     </View>
                     <Text
                         style={[
-                            DEFAULT_STYLE.normalText_1,
+                            default_style.normalText_1,
                             {
                                 color: '#828282',
-                                letterSpacing: LETTER_SPACING,
+                                letterSpacing: text.LETTER_SPACING.REGULAR,
                             },
                         ]}
                     >
@@ -246,8 +242,8 @@ class OnboardingTribeSelection extends React.Component {
                     />
                     <Text
                         style={{
-                            fontSize: GM_FONT_SIZE.FONT_2,
-                            fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+                            fontSize: text.TEXT_FONT_SIZE.FONT_2,
+                            fontFamily: text.FONT_FAMILY.BOLD,
                             color: '#2F80ED',
                             paddingTop: 2,
                             textAlign: 'center',
@@ -270,7 +266,7 @@ class OnboardingTribeSelection extends React.Component {
                     paddingHorizontal: 16,
                     paddingBottom: 16,
                     marginBottom: 2,
-                    backgroundColor: 'white',
+                    backgroundColor: color.GM_CARD_BACKGROUND,
                 }}
             >
                 {BUTTON_LIST.map((button) => {
@@ -293,17 +289,17 @@ class OnboardingTribeSelection extends React.Component {
                                     width: 20,
                                     tintColor:
                                         this.state.category == title
-                                            ? GM_BLUE
+                                            ? color.GM_BLUE
                                             : '#828282',
                                 }}
                             />
                             <Text
                                 style={[
-                                    DEFAULT_STYLE.normalText_2,
+                                    default_style.normalText_2,
                                     {
                                         color:
                                             this.state.category == title
-                                                ? GM_BLUE
+                                                ? color.GM_BLUE
                                                 : '#333333',
                                         marginTop: 5,
                                     },
@@ -337,7 +333,7 @@ class OnboardingTribeSelection extends React.Component {
                         style={{
                             alignItems: 'center',
                             justifyContent: 'center',
-                            backgroundColor: 'white',
+                            backgroundColor: color.GM_CARD_BACKGROUND,
                             paddingTop: 24,
                             padding: 16,
                         }}
@@ -349,8 +345,8 @@ class OnboardingTribeSelection extends React.Component {
                             style={[
                                 textStyle.subTitle,
                                 {
-                                    color: '#333',
-                                    fontFamily: FONT_FAMILY_2,
+                                    color: color.TEXT_COLOR.DARK,
+                                    fontFamily: text.FONT_FAMILY.REGULAR,
                                     textAlign: 'center',
                                     flexWrap: 'wrap',
                                 },
@@ -377,7 +373,7 @@ class OnboardingTribeSelection extends React.Component {
                         numColumns={1}
                         // style={{ marginTop: 10 }}
                         contentContainerStyle={{
-                            backgroundColor: 'white',
+                            backgroundColor: color.GM_CARD_BACKGROUND,
                             paddingBottom: 16,
                         }}
                         bounces={false}
@@ -468,7 +464,7 @@ const styles = {
         shadowOpacity: 0.9,
         shadowColor: 'rgba(0,0,0,0.1)',
         borderWidth: 0.5,
-        borderColor: GM_BLUE,
+        borderColor: color.GM_BLUE,
     },
     tribeCardImageStyle: {
         width: 42,

@@ -3,7 +3,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import _ from 'lodash'
-import { DEFAULT_STYLE } from '../../styles'
+import { default_style } from '../../styles/basic'
 
 const LOW_PRIORITY_COLOR = '#f3d94e'
 const MEDIAM_PRIORITY_COLOR = '#ef8258'
@@ -20,7 +20,7 @@ const PriorityBar = (props) => {
     const backgroundColor = getColor(parseInt(priority, 10))
 
     const views = Array.from(Array(10)).map((a, index) => {
-        let style = { ...DEFAULT_STYLE.priortyBar, ...styles.defaultStyle }
+        let style = { ...default_style.priortyBar, ...styles.defaultStyle }
         if (index >= 10 - priority) {
             style = _.set(style, 'backgroundColor', backgroundColor)
         }

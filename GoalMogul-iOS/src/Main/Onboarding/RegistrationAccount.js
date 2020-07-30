@@ -25,8 +25,10 @@ import OnboardingHeader from './Common/OnboardingHeader'
 import OnboardingFooter from './Common/OnboardingFooter'
 import InputBox from './Common/InputBox'
 import DelayedButton from '../Common/Button/DelayedButton'
-import { GM_BLUE } from '../../styles'
+
+import { color, text } from '../../styles/basic'
 import OnboardingStyles from '../../styles/Onboarding'
+
 import { registrationLogin, onVerifyPhoneNumber } from '../../actions'
 import {
     registrationTextInputChange,
@@ -34,8 +36,6 @@ import {
     validatePhoneCode,
     cancelRegistration,
 } from '../../redux/modules/registration/RegistrationActions'
-import PhoneVerificationMoal from './PhoneVerificationModal'
-import { Button, CheckBox } from '@ui-kitten/components'
 import UserAgreementCheckBox from './UserAgreementCheckBox'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
@@ -244,7 +244,7 @@ class RegistrationAccount extends React.Component {
                             {
                                 textAlign: 'center',
                                 alignItems: 'flex-end',
-                                color: GM_BLUE,
+                                color: color.GM_BLUE,
                             },
                         ]}
                     >

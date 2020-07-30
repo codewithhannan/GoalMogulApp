@@ -17,15 +17,7 @@
 
 import React from 'react'
 import { View, Text } from 'react-native'
-import {
-    GM_BLUE,
-    GM_DOT_GRAY,
-    GM_BLUE_LIGHT_LIGHT,
-    GM_FONT_SIZE,
-    GM_FONT_LINE_HEIGHT,
-    GM_FONT_FAMILY,
-    GM_BLUE_LIGHT,
-} from '../../../styles'
+import { color, text } from '../../../styles/basic'
 import OnboardingStyles from '../../../styles/Onboarding'
 import { Icon } from '@ui-kitten/components'
 import DelayedButton from '../../Common/Button/DelayedButton'
@@ -67,7 +59,9 @@ class OnboardingFooter extends React.Component {
 
     renderButton(props) {
         const { disabled, buttonText, ...otherProps } = props
-        let disabledStyle = disabled ? { backgroundColor: GM_BLUE_LIGHT } : {}
+        let disabledStyle = disabled
+            ? { backgroundColor: color.GM_BLUE_LIGHT }
+            : {}
         return (
             <DelayedButton
                 {...otherProps}
@@ -127,7 +121,7 @@ const styles = {
         alignItems: 'center',
         paddingBottom: 15,
         // marginBottom: 20,
-        backgroundColor: 'white',
+        backgroundColor: color.GM_CARD_BACKGROUND,
         shadowOffset: {
             width: 0,
             height: 0,
@@ -140,7 +134,7 @@ const styles = {
     buttonContainerStyle: {
         height: 45,
         width: '100%',
-        backgroundColor: GM_BLUE,
+        backgroundColor: color.GM_BLUE,
         borderRadius: 3,
         alignItems: 'center',
         justifyContent: 'center',
@@ -149,11 +143,11 @@ const styles = {
         marginBottom: 20,
     },
     buttonTextStyle: {
-        fontSize: GM_FONT_SIZE.FONT_3,
+        fontSize: text.TEXT_FONT_SIZE.FONT_3,
         fontWeight: 'bold',
-        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
+        lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
         color: 'white',
-        fontFamily: GM_FONT_FAMILY.GOTHAM_BOLD,
+        fontFamily: text.FONT_FAMILY.BOLD,
     },
     circleSize: 52, // TODO: circle size should ajust with screen dimension
     circle: {
@@ -166,8 +160,8 @@ const styles = {
             backgroundColor: rotate
                 ? '#F2F2F2'
                 : disabled
-                ? GM_BLUE_LIGHT_LIGHT
-                : GM_BLUE,
+                ? color.GM_BLUE_LIGHT_LIGHT
+                : color.GM_BLUE,
             marginLeft: size / 2,
             marginRight: size / 2,
             alignItems: 'center',
@@ -194,7 +188,7 @@ const styles = {
     dotStyleEmpty: (size) => {
         const radius = Math.ceil((size * 200) / 2000)
         return {
-            backgroundColor: GM_DOT_GRAY,
+            backgroundColor: color.GM_DOT_GRAY,
             height: radius * 2,
             width: radius * 2,
             borderRadius: radius,
@@ -205,7 +199,7 @@ const styles = {
     dotStyleFull: (size) => {
         const radius = Math.ceil((size * 200) / 2000)
         return {
-            backgroundColor: GM_BLUE,
+            backgroundColor: color.GM_BLUE,
             height: radius * 2,
             width: radius * 2,
             borderRadius: radius,

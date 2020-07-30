@@ -10,13 +10,9 @@ import {
     TouchableOpacity,
     Platform,
 } from 'react-native'
-import Constants from 'expo-constants'
 import * as Font from 'expo-font'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
-
-// Styles
-import { APP_BLUE_BRIGHT, APP_DEEP_BLUE } from '../styles'
 
 // Assets
 import LOGO from '../../assets/tutorial/logo.png'
@@ -34,6 +30,7 @@ import Host from './Host'
 
 // Constants
 import { IPHONE_MODELS, DEVICE_MODEL } from '../Utils/Constants'
+import { color } from '../styles/basic'
 
 const DEBUG_KEY = '[ UI Tutorial ]'
 const DURATION = 500
@@ -355,7 +352,7 @@ class Tutorial extends React.Component {
                 <View style={{ height: 10, width: '100%' }}>
                     <ProgressBar
                         progress={this.progress}
-                        fillColor={`${APP_DEEP_BLUE}`}
+                        fillColor={`${color.GM_BLUE_LIGHT}`}
                         barColor="#124562"
                     />
                 </View>
@@ -420,7 +417,7 @@ const CancelButton = (props) => {
 
 const styles = StyleSheet.create({
     containerStyle: {
-        backgroundColor: APP_BLUE_BRIGHT,
+        backgroundColor: color.GM_BLUE,
         flex: 1,
         alignItems: 'center',
     },

@@ -43,8 +43,6 @@ import {
     subscribeEntityNotification,
     unsubscribeEntityNotification,
 } from '../../redux/modules/notification/NotificationActions'
-// Styles
-import { APP_DEEP_BLUE } from '../../styles'
 // Constants
 import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,

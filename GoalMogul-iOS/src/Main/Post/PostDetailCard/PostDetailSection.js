@@ -63,12 +63,8 @@ import ImageModal from '../../Common/ImageModal'
 import RichText from '../../Common/Text/RichText'
 
 // Styles
-import {
-    imagePreviewContainerStyle,
-    APP_BLUE,
-    DEFAULT_STYLE,
-    GM_BLUE,
-} from '../../../styles'
+import { imagePreviewContainerStyle } from '../../../styles'
+import { default_style, color } from '../../../styles/basic'
 
 // Constants
 import {
@@ -268,7 +264,7 @@ class PostDetailSection extends React.PureComponent {
                             caret={caret}
                             user={owner}
                             pageId={this.props.pageId}
-                            textStyle={DEFAULT_STYLE.titleText_2}
+                            textStyle={default_style.titleText_2}
                             belongsToTribe={belongsToTribe}
                         />
                         <View style={{ marginTop: 2 }} />
@@ -283,7 +279,7 @@ class PostDetailSection extends React.PureComponent {
                     contentTags={content ? content.tags : []}
                     contentLinks={content ? content.links : []}
                     textStyle={{
-                        ...DEFAULT_STYLE.normalText_1,
+                        ...default_style.normalText_1,
                         flex: 1,
                         flexWrap: 'wrap',
                         color: 'black',
@@ -592,7 +588,7 @@ const styles = {
     },
     seeMoreTextStyle: {
         fontSize: 12,
-        color: GM_BLUE,
+        color: color.GM_BLUE,
     },
     statsContainerStyle: {
         borderTopWidth: 0.5,

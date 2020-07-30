@@ -9,7 +9,7 @@ import React from 'react'
 import { FlatList, View } from 'react-native'
 import { connect } from 'react-redux'
 import ModalHeader from '../../Common/Header/ModalHeader'
-import { APP_BLUE } from '../../../styles'
+import { color } from '../../../styles/basic'
 import EmptyResult from '../../Common/Text/EmptyResult'
 import { Actions } from 'react-native-router-flux'
 import ContactInviteCard from './ContactInviteCard'
@@ -57,7 +57,7 @@ class ContactInvitePage extends React.PureComponent {
                         shadowOffset: { width: 0, height: 1 },
                         shadowOpacity: 0.15,
                         shadowRadius: 3,
-                        backgroundColor: APP_BLUE,
+                        backgroundColor: color.GM_BLUE,
                     }}
                     backButtonStyle={{
                         tintColor: '#21364C',

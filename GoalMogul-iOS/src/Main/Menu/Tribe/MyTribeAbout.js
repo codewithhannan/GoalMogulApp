@@ -15,7 +15,7 @@ import ProfileImage from '../../Common/ProfileImage'
 
 // Asset
 import threeDotsIcon from '../../../asset/utils/friendsSettingIcon.png'
-import { DEFAULT_STYLE } from '../../../styles'
+import { default_style } from '../../../styles/basic'
 
 const { width } = Dimensions.get('window')
 const months = [
@@ -90,7 +90,7 @@ class MyTribeAbout extends Component {
                     }}
                 >
                     <Image
-                        style={DEFAULT_STYLE.profileImage_2}
+                        style={default_style.profileImage_2}
                         source={threeDotsIcon}
                     />
                 </TouchableOpacity>

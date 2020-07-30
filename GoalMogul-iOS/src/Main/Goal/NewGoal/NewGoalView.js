@@ -60,7 +60,7 @@ import { getGoalDetailByTab } from '../../../redux/modules/goal/selector'
 
 // Utils
 import { arrayUnique, clearTags } from '../../../redux/middleware/utils'
-import { DEFAULT_STYLE, BACKGROUND_COLOR, GM_BLUE } from '../../../styles'
+import { default_style, color } from '../../../styles/basic'
 import {
     PRIVACY_OPTIONS,
     DAY_IN_MS,
@@ -138,7 +138,7 @@ class NewGoalView extends Component {
         // console.log(`${DEBUG_KEY}: scrollTo is called to scroll to y: ${y}`);
         // console.log(`${DEBUG_KEY}: need length: `, this.props.steps.length);
         // console.log(`${DEBUG_KEY}: index is: `, index);
-        const extraScroll = index * 40 * DEFAULT_STYLE.uiScale
+        const extraScroll = index * 40 * default_style.uiScale
         this.view.measure((x, vy, width, height, pX, pY) => {
             if (type === 'step') {
                 this.stepsView.measure((x, y, width, height, pX, pY) => {
@@ -560,7 +560,7 @@ class NewGoalView extends Component {
                             textStyle={styles.subTitleTextStyle}
                             required={true}
                         />
-                        <Text style={DEFAULT_STYLE.smallText_2}>
+                        <Text style={default_style.smallText_2}>
                             {title ? title.length : 0}/90
                         </Text>
                     </View>
@@ -598,11 +598,11 @@ class NewGoalView extends Component {
                     >
                         <Text style={styles.subTitleTextStyle}>
                             Description{' '}
-                            <Text style={DEFAULT_STYLE.smallText_1}>
+                            <Text style={default_style.smallText_1}>
                                 (Optional)
                             </Text>
                         </Text>
-                        <Text style={DEFAULT_STYLE.smallText_2}>
+                        <Text style={default_style.smallText_2}>
                             {details && details[0] && details[0].length > 0
                                 ? this.props.details[0].length
                                 : 0}
@@ -732,7 +732,7 @@ class NewGoalView extends Component {
                     >
                         {SLIDER_NUMS.map((val) => {
                             return (
-                                <Text style={DEFAULT_STYLE.normalText_1}>
+                                <Text style={default_style.normalText_1}>
                                     {val}
                                 </Text>
                             )
@@ -857,7 +857,7 @@ class NewGoalView extends Component {
         const startTime = (
             <Text
                 style={{
-                    ...DEFAULT_STYLE.subTitleText_1,
+                    ...default_style.subTitleText_1,
                     marginLeft: 12,
                     marginRight: 12,
                 }}
@@ -870,7 +870,7 @@ class NewGoalView extends Component {
         const endTime = (
             <Text
                 style={{
-                    ...DEFAULT_STYLE.subTitleText_1,
+                    ...default_style.subTitleText_1,
                     marginLeft: 12,
                     marginRight: 12,
                 }}
@@ -884,8 +884,8 @@ class NewGoalView extends Component {
         const icon = (
             <View
                 style={{
-                    height: 40 * DEFAULT_STYLE.uiScale,
-                    width: 34 * DEFAULT_STYLE.uiScale,
+                    height: 40 * default_style.uiScale,
+                    width: 34 * default_style.uiScale,
                     borderWidth: 1,
                     borderColor: '#DFE0E1',
                     backgroundColor: '#F5F7FA',
@@ -897,7 +897,7 @@ class NewGoalView extends Component {
                     resizeMode="contain"
                     source={CalenderIcon}
                     style={{
-                        ...DEFAULT_STYLE.buttonIcon_1,
+                        ...default_style.buttonIcon_1,
                         tintColor: '#DADADA',
                     }}
                 />
@@ -929,7 +929,7 @@ class NewGoalView extends Component {
                     <Image
                         source={cancel}
                         resizeMode="contain"
-                        style={DEFAULT_STYLE.buttonIcon_1}
+                        style={default_style.buttonIcon_1}
                     />
                 </TouchableOpacity>
             ) : null
@@ -960,7 +960,7 @@ class NewGoalView extends Component {
                         <TouchableOpacity
                             activeOpacity={0.6}
                             style={{
-                                height: 40 * DEFAULT_STYLE.uiScale,
+                                height: 40 * default_style.uiScale,
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 ...styles.borderStyle,
@@ -977,13 +977,13 @@ class NewGoalView extends Component {
                             {startTime}
                         </TouchableOpacity>
                         <Image
-                            style={{ margin: 8, ...DEFAULT_STYLE.normalIcon_1 }}
+                            style={{ margin: 8, ...default_style.normalIcon_1 }}
                             source={arrowRight}
                         />
                         <TouchableOpacity
                             activeOpacity={0.6}
                             style={{
-                                height: 40 * DEFAULT_STYLE.uiScale,
+                                height: 40 * default_style.uiScale,
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'flex-start',
@@ -1031,7 +1031,7 @@ class NewGoalView extends Component {
                 style={{ ...styles.standardInputStyle }}
                 placeholder={placeholder}
                 iconSource={cancel}
-                iconStyle={DEFAULT_STYLE.normalIcon_1}
+                iconStyle={default_style.normalIcon_1}
                 iconOnPress={iconOnPress}
                 move={drag}
                 blurOnSubmit
@@ -1045,7 +1045,9 @@ class NewGoalView extends Component {
                 multiline
                 onSubmitEditing={onSubmitEditing}
                 inputContainerStyle={{
-                    backgroundColor: isActive ? '#F2F2F2' : BACKGROUND_COLOR,
+                    backgroundColor: isActive
+                        ? '#F2F2F2'
+                        : color.GM_CARD_BACKGROUND,
                 }}
             />
         )
@@ -1120,20 +1122,20 @@ class NewGoalView extends Component {
                         width: '100%',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        backgroundColor: BACKGROUND_COLOR,
+                        backgroundColor: color.GM_CARD_BACKGROUND,
                         borderWidth: 1,
                         borderRadius: 3,
-                        borderColor: GM_BLUE,
+                        borderColor: color.GM_BLUE,
                         padding: 10,
                     }}
                     iconStyle={{
-                        ...DEFAULT_STYLE.smallIcon_1,
-                        backgroundColor: BACKGROUND_COLOR,
-                        tintColor: GM_BLUE,
+                        ...default_style.smallIcon_1,
+                        backgroundColor: color.GM_CARD_BACKGROUND,
+                        tintColor: color.GM_BLUE,
                     }}
                     textStyle={{
-                        ...DEFAULT_STYLE.titleText_1,
-                        color: GM_BLUE,
+                        ...default_style.titleText_1,
+                        color: color.GM_BLUE,
                         marginLeft: 15,
                     }}
                 />
@@ -1174,20 +1176,20 @@ class NewGoalView extends Component {
                         padding: 24,
                     }}
                 >
-                    <Text style={DEFAULT_STYLE.subTitleText_1}>
+                    <Text style={default_style.subTitleText_1}>
                         Need some help forming your Goal?
                     </Text>
                     <Button
                         text="View Trending Goals"
                         containerStyle={{
-                            backgroundColor: GM_BLUE,
+                            backgroundColor: color.GM_BLUE,
                             alignSelf: 'flex-start',
                             paddingLeft: 16,
                             paddingRight: 16,
                             marginTop: 16,
                         }}
                         textStyle={{
-                            ...DEFAULT_STYLE.titleText_1,
+                            ...default_style.titleText_1,
                             color: 'white',
                         }}
                         onPress={() => Actions.push('trendingGoalView')}
@@ -1195,8 +1197,8 @@ class NewGoalView extends Component {
                 </View>
                 <View
                     style={[
-                        DEFAULT_STYLE.shadow,
-                        { height: 8 * DEFAULT_STYLE.uiScale },
+                        default_style.shadow,
+                        { height: 8 * default_style.uiScale },
                     ]}
                 />
                 <View style={{ padding: 20, paddingBottom: 0 }}>
@@ -1212,7 +1214,7 @@ class NewGoalView extends Component {
                     {this.renderPriority()}
                     {this.renderTimeline()}
                 </View>
-                <View style={[DEFAULT_STYLE.shadow, styles.sectionMargin]} />
+                <View style={[default_style.shadow, styles.sectionMargin]} />
                 <View
                     ref={(r) => {
                         this.view = r
@@ -1258,7 +1260,7 @@ const validateTime = (start, end) => {
 const styles = {
     activityIndicatorStyle: {
         flex: 1,
-        height: 50 * DEFAULT_STYLE.uiScale,
+        height: 50 * default_style.uiScale,
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
@@ -1293,27 +1295,27 @@ const styles = {
         borderColor: '#E0E0E0',
     },
     titleTextStyle: {
-        ...DEFAULT_STYLE.titleText_1,
+        ...default_style.titleText_1,
         padding: 2,
     },
     subTitleTextStyle: {
-        ...DEFAULT_STYLE.titleText_2,
+        ...default_style.titleText_2,
         padding: 2,
     },
     descriptionTextStyle: {
-        ...DEFAULT_STYLE.normalText_1,
+        ...default_style.normalText_1,
         padding: 2,
     },
     standardInputStyle: {
         flex: 1,
-        ...DEFAULT_STYLE.subTitleText_1,
+        ...default_style.subTitleText_1,
         padding: 12,
         paddingTop: 12,
         paddingRight: 12,
         paddingLeft: 12,
     },
     caretStyle: {
-        ...DEFAULT_STYLE.smallIcon_1,
+        ...default_style.smallIcon_1,
         marginRight: 12,
         tintColor: '#333',
     },
@@ -1347,7 +1349,7 @@ const styles = {
             activeOpacity: 10,
         },
         optionText: {
-            ...DEFAULT_STYLE.subTitleText_1,
+            ...default_style.subTitleText_1,
             paddingTop: 5,
             paddingBottom: 5,
             paddingLeft: 10,
@@ -1418,7 +1420,7 @@ const MenuFactory = (
                 <View style={triggerContainerStyle}>
                     <Text
                         style={{
-                            ...DEFAULT_STYLE.subTitleText_1,
+                            ...default_style.subTitleText_1,
                             margin: 10,
                             flex: 1,
                         }}
