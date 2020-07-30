@@ -16,14 +16,16 @@ import {
     GM_BLUE,
     GM_FONT_FAMILY,
     GM_FONT_LINE_HEIGHT,
-    TEXT_STYLE as textStyle,
     FONT_FAMILY_2,
     DEFAULT_STYLE,
 } from '../../styles'
+import OnboardingStyles from '../../styles/Onboarding'
 import OnboardingFooter from './Common/OnboardingFooter'
 import { Actions } from 'react-native-router-flux'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
+const { text: textStyle } = OnboardingStyles
+
 class OnboardingCommunity extends React.Component {
     constructor(props) {
         super(props)
@@ -141,10 +143,10 @@ class OnboardingCommunity extends React.Component {
                     }}
                 >
                     <View style={{ alignItems: 'center', marginTop: 35 }}>
-                        <Text style={textStyle.onboardingTitleTextStyle}>
+                        <Text style={textStyle.title}>
                             You are here to share
                         </Text>
-                        <Text style={textStyle.onboardingTitleTextStyle}>
+                        <Text style={textStyle.title}>
                             your goals with others
                         </Text>
                     </View>
@@ -187,10 +189,10 @@ const styles = {
             width: 0,
             height: 0,
         },
-        elevation: 6,
+        elevation: 3,
         shadowRadius: 6,
-        shadowOpacity: 1,
-        shadowColor: 'rgba(0,0,0,0.3)',
+        shadowOpacity: 0.1,
+        shadowColor: 'black',
     },
 }
 

@@ -7,14 +7,8 @@ import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import OnboardingHeader from './Common/OnboardingHeader'
 import OnboardingFooter from './Common/OnboardingFooter'
-import {
-    BUTTON_STYLE as buttonStyle,
-    TEXT_STYLE as textStyle,
-    GM_BLUE,
-    GM_FONT_SIZE,
-    FONT_FAMILY_2,
-    DEFAULT_STYLE,
-} from '../../styles'
+import { DEFAULT_STYLE } from '../../styles'
+import OnboardingStyles from '../../styles/Onboarding'
 import { inviteExistingUser } from '../../redux/modules/registration/RegistrationActions'
 import { inviteUser } from '../../redux/modules/User/ContactSync/ContactSyncActions'
 import { TabView } from 'react-native-tab-view'
@@ -22,6 +16,7 @@ import TabButtonGroup from '../Common/TabButtonGroup'
 import UserCard from './Common/UserCard'
 import { contactSyncLoadMore } from '../../actions'
 
+const { text: textStyle } = OnboardingStyles
 /**
  * Sync Contact Invitation page
  *
@@ -170,19 +165,15 @@ class SyncContactInvite extends React.Component {
                         }}
                     >
                         {inviteOnly ? (
-                            <Text style={[textStyle.onboardingTitleTextStyle]}>
+                            <Text style={[textStyle.title]}>
                                 Invite friends to join!
                             </Text>
                         ) : (
                             [
-                                <Text
-                                    style={textStyle.onboardingTitleTextStyle}
-                                >
+                                <Text style={textStyle.title}>
                                     Add some friends or
                                 </Text>,
-                                <Text
-                                    style={textStyle.onboardingTitleTextStyle}
-                                >
+                                <Text style={textStyle.title}>
                                     invite friends to join!
                                 </Text>,
                             ]

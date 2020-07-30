@@ -25,14 +25,12 @@ import OnboardingHeader from './Common/OnboardingHeader'
 import DelayedButton from '../Common/Button/DelayedButton'
 import ImagePicker from './Common/ImagePicker'
 
-import {
-    TEXT_STYLE as textStyle,
-    BUTTON_STYLE as buttonStyle,
-    GM_BLUE_LIGHT,
-    GM_BLUE,
-} from '../../styles'
+import { GM_BLUE_LIGHT, GM_BLUE } from '../../styles'
+import OnboardingStyles from '../../styles/Onboarding'
 import { openCamera, openCameraRoll } from '../../actions'
 import { registrationAddProfilePhoto } from '../../redux/modules/registration/RegistrationActions'
+
+const { text: textStyle, button: buttonStyle } = OnboardingStyles
 
 class OnboardingAddPhotos extends Component {
     /**Navigate to next step. */
@@ -52,10 +50,17 @@ class OnboardingAddPhotos extends Component {
         const { openCamera, openCameraRoll, profilePic } = this.props
 
         return (
-            <View style={styles.containerStyles}>
+            <View style={[OnboardingStyles.container.page]}>
                 <OnboardingHeader />
-                <View style={styles.containerStyles}>
-                    <View>
+                <View style={[OnboardingStyles.container.card]}>
+                    <View
+                        style={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexGrow: 1,
+                            paddingBottom: 68,
+                        }}
+                    >
                         <ImagePicker
                             handleTakingPicture={openCamera}
                             handleCameraRoll={openCameraRoll}
@@ -66,23 +71,28 @@ class OnboardingAddPhotos extends Component {
                         />
                         <Text
                             style={[
-                                textStyle.onboardingTitleTextStyle,
-                                styles.titleStyles,
+                                textStyle.title,
+                                { marginBottom: 16, textAlign: 'center' },
                             ]}
                         >
                             Now, add a photo
                         </Text>
-                        <Text style={textStyle.onboardingPharagraphTextStyle}>
-                            This way, people will recgonize you
+                        <Text
+                            style={[
+                                textStyle.paragraph,
+                                { textAlign: 'center' },
+                            ]}
+                        >
+                            This way your friends can recgonize you
                         </Text>
                     </View>
-                    <View style={styles.buttonContainerStyles}>
+                    <View>
                         <DelayedButton
                             style={[
                                 buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
                                     .containerStyle,
-                                styles.buttonPrimaryStyles,
                                 {
+                                    marginBottom: 8,
                                     backgroundColor:
                                         profilePic == undefined
                                             ? GM_BLUE_LIGHT
@@ -124,23 +134,8 @@ class OnboardingAddPhotos extends Component {
 }
 
 const styles = StyleSheet.create({
-    containerStyles: {
-        flex: 1,
-        backgroundColor: 'white',
-        justifyContent: 'space-between',
-    },
     imagePickerStyles: {
         marginVertical: 60,
-    },
-    buttonContainerStyles: {
-        marginBottom: 30,
-        paddingHorizontal: 25,
-    },
-    buttonPrimaryStyles: {
-        marginBottom: 15,
-    },
-    titleStyles: {
-        marginBottom: 16,
     },
 })
 

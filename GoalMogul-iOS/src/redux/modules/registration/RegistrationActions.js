@@ -50,7 +50,7 @@ import {
     SENTRY_CONTEXT,
 } from '../../../monitoring/sentry/Constants'
 import { CONTACT_SYNC_LOAD_CONTACT_DONE } from '../User/ContactSync/ContactSyncReducers'
-import { updateFriendship } from '../../../actions'
+import { updateFriendship, fetchAppUserProfile } from '../../../actions'
 import { Logger } from '../../middleware/utils/Logger'
 import LiveChatService from '../../../socketio/services/LiveChatService'
 import MessageStorageService from '../../../services/chat/MessageStorageService'
@@ -351,7 +351,7 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
  * User added a photo and choose to upload the profile photo.
  * @param {*} maybeOnSuccess transition function after profile upload is done
  */
-export const registrationAddProfilePhoto = (maybeOnSuccess) => (
+export const registrationAddProfilePhoto = (maybeOnSuccess) => async (
     dispatch,
     getState
 ) => {
@@ -360,7 +360,7 @@ export const registrationAddProfilePhoto = (maybeOnSuccess) => (
     const token = getState().user.token
 
     if (imageUri) {
-        ImageUtils.getImageSize(imageUri)
+        await ImageUtils.getImageSize(imageUri)
             .then(({ width, height }) => {
                 // Resize image
                 console.log('width, height are: ', width, height)
@@ -418,6 +418,9 @@ export const registrationAddProfilePhoto = (maybeOnSuccess) => (
                 */
                 console.log('profile picture error: ', err)
             })
+
+        // After profile image is uploaded, async refresh profile
+        fetchAppUserProfile()(dispatch, getState)
     }
     if (maybeOnSuccess) {
         maybeOnSuccess()

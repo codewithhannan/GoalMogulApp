@@ -3,14 +3,9 @@
 import React from 'react'
 import _ from 'lodash'
 import { View, Text } from 'react-native'
-import CountryPicker, { Flag } from 'react-native-country-picker-modal'
-import {
-    GM_FONT_SIZE,
-    GM_FONT_FAMILY,
-    GM_FONT_LINE_HEIGHT,
-    FONT_FAMILY_3,
-    FONT_FAMILY_2,
-} from '../../../styles'
+import CountryPicker from 'react-native-country-picker-modal'
+import { FONT_FAMILY_3 } from '../../../styles'
+import OnboardingStyles from '../../../styles/Onboarding'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { Input } from '@ui-kitten/components'
 
@@ -34,24 +29,12 @@ class CountryFlagButton extends React.Component {
 
         return (
             <DelayedButton style={{ flexDirection: 'row' }} onPress={onOpen}>
-                <Flag countryCode={countryCode.cca2} flagSize={14} />
-                <Text
-                    style={{
-                        fontSize: GM_FONT_SIZE.FONT_3,
-                        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                        fontFamily: GM_FONT_FAMILY.GOTHAM,
-                        paddingTop: 2,
-                    }}
-                >{`${countryCode.cca2} `}</Text>
-                <Text
-                    style={{
-                        fontSize: GM_FONT_SIZE.FONT_3,
-                        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                        fontFamily: GM_FONT_FAMILY.GOTHAM,
-                        paddingTop: 1,
-                    }}
-                >
-                    +({`${callingCode}`})
+                {/* <Flag countryCode={countryCode.cca2} flagSize={14} /> */}
+                {/* <Text
+                    style={[DEFAULT_STYLE.titleText_2]}
+                >{`${countryCode.cca2} `}</Text> */}
+                <Text style={[OnboardingStyles.text.subTitle_2]}>
+                    +{`${callingCode}`}
                 </Text>
             </DelayedButton>
         )
@@ -102,12 +85,7 @@ class InputBox extends React.Component {
         if (optional) {
             return (
                 <Text
-                    style={{
-                        fontSize: GM_FONT_SIZE.FONT_1,
-                        lineHeight: GM_FONT_LINE_HEIGHT.FONT_1,
-                        fontFamily: FONT_FAMILY_2,
-                        marginBottom: 5,
-                    }}
+                    style={[OnboardingStyles.input.title, { marginBottom: 5 }]}
                 >
                     <Text
                         style={{
@@ -124,12 +102,7 @@ class InputBox extends React.Component {
         return (
             <View style={{ flexDirection: 'row' }}>
                 <Text
-                    style={{
-                        fontSize: GM_FONT_SIZE.FONT_1,
-                        lineHeight: GM_FONT_LINE_HEIGHT.FONT_1,
-                        fontFamily: FONT_FAMILY_3,
-                        marginBottom: 5,
-                    }}
+                    style={[OnboardingStyles.input.title, { marginBottom: 5 }]}
                 >
                     <Text style={{ color: 'red' }}>*</Text>
                     <Text
@@ -165,7 +138,8 @@ class InputBox extends React.Component {
                             onCountryCodeSelected
                         )
                     }
-                    textStyle={{ fontSize: 16 }}
+                    style={{ backgroundColor: 'white' }}
+                    textStyle={[OnboardingStyles.input.text]}
                     {...custom}
                 />
             </View>
@@ -176,11 +150,11 @@ class InputBox extends React.Component {
         return (
             <View
                 style={{
-                    width: '40%',
                     justifyContent: 'flex-start',
                     borderRightWidth: 1,
                     borderRightColor: '#E0E0E0',
                     marginRight: 12,
+                    paddingRight: 8,
                 }}
             >
                 <CountryPicker
@@ -233,8 +207,8 @@ class InputBox extends React.Component {
                         caption={captionToUse}
                         ref="textInput"
                         label={this.renderInputTitle}
-                        style={{ width: '100%' }}
-                        textStyle={{ fontSize: 16 }}
+                        style={{ width: '100%', backgroundColor: 'white' }}
+                        textStyle={[OnboardingStyles.input.text]}
                         size="large"
                     />
                 </View>
@@ -248,8 +222,8 @@ class InputBox extends React.Component {
                     {...custom}
                     ref="textInput"
                     label={this.renderInputTitle}
-                    style={{ width: '100%' }}
-                    textStyle={{ fontSize: 16 }}
+                    style={{ width: '100%', backgroundColor: 'white' }}
+                    textStyle={[OnboardingStyles.input.text]}
                     size="large"
                 />
             </View>
@@ -262,49 +236,6 @@ const styles = {
         display: 'flex',
         width: '100%',
         marginTop: 20,
-    },
-    textInputContainerStyle: {
-        flexDirection: 'row',
-        width: '100%',
-        marginTop: 6,
-        borderWidth: 1,
-        borderColor: '#E0E0E0',
-        borderRadius: 3,
-        height: 42,
-        paddingTop: 11,
-        paddingBottom: 11,
-        paddingLeft: 16,
-        paddingRight: 16,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    textInputContainerStylePhone: {
-        flexDirection: 'row',
-        flowGrow: 1,
-        width: '100%',
-        marginTop: 6,
-        borderWidth: 1,
-        borderColor: '#E0E0E0',
-        borderRadius: 3,
-        height: 42,
-        paddingLeft: 16,
-        paddingRight: 16,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    textInputStyle: {
-        width: '100%',
-        fontSize: GM_FONT_SIZE.FONT_3,
-        fontFamily: GM_FONT_FAMILY.GOTHAM,
-        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-        marginTop: 0,
-    },
-    textInputStylePhone: {
-        width: '60%',
-        fontSize: GM_FONT_SIZE.FONT_3,
-        fontFamily: GM_FONT_FAMILY.GOTHAM,
-        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-        marginTop: 0,
     },
 }
 

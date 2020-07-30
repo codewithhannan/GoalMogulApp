@@ -9,10 +9,11 @@ import { View, Text } from 'react-native'
 import { DEFAULT_STYLE, GM_BLUE } from '../../styles'
 import { CheckBox } from '@ui-kitten/components'
 import { Actions } from 'react-native-router-flux'
+import DelayedButton from '../Common/Button/DelayedButton'
 
 const UserAgreementCheckBox = ({ checked, onPress }) => {
     return (
-        <View
+        <DelayedButton
             style={{
                 backgroundColor: 'white',
                 borderColor: 'lightgray',
@@ -23,6 +24,7 @@ const UserAgreementCheckBox = ({ checked, onPress }) => {
                 justifyContent: 'center',
                 alignItems: 'center',
             }}
+            onPress={() => onPress(!checked)}
         >
             <CheckBox checked={checked} onChange={onPress} />
             <Text
@@ -47,9 +49,9 @@ const UserAgreementCheckBox = ({ checked, onPress }) => {
                     Actions.push('user_agreement')
                 }}
             >
-                Terms of Service (EULA)
+                Terms of Service
             </Text>
-        </View>
+        </DelayedButton>
     )
 }
 

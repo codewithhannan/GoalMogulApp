@@ -19,12 +19,11 @@ import {
     GM_FONT_SIZE,
     GM_BLUE,
     GM_FONT_FAMILY,
-    GM_FONT_LINE_HEIGHT,
-    TEXT_STYLE as textStyle,
     FONT_FAMILY_2,
     DEFAULT_STYLE,
-    FONT_FAMILY_1,
+    LETTER_SPACING,
 } from '../../styles'
+import OnboardingStyles from '../../styles/Onboarding'
 import {
     registrationTribeSelection,
     registrationFetchTribes,
@@ -33,9 +32,10 @@ import {
 import OnboardingFooter from './Common/OnboardingFooter'
 import * as Animatable from 'react-native-animatable'
 import { Icon, CheckBox } from '@ui-kitten/components'
-import { getImageOrDefault } from '../../redux/middleware/utils'
+import { getImageOrDefault, decode } from '../../redux/middleware/utils'
 
 const { width } = Dimensions.get('window')
+const { text: textStyle } = OnboardingStyles
 
 // TODO: when categories are cleaned, this mapping needs to be updated
 // https://app.asana.com/0/1179217829906631/1184987107432454
@@ -45,7 +45,7 @@ const CATEGORY = {
         category: 'General',
     },
     relationship: {
-        title: 'Relationship',
+        title: 'Relationships',
         category: 'Family/Personal',
     },
     finance: {
@@ -107,7 +107,6 @@ class OnboardingTribeSelection extends React.Component {
             ? styles.tribeCardSelectedContainerStyle
             : styles.tribeCardContainerStyle
 
-        console.log('tribes are: ', item.category)
         return (
             <DelayedButton
                 style={containerStyle}
@@ -123,6 +122,30 @@ class OnboardingTribeSelection extends React.Component {
                         borderTopRightRadius: 3,
                     }}
                 >
+                    <View
+                        style={{
+                            position: 'absolute',
+                            bottom: 16,
+                            left: 16,
+                            zIndex: 2,
+                            borderRadius: 10,
+                            borderWidth: 0.5,
+                            backgroundColor: selected ? GM_BLUE : 'white',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderColor: selected ? GM_BLUE : '#8C8C8C',
+                        }}
+                    >
+                        <Icon
+                            name="check"
+                            pack="material-community"
+                            style={{
+                                tintColor: selected ? 'white' : '#8C8C8C',
+                                height: 20,
+                                width: 20,
+                            }}
+                        />
+                    </View>
                     <Image
                         style={{
                             height: (width - 32) / 2.2,
@@ -142,21 +165,11 @@ class OnboardingTribeSelection extends React.Component {
                             alignItems: 'center',
                         }}
                     >
-                        <Icon
-                            name="check-circle-outline"
-                            pack="material-community"
-                            style={{
-                                tintColor: selected ? GM_BLUE : '#E0E0E0',
-                                height: 23,
-                                width: 23,
-                            }}
-                        />
                         <Text
                             style={[
                                 DEFAULT_STYLE.titleText_1,
                                 {
-                                    paddingLeft: 8,
-                                    letterSpacing: 0.2,
+                                    letterSpacing: LETTER_SPACING,
                                     flex: 1,
                                 },
                             ]}
@@ -168,7 +181,7 @@ class OnboardingTribeSelection extends React.Component {
                                 DEFAULT_STYLE.normalText_1,
                                 {
                                     color: '#828282',
-                                    letterSpacing: 0.2,
+                                    letterSpacing: LETTER_SPACING,
                                 },
                             ]}
                         >
@@ -181,12 +194,11 @@ class OnboardingTribeSelection extends React.Component {
                             DEFAULT_STYLE.normalText_1,
                             {
                                 color: '#828282',
-                                letterSpacing: 0.2,
-                                paddingLeft: 2, // compensate for icon extra widith
+                                letterSpacing: LETTER_SPACING,
                             },
                         ]}
                     >
-                        {description}
+                        {decode(description)}
                     </Text>
                 </View>
             </DelayedButton>
@@ -255,9 +267,8 @@ class OnboardingTribeSelection extends React.Component {
                     width: '100%',
                     flexDirection: 'row',
                     justifyContent: 'space-around',
-                    paddingHorizontal: 10,
-                    paddingTop: 20,
-                    paddingBottom: 15,
+                    paddingHorizontal: 16,
+                    paddingBottom: 16,
                     marginBottom: 2,
                     backgroundColor: 'white',
                 }}
@@ -309,31 +320,42 @@ class OnboardingTribeSelection extends React.Component {
 
     render() {
         const { tribes } = this.props
-        console.log('tribe are: ', tribes)
         const tribesToRender = filterTribesByCategory({
             tribes,
             category: this.state.category,
         })
         return (
-            <View style={styles.containerStyle}>
+            <View
+                style={[
+                    OnboardingStyles.container.page,
+                    { paddingBottom: 0, backgroundColor: '#EAE8EA' },
+                ]}
+            >
                 <OnboardingHeader />
                 <View style={{ flex: 1, justifyContent: 'center' }}>
                     <View
                         style={{
                             alignItems: 'center',
-                            paddingTop: 30,
+                            justifyContent: 'center',
                             backgroundColor: 'white',
+                            paddingTop: 24,
+                            padding: 16,
                         }}
                     >
-                        <Text
-                            style={[
-                                textStyle.onboardingTitleTextStyle,
-                                { marginBottom: 15 },
-                            ]}
-                        >
+                        <Text style={[textStyle.title, { marginBottom: 12 }]}>
                             Join some Tribes!
                         </Text>
-                        <Text style={styles.subTitleTextStyle}>
+                        <Text
+                            style={[
+                                textStyle.subTitle,
+                                {
+                                    color: '#333',
+                                    fontFamily: FONT_FAMILY_2,
+                                    textAlign: 'center',
+                                    flexWrap: 'wrap',
+                                },
+                            ]}
+                        >
                             It'll be easier to connet to others with similar
                             goals.
                         </Text>
@@ -412,15 +434,6 @@ const BUTTON_LIST = [
 ]
 
 const styles = {
-    containerStyle: {
-        flex: 1,
-        backgroundColor: '#EAE8EA',
-    },
-    subTitleTextStyle: {
-        fontSize: GM_FONT_SIZE.FONT_3,
-        lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-        fontFamily: FONT_FAMILY_2,
-    },
     tribeCardContainerStyle: {
         backgroundColor: 'white',
         borderRadius: 5,

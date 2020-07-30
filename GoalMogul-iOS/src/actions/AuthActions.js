@@ -317,7 +317,7 @@ const authenticate = (
  */
 export const getLoginErrorMessage = ({ username, error, response }) => {
     // default message
-    let message = 'Could not find an account matching those credential.'
+    let message = 'Could not find an account matching those credentials.'
 
     // Server error
     if (response && is5xxResponse(response.status)) {
@@ -328,7 +328,7 @@ export const getLoginErrorMessage = ({ username, error, response }) => {
     if (response && is4xxResponse(response.status)) {
         if (response.message && response.message.includes('Wrong password')) {
             // Invalid password
-            return 'Could not find an account matching those credential.'
+            return 'Could not find an account matching those credentials.'
         }
         // If it's a phone number
         if (isPossiblePhoneNumber(username)) {
@@ -391,7 +391,7 @@ const mountUserWithToken = (
 
     // Let the screen transition happen first
     // before waiting on potential long duration operations
-    if (userObject && userObject.isOnBoarded == false) {
+    if (userObject && !userObject.isOnBoarded) {
         // Load profile success and user is marked as not onboarded
         // Go to onboarding flow
         Actions.replace('registration_add_photo')

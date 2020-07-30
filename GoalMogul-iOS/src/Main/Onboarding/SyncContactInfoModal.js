@@ -4,18 +4,12 @@ import React from 'react'
 import _ from 'ramda'
 import { View, Text } from 'react-native'
 import Modal from 'react-native-modal'
-import OTPInputView from '@twotalltotems/react-native-otp-input'
 import DelayedButton from '../Common/Button/DelayedButton'
-import EmptyResult from '../Common/Text/EmptyResult'
-import {
-    GM_BLUE,
-    GM_FONT_SIZE,
-    GM_FONT_FAMILY,
-    GM_FONT_LINE_HEIGHT,
-    BUTTON_STYLE as buttonStyle,
-} from '../../styles'
+import { GM_BLUE, GM_FONT_SIZE, GM_FONT_FAMILY } from '../../styles'
+import OnboardingStyles from '../../styles/Onboarding'
 import { DotIndicator } from 'react-native-indicators'
-import { Actions } from 'react-native-router-flux'
+
+const { button: buttonStyle } = OnboardingStyles
 
 class SyncContactInfoModal extends React.Component {
     onNotNow = () => {

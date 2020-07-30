@@ -19,7 +19,9 @@ import {
     GM_FONT_LINE_HEIGHT,
     FONT_FAMILY_2,
     FONT_FAMILY_1,
+    GM_BLUE,
 } from '../../styles'
+import OnboardingStyles from '../../styles/Onboarding'
 import {
     registrationTargetSelection,
     uploadSurvey,
@@ -27,6 +29,7 @@ import {
 import OnboardingFooter from './Common/OnboardingFooter'
 import { CheckBox } from 'react-native-elements'
 import { Actions } from 'react-native-router-flux'
+import { Icon } from '@ui-kitten/components'
 
 class OnboardingSelectionTarget extends React.Component {
     constructor(props) {
@@ -81,15 +84,16 @@ class OnboardingSelectionTarget extends React.Component {
         }
 
         return (
-            <View style={{ marginTop: 10 }} key="Other TextInput">
+            <View style={{ marginTop: 12 }} key="Other TextInput">
                 <Text
                     style={{
                         fontSize: GM_FONT_SIZE.FONT_1,
                         lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
                         fontFamily: FONT_FAMILY_2,
+                        marginBottom: 4,
                     }}
                 >
-                    Others
+                    Why did you download GoalMogul?
                 </Text>
                 <View
                     style={{
@@ -100,13 +104,8 @@ class OnboardingSelectionTarget extends React.Component {
                     }}
                 >
                     <TextInput
-                        placeholder="Why did you download goalmogul? What would you like to get out of it?"
-                        style={{
-                            fontSize: GM_FONT_SIZE.FONT_3,
-                            lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                            fontFamily: FONT_FAMILY_2,
-                            letterSpacing: 0.3,
-                        }}
+                        placeholder="What would you like to get out of this ap?"
+                        style={[OnboardingStyles.input.text]}
                         value={extra}
                         onChangeText={(val) =>
                             this.props.registrationTargetSelection(
@@ -132,8 +131,8 @@ class OnboardingSelectionTarget extends React.Component {
             return (
                 <Animated.View
                     style={{
-                        marginTop: 12,
-                        marginBottom: 12,
+                        marginTop: 20,
+                        marginBottom: 20,
                         opacity: this.animations.checkBoxOpacity,
                     }}
                     key={title}
@@ -141,47 +140,47 @@ class OnboardingSelectionTarget extends React.Component {
                     <DelayedButton
                         style={{
                             flexDirection: 'row',
-                            alignItems: 'center',
+                            alignItems: 'flex-start',
                             justifyContent: 'center',
                         }}
                         onPress={() => this.onSelect(title, selected, extra)}
                         activeOpacity={1}
                     >
-                        <CheckBox
-                            textStyle={{ fontWeight: 'normal' }}
-                            checked={selected}
-                            checkedIcon={
-                                <MaterialIcons
-                                    name="done"
-                                    color="#1B63DC"
-                                    size={21}
-                                />
-                            }
-                            uncheckedIcon={null}
-                            containerStyle={styles.checkBoxContainerStyle(
-                                selected
-                            )}
-                            onPress={() =>
-                                this.onSelect(title, selected, extra)
-                            }
-                        />
+                        <View
+                            style={{
+                                borderRadius: 12,
+                                height: 24,
+                                width: 24,
+                                borderWidth: 1,
+                                backgroundColor: selected ? GM_BLUE : 'white',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                borderColor: selected ? GM_BLUE : '#8C8C8C',
+                            }}
+                        >
+                            <Icon
+                                name="check"
+                                pack="material-community"
+                                style={{
+                                    tintColor: selected ? 'white' : '#8C8C8C',
+                                    height: 20,
+                                    width: 20,
+                                }}
+                            />
+                        </View>
                         <View
                             style={{
                                 flex: 1,
-                                flexGrow: '1',
-                                paddingRight: 10,
                                 paddingLeft: 15,
                             }}
                         >
                             <Text
-                                style={{
-                                    fontSize: GM_FONT_SIZE.FONT_3,
-                                    lineHeight: GM_FONT_LINE_HEIGHT.FONT_3,
-                                    fontFamily: FONT_FAMILY_2,
-                                    letterSpacing: 0.6,
-                                    flexWrap: 'wrap',
-                                    color: '#333333',
-                                }}
+                                style={[
+                                    OnboardingStyles.text.paragraph,
+                                    {
+                                        flexWrap: 'wrap',
+                                    },
+                                ]}
                             >
                                 {title}
                             </Text>
@@ -206,51 +205,55 @@ class OnboardingSelectionTarget extends React.Component {
                 !selectedTargets[0].extra.trim())
 
         return (
-            <View style={styles.containerStyle}>
+            <View
+                style={[OnboardingStyles.container.page, { paddingBottom: 0 }]}
+            >
                 <OnboardingHeader />
-                <View style={{ flex: 1, justifyContent: 'center' }}>
-                    <View style={{ alignItems: 'center', marginTop: 35 }}>
-                        <Text style={styles.titleTextStyle}>
+                <KeyboardAwareScrollView
+                    enableAutomaticScroll
+                    extraScrollHeight={100}
+                    innerRef={(ref) => {
+                        this.scrollview = ref
+                    }}
+                    keyExtractor={this.keyExtractor}
+                    contentContainerStyle={[
+                        OnboardingStyles.container.card,
+                        { padding: 16 },
+                    ]}
+                    onKeyboardWillShow={() => {
+                        // this.scrollview.props.scrollToPosition(0, 120)
+                        Animated.timing(this.animations.checkBoxOpacity, {
+                            toValue: 0.4,
+                            duration: 300,
+                        }).start()
+                    }}
+                    onKeyboardWillHide={() => {
+                        // this.scrollview.props.scrollToPosition(0, 0);
+                        Animated.timing(this.animations.checkBoxOpacity, {
+                            toValue: 1,
+                            duration: 300,
+                        }).start()
+                    }}
+                >
+                    <View style={{ alignItems: 'center', marginTop: 8 }}>
+                        <Text style={OnboardingStyles.text.title}>
                             Which of the following are
                         </Text>
-                        <Text style={styles.titleTextStyle}>
+                        <Text style={OnboardingStyles.text.title}>
                             most important to you?
                         </Text>
-                        <Text style={styles.subTitleTextStyle}>
+                        <Text
+                            style={[
+                                OnboardingStyles.input.title,
+                                { marginTop: 20, marginBottom: 10 },
+                            ]}
+                        >
                             (Check all that apply)
                         </Text>
                     </View>
-                    <KeyboardAwareScrollView
-                        enableAutomaticScroll
-                        extraScrollHeight={200}
-                        innerRef={(ref) => {
-                            this.scrollview = ref
-                        }}
-                        keyExtractor={this.keyExtractor}
-                        contentContainerStyle={{
-                            padding: 25,
-                            // backgroundColor: 'white',
-                            // flexGrow: 1 // this will fix scrollview scroll issue by passing parent view width and height to it
-                        }}
-                        onKeyboardWillShow={() => {
-                            // this.scrollview.props.scrollToPosition(0, 120)
-                            Animated.timing(this.animations.checkBoxOpacity, {
-                                toValue: 0.4,
-                                duration: 300,
-                            }).start()
-                        }}
-                        onKeyboardWillHide={() => {
-                            // this.scrollview.props.scrollToPosition(0, 0);
-                            Animated.timing(this.animations.checkBoxOpacity, {
-                                toValue: 1,
-                                duration: 300,
-                            }).start()
-                        }}
-                    >
-                        {this.renderTargets()}
-                        {this.renderOtherTextInput()}
-                    </KeyboardAwareScrollView>
-                </View>
+                    {this.renderTargets()}
+                    {this.renderOtherTextInput()}
+                </KeyboardAwareScrollView>
                 <OnboardingFooter
                     totalStep={3}
                     currentStep={1}
@@ -261,40 +264,6 @@ class OnboardingSelectionTarget extends React.Component {
             </View>
         )
     }
-}
-
-const styles = {
-    containerStyle: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
-    titleTextStyle: {
-        fontSize: GM_FONT_SIZE.FONT_4,
-        lineHeight: GM_FONT_LINE_HEIGHT.FONT_4,
-        fontFamily: FONT_FAMILY_1,
-        letterSpacing: 0.6,
-    },
-    subTitleTextStyle: {
-        fontSize: GM_FONT_SIZE.FONT_1,
-        lineHeight: GM_FONT_LINE_HEIGHT.FONT_1,
-        fontFamily: FONT_FAMILY_2,
-        letterSpacing: 0.4,
-        marginTop: 20,
-        marginBottom: 10,
-    },
-    checkBoxContainerStyle: (selected) => ({
-        width: 28,
-        height: 28,
-        borderRadius: 3,
-        borderWidth: 1,
-        borderColor: selected ? '#1B63DC' : '#B4BFC9',
-        padding: 0,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: 0,
-        marginRight: 0,
-        margin: 0,
-    }),
 }
 
 const mapStateToProps = (state) => {

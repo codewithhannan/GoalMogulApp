@@ -24,11 +24,13 @@ import {
     GM_FONT_SIZE,
     GM_FONT_LINE_HEIGHT,
     GM_FONT_FAMILY,
-    BUTTON_STYLE,
     GM_BLUE_LIGHT,
 } from '../../../styles'
+import OnboardingStyles from '../../../styles/Onboarding'
 import { Icon } from '@ui-kitten/components'
 import DelayedButton from '../../Common/Button/DelayedButton'
+
+const { button: buttonStyle } = OnboardingStyles
 
 class OnboardingFooter extends React.Component {
     renderProgressBar() {
@@ -71,14 +73,14 @@ class OnboardingFooter extends React.Component {
                 {...otherProps}
                 disabled={disabled}
                 style={[
-                    BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle,
+                    buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle,
                     disabledStyle,
-                    { marginBottom: 20 },
+                    { marginBottom: 8 },
                 ]}
                 onPress={this.props.onButtonPress}
             >
                 <Text
-                    style={[BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle]}
+                    style={[buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle]}
                 >
                     {buttonText}
                 </Text>

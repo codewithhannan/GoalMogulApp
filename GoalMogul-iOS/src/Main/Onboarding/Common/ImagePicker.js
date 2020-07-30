@@ -145,8 +145,8 @@ const styles = StyleSheet.create({
         borderRadius: 180,
     },
     defaultImageStyle: {
-        height: 60,
-        width: 60,
+        height: 80,
+        width: 80,
     },
 })
 

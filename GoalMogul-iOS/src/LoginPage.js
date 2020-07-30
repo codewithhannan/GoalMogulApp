@@ -32,13 +32,8 @@ import { RESET_PASSWORD_URL } from './Utils/Constants'
 import Recaptcha from './Main/Common/Recaptcha'
 import { SCREENS, wrapAnalytics } from './monitoring/segment'
 import InputBox from './Main/Onboarding/Common/InputBox'
-import {
-    DEFAULT_STYLE,
-    GM_BLUE,
-    BUTTON_STYLE,
-    FONT_FAMILY_3,
-    GM_BLUE_LIGHT,
-} from './styles'
+import { DEFAULT_STYLE, GM_BLUE, FONT_FAMILY_3, GM_BLUE_LIGHT } from './styles'
+import OnboardingStyles from './styles/Onboarding'
 import DelayedButton from './Main/Common/Button/DelayedButton'
 import UserAgreementCheckBox from './Main/Onboarding/UserAgreementCheckBox'
 import {
@@ -279,8 +274,7 @@ class LoginPage extends Component {
                 style={{
                     flexDirection: 'row',
                     width: '100%',
-                    marginTop: 15,
-                    marginBottom: 30,
+                    marginTop: 8,
                     justifyContent: 'center',
                     alignItems: 'center',
                 }}
@@ -298,7 +292,7 @@ class LoginPage extends Component {
                     Don't have an account?
                 </Text>
                 <DelayedButton
-                    style={[{ padding: 10 }]}
+                    style={[{ padding: 12, paddingLeft: 3 }]}
                     onPress={this.handleSignUp}
                 >
                     <Text
@@ -318,36 +312,33 @@ class LoginPage extends Component {
     render() {
         const { handleSubmit, username, password } = this.props
         return (
-            <KeyboardAwareScrollView
-                bounces={false}
-                innerRef={(ref) => {
-                    this.scrollview = ref
-                }}
-                style={styles.scroll}
-                extraScrollHeight={13}
-                contentContainerStyle={{
-                    backgroundColor: 'white',
-                    flexGrow: 1, // this will fix scrollview scroll issue by passing parent view width and height to it
-                }}
-            >
-                <TouchableWithoutFeedback
-                    onPress={this.handleContainerOnPressed.bind(this)}
+            <View style={[OnboardingStyles.container.page]}>
+                <Header canBack={!this.props.loading} hasBackButton={false} />
+                <KeyboardAwareScrollView
+                    bounces={false}
+                    innerRef={(ref) => {
+                        this.scrollview = ref
+                    }}
+                    style={styles.scroll}
+                    extraScrollHeight={13}
+                    contentContainerStyle={[
+                        {
+                            backgroundColor: 'white',
+                            flexGrow: 1, // this will fix scrollview scroll issue by passing parent view width and height to it
+                        },
+                    ]}
                 >
-                    <View style={Styles.containerStyle}>
-                        <Header
-                            canBack={!this.props.loading}
-                            hasBackButton={false}
-                        />
-                        <View style={styles.bodyContainerStyle}>
-                            {this.renderError(this.state.errMsg)}
-                            {/* <Text style={styles.titleTextStyle}>Get Started!</Text> */}
-
+                    <TouchableWithoutFeedback
+                        onPress={this.handleContainerOnPressed.bind(this)}
+                    >
+                        <View style={[OnboardingStyles.container.card]}>
                             <View
                                 style={{
                                     flex: 1,
-                                    justifyContent: 'flex-start',
+                                    justifyContent: 'center',
                                 }}
                             >
+                                {this.renderError(this.state.errMsg)}
                                 <Field
                                     name="username"
                                     label="Email or Phone number"
@@ -382,9 +373,8 @@ class LoginPage extends Component {
                                 />
                                 <Text
                                     style={[
-                                        DEFAULT_STYLE.smallTitle_1,
+                                        DEFAULT_STYLE.buttonText_1,
                                         {
-                                            fontSize: 14,
                                             color: GM_BLUE,
                                             padding: 8,
                                             alignSelf: 'flex-end',
@@ -406,41 +396,52 @@ class LoginPage extends Component {
                                     checked={this.state.userAgreementChecked}
                                 /> */}
                             </View>
-                            <TouchableOpacity
-                                activeOpacity={0.6}
-                                onPress={handleSubmit(this.handleLoginPressed)}
-                                style={[
-                                    BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT
-                                        .containerStyle,
-                                    {
-                                        backgroundColor: this.props.loading
-                                            ? // Disable user agreement check
-                                              // || !this.state.userAgreementChecked
-                                              GM_BLUE_LIGHT
-                                            : GM_BLUE,
-                                    },
-                                ]}
-                                disabled={
-                                    this.props.loading
-                                    // Disable user agreement check
-                                    // || !this.state.userAgreementChecked
-                                }
+                            <View
+                                style={{
+                                    // height: 150,
+                                    justifyContent: 'flex-start',
+                                }}
                             >
-                                <Text
+                                <DelayedButton
+                                    activeOpacity={0.6}
+                                    onPress={handleSubmit(
+                                        this.handleLoginPressed
+                                    )}
                                     style={[
-                                        BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT
-                                            .textStyle,
+                                        OnboardingStyles.button
+                                            .GM_BLUE_BG_WHITE_BOLD_TEXT
+                                            .containerStyle,
+                                        {
+                                            backgroundColor: this.props.loading
+                                                ? // Disable user agreement check
+                                                  // || !this.state.userAgreementChecked
+                                                  GM_BLUE_LIGHT
+                                                : GM_BLUE,
+                                        },
                                     ]}
+                                    disabled={
+                                        this.props.loading
+                                        // Disable user agreement check
+                                        // || !this.state.userAgreementChecked
+                                    }
                                 >
-                                    Log In
-                                </Text>
-                            </TouchableOpacity>
-                            {this.renderSignUp()}
+                                    <Text
+                                        style={[
+                                            OnboardingStyles.button
+                                                .GM_BLUE_BG_WHITE_BOLD_TEXT
+                                                .textStyle,
+                                        ]}
+                                    >
+                                        Log In
+                                    </Text>
+                                </DelayedButton>
+                                {this.renderSignUp()}
+                            </View>
                         </View>
-                    </View>
-                </TouchableWithoutFeedback>
-                {this.renderRecaptcha()}
-            </KeyboardAwareScrollView>
+                    </TouchableWithoutFeedback>
+                    {this.renderRecaptcha()}
+                </KeyboardAwareScrollView>
+            </View>
         )
     }
 }

@@ -10,15 +10,13 @@ import { connect } from 'react-redux'
 import { View, Text, Dimensions, Image } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import OnboardingHeader from './Common/OnboardingHeader'
-import {
-    BUTTON_STYLE as buttonStyle,
-    TEXT_STYLE as textStyle,
-} from '../../styles'
+import OnboardingStyles from '../../styles/Onboarding'
 import DelayedButton from '../Common/Button/DelayedButton'
 import Icons from '../../asset/base64/Icons'
 import { markUserAsOnboarded } from '../../redux/modules/registration/RegistrationActions'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
+const { text: textStyle, button: buttonStyle } = OnboardingStyles
 class OnboardingWelcome extends React.Component {
     continue = () => {
         Actions.replace('drawer')
@@ -44,31 +42,31 @@ class OnboardingWelcome extends React.Component {
 
     render() {
         return (
-            <View style={styles.containerStyle}>
+            <View style={[OnboardingStyles.container.page]}>
                 <OnboardingHeader />
                 <View
-                    style={{
-                        flex: 1,
-                        padding: 20,
-                        marginTop: 20,
-                        alignItems: 'center',
-                    }}
+                    style={[OnboardingStyles.container.card, { paddingTop: 0 }]}
                 >
                     <View
-                        style={{ flex: 1, alignItems: 'center', width: '100%' }}
+                        style={{
+                            flexGrow: 1,
+                            alignItems: 'center',
+                            width: '100%',
+                            justifyContent: 'center',
+                        }}
                     >
                         {this.renderImage()}
-                        <View style={{ marginTop: 40 }}>
-                            <Text style={textStyle.onboardingTitleTextStyle}>
+                        <View style={{ marginTop: 36 }}>
+                            <Text style={textStyle.title}>
                                 Welcome to GoalMogul!
                             </Text>
                             <Text
                                 style={[
-                                    textStyle.onboardingPharagraphTextStyle,
+                                    textStyle.paragraph,
                                     {
                                         paddingLeft: 20,
                                         paddingRight: 20,
-                                        marginTop: 30,
+                                        marginTop: 32,
                                     },
                                 ]}
                             >
@@ -83,7 +81,6 @@ class OnboardingWelcome extends React.Component {
                         style={[
                             buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
                                 .containerStyle,
-                            { marginBottom: 30 },
                         ]}
                     >
                         <Text
@@ -98,13 +95,6 @@ class OnboardingWelcome extends React.Component {
             </View>
         )
     }
-}
-
-const styles = {
-    containerStyle: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
 }
 
 export default connect(null, {

@@ -1,7 +1,7 @@
 /** @format */
 
 import React from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text, StatusBar } from 'react-native'
 import DropdownAlert from 'react-native-dropdownalert-jia'
 
 // State management
@@ -47,6 +47,7 @@ export default class App extends React.Component {
         SocketIOManager.initialize()
         LiveChatService.initialize()
         MessageStorageService.initialize()
+        StatusBar.setBarStyle('light-content')
     }
 
     render() {

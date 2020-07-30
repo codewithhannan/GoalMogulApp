@@ -3,11 +3,7 @@
 import React from 'react'
 import _ from 'lodash'
 import { View, Text, ActivityIndicator } from 'react-native'
-import {
-    BUTTON_STYLE as buttonStyle,
-    TEXT_STYLE as textStyle,
-    FONT_FAMILY_2,
-} from '../../../styles'
+import { FONT_FAMILY_2, FONT_FAMILY_3 } from '../../../styles'
 import ProfileImage from '../../Common/ProfileImage'
 import { getPhoneNumber, getEmail } from '../../../redux/middleware/utils'
 import { GM_BLUE, GM_FONT_SIZE, GM_FONT_FAMILY } from '../../../styles'
@@ -227,7 +223,7 @@ const styles = {
         textStyle: {
             fontSize: GM_FONT_SIZE.FONT_1,
             fontWeight: 'bold',
-            fontFamily: FONT_FAMILY_2,
+            fontFamily: FONT_FAMILY_3,
         },
     },
     inviteButtonContainerStyle: {
