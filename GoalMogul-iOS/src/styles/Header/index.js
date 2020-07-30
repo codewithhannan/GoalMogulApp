@@ -27,7 +27,7 @@ export const HEADER_STYLES = {
     },
     title: {
         ...default_style.titleText_1,
-        color: color.CONTENT_COLOR,
+        color: CONTENT_COLOR,
     },
     buttonText: {
         ...default_style.subTitleText_1,
