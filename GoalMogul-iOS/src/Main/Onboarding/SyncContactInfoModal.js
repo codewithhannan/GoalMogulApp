@@ -5,9 +5,13 @@ import _ from 'ramda'
 import { View, Text } from 'react-native'
 import Modal from 'react-native-modal'
 import DelayedButton from '../Common/Button/DelayedButton'
+
 import { color, text } from '../../styles/basic'
-import { BUTTON_STYLE as buttonStyle } from '../../styles'
+import OnboardingStyles from '../../styles/Onboarding'
 import { DotIndicator } from 'react-native-indicators'
+
+const { button: buttonStyle } = OnboardingStyles
+
 
 class SyncContactInfoModal extends React.Component {
     onNotNow = () => {
@@ -113,7 +117,7 @@ class SyncContactInfoModal extends React.Component {
                     style={{
                         borderRadius: 14,
                         padding: 23,
-                        backgroundColor: 'white',
+                        backgroundColor: color.GM_CARD_BACKGROUND,
                     }}
                 >
                     {this.renderFailureResult()}

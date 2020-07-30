@@ -16,14 +16,7 @@
  */
 
 import React from 'react'
-import {
-    View,
-    Text,
-    Alert,
-    KeyboardAvoidingView,
-    Keyboard,
-    TouchableWithoutFeedback,
-} from 'react-native'
+import { View, Text, Alert } from 'react-native'
 import { connect } from 'react-redux'
 import * as WebBrowser from 'expo-web-browser'
 import * as Linking from 'expo-linking'
@@ -32,8 +25,10 @@ import OnboardingHeader from './Common/OnboardingHeader'
 import OnboardingFooter from './Common/OnboardingFooter'
 import InputBox from './Common/InputBox'
 import DelayedButton from '../Common/Button/DelayedButton'
-import { BUTTON_STYLE } from '../../styles'
+
 import { color, text } from '../../styles/basic'
+import OnboardingStyles from '../../styles/Onboarding'
+
 import { registrationLogin, onVerifyPhoneNumber } from '../../actions'
 import {
     registrationTextInputChange,
@@ -42,6 +37,7 @@ import {
     cancelRegistration,
 } from '../../redux/modules/registration/RegistrationActions'
 import UserAgreementCheckBox from './UserAgreementCheckBox'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const NEXT_STEP = 'registration_add_photo'
 const FIELD_REQUIREMENTS = {
@@ -234,27 +230,23 @@ class RegistrationAccount extends React.Component {
         return (
             <View style={[styles.loginBoxStyle, { opacity: 0 }]}>
                 <Text
-                    style={{
-                        fontSize: text.TEXT_FONT_SIZE.FONT_3,
-                        lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
-                        fontWeight: 'bold',
-                        color: '#BDBDBD',
-                        fontFamily: text.FONT_FAMILY.BOLD,
-                    }}
+                    style={[
+                        OnboardingStyles.text.subTitle,
+                        { textAlign: 'center' },
+                    ]}
                 >
                     Already user GoalMogul?
                 </Text>
                 <DelayedButton onPress={this.props.registrationLogin}>
                     <Text
-                        style={{
-                            fontSize: text.TEXT_FONT_SIZE.FONT_3,
-                            lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
-                            textAlign: 'center',
-                            alignItems: 'flex-end',
-                            fontWeight: 'bold',
-                            color: color.GM_BLUE,
-                            fontFamily: text.FONT_FAMILY.BOLD,
-                        }}
+                        style={[
+                            OnboardingStyles.text.subTitle,
+                            {
+                                textAlign: 'center',
+                                alignItems: 'flex-end',
+                                color: color.GM_BLUE,
+                            },
+                        ]}
                     >
                         {' '}
                         Log In
@@ -274,266 +266,241 @@ class RegistrationAccount extends React.Component {
             registerErrMsg,
         } = this.props
         return (
-            <KeyboardAvoidingView
-                behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+            <View
                 style={{
-                    flex: 1,
-                    marginLeft: 20,
-                    marginRight: 20,
+                    flexGrow: 1,
                     justifyContent: 'center',
-                    backgroundColor: 'transparent',
-                    zIndex: 0,
-                    flexGrow: 1, // this will fix scrollview scroll issue by passing parent view width and height to it
+                    paddingBottom: 10,
+                    width: '100%',
                 }}
             >
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View
-                        style={{
-                            flex: 1,
-                            justifyContent: 'center',
-                            paddingBottom: 10,
-                        }}
-                    >
-                        <View
-                            style={{
-                                height: 29,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }}
-                        >
-                            {registerErrMsg ? (
-                                <Text style={styles.errorStyle}>
-                                    {registerErrMsg}
-                                </Text>
-                            ) : null}
-                        </View>
-                        <InputBox
-                            key="name"
-                            inputTitle="Full Name"
-                            placeholder="Your Full Name"
-                            onChangeText={(val) => {
-                                if (
-                                    this.state.nameStatus !=
-                                        FIELD_REQUIREMENTS.done &&
-                                    val &&
-                                    val.trim().length
-                                ) {
-                                    this.setState({
-                                        ...this.state,
-                                        nameStatus: FIELD_REQUIREMENTS.done,
-                                    })
-                                }
-                                this.props.registrationTextInputChange(
-                                    'name',
-                                    val
-                                )
-                            }}
-                            value={name}
-                            disabled={this.props.loading}
-                            returnKeyType="next"
-                            onBlur={() => this.validateName(name)}
-                            onSubmitEditing={() => {
-                                this.validateName(name)
-                                this.refs['email'].focus()
-                            }}
-                            caption={
-                                !this.state.nameStatus ||
-                                this.state.nameStatus == FIELD_REQUIREMENTS.done
-                                    ? ' '
-                                    : this.state.nameStatus
-                            }
-                            status={
-                                this.state.nameStatus &&
-                                this.state.nameStatus !==
-                                    FIELD_REQUIREMENTS.done
-                                    ? 'danger'
-                                    : 'basic'
-                            }
-                        />
-                        <InputBox
-                            key="email"
-                            inputTitle="Email"
-                            ref="email"
-                            placeholder="Your Email Address"
-                            onChangeText={(val) => {
-                                if (
-                                    this.state.emailStatus !=
-                                        FIELD_REQUIREMENTS.done &&
-                                    val &&
-                                    val.trim().length
-                                ) {
-                                    this.setState({
-                                        ...this.state,
-                                        emailStatus: FIELD_REQUIREMENTS.done,
-                                    })
-                                }
-                                this.props.registrationTextInputChange(
-                                    'email',
-                                    val
-                                )
-                            }}
-                            value={email}
-                            autoCompleteType="email"
-                            keyboardType="email-address"
-                            returnKeyType="next"
-                            disabled={this.props.loading}
-                            onBlur={() => this.validateEmail(email)}
-                            onSubmitEditing={() => {
-                                this.validateEmail(email)
-                                this.refs['phone'].focus()
-                            }}
-                            caption={
-                                !this.state.emailStatus ||
-                                this.state.emailStatus ==
-                                    FIELD_REQUIREMENTS.done
-                                    ? ' '
-                                    : this.state.emailStatus
-                            }
-                            status={
-                                this.state.emailStatus &&
-                                this.state.emailStatus !==
-                                    FIELD_REQUIREMENTS.done
-                                    ? 'danger'
-                                    : 'basic'
-                            }
-                        />
-                        <InputBox
-                            key="phone"
-                            inputTitle="Phone Number"
-                            ref="phone"
-                            countryCode={countryCode}
-                            placeholder="Your Phone Number"
-                            onChangeText={(val) =>
-                                this.props.registrationTextInputChange(
-                                    'phone',
-                                    val
-                                )
-                            }
-                            onCountryCodeSelected={(val) =>
-                                this.props.registrationTextInputChange(
-                                    'countryCode',
-                                    val
-                                )
-                            }
-                            value={phone}
-                            autoCompleteType="tel"
-                            keyboardType="phone-pad" // iOS specific type
-                            optional
-                            returnKeyType="next"
-                            disabled={this.props.loading}
-                            caption=" "
-                            onEndEditing={() => this.refs['password'].focus()}
-                        />
-                        <InputBox
-                            key="password"
-                            inputTitle="Password"
-                            ref="password"
-                            placeholder="Password"
-                            secureTextEntry
-                            onChangeText={(val) => {
-                                if (
-                                    this.state.passwordStatus !=
-                                        FIELD_REQUIREMENTS.done &&
-                                    val &&
-                                    val.trim().length
-                                ) {
-                                    this.setState({
-                                        ...this.state,
-                                        passwordStatus: FIELD_REQUIREMENTS.done,
-                                    })
-                                }
-                                this.props.registrationTextInputChange(
-                                    'password',
-                                    val
-                                )
-                            }}
-                            value={password}
-                            textContentType="newPassword"
-                            returnKeyType="done"
-                            onBlur={() => {
-                                this.validatePassword(password)
-                            }}
-                            onSubmitEditing={() => {
-                                this.validatePassword(password)
-                            }}
-                            onEndEditing={(event) => {
-                                if (event.nativeEvent.text.length === 0) {
-                                    this.props.registrationTextInputChange(
-                                        'password',
-                                        ''
-                                    )
-                                    this.validatePassword(password)
-                                }
-                            }}
-                            caption={
-                                !this.state.passwordStatus ||
-                                this.state.passwordStatus ==
-                                    FIELD_REQUIREMENTS.done
-                                    ? ' '
-                                    : this.state.passwordStatus
-                            }
-                            status={
-                                this.state.passwordStatus &&
-                                this.state.passwordStatus !==
-                                    FIELD_REQUIREMENTS.done
-                                    ? 'danger'
-                                    : 'basic'
-                            }
-                            disabled={this.props.loading}
-                        />
-                        <UserAgreementCheckBox
-                            onPress={(val) =>
-                                this.setState({
-                                    ...this.state,
-                                    userAgreementChecked: val,
-                                })
-                            }
-                            checked={this.state.userAgreementChecked}
-                        />
-                        {this.renderLogin()}
-                    </View>
-                </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
+                <View
+                    style={{
+                        height: 29,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    {registerErrMsg ? (
+                        <Text style={styles.errorStyle}>{registerErrMsg}</Text>
+                    ) : null}
+                </View>
+                <InputBox
+                    key="name"
+                    inputTitle="Full Name"
+                    placeholder="Your Full Name"
+                    onChangeText={(val) => {
+                        if (
+                            this.state.nameStatus != FIELD_REQUIREMENTS.done &&
+                            val &&
+                            val.trim().length
+                        ) {
+                            this.setState({
+                                ...this.state,
+                                nameStatus: FIELD_REQUIREMENTS.done,
+                            })
+                        }
+                        this.props.registrationTextInputChange('name', val)
+                    }}
+                    value={name}
+                    disabled={this.props.loading}
+                    returnKeyType="next"
+                    onBlur={() => this.validateName(name)}
+                    onSubmitEditing={() => {
+                        this.validateName(name)
+                        this.refs['email'].focus()
+                    }}
+                    caption={
+                        !this.state.nameStatus ||
+                        this.state.nameStatus == FIELD_REQUIREMENTS.done
+                            ? ' '
+                            : this.state.nameStatus
+                    }
+                    status={
+                        this.state.nameStatus &&
+                        this.state.nameStatus !== FIELD_REQUIREMENTS.done
+                            ? 'danger'
+                            : 'basic'
+                    }
+                />
+                <InputBox
+                    key="email"
+                    inputTitle="Email"
+                    ref="email"
+                    placeholder="Your Email Address"
+                    onChangeText={(val) => {
+                        if (
+                            this.state.emailStatus != FIELD_REQUIREMENTS.done &&
+                            val &&
+                            val.trim().length
+                        ) {
+                            this.setState({
+                                ...this.state,
+                                emailStatus: FIELD_REQUIREMENTS.done,
+                            })
+                        }
+                        this.props.registrationTextInputChange('email', val)
+                    }}
+                    value={email}
+                    autoCompleteType="email"
+                    keyboardType="email-address"
+                    returnKeyType="next"
+                    disabled={this.props.loading}
+                    onBlur={() => this.validateEmail(email)}
+                    onSubmitEditing={() => {
+                        this.validateEmail(email)
+                        this.refs['phone'].focus()
+                    }}
+                    caption={
+                        !this.state.emailStatus ||
+                        this.state.emailStatus == FIELD_REQUIREMENTS.done
+                            ? ' '
+                            : this.state.emailStatus
+                    }
+                    status={
+                        this.state.emailStatus &&
+                        this.state.emailStatus !== FIELD_REQUIREMENTS.done
+                            ? 'danger'
+                            : 'basic'
+                    }
+                />
+                <InputBox
+                    key="phone"
+                    inputTitle="Phone Number"
+                    ref="phone"
+                    countryCode={countryCode}
+                    placeholder="Your Phone Number"
+                    onChangeText={(val) =>
+                        this.props.registrationTextInputChange('phone', val)
+                    }
+                    onCountryCodeSelected={(val) =>
+                        this.props.registrationTextInputChange(
+                            'countryCode',
+                            val
+                        )
+                    }
+                    value={phone}
+                    autoCompleteType="tel"
+                    keyboardType="phone-pad" // iOS specific type
+                    optional
+                    returnKeyType="next"
+                    disabled={this.props.loading}
+                    caption=" "
+                    onEndEditing={() => this.refs['password'].focus()}
+                />
+                <InputBox
+                    key="password"
+                    inputTitle="Password"
+                    ref="password"
+                    placeholder="Password"
+                    secureTextEntry
+                    onChangeText={(val) => {
+                        if (
+                            this.state.passwordStatus !=
+                                FIELD_REQUIREMENTS.done &&
+                            val &&
+                            val.trim().length
+                        ) {
+                            this.setState({
+                                ...this.state,
+                                passwordStatus: FIELD_REQUIREMENTS.done,
+                            })
+                        }
+                        this.props.registrationTextInputChange('password', val)
+                    }}
+                    value={password}
+                    textContentType="newPassword"
+                    returnKeyType="done"
+                    onBlur={() => {
+                        this.validatePassword(password)
+                    }}
+                    onSubmitEditing={() => {
+                        this.validatePassword(password)
+                    }}
+                    onEndEditing={(event) => {
+                        if (event.nativeEvent.text.length === 0) {
+                            this.props.registrationTextInputChange(
+                                'password',
+                                ''
+                            )
+                            this.validatePassword(password)
+                        }
+                    }}
+                    caption={
+                        !this.state.passwordStatus ||
+                        this.state.passwordStatus == FIELD_REQUIREMENTS.done
+                            ? ' '
+                            : this.state.passwordStatus
+                    }
+                    status={
+                        this.state.passwordStatus &&
+                        this.state.passwordStatus !== FIELD_REQUIREMENTS.done
+                            ? 'danger'
+                            : 'basic'
+                    }
+                    disabled={this.props.loading}
+                />
+                <UserAgreementCheckBox
+                    onPress={(val) =>
+                        this.setState({
+                            ...this.state,
+                            userAgreementChecked: val,
+                        })
+                    }
+                    checked={this.state.userAgreementChecked}
+                />
+                {/* {this.renderLogin()} */}
+                <View style={{ flex: 1 }} />
+            </View>
         )
     }
 
     render() {
         return (
-            <View style={styles.containerStyle}>
-                <View style={{ zIndex: 1 }}>
-                    <OnboardingHeader />
-                </View>
-                <View style={{ flex: 1, zIndex: 0 }}>
-                    {this.renderInputs()}
-                </View>
-                <View style={{ marginHorizontal: 16, marginBottom: 30 }}>
-                    <OnboardingFooter
-                        buttonText="Continue"
-                        onButtonPress={this.onNext}
-                        disabled={
-                            this.props.loading ||
-                            this.state.nameStatus !== FIELD_REQUIREMENTS.done ||
-                            this.state.emailStatus !==
-                                FIELD_REQUIREMENTS.done ||
-                            this.state.passwordStatus !==
-                                FIELD_REQUIREMENTS.done ||
-                            !this.state.userAgreementChecked
-                        }
-                    />
-                    <DelayedButton
-                        style={[
-                            BUTTON_STYLE.GM_WHITE_BG_GRAY_TEXT.containerStyle,
+            <View style={[OnboardingStyles.container.page, { zIndex: 1 }]}>
+                <OnboardingHeader />
+                <View style={OnboardingStyles.container.card}>
+                    <KeyboardAwareScrollView
+                        contentContainerStyle={[
+                            {
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                flexGrow: 1,
+                            },
                         ]}
-                        onPress={() => Actions.pop()}
                     >
-                        <Text
+                        {this.renderInputs()}
+                        <OnboardingFooter
+                            buttonText="Continue"
+                            onButtonPress={this.onNext}
+                            disabled={
+                                this.props.loading ||
+                                this.state.nameStatus !==
+                                    FIELD_REQUIREMENTS.done ||
+                                this.state.emailStatus !==
+                                    FIELD_REQUIREMENTS.done ||
+                                this.state.passwordStatus !==
+                                    FIELD_REQUIREMENTS.done ||
+                                !this.state.userAgreementChecked
+                            }
+                        />
+                        <DelayedButton
                             style={[
-                                BUTTON_STYLE.GM_WHITE_BG_GRAY_TEXT.textStyle,
+                                OnboardingStyles.button.GM_WHITE_BG_GRAY_TEXT
+                                    .containerStyle,
                             ]}
+                            onPress={() => Actions.pop()}
                         >
-                            Cancel
-                        </Text>
-                    </DelayedButton>
+                            <Text
+                                style={[
+                                    OnboardingStyles.button
+                                        .GM_WHITE_BG_GRAY_TEXT.textStyle,
+                                ]}
+                            >
+                                Cancel
+                            </Text>
+                        </DelayedButton>
+                    </KeyboardAwareScrollView>
                 </View>
                 {/* As documented in the header, this is for phone verification method 2
                 <PhoneVerificationMoal

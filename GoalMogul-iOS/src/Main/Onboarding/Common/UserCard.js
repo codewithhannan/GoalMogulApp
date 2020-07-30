@@ -226,7 +226,7 @@ const styles = {
         textStyle: {
             fontSize: text.TEXT_FONT_SIZE.FONT_1,
             fontWeight: 'bold',
-            fontFamily: text.FONT_FAMILY.REGULAR,
+            fontFamily: text.FONT_FAMILY.SEMI_BOLD,
         },
     },
     inviteButtonContainerStyle: {

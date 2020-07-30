@@ -18,18 +18,16 @@ class OnboardingHeader extends React.Component {
                 <View style={{ height: 34, width: '100%' }} />
                 <View
                     style={{
-                        height: 90,
+                        height: 116,
                         justifyContent: 'center',
                         alignItems: 'center',
                     }}
                 >
-                    <View style={{ height: 35.1 }}>
-                        <Image
-                            source={HeaderImage}
-                            style={{ height: 35.1, width: 150 }}
-                            resizeMode="cover"
-                        />
-                    </View>
+                    <Image
+                        source={HeaderImage}
+                        style={{ height: 48 }}
+                        resizeMode="contain"
+                    />
                 </View>
             </View>
         )

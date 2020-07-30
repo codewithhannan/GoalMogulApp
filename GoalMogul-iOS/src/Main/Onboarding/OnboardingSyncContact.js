@@ -11,11 +11,10 @@ import * as WebBrowser from 'expo-web-browser'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import OnboardingHeader from './Common/OnboardingHeader'
-import {
-    BUTTON_STYLE as buttonStyle,
-    TEXT_STYLE as textStyle,
-} from '../../styles'
+
 import { text, color } from '../../styles/basic'
+import OnboardingStyles from '../../styles/Onboarding'
+
 import { PRIVACY_POLICY_URL } from '../../Utils/Constants'
 import { uploadContacts } from '../../redux/modules/registration/RegistrationActions'
 import { REGISTRATION_SYNC_CONTACT_NOTES } from '../../redux/modules/registration/RegistrationReducers'
@@ -24,6 +23,7 @@ import SyncContactInfoModal from './SyncContactInfoModal'
 import Icons from '../../asset/base64/Icons'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
+const { button: buttonStyle, text: textStyle } = OnboardingStyles
 
 class OnboardingSyncContact extends React.Component {
     constructor(props) {
@@ -115,7 +115,7 @@ class OnboardingSyncContact extends React.Component {
 
     renderButtons() {
         return (
-            <View style={{ flex: 1, width: '100%', justifyContent: 'center' }}>
+            <View style={{ width: '100%', justifyContent: 'center' }}>
                 <DelayedButton
                     onPress={this.onSyncContact}
                     style={
@@ -132,7 +132,7 @@ class OnboardingSyncContact extends React.Component {
                     onPress={this.onNotNow}
                     style={[
                         buttonStyle.GM_WHITE_BG_GRAY_TEXT.containerStyle,
-                        { marginTop: 10 },
+                        { marginTop: 8 },
                     ]}
                 >
                     <Text style={buttonStyle.GM_WHITE_BG_GRAY_TEXT.textStyle}>
@@ -152,8 +152,8 @@ class OnboardingSyncContact extends React.Component {
                 <Image
                     source={Icons.ContactBook}
                     style={{
-                        height: screenWidth * 0.7,
-                        width: screenWidth * 0.7,
+                        height: screenWidth * 0.76,
+                        width: screenWidth * 0.76,
                     }}
                 />
             </View>
@@ -162,46 +162,41 @@ class OnboardingSyncContact extends React.Component {
 
     render() {
         return (
-            <View style={styles.containerStyle}>
+            <View style={OnboardingStyles.container.page}>
                 <OnboardingHeader />
-                <View
-                    style={{
-                        flex: 1,
-                        padding: 20,
-                        marginTop: 20,
-                        alignItems: 'center',
-                    }}
-                >
+                <View style={[OnboardingStyles.container.card]}>
                     <View
-                        style={{ flex: 1, alignItems: 'center', width: '100%' }}
+                        style={{
+                            flexGrow: 1,
+                            alignItems: 'center',
+                            width: '100%',
+                        }}
                     >
                         {this.renderImage()}
-                        <View style={{ marginTop: 40 }}>
-                            <Text style={textStyle.onboardingTitleTextStyle}>
-                                Find friends who
+                        <View>
+                            <Text style={textStyle.title}>
+                                Find friends who already
                             </Text>
-                            <Text style={textStyle.onboardingTitleTextStyle}>
-                                already use GoalMogul!
-                            </Text>
+                            <Text style={textStyle.title}>use GoalMogul!</Text>
                         </View>
-                        {this.renderButtons()}
-                    </View>
-                    <Text style={styles.noteTextStyle}>
-                        {REGISTRATION_SYNC_CONTACT_NOTES}
-                        <Text
-                            style={{ color: color.GM_BLUE }}
-                            onPress={() =>
-                                WebBrowser.openBrowserAsync(
-                                    PRIVACY_POLICY_URL,
-                                    {
-                                        showTitle: true,
-                                    }
-                                )
-                            }
-                        >
-                            {` Learn more`}
+                        <Text style={styles.noteTextStyle}>
+                            {REGISTRATION_SYNC_CONTACT_NOTES}
+                            <Text
+                                style={{ color: color.GM_BLUE }}
+                                onPress={() =>
+                                    WebBrowser.openBrowserAsync(
+                                        PRIVACY_POLICY_URL,
+                                        {
+                                            showTitle: true,
+                                        }
+                                    )
+                                }
+                            >
+                                {` Learn more`}
+                            </Text>
                         </Text>
-                    </Text>
+                    </View>
+                    {this.renderButtons()}
                 </View>
                 <SyncContactInfoModal
                     isOpen={this.state.syncContactInfoModalVisible}
@@ -217,17 +212,14 @@ class OnboardingSyncContact extends React.Component {
 }
 
 const styles = {
-    containerStyle: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
     noteTextStyle: {
         fontSize: text.TEXT_FONT_SIZE.FONT_1,
         lineHeight: text.TEXT_LINE_HEIGHT.FONT_3_5,
         fontFamily: text.FONT_FAMILY.REGULAR,
         color: '#333333',
         alignSelf: 'flex-end',
-        paddingBottom: 20,
+        marginTop: 8,
+        textAlign: 'center',
     },
 }
 

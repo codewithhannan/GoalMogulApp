@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, Image, Text, Platform } from 'react-native'
+import { View, Image, Text, Platform, SafeAreaView } from 'react-native'
 import { connect } from 'react-redux'
 
 /* Asset */
@@ -25,37 +25,6 @@ const IS_SMALL_PHONE =
     Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL)
 
 class Header extends Component {
-    // constructor(props) {
-    //   super(props);
-    //
-    //   this.imageHeight = new Animated.Value(IMAGE_HEIGHT);
-    //   this.containerViewHeight = new Animated.Value(VIEW_HEIGHT);
-    // }
-    //
-    // componentWillMount() {
-    //   this.keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
-    //   this.keyboardWillHideSub = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
-    // }
-    //
-    // componentWillUnmount() {
-    //   this.keyboardWillShowSub.remove();
-    //   this.keyboardWillHideSub.remove();
-    // }
-    //
-    // keyboardWillShow = (event) => {
-    //   Animated.timing(this.imageHeight, {
-    //     duration: event.duration,
-    //     toValue: IMAGE_HEIGHT_SMALL,
-    //   }).start();
-    // };
-    //
-    // keyboardWillHide = (event) => {
-    //   Animated.timing(this.imageHeight, {
-    //     duration: event.duration,
-    //     toValue: IMAGE_HEIGHT,
-    //   }).start();
-    // };
-
     handleBackOnClick() {
         if (this.props.canBack === false) return
         this.props.registrationBack()
@@ -79,7 +48,7 @@ class Header extends Component {
                     <BackIcon
                         iconStyle={{
                             ...styles.iconStyle,
-                            tintColor: 'white',
+                            tintColor: color.GM_CARD_BACKGROUND,
                         }}
                     />
                     {/**
@@ -152,14 +121,23 @@ class Header extends Component {
         // Added this case for uploading image should not go back to account creation
         if (hasBackButton === false) {
             return (
-                <View style={headerStyle}>
-                    <Image source={HeaderImage} />
-                </View>
+                <SafeAreaView
+                    style={[
+                        headerStyle,
+                        { justifyContent: 'center', alignItems: 'center' },
+                    ]}
+                >
+                    <Image
+                        source={HeaderImage}
+                        style={{ height: 48, width: '100%' }}
+                        resizeMode="contain"
+                    />
+                </SafeAreaView>
             )
         }
 
         return (
-            <View style={headerStyle}>
+            <SafeAreaView style={headerStyle}>
                 <DelayedButton
                     onPress={this.handleLoginBackOnClick.bind(this)}
                     touchableWithoutFeedback
@@ -168,13 +146,12 @@ class Header extends Component {
                         <BackIcon
                             iconStyle={{
                                 ...styles.iconStyle,
-                                tintColor: 'white',
+                                tintColor: color.GM_CARD_BACKGROUND,
                             }}
                         />
                     </View>
                 </DelayedButton>
-                <Image source={HeaderImage} />
-            </View>
+            </SafeAreaView>
         )
     }
 }
@@ -183,7 +160,7 @@ const styles = {
     containerStyle: {
         display: 'flex',
         backgroundColor: color.GM_BLUE,
-        height: 207,
+        height: 150,
         paddingTop: 14,
         justifyContent: 'center',
         alignItems: 'center',

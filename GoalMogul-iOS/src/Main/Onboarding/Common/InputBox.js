@@ -3,8 +3,10 @@
 import React from 'react'
 import _ from 'lodash'
 import { View, Text } from 'react-native'
-import CountryPicker, { Flag } from 'react-native-country-picker-modal'
-import { text } from '../../../styles/basic'
+import CountryPicker from 'react-native-country-picker-modal'
+import { text, color } from '../../../styles/basic'
+import OnboardingStyles from '../../../styles/Onboarding'
+
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { Input } from '@ui-kitten/components'
 
@@ -28,24 +30,8 @@ class CountryFlagButton extends React.Component {
 
         return (
             <DelayedButton style={{ flexDirection: 'row' }} onPress={onOpen}>
-                <Flag countryCode={countryCode.cca2} flagSize={14} />
-                <Text
-                    style={{
-                        fontSize: text.TEXT_FONT_SIZE.FONT_3,
-                        lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
-                        fontFamily: text.FONT_FAMILY.REGULAR,
-                        paddingTop: 2,
-                    }}
-                >{`${countryCode.cca2} `}</Text>
-                <Text
-                    style={{
-                        fontSize: text.TEXT_FONT_SIZE.FONT_3,
-                        lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
-                        fontFamily: text.FONT_FAMILY.REGULAR,
-                        paddingTop: 1,
-                    }}
-                >
-                    +({`${callingCode}`})
+                <Text style={[OnboardingStyles.text.subTitle_2]}>
+                    +{`${callingCode}`}
                 </Text>
             </DelayedButton>
         )
@@ -96,12 +82,7 @@ class InputBox extends React.Component {
         if (optional) {
             return (
                 <Text
-                    style={{
-                        fontSize: text.TEXT_FONT_SIZE.FONT_1,
-                        lineHeight: text.TEXT_LINE_HEIGHT.FONT_1,
-                        fontFamily: text.FONT_FAMILY.REGULAR,
-                        marginBottom: 5,
-                    }}
+                    style={[OnboardingStyles.input.title, { marginBottom: 5 }]}
                 >
                     <Text
                         style={{
@@ -118,12 +99,7 @@ class InputBox extends React.Component {
         return (
             <View style={{ flexDirection: 'row' }}>
                 <Text
-                    style={{
-                        fontSize: text.TEXT_FONT_SIZE.FONT_1,
-                        lineHeight: text.TEXT_LINE_HEIGHT.FONT_1,
-                        fontFamily: text.FONT_FAMILY.SEMI_BOLD,
-                        marginBottom: 5,
-                    }}
+                    style={[OnboardingStyles.input.title, { marginBottom: 5 }]}
                 >
                     <Text style={{ color: 'red' }}>*</Text>
                     <Text
@@ -159,7 +135,8 @@ class InputBox extends React.Component {
                             onCountryCodeSelected
                         )
                     }
-                    textStyle={{ fontSize: 16 }}
+                    style={{ backgroundColor: color.GM_CARD_BACKGROUND }}
+                    textStyle={[OnboardingStyles.input.text]}
                     {...custom}
                 />
             </View>
@@ -170,11 +147,11 @@ class InputBox extends React.Component {
         return (
             <View
                 style={{
-                    width: '40%',
                     justifyContent: 'flex-start',
                     borderRightWidth: 1,
                     borderRightColor: '#E0E0E0',
                     marginRight: 12,
+                    paddingRight: 8,
                 }}
             >
                 <CountryPicker
@@ -227,8 +204,8 @@ class InputBox extends React.Component {
                         caption={captionToUse}
                         ref="textInput"
                         label={this.renderInputTitle}
-                        style={{ width: '100%' }}
-                        textStyle={{ fontSize: 16 }}
+                        style={{ width: '100%', backgroundColor: color.GM_CARD_BACKGROUND }}
+                        textStyle={[OnboardingStyles.input.text]}
                         size="large"
                     />
                 </View>
@@ -242,8 +219,8 @@ class InputBox extends React.Component {
                     {...custom}
                     ref="textInput"
                     label={this.renderInputTitle}
-                    style={{ width: '100%' }}
-                    textStyle={{ fontSize: 16 }}
+                    style={{ width: '100%', backgroundColor: color.GM_CARD_BACKGROUND }}
+                    textStyle={[OnboardingStyles.input.text]}
                     size="large"
                 />
             </View>
@@ -256,49 +233,6 @@ const styles = {
         display: 'flex',
         width: '100%',
         marginTop: 20,
-    },
-    textInputContainerStyle: {
-        flexDirection: 'row',
-        width: '100%',
-        marginTop: 6,
-        borderWidth: 1,
-        borderColor: '#E0E0E0',
-        borderRadius: 3,
-        height: 42,
-        paddingTop: 11,
-        paddingBottom: 11,
-        paddingLeft: 16,
-        paddingRight: 16,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    textInputContainerStylePhone: {
-        flexDirection: 'row',
-        flowGrow: 1,
-        width: '100%',
-        marginTop: 6,
-        borderWidth: 1,
-        borderColor: '#E0E0E0',
-        borderRadius: 3,
-        height: 42,
-        paddingLeft: 16,
-        paddingRight: 16,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    textInputStyle: {
-        width: '100%',
-        fontSize: text.TEXT_FONT_SIZE.FONT_3,
-        fontFamily: text.FONT_FAMILY.REGULAR,
-        lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
-        marginTop: 0,
-    },
-    textInputStylePhone: {
-        width: '60%',
-        fontSize: text.TEXT_FONT_SIZE.FONT_3,
-        fontFamily: text.FONT_FAMILY.REGULAR,
-        lineHeight: text.TEXT_LINE_HEIGHT.FONT_3,
-        marginTop: 0,
     },
 }
 

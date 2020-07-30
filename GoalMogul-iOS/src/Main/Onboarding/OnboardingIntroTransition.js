@@ -13,16 +13,18 @@ import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import OnboardingHeader from './Common/OnboardingHeader'
 import DelayedButton from '../Common/Button/DelayedButton'
-import {
-    TEXT_STYLE as textStyle,
-    BUTTON_STYLE as buttonStyle,
-} from '../../styles'
+import { FONT_FAMILY_3 } from '../../styles'
+import { DEFAULT_STYLE } from '../../styles'
+import OnboardingStyles from '../../styles/Onboarding'
 import Icons from '../../asset/base64/Icons'
 import { fetchAppUserProfile } from '../../actions'
 import { refreshGoals } from '../../redux/modules/home/mastermind/actions'
 import { refreshFeed } from '../../redux/modules/home/feed/actions'
+import ProfileImage from '../Common/ProfileImage'
 
 const { width } = Dimensions.get('window')
+const { text: textStyle, button: buttonStyle } = OnboardingStyles
+
 class OnboardingIntroTransition extends React.Component {
     componentDidMount() {
         // We try to prefetch user profile at this step of onboarding
@@ -43,14 +45,20 @@ class OnboardingIntroTransition extends React.Component {
         screenTransitionCallback()
     }
 
-    renderImage() {
+    renderImage = () => {
+        const { image } = this.props // user profile image
         return (
-            <View style={styles.imageContainerStyle}>
-                <Image
-                    source={Icons.LionMascotStars}
-                    style={[styles.imageStyle]}
-                />
-            </View>
+            <ProfileImage
+                imageStyle={{
+                    height: (width * 3.5 * DEFAULT_STYLE.uiScale) / 7,
+                    width: (width * 3.5 * DEFAULT_STYLE.uiScale) / 7,
+                    borderRadius: 200,
+                }}
+                imageUrl={image}
+                imageContainerStyle={{
+                    borderRadius: 200,
+                }}
+            />
         )
     }
 
@@ -58,16 +66,9 @@ class OnboardingIntroTransition extends React.Component {
         const { name } = this.props
 
         return (
-            <View style={styles.containerStyle}>
+            <View style={OnboardingStyles.container.page}>
                 <OnboardingHeader />
-                <View
-                    style={{
-                        flex: 1,
-                        paddingLeft: 25,
-                        paddingRight: 25,
-                        marginBottom: 30,
-                    }}
-                >
+                <View style={[OnboardingStyles.container.card]}>
                     <View
                         style={{
                             flex: 1,
@@ -78,21 +79,26 @@ class OnboardingIntroTransition extends React.Component {
                         {this.renderImage()}
                         <Text
                             style={[
-                                textStyle.onboardingTitleTextStyle,
+                                textStyle.title,
                                 {
-                                    marginTop: 50,
-                                    marginBottom: 30,
+                                    marginTop: 56,
                                     fontSize: 35,
                                     lineHeight: 40,
                                 },
                             ]}
                         >
-                            Hi{name ? `, ${name}` : ''}
+                            Hi{name ? `, ${name}` : ''}!
                         </Text>
-                        <Text style={textStyle.onboardingPharagraphTextStyle}>
-                            We are going to ask you three questions
+                        <Text style={[textStyle.paragraph, { marginTop: 24 }]}>
+                            We are going to ask you{' '}
+                            <Text style={{ fontFamily: FONT_FAMILY_3 }}>
+                                three
+                            </Text>{' '}
+                            questions
                         </Text>
-                        <Text style={textStyle.onboardingPharagraphTextStyle}>
+                        <Text
+                            style={[textStyle.paragraph, { marginBottom: 24 }]}
+                        >
                             to tailor your experience!
                         </Text>
                     </View>
@@ -100,7 +106,6 @@ class OnboardingIntroTransition extends React.Component {
                         style={[
                             buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
                                 .containerStyle,
-                            { marginTop: 40, marginBottom: 20 },
                         ]}
                         onPress={this.onContinue}
                     >
@@ -124,12 +129,14 @@ const styles = {
         backgroundColor: 'white',
     },
     imageContainerStyle: {
-        height: (width * 4 * 1.5) / 7,
-        width: (width * 4) / 7,
+        height: (width * 4 * 1.5) / 10,
+        width: (width * 4) / 10,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     imageStyle: {
-        height: (width * 4 * 1.5) / 7,
-        width: (width * 4) / 7,
+        height: (width * 4 * 1.5) / 10,
+        width: (width * 4) / 10,
     },
 }
 
@@ -145,6 +152,7 @@ const mapStateToProps = (state) => {
 
     return {
         name: nameToUse,
+        image: (user && user.profile && user.profile.image) || undefined,
     }
 }
 

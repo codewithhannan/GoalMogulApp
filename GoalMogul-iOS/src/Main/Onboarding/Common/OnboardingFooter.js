@@ -17,10 +17,12 @@
 
 import React from 'react'
 import { View, Text } from 'react-native'
-import { BUTTON_STYLE } from '../../../styles'
 import { color, text } from '../../../styles/basic'
+import OnboardingStyles from '../../../styles/Onboarding'
 import { Icon } from '@ui-kitten/components'
 import DelayedButton from '../../Common/Button/DelayedButton'
+
+const { button: buttonStyle } = OnboardingStyles
 
 class OnboardingFooter extends React.Component {
     renderProgressBar() {
@@ -65,14 +67,14 @@ class OnboardingFooter extends React.Component {
                 {...otherProps}
                 disabled={disabled}
                 style={[
-                    BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle,
+                    buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle,
                     disabledStyle,
-                    { marginBottom: 20 },
+                    { marginBottom: 8 },
                 ]}
                 onPress={this.props.onButtonPress}
             >
                 <Text
-                    style={[BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle]}
+                    style={[buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle]}
                 >
                     {buttonText}
                 </Text>
@@ -119,7 +121,7 @@ const styles = {
         alignItems: 'center',
         paddingBottom: 15,
         // marginBottom: 20,
-        backgroundColor: 'white',
+        backgroundColor: color.GM_CARD_BACKGROUND,
         shadowOffset: {
             width: 0,
             height: 0,

@@ -11,12 +11,16 @@ import { View, Text, Dimensions, Image } from 'react-native'
 import { connect } from 'react-redux'
 import Carousel from 'react-native-snap-carousel'
 import OnboardingHeader from './Common/OnboardingHeader'
-import { TEXT_STYLE as textStyle } from '../../styles'
-import { text, default_style } from '../../styles/basic'
+
+import { text, color, default_style } from '../../styles/basic'
+import OnboardingStyles from '../../styles/Onboarding'
+
 import OnboardingFooter from './Common/OnboardingFooter'
 import { Actions } from 'react-native-router-flux'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
+const { text: textStyle } = OnboardingStyles
+
 class OnboardingCommunity extends React.Component {
     constructor(props) {
         super(props)
@@ -49,13 +53,13 @@ class OnboardingCommunity extends React.Component {
             <View
                 style={{
                     flex: 1,
-                    backgroundColor: 'white',
+                    backgroundColor: color.GM_CARD_BACKGROUND,
                     paddingTop: 0,
                     paddingBottom: 30,
                     alignItems: 'center',
                     margin: 10,
                     borderWidth: 1,
-                    borderColor: 'white',
+                    borderColor: color.GM_CARD_BACKGROUND,
                     borderRadius: 10,
                     ...styles.shadow,
                 }}
@@ -67,7 +71,7 @@ class OnboardingCommunity extends React.Component {
                             style={{
                                 width: screenWidth - 32 - 10 - 10,
                                 height: screenWidth - 32 - 10,
-                                backgroundColor: 'white',
+                                backgroundColor: color.GM_CARD_BACKGROUND,
                                 borderTopLeftRadius: 10,
                                 borderTopRightRadius: 10,
                             }}
@@ -134,10 +138,10 @@ class OnboardingCommunity extends React.Component {
                     }}
                 >
                     <View style={{ alignItems: 'center', marginTop: 35 }}>
-                        <Text style={textStyle.onboardingTitleTextStyle}>
+                        <Text style={textStyle.title}>
                             You are here to share
                         </Text>
-                        <Text style={textStyle.onboardingTitleTextStyle}>
+                        <Text style={textStyle.title}>
                             your goals with others
                         </Text>
                     </View>
@@ -180,10 +184,10 @@ const styles = {
             width: 0,
             height: 0,
         },
-        elevation: 6,
+        elevation: 3,
         shadowRadius: 6,
-        shadowOpacity: 1,
-        shadowColor: 'rgba(0,0,0,0.3)',
+        shadowOpacity: 0.1,
+        shadowColor: 'black',
     },
 }
 

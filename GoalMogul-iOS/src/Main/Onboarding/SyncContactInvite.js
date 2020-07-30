@@ -7,8 +7,10 @@ import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import OnboardingHeader from './Common/OnboardingHeader'
 import OnboardingFooter from './Common/OnboardingFooter'
-import { TEXT_STYLE as textStyle } from '../../styles'
-import { default_style } from '../../styles/basic'
+
+import { default_style, color } from '../../styles/basic'
+import OnboardingStyles from '../../styles/Onboarding'
+
 import { inviteExistingUser } from '../../redux/modules/registration/RegistrationActions'
 import { inviteUser } from '../../redux/modules/User/ContactSync/ContactSyncActions'
 import { TabView } from 'react-native-tab-view'
@@ -16,6 +18,7 @@ import TabButtonGroup from '../Common/TabButtonGroup'
 import UserCard from './Common/UserCard'
 import { contactSyncLoadMore } from '../../actions'
 
+const { text: textStyle } = OnboardingStyles
 /**
  * Sync Contact Invitation page
  *
@@ -140,7 +143,7 @@ class SyncContactInvite extends React.Component {
                 style={{
                     paddingLeft: 12,
                     paddingRight: 12,
-                    backgroundColor: 'white',
+                    backgroundColor: color.GM_CARD_BACKGROUND,
                     paddingBottom: 2,
                     marginBottom: 10,
                 }}
@@ -160,23 +163,19 @@ class SyncContactInvite extends React.Component {
                         style={{
                             paddingTop: 20,
                             paddingBottom: 12,
-                            backgroundColor: 'white',
+                            backgroundColor: 'color.GM_CARD_BACKGROUND,
                         }}
                     >
                         {inviteOnly ? (
-                            <Text style={[textStyle.onboardingTitleTextStyle]}>
+                            <Text style={[textStyle.title]}>
                                 Invite friends to join!
                             </Text>
                         ) : (
                             [
-                                <Text
-                                    style={textStyle.onboardingTitleTextStyle}
-                                >
+                                <Text style={textStyle.title}>
                                     Add some friends or
                                 </Text>,
-                                <Text
-                                    style={textStyle.onboardingTitleTextStyle}
-                                >
+                                <Text style={textStyle.title}>
                                     invite friends to join!
                                 </Text>,
                             ]
