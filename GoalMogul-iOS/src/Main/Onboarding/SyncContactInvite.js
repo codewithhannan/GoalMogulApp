@@ -163,7 +163,7 @@ class SyncContactInvite extends React.Component {
                         style={{
                             paddingTop: 20,
                             paddingBottom: 12,
-                            backgroundColor: 'color.GM_CARD_BACKGROUND,
+                            backgroundColor: color.GM_CARD_BACKGROUND,
                         }}
                     >
                         {inviteOnly ? (

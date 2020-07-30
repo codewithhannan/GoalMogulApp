@@ -13,10 +13,8 @@ import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import OnboardingHeader from './Common/OnboardingHeader'
 import DelayedButton from '../Common/Button/DelayedButton'
-import { FONT_FAMILY_3 } from '../../styles'
-import { DEFAULT_STYLE } from '../../styles'
+import { default_style, text } from '../../styles/basic'
 import OnboardingStyles from '../../styles/Onboarding'
-import Icons from '../../asset/base64/Icons'
 import { fetchAppUserProfile } from '../../actions'
 import { refreshGoals } from '../../redux/modules/home/mastermind/actions'
 import { refreshFeed } from '../../redux/modules/home/feed/actions'
@@ -50,8 +48,8 @@ class OnboardingIntroTransition extends React.Component {
         return (
             <ProfileImage
                 imageStyle={{
-                    height: (width * 3.5 * DEFAULT_STYLE.uiScale) / 7,
-                    width: (width * 3.5 * DEFAULT_STYLE.uiScale) / 7,
+                    height: (width * 3.5 * default_style.uiScale) / 7,
+                    width: (width * 3.5 * default_style.uiScale) / 7,
                     borderRadius: 200,
                 }}
                 imageUrl={image}
@@ -91,7 +89,11 @@ class OnboardingIntroTransition extends React.Component {
                         </Text>
                         <Text style={[textStyle.paragraph, { marginTop: 24 }]}>
                             We are going to ask you{' '}
-                            <Text style={{ fontFamily: FONT_FAMILY_3 }}>
+                            <Text
+                                style={{
+                                    fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                                }}
+                            >
                                 three
                             </Text>{' '}
                             questions
