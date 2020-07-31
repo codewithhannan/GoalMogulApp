@@ -19,6 +19,10 @@ const PADDING_TOP = IS_SMALL_PHONE ? 20 : 40
 const FULL_SCREEN_HEIGHT = Dimensions.get('window').height
 const SUPPORTED_ORIENTATIONS = ['portrait', 'portrait-upside-down']
 
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(
+    TouchableOpacity
+)
+
 /**
  * This bottom sheet uses https://github.com/nysamnang/react-native-raw-bottom-sheet#readme
  * and follows the pattern https://developer.apple.com/design/human-interface-guidelines/ios/app-architecture/modality/
@@ -30,6 +34,7 @@ class BottomSheet extends React.PureComponent {
             modalVisible: false,
             isFullScreen: false,
             animatedHeight: new Animated.Value(FULL_SCREEN_HEIGHT),
+            animatedOpacity: new Animated.Value(0),
             springBackAnimationEnabled: false,
         }
         this.createPanResponder(props)
@@ -59,15 +64,23 @@ class BottomSheet extends React.PureComponent {
             onClose,
             onOpen,
         } = this.props
-        const { animatedHeight } = this.state
+        const { animatedHeight, animatedOpacity } = this.state
         if (visible) {
             this.setState({ modalVisible: visible })
-            if (typeof onOpen === 'function') onOpen(props)
-            Animated.timing(animatedHeight, {
-                useNativeDriver: false,
-                toValue: FULL_SCREEN_HEIGHT - height,
-                duration: openDuration,
-            }).start()
+            Animated.parallel([
+                Animated.timing(animatedHeight, {
+                    useNativeDriver: false,
+                    toValue: FULL_SCREEN_HEIGHT - height,
+                    duration: openDuration,
+                }),
+                Animated.timing(animatedOpacity, {
+                    useNativeDriver: false,
+                    toValue: 1,
+                    duration: openDuration,
+                }),
+            ]).start(() => {
+                if (typeof onOpen === 'function') onOpen(props)
+            })
         } else {
             Animated.timing(animatedHeight, {
                 useNativeDriver: false,
@@ -172,8 +185,7 @@ class BottomSheet extends React.PureComponent {
             children,
             customStyles,
         } = this.props
-        const { animatedHeight, modalVisible } = this.state
-
+        const { animatedHeight, animatedOpacity, modalVisible } = this.state
         return (
             <Modal
                 transparent
@@ -188,8 +200,8 @@ class BottomSheet extends React.PureComponent {
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     style={[styles.wrapper, customStyles.wrapper]}
                 >
-                    <TouchableOpacity
-                        style={styles.mask}
+                    <AnimatedTouchableOpacity
+                        style={[styles.mask, { opacity: animatedOpacity }]}
                         activeOpacity={1}
                         onPress={() => (closeOnPressMask ? this.close() : null)}
                     />
@@ -231,11 +243,11 @@ class BottomSheet extends React.PureComponent {
 const styles = {
     wrapper: {
         flex: 1,
-        backgroundColor: '#00000077',
     },
     mask: {
         flex: 1,
-        backgroundColor: 'transparent',
+        backgroundColor: '#00000077',
+        paddingTop: PADDING_TOP,
     },
     container: {
         backgroundColor: '#fff',
@@ -280,7 +292,7 @@ BottomSheet.defaultProps = {
     animationType: 'none',
     height: 150,
     swipeGestureSenstivity: 1,
-    openDuration: 250,
+    openDuration: 400,
     closeDuration: 250,
     fullScreenGesturesEnabled: false,
     swipeToCloseGestureEnabled: true,

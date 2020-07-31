@@ -26,6 +26,10 @@ export default class MentionsTextInput extends Component {
         this.cursorPosition = 0
     }
 
+    componentDidMount() {
+        if (this.props.onRef) this.props.onRef(this)
+    }
+
     componentWillReceiveProps(nextProps) {
         if (!nextProps.value) {
             this.resetTextbox()
@@ -237,7 +241,7 @@ export default class MentionsTextInput extends Component {
     }
 
     focus() {
-        this._textInput.focus()
+        if (this._textInput) this._textInput.focus()
     }
 
     renderItemSeparator = () => {
