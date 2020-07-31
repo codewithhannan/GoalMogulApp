@@ -1,14 +1,8 @@
 /** @format */
 
 import { getBottomSpace } from 'react-native-iphone-x-helper'
-import {
-    FONT_FAMILY_1,
-    FONT_FAMILY_2,
-    LETTER_SPACING_TITLE,
-    LETTER_SPACING,
-    FONT_FAMILY_3,
-    GM_BLUE,
-} from '..'
+import { text, color } from '../basic'
+import { UI_SCALE } from '..'
 
 export const getCardBottomMargin = () => {
     return getBottomSpace()
@@ -22,52 +16,52 @@ export default OnboardingStyles = {
             paddingBottom: getCardBottomMargin(),
         },
         card: {
-            backgroundColor: 'white',
+            backgroundColor: color.GM_CARD_BACKGROUND,
             flexGrow: 1,
             padding: 16,
         },
     },
     input: {
         text: {
-            fontSize: 16,
+            fontSize: 16 * UI_SCALE,
             lineHeight: 20,
-            letterSpacing: LETTER_SPACING,
+            letterSpacing: text.LETTER_SPACING.REGULAR,
             backgroundColor: 'white',
         },
         title: {
-            fontSize: 14,
+            fontSize: 14 * UI_SCALE,
             lineHeight: 14,
-            fontFamily: FONT_FAMILY_2,
-            letterSpacing: LETTER_SPACING,
+            fontFamily: text.FONT_FAMILY.REGULAR,
+            letterSpacing: text.LETTER_SPACING.REGULAR,
         },
     },
     text: {
         // onboardingTitleTextStyle
         title: {
-            fontSize: 24,
+            fontSize: 24 * UI_SCALE,
             lineHeight: 28,
-            fontFamily: FONT_FAMILY_1,
+            fontFamily: text.FONT_FAMILY.BOLD,
             textAlign: 'center',
-            letterSpacing: LETTER_SPACING_TITLE,
+            letterSpacing: text.LETTER_SPACING.WIDE,
         },
         subTitle: {
-            fontSize: 18,
+            fontSize: 18 * UI_SCALE,
             lineHeight: 18,
             color: '#BDBDBD',
-            fontFamily: FONT_FAMILY_1,
+            fontFamily: text.FONT_FAMILY.BOLD,
         },
         subTitle_2: {
-            fontFamily: FONT_FAMILY_2,
-            fontSize: 16,
-            color: '#333',
-            letterSpacing: LETTER_SPACING_TITLE,
+            fontFamily: text.FONT_FAMILY.REGULAR,
+            fontSize: 16 * UI_SCALE,
+            color: color.TEXT_COLOR.DARK,
+            letterSpacing: text.LETTER_SPACING.WIDE,
         },
         // onboardingPharagraphTextStyle
         paragraph: {
-            fontSize: 18,
+            fontSize: 18 * UI_SCALE,
             lineHeight: 24,
-            fontFamily: FONT_FAMILY_2,
-            color: '#333',
+            fontFamily: text.FONT_FAMILY.REGULAR,
+            color: color.TEXT_COLOR.DARK,
         },
     },
     button: {
@@ -75,26 +69,26 @@ export default OnboardingStyles = {
             containerStyle: {
                 height: 45,
                 width: '100%',
-                backgroundColor: GM_BLUE,
+                backgroundColor: color.GM_BLUE,
                 borderRadius: 3,
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderRadius: 5,
             },
             textStyle: {
-                fontSize: 18,
+                fontSize: 18 * UI_SCALE,
                 fontWeight: 'bold',
                 lineHeight: 24,
                 color: 'white',
-                fontFamily: FONT_FAMILY_3,
-                letterSpacing: LETTER_SPACING_TITLE,
+                fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                letterSpacing: text.LETTER_SPACING.WIDE,
             },
         },
         GM_WHITE_BG_BLUE_TEXT: {
             containerStyle: {
                 height: 45,
                 width: '100%',
-                backgroundColor: 'white',
+                backgroundColor: color.GM_CARD_BACKGROUND,
                 borderRadius: 3,
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -103,11 +97,11 @@ export default OnboardingStyles = {
                 borderRadius: 5,
             },
             textStyle: {
-                fontSize: 18,
+                fontSize: 18 * UI_SCALE,
                 lineHeight: 24,
-                color: GM_BLUE,
-                fontFamily: FONT_FAMILY_3,
-                letterSpacing: LETTER_SPACING_TITLE,
+                color: color.GM_BLUE,
+                fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                letterSpacing: text.LETTER_SPACING.WIDE,
             },
         },
         GM_WHITE_BG_GRAY_TEXT: {
@@ -115,16 +109,16 @@ export default OnboardingStyles = {
                 height: 45,
                 width: '100%',
                 borderRadius: 5,
-                backgroundColor: 'white',
+                backgroundColor: color.GM_CARD_BACKGROUND,
                 alignItems: 'center',
                 justifyContent: 'center',
             },
             textStyle: {
-                fontSize: 18,
+                fontSize: 18 * UI_SCALE,
                 lineHeight: 24,
                 color: '#828282',
-                fontFamily: FONT_FAMILY_3,
-                letterSpacing: LETTER_SPACING_TITLE,
+                fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                letterSpacing: text.LETTER_SPACING.WIDE,
             },
         },
     },
