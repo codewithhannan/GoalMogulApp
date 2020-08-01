@@ -388,8 +388,7 @@ export const getBlockedUsers = (refresh) => (dispatch, getState) => {
     }
 }
 
-// Block one particular user with userId
-export const blockUser = (blockeeId, callback) => (dispatch, getState) => {
+const handleBlockUser = (blockeeId, callback) => (dispatch, getState) => {
     dispatch({
         type: SETTING_BLOCK_BLOCK_REQUEST,
         payload: blockeeId,
@@ -404,16 +403,52 @@ export const blockUser = (blockeeId, callback) => (dispatch, getState) => {
             }
             dispatch({
                 type: SETTING_BLOCK_BLOCK_REQUEST_DONE,
-                payload: blockeeId,
+                payload: {
+                    blockeeId,
+                },
             })
         })
         .catch((err) => {
             console.log(`${DEBUG_KEY}: block user with error: `, err)
             dispatch({
                 type: SETTING_BLOCK_BLOCK_REQUEST_DONE,
-                payload: undefined,
+                payload: {},
             })
         })
+}
+
+// Block one particular user with userId
+export const blockUser = (blockeeId, callback, userDoc) => (
+    dispatch,
+    getState
+) => {
+    // For backward compatible. Some places didn't pass in userDoc
+    const title =
+        userDoc && userDoc.name
+            ? `Block ${userDoc.name}?`
+            : 'Are you sure to block this user?'
+
+    Alert.alert(
+        title,
+        '',
+        [
+            {
+                text: 'Cancel',
+                style: 'cancel',
+                onPress: () => {
+                    /* let it close */
+                },
+            },
+            {
+                text: 'Block',
+                style: 'default',
+                onPress: () => {
+                    handleBlockUser(blockeeId, callback)(dispatch, getState)
+                },
+            },
+        ],
+        { cancelable: false }
+    )
 }
 
 // Setting account unblock user

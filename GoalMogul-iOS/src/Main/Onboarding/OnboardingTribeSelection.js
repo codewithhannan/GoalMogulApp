@@ -126,7 +126,9 @@ class OnboardingTribeSelection extends React.Component {
                             zIndex: 2,
                             borderRadius: 10,
                             borderWidth: 0.5,
-                            backgroundColor: selected ? color.GM_BLUE : color.GM_CARD_BACKGROUND,
+                            backgroundColor: selected
+                                ? color.GM_BLUE
+                                : color.GM_CARD_BACKGROUND,
                             justifyContent: 'center',
                             alignItems: 'center',
                             borderColor: selected ? color.GM_BLUE : '#8C8C8C',
@@ -136,7 +138,9 @@ class OnboardingTribeSelection extends React.Component {
                             name="check"
                             pack="material-community"
                             style={{
-                                tintColor: selected ? color.GM_CARD_BACKGROUND : '#8C8C8C',
+                                tintColor: selected
+                                    ? color.GM_CARD_BACKGROUND
+                                    : '#8C8C8C',
                                 height: 20,
                                 width: 20,
                             }}

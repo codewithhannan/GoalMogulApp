@@ -388,11 +388,72 @@ export default (state = INITIAL_STATE, action) => {
 
         // User blocks a friend
         case SETTING_BLOCK_BLOCK_REQUEST_DONE: {
-            const newFriends = { ...state.friends }
-            newFriends.data = R.filter((a) => a._id !== action.payload)(
-                newFriends.data
+            const { blockeeId } = action.payload
+            let newState = _.cloneDeep(state)
+
+            // Update friends
+            let friends = _.get(newState, 'friends')
+            friends = _.set(
+                friends,
+                'data',
+                friends.data.filter((userDoc) => userDoc._id !== blockeeId)
             )
-            return { ...state, friends: newFriends }
+            newState = _.set(newState, 'friends', friends)
+
+            // Update invitations
+            let suggested = _.get(newState, 'suggested')
+            suggested = _.set(
+                suggested,
+                'data',
+                suggested.data.filter((userDoc) => userDoc._id !== blockeeId)
+            )
+            newState = _.set(newState, 'suggested', suggested)
+
+            // Update suggestions
+            let requests = _.get(newState, 'requests')
+            requests = _.set(
+                requests,
+                'incoming.data',
+                requests.incoming.data.filter((friendshipDoc) => {
+                    if (friendshipDoc && friendshipDoc.participants) {
+                        // Filter out the friendshipDoc where its participants don't contain blockeeId
+                        return !friendshipDoc.participants.filter(
+                            (userWrapper) => {
+                                const userId = _.get(
+                                    userWrapper,
+                                    'users_id._id',
+                                    undefined
+                                )
+                                return userId == blockeeId
+                            }
+                        ).length
+                    }
+                    return true
+                })
+            )
+            requests = _.set(
+                requests,
+                'outgoing.data',
+                requests.outgoing.data.filter((friendshipDoc) => {
+                    if (friendshipDoc && friendshipDoc.participants) {
+                        // Filter out the friendshipDoc where its participants don't contain blockeeId
+                        return !friendshipDoc.participants.filter(
+                            (userWrapper) => {
+                                const userId = _.get(
+                                    userWrapper,
+                                    'users_id._id',
+                                    undefined
+                                )
+                                return userId == blockeeId
+                            }
+                        ).length
+                    }
+                    return true
+                })
+            )
+            newState = _.set(newState, 'requests', requests)
+
+            return newState
         }
 
         // User fetch friend list in profile

@@ -19,8 +19,10 @@ const FULL_SCREEN_HEIGHT = Dimensions.get('window').height - PADDING_TOP
 const SUPPORTED_ORIENTATIONS = ['portrait', 'portrait-upside-down']
 
 /**
- * This bottom sheet uses https://github.com/nysamnang/react-native-raw-bottom-sheet#readme
+ * This bottom sheet borrows ideas from https://github.com/nysamnang/react-native-raw-bottom-sheet#readme
  * and follows the pattern https://developer.apple.com/design/human-interface-guidelines/ios/app-architecture/modality/
+ *
+ *
  */
 class BottomSheet extends React.PureComponent {
     constructor(props) {

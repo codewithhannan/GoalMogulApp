@@ -204,7 +204,10 @@ class InputBox extends React.Component {
                         caption={captionToUse}
                         ref="textInput"
                         label={this.renderInputTitle}
-                        style={{ width: '100%', backgroundColor: color.GM_CARD_BACKGROUND }}
+                        style={{
+                            width: '100%',
+                            backgroundColor: color.GM_CARD_BACKGROUND,
+                        }}
                         textStyle={[OnboardingStyles.input.text]}
                         size="large"
                     />
@@ -219,7 +222,10 @@ class InputBox extends React.Component {
                     {...custom}
                     ref="textInput"
                     label={this.renderInputTitle}
-                    style={{ width: '100%', backgroundColor: color.GM_CARD_BACKGROUND }}
+                    style={{
+                        width: '100%',
+                        backgroundColor: color.GM_CARD_BACKGROUND,
+                    }}
                     textStyle={[OnboardingStyles.input.text]}
                     size="large"
                 />

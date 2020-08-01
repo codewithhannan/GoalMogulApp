@@ -14,24 +14,16 @@ import ProfileImage from '../../Common/ProfileImage'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
 // Actions
-import {
-    updateFriendship,
-    blockUser,
-    openProfile,
-    UserBanner,
-} from '../../../actions'
+import { updateFriendship, blockUser, openProfile } from '../../../actions'
 
 import { handleRefresh } from '../../../redux/modules/meet/MeetActions'
 import UserCardHeader from '../Common/UserCardHeader'
 import { default_style, color } from '../../../styles/basic'
-import { SentryRequestBuilder } from '../../../monitoring/sentry'
-import {
-    SENTRY_MESSAGE_LEVEL,
-    SENTRY_MESSAGE_TYPE,
-    SENTRY_TAGS,
-    SENTRY_TAG_VALUE,
-} from '../../../monitoring/sentry/Constants'
 import UserTopGoals from '../Common/UserTopGoals'
+import { createReport } from '../../../redux/modules/report/ReportActions'
+import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
+import Icons from '../../../asset/base64/Icons'
+import { getBottomSpace } from 'react-native-iphone-x-helper'
 
 // Assets
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel']
@@ -130,6 +122,55 @@ class FriendRequestCardView extends React.PureComponent {
         }
     }
 
+    closeOptionModal = () => this.bottomSheetRef.close()
+
+    openOptionModal = () => this.bottomSheetRef.open()
+
+    makeRequestCardOptions = (userDoc) => {
+        const { _id } = userDoc
+
+        return [
+            {
+                text: 'Report',
+                textStyle: { color: 'black' },
+                icon: { name: 'account-alert', pack: 'material-community' },
+                iconStyle: { height: 24, color: 'black' },
+                onPress: () => {
+                    this.closeOptionModal()
+                    this.props.createReport(_id, undefined, 'User')
+                },
+            },
+            {
+                text: 'Block',
+                image: Icons.AccountRemove,
+                imageStyle: { tintColor: 'black' },
+                onPress: () => {
+                    // close bottom sheet
+                    this.closeOptionModal()
+
+                    // Wait for bottom sheet to close
+                    // before showing confirmation alert
+                    setTimeout(() => {
+                        this.props.blockUser(_id, undefined, userDoc)
+                    }, 500)
+                },
+            },
+        ]
+    }
+
+    renderBottomSheet = (userDoc) => {
+        const options = this.makeRequestCardOptions(userDoc)
+        // Options height + bottom space + bottom sheet handler height
+        const sheetHeight = options.length * 48 + getBottomSpace() + 30
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.bottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
+    }
+
     renderButton(item) {
         if (!item.user || item.type === 'info') return null
         if (item.type === 'outgoing') {
@@ -159,7 +200,7 @@ class FriendRequestCardView extends React.PureComponent {
                     activeOpacity={0.6}
                     style={[
                         styles.buttonTextContainerStyle,
-                        { backgroundColor: '#E0E0E0' },
+                        { backgroundColor: '#F2F2F2' },
                     ]}
                 >
                     <Text
@@ -211,7 +252,7 @@ class FriendRequestCardView extends React.PureComponent {
                     activeOpacity={0.6}
                     style={[
                         styles.buttonTextContainerStyle,
-                        { backgroundColor: '#E0E0E0' },
+                        { backgroundColor: '#F2F2F2' },
                     ]}
                 >
                     <Text
@@ -229,16 +270,19 @@ class FriendRequestCardView extends React.PureComponent {
         const { item } = this.props
         if (!item) return null
 
-        // console.log(`${DEBUG_KEY}: item is: `, item);
         return (
             <DelayedButton
                 activeOpacity={0.8}
                 style={[styles.containerStyle, styles.shadow]}
                 onPress={this.handleOnOpenProfile}
             >
-                <UserCardHeader user={item.user} />
+                <UserCardHeader
+                    user={item.user}
+                    optionsOnPress={this.openOptionModal}
+                />
                 <UserTopGoals user={item.user} />
                 {this.renderButton(item)}
+                {this.renderBottomSheet(item.user)}
             </DelayedButton>
         )
     }
@@ -260,9 +304,10 @@ const styles = {
         marginRight: 8,
         paddingTop: 8,
         paddingBottom: 8,
-        paddingLeft: 15,
-        paddingRight: 15,
+        paddingLeft: 16,
+        paddingRight: 16,
         borderRadius: 3,
+        width: 112,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -279,4 +324,5 @@ export default connect(null, {
     blockUser,
     openProfile,
     handleRefresh,
+    createReport,
 })(FriendRequestCardView)

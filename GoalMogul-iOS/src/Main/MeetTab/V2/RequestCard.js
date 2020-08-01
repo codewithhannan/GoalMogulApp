@@ -136,7 +136,7 @@ class RequestCard extends React.PureComponent {
                     numberOfLines={1}
                     style={[default_style.smallText_1, { color: '#555' }]}
                 >
-                    <Text></Text>mutual{' '}
+                    <Text>{mutualFriendCount}</Text> mutual{' '}
                     {mutualFriendCount > 1 ? 'friends' : 'friend'}
                 </Text>
                 <DelayedButton
@@ -154,10 +154,7 @@ class RequestCard extends React.PureComponent {
                     }}
                 >
                     <Text
-                        style={[
-                            default_style.buttonText_1,
-                            { color: color.GM_BLUE },
-                        ]}
+                        style={[default_style.buttonText_1, { color: 'white' }]}
                     >
                         Accept
                     </Text>

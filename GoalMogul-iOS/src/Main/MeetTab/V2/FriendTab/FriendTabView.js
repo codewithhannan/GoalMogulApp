@@ -7,7 +7,7 @@
 
 import _ from 'lodash'
 import React from 'react'
-import { ActivityIndicator, FlatList, View, Text, Image } from 'react-native'
+import { ActivityIndicator, FlatList, View, Text } from 'react-native'
 import { connect } from 'react-redux'
 // Constants
 import { MEET_REQUEST_LIMIT } from '../../../../reducers/MeetReducers'
@@ -22,7 +22,6 @@ import SearchBarHeader from '../../../Common/Header/SearchBarHeader'
 /* Components */
 import EmptyResult from '../../../Common/Text/EmptyResult'
 import FriendTabCardView from './FriendTabCardView'
-import Icons from '../../../../asset/base64/Icons'
 import DelayedButton from '../../../Common/Button/DelayedButton'
 import { Actions } from 'react-native-router-flux'
 import { componentKeyByTab } from '../../../../redux/middleware/utils'
@@ -56,8 +55,8 @@ class FriendTabView extends React.Component {
 
     keyExtractor = (item) => item._id
 
-    renderItem = ({ item }) => {
-        return <FriendTabCardView item={item} />
+    renderItem = (props) => {
+        return <FriendTabCardView {...props} />
     }
 
     renderListFooter() {
@@ -111,18 +110,6 @@ class FriendTabView extends React.Component {
                         >
                             Manage Invitations
                         </Text>
-                        <View style={{ height: 8, width: 5, marginLeft: 9 }}>
-                            <Image
-                                source={Icons.ChevronLeft}
-                                style={{
-                                    height: 8,
-                                    width: 5,
-                                    tintColor: color.GM_BLUE,
-                                    transform: [{ rotate: '180deg' }],
-                                }}
-                                resizeMode="cover"
-                            />
-                        </View>
                     </DelayedButton>
                 </View>
                 {/* <SearchBar 

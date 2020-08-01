@@ -9,7 +9,7 @@ import Icons from '../../../asset/base64/Icons'
 import ProfileImage from '../../Common/ProfileImage'
 import Name from '../../Common/Name'
 import DelayedButton from '../../Common/Button/DelayedButton'
-import FriendsSettingIcon from '../../../asset/utils/friendsSettingIcon.png'
+import { Icon } from '@ui-kitten/components'
 
 /**
  * This class render user object
@@ -129,20 +129,19 @@ class UserCardHeader extends React.PureComponent {
                     <DelayedButton
                         style={{
                             position: 'absolute',
-                            right: 0,
-                            top: 0,
+                            right: -16,
+                            top: -16,
                             paddingBottom: 23,
                             paddingLeft: 25,
-                            paddingTop: 6,
-                            paddingRight: 5,
+                            paddingTop: 14,
+                            paddingRight: 14,
                         }}
                         onPress={optionsOnPress}
                     >
-                        <Image
-                            source={FriendsSettingIcon}
-                            style={[
-                                { height: 10, width: 15, tintColor: '#828282' },
-                            ]}
+                        <Icon
+                            name="dots-horizontal"
+                            pack="material-community"
+                            style={{ height: 24, color: '#828282' }}
                         />
                     </DelayedButton>
                 ) : null}

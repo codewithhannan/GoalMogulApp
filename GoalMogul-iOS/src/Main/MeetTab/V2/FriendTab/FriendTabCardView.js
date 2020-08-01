@@ -16,6 +16,9 @@ import UserCardHeader from '../../Common/UserCardHeader'
 import UserTopGoals from '../../Common/UserTopGoals'
 import Icons from '../../../../asset/base64/Icons'
 import BottomButtonsSheet from '../../../Common/Modal/BottomButtonsSheet'
+import AnimatedCardWrapper from '../../../Common/Card/AnimatedCardWrapper'
+import { getFriendUserId } from '../../../../redux/middleware/utils'
+import { getBottomSpace } from 'react-native-iphone-x-helper'
 
 const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel']
 const BLOCK_INDEX = 0
@@ -77,10 +80,6 @@ class FriendTabCardView extends React.PureComponent {
         )
     }
 
-    handleBlockFriend = (friendUserId) => {
-        this.props.blockUser(friendUserId)
-    }
-
     handleDeleteFriend = (friendshipId) => {
         this.props.updateFriendship(
             '',
@@ -129,12 +128,18 @@ class FriendTabCardView extends React.PureComponent {
             },
             {
                 text: 'Block',
-                textStyle: { color: '#EB5757' },
+                textStyle: { color: 'black' },
                 image: Icons.AccountCancel,
-                imageStyle: { tintColor: '#EB5757' },
+                imageStyle: { tintColor: 'black' },
                 onPress: () => {
-                    this.handleBlockFriend(friendUserId)
+                    // Close bottom sheet
                     this.closeOptionModal()
+
+                    // Wait for bottom sheet to close
+                    // before showing confirmation alert
+                    setTimeout(() => {
+                        this.props.blockUser(friendUserId, undefined, item)
+                    }, 500)
                 },
             },
         ]
@@ -142,11 +147,13 @@ class FriendTabCardView extends React.PureComponent {
 
     renderBottomSheet = (item) => {
         const options = this.makeFriendCardOptions(item)
+        // Options height + bottom space + bottom sheet handler height
+        const sheetHeight = options.length * 48 + getBottomSpace() + 30
         return (
             <BottomButtonsSheet
                 ref={(r) => (this.bottomSheetRef = r)}
                 buttons={options}
-                height={150}
+                height={sheetHeight}
             />
         )
     }
@@ -158,37 +165,24 @@ class FriendTabCardView extends React.PureComponent {
     }
 
     render() {
-        const { item } = this.props
+        const { item, ...otherProps } = this.props
         if (!item) return null
 
-        // console.log(`${DEBUG_KEY}: item is: `, item);
         return (
-            <DelayedButton
-                style={styles.containerStyle}
-                onPress={() => this.props.openProfile(item._id)}
-                activeOpacity={0.8}
-            >
-                {this.renderHeader(item)}
-                <UserTopGoals user={item} />
-                {/* {this.renderButtons(item)} */}
-                {this.renderBottomSheet(item)}
-            </DelayedButton>
+            <AnimatedCardWrapper {...otherProps}>
+                <DelayedButton
+                    style={styles.containerStyle}
+                    onPress={() => this.props.openProfile(item._id)}
+                    activeOpacity={0.8}
+                >
+                    {this.renderHeader(item)}
+                    <UserTopGoals user={item} />
+                    {/* {this.renderButtons(item)} */}
+                    {this.renderBottomSheet(item)}
+                </DelayedButton>
+            </AnimatedCardWrapper>
         )
     }
-}
-
-/**
- * Get current user's friend's userId from friendship object
- * @param {*} maybeFriendshipRef friendship object
- * @param {*} userId current userId
- */
-const getFriendUserId = (maybeFriendshipRef, userId) => {
-    const { participants } = maybeFriendshipRef
-    let ret
-    participants.forEach((p) => {
-        if (p.users_id !== userId) ret = p.users_id
-    })
-    return ret
 }
 
 const styles = {

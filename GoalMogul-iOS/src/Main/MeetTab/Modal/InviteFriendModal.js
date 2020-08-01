@@ -22,6 +22,7 @@ import { color, default_style } from '../../../styles/basic'
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { generateInvitationLink } from '../../../redux/middleware/utils'
+import { FONT_FAMILY } from '../../../styles/basic/text'
 
 const DEBUG_KEY = '[UI InviteFriendModal]'
 const DEFAULT_STATE = {
@@ -157,13 +158,7 @@ class InviteFriendModal extends React.PureComponent {
             return this.inviteEmail(this.state.description, inviteLink)
         }
 
-        console.log(
-            'full link is: ',
-            deepLinkFormat(this.state.description, inviteLink)
-        )
-        console.log('deepLink is: ', deepLink)
         const canOpen = await Linking.canOpenURL(deepLink)
-        console.log('canOpen', canOpen)
 
         if (canOpen) {
             const fullLink = deepLinkFormat
@@ -199,12 +194,17 @@ class InviteFriendModal extends React.PureComponent {
 
         return (
             <DelayedButton
-                style={[{ width: '100%', minHeight: 70 }]}
+                style={[
+                    {
+                        width: '100%',
+                        paddingVertical: 24,
+                        paddingHorizontal: 16,
+                    },
+                ]}
                 onPress={() => this.handleDeepLink(item)}
             >
                 <View
                     style={[
-                        styles.boxContainerStyle,
                         { flexDirection: 'row', flex: 1, alignItems: 'center' },
                     ]}
                 >
@@ -218,13 +218,6 @@ class InviteFriendModal extends React.PureComponent {
                     </Text>
                     <View style={{ flex: 1 }} />
                 </View>
-                <View
-                    style={{
-                        width: '100%',
-                        height: 1,
-                        backgroundColor: '#E0E0E0',
-                    }}
-                />
             </DelayedButton>
         )
     }
@@ -323,15 +316,12 @@ class InviteFriendModal extends React.PureComponent {
                                     style={[
                                         default_style.subTitleText_1,
                                         {
-                                            letterSpacing: 0,
-                                            fontSize: 18,
-                                            lineHeight: 26,
+                                            lineHeight: 24,
                                             padding: 0,
                                             width: width - 72,
                                         },
                                     ]}
                                     multiline
-                                    editable={this.state.editEnabled}
                                 />
                                 <Text
                                     style={[
@@ -339,32 +329,14 @@ class InviteFriendModal extends React.PureComponent {
                                         {
                                             fontWeight: '400',
                                             color: color.GM_BLUE,
+                                            fontFamily: FONT_FAMILY.REGULAR,
                                             textDecorationLine: 'underline',
+                                            marginTop: 16,
                                         },
                                     ]}
                                 >
                                     {inviteLink}
                                 </Text>
-                            </View>
-                            <View style={{ flexDirection: 'row' }}>
-                                <View style={{ flex: 1 }} />
-                                <DelayedButton
-                                    onPress={this.handleEditDescriptionOnClick}
-                                >
-                                    <Text
-                                        style={[
-                                            default_style.smallTitle_1,
-                                            { fontSize: 14, padding: 10 },
-                                        ]}
-                                    >
-                                        {this.state.editEnabled
-                                            ? 'Save Description'
-                                            : 'Edit Invite Description'}
-                                    </Text>
-                                </DelayedButton>
-                                {/* <DelayedButton>
-                                        <Text style={[default_style.smallTitle_1, { fontSize: 14, padding: 10 }]}>Customize Username</Text>
-                                    </DelayedButton> */}
                             </View>
                         </View>
                         <View

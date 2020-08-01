@@ -96,10 +96,13 @@ class SearchBarHeader extends Component {
                         `${DEBUG_KEY} User blocks _id: `,
                         this.props.profileUserId
                     )
-                    this.props.blockUser(this.props.profileUserId, () =>
-                        alert(
-                            `You have successfully blocked ${this.props.profileUserName}. ${text}`
-                        )
+                    this.props.blockUser(
+                        this.props.profileUserId,
+                        () =>
+                            alert(
+                                `You have successfully blocked ${this.props.profileUserName}. ${text}`
+                            ),
+                        { name: this.props.profileUserName } // To show block confirmation alert
                     )
                 },
             ],
@@ -253,7 +256,7 @@ class SearchBarHeader extends Component {
         }
 
         // Empty dummy view as default
-        return <View style={styles.headerRightImage} />
+        return <View style={{ height: 30, width: 30 }} />
     }
 
     renderTitle() {

@@ -140,7 +140,6 @@ class ProfileDetailCard extends Component {
                             `${DEBUG_KEY} User withdraw request _id: `,
                             this.props.friendship._id
                         )
-                        // this.props.blockUser(this.props.profileUserId);
                         this.props.updateFriendship(
                             this.props.userId,
                             this.props.friendship._id,
