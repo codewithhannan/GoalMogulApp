@@ -32,7 +32,7 @@ export const HEADER_STYLES = {
     buttonText: {
         ...default_style.subTitleText_1,
         fontFamily: text.FONT_FAMILY.SEMI_BOLD,
-        fontWight: '700',
+        fontWeight: '700',
         color: CONTENT_COLOR,
     },
     logo: {

@@ -41,9 +41,8 @@ class TabButtonGroup extends Component {
                 : (buttonStyle && buttonStyle.unselected) || {
                       ...default_style.buttonText_1,
                       fontFamily: text.FONT_FAMILY.REGULAR,
-                      fontWight: '500',
+                      fontWeight: '500',
                       color: '#828282',
-                      tintColor: '#828282',
                       backgroundColor: '#F2F2F2',
                   }
             const iconSource = tabIconMap
