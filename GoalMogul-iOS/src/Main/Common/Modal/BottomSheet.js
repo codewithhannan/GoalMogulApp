@@ -11,12 +11,17 @@ import {
     PanResponder,
     Platform,
     Dimensions,
+    Keyboard,
 } from 'react-native'
 import { IS_SMALL_PHONE } from '../../../styles'
 
 const PADDING_TOP = IS_SMALL_PHONE ? 20 : 40
-const FULL_SCREEN_HEIGHT = Dimensions.get('window').height - PADDING_TOP
+const FULL_SCREEN_HEIGHT = Dimensions.get('window').height
 const SUPPORTED_ORIENTATIONS = ['portrait', 'portrait-upside-down']
+
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(
+    TouchableOpacity
+)
 
 /**
  * This bottom sheet borrows ideas from https://github.com/nysamnang/react-native-raw-bottom-sheet#readme
@@ -30,15 +35,16 @@ class BottomSheet extends React.PureComponent {
         this.state = {
             modalVisible: false,
             isFullScreen: false,
-            animatedHeight: new Animated.Value(0),
+            animatedHeight: new Animated.Value(FULL_SCREEN_HEIGHT),
+            animatedOpacity: new Animated.Value(0),
+            springBackAnimationEnabled: false,
         }
-
         this.createPanResponder(props)
     }
 
     fullScreen() {
         Animated.timing(this.state.animatedHeight, {
-            toValue: FULL_SCREEN_HEIGHT,
+            toValue: PADDING_TOP,
             duration: this.props.openDuration,
             useNativeDriver: false,
         }).start(() => this.setState({ isFullScreen: true }))
@@ -46,7 +52,7 @@ class BottomSheet extends React.PureComponent {
 
     minimize() {
         Animated.timing(this.state.animatedHeight, {
-            toValue: this.props.height,
+            toValue: FULL_SCREEN_HEIGHT - this.props.height,
             duration: this.props.closeDuration,
             useNativeDriver: false,
         }).start(() => this.setState({ isFullScreen: false }))
@@ -55,33 +61,38 @@ class BottomSheet extends React.PureComponent {
     setModalVisible(visible, props) {
         const {
             height,
-            minClosingHeight,
             openDuration,
             closeDuration,
             onClose,
             onOpen,
         } = this.props
-        const { animatedHeight } = this.state
+        const { animatedHeight, animatedOpacity } = this.state
         if (visible) {
             this.setState({ modalVisible: visible })
-            if (typeof onOpen === 'function') onOpen(props)
-            Animated.timing(animatedHeight, {
-                useNativeDriver: false,
-                toValue: height,
-                duration: openDuration,
-            }).start()
+            Animated.parallel([
+                Animated.timing(animatedHeight, {
+                    useNativeDriver: false,
+                    toValue: FULL_SCREEN_HEIGHT - height,
+                    duration: openDuration,
+                }),
+                Animated.timing(animatedOpacity, {
+                    useNativeDriver: false,
+                    toValue: 1,
+                    duration: openDuration,
+                }),
+            ]).start(() => {
+                if (typeof onOpen === 'function') onOpen(props)
+            })
         } else {
             Animated.timing(animatedHeight, {
                 useNativeDriver: false,
-                toValue: minClosingHeight,
+                toValue: FULL_SCREEN_HEIGHT,
                 duration: closeDuration,
             }).start(() => {
                 this.setState({
                     modalVisible: visible,
-                    animatedHeight: new Animated.Value(0),
                     isFullScreen: false,
                 })
-
                 if (typeof onClose === 'function') onClose(props)
             })
         }
@@ -97,29 +108,23 @@ class BottomSheet extends React.PureComponent {
         this.panResponder = PanResponder.create({
             onStartShouldSetPanResponder: () =>
                 swipeToCloseGestureEnabled || fullScreenGesturesEnabled,
-            onPanResponderMove: (e, gestureState) => {
-                let { isFullScreen, animatedHeight } = this.state
-                // Swiping down
-                if (gestureState.dy > 0) {
-                    let toValue = FULL_SCREEN_HEIGHT - gestureState.dy
-                    if (!isFullScreen) toValue = height - gestureState.dy
-                    Animated.timing(animatedHeight, {
-                        useNativeDriver: false,
-                        toValue,
-                        duration: 1,
-                    }).start()
-                }
-                // Swiping up: only registered if not full screen
-                else if (!isFullScreen) {
-                    Animated.timing(animatedHeight, {
-                        useNativeDriver: false,
-                        toValue: height - gestureState.dy,
-                        duration: 1,
-                    }).start()
-                }
-            },
+            onPanResponderMove: Animated.event(
+                [null, { moveY: this.state.animatedHeight }],
+                !this.state.springBackAnimationEnabled
+                    ? {
+                          listener: () =>
+                              this.setState({
+                                  springBackAnimationEnabled: true,
+                              }),
+                      }
+                    : null
+            ),
             onPanResponderRelease: (e, gestureState) => {
-                let { isFullScreen, animatedHeight } = this.state
+                let {
+                    isFullScreen,
+                    animatedHeight,
+                    springBackAnimationEnabled,
+                } = this.state
                 // Close/fullscreen/minimize when gesture velocity or distance hits the thereashold
                 if (
                     swipeToCloseGestureEnabled &&
@@ -148,12 +153,18 @@ class BottomSheet extends React.PureComponent {
                         gestureState.vy > 0.75 * swipeGestureSenstivity)
                 ) {
                     this.minimize()
-                } else {
+                } else if (springBackAnimationEnabled) {
                     Animated.spring(animatedHeight, {
-                        toValue: isFullScreen ? FULL_SCREEN_HEIGHT : height,
+                        toValue: isFullScreen
+                            ? PADDING_TOP
+                            : FULL_SCREEN_HEIGHT - height,
                         useNativeDriver: false,
                     }).start()
+                } else {
+                    // Only dismiss keyboard if user is not trying to resize the modal
+                    Keyboard.dismiss()
                 }
+                this.setState({ springBackAnimationEnabled: false })
             },
         })
     }
@@ -175,10 +186,8 @@ class BottomSheet extends React.PureComponent {
             closeOnPressBack,
             children,
             customStyles,
-            keyboardAvoidingViewEnabled,
         } = this.props
-        const { animatedHeight, modalVisible } = this.state
-
+        const { animatedHeight, animatedOpacity, modalVisible } = this.state
         return (
             <Modal
                 transparent
@@ -190,12 +199,11 @@ class BottomSheet extends React.PureComponent {
                 }}
             >
                 <KeyboardAvoidingView
-                    enabled={keyboardAvoidingViewEnabled}
-                    behavior="padding"
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     style={[styles.wrapper, customStyles.wrapper]}
                 >
-                    <TouchableOpacity
-                        style={styles.mask}
+                    <AnimatedTouchableOpacity
+                        style={[styles.mask, { opacity: animatedOpacity }]}
                         activeOpacity={1}
                         onPress={() => (closeOnPressMask ? this.close() : null)}
                     />
@@ -203,7 +211,12 @@ class BottomSheet extends React.PureComponent {
                         {...(!dragFromTopOnly && this.panResponder.panHandlers)}
                         style={[
                             styles.container,
-                            { height: animatedHeight },
+                            {
+                                height: animatedHeight.interpolate({
+                                    inputRange: [0, FULL_SCREEN_HEIGHT],
+                                    outputRange: [FULL_SCREEN_HEIGHT, 0],
+                                }),
+                            },
                             customStyles.container,
                         ]}
                     >
@@ -232,11 +245,11 @@ class BottomSheet extends React.PureComponent {
 const styles = {
     wrapper: {
         flex: 1,
-        backgroundColor: '#00000077',
     },
     mask: {
         flex: 1,
-        backgroundColor: 'transparent',
+        backgroundColor: '#00000077',
+        paddingTop: PADDING_TOP,
     },
     container: {
         backgroundColor: '#fff',
@@ -263,7 +276,6 @@ export default BottomSheet
 BottomSheet.propTypes = {
     animationType: PropTypes.oneOf(['none', 'slide', 'fade']),
     height: PropTypes.number,
-    minClosingHeight: PropTypes.number,
     swipeGestureSenstivity: PropTypes.number,
     openDuration: PropTypes.number,
     closeDuration: PropTypes.number,
@@ -272,7 +284,6 @@ BottomSheet.propTypes = {
     closeOnPressMask: PropTypes.bool,
     dragFromTopOnly: PropTypes.bool,
     closeOnPressBack: PropTypes.bool,
-    keyboardAvoidingViewEnabled: PropTypes.bool,
     customStyles: PropTypes.objectOf(PropTypes.object),
     onClose: PropTypes.func,
     onOpen: PropTypes.func,
@@ -282,16 +293,14 @@ BottomSheet.propTypes = {
 BottomSheet.defaultProps = {
     animationType: 'none',
     height: 150,
-    minClosingHeight: 0,
     swipeGestureSenstivity: 1,
-    openDuration: 250,
+    openDuration: 400,
     closeDuration: 250,
     fullScreenGesturesEnabled: false,
     swipeToCloseGestureEnabled: true,
     dragFromTopOnly: false,
     closeOnPressMask: true,
     closeOnPressBack: true,
-    keyboardAvoidingViewEnabled: Platform.OS === 'ios',
     customStyles: {
         borderTopRightRadius: 5,
         borderTopLeftRadius: 5,

@@ -1,5 +1,6 @@
 /** @format */
 import { default_style, color, text } from '../basic'
+import { IS_SMALL_PHONE } from '..'
 
 export const CONTENT_COLOR = 'white'
 
@@ -7,7 +8,8 @@ export const HEADER_STYLES = {
     headerContainer: {
         flexDirection: 'row',
         backgroundColor: color.GM_BLUE,
-        height: 47 * default_style.uiScale,
+        height: (IS_SMALL_PHONE ? 70 : 90) * default_style.uiScale,
+        paddingTop: IS_SMALL_PHONE ? 20 : 40,
         paddingLeft: 16,
         paddingRight: 16,
         alignItems: 'center',
