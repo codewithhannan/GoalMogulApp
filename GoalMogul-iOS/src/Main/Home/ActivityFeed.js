@@ -28,6 +28,7 @@ import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
 import { color } from '../../styles/basic'
 import DelayedButton from '../Common/Button/DelayedButton'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
+import { ActivityGhosts } from '../Common/Ghosts'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
@@ -45,15 +46,17 @@ class ActivityFeed extends Component {
     }
 
     handleOnViewableItemsChanged = ({ viewableItems, changed }) => {
-        viewableItems.map(({ item }) => {
-            if (item.postRef) {
-                const postId = item.postRef._id
-                this.props.markUserViewPost(postId)
-            } else if (item.goalRef) {
-                const goalId = item.goalRef._id
-                this.props.markUserViewGoal(goalId)
-            }
-        })
+        if (!this.props.loading) {
+            viewableItems.map(({ item }) => {
+                if (item.postRef) {
+                    const postId = item.postRef._id
+                    this.props.markUserViewPost(postId)
+                } else if (item.goalRef) {
+                    const goalId = item.goalRef._id
+                    this.props.markUserViewGoal(goalId)
+                }
+            })
+        }
     }
 
     handleOnLoadMore = () => this.props.loadMoreFeed()
@@ -136,33 +139,50 @@ class ActivityFeed extends Component {
     }
 
     render() {
-        return (
-            <View style={{ flex: 1 }}>
-                <FlatList
-                    ref={(f) => (this.flatlist = f)}
-                    data={this.props.data}
-                    renderItem={this.renderItem}
-                    numColumns={1}
-                    keyExtractor={this._keyExtractor}
-                    refreshing={this.props.loading}
-                    onRefresh={this.handleOnRefresh}
-                    onEndReached={this.handleOnLoadMore}
-                    onViewableItemsChanged={this.handleOnViewableItemsChanged}
-                    viewabilityConfig={this.viewabilityConfig}
-                    ListEmptyComponent={
-                        this.props.loading ? null : (
-                            <EmptyResult
-                                text={'No Activity'}
-                                textStyle={{ paddingTop: 230 }}
-                            />
-                        )
-                    }
-                    ListFooterComponent={this.renderListFooter()}
-                    onEndThreshold={2}
-                />
-                {this.renderPlus()}
-            </View>
-        )
+        if (this.props.loading) {
+            return (
+                <View style={{ flex: 1 }}>
+                    <FlatList
+                        data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                        renderItem={HomeGhost}
+                        onViewableItemsChanged={
+                            this.handleOnViewableItemsChanged
+                        }
+                        viewabilityConfig={this.viewabilityConfig}
+                        keyExtractor={(item) => item.toString()}
+                    />
+                </View>
+            )
+        } else {
+            return (
+                <View style={{ flex: 1 }}>
+                    <FlatList
+                        ref={(f) => (this.flatlist = f)}
+                        data={this.props.data}
+                        renderItem={this.renderItem}
+                        numColumns={1}
+                        keyExtractor={this._keyExtractor}
+                        refreshing={this.props.loading}
+                        onRefresh={this.handleOnRefresh}
+                        onEndReached={this.handleOnLoadMore}
+                        onViewableItemsChanged={
+                            this.handleOnViewableItemsChanged
+                        }
+                        viewabilityConfig={this.viewabilityConfig}
+                        ListEmptyComponent={
+                            this.props.loading ? null : (
+                                <EmptyResult
+                                    text={'No Activity'}
+                                    textStyle={{ paddingTop: 230 }}
+                                />
+                            )
+                        }
+                        ListFooterComponent={this.renderListFooter()}
+                    />
+                    {this.renderPlus()}
+                </View>
+            )
+        }
     }
 }
 
