@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { View, Image, Text, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
+import { Icon } from '@ui-kitten/components'
 import R from 'ramda'
 
 /* Assets */
@@ -435,6 +436,94 @@ class ProfileDetailCard extends Component {
         )
     }
 
+    renderHeadline(headline) {
+        if (headline && headline.trim() !== '') {
+            return (
+                <RichText
+                    textStyle={[
+                        styles.marginStyle,
+                        default_style.subTitleText_1,
+                    ]}
+                    contentText={headline}
+                    textContainerStyle={{ flexDirection: 'row' }}
+                    numberOfLines={1}
+                />
+            )
+        }
+        return (
+            <View>
+                {this.renderAddAction(
+                    'Add a headline',
+                    this.handleEditOnPressed
+                )}
+            </View>
+        )
+    }
+
+    renderLocation(location) {
+        if (location && location.trim() !== '') {
+            return (
+                <RichText
+                    textStyle={[styles.marginStyle, default_style.normalText_1]}
+                    contentText={location}
+                    textContainerStyle={{ flexDirection: 'row' }}
+                    numberOfLines={1}
+                />
+            )
+        }
+        return (
+            <View>
+                {this.renderAddAction(
+                    'Add a location',
+                    this.handleEditOnPressed
+                )}
+            </View>
+        )
+    }
+
+    renderAddAction(text, handleAddAction) {
+        return (
+            this.props.self && (
+                <DelayedButton
+                    activeOpacity={0.6}
+                    onPress={() => handleAddAction()}
+                >
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            borderColor: '#E0E0E0',
+                            borderWidth: 1,
+                            borderStyle: 'dashed',
+                            borderRadius: 6,
+                            padding: 4,
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Icon
+                            name="plus"
+                            pack="material-community"
+                            style={{
+                                ...default_style.buttonIcon_2,
+                                tintColor: '#828282',
+                                marginRight: 8,
+                            }}
+                            zIndex={1}
+                        ></Icon>
+                        <Text
+                            style={{
+                                ...default_style.normalText_1,
+                                color: '#828282',
+                                fontWeight: '600',
+                            }}
+                        >
+                            {text}
+                        </Text>
+                    </View>
+                </DelayedButton>
+            )
+        )
+    }
+
     render() {
         const { user, self } = this.props
         if (!user) return null
@@ -480,39 +569,24 @@ class ProfileDetailCard extends Component {
                         {this.props.self && (
                             <DelayedButton
                                 onPress={this.handleBannerInfoIconOnPress}
-                                style={[
-                                    styles.infoIconContainerStyle,
-                                    styles.marginStyle,
-                                ]}
                                 activeOpacity={0.6}
                             >
-                                <Image
-                                    source={InfoIcon}
-                                    style={default_style.infoIcon}
+                                <Icon
+                                    name="information"
+                                    pack="material-community"
+                                    style={{
+                                        ...styles.marginStyle,
+                                        height: 20 * default_style.uiScale,
+                                        width: 20 * default_style.uiScale,
+                                        tintColor: color.GM_BLUE,
+                                    }}
+                                    zIndex={1}
                                 />
                             </DelayedButton>
                         )}
                     </View>
-                    <RichText
-                        textStyle={[
-                            styles.marginStyle,
-                            default_style.subTitleText_1,
-                        ]}
-                        contentText={headline}
-                        textContainerStyle={{ flexDirection: 'row' }}
-                        numberOfLines={1}
-                    />
-                    {location && location.trim() !== '' && (
-                        <RichText
-                            textStyle={[
-                                styles.marginStyle,
-                                default_style.normalText_1,
-                            ]}
-                            contentText={location}
-                            textContainerStyle={{ flexDirection: 'row' }}
-                            numberOfLines={1}
-                        />
-                    )}
+                    {this.renderHeadline(headline)}
+                    {this.renderLocation(location)}
                 </View>
             </View>
         )
