@@ -16,7 +16,10 @@ import { IPHONE_MODELS, DEVICE_MODEL } from '../Utils/Constants'
 export const IS_SMALL_PHONE =
     Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL)
 export const UI_SCALE =
-    Constants.platform.ios.userInterfaceIdiom === 'tablet' ? 1.3 : 1
+    Constants.platform.ios &&
+    Constants.platform.ios.userInterfaceIdiom === 'tablet'
+        ? 1.3
+        : 1
 
 /**
  * DEPRECATED use use default styles

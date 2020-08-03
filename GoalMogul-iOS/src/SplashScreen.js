@@ -47,10 +47,6 @@ class SplashScreen extends Component {
     }
 
     async componentDidMount() {
-        console.log(
-            `${DEBUG_KEY}: [componentDidMount]: iphone model: `,
-            Constants.platform.ios.model.toLowerCase()
-        )
         await Font.loadAsync({
             'gotham-pro': require('../assets/fonts/GothamPro.ttf'),
             'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf'),
@@ -63,7 +59,7 @@ class SplashScreen extends Component {
     }
 
     // Functions to preload static assets
-    _loadAssetsAsync() {
+    _loadAssetsAsync = () => {
         const imageAssets = cacheImages([
             require('./asset/utils/badge.png'),
             require('./asset/utils/dropDown.png'),
@@ -165,27 +161,7 @@ class SplashScreen extends Component {
             'SFProDisplay-Semibold': require('../assets/fonts/SFProDisplay-Semibold.otf'),
         })
 
-        const loadBase64Icons = Object.keys(Icons).map((k) =>
-            Image.prefetch(Icons[k])
-        )
-        const loadBase64Badges = Object.keys(banner).map((k) =>
-            Image.prefetch(banner[k])
-        )
-        const loadBase64Backgrounds = Object.keys(background).map((k) =>
-            Image.prefetch(background[k])
-        )
-        const loadBase64Image = Object.keys(image).map((k) =>
-            Image.prefetch(image[k])
-        )
-
-        return Promise.all([
-            ...imageAssets,
-            ...fontAssets,
-            ...loadBase64Icons,
-            ...loadBase64Badges,
-            ...loadBase64Backgrounds,
-            ...loadBase64Image,
-        ]).catch((err) => {
+        return Promise.all([...imageAssets, ...fontAssets]).catch((err) => {
             console.log(`${DEBUG_KEY}: [ _loadAssetsAsync ]: err`, err)
         })
     }
