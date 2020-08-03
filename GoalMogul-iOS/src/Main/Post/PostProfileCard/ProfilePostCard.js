@@ -266,13 +266,13 @@ class ProfilePostCard extends React.PureComponent {
                                 ? owner.profile.image
                                 : undefined
                         }
-                        userId={owner._id}
+                        userId={owner ? owner._id : undefined}
                         actionDecorator={this.props.actionDecorator}
                     />
                     <View style={{ marginLeft: 12, marginTop: 2, flex: 1 }}>
                         <Headline
-                            name={owner.name || ''}
-                            isSelf={this.props.userId === owner._id}
+                            name={owner ? owner.name : ''}
+                            isSelf={owner && this.props.userId === owner._id}
                             caret={caret}
                             user={owner}
                             actionDecorator={this.props.actionDecorator}

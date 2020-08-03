@@ -187,7 +187,6 @@ class BottomSheet extends React.PureComponent {
                 swipeToCloseGestureEnabled || fullScreenGesturesEnabled,
             onPanResponderMove: (e, gestureState) => {
                 const { isFullScreen, hasModalMoved } = this.state
-
                 if (gestureState.dy > 0)
                     Animated.event([null, { dy: this.pan.y }], {
                         useNativeDriver: false,

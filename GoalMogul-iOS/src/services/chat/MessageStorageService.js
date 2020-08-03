@@ -10,6 +10,7 @@ import {
     INCOMING_EVENT_NAMES,
     OUTGOING_EVENT_NAMES,
 } from '../../socketio/services/LiveChatService'
+import { setBadgeNumberAsyncByPlatform } from '../../redux/modules/notification/NotificationTabActions'
 
 const LISTENER_BASE_IDENTIFIER = 'chatmessageservice'
 const CHAT_MESSAGES_COLLECTION_NAME = 'chatmessages'
@@ -780,12 +781,12 @@ class MessageStorageService {
                 if (res.status === 200) {
                     let notiCount = parseInt(res.count)
                     notiCount = isNaN(notiCount) ? 0 : notiCount
-                    Notifications.setBadgeNumberAsync(notiCount)
+                    setBadgeNumberAsyncByPlatform(notiCount)
                     return
                 }
-                Notifications.setBadgeNumberAsync(0)
+                setBadgeNumberAsyncByPlatform(0)
             })
-            .catch((err) => Notifications.setBadgeNumberAsync(0))
+            .catch((err) => setBadgeNumberAsyncByPlatform(0))
     }
     _pollMessageQueue = (authToken) => {
         this._pullMessageQueueRequest(authToken)

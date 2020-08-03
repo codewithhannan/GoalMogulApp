@@ -41,6 +41,7 @@ import {
     isPossiblePhoneNumber,
     isValidPhoneNumber,
 } from './redux/middleware/utils'
+import OnboardingHeader from './Main/Onboarding/Common/OnboardingHeader'
 
 const FIELD_REQUIREMENT = {
     username: {
@@ -316,13 +317,12 @@ class LoginPage extends Component {
         const { handleSubmit, username, password } = this.props
         return (
             <View style={[OnboardingStyles.container.page]}>
-                <Header canBack={!this.props.loading} hasBackButton={false} />
+                <OnboardingHeader />
                 <KeyboardAwareScrollView
                     bounces={false}
                     innerRef={(ref) => {
                         this.scrollview = ref
                     }}
-                    style={styles.scroll}
                     extraScrollHeight={13}
                     contentContainerStyle={[
                         {
@@ -398,6 +398,8 @@ class LoginPage extends Component {
                                     }
                                     checked={this.state.userAgreementChecked}
                                 /> */}
+                                {/* Comment below when user agreement check is in use */}
+                                <View style={{ height: 40 }} />
                             </View>
                             <View
                                 style={{
@@ -418,8 +420,8 @@ class LoginPage extends Component {
                                             backgroundColor: this.props.loading
                                                 ? // Disable user agreement check
                                                   // || !this.state.userAgreementChecked
-                                                  GM_BLUE_LIGHT
-                                                : GM_BLUE,
+                                                  color.GM_BLUE_LIGHT
+                                                : color.GM_BLUE,
                                         },
                                     ]}
                                     disabled={

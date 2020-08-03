@@ -12,7 +12,6 @@ import { DotIndicator } from 'react-native-indicators'
 
 const { button: buttonStyle } = OnboardingStyles
 
-
 class SyncContactInfoModal extends React.Component {
     onNotNow = () => {
         // Close modal and go to welcome page
@@ -54,7 +53,7 @@ class SyncContactInfoModal extends React.Component {
                 >
                     Uploading Contacts
                 </Text>
-                <DotIndicator size={10} color={color} />
+                <DotIndicator size={10} color={color.GM_BLUE} />
             </View>
         )
     }

@@ -18,6 +18,7 @@ import { api as API } from '../../middleware/api'
 import { Logger } from '../../middleware/utils/Logger'
 
 import { Notifications } from 'expo'
+import { Platform } from 'react-native'
 
 // Constants
 const DEBUG_KEY = '[ Actions NotificationTab ]'
@@ -62,6 +63,12 @@ export const refreshNotificationTab = () => (dispatch, getState) => {
     // refreshNeeds()(dispatch, getState);
 }
 
+export const setBadgeNumberAsyncByPlatform = Platform.select({
+    ios: async (number) => Notifications.setBadgeNumberAsync(number),
+    // TODO: android: investigate why Notifications.setBadgeNumberAsync throws errors
+    android: async (number) => {},
+})
+
 /**
  * refreshNeeds: boolean to determine should refresh needs on notification loads
  * refreshForUnreadNotif: boolean to determine should refresh unread notif
@@ -90,7 +97,7 @@ export const refreshNotifications = (params) => (dispatch, getState) => {
 
     const onSuccess = (res) => {
         // Clear app badge count
-        Notifications.setBadgeNumberAsync(0)
+        setBadgeNumberAsyncByPlatform(0)
 
         Logger.log(
             `${DEBUG_KEY}: refresh notifications succeed with res length: `,

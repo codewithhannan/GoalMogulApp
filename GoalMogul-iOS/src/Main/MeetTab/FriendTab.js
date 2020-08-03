@@ -20,6 +20,7 @@ import { componentKeyByTab } from '../../redux/middleware/utils'
 import { handleRefresh, meetOnLoadMore } from '../../actions'
 import InviteFriendModal from './Modal/InviteFriendModal'
 import { SCREENS, wrapAnalytics } from '../../monitoring/segment'
+import { FONT_FAMILY } from '../../styles/basic/text'
 
 /**
  * Friend tab page for GM main tabs
@@ -82,7 +83,9 @@ class FriendTab extends React.Component {
                     marginBottom: 8,
                 }}
             >
-                <View style={{ marginRight: 18, flex: 1, paddingVertical: 31 }}>
+                <View
+                    style={{ flex: 1, paddingVertical: 32, paddingRight: 16 }}
+                >
                     <Text
                         style={[
                             default_style.titleText_1,
@@ -96,7 +99,7 @@ class FriendTab extends React.Component {
                         style={[
                             BUTTON_STYLE.GM_BLUE_BG_WHITE_BOLD_TEXT
                                 .containerStyle,
-                            { width: width / 2 },
+                            { height: 40 },
                         ]}
                     >
                         <Text
@@ -114,7 +117,8 @@ class FriendTab extends React.Component {
                 </View>
                 <Image
                     source={Icons.LionMascotWithShadow}
-                    style={{ width: width * 0.2, marginHorizontal: 20 }}
+                    style={{ width: width * 0.3 }}
+                    resizeMode="contain"
                 />
             </View>
         )
@@ -130,9 +134,7 @@ class FriendTab extends React.Component {
             <View
                 style={{
                     width: '100%',
-                    paddingBottom: styles.padding,
-                    paddingLeft: styles.padding,
-                    paddingRight: styles.padding,
+                    padding: styles.padding,
                 }}
             >
                 <View
@@ -148,6 +150,7 @@ class FriendTab extends React.Component {
                 </View>
                 {requestCount <= 2 ? null : (
                     <DelayedButton
+                        touchableHighlight
                         onPress={this.handleSeeAllRequests}
                         style={{
                             backgroundColor: '#F2F2F2',
@@ -237,25 +240,15 @@ class FriendTab extends React.Component {
                                 default_style.titleText_2,
                                 {
                                     color: color.GM_BLUE,
+                                    fontFamily: FONT_FAMILY.SEMI_BOLD,
                                 },
                             ]}
                         >
                             All My Friends
                         </Text>
-                        <View style={{ height: 8, width: 5, marginLeft: 9 }}>
-                            <Image
-                                source={Icons.ChevronLeft}
-                                style={{
-                                    height: 8,
-                                    width: 5,
-                                    tintColor: color.GM_BLUE,
-                                    transform: [{ rotate: '180deg' }],
-                                }}
-                                resizeMode="cover"
-                            />
-                        </View>
                     </DelayedButton>
                 </View>
+                {this.renderItemSeparator()}
                 {!this.props.incomingRequests ||
                 this.props.incomingRequests.length == 0
                     ? this.renderRequestEmptyCard()
@@ -299,17 +292,13 @@ class FriendTab extends React.Component {
 
     /** Render people you may know card */
     renderPYMK = ({ item, index }) => {
-        return <PYMKCard user={item} />
+        return <PYMKCard user={item} index={index} />
     }
 
     render() {
         return (
             <View style={styles.containerStyle}>
-                <SearchBarHeader
-                    backButton={false}
-                    setting={false}
-                    rightIcon="menu"
-                />
+                <SearchBarHeader backButton title="Friends" />
                 <FlatList
                     keyExtractor={(item) => item._id}
                     data={this.props.pymkData || testData}

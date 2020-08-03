@@ -547,3 +547,17 @@ export const getE164PhoneNumber = (pn) => {
 export const is2xxRespose = (status) => status >= 200 && status < 300
 export const is4xxResponse = (status) => status >= 400 && status < 500
 export const is5xxResponse = (status) => status >= 500 && status < 600
+
+/**
+ * Get current user's friend's userId from friendship object
+ * @param {*} maybeFriendshipRef friendship object
+ * @param {*} userId current userId
+ */
+export const getFriendUserId = (maybeFriendshipRef, userId) => {
+    const { participants } = maybeFriendshipRef
+    let ret
+    participants.forEach((p) => {
+        if (p.users_id !== userId) ret = p.users_id
+    })
+    return ret
+}

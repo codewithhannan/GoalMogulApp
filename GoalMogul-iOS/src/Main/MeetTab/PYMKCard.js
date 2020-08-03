@@ -7,7 +7,12 @@ import DelayedButton from '../Common/Button/DelayedButton'
 import { text, color, default_style } from '../../styles/basic'
 import UserCardHeader from './Common/UserCardHeader'
 import UserTopGoals from './Common/UserTopGoals'
-import { updateFriendship, openProfile } from '../../actions'
+import { updateFriendship, openProfile, blockUser } from '../../actions'
+import BottomButtonsSheet from '../Common/Modal/BottomButtonsSheet'
+import AnimatedCardWrapper from '../Common/Card/AnimatedCardWrapper'
+import { createReport } from '../../redux/modules/report/ReportActions'
+import Icons from '../../asset/base64/Icons'
+import { getBottomSpace } from 'react-native-iphone-x-helper'
 
 const { width } = Dimensions.get('window')
 
@@ -41,6 +46,56 @@ class PYMKCard extends React.Component {
                     'requests.outgoing',
                     undefined
                 )
+        )
+    }
+
+    closeOptionModal = () => this.bottomSheetRef.close()
+
+    openOptionModal = () => this.bottomSheetRef.open()
+
+    makeFriendCardOptions = (userDoc) => {
+        const { _id } = userDoc
+
+        return [
+            {
+                text: 'Report',
+                textStyle: { color: 'black' },
+                icon: { name: 'account-alert', pack: 'material-community' },
+                iconStyle: { height: 24, color: 'black' },
+                imageStyle: { tintColor: 'black' },
+                onPress: () => {
+                    this.closeOptionModal()
+                    this.props.createReport(_id, undefined, 'User')
+                },
+            },
+            {
+                text: 'Block',
+                image: Icons.AccountCancel,
+                imageStyle: { tintColor: 'black' },
+                onPress: () => {
+                    // close bottom sheet
+                    this.closeOptionModal()
+
+                    // Wait for bottom sheet to close
+                    // before showing confirmation alert
+                    setTimeout(() => {
+                        this.props.blockUser(_id, undefined, userDoc)
+                    }, 500)
+                },
+            },
+        ]
+    }
+
+    renderBottomSheet = (userDoc) => {
+        const options = this.makeFriendCardOptions(userDoc)
+        // Options height + bottom space + bottom sheet handler height
+        const sheetHeight = options.length * 48 + getBottomSpace() + 30
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.bottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
         )
     }
 
@@ -144,21 +199,27 @@ class PYMKCard extends React.Component {
     }
 
     render() {
-        const { user } = this.props
+        const { user, ...otherProps } = this.props
         if (!user) {
             return null
         }
 
         return (
-            <DelayedButton
-                style={[styles.containerStyle, { padding: 20 }]}
-                activeOpacity={0.8}
-                onPress={() => this.props.openProfile(user._id)}
-            >
-                <UserCardHeader user={user} />
-                <UserTopGoals user={user} />
-                {this.renderButton(user._id)}
-            </DelayedButton>
+            <AnimatedCardWrapper {...otherProps}>
+                <DelayedButton
+                    style={[styles.containerStyle, { padding: 20 }]}
+                    activeOpacity={0.8}
+                    onPress={() => this.props.openProfile(user._id)}
+                >
+                    <UserCardHeader
+                        user={user}
+                        optionsOnPress={this.openOptionModal}
+                    />
+                    <UserTopGoals user={user} />
+                    {this.renderButton(user._id)}
+                    {this.renderBottomSheet(user)}
+                </DelayedButton>
+            </AnimatedCardWrapper>
         )
     }
 }
@@ -195,4 +256,6 @@ const styles = {
 export default connect(null, {
     updateFriendship,
     openProfile,
+    blockUser,
+    createReport,
 })(PYMKCard)

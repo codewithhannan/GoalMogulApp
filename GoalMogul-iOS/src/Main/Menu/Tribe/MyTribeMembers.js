@@ -93,10 +93,12 @@ class MyTribeMembers extends React.PureComponent {
     _renderScene() {
         const { memberData, navigationState } = this.props
 
-        const allMembers = memberData.filter((member) =>
-            member.memberRef.name
-                .toLowerCase()
-                .includes(this.state.searchContent.toLowerCase())
+        const allMembers = memberData.filter(
+            (member) =>
+                member.memberRef &&
+                member.memberRef.name
+                    .toLowerCase()
+                    .includes(this.state.searchContent.toLowerCase())
         )
         const admins = allMembers.filter(
             (member) => member.category === 'Admin'

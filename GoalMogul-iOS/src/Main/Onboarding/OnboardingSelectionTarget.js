@@ -148,17 +148,23 @@ class OnboardingSelectionTarget extends React.Component {
                                 height: 24,
                                 width: 24,
                                 borderWidth: 1,
-                                backgroundColor: selected ? color.GM_BLUE : color.GM_CARD_BACKGROUND,
+                                backgroundColor: selected
+                                    ? color.GM_BLUE
+                                    : color.GM_CARD_BACKGROUND,
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                borderColor: selected ? color.GM_BLUE : '#8C8C8C',
+                                borderColor: selected
+                                    ? color.GM_BLUE
+                                    : '#8C8C8C',
                             }}
                         >
                             <Icon
                                 name="check"
                                 pack="material-community"
                                 style={{
-                                    tintColor: selected ? color.GM_CARD_BACKGROUND : '#8C8C8C',
+                                    tintColor: selected
+                                        ? color.GM_CARD_BACKGROUND
+                                        : '#8C8C8C',
                                     height: 20,
                                     width: 20,
                                 }}

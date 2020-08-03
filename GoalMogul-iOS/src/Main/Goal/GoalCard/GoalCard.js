@@ -250,7 +250,8 @@ class GoalCard extends React.PureComponent {
                         return
                     }
                 },
-                shouldExtendOptionLength: owner._id === this.props.userId,
+                shouldExtendOptionLength:
+                    owner && owner._id === this.props.userId,
             },
             others: {
                 options: [
@@ -291,14 +292,14 @@ class GoalCard extends React.PureComponent {
                                 ? owner.profile.image
                                 : undefined
                         }
-                        userId={owner._id}
+                        userId={owner ? owner._id : undefined}
                     />
                     <View style={{ marginLeft: 12, marginTop: 2, flex: 1 }}>
                         <Headline
-                            name={owner.name}
+                            name={owner ? owner.name : ''}
                             category={category}
                             user={owner}
-                            isSelf={owner._id === this.props.userId}
+                            isSelf={owner && owner._id === this.props.userId}
                             hasCaret={!this.props.isSharedItem}
                             caret={caret}
                             textStyle={default_style.titleText_2}

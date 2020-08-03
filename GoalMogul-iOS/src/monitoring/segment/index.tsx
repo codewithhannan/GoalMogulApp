@@ -212,7 +212,7 @@ const { SEGMENT_CONFIG } = getEnvVars()
  * Calls to initialize segment library. Must call when app starts.
  */
 function initSegment() {
-    Segment.initialize({ iosWriteKey: SEGMENT_CONFIG.IOS_WRITE_KEY })
+    Segment.initialize({ iosWriteKey: SEGMENT_CONFIG.IOS_WRITE_KEY, androidWriteKey: SEGMENT_CONFIG.ANDROID_WRITE_KEY })
     allEventNames.clear()
     for (const prop in EVENT) {
         if (EVENT.hasOwnProperty(prop)) {
