@@ -198,7 +198,6 @@ class BottomSheet extends React.PureComponent {
                         duration: 1,
                     }).start()
                 else return
-
                 if (!hasModalMoved) this.setState({ hasModalMoved: true })
             },
             onPanResponderRelease: (e, gestureState) => {
