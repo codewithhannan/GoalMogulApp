@@ -52,24 +52,24 @@ class BottomSheet extends React.PureComponent {
             isFullScreen: false,
             hasModalMoved: false,
         }
-        ;(this.pan = new Animated.ValueXY({ x: 0, y: props.height })),
-            (this.animatedHeight = new Animated.Value(props.height)),
-            (this.animatedOpacity = new Animated.Value(0)),
-            (this.childernAnimatedProps = props.children
-                ? props.children.map((item) =>
-                      item &&
-                      item.props &&
-                      item.props.fadeInOnFullScreen &&
-                      item.props.style &&
-                      item.props.style.height
-                          ? {
-                                height: new Animated.Value(0),
-                                opacity: new Animated.Value(0),
-                            }
-                          : null
-                  )
-                : []),
-            this.createPanResponder(props)
+        this.pan = new Animated.ValueXY({ x: 0, y: props.height })
+        this.animatedHeight = new Animated.Value(props.height)
+        this.animatedOpacity = new Animated.Value(0)
+        this.childernAnimatedProps = props.children
+            ? props.children.map((item) =>
+                  item &&
+                  item.props &&
+                  item.props.fadeInOnFullScreen &&
+                  item.props.style &&
+                  item.props.style.height
+                      ? {
+                            height: new Animated.Value(0),
+                            opacity: new Animated.Value(0),
+                        }
+                      : null
+              )
+            : []
+        this.createPanResponder(props)
     }
 
     fadeAnimations = (duration, fadeIn) =>
