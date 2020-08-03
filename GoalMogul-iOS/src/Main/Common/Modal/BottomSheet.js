@@ -72,7 +72,7 @@ class BottomSheet extends React.PureComponent {
         this.createPanResponder(props)
     }
 
-    fadeAnimations = (duration, fadeIn) =>
+    fadeAnimations = (fadeIn) =>
         this.childernAnimatedProps
             .map((val, i) => {
                 if (!val) return null
@@ -82,12 +82,12 @@ class BottomSheet extends React.PureComponent {
                         toValue: fadeIn
                             ? this.props.children[i].props.style.height
                             : 0,
-                        duration: duration / 2,
+                        duration: this.props.fadeDuration / 2,
                     }),
                     Animated.timing(val.opacity, {
                         useNativeDriver: false,
                         toValue: fadeIn ? 1 : 0,
-                        duration: duration / 2,
+                        duration: this.props.fadeDuration / 2,
                     }),
                 ]
                 return Animated.sequence(
@@ -105,7 +105,7 @@ class BottomSheet extends React.PureComponent {
                 useNativeDriver: false,
             }),
             this.resetPanAnimation(openDuration),
-            ...this.fadeAnimations(openDuration, true),
+            ...this.fadeAnimations(true),
         ]).start(() => this.setState({ isFullScreen: true }))
     }
 
@@ -118,7 +118,7 @@ class BottomSheet extends React.PureComponent {
                 useNativeDriver: false,
             }),
             this.resetPanAnimation(closeDuration),
-            ...this.fadeAnimations(closeDuration, false),
+            ...this.fadeAnimations(false),
         ]).start(() => this.setState({ isFullScreen: false }))
     }
 
@@ -383,6 +383,7 @@ BottomSheet.propTypes = {
     animationType: PropTypes.oneOf(['none', 'slide', 'fade']),
     height: PropTypes.number,
     swipeGestureSenstivity: PropTypes.number,
+    fadeDuration: PropTypes.number,
     openDuration: PropTypes.number,
     closeDuration: PropTypes.number,
     fullScreenGesturesEnabled: PropTypes.bool,
@@ -400,6 +401,7 @@ BottomSheet.defaultProps = {
     animationType: 'none',
     height: 150,
     swipeGestureSenstivity: 1,
+    fadeDuration: 400,
     openDuration: 400,
     closeDuration: 250,
     fullScreenGesturesEnabled: false,
