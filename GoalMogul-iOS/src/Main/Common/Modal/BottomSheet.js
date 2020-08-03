@@ -24,8 +24,25 @@ const AnimatedKeyboardAvoidingView = Animated.createAnimatedComponent(
 )
 
 /**
- * This bottom sheet uses https://github.com/nysamnang/react-native-raw-bottom-sheet#readme
- * and follows the pattern https://developer.apple.com/design/human-interface-guidelines/ios/app-architecture/modality/
+ * Bottom sheet props:
+ *
+ * BottomSheet supports component fade-in (on switch fullscreen) and fade-out (on switch to half-screen)
+ * To apply that to a component that make sure:
+ * - it is at root level of Bottom Sheet as this will only work for components at root level
+ * - it has a height style attribute
+ * - to add the fadeInOnFullScreen as a prop your component
+ * @example
+ * 'ex1: to use it on this componen like:' <View />
+ * 'change it to:' <View fadeInOnFullScreen style={{ height: 10 }} />
+ *
+ * 'ex2: in the following sceneario:'
+ *  <BottomSheet>
+ *      <View1 fadeInOnFullScreen style={{ height: 10 }} />
+ *      <View2>
+ *          <View3 fadeInOnFullScreen style={{ height: 10 }} />
+ *      </View>
+ *  </BottomSheet>
+ * 'fade-in/out animations will only work for View1 not View3 because it is not at root level'
  */
 class BottomSheet extends React.PureComponent {
     constructor(props) {
