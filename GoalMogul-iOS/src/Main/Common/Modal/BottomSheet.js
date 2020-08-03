@@ -39,13 +39,45 @@ class BottomSheet extends React.PureComponent {
             (this.animatedHeight = new Animated.Value(props.height)),
             (this.animatedOpacity = new Animated.Value(0)),
             (this.childernAnimatedProps = props.children
-                ? props.children.map(() => ({
-                      height: new Animated.Value(0),
-                      opacity: new Animated.Value(0),
-                  }))
+                ? props.children.map((item) =>
+                      item &&
+                      item.props &&
+                      item.props.fadeInOnFullScreen &&
+                      item.props.style &&
+                      item.props.style.height
+                          ? {
+                                height: new Animated.Value(0),
+                                opacity: new Animated.Value(0),
+                            }
+                          : null
+                  )
                 : []),
             this.createPanResponder(props)
     }
+
+    fadeAnimations = (duration, fadeIn) =>
+        this.childernAnimatedProps
+            .map((val, i) => {
+                if (!val) return null
+                const animations = [
+                    Animated.timing(val.height, {
+                        useNativeDriver: false,
+                        toValue: fadeIn
+                            ? this.props.children[i].props.style.height
+                            : 0,
+                        duration: duration / 2,
+                    }),
+                    Animated.timing(val.opacity, {
+                        useNativeDriver: false,
+                        toValue: fadeIn ? 1 : 0,
+                        duration: duration / 2,
+                    }),
+                ]
+                return Animated.sequence(
+                    fadeIn ? animations : animations.reverse()
+                )
+            })
+            .filter((val) => val !== null)
 
     fullScreen() {
         const { openDuration } = this.props
@@ -56,6 +88,7 @@ class BottomSheet extends React.PureComponent {
                 useNativeDriver: false,
             }),
             this.resetPanAnimation(openDuration),
+            ...this.fadeAnimations(openDuration, true),
         ]).start(() => this.setState({ isFullScreen: true }))
     }
 
@@ -68,6 +101,7 @@ class BottomSheet extends React.PureComponent {
                 useNativeDriver: false,
             }),
             this.resetPanAnimation(closeDuration),
+            ...this.fadeAnimations(closeDuration, false),
         ]).start(() => this.setState({ isFullScreen: false }))
     }
 
@@ -273,7 +307,25 @@ class BottomSheet extends React.PureComponent {
                                 />
                             </View>
                         )}
-                        {children}
+                        {children.map((item, i) =>
+                            item &&
+                            item.props &&
+                            item.props.fadeInOnFullScreen &&
+                            this.childernAnimatedProps[i] ? (
+                                <Animated.View
+                                    style={{
+                                        height: this.childernAnimatedProps[i]
+                                            .height,
+                                        opacity: this.childernAnimatedProps[i]
+                                            .opacity,
+                                    }}
+                                >
+                                    {item}
+                                </Animated.View>
+                            ) : (
+                                item
+                            )
+                        )}
                     </Animated.View>
                 </AnimatedKeyboardAvoidingView>
             </Modal>
