@@ -1,21 +1,16 @@
 /** @format */
 
-import { Actions } from 'react-native-router-flux'
-import _ from 'lodash'
-
+import { EVENT as E, trackWithProperties } from '../../../monitoring/segment'
 import { api as API } from '../../middleware/api'
-import { queryBuilder } from '../../middleware/utils'
-
+import { Logger } from '../../middleware/utils/Logger'
 import {
-    LIKE_POST,
     LIKE_COMMENT,
     LIKE_GOAL,
-    UNLIKE_POST,
+    LIKE_POST,
     UNLIKE_COMMENT,
     UNLIKE_GOAL,
+    UNLIKE_POST,
 } from './LikeReducers'
-import { Logger } from '../../middleware/utils/Logger'
-import { trackWithProperties, EVENT as E } from '../../../monitoring/segment'
 
 const DEBUG_KEY = '[ Action Like ]'
 const LIKE_BASE_ROUTE = 'secure/feed/like'

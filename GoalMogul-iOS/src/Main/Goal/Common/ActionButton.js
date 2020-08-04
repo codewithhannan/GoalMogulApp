@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { Image, Text, View } from 'react-native'
-
 // Components
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { default_style } from '../../../styles/basic'
@@ -48,7 +47,7 @@ class ActionButton extends React.PureComponent {
 
         const countText = (
             <DelayedButton
-                activeOpacity={0.6}
+                activeOpacity={0.8}
                 onPress={
                     count > 0 && onTextPress ? onTextPress : this.handleOnPress
                 }
@@ -70,11 +69,11 @@ class ActionButton extends React.PureComponent {
 
         return (
             <DelayedButton
-                activeOpacity={0.6}
+                activeOpacity={0.8}
                 style={{
                     ...styles.containerStyle,
                     ...containerStyle,
-                    opacity: buttonDisabled ? 0.4 : 1,
+                    opacity: 1,
                 }}
                 onPress={this.handleOnPress}
                 disabled={buttonDisabled}

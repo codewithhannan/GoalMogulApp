@@ -1,80 +1,71 @@
 /** @format */
 
-import React from 'react'
-import {
-    View,
-    TouchableOpacity,
-    Image,
-    ImageBackground,
-    Dimensions,
-    Text,
-    TouchableWithoutFeedback,
-} from 'react-native'
-import { connect } from 'react-redux'
-import timeago from 'timeago.js'
+import * as Haptics from 'expo-haptics'
 import _ from 'lodash'
 import R from 'ramda'
-import { Actions } from 'react-native-router-flux'
-
-import { switchCase } from '../../../redux/middleware/utils'
-
-// Actions
-import { createReport } from '../../../redux/modules/report/ReportActions'
-
-import { likeGoal, unLikeGoal } from '../../../redux/modules/like/LikeActions'
-
-import { createCommentFromSuggestion } from '../../../redux/modules/feed/comment/CommentActions'
-
-import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions'
-
+import React from 'react'
 import {
-    openPostDetail,
+    Dimensions,
+    Image,
+    ImageBackground,
+    Text,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View,
+} from 'react-native'
+import { Actions } from 'react-native-router-flux'
+import { connect } from 'react-redux'
+import timeago from 'timeago.js'
+import { deletePost, openProfile } from '../../../actions'
+import CommentIcon from '../../../asset/utils/comment.png'
+import expand from '../../../asset/utils/expand.png'
+import ShareIcon from '../../../asset/utils/forward.png'
+import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
+// Assets
+import LoveIcon from '../../../asset/utils/love.png'
+import { switchCase } from '../../../redux/middleware/utils'
+import { createCommentFromSuggestion } from '../../../redux/modules/feed/comment/CommentActions'
+import {
     editPost,
+    openPostDetail,
 } from '../../../redux/modules/feed/post/PostActions'
-
-import { openProfile, deletePost } from '../../../actions'
-
+import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions'
 import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions'
-
+import { likeGoal, unLikeGoal } from '../../../redux/modules/like/LikeActions'
 import {
     subscribeEntityNotification,
     unsubscribeEntityNotification,
 } from '../../../redux/modules/notification/NotificationActions'
-
-// Assets
-import LoveIcon from '../../../asset/utils/love.png'
-import CommentIcon from '../../../asset/utils/comment.png'
-import ShareIcon from '../../../asset/utils/forward.png'
-import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
-import expand from '../../../asset/utils/expand.png'
-
+// Actions
+import { createReport } from '../../../redux/modules/report/ReportActions'
+// Styles
+import { imagePreviewContainerStyle } from '../../../styles'
+import { default_style, color } from '../../../styles/basic'
+// Constants
+import {
+    CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+    CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
+    DEVICE_MODEL,
+    IMAGE_BASE_URL,
+    IPHONE_MODELS,
+} from '../../../Utils/Constants'
+import {
+    actionSheet,
+    switchByButtonIndex,
+} from '../../Common/ActionSheetFactory'
+import FloatingHearts from '../../Common/FloatingHearts/FloatingHearts'
+import ImageModal from '../../Common/ImageModal'
+import LikeListModal from '../../Common/Modal/LikeListModal'
+import ShareListModal from '../../Common/Modal/ShareListModal'
+import ProfileImage from '../../Common/ProfileImage'
+import RefPreview from '../../Common/RefPreview'
+import RichText from '../../Common/Text/RichText'
+import SparkleBadgeView from '../../Gamification/Badge/SparkleBadgeView'
 // Components
 import ActionButton from '../../Goal/Common/ActionButton'
 import ActionButtonGroup from '../../Goal/Common/ActionButtonGroup'
 import Headline from '../../Goal/Common/Headline'
 import Timestamp from '../../Goal/Common/Timestamp'
-import {
-    actionSheet,
-    switchByButtonIndex,
-} from '../../Common/ActionSheetFactory'
-import ProfileImage from '../../Common/ProfileImage'
-import RefPreview from '../../Common/RefPreview'
-import ImageModal from '../../Common/ImageModal'
-import RichText from '../../Common/Text/RichText'
-
-// Styles
-import { imagePreviewContainerStyle } from '../../../styles'
-import { default_style, color } from '../../../styles/basic'
-
-// Constants
-import {
-    IMAGE_BASE_URL,
-    CARET_OPTION_NOTIFICATION_SUBSCRIBE,
-    CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
-} from '../../../Utils/Constants'
-import ShareListModal from '../../Common/Modal/ShareListModal'
-import LikeListModal from '../../Common/Modal/LikeListModal'
-import SparkleBadgeView from '../../Gamification/Badge/SparkleBadgeView'
 
 const DEBUG_KEY = '[ UI PostDetailCard.PostDetailSection ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -87,12 +78,16 @@ const CANCEL_INDEX = 3
 const { width } = Dimensions.get('window')
 
 class PostDetailSection extends React.PureComponent {
-    state = {
-        mediaModal: false,
-        numberOfLines: undefined,
-        seeMore: true,
-        showShareListModal: false,
-        showlikeListModal: false,
+    constructor(props) {
+        super(props)
+        this.state = {
+            mediaModal: false,
+            numberOfLines: undefined,
+            seeMore: true,
+            showShareListModal: false,
+            showlikeListModal: false,
+            floatingHeartCount: 0,
+        }
     }
 
     // shouldComponentUpdate(nextProps, nextState) {
@@ -417,7 +412,14 @@ class PostDetailSection extends React.PureComponent {
         )
     }
 
-    renderActionButtons() {
+    incrementFloatingHeartCount = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        this.setState({
+            floatingHeartCount: this.state.floatingHeartCount + 1,
+        })
+    }
+
+    renderActionButtons = () => {
         const { item } = this.props
         const { maybeLikeRef, _id } = item
 
@@ -449,6 +451,7 @@ class PostDetailSection extends React.PureComponent {
                                 maybeLikeRef
                             )
                         }
+                        this.incrementFloatingHeartCount()
                         this.props.likeGoal('post', _id)
                     }}
                     onTextPress={() => {
@@ -490,6 +493,20 @@ class PostDetailSection extends React.PureComponent {
         // { postExploreTab: { pageId, pageIdCount, // all the fileds for the real object }}
         if (!item || _.isEmpty(item) || !item.created) return null
 
+        // position the floating heart animation on like correctly
+        const isShare = item.postType !== 'General'
+        const isSmallerIphone = IPHONE_MODELS.includes(DEVICE_MODEL)
+        let floatingHeartLeftOffset = isShare
+            ? isSmallerIphone
+                ? 56
+                : 66
+            : isSmallerIphone
+            ? 28
+            : 36
+        // reduce left offset if the like count is higher
+        const likeCount = item.likeCount ? item.likeCount : 0
+        floatingHeartLeftOffset -= (likeCount.toString().length - 1) * 2
+
         // console.log(`${DEBUG_KEY}: render post detail section`);
         return (
             <View style={styles.containerStyle}>
@@ -519,6 +536,14 @@ class PostDetailSection extends React.PureComponent {
                         {this.renderCardContent(item)}
                     </View>
                 </View>
+                <FloatingHearts
+                    count={this.state.floatingHeartCount}
+                    color={'#EB5757'}
+                    style={{
+                        zIndex: 5,
+                    }}
+                    leftOffset={floatingHeartLeftOffset}
+                />
                 {this.renderActionButtons(item)}
             </View>
         )

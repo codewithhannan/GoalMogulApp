@@ -1,5 +1,6 @@
 /** @format */
 
+import * as Haptics from 'expo-haptics'
 import _ from 'lodash'
 import R from 'ramda'
 import React from 'react'
@@ -13,23 +14,29 @@ import {
 import { connect } from 'react-redux'
 // Actions
 import { openProfile } from '../../actions'
+// Assets
+import { ConfettiFadedBackgroundTopHalf } from '../../asset/background'
+import CommentIcon from '../../asset/utils/comment.png'
+import ShareIcon from '../../asset/utils/forward.png'
+import LoveOutlineIcon from '../../asset/utils/love-outline.png'
+import LoveIcon from '../../asset/utils/love.png'
 import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
 import { chooseShareDest } from '../../redux/modules/feed/post/ShareActions'
 import { refreshFeed } from '../../redux/modules/home/feed/actions'
 import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
 import { likeGoal, unLikeGoal } from '../../redux/modules/like/LikeActions'
-// Assets
-import { ConfettiFadedBackgroundTopHalf } from '../../asset/background'
-import CommentIcon from '../../asset/utils/comment.png'
-import ShareIcon from '../../asset/utils/forward.png'
-import LoveIcon from '../../asset/utils/love.png'
-import LoveOutlineIcon from '../../asset/utils/love-outline.png'
 // Styles
 import { imagePreviewContainerStyle } from '../../styles'
 import { default_style } from '../../styles/basic'
 // Constants
-import { IMAGE_BASE_URL } from '../../Utils/Constants'
+import {
+    DEVICE_MODEL,
+    IMAGE_BASE_URL,
+    IPHONE_MODELS,
+} from '../../Utils/Constants'
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
+import DelayedButton from '../Common/Button/DelayedButton'
+import FloatingHearts from '../Common/FloatingHearts/FloatingHearts'
 import ImageModal from '../Common/ImageModal'
 import ProfileImage from '../Common/ProfileImage'
 import RichText from '../Common/Text/RichText'
@@ -41,7 +48,6 @@ import CommentRef from '../Goal/GoalDetailCard/Comment/CommentRef'
 import ActivityBody from './ActivityBody'
 import ActivityHeader from './ActivityHeader'
 import ActivitySummary from './ActivitySummary'
-import DelayedButton from '../Common/Button/DelayedButton'
 
 const DEBUG_KEY = '[ UI ActivityCard ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -59,6 +65,7 @@ class ActivityCard extends React.PureComponent {
         super(props)
         this.state = {
             mediaModal: false,
+            floatingHeartCount: 0,
         }
         this.renderCommentRef = this.renderCommentRef.bind(this)
         this.renderMedia = this.renderMedia.bind(this)
@@ -154,6 +161,13 @@ class ActivityCard extends React.PureComponent {
         return shareToActionSheet()
     }
 
+    incrementFloatingHeartCount = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        this.setState({
+            floatingHeartCount: this.state.floatingHeartCount + 1,
+        })
+    }
+
     renderActionButtons({ postRef, goalRef, actedUponEntityType, actedWith }) {
         const isPost = actedUponEntityType === 'Post'
         const item = isPost ? postRef : goalRef
@@ -191,6 +205,7 @@ class ActivityCard extends React.PureComponent {
                                 maybeLikeRef
                             )
                         }
+                        this.incrementFloatingHeartCount()
                         this.props.likeGoal(isPost ? 'post' : 'goal', _id)
                     }}
                 />
@@ -357,9 +372,33 @@ class ActivityCard extends React.PureComponent {
         const { item } = this.props
         if (!item || _.isEmpty(item) || !isValidActivity(item)) return null
 
+        // position the floating heart animation on like correctly
+        const isShare =
+            item.actedUponEntityType === 'Post' &&
+            item.postRef.postType !== 'General'
+        const isSmallerIphone = IPHONE_MODELS.includes(DEVICE_MODEL)
+        let floatingHeartLeftOffset = isShare
+            ? isSmallerIphone
+                ? 56
+                : 66
+            : isSmallerIphone
+            ? 28
+            : 36
+        // reduce left offset if the like count is higher
+        const likeCount = item.likeCount ? item.likeCount : 0
+        floatingHeartLeftOffset -= (likeCount.toString().length - 1) * 2
+
         return (
             <View style={{ marginTop: 10 }}>
                 <View style={{ backgroundColor: 'white' }}>
+                    <FloatingHearts
+                        count={this.state.floatingHeartCount}
+                        color={'#EB5757'}
+                        style={{
+                            zIndex: 5,
+                        }}
+                        leftOffset={floatingHeartLeftOffset}
+                    />
                     {item.goalRef && item.goalRef.isCompleted ? (
                         <Image
                             source={ConfettiFadedBackgroundTopHalf}
