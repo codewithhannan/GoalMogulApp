@@ -221,6 +221,7 @@ class BottomSheet extends React.PureComponent {
                 swipeToCloseGestureEnabled || fullScreenGesturesEnabled,
             onPanResponderMove: (e, gestureState) => {
                 const { isFullScreen, hasModalMoved } = this.state
+                // Swiping up
                 if (gestureState.dy > 0) {
                     if (!isFullScreen)
                         Animated.event([null, { dy: this.pan.y }], {
@@ -233,7 +234,9 @@ class BottomSheet extends React.PureComponent {
                                 this.getFullScreenHeight() - gestureState.dy,
                             duration: 1,
                         }).start()
-                } else if (!isFullScreen)
+                }
+                // else Swiping down
+                else if (!isFullScreen && fullScreenGesturesEnabled)
                     Animated.timing(this.animatedHeight, {
                         useNativeDriver: false,
                         toValue: height - gestureState.dy,
