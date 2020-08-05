@@ -11,8 +11,6 @@ import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
 import GoalCard from '../Goal/GoalCard/GoalCard'
 import EmptyResult from '../Common/Text/EmptyResult'
 
-import { markUserViewGoal } from '../../redux/modules/goal/GoalDetailActions'
-
 // actions
 import {
     openCreateOverlay,
@@ -20,6 +18,7 @@ import {
     openGoalDetail,
     changeFilter,
 } from '../../redux/modules/home/mastermind/actions'
+import { markUserViewGoal } from '../../redux/modules/goal/GoalDetailActions'
 
 import { color } from '../../styles/basic'
 import { Logger } from '../../redux/middleware/utils/Logger'

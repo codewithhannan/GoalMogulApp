@@ -1,15 +1,12 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, FlatList, ActivityIndicator, Image } from 'react-native'
+import { View, FlatList, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 
 // Components
 import ActivityCard from '../Activity/ActivityCard'
 import EmptyResult from '../Common/Text/EmptyResult'
-
-// Assets
-import plus from '../../asset/utils/plus.png'
 
 import {
     openPostDetail,
@@ -19,10 +16,7 @@ import { markUserViewGoal } from '../../redux/modules/goal/GoalDetailActions'
 import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
 
 import { color } from '../../styles/basic'
-import DelayedButton from '../Common/Button/DelayedButton'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
-import CreatePostModal from '../Post/CreatePostModal'
-import { Actions } from 'react-native-router-flux'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
