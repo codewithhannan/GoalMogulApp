@@ -285,7 +285,7 @@ class ProfileInfoCard extends Component {
 
 const styles = {
     containerStyle: {
-        marginBottom: 8,
+        marginTop: 8,
         padding: 30,
         paddingLeft: 20,
         paddingRight: 20,

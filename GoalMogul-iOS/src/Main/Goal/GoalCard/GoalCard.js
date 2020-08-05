@@ -436,7 +436,7 @@ class GoalCard extends React.PureComponent {
 const styles = {
     containerStyle: {
         backgroundColor: color.GM_CARD_BACKGROUND,
-        marginBottom: 8,
+        marginTop: 8,
     },
 }
 

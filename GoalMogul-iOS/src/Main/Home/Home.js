@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, AppState } from 'react-native'
+import { View, AppState, ScrollView, FlatList } from 'react-native'
 import { connect } from 'react-redux'
 import { TabView } from 'react-native-tab-view'
 import { MenuProvider } from 'react-native-popup-menu'
@@ -28,10 +28,14 @@ import {
 import {
     openCreateOverlay,
     refreshGoals,
+    loadMoreGoals,
     closeCreateOverlay,
 } from '../../redux/modules/home/mastermind/actions'
 
-import { refreshFeed } from '../../redux/modules/home/feed/actions'
+import {
+    refreshFeed,
+    loadMoreFeed,
+} from '../../redux/modules/home/feed/actions'
 
 import {
     subscribeNotification,
@@ -51,12 +55,8 @@ import {
 
 import { saveRemoteMatches } from '../../actions/MeetActions'
 
-// Assets
-import Logo from '../../asset/header/logo.png'
-import Activity from '../../asset/utils/activity.png'
-
 // Styles
-import { color, default_style } from '../../styles/basic'
+import { color } from '../../styles/basic'
 
 // Utils
 import Tooltip from '../Tutorial/Tooltip'
@@ -64,17 +64,6 @@ import { svgMaskPath } from '../Tutorial/Utils'
 import WelcomSreen from './WelcomeScreen'
 import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
 import { track, EVENT as E } from '../../monitoring/segment'
-
-const TabIconMap = {
-    goals: {
-        iconSource: Logo,
-        iconStyle: default_style.normalIcon_1,
-    },
-    activity: {
-        iconSource: Activity,
-        iconStyle: default_style.normalIcon_1,
-    },
-}
 
 const DEBUG_KEY = '[ UI Home ]'
 
@@ -124,7 +113,6 @@ class Home extends Component {
         ) {
             // Tutorial will be started by on welcome screen closed
             this.setState({
-                ...this.state,
                 showWelcomeScreen: true,
             })
             return
@@ -142,7 +130,6 @@ class Home extends Component {
         ) {
             // Showing modal to congrats user earning a new badge
             this.setState({
-                ...this.state,
                 showBadgeEarnModal: true,
             })
             return
@@ -236,14 +223,12 @@ class Home extends Component {
     }
 
     scrollToTop() {
-        const { navigationState } = this.state
-        const { index, routes } = navigationState
-        if (routes[index].key === 'goals') {
-            return this.mastermind.getWrappedInstance().scrollToTop()
-        }
-        if (routes[index].key === 'activity') {
-            return this.activityFeed.getWrappedInstance().scrollToTop()
-        }
+        if (this.flatList)
+            this.flatList.scrollToIndex({
+                animated: true,
+                index: 0,
+                viewOffset: 50,
+            })
     }
 
     _handleNotification(notification) {
@@ -293,7 +278,6 @@ class Home extends Component {
 
     _handleIndexChange = (index) => {
         this.setState({
-            ...this.state,
             navigationState: {
                 ...this.state.navigationState,
                 index,
@@ -310,22 +294,34 @@ class Home extends Component {
         )
     }
 
-    _renderScene = ({ route }) => {
-        switch (route.key) {
+    handleOnLoadMore = () => {
+        const { routes, index } = this.state.navigationState
+        routes[index].key === 'activity'
+            ? this.props.loadMoreFeed()
+            : this.props.loadMoreGoals()
+    }
+
+    handleOnRefresh = () => {
+        const { routes, index } = this.state.navigationState
+        routes[index].key === 'activity'
+            ? this.props.refreshFeed()
+            : this.props.refreshGoals()
+    }
+
+    _renderScene = () => {
+        const { routes, index } = this.state.navigationState
+        switch (routes[index].key) {
             case 'goals':
                 return (
                     <Mastermind
-                        ref={(m) => (this.mastermind = m)}
                         tutorialText={this.props.tutorialText[0]}
                         nextStepNumber={this.props.nextStepNumber}
                         order={0}
                         name="create_goal_home_0"
                     />
                 )
-
             case 'activity':
-                return <ActivityFeed ref={(a) => (this.activityFeed = a)} />
-
+                return <ActivityFeed />
             default:
                 return null
         }
@@ -352,13 +348,17 @@ class Home extends Component {
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />
-                    <TabView
-                        ref={(ref) => (this.tab = ref)}
-                        navigationState={this.state.navigationState}
-                        renderScene={this._renderScene}
-                        renderTabBar={this._renderHeader}
-                        onIndexChange={this._handleIndexChange}
-                        swipeEnabled={false}
+                    <FlatList
+                        ref={(ref) => (this.flatList = ref)}
+                        ListHeaderComponent={this._renderHeader({
+                            jumpToIndex: this._handleIndexChange,
+                            navigationState: this.state.navigationState,
+                        })}
+                        refreshing={this.props.refreshing}
+                        data={[{}]}
+                        onRefresh={this.handleOnRefresh}
+                        onEndReached={this.handleOnLoadMore}
+                        renderItem={this._renderScene}
                     />
                     {/* <WelcomSreen
                         isVisible={this.state.showWelcomeScreen}
@@ -366,7 +366,6 @@ class Home extends Component {
                         closeModal={() => {
                             this.setState(
                                 {
-                                    ...this.state,
                                     showWelcomeScreen: false,
                                 },
                                 () => {
@@ -387,7 +386,6 @@ class Home extends Component {
                         isVisible={this.state.showBadgeEarnModal}
                         closeModal={() => {
                             this.setState({
-                                ...this.state,
                                 showBadgeEarnModal: false,
                             })
                         }}
@@ -401,8 +399,8 @@ class Home extends Component {
 
 const mapStateToProps = (state) => {
     const { userId } = state.user
-    const { showingModal } = state.report
-    const { showPlus } = state.home.mastermind
+    const refreshing =
+        state.home.mastermind.refreshing || state.home.activityfeed.refreshing
     const needRefreshMastermind = _.isEmpty(state.home.mastermind.data)
     const needRefreshActivity = _.isEmpty(state.home.activityfeed.data)
     const { user } = state.user
@@ -413,8 +411,7 @@ const mapStateToProps = (state) => {
     const { hasShown, showTutorial, tutorialText, nextStepNumber } = home
 
     return {
-        showingModal,
-        showPlus,
+        refreshing,
         user,
         needRefreshActivity,
         needRefreshMastermind,
@@ -435,7 +432,6 @@ const styles = {
     tabContainer: {
         paddingLeft: 8,
         paddingRight: 8,
-        marginBottom: 8,
         backgroundColor: color.GM_CARD_BACKGROUND,
     },
     backdrop: {
@@ -466,7 +462,9 @@ export default connect(
         handlePushNotification,
         /* Feed related */
         refreshGoals,
+        loadMoreGoals,
         refreshFeed,
+        loadMoreFeed,
         fetchProfile,
         checkIfNewlyCreated,
         closeCreateOverlay,

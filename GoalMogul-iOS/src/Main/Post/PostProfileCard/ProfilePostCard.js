@@ -322,7 +322,7 @@ class ProfilePostCard extends React.PureComponent {
             <View
                 style={[
                     styles.containerStyle,
-                    { marginBottom: isSharedItem ? 0 : 8 },
+                    { marginTop: isSharedItem ? 0 : 8 },
                 ]}
             >
                 <View

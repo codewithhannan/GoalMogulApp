@@ -128,7 +128,7 @@ class ProfileNeedCard extends React.Component {
         if (!item) return null
 
         return (
-            <View style={{ backgroundColor: '#e5e5e5', marginBottom: 8 }}>
+            <View style={{ backgroundColor: '#e5e5e5', marginTop: 8 }}>
                 <View style={styles.containerStyle}>
                     <TouchableOpacity
                         activeOpacity={0.6}

@@ -359,7 +359,6 @@ class ProfileV2 extends Component {
         return (
             <View
                 style={{
-                    marginBottom: 8,
                     backgroundColor: color.GM_CARD_BACKGROUND,
                 }}
             >

@@ -450,7 +450,7 @@ class ActivityCard extends React.PureComponent {
 const styles = {
     containerStyle: {
         backgroundColor: color.GM_CARD_BACKGROUND,
-        marginBottom: 8,
+        marginTop: 8,
     },
     imageContainerStyle: {
         borderWidth: 0.5,

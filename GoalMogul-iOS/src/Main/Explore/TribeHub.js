@@ -82,7 +82,6 @@ class TribeHub extends Component {
                             <View
                                 style={{
                                     padding: 16,
-                                    marginBottom: 8,
                                     backgroundColor: color.GM_CARD_BACKGROUND,
                                 }}
                             >
