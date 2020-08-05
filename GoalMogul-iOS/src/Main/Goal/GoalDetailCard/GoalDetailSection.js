@@ -1,5 +1,6 @@
 /** @format */
 
+import * as Haptics from 'expo-haptics'
 import _ from 'lodash'
 import moment from 'moment'
 import R from 'ramda'
@@ -23,11 +24,12 @@ import Icons from '../../../asset/base64/Icons'
 import CommentIcon from '../../../asset/utils/comment.png'
 import EditIcon from '../../../asset/utils/edit.png'
 import ShareIcon from '../../../asset/utils/forward.png'
+import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
 // Assets
 import LoveIcon from '../../../asset/utils/love.png'
-import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
 import TrashIcon from '../../../asset/utils/trash.png'
 import UndoIcon from '../../../asset/utils/undo.png'
+import { decode } from '../../../redux/middleware/utils'
 import { createCommentFromSuggestion } from '../../../redux/modules/feed/comment/CommentActions'
 import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions'
 import {
@@ -48,11 +50,14 @@ import { color, default_style } from '../../../styles/basic'
 import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
+    DEVICE_MODEL,
+    IPHONE_MODELS,
 } from '../../../Utils/Constants'
 import {
     actionSheet,
     switchByButtonIndex,
 } from '../../Common/ActionSheetFactory'
+import FloatingHearts from '../../Common/FloatingHearts/FloatingHearts'
 import LikeListModal from '../../Common/Modal/LikeListModal'
 import ShareListModal from '../../Common/Modal/ShareListModal'
 import ProfileImage from '../../Common/ProfileImage'
@@ -64,7 +69,6 @@ import IndividualActionButton from '../Common/IndividualActionButton'
 // Components
 import ProgressBar from '../Common/ProgressBar'
 import Timestamp from '../Common/Timestamp'
-import { decode } from '../../../redux/middleware/utils'
 
 const { width } = Dimensions.get('window')
 const WINDOW_WIDTH = width
@@ -88,6 +92,7 @@ class GoalDetailSection extends React.PureComponent {
             goalReminderDatePicker: false,
             showShareListModa: false,
             showlikeListModal: false,
+            floatingHeartCount: 0,
         }
         this.handleGoalReminder = this.handleGoalReminder.bind(this)
     }
@@ -568,6 +573,13 @@ class GoalDetailSection extends React.PureComponent {
         )
     }
 
+    incrementFloatingHeartCount = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        this.setState({
+            floatingHeartCount: this.state.floatingHeartCount + 1,
+        })
+    }
+
     renderActionButtons(item) {
         const { maybeLikeRef, _id } = item
         const likeCount = item.likeCount ? item.likeCount : 0
@@ -592,6 +604,7 @@ class GoalDetailSection extends React.PureComponent {
                                 maybeLikeRef
                             )
                         }
+                        this.incrementFloatingHeartCount()
                         this.props.likeGoal('goal', _id)
                     }}
                     onTextPress={() => {
@@ -640,6 +653,13 @@ class GoalDetailSection extends React.PureComponent {
         const { item } = this.props
         if (!item || _.isEmpty(item)) return null
 
+        // position the floating heart animation on like correctly
+        const isSmallerIphone = IPHONE_MODELS.includes(DEVICE_MODEL)
+        let floatingHeartLeftOffset = isSmallerIphone ? 28 : 36
+        // reduce left offset if the like count is higher
+        const likeCount = item.likeCount ? item.likeCount : 0
+        floatingHeartLeftOffset -= (likeCount.toString().length - 1) * 2
+
         return (
             <View onLayout={this.handleOnLayout}>
                 <View style={{ paddingHorizontal: 16 }}>
@@ -686,6 +706,15 @@ class GoalDetailSection extends React.PureComponent {
                         </View>
                     </View>
                 </View>
+
+                <FloatingHearts
+                    count={this.state.floatingHeartCount}
+                    color={'#EB5757'}
+                    style={{
+                        zIndex: 5,
+                    }}
+                    leftOffset={floatingHeartLeftOffset}
+                />
                 {this.renderActionButtons(item)}
                 {this.renderGoalReminderDatePicker()}
             </View>

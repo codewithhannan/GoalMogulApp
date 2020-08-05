@@ -51,6 +51,7 @@ import {
     SENTRY_CONTEXT,
 } from '../../../monitoring/sentry/Constants'
 import { loadUserGoals } from '../goal/GoalActions'
+import { is2xxRespose } from '../../middleware/utils'
 
 const DEBUG_KEY = '[ MyTribe Actions ]'
 const BASE_ROUTE = 'secure/tribe'
@@ -723,7 +724,7 @@ export const loadTribeFeed = (
         token
     )
         .then((res) => {
-            if (res.status === 200 || (res && res.data)) {
+            if (is2xxRespose(res.status) || (res && res.data)) {
                 console.log(
                     `${DEBUG_KEY}: loading tribe feed with res: `,
                     res.data.length
@@ -735,6 +736,7 @@ export const loadTribeFeed = (
                 `${DEBUG_KEY}: loading with no res. Message is: `,
                 res.message
             )
+            return callback([])
         })
         .catch((err) => {
             onError(err)

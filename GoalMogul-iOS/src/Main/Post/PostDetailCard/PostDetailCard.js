@@ -11,6 +11,7 @@ import {
 import { getBottomSpace } from 'react-native-iphone-x-helper'
 import { MenuProvider } from 'react-native-popup-menu'
 import { connect } from 'react-redux'
+import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 import { getParentCommentId } from '../../../redux/middleware/utils'
 import { Logger } from '../../../redux/middleware/utils/Logger'
 import { refreshComments } from '../../../redux/modules/feed/comment/CommentActions'
@@ -32,7 +33,6 @@ import LikeListModal from '../../Common/Modal/LikeListModal'
 import CommentBox from '../../Goal/Common/CommentBoxV2'
 import CommentCard from '../../Goal/GoalDetailCard/Comment/CommentCard'
 import PostDetailSection from './PostDetailSection'
-import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 const DEBUG_KEY = '[ UI PostDetailCard ]'
 const TABBAR_HEIGHT = 48.5
@@ -286,7 +286,8 @@ class PostDetailCard extends React.PureComponent {
         )
     }
 
-    renderPostDetailSection(postDetail) {
+    renderPostDetailSection() {
+        const { postDetail } = this.props
         return (
             <View style={{ marginBottom: 1 }}>
                 <PostDetailSection
@@ -300,7 +301,7 @@ class PostDetailCard extends React.PureComponent {
     }
 
     render() {
-        const { comments, postDetail, pageId, postId } = this.props
+        const { comments, pageId, postId } = this.props
         const data = comments
 
         return (
@@ -329,9 +330,9 @@ class PostDetailCard extends React.PureComponent {
                             data={data}
                             renderItem={this.renderItem}
                             keyExtractor={this.keyExtractor}
-                            ListHeaderComponent={() =>
-                                this.renderPostDetailSection(postDetail)
-                            }
+                            ListHeaderComponent={this.renderPostDetailSection.apply(
+                                this
+                            )}
                             refreshing={this.props.commentLoading}
                             onRefresh={this.handleRefresh}
                             ListFooterComponent={

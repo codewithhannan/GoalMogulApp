@@ -11,6 +11,7 @@ import {
 import { getBottomSpace } from 'react-native-iphone-x-helper'
 import { MenuProvider } from 'react-native-popup-menu'
 import { connect } from 'react-redux'
+import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 // Utils
 import { getParentCommentId, switchCase } from '../../../redux/middleware/utils'
 import { Logger } from '../../../redux/middleware/utils/Logger'
@@ -38,7 +39,6 @@ import LikeListModal from '../../Common/Modal/LikeListModal'
 import CommentBox from '../../Goal/Common/CommentBoxV2'
 import CommentCard from '../../Goal/GoalDetailCard/Comment/CommentCard'
 import ShareDetailSection from './ShareDetailSection'
-import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
 const DEBUG_KEY = '[ UI ShareDetailCard ]'
 const TABBAR_HEIGHT = 48.5
@@ -282,7 +282,8 @@ class ShareDetailCard extends Component {
         )
     }
 
-    renderShareDetailSection(shareDetail) {
+    renderShareDetailSection() {
+        const { shareDetail } = this.props
         return (
             <ShareDetailSection
                 item={shareDetail}
@@ -324,9 +325,9 @@ class ShareDetailCard extends Component {
                             data={data}
                             renderItem={this.renderItem}
                             keyExtractor={this.keyExtractor}
-                            ListHeaderComponent={() =>
-                                this.renderShareDetailSection(shareDetail)
-                            }
+                            ListHeaderComponent={this.renderShareDetailSection.apply(
+                                this
+                            )}
                             refreshing={this.props.commentLoading}
                             onRefresh={this.handleRefresh}
                             ListFooterComponent={
