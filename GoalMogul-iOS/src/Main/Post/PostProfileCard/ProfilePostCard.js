@@ -319,31 +319,33 @@ class ProfilePostCard extends React.PureComponent {
         const { item, hasActionButton, isSharedItem } = this.props
         if (!item || _.isEmpty(item)) return null
         return (
-            <View>
-                <View style={styles.containerStyle}>
-                    <View
-                        style={{
-                            marginTop: 12,
-                            marginBottom: 10,
-                            marginRight: 12,
-                            marginLeft: 12,
-                        }}
+            <View
+                style={[
+                    styles.containerStyle,
+                    { marginBottom: isSharedItem ? 0 : 8 },
+                ]}
+            >
+                <View
+                    style={{
+                        marginTop: 12,
+                        marginBottom: 10,
+                        marginRight: 12,
+                        marginLeft: 12,
+                    }}
+                >
+                    <TouchableOpacity
+                        activeOpacity={0.6}
+                        onPress={() => this.handleCardOnPress(item)}
                     >
-                        <TouchableOpacity
-                            activeOpacity={0.6}
-                            onPress={() => this.handleCardOnPress(item)}
-                        >
-                            {this.renderHeader(item)}
-                        </TouchableOpacity>
-                        <ProfilePostBody
-                            item={item}
-                            showRefPreview={this.props.showRefPreview}
-                            openCardContent={() => this.handleCardOnPress(item)}
-                        />
-                    </View>
+                        {this.renderHeader(item)}
+                    </TouchableOpacity>
+                    <ProfilePostBody
+                        item={item}
+                        showRefPreview={this.props.showRefPreview}
+                        openCardContent={() => this.handleCardOnPress(item)}
+                    />
                 </View>
                 {this.renderActionButtons(item, hasActionButton)}
-                {!isSharedItem && <View style={default_style.cardSeparator} />}
             </View>
         )
     }
@@ -351,7 +353,7 @@ class ProfilePostCard extends React.PureComponent {
 
 const styles = {
     containerStyle: {
-        backgroundColor: 'white',
+        backgroundColor: color.GM_CARD_BACKGROUND,
     },
     textStyle: {
         flex: 1,

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Text, View } from 'react-native'
-import { default_style } from '../../../styles/basic'
+import { default_style, color } from '../../../styles/basic'
 
 const EmptyResult = (props) => {
     const { textStyle, containerStyle } = props
@@ -18,11 +18,12 @@ const EmptyResult = (props) => {
 const styles = {
     containerStyle: {
         alignItems: 'center',
+        backgroundColor: color.GM_CARD_BACKGROUND,
     },
     textStyle: {
         ...default_style.subTitleText_1,
         paddingTop: 150,
-        color: '#818181',
+        color: '#828282',
     },
 }
 

@@ -18,7 +18,7 @@ import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
 import { makeTribeFeedSelector } from '../../redux/modules/tribe/TribeSelector'
 
 // Styles
-import { default_style } from '../../styles/basic'
+import { default_style, color } from '../../styles/basic'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 import { Actions } from 'react-native-router-flux'
@@ -47,11 +47,11 @@ class TribeHub extends Component {
         const { data, loading, refreshing } = this.props
         return (
             <MenuProvider>
-                <View style={{ backgroundColor: '#FAFAFA', flex: 1 }}>
+                <View style={{ backgroundColor: color.GM_BACKGROUND, flex: 1 }}>
                     <SearchBarHeader rightIcon="menu" />
                     <View
                         style={{
-                            backgroundColor: 'white',
+                            backgroundColor: color.GM_CARD_BACKGROUND,
                             padding: 12,
                             marginBottom: 8,
                             flexDirection: 'row',
@@ -79,7 +79,13 @@ class TribeHub extends Component {
                         data={data}
                         keyExtractor={(i) => i._id}
                         ListHeaderComponent={
-                            <View style={{ padding: 16 }}>
+                            <View
+                                style={{
+                                    padding: 16,
+                                    marginBottom: 8,
+                                    backgroundColor: color.GM_CARD_BACKGROUND,
+                                }}
+                            >
                                 <Text style={default_style.titleText_1}>
                                     All Tribe Activity
                                 </Text>
@@ -102,7 +108,6 @@ class TribeHub extends Component {
                                 />
                             )
                         }
-                        contentContainerStyle={{ backgroundColor: 'white' }}
                     />
                 </View>
             </MenuProvider>
