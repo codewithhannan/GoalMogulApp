@@ -13,9 +13,6 @@ import EmptyResult from '../Common/Text/EmptyResult'
 
 import { markUserViewGoal } from '../../redux/modules/goal/GoalDetailActions'
 
-// asset
-import plus from '../../asset/utils/plus.png'
-
 // actions
 import {
     openCreateOverlay,
@@ -157,7 +154,6 @@ class Mastermind extends Component {
                     }
                     onEndThreshold={2}
                 />
-                {this.renderPlus()}
             </View>
         )
     }
@@ -195,16 +191,9 @@ const styles = {
 }
 
 const mapStateToProps = (state) => {
-    const {
-        showPlus,
-        data,
-        loading,
-        loadingMore,
-        refreshing,
-    } = state.home.mastermind
+    const { data, loading, loadingMore, refreshing } = state.home.mastermind
 
     return {
-        showPlus,
         data,
         loading,
         loadingMore,

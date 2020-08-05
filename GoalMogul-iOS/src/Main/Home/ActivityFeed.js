@@ -3,7 +3,6 @@
 import React, { Component } from 'react'
 import { View, FlatList, ActivityIndicator, Image } from 'react-native'
 import { connect } from 'react-redux'
-import { Actions } from 'react-native-router-flux'
 
 // Components
 import ActivityCard from '../Activity/ActivityCard'
@@ -11,12 +10,6 @@ import EmptyResult from '../Common/Text/EmptyResult'
 
 // Assets
 import plus from '../../asset/utils/plus.png'
-
-// actions
-import {
-    loadMoreFeed,
-    refreshFeed,
-} from '../../redux/modules/home/feed/actions'
 
 import {
     openPostDetail,
@@ -28,6 +21,8 @@ import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
 import { color } from '../../styles/basic'
 import DelayedButton from '../Common/Button/DelayedButton'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
+import CreatePostModal from '../Post/CreatePostModal'
+import { Actions } from 'react-native-router-flux'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
@@ -55,28 +50,6 @@ class ActivityFeed extends Component {
             }
         })
     }
-
-    handleOnLoadMore = () => this.props.loadMoreFeed()
-
-    handleOnRefresh = () => this.props.refreshFeed()
-
-    /**
-     * Used by parent to scroll mastermind to top on tab pressed
-     */
-    scrollToTop = () => {
-        const { data } = this.props
-        if (!data || data.length === 0) return
-        this.flatlist.scrollToIndex({
-            animated: true,
-            index: 0,
-        })
-    }
-
-    /**
-     * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
-     */
-    handleOnMenuChange = (type, value) =>
-        this.props.changeFilter(TAB_KEY, type, value)
 
     _keyExtractor = (item) => item._id
 
@@ -122,35 +95,19 @@ class ActivityFeed extends Component {
         }
     }
 
-    // This was used in V2 where user can only create Goal here.
-    renderPlus() {
-        return (
-            <DelayedButton
-                activeOpacity={0.6}
-                style={styles.iconContainerStyle}
-                onPress={() => Actions.createPostModal()}
-            >
-                <Image style={styles.iconStyle} source={plus} />
-            </DelayedButton>
-        )
-    }
-
     render() {
         return (
             <View style={{ flex: 1 }}>
                 <FlatList
-                    ref={(f) => (this.flatlist = f)}
+                    scrollEnabled={false}
                     data={this.props.data}
                     renderItem={this.renderItem}
                     numColumns={1}
                     keyExtractor={this._keyExtractor}
-                    refreshing={this.props.loading}
-                    onRefresh={this.handleOnRefresh}
-                    onEndReached={this.handleOnLoadMore}
                     onViewableItemsChanged={this.handleOnViewableItemsChanged}
                     viewabilityConfig={this.viewabilityConfig}
                     ListEmptyComponent={
-                        this.props.loading ? null : (
+                        this.props.loading || this.props.refreshing ? null : (
                             <EmptyResult
                                 text={'No Activity'}
                                 textStyle={{ paddingTop: 230 }}
@@ -160,18 +117,17 @@ class ActivityFeed extends Component {
                     ListFooterComponent={this.renderListFooter()}
                     onEndThreshold={2}
                 />
-                {this.renderPlus()}
             </View>
         )
     }
 }
 
 const mapStateToProps = (state) => {
-    const { loading, loadingMore, filter, data } = state.home.activityfeed
+    const { refreshing, loading, loadingMore, data } = state.home.activityfeed
     return {
         data,
+        refreshing,
         loading,
-        filter,
         loadingMore, // For footer indicator
     }
 }
@@ -199,8 +155,6 @@ const styles = {
 export default connect(
     mapStateToProps,
     {
-        loadMoreFeed,
-        refreshFeed,
         openPostDetail,
         openGoalDetail,
         markUserViewPost,

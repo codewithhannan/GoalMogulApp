@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, AppState, ScrollView, FlatList } from 'react-native'
+import { View, AppState, ScrollView, FlatList, Image } from 'react-native'
 import { connect } from 'react-redux'
 import { TabView } from 'react-native-tab-view'
 import { MenuProvider } from 'react-native-popup-menu'
@@ -58,12 +58,17 @@ import { saveRemoteMatches } from '../../actions/MeetActions'
 // Styles
 import { color } from '../../styles/basic'
 
+// Asset
+import plus from '../../asset/utils/plus.png'
+
 // Utils
 import Tooltip from '../Tutorial/Tooltip'
 import { svgMaskPath } from '../Tutorial/Utils'
 import WelcomSreen from './WelcomeScreen'
 import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
 import { track, EVENT as E } from '../../monitoring/segment'
+import DelayedButton from '../Common/Button/DelayedButton'
+import { Icon } from '@ui-kitten/components'
 
 const DEBUG_KEY = '[ UI Home ]'
 
@@ -308,7 +313,7 @@ class Home extends Component {
             : this.props.refreshGoals()
     }
 
-    _renderScene = () => {
+    _renderScene() {
         const { routes, index } = this.state.navigationState
         switch (routes[index].key) {
             case 'goals':
@@ -325,6 +330,41 @@ class Home extends Component {
             default:
                 return null
         }
+    }
+
+    renderPlus() {
+        const { routes, index } = this.state.navigationState
+        return (
+            <DelayedButton
+                activeOpacity={0.6}
+                style={{
+                    position: 'absolute',
+                    bottom: 20,
+                    right: 29,
+                    height: 54,
+                    width: 54,
+                    borderRadius: 28,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 3,
+                    backgroundColor: color.GM_BLUE,
+                }}
+                onPress={
+                    routes[index].key === 'activity'
+                        ? Actions.createPostModal
+                        : Actions.createGoalModal
+                }
+            >
+                <Image
+                    style={{
+                        height: 26,
+                        width: 26,
+                        tintColor: 'white',
+                    }}
+                    source={plus}
+                />
+            </DelayedButton>
+        )
     }
 
     render() {
@@ -360,6 +400,7 @@ class Home extends Component {
                         onEndReached={this.handleOnLoadMore}
                         renderItem={this._renderScene}
                     />
+                    {this.renderPlus()}
                     {/* <WelcomSreen
                         isVisible={this.state.showWelcomeScreen}
                         name={this.props.user.name}
