@@ -358,6 +358,7 @@ class Home extends Component {
                         renderScene={this._renderScene}
                         renderTabBar={this._renderHeader}
                         onIndexChange={this._handleIndexChange}
+                        swipeEnabled={false}
                     />
                     {/* <WelcomSreen
                         isVisible={this.state.showWelcomeScreen}

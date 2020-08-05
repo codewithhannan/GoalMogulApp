@@ -46,7 +46,6 @@ export const IPHONE_MODELS = [
     'iphone 5',
     'iphone 4',
     'iphone 5s',
-    'simulator',
 ]
 
 export const DEVICE_MODEL =
