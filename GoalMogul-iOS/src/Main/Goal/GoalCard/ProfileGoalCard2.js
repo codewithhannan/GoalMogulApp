@@ -175,26 +175,21 @@ class ProfileGoalCard2 extends React.Component {
             ? '#F6F6F6'
             : color.GM_CARD_BACKGROUND
         return (
-            <View>
-                <DelayedButton
-                    activeOpacity={0.6}
-                    style={[styles.cardContainerStyle, { backgroundColor }]}
-                    onPress={() => this.handleOnCardPress(item)}
-                >
-                    <View
-                        style={{ flexDirection: 'row', alignItems: 'center' }}
-                    >
-                        <View style={{ flex: 1 }}>
-                            {this.renderHeader(item)}
-                            {this.renderTitle(item)}
-                            {this.renderProgressBar(item)}
-                        </View>
-                        {this.renderPriorityBar(item)}
+            <DelayedButton
+                activeOpacity={0.6}
+                style={[styles.cardContainerStyle, { backgroundColor }]}
+                onPress={() => this.handleOnCardPress(item)}
+            >
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ flex: 1 }}>
+                        {this.renderHeader(item)}
+                        {this.renderTitle(item)}
+                        {this.renderProgressBar(item)}
                     </View>
-                    {this.renderStats(item)}
-                </DelayedButton>
-                <View style={default_style.cardSeparator} />
-            </View>
+                    {this.renderPriorityBar(item)}
+                </View>
+                {this.renderStats(item)}
+            </DelayedButton>
         )
     }
 }
@@ -232,6 +227,7 @@ const StatsComponent = (props) => {
 
 const styles = {
     cardContainerStyle: {
+        marginBottom: 8,
         padding: 16,
         borderRadius: 2,
     },

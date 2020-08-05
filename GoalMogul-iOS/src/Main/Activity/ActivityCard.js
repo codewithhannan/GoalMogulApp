@@ -26,7 +26,7 @@ import LoveIcon from '../../asset/utils/love.png'
 import LoveOutlineIcon from '../../asset/utils/love-outline.png'
 // Styles
 import { imagePreviewContainerStyle } from '../../styles'
-import { default_style } from '../../styles/basic'
+import { default_style, color } from '../../styles/basic'
 // Constants
 import { IMAGE_BASE_URL } from '../../Utils/Constants'
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
@@ -358,56 +358,49 @@ class ActivityCard extends React.PureComponent {
         if (!item || _.isEmpty(item) || !isValidActivity(item)) return null
 
         return (
-            <View style={{ marginTop: 10 }}>
-                <View style={{ backgroundColor: 'white' }}>
-                    {item.goalRef && item.goalRef.isCompleted ? (
-                        <Image
-                            source={ConfettiFadedBackgroundTopHalf}
-                            style={{
-                                height: WINDOW_WIDTH * 0.6,
-                                width: WINDOW_WIDTH,
-                                position: 'absolute',
-                                resizeMode: 'cover',
-                                opacity: 0.55,
-                            }}
-                        />
-                    ) : null}
-                    <ActivitySummary item={item} />
-                    <View style={{ marginTop: 1 }}>
-                        <View
-                            style={{
-                                marginTop: 12,
-                                marginBottom: 15,
-                                marginRight: 15,
-                                marginLeft: 15,
-                            }}
-                        >
-                            <DelayedButton
-                                activeOpacity={0.6}
-                                onPress={() => this.handleCardOnPress(item)}
-                            >
-                                <ActivityHeader item={item} />
-                            </DelayedButton>
-                            <ActivityBody
-                                item={item}
-                                openCardContent={() =>
-                                    this.handleCardOnPress(item)
-                                }
-                            />
-                        </View>
-                    </View>
-                    <View
+            <View style={styles.containerStyle}>
+                {item.goalRef && item.goalRef.isCompleted ? (
+                    <Image
+                        source={ConfettiFadedBackgroundTopHalf}
                         style={{
-                            marginTop: 1,
-                            borderBottomColor: '#f8f8f8',
-                            borderBottomWidth: 1,
+                            height: WINDOW_WIDTH * 0.6,
+                            width: WINDOW_WIDTH,
+                            position: 'absolute',
+                            resizeMode: 'cover',
+                            opacity: 0.55,
                         }}
+                    />
+                ) : null}
+                <ActivitySummary item={item} />
+                <View
+                    style={{
+                        marginTop: 12,
+                        marginBottom: 15,
+                        marginRight: 15,
+                        marginLeft: 15,
+                    }}
+                >
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        onPress={() => this.handleCardOnPress(item)}
                     >
-                        {!(
-                            item.actedUponEntityType === 'Post' &&
-                            item.postRef.postType === 'ShareGoal'
-                        ) && this.renderActionButtons(item)}
-                    </View>
+                        <ActivityHeader item={item} />
+                    </DelayedButton>
+                    <ActivityBody
+                        item={item}
+                        openCardContent={() => this.handleCardOnPress(item)}
+                    />
+                </View>
+                <View
+                    style={{
+                        borderBottomColor: '#f8f8f8',
+                        borderBottomWidth: 1,
+                    }}
+                >
+                    {!(
+                        item.actedUponEntityType === 'Post' &&
+                        item.postRef.postType === 'ShareGoal'
+                    ) && this.renderActionButtons(item)}
                 </View>
                 {this.renderComment(item)}
             </View>
@@ -417,7 +410,8 @@ class ActivityCard extends React.PureComponent {
 
 const styles = {
     containerStyle: {
-        backgroundColor: 'white',
+        backgroundColor: color.GM_CARD_BACKGROUND,
+        marginBottom: 8,
     },
     imageContainerStyle: {
         borderWidth: 0.5,

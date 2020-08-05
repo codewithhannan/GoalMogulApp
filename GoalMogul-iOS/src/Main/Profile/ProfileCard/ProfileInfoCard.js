@@ -114,13 +114,18 @@ class ProfileInfoCard extends Component {
         )
     }
 
-    renderFriendInfo() {
+    renderFriendInfo(occupation) {
         const title = this.props.canEdit ? 'Friends' : 'Mutual Friends'
         const data = this.props.canEdit
             ? this.props.friendsCount
             : this.props.mutualFriends.count
         return (
-            <View style={{ flexDirection: 'row', paddingBottom: 20 }}>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    paddingBottom: occupation ? 20 : 0,
+                }}
+            >
                 <Image source={icon_meet} style={styles.iconStyle} />
                 <View
                     style={{
@@ -165,7 +170,7 @@ class ProfileInfoCard extends Component {
     }
 
     renderOccupation(occupation) {
-        if (occupation) {
+        if (occupation && occupation.trim() !== '') {
             return (
                 <View style={{ flexDirection: 'row' }}>
                     <Image source={brief_case} style={styles.iconStyle} />
@@ -186,7 +191,7 @@ class ProfileInfoCard extends Component {
     }
 
     renderElevatorPitch(elevatorPitch) {
-        if (elevatorPitch) {
+        if (elevatorPitch && elevatorPitch.trim() !== '') {
             return (
                 <View style={{ alignSelf: 'flex-start' }}>
                     <View style={profileStyles.subHeaderStyle}>
@@ -213,7 +218,7 @@ class ProfileInfoCard extends Component {
     }
 
     renderAbout(about, elevatorPitch) {
-        if (about) {
+        if (about && about.trim() !== '') {
             return (
                 <View
                     style={
@@ -263,25 +268,16 @@ class ProfileInfoCard extends Component {
 
         return (
             <View>
+                {about && elevatorPitch && (
+                    <View style={styles.containerStyle}>
+                        {this.renderElevatorPitch(elevatorPitch)}
+                        {this.renderAbout(about, elevatorPitch)}
+                    </View>
+                )}
                 <View style={styles.containerStyle}>
-                    {this.renderElevatorPitch(elevatorPitch)}
-                    {this.renderAbout(about, elevatorPitch)}
-                </View>
-                <View style={default_style.cardSeparator} />
-                <View style={styles.containerStyle}>
-                    {this.renderFriendInfo()}
+                    {this.renderFriendInfo(occupation)}
                     {this.renderOccupation(occupation)}
-                    <CoinProfileInfoModal
-                        isVisible={this.state.showCoinProfileInfoModal}
-                        closeModal={() => {
-                            this.setState({
-                                ...this.state,
-                                showCoinProfileInfoModal: false,
-                            })
-                        }}
-                    />
                 </View>
-                <View style={default_style.cardSeparator} />
             </View>
         )
     }
@@ -289,11 +285,11 @@ class ProfileInfoCard extends Component {
 
 const styles = {
     containerStyle: {
-        display: 'flex',
+        marginBottom: 8,
         padding: 30,
         paddingLeft: 20,
         paddingRight: 20,
-        backgroundColor: 'white',
+        backgroundColor: color.GM_CARD_BACKGROUND,
         flex: 1,
     },
     iconStyle: {
@@ -301,7 +297,7 @@ const styles = {
         width: 20,
     },
     dotIconStyle: {
-        tintColor: '#818181',
+        tintColor: '#828282',
         height: 5,
         width: 5,
     },

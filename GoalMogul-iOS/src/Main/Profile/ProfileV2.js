@@ -46,6 +46,7 @@ import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard'
 import About from './About'
 import ProfileDetailCard from './ProfileCard/ProfileDetailCard'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
+import EmptyResult from '../Common/Text/EmptyResult'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
@@ -356,7 +357,12 @@ class ProfileV2 extends Component {
         const renderFilter =
             props.selectedTab === 'goals' || props.selectedTab === 'needs'
         return (
-            <View>
+            <View
+                style={{
+                    marginBottom: 8,
+                    backgroundColor: color.GM_CARD_BACKGROUND,
+                }}
+            >
                 {this.renderUserInfo(props)}
                 {this.renderTabs({
                     jumpToIndex: (i) => this._handleIndexChange(i),
@@ -364,7 +370,6 @@ class ProfileV2 extends Component {
                     renderFilter,
                 })}
                 {renderFilter ? this.renderFilterBar(props) : null}
-                <View style={default_style.cardSeparator} />
             </View>
         )
     }
@@ -379,25 +384,13 @@ class ProfileV2 extends Component {
 
         emptyText = routes[index].key
         return (
-            <View
-                style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flex: 1,
+            <EmptyResult
+                text={`No ${emptyText}`}
+                textStyle={{
+                    paddingTop: 80,
+                    paddingBottom: 80,
                 }}
-            >
-                <Text
-                    style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        fontSize: 18,
-                        color: '#999',
-                        paddingTop: 80,
-                    }}
-                >
-                    No {emptyText}
-                </Text>
-            </View>
+            />
         )
     }
 
@@ -427,15 +420,15 @@ class ProfileV2 extends Component {
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <SearchBarHeader
+                    backButton={!this.props.isMainTab}
+                    setting={!this.props.isMainTab}
+                    rightIcon="menu"
+                    onBackPress={this.handleOnBackPress}
+                    userId={userId}
+                    handlePageSetting={this.handlePageSetting}
+                />
                 <View style={styles.containerStyle}>
-                    <SearchBarHeader
-                        backButton={!this.props.isMainTab}
-                        setting={!this.props.isMainTab}
-                        rightIcon="menu"
-                        onBackPress={this.handleOnBackPress}
-                        userId={userId}
-                        handlePageSetting={this.handlePageSetting}
-                    />
                     <FlatList
                         data={data}
                         renderItem={this.renderItem}
@@ -473,11 +466,10 @@ class ProfileV2 extends Component {
 const styles = {
     containerStyle: {
         flex: 1,
-        backgroundColor: color.GM_CARD_BACKGROUND,
+        backgroundColor: color.GM_BACKGROUND,
     },
     tabContainer: {
         padding: 8,
-        backgroundColor: color.GM_CARD_BACKGROUND,
     },
     backdrop: {
         backgroundColor: 'gray',

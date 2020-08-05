@@ -428,12 +428,13 @@ const mapStateToProps = (state) => {
 
 const styles = {
     homeContainerStyle: {
-        backgroundColor: '#E4E8EA',
+        backgroundColor: color.GM_BACKGROUND,
         flex: 1,
     },
     tabContainer: {
         paddingLeft: 8,
         paddingRight: 8,
+        marginBottom: 8,
         backgroundColor: color.GM_CARD_BACKGROUND,
     },
     backdrop: {
