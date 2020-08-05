@@ -56,16 +56,14 @@ export default connect()(MyTribeBanner)
 const styles = {
     containerStyle: {
         flexDirection: 'row',
-        backgroundColor: 'white',
-        marginTop: 8,
-        marginBottom: 8,
-        marginLeft: 16,
-        marginRight: 16,
+        backgroundColor: color.GM_CARD_BACKGROUND,
+        marginVertical: 8,
         borderRadius: 5,
     },
     aboutContainer: {
         flex: 1,
         padding: 20,
+        paddingRight: 16,
     },
     header: {
         ...default_style.titleText_1,
