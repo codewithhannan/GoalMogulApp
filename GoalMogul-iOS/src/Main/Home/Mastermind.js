@@ -49,6 +49,8 @@ class Mastermind extends Component {
         viewableItems.map(({ item }) => this.props.markUserViewGoal(item._id))
     }
 
+    handleOnLoadMore = () => this.props.loadMoreGoals()
+
     _keyExtractor = (item) => item._id
 
     renderItem = ({ item }) => {
@@ -133,27 +135,26 @@ class Mastermind extends Component {
     render() {
         // Following is the old implementation
         return (
-            <View style={{ flex: 1 }}>
-                <FlatList
-                    scrollEnabled={false}
-                    data={this.props.data}
-                    renderItem={this.renderItem}
-                    numColumns={1}
-                    keyExtractor={this._keyExtractor}
-                    onViewableItemsChanged={this.handleOnViewableItemsChanged}
-                    viewabilityConfig={this.viewabilityConfig}
-                    ListFooterComponent={this.renderListFooter()}
-                    ListEmptyComponent={
-                        this.props.loading || this.props.refreshing ? null : (
-                            <EmptyResult
-                                text={'No Goals have been shared'}
-                                textStyle={{ paddingTop: 230 }}
-                            />
-                        )
-                    }
-                    onEndThreshold={2}
-                />
-            </View>
+            <FlatList
+                scrollEnabled={false}
+                data={this.props.data}
+                renderItem={this.renderItem}
+                numColumns={1}
+                keyExtractor={this._keyExtractor}
+                onViewableItemsChanged={this.handleOnViewableItemsChanged}
+                viewabilityConfig={this.viewabilityConfig}
+                ListFooterComponent={this.renderListFooter()}
+                ListEmptyComponent={
+                    this.props.loading || this.props.refreshing ? null : (
+                        <EmptyResult
+                            text={'No Goals have been shared'}
+                            textStyle={{ paddingTop: 230 }}
+                        />
+                    )
+                }
+                onEndReached={this.handleOnLoadMore}
+                onEndThreshold={2}
+            />
         )
     }
 }

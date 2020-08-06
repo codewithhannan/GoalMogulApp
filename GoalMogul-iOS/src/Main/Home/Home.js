@@ -28,14 +28,10 @@ import {
 import {
     openCreateOverlay,
     refreshGoals,
-    loadMoreGoals,
     closeCreateOverlay,
 } from '../../redux/modules/home/mastermind/actions'
 
-import {
-    refreshFeed,
-    loadMoreFeed,
-} from '../../redux/modules/home/feed/actions'
+import { refreshFeed } from '../../redux/modules/home/feed/actions'
 
 import {
     subscribeNotification,
@@ -69,6 +65,7 @@ import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
 import { track, EVENT as E } from '../../monitoring/segment'
 import DelayedButton from '../Common/Button/DelayedButton'
 import { Icon } from '@ui-kitten/components'
+import CreatePostModal from '../Post/CreatePostModal'
 
 const DEBUG_KEY = '[ UI Home ]'
 
@@ -299,13 +296,6 @@ class Home extends Component {
         )
     }
 
-    handleOnLoadMore = () => {
-        const { routes, index } = this.state.navigationState
-        routes[index].key === 'activity'
-            ? this.props.loadMoreFeed()
-            : this.props.loadMoreGoals()
-    }
-
     handleOnRefresh = () => {
         const { routes, index } = this.state.navigationState
         routes[index].key === 'activity'
@@ -394,11 +384,10 @@ class Home extends Component {
                             jumpToIndex: this._handleIndexChange,
                             navigationState: this.state.navigationState,
                         })}
-                        refreshing={this.props.refreshing}
                         data={[{}]}
-                        onRefresh={this.handleOnRefresh}
-                        onEndReached={this.handleOnLoadMore}
                         renderItem={this._renderScene}
+                        refreshing={this.props.refreshing}
+                        onRefresh={this.handleOnRefresh}
                     />
                     {this.renderPlus()}
                     {/* <WelcomSreen
@@ -503,9 +492,7 @@ export default connect(
         handlePushNotification,
         /* Feed related */
         refreshGoals,
-        loadMoreGoals,
         refreshFeed,
-        loadMoreFeed,
         fetchProfile,
         checkIfNewlyCreated,
         closeCreateOverlay,

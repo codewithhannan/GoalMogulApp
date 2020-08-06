@@ -45,6 +45,8 @@ class ActivityFeed extends Component {
         })
     }
 
+    handleOnLoadMore = () => this.props.loadMoreFeed()
+
     _keyExtractor = (item) => item._id
 
     renderItem = ({ item }) => {
@@ -91,27 +93,26 @@ class ActivityFeed extends Component {
 
     render() {
         return (
-            <View style={{ flex: 1 }}>
-                <FlatList
-                    scrollEnabled={false}
-                    data={this.props.data}
-                    renderItem={this.renderItem}
-                    numColumns={1}
-                    keyExtractor={this._keyExtractor}
-                    onViewableItemsChanged={this.handleOnViewableItemsChanged}
-                    viewabilityConfig={this.viewabilityConfig}
-                    ListEmptyComponent={
-                        this.props.loading || this.props.refreshing ? null : (
-                            <EmptyResult
-                                text={'No Activity'}
-                                textStyle={{ paddingTop: 230 }}
-                            />
-                        )
-                    }
-                    ListFooterComponent={this.renderListFooter()}
-                    onEndThreshold={2}
-                />
-            </View>
+            <FlatList
+                scrollEnabled={false}
+                data={this.props.data}
+                renderItem={this.renderItem}
+                numColumns={1}
+                keyExtractor={this._keyExtractor}
+                onViewableItemsChanged={this.handleOnViewableItemsChanged}
+                viewabilityConfig={this.viewabilityConfig}
+                ListEmptyComponent={
+                    this.props.loading || this.props.refreshing ? null : (
+                        <EmptyResult
+                            text={'No Activity'}
+                            textStyle={{ paddingTop: 230 }}
+                        />
+                    )
+                }
+                ListFooterComponent={this.renderListFooter()}
+                onEndReached={this.handleOnLoadMore}
+                onEndThreshold={2}
+            />
         )
     }
 }
