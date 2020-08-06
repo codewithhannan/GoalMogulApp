@@ -61,20 +61,21 @@ class BottomSheet extends React.PureComponent {
             height: new Animated.Value(0),
             opacity: new Animated.Value(0),
         }
-        this.childernAnimatedProps = props.children
-            ? props.children.map((item) =>
-                  item &&
-                  item.props &&
-                  item.props.fadeInOnFullScreen &&
-                  item.props.style &&
-                  item.props.style.height
-                      ? {
-                            height: new Animated.Value(0),
-                            opacity: new Animated.Value(0),
-                        }
-                      : null
-              )
-            : []
+        this.childernAnimatedProps =
+            props.children && props.children.map
+                ? props.children.map((item) =>
+                      item &&
+                      item.props &&
+                      item.props.fadeInOnFullScreen &&
+                      item.props.style &&
+                      item.props.style.height
+                          ? {
+                                height: new Animated.Value(0),
+                                opacity: new Animated.Value(0),
+                            }
+                          : null
+                  )
+                : []
         this.createPanResponder(props)
     }
 
@@ -380,27 +381,32 @@ class BottomSheet extends React.PureComponent {
                                 scrollEnabled={isFullScreen}
                                 style={[{ flex: 1 }, customStyles.container]}
                             >
-                                {children.map((item, i) =>
-                                    item &&
-                                    item.props &&
-                                    item.props.fadeInOnFullScreen &&
-                                    this.childernAnimatedProps[i] ? (
-                                        <Animated.View
-                                            style={{
-                                                height: this
-                                                    .childernAnimatedProps[i]
-                                                    .height,
-                                                opacity: this
-                                                    .childernAnimatedProps[i]
-                                                    .opacity,
-                                            }}
-                                        >
-                                            {item}
-                                        </Animated.View>
-                                    ) : (
-                                        item
-                                    )
-                                )}
+                                {(children &&
+                                    children.map &&
+                                    children.map((item, i) =>
+                                        item &&
+                                        item.props &&
+                                        item.props.fadeInOnFullScreen &&
+                                        this.childernAnimatedProps[i] ? (
+                                            <Animated.View
+                                                style={{
+                                                    height: this
+                                                        .childernAnimatedProps[
+                                                        i
+                                                    ].height,
+                                                    opacity: this
+                                                        .childernAnimatedProps[
+                                                        i
+                                                    ].opacity,
+                                                }}
+                                            >
+                                                {item}
+                                            </Animated.View>
+                                        ) : (
+                                            item
+                                        )
+                                    )) ||
+                                    children}
                             </ScrollView>
                             {sheetFooter}
                         </Animated.View>

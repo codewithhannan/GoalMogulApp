@@ -89,7 +89,7 @@ class PYMKCard extends React.Component {
     renderBottomSheet = (userDoc) => {
         const options = this.makeFriendCardOptions(userDoc)
         // Options height + bottom space + bottom sheet handler height
-        const sheetHeight = options.length * 48 + getBottomSpace() + 30
+        const sheetHeight = options.length * 48 + 30
         return (
             <BottomButtonsSheet
                 ref={(r) => (this.bottomSheetRef = r)}

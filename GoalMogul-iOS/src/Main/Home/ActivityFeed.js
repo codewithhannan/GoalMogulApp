@@ -12,6 +12,7 @@ import {
     openPostDetail,
     markUserViewPost,
 } from '../../redux/modules/feed/post/PostActions'
+import { loadMoreFeed } from '../../redux/modules/home/feed/actions'
 import { markUserViewGoal } from '../../redux/modules/goal/GoalDetailActions'
 import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
 
@@ -150,6 +151,7 @@ const styles = {
 export default connect(
     mapStateToProps,
     {
+        loadMoreFeed,
         openPostDetail,
         openGoalDetail,
         markUserViewPost,

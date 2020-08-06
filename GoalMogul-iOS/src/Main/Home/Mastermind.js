@@ -13,6 +13,7 @@ import EmptyResult from '../Common/Text/EmptyResult'
 
 // actions
 import {
+    loadMoreGoals,
     openCreateOverlay,
     closeCreateOverlay,
     openGoalDetail,
@@ -204,6 +205,7 @@ const mapStateToProps = (state) => {
 export default connect(
     mapStateToProps,
     {
+        loadMoreGoals,
         openCreateOverlay,
         closeCreateOverlay,
         openGoalDetail,
