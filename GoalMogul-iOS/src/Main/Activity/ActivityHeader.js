@@ -67,7 +67,7 @@ class ActivityHeader extends Component {
             >
                 <Text
                     style={{
-                        ...default_style.smallText_1,
+                        ...default_style.normalText_1,
                         color: color.GM_BLUE,
                     }}
                 >

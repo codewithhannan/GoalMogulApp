@@ -754,7 +754,7 @@ const styles = {
         marginTop: 2,
     },
     seeMoreTextStyle: {
-        fontSize: 12,
+        ...default_style.normalText_1,
         color: color.GM_BLUE,
     },
     statsContainerStyle: {

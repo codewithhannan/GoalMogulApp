@@ -186,11 +186,9 @@ class ActivityBody extends React.Component {
         const { item } = this.props
         if (!item) return null
 
-        return (
-            <View style={{ marginTop: 16 }}>
-                {this.renderCardContent(item)}
-            </View>
-        )
+        const content = this.renderCardContent(item)
+
+        return content ? <View style={{ marginTop: 16 }}>{content}</View> : null
     }
 }
 
