@@ -139,7 +139,7 @@ class ActivityFeed extends Component {
     }
 
     render() {
-        if (this.props.loading) {
+        if (this.props.loading && !this.props.data) {
             return (
                 <View style={{ flex: 1 }}>
                     <FlatList
