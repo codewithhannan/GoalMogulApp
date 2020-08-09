@@ -3,7 +3,6 @@
 import React from 'react'
 import { View } from 'react-native'
 import SkeletonContent from 'react-native-skeleton-content'
-import { DEFAULT_STYLE } from '../../../styles'
 
 export const ActivityGhost = () => {
     return (
