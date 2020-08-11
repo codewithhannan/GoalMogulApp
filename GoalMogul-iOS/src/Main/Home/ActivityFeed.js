@@ -18,6 +18,7 @@ import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
 
 import { color } from '../../styles/basic'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
+import ActivityGhost from '../Common/Ghosts'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
@@ -35,15 +36,17 @@ class ActivityFeed extends Component {
     }
 
     handleOnViewableItemsChanged = ({ viewableItems, changed }) => {
-        viewableItems.map(({ item }) => {
-            if (item.postRef) {
-                const postId = item.postRef._id
-                this.props.markUserViewPost(postId)
-            } else if (item.goalRef) {
-                const goalId = item.goalRef._id
-                this.props.markUserViewGoal(goalId)
-            }
-        })
+        if (!this.props.loading) {
+            viewableItems.map(({ item }) => {
+                if (item.postRef) {
+                    const postId = item.postRef._id
+                    this.props.markUserViewPost(postId)
+                } else if (item.goalRef) {
+                    const goalId = item.goalRef._id
+                    this.props.markUserViewGoal(goalId)
+                }
+            })
+        }
     }
 
     handleOnLoadMore = () => this.props.loadMoreFeed()
@@ -93,28 +96,45 @@ class ActivityFeed extends Component {
     }
 
     render() {
-        return (
-            <FlatList
-                scrollEnabled={false}
-                data={this.props.data}
-                renderItem={this.renderItem}
-                numColumns={1}
-                keyExtractor={this._keyExtractor}
-                onViewableItemsChanged={this.handleOnViewableItemsChanged}
-                viewabilityConfig={this.viewabilityConfig}
-                ListEmptyComponent={
-                    this.props.loading || this.props.refreshing ? null : (
-                        <EmptyResult
-                            text={'No Activity'}
-                            textStyle={{ paddingTop: 230 }}
-                        />
-                    )
-                }
-                ListFooterComponent={this.renderListFooter()}
-                onEndReached={this.handleOnLoadMore}
-                onEndThreshold={2}
-            />
-        )
+        const showGhostCards =
+            this.props.refreshing &&
+            (!this.props.data || this.props.data.length === 0)
+        const i = 10
+        if (showGhostCards) {
+            return (
+                <FlatList
+                    data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                    renderItem={ActivityGhost}
+                    onViewableItemsChanged={this.handleOnViewableItemsChanged}
+                    viewabilityConfig={this.viewabilityConfig}
+                    keyExtractor={(item) => item.toString()}
+                />
+            )
+        } else {
+            return (
+                <FlatList
+                    scrollEnabled={false}
+                    data={this.props.data}
+                    renderItem={this.renderItem}
+                    numColumns={1}
+                    keyExtractor={this._keyExtractor}
+                    onViewableItemsChanged={this.handleOnViewableItemsChanged}
+                    viewabilityConfig={this.viewabilityConfig}
+                    ListEmptyComponent={
+                        !this.props.loading &&
+                        !this.props.refreshing && (
+                            <EmptyResult
+                                text={'No Activity'}
+                                textStyle={{ paddingTop: 230 }}
+                            />
+                        )
+                    }
+                    ListFooterComponent={this.renderListFooter()}
+                    onEndReached={this.handleOnLoadMore}
+                    onEndThreshold={2}
+                />
+            )
+        }
     }
 }
 
