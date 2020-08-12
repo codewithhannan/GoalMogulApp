@@ -246,10 +246,14 @@ class ProfileDetailEditForm extends Component {
                         }
                     />
                     <KeyboardAwareScrollView
+                        enableOnAndroid
                         innerRef={(ref) => {
                             this.scrollview = ref
                         }}
-                        extraScrollHeight={13}
+                        extraScrollHeight={Platform.select({
+                            ios: 13,
+                            default: 100,
+                        })}
                         contentContainerStyle={{
                             backgroundColor: 'white',
                             flexGrow: 1,
