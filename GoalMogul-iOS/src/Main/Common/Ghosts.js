@@ -6,7 +6,7 @@ import SkeletonContent from 'react-native-skeleton-content'
 
 export const ActivityGhost = () => {
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, marginBottom: 8 }}>
             <SkeletonContent
                 containerStyle={styles.top}
                 animationDirection="horizontalLeft"
@@ -123,7 +123,6 @@ export const ActivityGhost = () => {
                 ]}
                 isLoading={true}
             />
-            <View style={DEFAULT_STYLE.cardSeparator} />
         </View>
     )
 }

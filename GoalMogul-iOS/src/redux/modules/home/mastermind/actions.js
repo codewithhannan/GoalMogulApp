@@ -151,7 +151,7 @@ export const changeFilter = (tab, filterType, value) => (dispatch) => {
  */
 
 //Refresh goal for mastermind tab
-export const refreshGoals = () => (dispatch, getState) => {
+export const refreshGoalFeed = () => (dispatch, getState) => {
     const { token } = getState().user
     const { limit, filter, refreshing } = getState().home.mastermind
     const { categories, priorities, sortBy } = filter

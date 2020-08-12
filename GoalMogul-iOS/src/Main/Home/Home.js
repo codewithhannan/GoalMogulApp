@@ -27,11 +27,11 @@ import {
 } from '../../actions'
 import {
     openCreateOverlay,
-    refreshGoals,
+    refreshGoalFeed,
     closeCreateOverlay,
 } from '../../redux/modules/home/mastermind/actions'
 
-import { refreshFeed } from '../../redux/modules/home/feed/actions'
+import { refreshActivityFeed } from '../../redux/modules/home/feed/actions'
 
 import {
     subscribeNotification,
@@ -229,7 +229,7 @@ class Home extends Component {
             this.flatList.scrollToIndex({
                 animated: true,
                 index: 0,
-                viewOffset: 50,
+                viewOffset: this.topTabBarHeight,
             })
     }
 
@@ -256,11 +256,11 @@ class Home extends Component {
             }
 
             if (needRefreshMastermind) {
-                this.props.refreshGoals()
+                this.props.refreshGoalFeed()
             }
 
             if (needRefreshActivity) {
-                this.props.refreshFeed()
+                this.props.refreshActivityFeed()
             }
         }
 
@@ -290,7 +290,12 @@ class Home extends Component {
 
     _renderHeader = (props) => {
         return (
-            <View style={styles.tabContainer}>
+            <View
+                onLayout={(e) =>
+                    (this.topTabBarHeight = e.nativeEvent.layout.height)
+                }
+                style={styles.tabContainer}
+            >
                 <TabButtonGroup buttons={props} />
             </View>
         )
@@ -299,8 +304,8 @@ class Home extends Component {
     handleOnRefresh = () => {
         const { routes, index } = this.state.navigationState
         routes[index].key === 'activity'
-            ? this.props.refreshFeed()
-            : this.props.refreshGoals()
+            ? this.props.refreshActivityFeed()
+            : this.props.refreshGoalFeed()
     }
 
     _renderScene() {
@@ -376,6 +381,7 @@ class Home extends Component {
                 : undefined
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <CreatePostModal onRef={(r) => (this.createPostModal = r)} />
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />
                     <FlatList
@@ -491,8 +497,8 @@ export default connect(
         saveUnreadNotification,
         handlePushNotification,
         /* Feed related */
-        refreshGoals,
-        refreshFeed,
+        refreshGoalFeed,
+        refreshActivityFeed,
         fetchProfile,
         checkIfNewlyCreated,
         closeCreateOverlay,

@@ -16,8 +16,8 @@ import DelayedButton from '../Common/Button/DelayedButton'
 import { default_style, text } from '../../styles/basic'
 import OnboardingStyles from '../../styles/Onboarding'
 import { fetchAppUserProfile } from '../../actions'
-import { refreshGoals } from '../../redux/modules/home/mastermind/actions'
-import { refreshFeed } from '../../redux/modules/home/feed/actions'
+import { refreshGoalFeed } from '../../redux/modules/home/mastermind/actions'
+import { refreshActivityFeed } from '../../redux/modules/home/feed/actions'
 import ProfileImage from '../Common/ProfileImage'
 
 const { width } = Dimensions.get('window')
@@ -29,10 +29,10 @@ class OnboardingIntroTransition extends React.Component {
         this.props.fetchAppUserProfile()
 
         // Refresh home goals
-        this.props.refreshGoals()
+        this.props.refreshGoalFeed()
 
         // Refresh home feed
-        this.props.refreshFeed()
+        this.props.refreshActivityFeed()
     }
 
     onContinue = () => {
@@ -160,6 +160,6 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
     fetchAppUserProfile,
-    refreshGoals,
-    refreshFeed,
+    refreshGoalFeed,
+    refreshActivityFeed,
 })(OnboardingIntroTransition)

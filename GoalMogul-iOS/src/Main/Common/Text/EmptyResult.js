@@ -18,7 +18,6 @@ const EmptyResult = (props) => {
 const styles = {
     containerStyle: {
         alignItems: 'center',
-        backgroundColor: color.GM_CARD_BACKGROUND,
     },
     textStyle: {
         ...default_style.subTitleText_1,

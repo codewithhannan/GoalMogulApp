@@ -56,7 +56,7 @@ class ProfileV2 extends Component {
         super(props)
         this._handleIndexChange = this._handleIndexChange.bind(this)
         this.renderTabs = this.renderTabs.bind(this)
-        this.handleOnBackPress = this.handleOnBackPress.bind(this)
+        // this.handleOnBackPress = this.handleOnBackPress.bind(this)
         this.closeProfileInfoCard = this.closeProfileInfoCard.bind(this)
         this.state = {
             infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT), // Initial info card height
@@ -376,15 +376,16 @@ class ProfileV2 extends Component {
     renderListEmptyState() {
         const { navigationState, refreshing } = this.props
         const { routes, index } = navigationState
-        let emptyText = ''
-        if (routes[index].key === 'about' || refreshing) {
+        const currentTabName = routes[index].key
+
+        if (currentTabName === 'about' || refreshing) {
             return null
         }
 
-        emptyText = routes[index].key
+        const emptyStateText = `No ${currentTabName}`
         return (
             <EmptyResult
-                text={`No ${emptyText}`}
+                text={emptyStateText}
                 textStyle={{
                     paddingTop: 80,
                     paddingBottom: 80,

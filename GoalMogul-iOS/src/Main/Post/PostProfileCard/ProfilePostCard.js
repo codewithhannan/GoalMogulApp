@@ -334,7 +334,6 @@ class ProfilePostCard extends React.PureComponent {
                     }}
                 >
                     <TouchableOpacity
-                        activeOpacity={0.6}
                         onPress={() => this.handleCardOnPress(item)}
                     >
                         {this.renderHeader(item)}

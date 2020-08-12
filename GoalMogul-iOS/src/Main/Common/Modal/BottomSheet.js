@@ -311,6 +311,25 @@ class BottomSheet extends React.PureComponent {
             customStyles,
         } = this.props
         const { modalVisible, isFullScreen } = this.state
+        const scrollViewContent = Array.isArray(children)
+            ? children.map((item, i) =>
+                  item &&
+                  item.props &&
+                  item.props.fadeInOnFullScreen &&
+                  this.childernAnimatedProps[i] ? (
+                      <Animated.View
+                          style={{
+                              height: this.childernAnimatedProps[i].height,
+                              opacity: this.childernAnimatedProps[i].opacity,
+                          }}
+                      >
+                          {item}
+                      </Animated.View>
+                  ) : (
+                      item
+                  )
+              )
+            : children
         return (
             <Modal
                 transparent
@@ -381,32 +400,7 @@ class BottomSheet extends React.PureComponent {
                                 scrollEnabled={isFullScreen}
                                 style={[{ flex: 1 }, customStyles.container]}
                             >
-                                {(children &&
-                                    children.map &&
-                                    children.map((item, i) =>
-                                        item &&
-                                        item.props &&
-                                        item.props.fadeInOnFullScreen &&
-                                        this.childernAnimatedProps[i] ? (
-                                            <Animated.View
-                                                style={{
-                                                    height: this
-                                                        .childernAnimatedProps[
-                                                        i
-                                                    ].height,
-                                                    opacity: this
-                                                        .childernAnimatedProps[
-                                                        i
-                                                    ].opacity,
-                                                }}
-                                            >
-                                                {item}
-                                            </Animated.View>
-                                        ) : (
-                                            item
-                                        )
-                                    )) ||
-                                    children}
+                                {scrollViewContent}
                             </ScrollView>
                             {sheetFooter}
                         </Animated.View>

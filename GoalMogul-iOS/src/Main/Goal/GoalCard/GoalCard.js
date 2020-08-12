@@ -86,6 +86,10 @@ const SHARE_TO_MENU_OPTTIONS = [
 ]
 const CANCEL_INDEX = 3
 
+/**
+ * @param isSharedItem: when true, component renders a concise view of GoalCard
+ *                      that is meant just view and link to the Goal that has been shared
+ */
 class GoalCard extends React.PureComponent {
     constructor(props) {
         super(props)
@@ -387,8 +391,6 @@ class GoalCard extends React.PureComponent {
             </ActionButtonGroup>
         )
     }
-    // Original color picked for comment icon
-    // #FCB110
 
     render() {
         const { item, isSharedItem } = this.props
@@ -396,7 +398,7 @@ class GoalCard extends React.PureComponent {
 
         return (
             <View style={styles.containerStyle}>
-                {item.isCompleted ? (
+                {item.isCompleted && (
                     <Image
                         source={ConfettiFadedBackgroundTopHalf}
                         style={{
@@ -407,13 +409,10 @@ class GoalCard extends React.PureComponent {
                             opacity: 0.55,
                         }}
                     />
-                ) : null}
+                )}
                 {!isSharedItem && <GoalCardHeader item={item} />}
                 <View>
-                    <DelayedButton
-                        activeOpacity={0.6}
-                        onPress={this.handleOnPress.bind(this)}
-                    >
+                    <DelayedButton onPress={this.handleOnPress.bind(this)}>
                         <View
                             style={{
                                 marginTop: 14,

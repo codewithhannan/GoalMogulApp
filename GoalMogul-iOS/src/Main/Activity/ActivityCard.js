@@ -22,7 +22,7 @@ import LoveOutlineIcon from '../../asset/utils/love-outline.png'
 import LoveIcon from '../../asset/utils/love.png'
 import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
 import { chooseShareDest } from '../../redux/modules/feed/post/ShareActions'
-import { refreshFeed } from '../../redux/modules/home/feed/actions'
+import { refreshActivityFeed } from '../../redux/modules/home/feed/actions'
 import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
 import { likeGoal, unLikeGoal } from '../../redux/modules/like/LikeActions'
 // Styles
@@ -95,12 +95,12 @@ class ActivityCard extends React.PureComponent {
         }
 
         const callback = () => {
-            this.props.refreshFeed()
+            this.props.refreshActivityFeed()
         }
 
         const shareToFeedCallback = () => {
             this.props.onShareCallback()
-            this.props.refreshFeed()
+            this.props.refreshActivityFeed()
         }
         // Share ref is the id of the item to share
         const { _id } = itemToShare
@@ -275,7 +275,6 @@ class ActivityCard extends React.PureComponent {
                     userId={_id}
                 />
                 <DelayedButton
-                    activeOpacity={0.6}
                     style={{
                         padding: 12,
                         backgroundColor: '#F9F9F9',
@@ -419,10 +418,7 @@ class ActivityCard extends React.PureComponent {
                         marginLeft: 15,
                     }}
                 >
-                    <DelayedButton
-                        activeOpacity={0.6}
-                        onPress={() => this.handleCardOnPress(item)}
-                    >
+                    <DelayedButton onPress={() => this.handleCardOnPress(item)}>
                         <ActivityHeader item={item} />
                     </DelayedButton>
                     <ActivityBody
@@ -515,6 +511,6 @@ export default connect(mapStateToProps, {
     chooseShareDest,
     openPostDetail,
     openGoalDetail,
-    refreshFeed,
+    refreshActivityFeed,
     openProfile,
 })(ActivityCard)

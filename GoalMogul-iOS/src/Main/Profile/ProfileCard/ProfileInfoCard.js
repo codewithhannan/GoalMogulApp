@@ -170,7 +170,7 @@ class ProfileInfoCard extends Component {
     }
 
     renderOccupation(occupation) {
-        if (occupation && occupation.trim() !== '') {
+        if (occupation && occupation.trim().length > 0) {
             return (
                 <View style={{ flexDirection: 'row' }}>
                     <Image source={brief_case} style={styles.iconStyle} />
@@ -191,7 +191,7 @@ class ProfileInfoCard extends Component {
     }
 
     renderElevatorPitch(elevatorPitch) {
-        if (elevatorPitch && elevatorPitch.trim() !== '') {
+        if (elevatorPitch && elevatorPitch.trim().length > 0) {
             return (
                 <View style={{ alignSelf: 'flex-start' }}>
                     <View style={profileStyles.subHeaderStyle}>
@@ -218,7 +218,7 @@ class ProfileInfoCard extends Component {
     }
 
     renderAbout(about, elevatorPitch) {
-        if (about && about.trim() !== '') {
+        if (about && about.trim().length > 0) {
             return (
                 <View
                     style={
