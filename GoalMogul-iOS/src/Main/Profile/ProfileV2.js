@@ -56,7 +56,6 @@ class ProfileV2 extends Component {
         super(props)
         this._handleIndexChange = this._handleIndexChange.bind(this)
         this.renderTabs = this.renderTabs.bind(this)
-        // this.handleOnBackPress = this.handleOnBackPress.bind(this)
         this.closeProfileInfoCard = this.closeProfileInfoCard.bind(this)
         this.state = {
             infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT), // Initial info card height
@@ -416,13 +415,15 @@ class ProfileV2 extends Component {
             selectedTab,
             navigationState,
             data,
+            isMainTab,
         } = this.props
-
+        const shouldShowBackButton = !isMainTab
+        const shouldShowPageSettings = !isMainTab
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <SearchBarHeader
-                    backButton={!this.props.isMainTab}
-                    setting={!this.props.isMainTab}
+                    backButton={shouldShowBackButton}
+                    setting={shouldShowPageSettings}
                     rightIcon="menu"
                     onBackPress={this.handleOnBackPress}
                     userId={userId}
