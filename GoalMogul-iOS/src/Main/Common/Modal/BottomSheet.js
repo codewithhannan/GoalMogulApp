@@ -63,7 +63,7 @@ class BottomSheet extends React.PureComponent {
         this.animatedChildrenStyles = !Array.isArray(children)
             ? []
             : children.map((item) => {
-                  if (itemHasRequiredProps(item)) {
+                  if (hasFadeAnimationProps(item)) {
                       return {
                           fadeInHeight: item.props.style.height,
                           height: new Animated.Value(0),
@@ -364,7 +364,6 @@ class BottomSheet extends React.PureComponent {
             animationType,
             swipeToCloseGestureEnabled,
             fullScreenGesturesEnabled,
-            closeOnPressMask,
             closeOnPressBack,
             children,
             sheetHeader,
@@ -374,20 +373,21 @@ class BottomSheet extends React.PureComponent {
         const { modalVisible, isFullScreen } = this.state
         const scrollViewContent = !Array.isArray(children)
             ? children
-            : children.map((item, i) =>
-                  this.animatedChildrenStyles[i] ? (
-                      <Animated.View
-                          style={{
-                              height: this.animatedChildrenStyles[i].height,
-                              opacity: this.animatedChildrenStyles[i].opacity,
-                          }}
-                      >
-                          {item}
-                      </Animated.View>
-                  ) : (
-                      item
-                  )
-              )
+            : children.map((item, i) => {
+                  if (this.animatedChildrenStyles[i] !== null) {
+                      return (
+                          <Animated.View
+                              style={{
+                                  height: this.animatedChildrenStyles[i].height,
+                                  opacity: this.animatedChildrenStyles[i]
+                                      .opacity,
+                              }}
+                          >
+                              {item}
+                          </Animated.View>
+                      )
+                  } else return item
+              })
         const showDragIcon =
             swipeToCloseGestureEnabled || fullScreenGesturesEnabled
 
@@ -437,6 +437,7 @@ class BottomSheet extends React.PureComponent {
                         ]}
                     >
                         <View
+                            // set pan handlers here on fullScreen because Scroll View is Enabled
                             {...(isFullScreen && this.panResponder.panHandlers)}
                         >
                             {showDragIcon && (
@@ -460,7 +461,6 @@ class BottomSheet extends React.PureComponent {
                         </View>
                         <ScrollView
                             scrollEnabled={isFullScreen}
-                            scrollEventThrottle={2}
                             style={[{ flex: 1 }, customStyles.container]}
                         >
                             {scrollViewContent}
@@ -498,7 +498,7 @@ const styles = {
     },
 }
 
-const itemHasRequiredProps = (item) => {
+const hasFadeAnimationProps = (item) => {
     return (
         item &&
         item.props &&
@@ -518,7 +518,6 @@ BottomSheet.propTypes = {
     closeDuration: PropTypes.number,
     fullScreenGesturesEnabled: PropTypes.bool,
     swipeToCloseGestureEnabled: PropTypes.bool,
-    closeOnPressMask: PropTypes.bool,
     dragFromTopOnly: PropTypes.bool,
     closeOnPressBack: PropTypes.bool,
     customStyles: PropTypes.objectOf(PropTypes.object),
@@ -539,7 +538,6 @@ BottomSheet.defaultProps = {
     fullScreenGesturesEnabled: false,
     swipeToCloseGestureEnabled: true,
     dragFromTopOnly: false,
-    closeOnPressMask: true,
     closeOnPressBack: true,
     customStyles: {
         borderTopRightRadius: 5,
