@@ -422,7 +422,7 @@ class RouterComponent extends Component {
                                 <Scene
                                     key="main"
                                     hideNavBar
-                                    drawerLockMode="locked-closed"
+                                    drawerLockMode="unlocked"
                                 >
                                     <Tabs
                                         key="mainTabs"

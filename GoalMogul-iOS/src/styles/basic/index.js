@@ -41,9 +41,10 @@ export const default_style = {
     // Normal texts
     normalText_1: {
         fontFamily: text.FONT_FAMILY.REGULAR,
-        fontSize: 14 * UI_SCALE,
+        fontSize: 15 * UI_SCALE,
         color: color.TEXT_COLOR.DARK,
         fontWeight: '500',
+        lineHeight: 19,
         letterSpacing: text.LETTER_SPACING.REGULAR,
     },
     normalText_2: {

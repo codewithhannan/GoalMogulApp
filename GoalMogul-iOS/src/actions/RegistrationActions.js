@@ -315,6 +315,20 @@ export const openCamera = (callback) => async (dispatch) => {
     console.log('user took image fail with result: ', result)
 }
 
+export const getPhotosAsync = async () => {
+    const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
+    const permissionGranted = await ImageUtils.checkPermission(permissions)
+    if (!permissionGranted) return
+
+    return await CameraRoll.getPhotos({ first: 10 })
+        .then((data) => {
+            const assets = data.edges
+            const photos = assets.map((asset) => asset.node.image)
+            return photos
+        })
+        .catch((err) => {})
+}
+
 // Action to open camera roll modal
 export const openCameraRoll = (callback, maybeOptions) => async (dispatch) => {
     const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]

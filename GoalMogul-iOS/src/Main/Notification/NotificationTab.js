@@ -30,7 +30,7 @@ import {
 } from '../../redux/modules/notification/NotificationSelector'
 
 // Styles
-import { color } from '../../styles/basic'
+import { color, default_style } from '../../styles/basic'
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationTab ]'
@@ -248,7 +248,7 @@ const mapStateToProps = (state) => {
 
 const styles = {
     seeMoreTextStyle: {
-        fontSize: 13,
+        ...default_style.normalText_1,
         fontWeight: '600',
         color: '#17B3EC',
         alignSelf: 'center',

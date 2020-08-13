@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, AppState } from 'react-native'
+import { View, AppState, ScrollView, FlatList, Image } from 'react-native'
 import { connect } from 'react-redux'
 import { TabView } from 'react-native-tab-view'
 import { MenuProvider } from 'react-native-popup-menu'
@@ -27,11 +27,11 @@ import {
 } from '../../actions'
 import {
     openCreateOverlay,
-    refreshGoals,
+    refreshGoalFeed,
     closeCreateOverlay,
 } from '../../redux/modules/home/mastermind/actions'
 
-import { refreshFeed } from '../../redux/modules/home/feed/actions'
+import { refreshActivityFeed } from '../../redux/modules/home/feed/actions'
 
 import {
     subscribeNotification,
@@ -51,12 +51,11 @@ import {
 
 import { saveRemoteMatches } from '../../actions/MeetActions'
 
-// Assets
-import Logo from '../../asset/header/logo.png'
-import Activity from '../../asset/utils/activity.png'
-
 // Styles
-import { color, default_style } from '../../styles/basic'
+import { color } from '../../styles/basic'
+
+// Asset
+import plus from '../../asset/utils/plus.png'
 
 // Utils
 import Tooltip from '../Tutorial/Tooltip'
@@ -64,17 +63,9 @@ import { svgMaskPath } from '../Tutorial/Utils'
 import WelcomSreen from './WelcomeScreen'
 import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
 import { track, EVENT as E } from '../../monitoring/segment'
-
-const TabIconMap = {
-    goals: {
-        iconSource: Logo,
-        iconStyle: default_style.normalIcon_1,
-    },
-    activity: {
-        iconSource: Activity,
-        iconStyle: default_style.normalIcon_1,
-    },
-}
+import DelayedButton from '../Common/Button/DelayedButton'
+import { Icon } from '@ui-kitten/components'
+import CreatePostModal from '../Post/CreatePostModal'
 
 const DEBUG_KEY = '[ UI Home ]'
 
@@ -124,7 +115,6 @@ class Home extends Component {
         ) {
             // Tutorial will be started by on welcome screen closed
             this.setState({
-                ...this.state,
                 showWelcomeScreen: true,
             })
             return
@@ -142,7 +132,6 @@ class Home extends Component {
         ) {
             // Showing modal to congrats user earning a new badge
             this.setState({
-                ...this.state,
                 showBadgeEarnModal: true,
             })
             return
@@ -236,14 +225,12 @@ class Home extends Component {
     }
 
     scrollToTop() {
-        const { navigationState } = this.state
-        const { index, routes } = navigationState
-        if (routes[index].key === 'goals') {
-            return this.mastermind.getWrappedInstance().scrollToTop()
-        }
-        if (routes[index].key === 'activity') {
-            return this.activityFeed.getWrappedInstance().scrollToTop()
-        }
+        if (this.flatList)
+            this.flatList.scrollToIndex({
+                animated: true,
+                index: 0,
+                viewOffset: this.topTabBarHeight,
+            })
     }
 
     _handleNotification(notification) {
@@ -269,11 +256,11 @@ class Home extends Component {
             }
 
             if (needRefreshMastermind) {
-                this.props.refreshGoals()
+                this.props.refreshGoalFeed()
             }
 
             if (needRefreshActivity) {
-                this.props.refreshFeed()
+                this.props.refreshActivityFeed()
             }
         }
 
@@ -293,7 +280,6 @@ class Home extends Component {
 
     _handleIndexChange = (index) => {
         this.setState({
-            ...this.state,
             navigationState: {
                 ...this.state.navigationState,
                 index,
@@ -304,31 +290,76 @@ class Home extends Component {
 
     _renderHeader = (props) => {
         return (
-            <View style={styles.tabContainer}>
+            <View
+                onLayout={(e) =>
+                    (this.topTabBarHeight = e.nativeEvent.layout.height)
+                }
+                style={styles.tabContainer}
+            >
                 <TabButtonGroup buttons={props} />
             </View>
         )
     }
 
-    _renderScene = ({ route }) => {
-        switch (route.key) {
+    handleOnRefresh = () => {
+        const { routes, index } = this.state.navigationState
+        routes[index].key === 'activity'
+            ? this.props.refreshActivityFeed()
+            : this.props.refreshGoalFeed()
+    }
+
+    _renderScene() {
+        const { routes, index } = this.state.navigationState
+        switch (routes[index].key) {
             case 'goals':
                 return (
                     <Mastermind
-                        ref={(m) => (this.mastermind = m)}
                         tutorialText={this.props.tutorialText[0]}
                         nextStepNumber={this.props.nextStepNumber}
                         order={0}
                         name="create_goal_home_0"
                     />
                 )
-
             case 'activity':
-                return <ActivityFeed ref={(a) => (this.activityFeed = a)} />
-
+                return <ActivityFeed />
             default:
                 return null
         }
+    }
+
+    renderPlus() {
+        const { routes, index } = this.state.navigationState
+        return (
+            <DelayedButton
+                activeOpacity={0.6}
+                style={{
+                    position: 'absolute',
+                    bottom: 20,
+                    right: 29,
+                    height: 54,
+                    width: 54,
+                    borderRadius: 28,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 3,
+                    backgroundColor: color.GM_BLUE,
+                }}
+                onPress={
+                    routes[index].key === 'activity'
+                        ? Actions.createPostModal
+                        : Actions.createGoalModal
+                }
+            >
+                <Image
+                    style={{
+                        height: 26,
+                        width: 26,
+                        tintColor: 'white',
+                    }}
+                    source={plus}
+                />
+            </DelayedButton>
+        )
     }
 
     render() {
@@ -350,22 +381,27 @@ class Home extends Component {
                 : undefined
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <CreatePostModal onRef={(r) => (this.createPostModal = r)} />
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />
-                    <TabView
-                        ref={(ref) => (this.tab = ref)}
-                        navigationState={this.state.navigationState}
-                        renderScene={this._renderScene}
-                        renderTabBar={this._renderHeader}
-                        onIndexChange={this._handleIndexChange}
+                    <FlatList
+                        ref={(ref) => (this.flatList = ref)}
+                        ListHeaderComponent={this._renderHeader({
+                            jumpToIndex: this._handleIndexChange,
+                            navigationState: this.state.navigationState,
+                        })}
+                        data={[{}]}
+                        renderItem={this._renderScene}
+                        refreshing={this.props.refreshing}
+                        onRefresh={this.handleOnRefresh}
                     />
+                    {this.renderPlus()}
                     {/* <WelcomSreen
                         isVisible={this.state.showWelcomeScreen}
                         name={this.props.user.name}
                         closeModal={() => {
                             this.setState(
                                 {
-                                    ...this.state,
                                     showWelcomeScreen: false,
                                 },
                                 () => {
@@ -386,7 +422,6 @@ class Home extends Component {
                         isVisible={this.state.showBadgeEarnModal}
                         closeModal={() => {
                             this.setState({
-                                ...this.state,
                                 showBadgeEarnModal: false,
                             })
                         }}
@@ -400,8 +435,8 @@ class Home extends Component {
 
 const mapStateToProps = (state) => {
     const { userId } = state.user
-    const { showingModal } = state.report
-    const { showPlus } = state.home.mastermind
+    const refreshing =
+        state.home.mastermind.refreshing || state.home.activityfeed.refreshing
     const needRefreshMastermind = _.isEmpty(state.home.mastermind.data)
     const needRefreshActivity = _.isEmpty(state.home.activityfeed.data)
     const { user } = state.user
@@ -412,8 +447,7 @@ const mapStateToProps = (state) => {
     const { hasShown, showTutorial, tutorialText, nextStepNumber } = home
 
     return {
-        showingModal,
-        showPlus,
+        refreshing,
         user,
         needRefreshActivity,
         needRefreshMastermind,
@@ -428,7 +462,7 @@ const mapStateToProps = (state) => {
 
 const styles = {
     homeContainerStyle: {
-        backgroundColor: '#E4E8EA',
+        backgroundColor: color.GM_BACKGROUND,
         flex: 1,
     },
     tabContainer: {
@@ -463,8 +497,8 @@ export default connect(
         saveUnreadNotification,
         handlePushNotification,
         /* Feed related */
-        refreshGoals,
-        refreshFeed,
+        refreshGoalFeed,
+        refreshActivityFeed,
         fetchProfile,
         checkIfNewlyCreated,
         closeCreateOverlay,

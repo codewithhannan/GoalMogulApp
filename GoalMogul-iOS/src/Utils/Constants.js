@@ -46,7 +46,6 @@ export const IPHONE_MODELS = [
     'iphone 5',
     'iphone 4',
     'iphone 5s',
-    'simulator',
 ]
 
 export const DEVICE_MODEL =
@@ -151,14 +150,17 @@ export const PRIVACY_OPTIONS = [
     {
         text: 'Friends',
         value: PRIVACY_FRIENDS,
+        materialCommunityIconName: 'account-multiple',
     },
     {
         text: 'Public',
         value: PRIVACY_PUBLIC,
+        materialCommunityIconName: 'earth',
     },
     {
         text: 'Only Me',
         value: PRIVACY_PRIVATE,
+        materialCommunityIconName: 'lock',
     },
 ]
 

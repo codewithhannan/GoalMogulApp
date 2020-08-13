@@ -22,12 +22,12 @@ import LoveOutlineIcon from '../../asset/utils/love-outline.png'
 import LoveIcon from '../../asset/utils/love.png'
 import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
 import { chooseShareDest } from '../../redux/modules/feed/post/ShareActions'
-import { refreshFeed } from '../../redux/modules/home/feed/actions'
+import { refreshActivityFeed } from '../../redux/modules/home/feed/actions'
 import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
 import { likeGoal, unLikeGoal } from '../../redux/modules/like/LikeActions'
 // Styles
 import { imagePreviewContainerStyle } from '../../styles'
-import { default_style } from '../../styles/basic'
+import { default_style, color } from '../../styles/basic'
 // Constants
 import {
     DEVICE_MODEL,
@@ -95,12 +95,12 @@ class ActivityCard extends React.PureComponent {
         }
 
         const callback = () => {
-            this.props.refreshFeed()
+            this.props.refreshActivityFeed()
         }
 
         const shareToFeedCallback = () => {
             this.props.onShareCallback()
-            this.props.refreshFeed()
+            this.props.refreshActivityFeed()
         }
         // Share ref is the id of the item to share
         const { _id } = itemToShare
@@ -275,7 +275,6 @@ class ActivityCard extends React.PureComponent {
                     userId={_id}
                 />
                 <DelayedButton
-                    activeOpacity={0.6}
                     style={{
                         padding: 12,
                         backgroundColor: '#F9F9F9',
@@ -283,6 +282,7 @@ class ActivityCard extends React.PureComponent {
                         marginLeft: 10,
                         flex: 1,
                     }}
+                    activeOpacity={1}
                     onPress={() =>
                         this.handleCardOnPress(item, { focusType: 'comment' })
                     }
@@ -389,64 +389,57 @@ class ActivityCard extends React.PureComponent {
         floatingHeartLeftOffset -= (likeCount.toString().length - 1) * 2
 
         return (
-            <View style={{ marginTop: 10 }}>
-                <View style={{ backgroundColor: 'white' }}>
-                    <FloatingHearts
-                        count={this.state.floatingHeartCount}
-                        color={'#EB5757'}
+            <View style={styles.containerStyle}>
+                <FloatingHearts
+                    count={this.state.floatingHeartCount}
+                    color={'#EB5757'}
+                    style={{
+                        zIndex: 5,
+                    }}
+                    leftOffset={floatingHeartLeftOffset}
+                />
+                {item.goalRef && item.goalRef.isCompleted ? (
+                    <Image
+                        source={ConfettiFadedBackgroundTopHalf}
                         style={{
-                            zIndex: 5,
+                            height: WINDOW_WIDTH * 0.6,
+                            width: WINDOW_WIDTH,
+                            position: 'absolute',
+                            resizeMode: 'cover',
+                            opacity: 0.55,
                         }}
-                        leftOffset={floatingHeartLeftOffset}
                     />
-                    {item.goalRef && item.goalRef.isCompleted ? (
-                        <Image
-                            source={ConfettiFadedBackgroundTopHalf}
-                            style={{
-                                height: WINDOW_WIDTH * 0.6,
-                                width: WINDOW_WIDTH,
-                                position: 'absolute',
-                                resizeMode: 'cover',
-                                opacity: 0.55,
-                            }}
-                        />
-                    ) : null}
-                    <ActivitySummary item={item} />
-                    <View style={{ marginTop: 1 }}>
-                        <View
-                            style={{
-                                marginTop: 12,
-                                marginBottom: 15,
-                                marginRight: 15,
-                                marginLeft: 15,
-                            }}
-                        >
-                            <DelayedButton
-                                activeOpacity={0.6}
-                                onPress={() => this.handleCardOnPress(item)}
-                            >
-                                <ActivityHeader item={item} />
-                            </DelayedButton>
-                            <ActivityBody
-                                item={item}
-                                openCardContent={() =>
-                                    this.handleCardOnPress(item)
-                                }
-                            />
-                        </View>
-                    </View>
-                    <View
-                        style={{
-                            marginTop: 1,
-                            borderBottomColor: '#f8f8f8',
-                            borderBottomWidth: 1,
-                        }}
+                ) : null}
+                <ActivitySummary item={item} />
+                <View
+                    style={{
+                        marginTop: 12,
+                        marginBottom: 15,
+                        marginRight: 15,
+                        marginLeft: 15,
+                    }}
+                >
+                    <DelayedButton
+                        activeOpacity={1}
+                        onPress={() => this.handleCardOnPress(item)}
                     >
-                        {!(
-                            item.actedUponEntityType === 'Post' &&
-                            item.postRef.postType === 'ShareGoal'
-                        ) && this.renderActionButtons(item)}
-                    </View>
+                        <ActivityHeader item={item} />
+                    </DelayedButton>
+                    <ActivityBody
+                        item={item}
+                        openCardContent={() => this.handleCardOnPress(item)}
+                    />
+                </View>
+                <View
+                    style={{
+                        borderBottomColor: '#f8f8f8',
+                        borderBottomWidth: 1,
+                    }}
+                >
+                    {!(
+                        item.actedUponEntityType === 'Post' &&
+                        item.postRef.postType === 'ShareGoal'
+                    ) && this.renderActionButtons(item)}
                 </View>
                 {this.renderComment(item)}
             </View>
@@ -456,7 +449,8 @@ class ActivityCard extends React.PureComponent {
 
 const styles = {
     containerStyle: {
-        backgroundColor: 'white',
+        backgroundColor: color.GM_CARD_BACKGROUND,
+        marginTop: 8,
     },
     imageContainerStyle: {
         borderWidth: 0.5,
@@ -521,6 +515,6 @@ export default connect(mapStateToProps, {
     chooseShareDest,
     openPostDetail,
     openGoalDetail,
-    refreshFeed,
+    refreshActivityFeed,
     openProfile,
 })(ActivityCard)

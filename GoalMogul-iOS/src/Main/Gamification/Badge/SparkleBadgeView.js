@@ -69,7 +69,11 @@ const SparkleBadgeView = (props) => {
 
     if (onPress) {
         return (
-            <DelayedButton onPress={onPress} touchableWithoutFeedback>
+            <DelayedButton
+                onPress={onPress}
+                activeOpacity={1}
+                touchableWithoutFeedback
+            >
                 <View>{view}</View>
             </DelayedButton>
         )

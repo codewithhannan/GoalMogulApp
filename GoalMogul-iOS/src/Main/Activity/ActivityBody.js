@@ -57,6 +57,7 @@ class ActivityBody extends React.Component {
         const imageUrl = `${IMAGE_BASE_URL}${url}`
         return (
             <TouchableWithoutFeedback
+                activeOpacity={1}
                 onPress={() => this.setState({ mediaModal: true })}
             >
                 <View>
@@ -186,10 +187,12 @@ class ActivityBody extends React.Component {
         const { item } = this.props
         if (!item) return null
 
-        return (
-            <View style={{ marginTop: 16 }}>
-                {this.renderCardContent(item)}
-            </View>
+        const content = this.renderCardContent(item)
+
+        return content ? (
+            <View style={{ marginTop: 16 }}>{content}</View>
+        ) : (
+            <View />
         )
     }
 }

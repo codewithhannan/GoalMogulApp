@@ -61,7 +61,7 @@ import GoalCardHeader from '../Common/GoalCardHeader'
 import Headline from '../Common/Headline'
 import ProgressBar from '../Common/ProgressBar'
 import Timestamp from '../Common/Timestamp'
-import { default_style } from '../../../styles/basic'
+import { default_style, color } from '../../../styles/basic'
 
 const { height, width } = Dimensions.get('window')
 const WINDOW_WIDTH = width
@@ -86,6 +86,10 @@ const SHARE_TO_MENU_OPTTIONS = [
 ]
 const CANCEL_INDEX = 3
 
+/**
+ * @param isSharedItem: when true, component renders a concise view of GoalCard
+ *                      that is meant just view and link to the Goal that has been shared
+ */
 class GoalCard extends React.PureComponent {
     constructor(props) {
         super(props)
@@ -387,48 +391,44 @@ class GoalCard extends React.PureComponent {
             </ActionButtonGroup>
         )
     }
-    // Original color picked for comment icon
-    // #FCB110
 
     render() {
         const { item, isSharedItem } = this.props
         if (!item) return
 
         return (
-            <View>
-                <View style={{ backgroundColor: 'white' }}>
-                    {item.isCompleted ? (
-                        <Image
-                            source={ConfettiFadedBackgroundTopHalf}
+            <View style={styles.containerStyle}>
+                {item.isCompleted && (
+                    <Image
+                        source={ConfettiFadedBackgroundTopHalf}
+                        style={{
+                            height: WINDOW_WIDTH * 0.6,
+                            width: WINDOW_WIDTH,
+                            position: 'absolute',
+                            resizeMode: 'cover',
+                            opacity: 0.55,
+                        }}
+                    />
+                )}
+                {!isSharedItem && <GoalCardHeader item={item} />}
+                <View>
+                    <DelayedButton
+                        activeOpacity={1}
+                        onPress={this.handleOnPress.bind(this)}
+                    >
+                        <View
                             style={{
-                                height: WINDOW_WIDTH * 0.6,
-                                width: WINDOW_WIDTH,
-                                position: 'absolute',
-                                resizeMode: 'cover',
-                                opacity: 0.55,
+                                marginTop: 14,
+                                marginBottom: 15,
+                                marginRight: 12,
+                                marginLeft: 12,
                             }}
-                        />
-                    ) : null}
-                    {!isSharedItem && <GoalCardHeader item={item} />}
-                    <View>
-                        <DelayedButton
-                            activeOpacity={0.6}
-                            onPress={this.handleOnPress.bind(this)}
                         >
-                            <View
-                                style={{
-                                    marginTop: 14,
-                                    marginBottom: 15,
-                                    marginRight: 12,
-                                    marginLeft: 12,
-                                }}
-                            >
-                                {this.renderUserDetail(item)}
-                                {this.renderCardContent(item)}
-                            </View>
-                        </DelayedButton>
-                        {!isSharedItem && this.renderActionButtons(item)}
-                    </View>
+                            {this.renderUserDetail(item)}
+                            {this.renderCardContent(item)}
+                        </View>
+                    </DelayedButton>
+                    {!isSharedItem && this.renderActionButtons(item)}
                 </View>
             </View>
         )
@@ -437,22 +437,8 @@ class GoalCard extends React.PureComponent {
 
 const styles = {
     containerStyle: {
-        backgroundColor: 'white',
-    },
-    iconStyle: {
-        alignSelf: 'center',
-        fontSize: 20,
-        marginLeft: 5,
-        marginTop: 2,
-    },
-    imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1.5,
-        borderColor: 'lightgray',
-        alignItems: 'center',
-        borderRadius: 6,
-        alignSelf: 'flex-start',
-        backgroundColor: 'white',
+        backgroundColor: color.GM_CARD_BACKGROUND,
+        marginTop: 8,
     },
 }
 

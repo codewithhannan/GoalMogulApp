@@ -31,9 +31,9 @@ import {
     loadTutorialState,
 } from '../redux/modules/User/TutorialActions'
 
-import { refreshFeed } from '../redux/modules/home/feed/actions'
+import { refreshActivityFeed } from '../redux/modules/home/feed/actions'
 
-import { refreshGoals } from '../redux/modules/home/mastermind/actions'
+import { refreshGoalFeed } from '../redux/modules/home/mastermind/actions'
 
 import { IMAGE_BASE_URL, MINUTE_IN_MS, DAY_IN_MS } from '../Utils/Constants'
 
@@ -379,8 +379,8 @@ const mountUserWithToken = (
     identify(payload.userId, username)
 
     // Refresh feed and all goals
-    refreshFeed()(dispatch, getState)
-    refreshGoals()(dispatch, getState)
+    refreshActivityFeed()(dispatch, getState)
+    refreshGoalFeed()(dispatch, getState)
     subscribeNotification()(dispatch, getState)
 
     // Fetch user profile using returned token and userId

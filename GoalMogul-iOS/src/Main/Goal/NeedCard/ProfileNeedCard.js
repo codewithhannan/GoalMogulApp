@@ -26,7 +26,7 @@ import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
 } from '../../../Utils/Constants'
-import { default_style } from '../../../styles/basic'
+import { default_style, color } from '../../../styles/basic'
 
 import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 
@@ -128,19 +128,16 @@ class ProfileNeedCard extends React.Component {
         if (!item) return null
 
         return (
-            <View>
-                <View style={{ backgroundColor: '#e5e5e5' }}>
-                    <View style={styles.containerStyle}>
-                        <TouchableOpacity
-                            activeOpacity={0.6}
-                            onPress={() => this.handleCardOnPress(item)}
-                        >
-                            {this.renderUserDetail(item)}
-                        </TouchableOpacity>
-                    </View>
-                    {this.renderCardContent(item)}
+            <View style={{ backgroundColor: '#e5e5e5', marginTop: 8 }}>
+                <View style={styles.containerStyle}>
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={() => this.handleCardOnPress(item)}
+                    >
+                        {this.renderUserDetail(item)}
+                    </TouchableOpacity>
                 </View>
-                <View style={default_style.cardSeparator} />
+                {this.renderCardContent(item)}
             </View>
         )
     }
@@ -148,7 +145,7 @@ class ProfileNeedCard extends React.Component {
 
 const styles = {
     containerStyle: {
-        backgroundColor: 'white',
+        backgroundColor: color.GM_CARD_BACKGROUND,
         padding: 20,
         paddingRight: 15,
         paddingLeft: 15,

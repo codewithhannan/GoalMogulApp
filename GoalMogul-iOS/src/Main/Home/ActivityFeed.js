@@ -1,34 +1,24 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, FlatList, ActivityIndicator, Image } from 'react-native'
+import { View, FlatList, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
-import { Actions } from 'react-native-router-flux'
 
 // Components
 import ActivityCard from '../Activity/ActivityCard'
 import EmptyResult from '../Common/Text/EmptyResult'
 
-// Assets
-import plus from '../../asset/utils/plus.png'
-
-// actions
-import {
-    loadMoreFeed,
-    refreshFeed,
-} from '../../redux/modules/home/feed/actions'
-
 import {
     openPostDetail,
     markUserViewPost,
 } from '../../redux/modules/feed/post/PostActions'
+import { loadMoreFeed } from '../../redux/modules/home/feed/actions'
 import { markUserViewGoal } from '../../redux/modules/goal/GoalDetailActions'
 import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
 
 import { color } from '../../styles/basic'
-import DelayedButton from '../Common/Button/DelayedButton'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
-import { ActivityGhosts } from '../Common/Ghosts'
+import { ActivityGhost } from '../Common/Ghosts'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
@@ -60,26 +50,6 @@ class ActivityFeed extends Component {
     }
 
     handleOnLoadMore = () => this.props.loadMoreFeed()
-
-    handleOnRefresh = () => this.props.refreshFeed()
-
-    /**
-     * Used by parent to scroll mastermind to top on tab pressed
-     */
-    scrollToTop = () => {
-        const { data } = this.props
-        if (!data || data.length === 0) return
-        this.flatlist.scrollToIndex({
-            animated: true,
-            index: 0,
-        })
-    }
-
-    /**
-     * @param type: ['sortBy', 'orderBy', 'categories', 'priorities']
-     */
-    handleOnMenuChange = (type, value) =>
-        this.props.changeFilter(TAB_KEY, type, value)
 
     _keyExtractor = (item) => item._id
 
@@ -125,73 +95,52 @@ class ActivityFeed extends Component {
         }
     }
 
-    // This was used in V2 where user can only create Goal here.
-    renderPlus() {
-        return (
-            <DelayedButton
-                activeOpacity={0.6}
-                style={styles.iconContainerStyle}
-                onPress={() => Actions.createPostModal()}
-            >
-                <Image style={styles.iconStyle} source={plus} />
-            </DelayedButton>
-        )
-    }
-
     render() {
-        if (this.props.loading && !this.props.data) {
-            return (
-                <View style={{ flex: 1 }}>
-                    <FlatList
-                        data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                        renderItem={ActivityGhosts}
-                        onViewableItemsChanged={
-                            this.handleOnViewableItemsChanged
-                        }
-                        viewabilityConfig={this.viewabilityConfig}
-                        keyExtractor={(item) => item.toString()}
-                    />
-                </View>
-            )
-        } else {
-            return (
-                <View style={{ flex: 1 }}>
-                    <FlatList
-                        ref={(f) => (this.flatlist = f)}
-                        data={this.props.data}
-                        renderItem={this.renderItem}
-                        numColumns={1}
-                        keyExtractor={this._keyExtractor}
-                        refreshing={this.props.loading}
-                        onRefresh={this.handleOnRefresh}
-                        onEndReached={this.handleOnLoadMore}
-                        onViewableItemsChanged={
-                            this.handleOnViewableItemsChanged
-                        }
-                        viewabilityConfig={this.viewabilityConfig}
-                        ListEmptyComponent={
-                            this.props.loading ? null : (
-                                <EmptyResult
-                                    text={'No Activity'}
-                                    textStyle={{ paddingTop: 230 }}
-                                />
-                            )
-                        }
-                        ListFooterComponent={this.renderListFooter()}
-                    />
-                    {this.renderPlus()}
-                </View>
-            )
-        }
+        // const showGhostCards =
+        //     this.props.refreshing &&
+        //     (!this.props.data || this.props.data.length === 0)
+        // if (showGhostCards) {
+        //     return (
+        //         <FlatList
+        //             data={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}
+        //             renderItem={() => <ActivityGhost />}
+        //             onViewableItemsChanged={this.handleOnViewableItemsChanged}
+        //             viewabilityConfig={this.viewabilityConfig}
+        //         />
+        //     )
+        // }
+        return (
+            <FlatList
+                scrollEnabled={false}
+                data={this.props.data}
+                renderItem={this.renderItem}
+                numColumns={1}
+                keyExtractor={this._keyExtractor}
+                onViewableItemsChanged={this.handleOnViewableItemsChanged}
+                viewabilityConfig={this.viewabilityConfig}
+                ListEmptyComponent={
+                    !this.props.loading &&
+                    !this.props.refreshing && (
+                        <EmptyResult
+                            text={'No Activity'}
+                            textStyle={{ paddingTop: 230 }}
+                        />
+                    )
+                }
+                ListFooterComponent={this.renderListFooter()}
+                onEndReached={this.handleOnLoadMore}
+                onEndThreshold={2}
+            />
+        )
     }
 }
 
 const mapStateToProps = (state) => {
-    const { loading, loadingMore, filter, data } = state.home.activityfeed
+    const { refreshing, loading, loadingMore, data } = state.home.activityfeed
     return {
         data,
+        refreshing,
         loading,
-        filter,
         loadingMore, // For footer indicator
     }
 }
@@ -220,7 +169,6 @@ export default connect(
     mapStateToProps,
     {
         loadMoreFeed,
-        refreshFeed,
         openPostDetail,
         openGoalDetail,
         markUserViewPost,

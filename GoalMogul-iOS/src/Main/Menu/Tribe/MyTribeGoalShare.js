@@ -26,6 +26,7 @@ import ProfileGoalCard from '../../Goal/GoalCard/ProfileGoalCard2'
 import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 import EmptyResult from '../../Common/Text/EmptyResult'
 import ModalHeader from '../../Common/Header/ModalHeader'
+import { color } from '../../../styles/basic'
 
 const DEBUG_KEY = '[ UI MyTribeGoalShare ]'
 
@@ -85,7 +86,15 @@ class UserGoalsView extends Component {
     }
 
     renderListEmptyState() {
-        return <EmptyResult text="No Goals to Share" />
+        return (
+            <EmptyResult
+                text="No Goals to Share"
+                textStyle={{
+                    paddingTop: 80,
+                    paddingBottom: 80,
+                }}
+            />
+        )
     }
 
     renderListFooter() {
@@ -130,11 +139,7 @@ class UserGoalsView extends Component {
 const styles = {
     containerStyle: {
         flex: 1,
-        backgroundColor: 'white',
-    },
-    tabContainer: {
-        padding: 16,
-        backgroundColor: 'white',
+        backgroundColor: color.GM_BACKGROUND,
     },
     backdrop: {
         backgroundColor: 'gray',

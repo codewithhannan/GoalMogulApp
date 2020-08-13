@@ -22,7 +22,7 @@ const BASE_ROUTE = 'secure/feed/activity'
  */
 
 //Refresh feed for activity tab
-export const refreshFeed = () => (dispatch, getState) => {
+export const refreshActivityFeed = () => (dispatch, getState) => {
     const { token } = getState().user
     const { limit, filter } = getState().home.activityfeed
     const { categories, priority } = filter

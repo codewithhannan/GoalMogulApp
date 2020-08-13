@@ -518,7 +518,7 @@ class MyTribe extends React.PureComponent {
         if (!item) return <View />
         return (
             <MenuProvider
-                style={{ backgroundColor: '#FAFAFA' }}
+                style={{ backgroundColor: color.GM_BACKGROUND }}
                 customStyles={{ backdrop: styles.backdrop }}
             >
                 <SearchBarHeader

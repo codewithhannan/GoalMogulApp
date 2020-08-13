@@ -262,11 +262,22 @@ export default class MentionsTextInput extends Component {
             this.props.flexGrowDirection === 'bottom'
         ) {
             return (
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                    }}
+                >
                     {this.props.renderLeftIcons
                         ? this.props.renderLeftIcons()
                         : null}
-                    <View style={{ ...this.props.textInputContainerStyle }}>
+                    <View
+                        style={{
+                            flex: 1,
+                            ...this.props.textInputContainerStyle,
+                        }}
+                    >
                         <TextInput
                             {...this.props}
                             ref={(component) => (this._textInput = component)}
@@ -325,7 +336,7 @@ export default class MentionsTextInput extends Component {
 
     render() {
         return (
-            <View>
+            <View style={{ flex: 1 }}>
                 {this.props.suggestionPosition &&
                 this.props.suggestionPosition === 'bottom' ? null : (
                     <Animated.View
