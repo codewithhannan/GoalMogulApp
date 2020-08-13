@@ -412,7 +412,10 @@ class GoalCard extends React.PureComponent {
                 )}
                 {!isSharedItem && <GoalCardHeader item={item} />}
                 <View>
-                    <DelayedButton onPress={this.handleOnPress.bind(this)}>
+                    <DelayedButton
+                        activeOpacity={1}
+                        onPress={this.handleOnPress.bind(this)}
+                    >
                         <View
                             style={{
                                 marginTop: 14,

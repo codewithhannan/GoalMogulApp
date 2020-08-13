@@ -176,6 +176,7 @@ class ProfileGoalCard2 extends React.Component {
             : color.GM_CARD_BACKGROUND
         return (
             <DelayedButton
+                activeOpacity={1}
                 style={[styles.cardContainerStyle, { backgroundColor }]}
                 onPress={() => this.handleOnCardPress(item)}
             >

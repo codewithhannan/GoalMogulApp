@@ -131,6 +131,7 @@ class ProfileNeedCard extends React.Component {
             <View style={{ backgroundColor: '#e5e5e5', marginTop: 8 }}>
                 <View style={styles.containerStyle}>
                     <TouchableOpacity
+                        activeOpacity={1}
                         onPress={() => this.handleCardOnPress(item)}
                     >
                         {this.renderUserDetail(item)}

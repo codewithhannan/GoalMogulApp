@@ -57,6 +57,7 @@ class ActivityBody extends React.Component {
         const imageUrl = `${IMAGE_BASE_URL}${url}`
         return (
             <TouchableWithoutFeedback
+                activeOpacity={1}
                 onPress={() => this.setState({ mediaModal: true })}
             >
                 <View>

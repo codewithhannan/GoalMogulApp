@@ -282,6 +282,7 @@ class ActivityCard extends React.PureComponent {
                         marginLeft: 10,
                         flex: 1,
                     }}
+                    activeOpacity={1}
                     onPress={() =>
                         this.handleCardOnPress(item, { focusType: 'comment' })
                     }
@@ -418,7 +419,10 @@ class ActivityCard extends React.PureComponent {
                         marginLeft: 15,
                     }}
                 >
-                    <DelayedButton onPress={() => this.handleCardOnPress(item)}>
+                    <DelayedButton
+                        activeOpacity={1}
+                        onPress={() => this.handleCardOnPress(item)}
+                    >
                         <ActivityHeader item={item} />
                     </DelayedButton>
                     <ActivityBody

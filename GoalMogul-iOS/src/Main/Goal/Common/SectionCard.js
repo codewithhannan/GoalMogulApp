@@ -195,7 +195,7 @@ class SectionCard extends Component {
 
         return (
             <TouchableOpacity
-                activeOpacity={0.6}
+                activeOpacity={1}
                 onPress={() => onCardPress(item)}
                 style={{
                     ...styles.sectionContainerStyle,

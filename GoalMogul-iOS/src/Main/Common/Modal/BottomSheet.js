@@ -73,6 +73,7 @@ class BottomSheet extends React.PureComponent {
               })
 
         this.createPanResponder(props)
+        this.close = this.close.bind(this)
         this.keyboardWillShow = this.keyboardWillShow.bind(this)
         this.keyboardWillHide = this.keyboardWillHide.bind(this)
     }
@@ -417,11 +418,8 @@ class BottomSheet extends React.PureComponent {
                                 (this.maskHeight = nativeEvent.layout.height)
                             }
                             activeOpacity={1}
-                            onPress={() =>
-                                closeOnPressMask && !isFullScreen
-                                    ? this.close()
-                                    : () => {}
-                            }
+                            disabled={!closeOnPressBack || isFullScreen}
+                            onPress={this.close}
                         />
                     </SafeAreaView>
                     <AnimatedSafeAreaView

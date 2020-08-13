@@ -110,7 +110,7 @@ class RefPreview extends Component {
               }
         return (
             <DelayedButton
-                activeOpacity={0.6}
+                activeOpacity={1}
                 style={styles.containerStyle}
                 onPress={() => this.handleOnPress(item, postType, goalRef)}
                 disabled={disabled}
