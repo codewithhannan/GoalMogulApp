@@ -50,7 +50,11 @@ import {
     SENTRY_CONTEXT,
 } from '../../../monitoring/sentry/Constants'
 import { CONTACT_SYNC_LOAD_CONTACT_DONE } from '../User/ContactSync/ContactSyncReducers'
-import { updateFriendship, fetchAppUserProfile } from '../../../actions'
+import {
+    updateFriendship,
+    fetchAppUserProfile,
+    updateTokenObject,
+} from '../../../actions'
 import { Logger } from '../../middleware/utils/Logger'
 import LiveChatService from '../../../socketio/services/LiveChatService'
 import MessageStorageService from '../../../services/chat/MessageStorageService'
@@ -611,6 +615,10 @@ export const markUserAsOnboarded = () => async (dispatch, getState) => {
     const { userId, token } = getState().user
     Logger.log(`${DEBUG_KEY}: [ markUserAsOnboarded ] for user: `, userId, 1)
     track(E.ONBOARDING_DONE)
+
+    // Update onboarding status on SecureStore
+    // This should be fired regardless of API call succeeds or not
+    await updateTokenObject({ isOnboarded: true })
 
     // Fire request to update server user state
     try {

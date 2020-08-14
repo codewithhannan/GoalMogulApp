@@ -23,6 +23,24 @@ class TabIcon extends React.PureComponent {
         // Tutorial logics
         // componentDidUpdate receive this new props {@showTutorial} for tutorial reducers
         // And it’s navigation.state.key is meet tab, then start tutorial on this guy
+        const { token } = prevProps
+        if (
+            token !== undefined &&
+            token.trim().length &&
+            (!this.props.token || !this.props.token.length)
+        ) {
+            this.clearRefreshChatInterval()
+            this.clearRefreshNotificationInterval()
+        }
+
+        if (
+            (!token || !token.trim().length) &&
+            this.props.token &&
+            this.props.token.length
+        ) {
+            this.createRefreshChatInterval()
+            this.createRefreshNotificationInterval()
+        }
     }
 
     componentDidMount() {
@@ -30,37 +48,45 @@ class TabIcon extends React.PureComponent {
         if (navigation.state.key == 'chatTab') {
             // chat count updater
             this.props.updateChatCount()
-            this.refreshChatInterval = setInterval(() => {
-                this.props.updateChatCount()
-            }, CHAT_COUNT_UPDATE_INTERVAL)
+            this.createRefreshChatInterval()
         }
 
         if (navigation.state.key === 'notificationTab') {
             // notification count updater
             this.props.fetchUnreadCount()
-            this.refreshNotificationInterval = setInterval(() => {
-                Logger.log(
-                    `${DEBUG_KEY}: [ Timer firing ] Fetching unread count.`,
-                    '',
-                    4
-                )
-                this.props.fetchUnreadCount()
-            }, NOTIFICATION_COUNT_UPDATE_INTERVAL)
+            this.createRefreshNotificationInterval()
         }
     }
 
     componentWillUnmount() {
-        clearInterval(this.refreshChatInterval)
+        this.clearRefreshChatInterval()
+        this.clearRefreshNotificationInterval()
+    }
 
-        // Clearn notification refresh interval
-        if (this.refreshNotificationInterval !== undefined) {
-            Logger.log(
-                `${DEBUG_KEY}: [ Notification timer clearing ]`,
-                undefined,
-                3
-            )
+    clearRefreshChatInterval = () => {
+        if (this.refreshChatInterval) {
+            clearInterval(this.refreshChatInterval)
+        }
+    }
+
+    clearRefreshNotificationInterval = () => {
+        if (this.refreshNotificationInterval) {
             clearInterval(this.refreshNotificationInterval)
         }
+    }
+
+    createRefreshChatInterval = () => {
+        this.clearRefreshChatInterval()
+        this.refreshChatInterval = setInterval(() => {
+            this.props.updateChatCount()
+        }, CHAT_COUNT_UPDATE_INTERVAL)
+    }
+
+    createRefreshNotificationInterval = () => {
+        this.clearRefreshNotificationInterval()
+        this.refreshNotificationInterval = setInterval(() => {
+            this.props.fetchUnreadCount()
+        }, NOTIFICATION_COUNT_UPDATE_INTERVAL)
     }
 
     render() {
@@ -192,12 +218,14 @@ const mapStateToProps = (state) => {
     const { unreadCount } = state.notification.unread
     const { chatCount } = state.navigationTabBadging
     const { activeChatRoomId } = state.chatRoom
+    const { token } = state.user
 
     // TODO: @Jia Tutorial get showTutorial from tutorial reducer for this TUTORIAL_KEY
     return {
         notificationCount: unreadCount,
         chatCount,
         chatConversationOpen: activeChatRoomId,
+        token,
     }
 }
 
