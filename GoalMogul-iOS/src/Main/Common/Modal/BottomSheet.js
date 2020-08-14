@@ -53,8 +53,8 @@ class BottomSheet extends React.PureComponent {
             isFullScreen: false,
             hasModalMoved: false,
         }
-        this.pan = new Animated.ValueXY({ x: 0, y: props.height })
-        this.animatedHeight = new Animated.Value(props.height)
+        this.pan = new Animated.ValueXY({ x: 0, y: 0 })
+        this.animatedHeight = new Animated.Value(0)
         this.animatedPaddingBottom = new Animated.Value(0)
         this.animatedOpacity = new Animated.Value(0)
         this.animatedHeaderStyles = {
@@ -95,11 +95,14 @@ class BottomSheet extends React.PureComponent {
     componentWillUpdate(nextProps) {
         const offset = Math.abs(nextProps.height - this.props.height)
         if (offset > 0 && !this.state.isFullScreen && this.state.modalVisible) {
-            Animated.timing(this.animatedHeight, {
-                toValue: nextProps.height,
-                duration: 1,
-                useNativeDriver: false,
-            }).start(
+            Animated.parallel([
+                Animated.timing(this.animatedHeight, {
+                    toValue: nextProps.height,
+                    duration: 1,
+                    useNativeDriver: false,
+                }),
+                resetPanAnimation(1),
+            ]).start(
                 () =>
                     this.props.onPropsHeightChange &&
                     this.props.onPropsHeightChange()
@@ -256,14 +259,15 @@ class BottomSheet extends React.PureComponent {
         if (visible) {
             this.setState({ modalVisible: true })
             Animated.parallel([
-                Animated.timing(this.pan, {
-                    useNativeDriver: false,
-                    toValue: { x: 0, y: 0 },
-                    duration: openDuration,
-                }),
+                this.resetPanAnimation(openDuration),
                 Animated.timing(this.animatedOpacity, {
                     useNativeDriver: false,
                     toValue: 1,
+                    duration: openDuration,
+                }),
+                Animated.timing(this.animatedHeight, {
+                    useNativeDriver: false,
+                    toValue: height,
                     duration: openDuration,
                 }),
             ]).start(() => {
@@ -271,15 +275,16 @@ class BottomSheet extends React.PureComponent {
             })
         } else {
             Animated.parallel([
-                Animated.timing(this.pan, {
-                    useNativeDriver: false,
-                    toValue: { x: 0, y: height },
-                    duration: closeDuration,
-                }),
+                this.resetPanAnimation(closeDuration),
                 Animated.timing(this.animatedOpacity, {
                     useNativeDriver: false,
                     toValue: 0,
                     duration: closeDuration,
+                }),
+                Animated.timing(this.animatedHeight, {
+                    useNativeDriver: false,
+                    toValue: 0,
+                    duration: openDuration,
                 }),
             ]).start(() => {
                 this.setState({
@@ -517,6 +522,8 @@ const styles = {
     container: {
         backgroundColor: color.GM_CARD_BACKGROUND,
         overflow: 'hidden',
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10,
     },
     draggableContainer: {
         alignItems: 'center',
@@ -573,9 +580,8 @@ BottomSheet.defaultProps = {
     dragFromTopOnly: false,
     closeOnPressBack: true,
     customStyles: {
-        borderTopRightRadius: 5,
-        borderTopLeftRadius: 5,
-        paddingHorizontal: 16,
+        wrapper: {},
+        container: {},
     },
     onClose: null,
     onOpen: null,
