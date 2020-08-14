@@ -5,6 +5,7 @@ import { AppState, Image } from 'react-native'
 import { api as API } from '../redux/middleware/api'
 import { SplashScreen } from 'expo'
 import { SPLASHSCREEN_HIDE } from '../reducers/AuthReducers'
+import _ from 'lodash'
 
 import {
     USERNAME_CHANGED,
@@ -17,7 +18,7 @@ import {
 
 import { USER_LOAD_PROFILE_DONE, USER_LOG_OUT } from '../reducers/User'
 
-import { auth as Auth } from '../redux/modules/auth/Auth'
+import { auth as Auth, AUTH_TOKEN_OBJECT } from '../redux/modules/auth/Auth'
 import { openProfile } from '../actions'
 import {
     subscribeNotification,
@@ -62,6 +63,8 @@ import {
     is5xxResponse,
     is2xxRespose,
 } from '../redux/middleware/utils'
+import { Asset } from 'expo-asset'
+import * as Font from 'expo-font'
 
 const DEBUG_KEY = '[ Action Auth ]'
 
@@ -89,55 +92,6 @@ const dispatchHideSplashScreen = (dispatch) => {
     dispatch({
         type: SPLASHSCREEN_HIDE,
     })
-}
-
-export const tryAutoLogin = (flags) => async (dispatch, getState) => {
-    let res
-    try {
-        res = await Auth.getKey()
-    } catch (error) {
-        new SentryRequestBuilder(message, SENTRY_MESSAGE_TYPE.MESSAGE)
-            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
-            .withTag(SENTRY_TAGS.AUTH.ACTION, 'tryAutoLogin')
-            .withTag(
-                SENTRY_TAGS.AUTH.EXPO_SECURE_STORE_FETCH,
-                SENTRY_TAG_VALUE.ACTIONS.FAILED
-            )
-            .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
-            .send()
-
-        if (flags && flags.hideSplashScreen) {
-            dispatchHideSplashScreen(dispatch)
-        }
-        return
-    }
-
-    try {
-        // auto-login with current token
-        authenticate(res, flags)(dispatch, getState)
-        // refresh token 30s after app load
-        setTimeout(async () => {
-            const { username, password } = res
-            authenticate({ username, password }, { tokenRefresh: true })(
-                dispatch,
-                getState
-            )
-        }, MINUTE_IN_MS / 2)
-    } catch (error) {
-        new SentryRequestBuilder(message, SENTRY_MESSAGE_TYPE.MESSAGE)
-            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
-            .withTag(SENTRY_TAGS.AUTH.ACTION, 'tryAutoLogin')
-            .withTag(
-                SENTRY_TAGS.AUTH.AUTO_AUTHENTICATE,
-                SENTRY_TAG_VALUE.ACTIONS.FAILED
-            )
-            .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
-            .send()
-
-        if (flags && flags.hideSplashScreen) {
-            dispatchHideSplashScreen(dispatch)
-        }
-    }
 }
 
 export const loginUser = ({ username, password, onError, onSuccess }) => (
@@ -341,7 +295,7 @@ export const getLoginErrorMessage = ({ username, error, response }) => {
 /**
  * Dispaches required actions and set's the app state to mount user
  * and content after login is successful
- * @param { payload: { userId, token }, username, password, onSuccess } param0
+ * @param { payload: { userId, token, created }, username, password, onSuccess } param0
  * payload: { userId, token } and username is required for a successful user mount
  * @param { hideSplashScreen, tokenRefresh } param1
  * if tokenRefresh then token will be mounted but user wont be mounted
@@ -356,6 +310,8 @@ const mountUserWithToken = (
         payload,
     })
 
+    let tokenObjectToUpdate = _.cloneDeep(payload)
+
     // set up chat listeners
     LiveChatService.mountUser({
         userId: payload.userId,
@@ -366,6 +322,9 @@ const mountUserWithToken = (
         authToken: payload.token,
     })
 
+    // This call is to save username and password
+    // for "payload", it's actually updated together with isOnboarded
+    // through {@code updateTokenObject}
     Auth.saveKey(username, password, JSON.stringify(payload))
 
     if (onSuccess) onSuccess()
@@ -398,6 +357,7 @@ const mountUserWithToken = (
     } else {
         // Go to home page
         Actions.replace('drawer')
+        tokenObjectToUpdate = _.set(tokenObjectToUpdate, 'isOnboarded', true)
     }
 
     // Load unread notification
@@ -410,6 +370,266 @@ const mountUserWithToken = (
     await loadRemoteMatches(payload.userId)(dispatch, getState)
 
     if (hideSplashScreen) dispatchHideSplashScreen(dispatch)
+
+    await updateTokenObject(tokenObjectToUpdate)
+}
+
+/**
+ * Auto login when user starts the app.
+ * TODO: there might be refactoring can be done by merging with {@code loginUser} function
+ */
+export const tryAutoLoginV2 = () => async (dispatch, getState) => {
+    // Only load token object { token, userId, created, isOnboarded } to reduce loading time
+    const tokenObject = await Auth.getByKey(AUTH_TOKEN_OBJECT)
+
+    // User hasn't logged in before
+    if (!tokenObject) {
+        dispatchHideSplashScreen(dispatch)
+        return
+    }
+
+    // Token object was saved through JSON.stringify(tokenObject).
+    // Hence parsing here
+    const parsedTokenObject = JSON.parse(tokenObject)
+
+    // Create a copy to save as the latest token object at the end
+    // in case there is any updates to the isOnboarded or token or created
+    let parsedTokenObjectToUpdate = _.cloneDeep(parsedTokenObject)
+
+    if (!parsedTokenObject) {
+        // No token object has been preserved. User has to log in.
+        dispatchHideSplashScreen(dispatch)
+        return
+    }
+
+    const { created, token, userId, isOnboarded } = parsedTokenObject
+    const minTokenCreationLimit = Date.now() - 2 * DAY_IN_MS
+    // User has logged in but token is corrupted or lost
+    // or token has expired
+    if (!token || created <= minTokenCreationLimit) {
+        // User has to log in.
+        dispatchHideSplashScreen(dispatch)
+        return
+    }
+
+    // Saturate User.js and AuthReducers.js with user token and userId for other actions to work
+    dispatch({
+        type: LOGIN_USER_SUCCESS,
+        payload: {
+            token,
+            userId,
+        },
+    })
+
+    // Step 1 Page transition
+    if (!isOnboarded) {
+        // isOnboarded is false, then we fetch user profile to validate
+        // this is to handle when user has finished onboarding but it's first time
+        // logging on this device
+        const userObject = await fetchAppUserProfile(token, userId)(
+            dispatch,
+            getState
+        )
+        if (!userObject) {
+            // Something went wrong fetching profile
+            dispatchHideSplashScreen(dispatch)
+            return
+        }
+        if (!userObject.isOnBoarded) {
+            // Go to onboarding flow
+            Actions.replace('registration_add_photo')
+        } else {
+            // Update token object to update
+            parsedTokenObjectToUpdate.isOnBoarded = true
+            // Go to home page
+            Actions.replace('drawer')
+        }
+    } else {
+        // Go to home page
+        Actions.replace('drawer')
+    }
+
+    // Add a 50ms delay here to let screen transition finishes
+    await new Promise((resolve, rej) => setTimeout(() => resolve(), 50))
+
+    // Step 2 hide splash screen
+    dispatchHideSplashScreen(dispatch)
+
+    // Step 3 Setup all necessary service and configuration
+    // set up chat listeners
+    LiveChatService.mountUser({
+        userId: userId,
+        authToken: token,
+    })
+    MessageStorageService.mountUser({
+        userId: userId,
+        authToken: token,
+    })
+
+    // Step 4 Refresh feed and all goals
+    refreshActivityFeed()(dispatch, getState)
+    refreshGoalFeed()(dispatch, getState)
+
+    // Step 5 Subscribe notification
+    subscribeNotification()(dispatch, getState)
+
+    /** Below actions are none blocking since we have transitioned the UI **/
+    // Load general assets like icons and images
+    loadGeneralAssets()
+
+    // Load unread notification
+    loadUnreadNotification()(dispatch, getState)
+
+    // Load tutorial state
+    loadTutorialState(payload.userId)(dispatch, getState)
+
+    // Load remote matches
+    loadRemoteMatches(payload.userId)(dispatch, getState)
+
+    // Fetch user profile
+    fetchAppUserProfile(token, userId)(dispatch, getState)
+
+    /** Refresh token **/
+    const newTokenObject = await refreshToken()
+
+    // parsedTokenObjectToUpdate may contain update to isOnboarded
+    // newTokenObject contains the latest token
+    updateTokenObject({ ...parsedTokenObjectToUpdate, ...newTokenObject })
+}
+
+/**
+ * Refresh user token
+ * @param {Object} loginCredential Optional: { username, password }
+ * @returns { token, userId, created }
+ */
+export const refreshToken = async (loginCredential) => {
+    let username
+    let password
+    if (
+        loginCredential &&
+        loginCredential.username &&
+        loginCredential.password
+    ) {
+        // Use login credential passed in through params
+        username = loginCredential.username
+        password = loginCredential.password
+    } else {
+        // Obtain login credential through SecureStorage
+        let payload
+        try {
+            payload = await Auth.getKey()
+        } catch (error) {
+            // Fail to get login credential. Do nothing.
+            // Log error as there are issues retrieving items from SecureStore
+            new SentryRequestBuilder(error, SENTRY_MESSAGE_TYPE.ERROR)
+                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                .withTag(SENTRY_TAGS.AUTH.ACTION, 'refreshToken')
+                .send()
+            return
+        }
+        if (!payload || !payload.username || !payload.password) {
+            // Fail to get login credential. Do nothing.
+            return
+        }
+        username = payload.username
+        password = payload.password
+    }
+
+    const { token, userId } = await authenticateUser({ username, password })
+    if (!token || !userId) {
+        // Failed to authenticate
+        return
+    }
+
+    return { token, userId, created: Date.now() }
+}
+
+/**
+ * Update token object
+ * @param {Object} tokenObjectToUpdate { token, userId, created, isOnboarded } token object to update SecureStore
+ */
+export const updateTokenObject = async (tokenObjectToUpdate) => {
+    let parsedTokenObject = {}
+    const tokenObject = await Auth.getByKey(AUTH_TOKEN_OBJECT) // Error is handled within Auth.getByKey
+    if (tokenObject) {
+        parsedTokenObject = JSON.parse(tokenObject)
+    }
+
+    // Set latest token, userId and created
+    parsedTokenObject = {
+        ...parsedTokenObject,
+        ...tokenObjectToUpdate,
+    }
+
+    try {
+        await Auth.saveByKey(
+            AUTH_TOKEN_OBJECT,
+            JSON.stringify(parsedTokenObject)
+        )
+    } catch (error) {
+        // Error event as saving user token object encounter errors
+        new SentryRequestBuilder(error, SENTRY_MESSAGE_TYPE.ERROR)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.AUTH.ACTION, 'updateTokenObject')
+            .withExtraContext(
+                SENTRY_CONTEXT.LOGIN.USERNAME,
+                parsedTokenObject.username
+            )
+            .send()
+    }
+}
+
+/**
+ * Authenticate user based on username and password
+ * @param {Object} param0 { username, password }
+ * @returns {Object} { token, userId, response, error } token and userId are undefined when response or error is not undefined
+ * response is set when invalid login credential, error is set when exception happens
+ */
+export const authenticateUser = async ({ username, password }) => {
+    const data = validateEmail(username)
+        ? {
+              email: username,
+              password,
+          }
+        : {
+              phone: username,
+              password,
+          }
+
+    try {
+        const res = await API.post(
+            'pub/user/authenticate/',
+            { ...data },
+            undefined
+        )
+        if (!res.token || !is2xxRespose(res.status)) {
+            if (!is4xxResponse(res.status)) {
+                // Record failure in Sentry excluding user behavior
+                new SentryRequestBuilder(
+                    res.message,
+                    SENTRY_MESSAGE_TYPE.MESSAGE
+                )
+                    .withLevel(SENTRY_MESSAGE_LEVEL.WARNING)
+                    .withTag(SENTRY_TAGS.AUTH.ACTION, 'authenticateUser')
+                    .withExtraContext(SENTRY_CONTEXT.LOGIN.USERNAME, username)
+                    .send()
+            }
+            return { response: res }
+        }
+
+        // User authenticates Successfully
+        return {
+            token: res.token,
+            userId: res.userId,
+        }
+    } catch (error) {
+        new SentryRequestBuilder(error, SENTRY_MESSAGE_TYPE.ERROR)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.AUTH.ACTION, 'authenticateUser')
+            .withExtraContext(SENTRY_CONTEXT.LOGIN.USERNAME, username)
+            .send()
+        return { error }
+    }
 }
 
 // We have the same action in Profile.js
@@ -502,7 +722,7 @@ export const logout = () => async (dispatch, getState) => {
         }
     }
     await unsubscribeNotifications()(dispatch, getState)
-    Auth.reset(callback)
+    await Auth.reset(callback)
     Actions.reset('root')
     // clear chat service details
     LiveChatService.unMountUser()
@@ -621,4 +841,162 @@ export const checkIfNewlyCreated = () => async (dispatch, getState) => {
         .catch((err) => {
             onError(err)
         })
+}
+
+/**
+ * Load necessary assets at login for home.
+ * 1. Fonts
+ * 2. Home nav assets
+ *
+ * @returns an array of promises
+ */
+export const loadInitialAssets = () => {
+    // Images that are required initially
+    const imageAssetPromises = cacheImages([
+        // Splash screen images
+        require('../asset/utils/help.png'),
+        require('../asset/header/header-logo-white.png'),
+    ])
+
+    // Fonts are required initially
+    const fontPromise = cacheFonts({
+        'SFProDisplay-Bold': require('../../assets/fonts/SFProDisplay-Bold.otf'),
+        'SFProDisplay-Regular': require('../../assets/fonts/SFProDisplay-Regular.otf'),
+        'SFProDisplay-Semibold': require('../../assets/fonts/SFProDisplay-Semibold.otf'),
+    })
+
+    return Promise.all([...imageAssetPromises, ...fontPromise]).catch((err) => {
+        new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.AUTH.ACTION, 'loadInitialAssets')
+            .send()
+    })
+}
+
+/**
+ * Load general assets
+ * @returns an array of promises
+ */
+export const loadGeneralAssets = async () => {
+    const imageAssetPromises = cacheImages([
+        require('../asset/utils/badge.png'),
+        require('../asset/utils/dropDown.png'),
+        require('../asset/utils/like.png'),
+        require('../asset/utils/bulb.png'),
+        require('../asset/utils/privacy.png'),
+        require('../asset/utils/edit.png'),
+        require('../asset/utils/default_profile.png'),
+        require('../asset/utils/defaultUserProfile.png'),
+        require('../asset/utils/meetSetting.png'),
+        require('../asset/utils/back.png'),
+        require('../asset/utils/next.png'),
+        require('../asset/utils/plus.png'),
+        require('../asset/utils/cancel_no_background.png'),
+        require('../asset/utils/briefcase.png'),
+        require('../asset/utils/love.png'),
+        require('../asset/utils/cancel.png'),
+        require('../asset/utils/post.png'),
+        require('../asset/utils/friendsSettingIcon.png'),
+        require('../asset/utils/camera.png'),
+        require('../asset/utils/cameraRoll.png'),
+        require('../asset/utils/photoIcon.png'),
+        require('../asset/utils/expand.png'),
+        require('../asset/utils/forward.png'),
+        require('../asset/utils/steps.png'),
+        require('../asset/utils/activity.png'),
+        require('../asset/utils/calendar.png'),
+        require('../asset/utils/location.png'),
+        require('../asset/utils/lightBulb.png'),
+        require('../asset/utils/comment.png'),
+        require('../asset/utils/reply.png'),
+        require('../asset/utils/makeSuggestion.png'),
+        require('../asset/utils/imageOverlay.png'),
+        require('../asset/utils/info_white.png'),
+        require('../asset/utils/info.png'),
+        require('../asset/utils/HelpBG2.png'),
+        require('../asset/utils/allComments.png'),
+        require('../asset/utils/undo.png'),
+        require('../asset/utils/trash.png'),
+        require('../asset/utils/invite.png'),
+        require('../asset/utils/tutorial.png'),
+        require('../asset/utils/right_arrow.png'),
+        require('../asset/utils/search.png'),
+        require('../asset/utils/dot.png'),
+        require('../asset/utils/envelope.png'),
+        require('../asset/utils/eventIcon.png'),
+        require('../asset/utils/tribeIcon.png'),
+        // Friends Tab images
+        require('../asset/utils/Friends.png'),
+        require('../asset/utils/ContactSync.png'),
+        require('../asset/utils/Suggest.png'),
+        require('../asset/utils/clipboard.png'),
+        require('../asset/utils/logout.png'),
+        require('../asset/utils/bug_report.png'),
+        // Suggestion Modal Icons
+        require('../asset/suggestion/book.png'),
+        require('../asset/suggestion/chat.png'),
+        require('../asset/suggestion/event.png'),
+        require('../asset/suggestion/flag.png'),
+        require('../asset/suggestion/friend.png'),
+        require('../asset/suggestion/group.png'),
+        require('../asset/suggestion/link.png'),
+        require('../asset/suggestion/other.png'),
+        // Explore related icons
+        require('../asset/explore/explore.png'),
+        require('../asset/explore/tribe.png'),
+        require('../asset/explore/PeopleGlobe.png'),
+        require('../asset/explore/ExploreImage.png'),
+        // Navigation Icons
+        require('../asset/footer/navigation/meet.png'),
+        require('../asset/footer/navigation/chat.png'),
+        require('../asset/header/menu.png'),
+        require('../asset/header/setting.png'),
+        require('../asset/header/home-logo.png'),
+        require('../asset/header/logo.png'),
+        require('../asset/header/GMText.png'),
+        // Banners
+        require('../asset/banner/bronze.png'),
+        require('../asset/banner/gold.png'),
+        require('../asset/banner/green.png'),
+        require('../asset/banner/silver.png'),
+        // Tutorial
+        require('../../assets/tutorial/RightArrow.png'),
+        require('../../assets/tutorial/Replay.png'),
+        require('../../assets/tutorial/logo.png'),
+        //Chat
+        require('../asset/utils/direct_message.png'),
+        require('../asset/utils/profile_people.png'),
+        require('../asset/utils/sendButton.png'),
+    ])
+
+    return Promise.all(imageAssetPromises).catch((err) => {
+        new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
+            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+            .withTag(SENTRY_TAGS.AUTH.ACTION, 'loadGeneralAssets')
+            .send()
+    })
+}
+
+/**
+ * Utility function to return an array of promise for caching images
+ * @param {*} images
+ * @return an array of promises
+ */
+function cacheImages(images) {
+    return images.map((image) => {
+        if (typeof image === 'string') {
+            return Image.prefetch(image)
+        }
+
+        return Asset.fromModule(image).downloadAsync()
+    })
+}
+
+/**
+ * Utility function to return an array of promise for caching fonts
+ * @param {*} fonts
+ * @return an array of promises
+ */
+function cacheFonts(fonts) {
+    return [Font.loadAsync(fonts)]
 }

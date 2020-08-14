@@ -2,7 +2,6 @@
 
 import { AppLoading } from 'expo'
 import { Asset } from 'expo-asset'
-import Constants from 'expo-constants'
 import * as Font from 'expo-font'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { Component } from 'react'
@@ -17,13 +16,9 @@ import {
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 // Actions
-import { tryAutoLogin } from './actions'
-import background from './asset/background'
-import banner from './asset/banner'
-import Icons from './asset/base64/Icons'
+import { tryAutoLoginV2, loadInitialAssets } from './actions'
 /* Asset */
 import HeaderLogo from './asset/header/header-logo-white.png'
-import image from './asset/image'
 import Helpfulness from './asset/utils/help.png'
 import { trackViewScreen } from './monitoring/segment'
 import { Screen } from './monitoring/segment/Constants'
@@ -47,123 +42,8 @@ class SplashScreen extends Component {
     }
 
     async componentDidMount() {
-        await Font.loadAsync({
-            'gotham-pro': require('../assets/fonts/GothamPro.ttf'),
-            'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf'),
-            'SFProDisplay-Bold': require('../assets/fonts/SFProDisplay-Bold.otf'),
-            'SFProDisplay-Regular': require('../assets/fonts/SFProDisplay-Regular.otf'),
-            'SFProDisplay-Semibold': require('../assets/fonts/SFProDisplay-Semibold.otf'),
-        })
         this.setState({ fontLoaded: true })
         trackViewScreen(Screen.SPLASH_SCREEN)
-    }
-
-    // Functions to preload static assets
-    _loadAssetsAsync = () => {
-        const imageAssets = cacheImages([
-            require('./asset/utils/badge.png'),
-            require('./asset/utils/dropDown.png'),
-            require('./asset/utils/like.png'),
-            require('./asset/utils/bulb.png'),
-            require('./asset/utils/help.png'),
-            require('./asset/utils/privacy.png'),
-            require('./asset/utils/edit.png'),
-            require('./asset/utils/default_profile.png'),
-            require('./asset/utils/defaultUserProfile.png'),
-            require('./asset/utils/meetSetting.png'),
-            require('./asset/utils/back.png'),
-            require('./asset/utils/next.png'),
-            require('./asset/utils/plus.png'),
-            require('./asset/utils/cancel_no_background.png'),
-            require('./asset/utils/briefcase.png'),
-            require('./asset/utils/love.png'),
-            require('./asset/utils/cancel.png'),
-            require('./asset/utils/post.png'),
-            require('./asset/utils/friendsSettingIcon.png'),
-            require('./asset/utils/camera.png'),
-            require('./asset/utils/cameraRoll.png'),
-            require('./asset/utils/photoIcon.png'),
-            require('./asset/utils/expand.png'),
-            require('./asset/utils/forward.png'),
-            require('./asset/utils/steps.png'),
-            require('./asset/utils/activity.png'),
-            require('./asset/utils/calendar.png'),
-            require('./asset/utils/location.png'),
-            require('./asset/utils/lightBulb.png'),
-            require('./asset/utils/comment.png'),
-            require('./asset/utils/reply.png'),
-            require('./asset/utils/makeSuggestion.png'),
-            require('./asset/utils/imageOverlay.png'),
-            require('./asset/utils/info_white.png'),
-            require('./asset/utils/info.png'),
-            require('./asset/utils/HelpBG2.png'),
-            require('./asset/utils/allComments.png'),
-            require('./asset/utils/undo.png'),
-            require('./asset/utils/trash.png'),
-            require('./asset/utils/invite.png'),
-            require('./asset/utils/tutorial.png'),
-            require('./asset/utils/right_arrow.png'),
-            require('./asset/utils/search.png'),
-            require('./asset/utils/dot.png'),
-            require('./asset/utils/envelope.png'),
-            require('./asset/utils/eventIcon.png'),
-            require('./asset/utils/tribeIcon.png'),
-            // Friends Tab images
-            require('./asset/utils/Friends.png'),
-            require('./asset/utils/ContactSync.png'),
-            require('./asset/utils/Suggest.png'),
-            require('./asset/utils/clipboard.png'),
-            require('./asset/utils/logout.png'),
-            require('./asset/utils/bug_report.png'),
-            // Suggestion Modal Icons
-            require('./asset/suggestion/book.png'),
-            require('./asset/suggestion/chat.png'),
-            require('./asset/suggestion/event.png'),
-            require('./asset/suggestion/flag.png'),
-            require('./asset/suggestion/friend.png'),
-            require('./asset/suggestion/group.png'),
-            require('./asset/suggestion/link.png'),
-            require('./asset/suggestion/other.png'),
-            // Explore related icons
-            require('./asset/explore/explore.png'),
-            require('./asset/explore/tribe.png'),
-            require('./asset/explore/PeopleGlobe.png'),
-            require('./asset/explore/ExploreImage.png'),
-            // Navigation Icons
-            require('./asset/footer/navigation/meet.png'),
-            require('./asset/footer/navigation/chat.png'),
-            require('./asset/header/menu.png'),
-            require('./asset/header/setting.png'),
-            require('./asset/header/home-logo.png'),
-            require('./asset/header/header-logo-white.png'),
-            require('./asset/header/logo.png'),
-            require('./asset/header/GMText.png'),
-            // Banners
-            require('./asset/banner/bronze.png'),
-            require('./asset/banner/gold.png'),
-            require('./asset/banner/green.png'),
-            require('./asset/banner/silver.png'),
-            // Tutorial
-            require('../assets/tutorial/RightArrow.png'),
-            require('../assets/tutorial/Replay.png'),
-            require('../assets/tutorial/logo.png'),
-            //Chat
-            require('./asset/utils/direct_message.png'),
-            require('./asset/utils/profile_people.png'),
-            require('./asset/utils/sendButton.png'),
-        ])
-
-        const fontAssets = cacheFonts({
-            'gotham-pro': require('../assets/fonts/GothamPro.ttf'),
-            'gotham-pro-bold': require('../assets/fonts/GothamPro-Bold.ttf'),
-            'SFProDisplay-Bold': require('../assets/fonts/SFProDisplay-Bold.otf'),
-            'SFProDisplay-Regular': require('../assets/fonts/SFProDisplay-Regular.otf'),
-            'SFProDisplay-Semibold': require('../assets/fonts/SFProDisplay-Semibold.otf'),
-        })
-
-        return Promise.all([...imageAssets, ...fontAssets]).catch((err) => {
-            console.log(`${DEBUG_KEY}: [ _loadAssetsAsync ]: err`, err)
-        })
     }
 
     handleGetStartedOnPress() {
@@ -228,10 +108,11 @@ class SplashScreen extends Component {
             return (
                 <AppLoading
                     startAsync={async () => {
-                        await this._loadAssetsAsync()
-                        await this.props.tryAutoLogin({
-                            hideSplashScreen: true,
-                        })
+                        // Load necessary assets like fonts
+                        await loadInitialAssets()
+
+                        // Attempt auto login
+                        await this.props.tryAutoLoginV2()
                     }}
                     onFinish={() => this.setState({ appReady: true })}
                     onError={console.warn}
@@ -387,13 +268,13 @@ const styles = {
     headerTextStyle: {
         fontSize: 36,
         color: '#ffffff',
-        fontFamily: 'gotham-pro',
+        fontFamily: 'SFProDisplay-Regular',
     },
     headerBoldTextStyle: {
         fontSize: 36,
         color: '#ffffff',
         fontWeight: '800',
-        fontFamily: 'gotham-pro-bold',
+        fontFamily: 'SFProDisplay-Bold',
     },
     largePhoneLogoImageStyle: {
         height: 54,
@@ -423,7 +304,7 @@ const styles = {
         alignSelf: 'center',
         fontWeight: '700',
         letterSpacing: 0.5,
-        fontFamily: 'gotham-pro',
+        fontFamily: 'SFProDisplay-Regular',
     },
     // Highlight style
     buttonTextStyle: {
@@ -431,8 +312,7 @@ const styles = {
         fontWeight: '800',
         color: '#ffffff',
         alignSelf: 'center',
-        marginTop: 5,
-        fontFamily: 'gotham-pro-bold',
+        fontFamily: 'SFProDisplay-Bold',
     },
     highlightContainerStyle: {
         marginTop: 50,
@@ -465,13 +345,13 @@ const styles = {
         color: '#ffffff',
         fontWeight: '800',
         fontSize: 18,
-        fontFamily: 'gotham-pro-bold',
+        fontFamily: 'SFProDisplay-Bold',
     },
     haveAccountTextStyle: {
         fontSize: 15,
         color: '#0d6992',
         marginRight: 3,
-        fontFamily: 'gotham-pro',
+        fontFamily: 'SFProDisplay-Regular',
     },
     iconStyle: {
         alignSelf: 'center',
@@ -497,7 +377,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         registration: () => Actions.push('registrationAccount'),
         login: () => Actions.push('login'),
-        tryAutoLogin: (params) => dispatch(tryAutoLogin(params)),
+        tryAutoLoginV2: (params) => dispatch(tryAutoLoginV2(params)),
     }
 }
 

@@ -132,14 +132,14 @@ export const tutorial = {
         fontSize: 21,
         fontWeight: '800',
         color: 'white',
-        fontFamily: 'gotham-pro-bold',
+        fontFamily: 'SFProDisplay-Bold',
         lineHeight: 23,
     },
     textStyle: {
         fontSize: 15,
         fontWeight: '600',
         color: 'white',
-        fontFamily: 'gotham-pro',
+        fontFamily: 'SFProDisplay-Regular',
         lineHeight: 18,
     },
     imageShadow: {

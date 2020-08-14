@@ -3,9 +3,10 @@
 // Authantication actions
 import * as SecureStore from 'expo-secure-store'
 
-const USERNAME = 'username'
-const PASSWORD = 'password'
-const AUTH_TOKEN = 'auth_token'
+export const USERNAME = 'username'
+export const PASSWORD = 'password'
+export const AUTH_TOKEN_OBJECT = 'auth_token'
+export const USER_ID = 'user_id'
 const DEBUG_KEY = '[ Action Auth ]'
 export const auth = {
     getKey() {
@@ -13,7 +14,7 @@ export const auth = {
             try {
                 const username = await SecureStore.getItemAsync(USERNAME)
                 const password = await SecureStore.getItemAsync(PASSWORD)
-                const token = await SecureStore.getItemAsync(AUTH_TOKEN)
+                const token = await SecureStore.getItemAsync(AUTH_TOKEN_OBJECT)
 
                 const value =
                     username !== null && password !== null
@@ -78,7 +79,7 @@ export const auth = {
         try {
             await SecureStore.setItemAsync(USERNAME, `${username}`, {})
             await SecureStore.setItemAsync(PASSWORD, `${password}`, {})
-            await SecureStore.setItemAsync(AUTH_TOKEN, token, {})
+            await SecureStore.setItemAsync(AUTH_TOKEN_OBJECT, token, {})
             if (callback) {
                 callback(true)
             }
@@ -105,7 +106,7 @@ export const auth = {
         try {
             await SecureStore.deleteItemAsync(USERNAME)
             await SecureStore.deleteItemAsync(PASSWORD)
-            await SecureStore.deleteItemAsync(AUTH_TOKEN)
+            await SecureStore.deleteItemAsync(AUTH_TOKEN_OBJECT)
 
             if (callback) {
                 callback(true)
