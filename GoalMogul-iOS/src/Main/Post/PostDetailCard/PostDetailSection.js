@@ -25,10 +25,7 @@ import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
 import LoveIcon from '../../../asset/utils/love.png'
 import { switchCase } from '../../../redux/middleware/utils'
 import { createCommentFromSuggestion } from '../../../redux/modules/feed/comment/CommentActions'
-import {
-    editPost,
-    openPostDetail,
-} from '../../../redux/modules/feed/post/PostActions'
+import { openPostDetail } from '../../../redux/modules/feed/post/PostActions'
 import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions'
 import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions'
 import { likeGoal, unLikeGoal } from '../../../redux/modules/like/LikeActions'
@@ -66,6 +63,7 @@ import ActionButton from '../../Goal/Common/ActionButton'
 import ActionButtonGroup from '../../Goal/Common/ActionButtonGroup'
 import Headline from '../../Goal/Common/Headline'
 import Timestamp from '../../Goal/Common/Timestamp'
+import CreatePostModal from '../CreatePostModal'
 
 const DEBUG_KEY = '[ UI PostDetailCard.PostDetailSection ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -199,7 +197,7 @@ class PostDetailSection extends React.PureComponent {
                     }
                     if (key === 'Edit Post') {
                         // TODO: open edit modal
-                        this.props.editPost(item)
+                        this.createPostModal && this.createPostModal.open()
                         return
                     }
                 },
@@ -510,28 +508,33 @@ class PostDetailSection extends React.PureComponent {
         // console.log(`${DEBUG_KEY}: render post detail section`);
         return (
             <View style={styles.containerStyle}>
-                <View style={{ paddingHorizontal: 15 }}>
-                    <LikeListModal
-                        isVisible={this.state.showlikeListModal}
-                        closeModal={() => {
-                            this.setState({
-                                showlikeListModal: false,
-                            })
-                        }}
-                        parentId={item._id}
-                        parentType="Post"
-                    />
-                    <ShareListModal
-                        isVisible={this.state.showShareListModal}
-                        closeModal={() => {
-                            this.setState({
-                                showShareListModal: false,
-                            })
-                        }}
-                        entityId={item._id}
-                        entityType="Post"
-                    />
-                    <View style={{ marginTop: 15, marginBottom: 10 }}>
+                <CreatePostModal
+                    onRef={(r) => (this.createPostModal = r)}
+                    initializeFromState
+                    initialPost={item}
+                />
+                <LikeListModal
+                    isVisible={this.state.showlikeListModal}
+                    closeModal={() => {
+                        this.setState({
+                            showlikeListModal: false,
+                        })
+                    }}
+                    parentId={item._id}
+                    parentType="Post"
+                />
+                <ShareListModal
+                    isVisible={this.state.showShareListModal}
+                    closeModal={() => {
+                        this.setState({
+                            showShareListModal: false,
+                        })
+                    }}
+                    entityId={item._id}
+                    entityType="Post"
+                />
+                <View style={{ paddingHorizontal: 16 }}>
+                    <View style={{ marginTop: 16, marginBottom: 10 }}>
                         {this.renderUserDetail(item)}
                         {this.renderCardContent(item)}
                     </View>
@@ -653,5 +656,4 @@ export default connect(mapStateToProps, {
     deletePost,
     subscribeEntityNotification,
     unsubscribeEntityNotification,
-    editPost,
 })(PostDetailSection)

@@ -1,5 +1,5 @@
 /** @format */
-
+import Fuse from 'fuse.js'
 import R from 'ramda'
 import React from 'react'
 import {
@@ -54,16 +54,11 @@ import {
 // Styles
 import { default_style, color } from '../../../styles/basic'
 // Constants
-import {
-    IMAGE_BASE_URL,
-    IPHONE_MODELS,
-    DEVICE_MODEL,
-} from '../../../Utils/Constants'
+import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import {
     actionSheet,
     switchByButtonIndex,
 } from '../../Common/ActionSheetFactory'
-import PlusButton from '../../Common/Button/PlusButton'
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
 import EmptyResult from '../../Common/Text/EmptyResult'
@@ -73,6 +68,7 @@ import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
 import MyTribeBanner from './MyTribeBanner'
 import DelayedButton from '../../Common/Button/DelayedButton'
+import CreatePostModal from '../../Post/CreatePostModal'
 
 const DEBUG_KEY = '[ UI MyTribe ]'
 const { width } = Dimensions.get('window')
@@ -90,12 +86,15 @@ const months = [
     'Nov',
     'Dec',
 ]
-
-const SEARCHBAR_HEIGHT =
-    Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL) ? 30 : 40
-
-const SCREEN_HEIGHT = Dimensions.get('window').height
-const PADDING = SCREEN_HEIGHT - 48.5 - SEARCHBAR_HEIGHT
+const TAG_SEARCH_OPTIONS = {
+    shouldSort: true,
+    threshold: 0.6,
+    location: 0,
+    distance: 100,
+    maxPatternLength: 32,
+    minMatchCharLength: 1,
+    keys: ['name'],
+}
 
 const INFO_CARD_HEIGHT = (width * 0.95) / 3 + 30 + 56.5
 /**
@@ -488,29 +487,45 @@ class MyTribe extends React.PureComponent {
                 <DelayedButton
                     activeOpacity={0.6}
                     style={styles.iconContainerStyle}
-                    onPress={() => {
-                        const postCallback = () => {
-                            this.props.refreshMyTribeDetail(
-                                this.props.tribeId,
-                                this.props.pageId
-                            )
-                        }
-                        const tagSearch = (keyword, callback) => {
-                            const result = fuse.search(keyword.replace('@', ''))
-                            callback({ data: result }, keyword)
-                        }
-                        Actions.createPostModal({
-                            belongsToTribe: item._id,
-                            callback: postCallback,
-                            tagSearch,
-                        })
-                    }}
+                    onPress={() =>
+                        this.createPostModal && this.createPostModal.open()
+                    }
                 >
                     <Image style={styles.iconStyle} source={plus} />
                 </DelayedButton>
             )
         }
         return null
+    }
+
+    renderCreatePostModal(item) {
+        const postCallback = () => {
+            this.props.refreshMyTribeDetail(
+                this.props.tribeId,
+                this.props.pageId
+            )
+        }
+        const members = item
+            ? item.members
+                  .filter(
+                      (m) => m.category === 'Admin' || m.category === 'Member'
+                  )
+                  .map((m) => m.memberRef)
+            : []
+        const fuse = new Fuse(members, TAG_SEARCH_OPTIONS)
+        const tagSearch = (keyword, callback) => {
+            const result = fuse.search(keyword.replace('@', ''))
+            callback({ data: result }, keyword)
+        }
+
+        return (
+            <CreatePostModal
+                onRef={(r) => (this.createPostModal = r)}
+                belongsToTribe={item._id}
+                callback={postCallback}
+                tagSearch={tagSearch}
+            />
+        )
     }
 
     render() {
@@ -521,6 +536,7 @@ class MyTribe extends React.PureComponent {
                 style={{ backgroundColor: color.GM_BACKGROUND }}
                 customStyles={{ backdrop: styles.backdrop }}
             >
+                {this.renderCreatePostModal(item)}
                 <SearchBarHeader
                     backButton
                     title={this.state.showNameInTitle ? decode(item.name) : ''}

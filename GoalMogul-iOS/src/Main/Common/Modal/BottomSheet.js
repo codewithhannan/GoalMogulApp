@@ -398,7 +398,7 @@ class BottomSheet extends React.PureComponent {
                 visible={modalVisible}
                 supportedOrientations={SUPPORTED_ORIENTATIONS}
                 onRequestClose={() => {
-                    if (closeOnPressBack) this.setModalVisible(false)
+                    if (closeOnPressBack) this.close()
                 }}
             >
                 <Animated.View

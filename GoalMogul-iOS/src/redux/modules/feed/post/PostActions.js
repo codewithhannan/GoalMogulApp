@@ -172,16 +172,6 @@ export const closePostDetail = (postId, pageId) => (dispatch, getState) => {
     })
 }
 
-// open edit modal for post given post belongs to current user
-export const editPost = (post) => (dispatch, getState) => {
-    // We don't need to pass pageId since the pageId is for profile in this case
-    console.log(`${DEBUG_KEY}: [ editPost ]: post is:`, post)
-    Actions.push('createPostModal', {
-        initializeFromState: true,
-        initialPost: post,
-    })
-}
-
 // Submit creating new post
 /**
  * @param needOpenProfile: if true, then open profile with post tab

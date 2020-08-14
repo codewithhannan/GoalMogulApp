@@ -3,8 +3,6 @@
 import React, { Component } from 'react'
 import {
     View,
-    KeyboardAvoidingView,
-    ScrollView,
     Image,
     Text,
     TouchableOpacity,
@@ -16,11 +14,8 @@ import { Field, reduxForm, formValueSelector } from 'redux-form'
 import _ from 'lodash'
 import R from 'ramda'
 import { Actions } from 'react-native-router-flux'
-// import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-// import Modal from 'react-native-modal';
 
 /* Components */
-import ModalHeader from '../Common/Header/ModalHeader'
 import ViewableSettingMenu from '../Goal/ViewableSettingMenu'
 import ImageModal from '../Common/ImageModal'
 import EmptyResult from '../Common/Text/EmptyResult'
@@ -32,8 +27,6 @@ import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
 // assets
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png'
 import cancel from '../../asset/utils/cancel_no_background.png'
-import camera from '../../asset/utils/camera.png'
-import cameraRoll from '../../asset/utils/cameraRoll.png'
 import imageOverlay from '../../asset/utils/imageOverlay.png'
 import expand from '../../asset/utils/expand.png'
 
@@ -46,8 +39,9 @@ import {
 } from '../../monitoring/segment'
 
 // Actions
-import { openCameraRoll, openCamera } from '../../actions'
+import { openCameraRoll, openCamera, getPhotosAsync } from '../../actions'
 import {
+    setCreatePostModalRef,
     submitCreatingPost,
     postToFormAdapter,
     fetchPostDrafts,
@@ -57,7 +51,8 @@ import { searchUser } from '../../redux/modules/search/SearchActions'
 import { IMAGE_BASE_URL, PRIVACY_FRIENDS } from '../../Utils/Constants'
 import { default_style, color } from '../../styles/basic'
 import DraftsView from './DraftsView'
-import { MenuProvider } from 'react-native-popup-menu'
+import BottomSheet from '../Common/Modal/BottomSheet'
+import { Icon } from '@ui-kitten/components'
 
 const DEBUG_KEY = '[ UI CreatePostModal ]'
 const INITIAL_TAG_SEARCH = {
@@ -83,6 +78,7 @@ class CreatePostModal extends Component {
     }
 
     componentDidMount() {
+        if (this.props.onRef) this.props.onRef(this)
         this.startTime = new Date()
         track(
             this.props.initializeFromState
@@ -479,7 +475,6 @@ class CreatePostModal extends Component {
             input: { value, onChange },
             editable,
             placeholder,
-            style,
             loading,
             tagData,
             change,
@@ -488,8 +483,9 @@ class CreatePostModal extends Component {
         const { tags } = this.props
 
         return (
-            <View style={{ zIndex: 3 }}>
+            <View style={{ zIndex: 3, flex: 1 }}>
                 <MentionsTextInput
+                    onRef={(r) => (this.textInput = r)}
                     placeholder={placeholder}
                     onChangeText={(val) => onChange(val)}
                     editable={editable}
@@ -499,8 +495,8 @@ class CreatePostModal extends Component {
                     tagSearchRes={this.state.tagSearchData.data}
                     flexGrowDirection="bottom"
                     suggestionPosition="bottom"
-                    textInputContainerStyle={{ ...styles.inputContainerStyle }}
-                    textInputStyle={style}
+                    textInputContainerStyle={styles.inputContainerStyle}
+                    textInputStyle={styles.inputStyle}
                     validateTags={() => this.validateContentTags(change)}
                     autoCorrect
                     suggestionsPanelStyle={{ backgroundColor: '#f8f8f8' }}
@@ -586,7 +582,6 @@ class CreatePostModal extends Component {
                     <ViewableSettingMenu
                         viewableSetting={this.props.viewableSetting}
                         callback={callback}
-                        shareToMastermind={null}
                         belongsToTribe={belongsToTribe}
                         belongsToEvent={belongsToEvent}
                     />
@@ -704,26 +699,19 @@ class CreatePostModal extends Component {
     }
 
     renderPost() {
-        const titleText = (
-            <Text style={styles.titleTextStyle}>Your thoughts</Text>
-        )
         return (
-            <View style={{ marginTop: 5 }}>
-                {titleText}
-                <Field
-                    name="post"
-                    label="post"
-                    component={this.renderInput}
-                    editable={!this.props.uploading}
-                    multiline
-                    style={styles.goalInputStyle}
-                    placeholder="What do you have in mind?"
-                    loading={this.state.tagSearchData.loading}
-                    tagData={this.state.tagSearchData.data}
-                    keyword={this.state.keyword}
-                    change={(type, val) => this.props.change(type, val)}
-                />
-            </View>
+            <Field
+                name="post"
+                label="post"
+                component={this.renderInput}
+                editable={!this.props.uploading}
+                multiline
+                placeholder="Got new updates for your goal or things in general?"
+                loading={this.state.tagSearchData.loading}
+                tagData={this.state.tagSearchData.data}
+                keyword={this.state.keyword}
+                change={(type, val) => this.props.change(type, val)}
+            />
         )
     }
 
@@ -742,84 +730,44 @@ class CreatePostModal extends Component {
     renderActionIcons() {
         // If user already has the image, they need to delete the image and then
         // these icons would show up to attach another image
-        const { post, mediaRef, uploading } = this.props
-        const actionIconStyle = {
-            ...default_style.buttonIcon_1,
-            marginRight: 8,
-        }
-        const actionIconWrapperStyle = { ...styles.actionIconWrapperStyle }
-        const actionDisabled =
-            uploading || ((!post || post.trim() === '') && !mediaRef)
-        const saveDraftDisabled = actionDisabled || !this.isSaveDraftDisabled()
+        const { uploading } = this.props
+        const actionIconStyle = [
+            default_style.buttonIcon_1,
+            { color: '#E0E0E0' },
+        ]
+        const actionIconWrapperStyle = styles.actionIconWrapperStyle
+
         return (
             <View
                 style={{
                     flexDirection: 'row',
-                    justifyContent: 'space-between',
                     marginTop: 10,
                 }}
             >
                 <DelayedButton
                     activeOpacity={0.6}
-                    style={{ marginTop: 8, padding: 2 }}
-                    onPress={this.handleSaveDraft}
-                    disabled={saveDraftDisabled}
+                    style={actionIconWrapperStyle}
+                    onPress={this.handleOpenCamera}
+                    disabled={uploading}
                 >
-                    <Text
-                        style={{
-                            ...default_style.titleText_2,
-                            color: saveDraftDisabled
-                                ? color.GM_CARD_BACKGROUND
-                                : color.GM_BLUE,
-                        }}
-                    >
-                        Save Draft
-                    </Text>
+                    <Icon
+                        name="camera"
+                        pack="material-community"
+                        style={actionIconStyle}
+                    />
                 </DelayedButton>
-                <View style={{ flexDirection: 'row' }}>
-                    <DelayedButton
-                        activeOpacity={0.6}
-                        style={actionIconWrapperStyle}
-                        onPress={this.handleOpenCamera}
-                        disabled={uploading}
-                    >
-                        <Image
-                            resizeMode="contain"
-                            style={{ ...actionIconStyle, tintColor: '#828282' }}
-                            source={camera}
-                        />
-                        <Text
-                            style={{
-                                ...default_style.titleText_2,
-                                color: '#828282',
-                                marginTop: 2,
-                            }}
-                        >
-                            Camera
-                        </Text>
-                    </DelayedButton>
-                    <DelayedButton
-                        activeOpacity={0.6}
-                        style={{ ...actionIconWrapperStyle, marginLeft: 8 }}
-                        onPress={this.handleOpenCameraRoll}
-                        disabled={uploading}
-                    >
-                        <Image
-                            resizeMode="contain"
-                            style={actionIconStyle}
-                            source={cameraRoll}
-                        />
-                        <Text
-                            style={{
-                                ...default_style.titleText_2,
-                                color: '#828282',
-                                marginTop: 2,
-                            }}
-                        >
-                            Photo
-                        </Text>
-                    </DelayedButton>
-                </View>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    style={{ ...actionIconWrapperStyle, marginLeft: 8 }}
+                    onPress={this.handleOpenCameraRoll}
+                    disabled={uploading}
+                >
+                    <Icon
+                        name="image-area"
+                        pack="material-community"
+                        style={actionIconStyle}
+                    />
+                </DelayedButton>
             </View>
         )
     }
@@ -857,6 +805,10 @@ class CreatePostModal extends Component {
         )
     }
 
+    open = () => this.bottomSheetRef.open()
+
+    close = () => this.bottomSheetRef.close()
+
     render() {
         const {
             handleSubmit,
@@ -864,50 +816,89 @@ class CreatePostModal extends Component {
             post,
             mediaRef,
             uploading,
+            user,
+            viewableSetting,
         } = this.props
         const modalActionText = initializeFromState ? 'Update' : 'Publish'
         const actionDisabled =
             uploading || ((!post || post.trim() === '') && !mediaRef)
-
+        const saveDraftDisabled = actionDisabled || !this.isSaveDraftDisabled()
+        const { profile, name } = user
+        const callback = R.curry((value) =>
+            this.props.change('viewableSetting', value)
+        )
         return (
-            <KeyboardAvoidingView
-                behavior="padding"
-                style={{ flex: 1, backgroundColor: color.GM_CARD_BACKGROUND }}
+            <BottomSheet
+                fullScreenGesturesEnabled
+                ref={(r) => (this.bottomSheetRef = r)}
+                height={330}
+                onOpen={() => {
+                    this.textInput && this.textInput.focus()
+                }}
+                customStyles={{ container: { flex: 1, padding: 16 } }}
+                sheetFooter={
+                    <DelayedButton
+                        style={{
+                            backgroundColor: color.GM_BLUE,
+                            marginHorizontal: 16,
+                            marginVertical: 8,
+                            padding: 8,
+                            alignItems: 'center',
+                        }}
+                        onPress={handleSubmit(this.handleCreate)}
+                        disabled={actionDisabled}
+                    >
+                        <Text
+                            style={[
+                                default_style.buttonText_1,
+                                { color: 'white' },
+                            ]}
+                        >
+                            {modalActionText}
+                        </Text>
+                    </DelayedButton>
+                }
             >
-                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                    <ModalHeader
-                        title="New Post"
-                        actionText={modalActionText}
-                        onCancel={this.handleCancel}
-                        onAction={handleSubmit(this.handleCreate)}
-                        actionDisabled={actionDisabled}
+                {!initializeFromState &&
+                    this.state.drafts.length > 0 &&
+                    this.renderDraftsHeader()}
+                <View style={{ flexDirection: 'row' }}>
+                    <ProfileImage
+                        imageUrl={profile ? profile.image : undefined}
                     />
-                    {!initializeFromState &&
-                        this.state.drafts.length > 0 &&
-                        this.renderDraftsHeader()}
-                    <ScrollView>
-                        <View style={{ flex: 1, padding: 20 }}>
-                            {this.renderUserInfo()}
-                            {this.renderPost()}
-                            {this.renderActionIcons()}
-                            {this.renderMedia()}
-                        </View>
-                    </ScrollView>
-                    {this.renderImageModal()}
-                </MenuProvider>
-            </KeyboardAvoidingView>
+                    {this.renderPost()}
+                </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        style={{ marginTop: 8, padding: 2 }}
+                        onPress={this.handleSaveDraft}
+                        disabled={saveDraftDisabled}
+                    >
+                        <Text
+                            style={{
+                                ...default_style.titleText_2,
+                                color: saveDraftDisabled
+                                    ? color.GM_CARD_BACKGROUND
+                                    : color.GM_BLUE,
+                            }}
+                        >
+                            Save Draft
+                        </Text>
+                    </DelayedButton>
+                </View>
+                {this.renderActionIcons()}
+                {this.renderImageModal()}
+            </BottomSheet>
         )
     }
 }
 
 const styles = {
     inputContainerStyle: {
-        flex: 1,
-        justifyContent: 'center',
-        marginTop: 5,
-        borderWidth: 1,
-        borderRadius: 5,
-        borderColor: '#E0E0E0',
+        marginLeft: 10,
+        minHeight: 100,
+        paddingBotttom: 8,
     },
     backdrop: {
         backgroundColor: 'gray',
@@ -922,15 +913,7 @@ const styles = {
         borderWidth: 1,
         padding: 12,
     },
-    goalInputStyle: {
-        ...default_style.subTitleText_1,
-        paddingTop: 15,
-        padding: 15,
-        width: '100%',
-        height: 'auto',
-        maxHeight: 200 * default_style.uiScale,
-        minHeight: 90,
-    },
+    inputStyle: default_style.subTitleText_1,
     titleTextStyle: {
         ...default_style.smallTitle_1,
         padding: 2,
@@ -942,13 +925,12 @@ const styles = {
     },
     actionIconWrapperStyle: {
         flexDirection: 'row',
-        backgroundColor: '#F2F2F2',
-        padding: 8,
-        paddingLeft: 16,
-        paddingRight: 16,
+        backgroundColor: '#4F4F4F',
+        height: 74,
+        width: 74,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 4,
+        borderRadius: 5,
     },
     userImageContainerStyle: {
         borderWidth: 0.5,
@@ -1006,4 +988,5 @@ export default connect(mapStateToProps, {
     openCameraRoll,
     openCamera,
     submitCreatingPost,
+    setCreatePostModalRef,
 })(CreatePostModal)

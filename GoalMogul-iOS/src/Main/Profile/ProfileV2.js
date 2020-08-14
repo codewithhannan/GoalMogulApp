@@ -47,6 +47,7 @@ import About from './About'
 import ProfileDetailCard from './ProfileCard/ProfileDetailCard'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 import EmptyResult from '../Common/Text/EmptyResult'
+import CreatePostModal from '../Post/CreatePostModal'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
@@ -56,7 +57,6 @@ class ProfileV2 extends Component {
         super(props)
         this._handleIndexChange = this._handleIndexChange.bind(this)
         this.renderTabs = this.renderTabs.bind(this)
-        this.closeProfileInfoCard = this.closeProfileInfoCard.bind(this)
         this.state = {
             infoCardHeight: new Animated.Value(INFO_CARD_HEIGHT), // Initial info card height
             infoCardOpacity: new Animated.Value(1),
@@ -103,11 +103,8 @@ class ProfileV2 extends Component {
     }
 
     componentDidMount() {
-        const { userId, pageId, hideProfileDetail, isSelf } = this.props
+        const { userId, pageId } = this.props
         // console.log(`${DEBUG_KEY}: mounting Profile with pageId: ${pageId}`);
-
-        // Hide profile detail as it's not on about tab
-        if (hideProfileDetail) this.closeProfileInfoCard()
 
         this.props.handleTabRefresh(
             'goals',
@@ -133,10 +130,6 @@ class ProfileV2 extends Component {
     componentWillUnmount() {
         const { pageId, userId } = this.props
         this.props.closeProfile(userId, pageId)
-    }
-
-    closeProfileInfoCard = () => {
-        Logger.log(`${DEBUG_KEY}: [ closeProfileInfoCard ]`, {}, 2)
     }
 
     handleRefresh = () => {
@@ -249,7 +242,9 @@ class ProfileV2 extends Component {
         // As we move the create option here, we no longer need to care about the tab
         Actions.createGoalButtonOverlay({
             tab: 'mastermind',
-            callback: () => this.closeProfileInfoCard(),
+            // This is a temp hack, createGoalButtonOverlay is being depricated
+            openCreatePost: () =>
+                this.createPostModal && this.createPostModal.open(),
             onCreate: () => this.props.openCreateOverlay(userId, pageId),
             onClose: () => this.props.closeCreateOverlay(userId, pageId),
             openProfile: false,
@@ -421,6 +416,12 @@ class ProfileV2 extends Component {
         const shouldShowPageSettings = !isMainTab
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <CreatePostModal
+                    onRef={(r) => (this.createPostModal = r)}
+                    onClose={() => this.props.openCreateOverlay(userId, pageId)}
+                    openProfile={false}
+                    pageId={pageId}
+                />
                 <SearchBarHeader
                     backButton={shouldShowBackButton}
                     setting={shouldShowPageSettings}
