@@ -101,7 +101,7 @@ class BottomSheet extends React.PureComponent {
                     duration: 1,
                     useNativeDriver: false,
                 }),
-                resetPanAnimation(1),
+                this.resetPanAnimation(1),
             ]).start(
                 () =>
                     this.props.onPropsHeightChange &&
