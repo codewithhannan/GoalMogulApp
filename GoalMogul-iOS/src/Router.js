@@ -61,7 +61,6 @@ import NotificationNeedListView from './Main/Notification/Need/NotificationNeedL
 import NotificationListView from './Main/Notification/Notification/NotificationListView'
 // Notification
 import NotificationTab from './Main/Notification/NotificationTab'
-import CreatePostModal from './Main/Post/CreatePostModal'
 import PostDetailCard from './Main/Post/PostDetailCard/PostDetailCard'
 import ShareDetailCard from './Main/Post/ShareDetailCard/ShareDetailCard'
 // Lightbox form
@@ -717,11 +716,7 @@ class RouterComponent extends Component {
                         component={TrendingGoalView}
                         hideNavBar
                     />
-                    <Scene
-                        key="createPostModal"
-                        component={CreatePostModal}
-                        hideNavBar
-                    />
+
                     <Stack key="createChatRoomStack" hideNavBar>
                         <Scene
                             key="createChatRoomModal"

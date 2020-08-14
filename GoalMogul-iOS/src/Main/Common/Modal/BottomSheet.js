@@ -120,7 +120,7 @@ class BottomSheet extends React.PureComponent {
             {
                 useNativeDriver: false,
                 toValue: keyBoardHeight,
-                duration: 200,
+                duration: e.duration,
             }
         )
         if (isFullScreen) {
@@ -245,7 +245,7 @@ class BottomSheet extends React.PureComponent {
         })
     }
 
-    setModalVisible(visible, props) {
+    setModalVisible(visible) {
         const {
             height,
             openDuration,
@@ -267,7 +267,7 @@ class BottomSheet extends React.PureComponent {
                     duration: openDuration,
                 }),
             ]).start(() => {
-                if (typeof onOpen === 'function') onOpen(props)
+                if (typeof onOpen === 'function') onOpen()
             })
         } else {
             Animated.parallel([
@@ -282,11 +282,19 @@ class BottomSheet extends React.PureComponent {
                     duration: closeDuration,
                 }),
             ]).start(() => {
-                this.setState({
-                    modalVisible: false,
-                    isFullScreen: false,
-                })
-                if (typeof onClose === 'function') onClose(props)
+                if (typeof onClose === 'function') {
+                    onClose(() =>
+                        this.setState({
+                            modalVisible: false,
+                            isFullScreen: false,
+                        })
+                    )
+                } else {
+                    this.setState({
+                        modalVisible: false,
+                        isFullScreen: false,
+                    })
+                }
             })
         }
     }
@@ -369,12 +377,12 @@ class BottomSheet extends React.PureComponent {
         })
     }
 
-    open(props) {
-        this.setModalVisible(true, props)
+    open() {
+        this.setModalVisible(true)
     }
 
-    close(props) {
-        this.setModalVisible(false, props)
+    close() {
+        this.setModalVisible(false)
     }
 
     render() {

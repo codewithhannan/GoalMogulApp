@@ -408,7 +408,7 @@ class CreatePostModal extends Component {
         )
     }
 
-    handleCancel = () => {
+    handleCancel = (callback) => {
         const durationSec =
             (new Date().getTime() - this.startTime.getTime()) / 1000
         trackWithProperties(
@@ -417,10 +417,7 @@ class CreatePostModal extends Component {
                 : E.CREATE_POST_MODAL_CANCELLED,
             { DurationSec: durationSec }
         )
-        this.handleDraftCancel(() => {
-            if (this.props.onClose) this.props.onClose()
-            Actions.pop()
-        })
+        this.handleDraftCancel(callback)
     }
 
     handleDraftCancel = (callback) => {
@@ -845,6 +842,7 @@ class CreatePostModal extends Component {
                 onOpen={() => {
                     this.textInput && this.textInput.focus()
                 }}
+                onClose={(callback) => this.handleCancel(callback)}
                 onPropsHeightChange={() =>
                     this.setState((state) => ({
                         textInputHeight: state.textContentHeight,
