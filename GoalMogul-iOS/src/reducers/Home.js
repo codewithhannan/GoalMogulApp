@@ -89,6 +89,7 @@ const INITIAL_STATE = {
         hasNextPage: undefined,
         loading: false,
         loadingMore: false,
+        refreshing: false,
     },
 }
 
