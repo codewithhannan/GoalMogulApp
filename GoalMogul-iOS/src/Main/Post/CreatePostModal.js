@@ -62,6 +62,7 @@ const INITIAL_TAG_SEARCH = {
 }
 const ON_CANCEL_OPTIONS = ['Save Draft', 'Discard', 'Cancel']
 const ON_CANCEL_CANCEL_INDEX = 2
+const TEXT_INPUT_DEAFULT_HEIGHT = 100
 
 class CreatePostModal extends Component {
     constructor(props) {
@@ -72,6 +73,9 @@ class CreatePostModal extends Component {
             mediaModal: false,
             keyword: '',
             tagSearchData: { ...INITIAL_TAG_SEARCH },
+            textContentHeight: TEXT_INPUT_DEAFULT_HEIGHT,
+            textInputHeight: TEXT_INPUT_DEAFULT_HEIGHT,
+            draftHeaderHeight: 0,
         }
         this.updateSearchRes = this.updateSearchRes.bind(this)
     }
@@ -478,13 +482,44 @@ class CreatePostModal extends Component {
             tagData,
             change,
         } = props
-
         const { tags } = this.props
-
+        const inputStyle = {
+            ...styles.inputStyle,
+            height: this.state.textInputHeight,
+        }
         return (
             <View style={{ zIndex: 3, flex: 1 }}>
                 <MentionsTextInput
                     onRef={(r) => (this.textInput = r)}
+                    onContentSizeChange={(e) => {
+                        // Modal height needs to be adjusted when post text content size increases/decreases
+                        const height = e.nativeEvent.contentSize.height
+                        const hasEnoughSpaceAboveModal =
+                            !this.bottomSheetRef.maskHeight ||
+                            this.bottomSheetRef.maskHeight >= 25
+                        const heightChange =
+                            height - this.state.textContentHeight
+                        console.log(height, heightChange)
+                        console.log(hasEnoughSpaceAboveModal)
+                        if (height > TEXT_INPUT_DEAFULT_HEIGHT) {
+                            // height increased
+                            if (heightChange > 0)
+                                hasEnoughSpaceAboveModal &&
+                                    this.setState({
+                                        textContentHeight:
+                                            height + inputStyle.fontSize,
+                                    })
+                            // height decreased
+                            else
+                                this.setState({
+                                    textContentHeight:
+                                        height + inputStyle.fontSize,
+                                })
+                        } else
+                            this.setState({
+                                textContentHeight: TEXT_INPUT_DEAFULT_HEIGHT,
+                            })
+                    }}
                     placeholder={placeholder}
                     onChangeText={(val) => onChange(val)}
                     editable={editable}
@@ -494,16 +529,17 @@ class CreatePostModal extends Component {
                     tagSearchRes={this.state.tagSearchData.data}
                     flexGrowDirection="bottom"
                     suggestionPosition="bottom"
-                    textInputContainerStyle={styles.inputContainerStyle}
-                    textInputStyle={styles.inputStyle}
+                    textInputContainerStyle={{
+                        ...styles.inputContainerStyle,
+                        height: this.state.textInputHeight,
+                    }}
+                    textInputStyle={inputStyle}
                     validateTags={() => this.validateContentTags(change)}
                     autoCorrect
                     suggestionsPanelStyle={{ backgroundColor: '#f8f8f8' }}
                     loadingComponent={() =>
                         this.renderTagSearchLoadingComponent(loading)
                     }
-                    textInputMinHeight={80}
-                    textInputMaxHeight={200}
                     trigger={'@'}
                     triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
                     triggerCallback={(keyword) => this.triggerCallback(keyword)}
@@ -549,41 +585,6 @@ class CreatePostModal extends Component {
                 />
                 <Text style={{ fontSize: 16, color: 'darkgray' }}>{name}</Text>
             </TouchableOpacity>
-        )
-    }
-
-    renderUserInfo() {
-        const { belongsToTribe, belongsToEvent, user } = this.props
-        const { profile, name } = user
-
-        const callback = R.curry((value) =>
-            this.props.change('viewableSetting', value)
-        )
-
-        return (
-            <View style={{ flexDirection: 'row', marginBottom: 15 }}>
-                <ProfileImage imageUrl={profile ? profile.image : undefined} />
-                <View
-                    style={{
-                        flexDirection: 'column',
-                        marginLeft: 12,
-                        marginTop: 0,
-                    }}
-                >
-                    <Text
-                        style={{
-                            ...default_style.titleText_2,
-                            marginBottom: 2,
-                        }}
-                    >
-                        {name}
-                    </Text>
-                    <ViewableSettingMenu
-                        viewableSetting={this.props.viewableSetting}
-                        callback={callback}
-                    />
-                </View>
-            </View>
         )
     }
 
@@ -738,7 +739,9 @@ class CreatePostModal extends Component {
             <View
                 style={{
                     flexDirection: 'row',
-                    marginTop: 10,
+                    paddingTop: 16,
+                    borderTopWidth: 1,
+                    borderColor: '#F2F2F2',
                 }}
             >
                 <DelayedButton
@@ -771,7 +774,14 @@ class CreatePostModal extends Component {
 
     renderDraftsHeader() {
         return (
-            <View style={styles.draftsHeader}>
+            <View
+                onLayout={(e) =>
+                    this.setState({
+                        draftHeaderHeight: e.nativeEvent.layout.height,
+                    })
+                }
+                style={styles.draftsHeader}
+            >
                 <Text
                     style={{
                         ...default_style.subTitleText_1,
@@ -816,21 +826,37 @@ class CreatePostModal extends Component {
             user,
             viewableSetting,
         } = this.props
-        const modalActionText = initializeFromState ? 'Update' : 'Publish'
+        const { profile } = user
+
         const actionDisabled =
             uploading || ((!post || post.trim() === '') && !mediaRef)
         const saveDraftDisabled = actionDisabled || !this.isSaveDraftDisabled()
-        const { profile } = user
+        const showDraftHeader =
+            !initializeFromState && this.state.drafts.length > 0
+
+        const modalActionText = initializeFromState ? 'Update' : 'Publish'
+        const modalHeight =
+            246 + this.state.textContentHeight + this.state.draftHeaderHeight
 
         return (
             <BottomSheet
-                fullScreenGesturesEnabled
                 ref={(r) => (this.bottomSheetRef = r)}
-                height={330}
+                height={modalHeight}
                 onOpen={() => {
                     this.textInput && this.textInput.focus()
                 }}
-                customStyles={{ container: { flex: 1, padding: 16 } }}
+                onPropsHeightChange={() =>
+                    this.setState((state) => ({
+                        textInputHeight: state.textContentHeight,
+                    }))
+                }
+                customStyles={{
+                    container: {
+                        flex: 1,
+                        paddingHorizontal: 16,
+                        paddingBotttom: 16,
+                    },
+                }}
                 sheetFooter={
                     <DelayedButton
                         style={{
@@ -854,27 +880,32 @@ class CreatePostModal extends Component {
                     </DelayedButton>
                 }
             >
-                {!initializeFromState &&
-                    this.state.drafts.length > 0 &&
-                    this.renderDraftsHeader()}
-                <View style={{ flexDirection: 'row' }}>
+                {showDraftHeader && this.renderDraftsHeader()}
+                <View style={{ flexDirection: 'row', marginTop: 16 }}>
                     <ProfileImage
                         imageUrl={profile ? profile.image : undefined}
                     />
                     {this.renderPost()}
                 </View>
-                <View style={{ flexDirection: 'row' }}>
-                    <ViewableSettingMenu
-                        viewableSetting={viewableSetting}
-                        callback={R.curry((value) =>
-                            this.props.change('viewableSetting', value)
-                        )}
-                    />
-                </View>
-                <View style={{ flexDirection: 'row' }}>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginVertical: 16,
+                    }}
+                >
+                    <View style={{ flexDirection: 'row' }}>
+                        <ViewableSettingMenu
+                            viewableSetting={viewableSetting}
+                            callback={R.curry((value) =>
+                                this.props.change('viewableSetting', value)
+                            )}
+                        />
+                    </View>
                     <DelayedButton
                         activeOpacity={0.6}
-                        style={{ marginTop: 8, padding: 2 }}
+                        style={{ padding: 2 }}
                         onPress={this.handleSaveDraft}
                         disabled={saveDraftDisabled}
                     >
@@ -900,12 +931,7 @@ class CreatePostModal extends Component {
 const styles = {
     inputContainerStyle: {
         marginLeft: 10,
-        minHeight: 100,
-        paddingBotttom: 8,
-    },
-    backdrop: {
-        backgroundColor: 'gray',
-        opacity: 0.5,
+        marginBotttom: 8,
     },
     draftsHeader: {
         flexDirection: 'row',
@@ -914,7 +940,8 @@ const styles = {
         backgroundColor: '#FFF8E3',
         borderColor: '#D39F00',
         borderWidth: 1,
-        padding: 12,
+        paddingHorizontal: 12,
+        paddingVertical: 6,
     },
     inputStyle: default_style.subTitleText_1,
     titleTextStyle: {

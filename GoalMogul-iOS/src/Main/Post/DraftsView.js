@@ -29,11 +29,15 @@ import cancelImage from '../../asset/utils/cancel_no_background.png'
 class DraftsView extends Component {
     render() {
         const { width, height } = Dimensions.get('window')
-        const textWidth = width - 3 * 16 - default_style.buttonIcon_1.width - 30
+        const cancelIconStyle = {
+            ...default_style.smallIcon_1,
+            tintColor: '#EB5757',
+        }
+        const textWidth = width - 3 * 16 - cancelIconStyle.width - 30
         return (
             <Menu
                 rendererProps={{ placement: 'bottom' }}
-                renderer={renderers.SlideInMenu}
+                renderer={renderers.Popover}
                 name="DRAFT_MENU"
             >
                 <MenuTrigger
@@ -111,10 +115,7 @@ class DraftsView extends Component {
                                                 style={styles.cancelWrapper}
                                             >
                                                 <Image
-                                                    style={{
-                                                        ...default_style.buttonIcon_1,
-                                                        tintColor: '#EB5757',
-                                                    }}
+                                                    style={cancelIconStyle}
                                                     source={cancelImage}
                                                 />
                                             </DelayedButton>
@@ -133,8 +134,7 @@ class DraftsView extends Component {
                         )}
                         style={{
                             maxHeight: height / 2,
-                            paddingTop: 5,
-                            paddingBottom: 35,
+                            paddingVertical: 5,
                         }}
                     />
                 </MenuOptions>

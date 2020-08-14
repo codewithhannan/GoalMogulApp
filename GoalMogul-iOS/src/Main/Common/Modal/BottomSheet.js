@@ -13,6 +13,7 @@ import {
     SafeAreaView,
 } from 'react-native'
 import { color } from '../../../styles/basic'
+import { MenuProvider } from 'react-native-popup-menu'
 
 const SUPPORTED_ORIENTATIONS = ['portrait', 'portrait-upside-down']
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView)
@@ -23,6 +24,8 @@ const FULL_SCREEN_TOP_OFFSET = 25
  * @param sheetHeader: fades in on fullscreen, needs a height style to work
  * @param sheetFooter: always visible and sticks to bottom of the sheet
  * @param childeren: all components wrapped inside bottomSheet will be passed in as children prop
+ *
+ * BotomSheet is also wraps its components inside a MenuProvider
  *
  * BottomSheet supports component fade-in (on switch fullscreen) and fade-out (on switch to half-screen)
  * To apply that to a component that make sure:
@@ -87,6 +90,21 @@ class BottomSheet extends React.PureComponent {
             'keyboardWillHide',
             this.keyboardWillHide
         )
+    }
+
+    componentWillUpdate(nextProps) {
+        const offset = Math.abs(nextProps.height - this.props.height)
+        if (offset > 0 && !this.state.isFullScreen && this.state.modalVisible) {
+            Animated.timing(this.animatedHeight, {
+                toValue: nextProps.height,
+                duration: 1,
+                useNativeDriver: false,
+            }).start(
+                () =>
+                    this.props.onPropsHeightChange &&
+                    this.props.onPropsHeightChange()
+            )
+        }
     }
 
     componentWillUnmount() {
@@ -401,79 +419,94 @@ class BottomSheet extends React.PureComponent {
                     if (closeOnPressBack) this.close()
                 }}
             >
-                <Animated.View
-                    style={[
-                        styles.wrapper,
-                        customStyles.wrapper,
-                        {
-                            opacity: this.animatedOpacity,
-                            paddingBottom: this.animatedPaddingBottom,
-                        },
-                    ]}
-                >
-                    <SafeAreaView style={styles.mask}>
-                        <TouchableOpacity
-                            style={styles.mask}
-                            onLayout={({ nativeEvent }) =>
-                                (this.maskHeight = nativeEvent.layout.height)
-                            }
-                            activeOpacity={1}
-                            disabled={!closeOnPressBack || isFullScreen}
-                            onPress={this.close}
-                        />
-                    </SafeAreaView>
-                    <AnimatedSafeAreaView
-                        // Do not set pan handlers on fullScreen because Scroll View is Enabled
-                        {...(!isFullScreen && this.panResponder.panHandlers)}
-                        onLayout={({ nativeEvent }) =>
-                            (this.modalHeight = nativeEvent.layout.height)
-                        }
+                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                    <Animated.View
                         style={[
-                            styles.container,
+                            styles.wrapper,
+                            customStyles.wrapper,
                             {
-                                transform: this.pan.getTranslateTransform(),
-                                height: this.animatedHeight,
+                                opacity: this.animatedOpacity,
+                                paddingBottom: this.animatedPaddingBottom,
                             },
                         ]}
                     >
-                        <View
-                            // set pan handlers here on fullScreen because Scroll View is Enabled
-                            {...(isFullScreen && this.panResponder.panHandlers)}
+                        <SafeAreaView style={styles.mask}>
+                            <TouchableOpacity
+                                style={styles.mask}
+                                onLayout={({ nativeEvent }) =>
+                                    (this.maskHeight =
+                                        nativeEvent.layout.height)
+                                }
+                                activeOpacity={1}
+                                disabled={!closeOnPressBack || isFullScreen}
+                                onPress={this.close}
+                            />
+                        </SafeAreaView>
+                        <AnimatedSafeAreaView
+                            {...(!isFullScreen &&
+                                this.panResponder.panHandlers)}
+                            style={[
+                                styles.container,
+                                { transform: this.pan.getTranslateTransform() },
+                            ]}
                         >
-                            {showDragIcon && (
-                                <View style={styles.draggableContainer}>
-                                    <View
-                                        style={[
-                                            styles.draggableIcon,
-                                            customStyles.draggableIcon,
-                                        ]}
-                                    />
-                                </View>
-                            )}
-                            <Animated.View
-                                style={{
-                                    height: this.animatedHeaderStyles.height,
-                                    opacity: this.animatedHeaderStyles.opacity,
-                                }}
+                            <Animated.View // Do not set pan handlers on fullScreen because Scroll View is Enabled
+                                onLayout={({ nativeEvent }) =>
+                                    (this.modalHeight =
+                                        nativeEvent.layout.height)
+                                }
+                                style={{ height: this.animatedHeight }}
                             >
-                                {sheetHeader}
+                                <View
+                                    // set pan handlers here on fullScreen because Scroll View is Enabled
+                                    {...(isFullScreen &&
+                                        this.panResponder.panHandlers)}
+                                >
+                                    {showDragIcon && (
+                                        <View style={styles.draggableContainer}>
+                                            <View
+                                                style={[
+                                                    styles.draggableIcon,
+                                                    customStyles.draggableIcon,
+                                                ]}
+                                            />
+                                        </View>
+                                    )}
+                                    <Animated.View
+                                        style={{
+                                            height: this.animatedHeaderStyles
+                                                .height,
+                                            opacity: this.animatedHeaderStyles
+                                                .opacity,
+                                        }}
+                                    >
+                                        {sheetHeader}
+                                    </Animated.View>
+                                </View>
+                                <ScrollView
+                                    scrollEnabled={isFullScreen}
+                                    style={[
+                                        { flex: 1 },
+                                        customStyles.container,
+                                    ]}
+                                >
+                                    {scrollViewContent}
+                                </ScrollView>
+                                {sheetFooter}
                             </Animated.View>
-                        </View>
-                        <ScrollView
-                            scrollEnabled={isFullScreen}
-                            style={[{ flex: 1 }, customStyles.container]}
-                        >
-                            {scrollViewContent}
-                        </ScrollView>
-                        {sheetFooter}
-                    </AnimatedSafeAreaView>
-                </Animated.View>
+                        </AnimatedSafeAreaView>
+                    </Animated.View>
+                </MenuProvider>
             </Modal>
         )
     }
 }
 
 const styles = {
+    backdrop: {
+        backgroundColor: 'gray',
+        opacity: 0.5,
+    },
     wrapper: {
         flex: 1,
         backgroundColor: '#00000077',
@@ -513,7 +546,6 @@ export default BottomSheet
 BottomSheet.propTypes = {
     animationType: PropTypes.oneOf(['none', 'slide', 'fade']),
     height: PropTypes.number,
-    fadeDuration: PropTypes.number,
     openDuration: PropTypes.number,
     closeDuration: PropTypes.number,
     fullScreenGesturesEnabled: PropTypes.bool,
@@ -525,6 +557,7 @@ BottomSheet.propTypes = {
     onOpen: PropTypes.func,
     onFullScreen: PropTypes.func,
     onMinimize: PropTypes.func,
+    onPropsHeightChange: PropTypes.func,
     sheetHeader: PropTypes.node,
     children: PropTypes.node,
     sheetFooter: PropTypes.node,
@@ -548,6 +581,7 @@ BottomSheet.defaultProps = {
     onOpen: null,
     onFullScreen: null,
     onMinimize: null,
+    onPropsHeightChange: null,
     sheetHeader: <View />,
     children: <View />,
     sheetFooter: <View />,

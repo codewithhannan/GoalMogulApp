@@ -630,8 +630,6 @@ class CommentBoxV2 extends Component {
                             />
                         )
                     }}
-                    textInputMinHeight={28}
-                    textInputMaxHeight={80}
                     trigger={'@'}
                     triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
                     triggerCallback={this.callback.bind(this)}
@@ -706,6 +704,8 @@ const styles = {
     },
     inputStyle: {
         ...default_style.normalText_1,
+        minHeight: 28,
+        maxHeight: 80,
         paddingLeft: 15,
         paddingRight: 15,
         backgroundColor: 'white',

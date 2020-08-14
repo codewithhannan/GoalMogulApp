@@ -364,8 +364,6 @@ class ShareModal extends React.Component {
                     loadingComponent={() =>
                         this.renderTagSearchLoadingComponent(loading)
                     }
-                    textInputMinHeight={80}
-                    textInputMaxHeight={200}
                     trigger={'@'}
                     triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
                     triggerCallback={(keyword) => this.triggerCallback(keyword)}
@@ -615,6 +613,8 @@ const styles = {
         backgroundColor: 'white',
         borderRadius: 22,
         maxHeight: 120,
+        maxHeight: 200,
+        minHeight: 80,
     },
     inputContainerStyle: {
         flex: 1,
