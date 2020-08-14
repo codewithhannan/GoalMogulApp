@@ -336,21 +336,14 @@ class ShareModal extends React.Component {
     }
 
     renderInput = ({
-        input: { onChange, onFocus, value, ...restInput },
+        input: { onChange, value },
         editable,
-        meta: { touched, error },
         placeholder,
         loading,
         tagData,
         change,
-        ...custom
     }) => {
-        const inputStyle = {
-            ...styles.inputStyle,
-        }
-
         const { tags } = this.props
-
         return (
             <View style={{ zIndex: 3 }}>
                 <MentionsTextInput
@@ -364,7 +357,7 @@ class ShareModal extends React.Component {
                     flexGrowDirection="bottom"
                     suggestionPosition="bottom"
                     textInputContainerStyle={{ ...styles.inputContainerStyle }}
-                    textInputStyle={inputStyle}
+                    textInputStyle={styles.inputStyle}
                     validateTags={() => this.validateContentTags(change)}
                     autoCorrect
                     suggestionsPanelStyle={{ backgroundColor: '#f8f8f8' }}
@@ -379,35 +372,14 @@ class ShareModal extends React.Component {
                     triggerLoadMore={this.handleTagSearchLoadMore.bind(this)}
                     renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
                     suggestionsData={tagData} // array of objects
-                    keyExtractor={(item, index) => item._id}
+                    keyExtractor={(item) => item._id}
                     suggestionRowHeight={50}
                     horizontal={false} // defaut is true, change the orientation of the list
                     MaxVisibleRowCount={4} // this is required if horizontal={false}
                 />
             </View>
         )
-        // return (
-        //   <SafeAreaView
-        //     style={{
-        //       backgroundColor: 'white',
-        //       borderBottomWidth: 0.5,
-        //       margin: 5,
-        //       borderColor: 'lightgray'
-        //     }}
-        //   >
-        //     <TextInput
-        //       placeholder={placeholder}
-        //       onChangeText={onChange}
-        //       style={inputStyle}
-        //       editable={editable}
-        //       maxHeight={150}
-        //       multiline
-        //       value={value}
-        //     />
-        //   </SafeAreaView>
-        // );
     }
-    // onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
 
     // Render user info
     renderUserInfo(user) {
@@ -439,7 +411,6 @@ class ShareModal extends React.Component {
                     <ViewableSettingMenu
                         viewableSetting={this.props.privacy}
                         callback={callback}
-                        shareToMastermind={null}
                     />
                 </View>
             </View>

@@ -41,7 +41,6 @@ import {
 // Actions
 import { openCameraRoll, openCamera, getPhotosAsync } from '../../actions'
 import {
-    setCreatePostModalRef,
     submitCreatingPost,
     postToFormAdapter,
     fetchPostDrafts,
@@ -582,8 +581,6 @@ class CreatePostModal extends Component {
                     <ViewableSettingMenu
                         viewableSetting={this.props.viewableSetting}
                         callback={callback}
-                        belongsToTribe={belongsToTribe}
-                        belongsToEvent={belongsToEvent}
                     />
                 </View>
             </View>
@@ -823,10 +820,8 @@ class CreatePostModal extends Component {
         const actionDisabled =
             uploading || ((!post || post.trim() === '') && !mediaRef)
         const saveDraftDisabled = actionDisabled || !this.isSaveDraftDisabled()
-        const { profile, name } = user
-        const callback = R.curry((value) =>
-            this.props.change('viewableSetting', value)
-        )
+        const { profile } = user
+
         return (
             <BottomSheet
                 fullScreenGesturesEnabled
@@ -867,6 +862,14 @@ class CreatePostModal extends Component {
                         imageUrl={profile ? profile.image : undefined}
                     />
                     {this.renderPost()}
+                </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <ViewableSettingMenu
+                        viewableSetting={viewableSetting}
+                        callback={R.curry((value) =>
+                            this.props.change('viewableSetting', value)
+                        )}
+                    />
                 </View>
                 <View style={{ flexDirection: 'row' }}>
                     <DelayedButton
@@ -988,5 +991,4 @@ export default connect(mapStateToProps, {
     openCameraRoll,
     openCamera,
     submitCreatingPost,
-    setCreatePostModalRef,
 })(CreatePostModal)
