@@ -25,7 +25,7 @@ const FULL_SCREEN_TOP_OFFSET = 25
  * @param sheetFooter: always visible and sticks to bottom of the sheet
  * @param childeren: all components wrapped inside bottomSheet will be passed in as children prop
  *
- * BotomSheet is also wraps its components inside a MenuProvider
+ * BotomSheet also wraps its components inside a MenuProvider from 'react-native-popup-menu' library
  *
  * BottomSheet supports component fade-in (on switch fullscreen) and fade-out (on switch to half-screen)
  * To apply that to a component that make sure:
