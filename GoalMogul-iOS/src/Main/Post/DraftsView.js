@@ -17,7 +17,7 @@ import {
     renderers,
 } from 'react-native-popup-menu'
 
-import { default_style, color } from '../../styles/basic'
+import { default_style } from '../../styles/basic'
 import DelayedButton from '../Common/Button/DelayedButton'
 
 import cancelImage from '../../asset/utils/cancel_no_background.png'
@@ -33,7 +33,7 @@ class DraftsView extends Component {
             ...default_style.smallIcon_1,
             tintColor: '#EB5757',
         }
-        const textWidth = width - 3 * 16 - cancelIconStyle.width - 30
+        const textWidth = width - 3 * 16 - cancelIconStyle.width - 24
         return (
             <Menu
                 rendererProps={{ placement: 'bottom' }}
@@ -55,18 +55,20 @@ class DraftsView extends Component {
                     </Text>
                 </MenuTrigger>
                 <MenuOptions>
-                    <View style={styles.headerWrapper}>
-                        <Text
-                            style={{
-                                ...default_style.titleText_1,
-                                color: 'white',
-                            }}
-                        >
-                            Drafts
-                        </Text>
-                    </View>
                     <FlatList
                         data={this.props.drafts}
+                        ItemSeparatorComponent={() => (
+                            <View
+                                style={{
+                                    ...default_style.cardSeparator,
+                                    height: 1.5,
+                                }}
+                            />
+                        )}
+                        style={{
+                            maxHeight: height / 2,
+                            paddingVertical: 5,
+                        }}
                         renderItem={({ item: { post, mediaRef }, index }) => {
                             return (
                                 <MenuOption
@@ -124,18 +126,6 @@ class DraftsView extends Component {
                                 </MenuOption>
                             )
                         }}
-                        ItemSeparatorComponent={() => (
-                            <View
-                                style={{
-                                    ...default_style.cardSeparator,
-                                    height: 1.5,
-                                }}
-                            />
-                        )}
-                        style={{
-                            maxHeight: height / 2,
-                            paddingVertical: 5,
-                        }}
                     />
                 </MenuOptions>
             </Menu>
@@ -144,16 +134,6 @@ class DraftsView extends Component {
 }
 
 const styles = {
-    headerWrapper: {
-        backgroundColor: color.GM_BLUE,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 0.1,
-        padding: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     media: {
         height: 50 * default_style.uiScale,
         width: 75 * default_style.uiScale,
@@ -162,7 +142,7 @@ const styles = {
     },
     bodyText: {
         ...default_style.subTitleText_1,
-        margin: 16,
+        margin: 10,
     },
     cancelWrapper: {
         backgroundColor: '#F2F2F2',
