@@ -10,11 +10,11 @@ import _ from 'lodash'
 import { View, Image, Text } from 'react-native'
 import Constants from 'expo-constants'
 import Modal from 'react-native-modal'
+import { Icon } from '@ui-kitten/components'
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
-import flagIcon from '../../../asset/icons/flag.png'
-import { default_style } from '../../../styles/basic'
+import { default_style, color } from '../../../styles/basic'
 
 class MyTribeDescription extends React.PureComponent {
     constructor(props) {
@@ -58,7 +58,7 @@ class MyTribeDescription extends React.PureComponent {
             >
                 <View
                     style={{
-                        backgroundColor: 'white',
+                        backgroundColor: color.GM_CARD_BACKGROUND,
                         width: '100%',
                         position: 'absolute',
                         bottom: 0,
@@ -80,19 +80,29 @@ class MyTribeDescription extends React.PureComponent {
                                     alignItems: 'center',
                                 }}
                             >
-                                <Image
-                                    source={flagIcon}
+                                <Icon
+                                    name="flag-variant"
+                                    pack="material-community"
+                                    zIndex={1}
                                     style={styles.imageIcon}
                                 />
                                 <Text style={styles.aboutTitle}>About</Text>
                             </View>
                             <DelayedButton
+                                style={{
+                                    padding: 16,
+                                    position: 'absolute',
+                                    right: 0,
+                                    top: -17,
+                                }}
                                 activeOpacity={0.6}
                                 onPress={() => this.closeModal()}
                             >
-                                <Image
-                                    source={cancel}
-                                    style={default_style.normalIcon_1}
+                                <Icon
+                                    name="close"
+                                    pack="material-community"
+                                    zIndex={1}
+                                    style={default_style.buttonIcon_1}
                                 />
                             </DelayedButton>
                         </View>
@@ -129,15 +139,17 @@ const styles = {
         paddingBottom: 16,
         borderBottomWidth: 1,
         borderBottomColor: '#DADADA',
+        paddingHorizontal: 16,
     },
     imageIcon: {
         ...default_style.smallIcon_1,
         marginRight: 10,
     },
     modalContainerStyle: {
-        backgroundColor: 'white',
+        backgroundColor: color.GM_CARD_BACKGROUND,
         borderRadius: 15,
-        padding: 16,
+        paddingTop: 16,
+        paddingBottom: 16,
         alignItems: 'left',
     },
 }

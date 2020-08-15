@@ -24,7 +24,7 @@ import {
 } from '../../../redux/modules/tribe/TribeSelector'
 import { SearchBar } from 'react-native-elements'
 import { SearchIcon } from '../../../Utils/Icons'
-import { default_style } from '../../../styles/basic'
+import { default_style, color } from '../../../styles/basic'
 import { ALL_MEMBERS_FILTER_INDEX } from '../../../redux/modules/tribe/Tribes'
 
 function Item({ title }) {
@@ -100,6 +100,7 @@ class MyTribeMembers extends React.PureComponent {
                     .toLowerCase()
                     .includes(this.state.searchContent.toLowerCase())
         )
+
         const admins = allMembers.filter(
             (member) => member.category === 'Admin'
         )
@@ -112,10 +113,18 @@ class MyTribeMembers extends React.PureComponent {
             case ALL_MEMBERS_FILTER_INDEX:
                 return (
                     <ScrollView
-                        style={{ backgroundColor: 'white', marginTop: 8 }}
+                        style={{ backgroundColor: color.GM_CARD_BACKGROUND }}
                     >
                         {admins.length > 0 && (
-                            <View style={styles.headerContainer}>
+                            <View
+                                style={{
+                                    ...styles.headerContainer,
+                                    alignItems: 'center',
+                                    borderTopWidth: 8,
+                                    borderTopColor: color.GM_BORDER_COLOR,
+                                }}
+                            >
+                                {/* <View style={{ ...default_style.activitySeparator }} />         */}
                                 <Text style={default_style.titleText_1}>
                                     Admin
                                 </Text>
@@ -123,7 +132,12 @@ class MyTribeMembers extends React.PureComponent {
                         )}
                         {admins.map((admin) => this.renderItem(admin))}
                         {members.length > 0 && (
-                            <View style={styles.headerContainer}>
+                            <View
+                                style={{
+                                    ...styles.headerContainer,
+                                    alignItems: 'center',
+                                }}
+                            >
                                 <Text style={default_style.titleText_1}>
                                     Members
                                 </Text>
@@ -178,7 +192,7 @@ class MyTribeMembers extends React.PureComponent {
                         placeholderTextColor="#D3D3D3"
                         containerStyle={[
                             styles.searchBar.container,
-                            { margin: 8, marginTop: navigation ? 8 : 0 },
+                            { margin: 8, marginTop: 8 },
                         ]}
                         inputContainerStyle={styles.searchBar.inputContainer}
                         searchIcon={() => (
@@ -205,7 +219,7 @@ class MyTribeMembers extends React.PureComponent {
 
 const styles = {
     containerStyle: {
-        backgroundColor: '#F2F2F2',
+        backgroundColor: color.GM_BORDER_COLOR,
     },
     aboutContainer: {
         padding: 20,
@@ -219,10 +233,9 @@ const styles = {
     },
     headerContainer: {
         padding: 16,
-        paddingBottom: 8,
         marginBottom: 8,
         borderBottomWidth: 1,
-        borderBottomColor: '#F2F2F2',
+        borderBottomColor: color.GM_BORDER_COLOR,
     },
     searchBar: {
         container: {

@@ -11,6 +11,7 @@ export const GM_BLUE_LIGHT_LIGHT = '#DEF7FF'
 export const GM_DOT_GRAY = '#E0E0E0'
 export const GM_BACKGROUND = '#E4E8EA'
 export const GM_CARD_BACKGROUND = 'white'
+export const GM_BORDER_COLOR = '#F2F2F2'
 export const TEXT_COLOR = {
     DARK: '#333',
     LIGHT: 'white',

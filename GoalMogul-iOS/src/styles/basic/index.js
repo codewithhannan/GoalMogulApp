@@ -129,4 +129,9 @@ export const default_style = {
         height: 5 * UI_SCALE,
         backgroundColor: color.GM_BACKGROUND,
     },
+    activitySeparator: {
+        width: '100%',
+        height: 8 * UI_SCALE,
+        backgroundColor: color.GM_BACKGROUND,
+    },
 }

@@ -34,7 +34,7 @@ class MyTribeBanner extends React.PureComponent {
                     </Text>
                     {/* TODO: Add your onClick handler here, for the share your goal button. */}
                     <TouchableOpacity
-                        activeOpacity={0.6}
+                        activeOpacity={0.8}
                         onPress={() =>
                             Actions.push('myTribeGoalShareView', {
                                 tribe,
@@ -43,7 +43,14 @@ class MyTribeBanner extends React.PureComponent {
                             })
                         }
                     >
-                        <Text style={styles.link}>Share your goal</Text>
+                        <Text
+                            style={[
+                                default_style.titleText_1,
+                                { marginTop: 12, color: color.GM_BLUE },
+                            ]}
+                        >
+                            Share Your Goal
+                        </Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -57,7 +64,7 @@ const styles = {
     containerStyle: {
         flexDirection: 'row',
         backgroundColor: color.GM_CARD_BACKGROUND,
-        marginVertical: 8,
+        marginTop: 8,
         borderRadius: 5,
     },
     aboutContainer: {
@@ -78,9 +85,5 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: 16,
-    },
-    link: {
-        marginTop: 12,
-        color: color.GM_BLUE,
     },
 }

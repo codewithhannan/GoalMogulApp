@@ -12,10 +12,12 @@ import {
 import { Actions } from 'react-native-router-flux'
 // Component
 import ProfileImage from '../../Common/ProfileImage'
+import DelayedButton from '../../Common/Button/DelayedButton'
 
 // Asset
 import threeDotsIcon from '../../../asset/utils/friendsSettingIcon.png'
 import { default_style } from '../../../styles/basic'
+import { Icon } from '@ui-kitten/components'
 
 const { width } = Dimensions.get('window')
 const months = [
@@ -57,8 +59,9 @@ class MyTribeAbout extends Component {
                       const { memberRef } = member
                       if (index > 4 || !memberRef) return null
                       return (
-                          <View style={{ margin: 1 }}>
+                          <View style={{ margin: 4 }}>
                               <ProfileImage
+                                  disabledOnPress
                                   userId={memberRef._id}
                                   imageUrl={
                                       memberRef.profile
@@ -73,8 +76,8 @@ class MyTribeAbout extends Component {
 
         return (
             <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                {memberPictures}
-                <TouchableOpacity
+                <DelayedButton
+                    activeOpacity={0.8}
                     onPress={() =>
                         Actions.push('myTribeMembers', {
                             itemId: _id,
@@ -83,17 +86,31 @@ class MyTribeAbout extends Component {
                         })
                     }
                     style={{
-                        backgroundColor: '#E0E0E0',
-                        alignItems: 'center',
-                        borderRadius: 100,
-                        margin: 1,
+                        flexDirection: 'row',
+                        flexGrow: 1,
+                        justifyContent: 'center',
                     }}
                 >
-                    <Image
-                        style={default_style.profileImage_2}
-                        source={threeDotsIcon}
-                    />
-                </TouchableOpacity>
+                    {memberPictures}
+                    <View
+                        style={{
+                            backgroundColor: '#F2F2F2',
+                            alignItems: 'center',
+                            borderRadius: 100,
+                            margin: 4,
+                        }}
+                    >
+                        <Icon
+                            name="dots-horizontal"
+                            pack="material-community"
+                            style={{
+                                ...default_style.profileImage_2,
+                                tintColor: '#333333',
+                            }}
+                            zIndex={1}
+                        />
+                    </View>
+                </DelayedButton>
             </View>
         )
     }
