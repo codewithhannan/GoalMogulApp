@@ -6,6 +6,7 @@ import {
     Image,
     Text,
     TouchableOpacity,
+    TouchableWithoutFeedback,
     ImageBackground,
     ActivityIndicator,
 } from 'react-native'
@@ -13,7 +14,6 @@ import { connect } from 'react-redux'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
 import _ from 'lodash'
 import R from 'ramda'
-import { Actions } from 'react-native-router-flux'
 
 /* Components */
 import ViewableSettingMenu from '../Goal/ViewableSettingMenu'
@@ -393,6 +393,10 @@ class CreatePostModal extends Component {
                 DurationSec: durationSec,
             }
         )
+        const callback = (props) => {
+            if (this.props.callBack) this.props.callBack(props)
+            this.close()
+        }
 
         return this.props.submitCreatingPost(
             this.props.formVals.values,
@@ -403,7 +407,7 @@ class CreatePostModal extends Component {
             },
             initializeFromState,
             initialPost,
-            this.props.callback,
+            callback,
             this.props.pageId
         )
     }
@@ -587,7 +591,7 @@ class CreatePostModal extends Component {
 
     // Current media type is only picture
     renderMedia() {
-        const { initializeFromState, post, mediaRef } = this.props
+        const { initializeFromState, post, mediaRef, uploading } = this.props
         let imageUrl = mediaRef
         if (initializeFromState && mediaRef) {
             const hasImageModified = post.mediaRef && post.mediaRef !== mediaRef
@@ -605,6 +609,7 @@ class CreatePostModal extends Component {
                 activeOpacity={0.6}
                 onPress={() => this.props.change('mediaRef', false)}
                 style={{ position: 'absolute', top: 10, left: 15 }}
+                disabled={uploading}
             >
                 <Image
                     source={cancel}
@@ -652,6 +657,7 @@ class CreatePostModal extends Component {
                             activeOpacity={0.6}
                             onPress={() => this.setState({ mediaModal: true })}
                             style={{ position: 'absolute', top: 10, right: 15 }}
+                            disabled={uploading}
                         >
                             <Image
                                 source={expand}
@@ -789,6 +795,7 @@ class CreatePostModal extends Component {
                 </Text>
                 <DraftsView
                     drafts={this.state.drafts}
+                    disabled={this.props.uploading}
                     onDelete={this.handleDeleteDraft}
                     maxModalHeight={draftModalHeight}
                     onSelect={(index) => {
@@ -834,13 +841,14 @@ class CreatePostModal extends Component {
         const modalActionText = initializeFromState ? 'Update' : 'Publish'
         const modalHeight =
             246 + this.state.textContentHeight + this.state.draftHeaderHeight
-        const draftModalHeight = modalHeight / 3
+        const draftModalHeight = (modalHeight * 3) / 4
 
         return (
             <BottomSheet
                 ref={(r) => (this.bottomSheetRef = r)}
                 height={modalHeight}
                 onOpen={() => {
+                    this.initializeForm()
                     this.textInput && this.textInput.focus()
                 }}
                 onClose={(callback) => this.handleCancel(callback)}
@@ -864,6 +872,7 @@ class CreatePostModal extends Component {
                             marginVertical: 8,
                             padding: 8,
                             alignItems: 'center',
+                            opacity: actionDisabled ? 0.5 : 1,
                         }}
                         onPress={handleSubmit(this.handleCreate)}
                         disabled={actionDisabled}

@@ -206,11 +206,7 @@ export const submitCreatingPost = (
             },
         })
 
-        if (callback) {
-            callback()
-        }
-
-        Actions.pop() // This is needed for all the actions below
+        if (callback) callback()
 
         if (needOpenProfile) {
             // Open profile and then refresh

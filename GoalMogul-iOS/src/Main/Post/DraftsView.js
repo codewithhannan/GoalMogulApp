@@ -42,6 +42,7 @@ class DraftsView extends Component {
                 name="DRAFT_MENU"
             >
                 <MenuTrigger
+                    disabled={this.props.disabled}
                     customStyles={{
                         TriggerTouchableComponent: TouchableOpacity,
                     }}
