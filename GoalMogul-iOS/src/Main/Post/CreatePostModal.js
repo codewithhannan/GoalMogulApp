@@ -617,9 +617,9 @@ class CreatePostModal extends Component {
             return (
                 <View
                     style={{
-                        marginTop: 8,
                         backgroundColor: 'gray',
-                        borderRadius: 8,
+                        borderRadius: 5,
+                        flex: 1,
                     }}
                 >
                     <ImageBackground
@@ -648,7 +648,6 @@ class CreatePostModal extends Component {
                                 }}
                             />
                         </View>
-
                         <TouchableOpacity
                             activeOpacity={0.6}
                             onPress={() => this.setState({ mediaModal: true })}
@@ -663,7 +662,6 @@ class CreatePostModal extends Component {
                                 }}
                             />
                         </TouchableOpacity>
-
                         {cancelButton}
                     </ImageBackground>
                 </View>
@@ -755,7 +753,7 @@ class CreatePostModal extends Component {
                 </DelayedButton>
                 <DelayedButton
                     activeOpacity={0.6}
-                    style={{ ...actionIconWrapperStyle, marginLeft: 8 }}
+                    style={actionIconWrapperStyle}
                     onPress={this.handleOpenCameraRoll}
                     disabled={uploading}
                 >
@@ -765,11 +763,12 @@ class CreatePostModal extends Component {
                         style={actionIconStyle}
                     />
                 </DelayedButton>
+                {this.renderMedia()}
             </View>
         )
     }
 
-    renderDraftsHeader() {
+    renderDraftsHeader(draftModalHeight) {
         return (
             <View
                 onLayout={(e) =>
@@ -791,6 +790,7 @@ class CreatePostModal extends Component {
                 <DraftsView
                     drafts={this.state.drafts}
                     onDelete={this.handleDeleteDraft}
+                    maxModalHeight={draftModalHeight}
                     onSelect={(index) => {
                         this.handleDraftCancel(() => {
                             const selectedDraft = this.state.drafts[index]
@@ -834,6 +834,7 @@ class CreatePostModal extends Component {
         const modalActionText = initializeFromState ? 'Update' : 'Publish'
         const modalHeight =
             246 + this.state.textContentHeight + this.state.draftHeaderHeight
+        const draftModalHeight = modalHeight / 3
 
         return (
             <BottomSheet
@@ -878,7 +879,7 @@ class CreatePostModal extends Component {
                     </DelayedButton>
                 }
             >
-                {showDraftHeader && this.renderDraftsHeader()}
+                {showDraftHeader && this.renderDraftsHeader(draftModalHeight)}
                 <View style={{ flexDirection: 'row', marginTop: 16 }}>
                     <ProfileImage
                         imageUrl={profile ? profile.image : undefined}
@@ -947,7 +948,7 @@ const styles = {
         padding: 2,
     },
     mediaStyle: {
-        height: 150 * default_style.uiScale,
+        height: 74,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -959,6 +960,7 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 5,
+        marginRight: 8,
     },
     userImageContainerStyle: {
         borderWidth: 0.5,

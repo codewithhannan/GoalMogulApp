@@ -21,6 +21,7 @@ import { default_style } from '../../styles/basic'
 import DelayedButton from '../Common/Button/DelayedButton'
 
 import cancelImage from '../../asset/utils/cancel_no_background.png'
+import { GM_CARD_BACKGROUND } from '../../styles/basic/color'
 
 /**
  * @param onDraftSelect(index)
@@ -28,16 +29,16 @@ import cancelImage from '../../asset/utils/cancel_no_background.png'
  */
 class DraftsView extends Component {
     render() {
-        const { width, height } = Dimensions.get('window')
+        const { width } = Dimensions.get('window')
         const cancelIconStyle = {
             ...default_style.smallIcon_1,
             tintColor: '#EB5757',
         }
-        const textWidth = width - 3 * 16 - cancelIconStyle.width - 24
+        const textWidth = width - 3 * 16 - cancelIconStyle.width - 30
         return (
             <Menu
                 rendererProps={{ placement: 'bottom' }}
-                renderer={renderers.Popover}
+                renderer={renderers.ContextMenu}
                 name="DRAFT_MENU"
             >
                 <MenuTrigger
@@ -54,7 +55,22 @@ class DraftsView extends Component {
                         View Drafts
                     </Text>
                 </MenuTrigger>
-                <MenuOptions>
+                <MenuOptions
+                    customStyles={{
+                        optionsWrapper: {
+                            position: 'absolute',
+                            top: 0,
+                            right: -20,
+                            width: width - 20,
+                            backgroundColor: GM_CARD_BACKGROUND,
+                            borderRadius: 10,
+                        },
+                        optionsContainer: {
+                            backgroundColor: GM_CARD_BACKGROUND,
+                            borderRadius: 10,
+                        },
+                    }}
+                >
                     <FlatList
                         data={this.props.drafts}
                         ItemSeparatorComponent={() => (
@@ -66,7 +82,7 @@ class DraftsView extends Component {
                             />
                         )}
                         style={{
-                            maxHeight: height / 2,
+                            maxHeight: this.props.maxModalHeight,
                             paddingVertical: 5,
                         }}
                         renderItem={({ item: { post, mediaRef }, index }) => {

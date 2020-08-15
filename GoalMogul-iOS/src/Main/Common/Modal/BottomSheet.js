@@ -75,7 +75,7 @@ class BottomSheet extends React.PureComponent {
                   } else return null
               })
 
-        this.createPanResponder(props)
+        this.createPanResponder()
         this.close = this.close.bind(this)
         this.keyboardWillShow = this.keyboardWillShow.bind(this)
         this.keyboardWillHide = this.keyboardWillHide.bind(this)
@@ -299,17 +299,18 @@ class BottomSheet extends React.PureComponent {
         }
     }
 
-    createPanResponder(props) {
-        const {
-            fullScreenGesturesEnabled,
-            swipeToCloseGestureEnabled,
-            height,
-        } = props
+    createPanResponder() {
         this.panResponder = PanResponder.create({
-            onStartShouldSetPanResponder: () =>
-                swipeToCloseGestureEnabled || fullScreenGesturesEnabled,
+            onStartShouldSetPanResponder: () => {
+                const {
+                    fullScreenGesturesEnabled,
+                    swipeToCloseGestureEnabled,
+                } = this.props
+                return swipeToCloseGestureEnabled || fullScreenGesturesEnabled
+            },
             onPanResponderMove: (e, gestureState) => {
                 const { isFullScreen, hasModalMoved } = this.state
+                const { fullScreenGesturesEnabled, height } = this.props
                 // Swiping down
                 if (gestureState.dy > 0) {
                     if (!isFullScreen)
@@ -335,6 +336,11 @@ class BottomSheet extends React.PureComponent {
                 if (!hasModalMoved) this.setState({ hasModalMoved: true })
             },
             onPanResponderRelease: (e, gestureState) => {
+                const {
+                    fullScreenGesturesEnabled,
+                    swipeToCloseGestureEnabled,
+                    height,
+                } = this.props
                 const { isFullScreen, hasModalMoved } = this.state
                 // Close/fullscreen/minimize when gesture velocity or distance hits the thereashold
                 if (
