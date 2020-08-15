@@ -56,7 +56,7 @@ const DEFAULT_CARDS = [
     // },
     {
         type: 'sms',
-        text: 'iMessage',
+        text: 'Message',
         image: undefined,
     },
     {

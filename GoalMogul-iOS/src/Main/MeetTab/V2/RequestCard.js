@@ -154,7 +154,10 @@ class RequestCard extends React.PureComponent {
                     }}
                 >
                     <Text
-                        style={[default_style.buttonText_1, { color: 'white' }]}
+                        style={[
+                            default_style.buttonText_1,
+                            { color: color.GM_BLUE },
+                        ]}
                     >
                         Accept
                     </Text>
