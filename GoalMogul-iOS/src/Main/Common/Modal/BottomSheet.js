@@ -297,13 +297,9 @@ class BottomSheet extends React.PureComponent {
 
     createPanResponder() {
         this.panResponder = PanResponder.create({
-            onStartShouldSetPanResponder: () => {
-                const {
-                    fullScreenGesturesEnabled,
-                    swipeToCloseGestureEnabled,
-                } = this.props
-                return swipeToCloseGestureEnabled || fullScreenGesturesEnabled
-            },
+            onStartShouldSetPanResponder: () =>
+                this.props.swipeToCloseGestureEnabled ||
+                this.props.fullScreenGesturesEnabled,
             onPanResponderMove: (e, gestureState) => {
                 const { isFullScreen, hasModalMoved } = this.state
                 const { fullScreenGesturesEnabled, height } = this.props

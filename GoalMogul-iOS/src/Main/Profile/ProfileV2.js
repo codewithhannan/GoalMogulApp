@@ -3,7 +3,7 @@
 import _ from 'lodash'
 import R from 'ramda'
 import React, { Component } from 'react'
-import { ActivityIndicator, Animated, FlatList, Text, View } from 'react-native'
+import { ActivityIndicator, Animated, FlatList, View } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
