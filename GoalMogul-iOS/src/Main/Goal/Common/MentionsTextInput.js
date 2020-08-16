@@ -284,7 +284,7 @@ export default class MentionsTextInput extends Component {
                             onChangeText={this.onChangeText.bind(this)}
                             multiline
                             value={this.props.value}
-                            style={[this.props.textInputStyle]}
+                            style={this.props.textInputStyle}
                             onSelectionChange={this.handleOnSelectionChange.bind(
                                 this
                             )}
@@ -304,7 +304,7 @@ export default class MentionsTextInput extends Component {
                 {this.props.renderLeftIcons
                     ? this.props.renderLeftIcons()
                     : null}
-                <View style={{ ...this.props.textInputContainerStyle }}>
+                <View style={this.props.textInputContainerStyle}>
                     <TextInput
                         {...this.props}
                         autoCorrect
@@ -315,11 +315,7 @@ export default class MentionsTextInput extends Component {
                         )}
                         multiline={true}
                         value={this.props.value}
-                        style={{
-                            ...this.props.textInputStyle,
-                            paddingTop: 4,
-                            paddingBottom: 3,
-                        }}
+                        style={this.props.textInputStyle}
                         placeholder={
                             this.props.placeholder
                                 ? this.props.placeholder

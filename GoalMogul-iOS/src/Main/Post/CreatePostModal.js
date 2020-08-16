@@ -484,14 +484,15 @@ class CreatePostModal extends Component {
             change,
         } = props
         const { tags } = this.props
-        const inputStyle = {
-            ...styles.inputStyle,
-            height: this.state.textInputHeight,
-        }
         return (
             <View style={{ zIndex: 3, flex: 1 }}>
                 <MentionsTextInput
                     onRef={(r) => (this.textInput = r)}
+                    textInputContainerStyle={styles.inputContainerStyle}
+                    textInputStyle={{
+                        ...styles.inputStyle,
+                        height: this.state.textInputHeight,
+                    }}
                     onContentSizeChange={(e) => {
                         // Modal height needs to be adjusted when post text content size increases/decreases
                         const height = e.nativeEvent.contentSize.height
@@ -507,14 +508,12 @@ class CreatePostModal extends Component {
                             if (heightChange > 0)
                                 hasEnoughSpaceAboveModal &&
                                     this.setState({
-                                        textContentHeight:
-                                            height + inputStyle.fontSize,
+                                        textContentHeight: height,
                                     })
                             // height decreased
                             else
                                 this.setState({
-                                    textContentHeight:
-                                        height + inputStyle.fontSize,
+                                    textContentHeight: height,
                                 })
                         } else
                             this.setState({
@@ -530,11 +529,6 @@ class CreatePostModal extends Component {
                     tagSearchRes={this.state.tagSearchData.data}
                     flexGrowDirection="bottom"
                     suggestionPosition="bottom"
-                    textInputContainerStyle={{
-                        ...styles.inputContainerStyle,
-                        height: this.state.textInputHeight,
-                    }}
-                    textInputStyle={inputStyle}
                     validateTags={() => this.validateContentTags(change)}
                     autoCorrect
                     suggestionsPanelStyle={{ backgroundColor: '#f8f8f8' }}
@@ -854,7 +848,7 @@ class CreatePostModal extends Component {
                 onClose={(callback) => this.handleCancel(callback)}
                 onPropsHeightChange={() =>
                     this.setState((state) => ({
-                        textInputHeight: state.textContentHeight,
+                        textInputHeight: state.textContentHeight + 5,
                     }))
                 }
                 customStyles={{

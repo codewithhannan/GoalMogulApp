@@ -93,17 +93,13 @@ class BottomSheet extends React.PureComponent {
     }
 
     componentWillUpdate(nextProps) {
-        const offset = Math.abs(nextProps.height - this.props.height)
-        if (offset > 0 && !this.state.isFullScreen && this.state.modalVisible) {
-            Animated.timing(this.animatedHeight, {
-                toValue: nextProps.height,
-                duration: 1,
-                useNativeDriver: false,
-            }).start(
-                () =>
-                    this.props.onPropsHeightChange &&
-                    this.props.onPropsHeightChange()
-            )
+        // in cases the height props is changed dynamically this will re adjust the view's height
+        // Fullscreen animations are done by changing modal's height,
+        // whereas modal open close animations are done by moving the whole modal
+        // Hence we check if modal is inFullScreen state
+        if (nextProps.height != this.props.height && !this.state.isFullScreen) {
+            this.props.onPropsHeightChange && this.props.onPropsHeightChange()
+            this.animatedHeight = new Animated.Value(nextProps.height)
         }
     }
 
@@ -213,6 +209,7 @@ class BottomSheet extends React.PureComponent {
 
     fullScreen() {
         const { openDuration, onFullScreen } = this.props
+        this.setState({ isFullScreen: true })
         Animated.parallel([
             Animated.timing(this.animatedHeight, {
                 toValue: this.getFullScreenHeight(),
@@ -224,12 +221,12 @@ class BottomSheet extends React.PureComponent {
             ...this.childrenAnimations(true, openDuration),
         ]).start(() => {
             if (typeof onFullScreen === 'function') onFullScreen(props)
-            this.setState({ isFullScreen: true })
         })
     }
 
     minimize() {
         const { closeDuration, onMinimize } = this.props
+        this.setState({ isFullScreen: false })
         Animated.parallel([
             Animated.timing(this.animatedHeight, {
                 toValue: this.props.height,
@@ -240,7 +237,6 @@ class BottomSheet extends React.PureComponent {
             this.headerAnimation(false, closeDuration),
             ...this.childrenAnimations(false, closeDuration),
         ]).start(() => {
-            this.setState({ isFullScreen: false })
             if (typeof onMinimize === 'function') onMinimize(props)
         })
     }
