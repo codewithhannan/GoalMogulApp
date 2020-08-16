@@ -145,6 +145,7 @@ class RequestCard extends React.PureComponent {
                     }
                     style={{
                         borderRadius: 3,
+                        backgroundColor: color.GM_BLUE,
                         borderColor: color.GM_BLUE,
                         borderWidth: 1,
                         width: '100%',
@@ -156,7 +157,7 @@ class RequestCard extends React.PureComponent {
                     <Text
                         style={[
                             default_style.buttonText_1,
-                            { color: color.GM_BLUE },
+                            { color: color.GM_CARD_BACKGROUND },
                         ]}
                     >
                         Accept

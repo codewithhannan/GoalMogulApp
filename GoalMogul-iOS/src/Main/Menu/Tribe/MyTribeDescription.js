@@ -68,7 +68,6 @@ class MyTribeDescription extends React.PureComponent {
                     <View
                         style={{
                             ...styles.modalContainerStyle,
-                            backgroundColor: 'transparent',
                             flex: 1,
                         }}
                     >
@@ -150,6 +149,5 @@ const styles = {
         borderRadius: 15,
         paddingTop: 16,
         paddingBottom: 16,
-        alignItems: 'left',
     },
 }
