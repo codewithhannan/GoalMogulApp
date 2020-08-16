@@ -14,11 +14,9 @@ import { DotIcon } from '../../../Utils/Icons'
 import { openProfileDetailEditForm } from '../../../actions/'
 
 /* Asset */
-import brief_case from '../../../asset/utils/briefcase.png'
-import ElevatorPitchIcon from '../../../asset/utils/elevator_pitch.png'
-import AboutIcon from '../../../asset/utils/about.png'
 import icon_meet from '../../../asset/footer/navigation/meet.png'
 import profileStyles from './Styles'
+import { PROFILE_STYLES } from '../../../styles/Profile'
 
 /* Select */
 import { getUserData } from '../../../redux/modules/User/Selector'
@@ -169,77 +167,67 @@ class ProfileInfoCard extends Component {
         )
     }
 
-    renderOccupation(occupation) {
+
+    renderOccupation(occupation, isTopElementExisting) {
         if (occupation && occupation.trim().length > 0) {
-            return (
-                <View style={{ flexDirection: 'row' }}>
-                    <Image source={brief_case} style={styles.iconStyle} />
-                    <Text
-                        style={[
-                            profileStyles.headerTextStyle,
-                            default_style.normalText_1,
-                        ]}
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                    >
-                        {occupation}
-                    </Text>
-                </View>
-            )
-        }
-        return null
-    }
-
-    renderElevatorPitch(elevatorPitch) {
-        if (elevatorPitch && elevatorPitch.trim().length > 0) {
-            return (
-                <View style={{ alignSelf: 'flex-start' }}>
-                    <View style={profileStyles.subHeaderStyle}>
-                        <Image
-                            resizeMode="contain"
-                            source={ElevatorPitchIcon}
-                            style={{
-                                ...default_style.normalIcon_1,
-                                tintColor: '#828282',
-                                marginRight: 10,
-                            }}
-                        />
-                        <Text style={default_style.titleText_1}>
-                            Elevator Pitch
-                        </Text>
-                    </View>
-                    <Text style={[default_style.normalText_1]}>
-                        {elevatorPitch}
-                    </Text>
-                </View>
-            )
-        }
-        return null
-    }
-
-    renderAbout(about, elevatorPitch) {
-        if (about && about.trim().length > 0) {
             return (
                 <View
                     style={
-                        elevatorPitch
-                            ? { alignSelf: 'flex-start', marginTop: 24 }
+                        isTopElementExisting
+                            ? { alignSelf: 'flex-start', marginTop: 16 }
                             : { alignSelf: 'flex-start', marginTop: 0 }
                     }
                 >
                     <View style={profileStyles.subHeaderStyle}>
-                        <Image
-                            resizeMode="contain"
-                            source={AboutIcon}
-                            style={{
-                                ...default_style.normalIcon_1,
-                                tintColor: '#828282',
-                                marginRight: 10,
-                            }}
-                        />
-                        <Text style={default_style.titleText_1}>About</Text>
+                        <Text style={PROFILE_STYLES.aboutInfoTitle}>
+                            Occupation
+                        </Text>
                     </View>
-                    <Text style={[default_style.normalText_1]}>{about}</Text>
+                    <Text style={[default_style.normalText_1]}>
+                        {occupation.trim()}
+                    </Text>
+                </View>
+            )
+        }
+        return null
+    }
+
+
+    renderElevatorPitch(elevatorPitch, isTopElementExisting) {
+        if (elevatorPitch && elevatorPitch.trim().length > 0) {
+            return (
+                <View
+                    style={
+                        isTopElementExisting
+                            ? { alignSelf: 'flex-start', marginTop: 16 }
+                            : { alignSelf: 'flex-start', marginTop: 0 }
+                    }
+                >
+                    <View style={profileStyles.subHeaderStyle}>
+                        <Text style={PROFILE_STYLES.aboutInfoTitle}>
+                            Elevator Pitch
+                        </Text>
+                    </View>
+                    <Text style={[default_style.normalText_1]}>
+                        {elevatorPitch.trim()}
+                    </Text>
+                </View>
+            )
+        }
+        return null
+    }
+
+
+    renderAbout(about) {
+        if (about  && about.trim().length > 0) {
+            return (
+                <View style={{ alignSelf: 'flex-start' }}>
+                    <View style={profileStyles.subHeaderStyle}>
+                        <Text style={PROFILE_STYLES.aboutInfoTitle}>About</Text>
+                    </View>
+                    <Text style={[default_style.normalText_1]}>
+                        {about.trim()}
+                    </Text>
                 </View>
             )
         }
@@ -266,17 +254,32 @@ class ProfileInfoCard extends Component {
         }
         const { elevatorPitch, occupation, about } = user.profile
 
+        const detailsCard = (
+            <View style={styles.containerStyle}>
+                {this.renderAbout(about)}
+                {this.renderElevatorPitch(elevatorPitch, about)}
+                
+            </View>
+        )
+
+        const cardSeparator = <View style={default_style.cardSeparator} />
+
         return (
             <View>
-                {about && elevatorPitch && (
-                    <View style={styles.containerStyle}>
-                        {this.renderElevatorPitch(elevatorPitch)}
-                        {this.renderAbout(about, elevatorPitch)}
-                    </View>
-                )}
+                {about || elevatorPitch ? detailsCard : null}
+                {about || elevatorPitch || occupation ? cardSeparator : null}
                 <View style={styles.containerStyle}>
-                    {this.renderFriendInfo(occupation)}
-                    {this.renderOccupation(occupation)}
+                    {this.renderFriendInfo()}
+                    {this.renderOccupation(occupation, about || elevatorPitch)}
+                    {/* <CoinProfileInfoModal
+                        isVisible={this.state.showCoinProfileInfoModal}
+                        closeModal={() => {
+                            this.setState({
+                                ...this.state,
+                                showCoinProfileInfoModal: false,
+                            })
+                        }}
+                    /> */}
                 </View>
             </View>
         )
@@ -285,10 +288,9 @@ class ProfileInfoCard extends Component {
 
 const styles = {
     containerStyle: {
-        marginTop: 8,
-        padding: 30,
-        paddingLeft: 20,
-        paddingRight: 20,
+        display: 'flex',
+        paddingHorizontal: 16,
+        paddingVertical: 24,
         backgroundColor: color.GM_CARD_BACKGROUND,
         flex: 1,
     },

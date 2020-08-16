@@ -165,77 +165,6 @@ class ProfileV2 extends Component {
         return
     }
 
-    /**
-     * Handle SearchBarHeader Setting icon onPress. This is only called if viewing
-     * profile that is not self
-     */
-    handlePageSetting = () => {
-        const text = 'Please go to Settings to manage blocked users.'
-        const switchCases = switchByButtonIndex([
-            [
-                R.equals(0),
-                () => {
-                    // share to Direct Chat
-                    // TODO: @Jay Share to direct message
-                    const userToShare = this.props.user
-                    const chatRoomType = 'Direct'
-                    Actions.push('shareToChatLightBox', {
-                        userToShare,
-                        chatRoomType,
-                    })
-                },
-            ],
-            [
-                R.equals(1),
-                () => {
-                    // TODO: @Jay Share to group conversation
-                    const userToShare = this.props.user
-                    const chatRoomType = 'Group'
-                    Actions.push('shareToChatLightBox', {
-                        userToShare,
-                        chatRoomType,
-                    })
-                },
-            ],
-            [
-                R.equals(2),
-                () => {
-                    console.log(
-                        `${DEBUG_KEY} User blocks _id: `,
-                        this.props.userId
-                    )
-                    this.props.blockUser(this.props.userId, () =>
-                        alert(
-                            `You have successfully blocked ${this.props.user.name}. ${text}`
-                        )
-                    )
-                },
-            ],
-            [
-                R.equals(3),
-                () => {
-                    console.log(
-                        `${DEBUG_KEY} User reports profile with _id: `,
-                        this.props.userId
-                    )
-                    this.props.createReport(this.props.userId, 'User')
-                },
-            ],
-        ])
-        const profileSettingActionSheet = actionSheet(
-            [
-                'Share Profile as Direct Message',
-                'Share Profile to Group Chat',
-                'Block',
-                'Report',
-                'Cancel',
-            ],
-            4,
-            switchCases
-        )
-        profileSettingActionSheet()
-    }
-
     handleCreateGoal = () => {
         const { userId, pageId } = this.props
         this.props.openCreateOverlay(userId, pageId)
@@ -423,9 +352,9 @@ class ProfileV2 extends Component {
                     pageId={pageId}
                 />
                 <SearchBarHeader
-                    backButton={shouldShowBackButton}
+                    backButton={!this.props.isMainTab}
                     setting={shouldShowPageSettings}
-                    rightIcon="menu"
+                    rightIcon={this.props.isMainTab ? 'menu' : null}
                     onBackPress={this.handleOnBackPress}
                     userId={userId}
                     handlePageSetting={this.handlePageSetting}
