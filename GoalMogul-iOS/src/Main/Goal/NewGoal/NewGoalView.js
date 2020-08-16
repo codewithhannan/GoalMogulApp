@@ -447,8 +447,6 @@ class NewGoalView extends Component {
                     loadingComponent={() =>
                         this.renderTagSearchLoadingComponent(loading)
                     }
-                    textInputMinHeight={80}
-                    textInputMaxHeight={200}
                     trigger={'@'}
                     triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
                     triggerCallback={(keyword) => this.triggerCallback(keyword)}
@@ -619,7 +617,7 @@ class NewGoalView extends Component {
                             paddingLeft: 15,
                             paddingRight: 15,
                             // Should approximately match numberOfLines * fontSize height + padding
-                            maxHeight: 100,
+                            maxHeight: 200,
                             minHeight: 80,
                         }}
                         numberOfLines={5}

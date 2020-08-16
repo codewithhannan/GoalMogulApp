@@ -7,7 +7,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import { View, Image, Text, Animated, ImageBackground } from 'react-native'
+import { View, Image, Text } from 'react-native'
 import Constants from 'expo-constants'
 import Modal from 'react-native-modal'
 import cancel from '../../../asset/utils/cancel_no_background.png'

@@ -17,10 +17,11 @@ import {
     renderers,
 } from 'react-native-popup-menu'
 
-import { default_style, color } from '../../styles/basic'
+import { default_style } from '../../styles/basic'
 import DelayedButton from '../Common/Button/DelayedButton'
 
 import cancelImage from '../../asset/utils/cancel_no_background.png'
+import { GM_CARD_BACKGROUND } from '../../styles/basic/color'
 
 /**
  * @param onDraftSelect(index)
@@ -28,15 +29,20 @@ import cancelImage from '../../asset/utils/cancel_no_background.png'
  */
 class DraftsView extends Component {
     render() {
-        const { width, height } = Dimensions.get('window')
-        const textWidth = width - 3 * 16 - default_style.buttonIcon_1.width - 30
+        const { width } = Dimensions.get('window')
+        const cancelIconStyle = {
+            ...default_style.smallIcon_1,
+            tintColor: '#EB5757',
+        }
+        const textWidth = width - 3 * 16 - cancelIconStyle.width - 30
         return (
             <Menu
                 rendererProps={{ placement: 'bottom' }}
-                renderer={renderers.SlideInMenu}
+                renderer={renderers.ContextMenu}
                 name="DRAFT_MENU"
             >
                 <MenuTrigger
+                    disabled={this.props.disabled}
                     customStyles={{
                         TriggerTouchableComponent: TouchableOpacity,
                     }}
@@ -50,19 +56,36 @@ class DraftsView extends Component {
                         View Drafts
                     </Text>
                 </MenuTrigger>
-                <MenuOptions>
-                    <View style={styles.headerWrapper}>
-                        <Text
-                            style={{
-                                ...default_style.titleText_1,
-                                color: 'white',
-                            }}
-                        >
-                            Drafts
-                        </Text>
-                    </View>
+                <MenuOptions
+                    customStyles={{
+                        optionsWrapper: {
+                            position: 'absolute',
+                            top: 0,
+                            right: -20,
+                            width: width - 20,
+                            backgroundColor: GM_CARD_BACKGROUND,
+                            borderRadius: 10,
+                        },
+                        optionsContainer: {
+                            backgroundColor: GM_CARD_BACKGROUND,
+                            borderRadius: 10,
+                        },
+                    }}
+                >
                     <FlatList
                         data={this.props.drafts}
+                        ItemSeparatorComponent={() => (
+                            <View
+                                style={{
+                                    ...default_style.cardSeparator,
+                                    height: 1.5,
+                                }}
+                            />
+                        )}
+                        style={{
+                            maxHeight: this.props.maxModalHeight,
+                            paddingVertical: 5,
+                        }}
                         renderItem={({ item: { post, mediaRef }, index }) => {
                             return (
                                 <MenuOption
@@ -111,10 +134,7 @@ class DraftsView extends Component {
                                                 style={styles.cancelWrapper}
                                             >
                                                 <Image
-                                                    style={{
-                                                        ...default_style.buttonIcon_1,
-                                                        tintColor: '#EB5757',
-                                                    }}
+                                                    style={cancelIconStyle}
                                                     source={cancelImage}
                                                 />
                                             </DelayedButton>
@@ -122,19 +142,6 @@ class DraftsView extends Component {
                                     </View>
                                 </MenuOption>
                             )
-                        }}
-                        ItemSeparatorComponent={() => (
-                            <View
-                                style={{
-                                    ...default_style.cardSeparator,
-                                    height: 1.5,
-                                }}
-                            />
-                        )}
-                        style={{
-                            maxHeight: height / 2,
-                            paddingTop: 5,
-                            paddingBottom: 35,
                         }}
                     />
                 </MenuOptions>
@@ -144,16 +151,6 @@ class DraftsView extends Component {
 }
 
 const styles = {
-    headerWrapper: {
-        backgroundColor: color.GM_BLUE,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 0.1,
-        padding: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     media: {
         height: 50 * default_style.uiScale,
         width: 75 * default_style.uiScale,
@@ -162,7 +159,7 @@ const styles = {
     },
     bodyText: {
         ...default_style.subTitleText_1,
-        margin: 16,
+        margin: 10,
     },
     cancelWrapper: {
         backgroundColor: '#F2F2F2',

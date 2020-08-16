@@ -20,7 +20,6 @@ import { makeGetCommentByEntityId } from '../../../redux/modules/feed/comment/Co
 // Actions
 import {
     closePostDetail,
-    editPost,
     fetchPostDetail,
     markUserViewPost,
 } from '../../../redux/modules/feed/post/PostActions'
@@ -33,6 +32,7 @@ import LikeListModal from '../../Common/Modal/LikeListModal'
 import CommentBox from '../../Goal/Common/CommentBoxV2'
 import CommentCard from '../../Goal/GoalDetailCard/Comment/CommentCard'
 import PostDetailSection from './PostDetailSection'
+import CreatePostModal from '../CreatePostModal'
 
 const DEBUG_KEY = '[ UI PostDetailCard ]'
 const TABBAR_HEIGHT = 48.5
@@ -111,7 +111,7 @@ class PostDetailCard extends React.PureComponent {
             // Display CreatePostModal
             if (initialShowPostModal) {
                 setTimeout(() => {
-                    this.props.editPost(postDetail)
+                    this.createPostModal && this.createPostModal.open()
                 }, 750)
                 return
             }
@@ -301,19 +301,24 @@ class PostDetailCard extends React.PureComponent {
     }
 
     render() {
-        const { comments, pageId, postId } = this.props
+        const { comments, pageId, postId, postDetail } = this.props
         const data = comments
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <LikeListModal
+                    isVisible={this.state.showCommentLikeList}
+                    closeModal={this.closeCommentLikeList}
+                    parentId={this.state.likeListParentId}
+                    parentType={this.state.likeListParentType}
+                    clearDataOnHide
+                />
+                <CreatePostModal
+                    onRef={(r) => (this.createPostModal = r)}
+                    initializeFromState
+                    initialPost={postDetail}
+                />
                 <View style={styles.containerStyle}>
-                    <LikeListModal
-                        isVisible={this.state.showCommentLikeList}
-                        closeModal={this.closeCommentLikeList}
-                        parentId={this.state.likeListParentId}
-                        parentType={this.state.likeListParentType}
-                        clearDataOnHide
-                    />
                     <SearchBarHeader
                         backButton
                         title="Post"
@@ -441,7 +446,6 @@ const makeMapStateToProps = () => {
 export default connect(makeMapStateToProps, {
     closePostDetail,
     refreshComments,
-    editPost,
     fetchPostDetail,
     markUserViewPost,
 })(wrapAnalytics(PostDetailCard, SCREENS.POST_DETAIL))

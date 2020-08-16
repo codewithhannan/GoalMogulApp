@@ -86,6 +86,7 @@ const INITIAL_STATE = {
             completedOnly: 'false',
             priorities: '',
         },
+        refreshing: false,
         hasNextPage: undefined,
         loading: false,
         loadingMore: false,

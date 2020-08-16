@@ -77,7 +77,6 @@ class CreateGoalButtonOverlay extends Component {
     }
 
     handleCreatePost = () => {
-        console.log('User trying to create post')
         if (this.props.onClose) {
             this.props.onClose()
         } else {
@@ -96,12 +95,8 @@ class CreateGoalButtonOverlay extends Component {
             }),
         ]).start(() => {
             Actions.pop()
-            Actions.createPostModal({
-                callback: this.props.callback,
-                onClose: this.props.onClose,
-                openProfile: this.props.openProfile,
-                pageId: this.props.pageId,
-            })
+            // This is a temp hack, createGoalButtonOverlay is being depricated
+            this.props.openCreatePost()
         })
     }
 
@@ -126,7 +121,6 @@ class CreateGoalButtonOverlay extends Component {
         ]).start(() => {
             Actions.pop()
             Actions.createGoalModal({
-                callback: this.props.callback,
                 onCreate: this.props.onCreate,
                 onClose: this.props.onClose,
                 openProfile: this.props.openProfile,
@@ -165,7 +159,7 @@ class CreateGoalButtonOverlay extends Component {
 
     render() {
         return (
-            <View style={{ ...styles.wrapperStyle }}>
+            <View style={styles.wrapperStyle}>
                 <TouchableWithoutFeedback onPress={this.handleCancel}>
                     <Animated.View
                         style={[

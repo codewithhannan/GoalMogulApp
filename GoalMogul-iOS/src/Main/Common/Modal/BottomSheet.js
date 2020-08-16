@@ -13,6 +13,7 @@ import {
     SafeAreaView,
 } from 'react-native'
 import { color } from '../../../styles/basic'
+import { MenuProvider } from 'react-native-popup-menu'
 
 const SUPPORTED_ORIENTATIONS = ['portrait', 'portrait-upside-down']
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView)
@@ -23,6 +24,8 @@ const FULL_SCREEN_TOP_OFFSET = 25
  * @param sheetHeader: fades in on fullscreen, needs a height style to work
  * @param sheetFooter: always visible and sticks to bottom of the sheet
  * @param childeren: all components wrapped inside bottomSheet will be passed in as children prop
+ *
+ * BotomSheet also wraps its components inside a MenuProvider from 'react-native-popup-menu' library
  *
  * BottomSheet supports component fade-in (on switch fullscreen) and fade-out (on switch to half-screen)
  * To apply that to a component that make sure:
@@ -63,7 +66,7 @@ class BottomSheet extends React.PureComponent {
         this.animatedChildrenStyles = !Array.isArray(children)
             ? []
             : children.map((item) => {
-                  if (itemHasRequiredProps(item)) {
+                  if (hasFadeAnimationProps(item)) {
                       return {
                           fadeInHeight: item.props.style.height,
                           height: new Animated.Value(0),
@@ -72,7 +75,7 @@ class BottomSheet extends React.PureComponent {
                   } else return null
               })
 
-        this.createPanResponder(props)
+        this.createPanResponder()
         this.close = this.close.bind(this)
         this.keyboardWillShow = this.keyboardWillShow.bind(this)
         this.keyboardWillHide = this.keyboardWillHide.bind(this)
@@ -89,6 +92,17 @@ class BottomSheet extends React.PureComponent {
         )
     }
 
+    componentWillUpdate(nextProps) {
+        // in cases the height props is changed dynamically this will re adjust the view's height
+        // Fullscreen animations are done by changing modal's height,
+        // whereas modal open close animations are done by moving the whole modal
+        // Hence we check if modal is inFullScreen state
+        if (nextProps.height != this.props.height && !this.state.isFullScreen) {
+            this.props.onPropsHeightChange && this.props.onPropsHeightChange()
+            this.animatedHeight = new Animated.Value(nextProps.height)
+        }
+    }
+
     componentWillUnmount() {
         this.keyboardWillShowListener.remove()
         this.keyboardWillHideListener.remove()
@@ -102,7 +116,7 @@ class BottomSheet extends React.PureComponent {
             {
                 useNativeDriver: false,
                 toValue: keyBoardHeight,
-                duration: 200,
+                duration: e.duration,
             }
         )
         if (isFullScreen) {
@@ -195,6 +209,7 @@ class BottomSheet extends React.PureComponent {
 
     fullScreen() {
         const { openDuration, onFullScreen } = this.props
+        this.setState({ isFullScreen: true })
         Animated.parallel([
             Animated.timing(this.animatedHeight, {
                 toValue: this.getFullScreenHeight(),
@@ -206,12 +221,12 @@ class BottomSheet extends React.PureComponent {
             ...this.childrenAnimations(true, openDuration),
         ]).start(() => {
             if (typeof onFullScreen === 'function') onFullScreen(props)
-            this.setState({ isFullScreen: true })
         })
     }
 
     minimize() {
         const { closeDuration, onMinimize } = this.props
+        this.setState({ isFullScreen: false })
         Animated.parallel([
             Animated.timing(this.animatedHeight, {
                 toValue: this.props.height,
@@ -222,12 +237,11 @@ class BottomSheet extends React.PureComponent {
             this.headerAnimation(false, closeDuration),
             ...this.childrenAnimations(false, closeDuration),
         ]).start(() => {
-            this.setState({ isFullScreen: false })
             if (typeof onMinimize === 'function') onMinimize(props)
         })
     }
 
-    setModalVisible(visible, props) {
+    setModalVisible(visible) {
         const {
             height,
             openDuration,
@@ -249,7 +263,7 @@ class BottomSheet extends React.PureComponent {
                     duration: openDuration,
                 }),
             ]).start(() => {
-                if (typeof onOpen === 'function') onOpen(props)
+                if (typeof onOpen === 'function') onOpen()
             })
         } else {
             Animated.parallel([
@@ -264,26 +278,31 @@ class BottomSheet extends React.PureComponent {
                     duration: closeDuration,
                 }),
             ]).start(() => {
-                this.setState({
-                    modalVisible: false,
-                    isFullScreen: false,
-                })
-                if (typeof onClose === 'function') onClose(props)
+                if (typeof onClose === 'function') {
+                    onClose(() =>
+                        this.setState({
+                            modalVisible: false,
+                            isFullScreen: false,
+                        })
+                    )
+                } else {
+                    this.setState({
+                        modalVisible: false,
+                        isFullScreen: false,
+                    })
+                }
             })
         }
     }
 
-    createPanResponder(props) {
-        const {
-            fullScreenGesturesEnabled,
-            swipeToCloseGestureEnabled,
-            height,
-        } = props
+    createPanResponder() {
         this.panResponder = PanResponder.create({
             onStartShouldSetPanResponder: () =>
-                swipeToCloseGestureEnabled || fullScreenGesturesEnabled,
+                this.props.swipeToCloseGestureEnabled ||
+                this.props.fullScreenGesturesEnabled,
             onPanResponderMove: (e, gestureState) => {
                 const { isFullScreen, hasModalMoved } = this.state
+                const { fullScreenGesturesEnabled, height } = this.props
                 // Swiping down
                 if (gestureState.dy > 0) {
                     if (!isFullScreen)
@@ -309,6 +328,11 @@ class BottomSheet extends React.PureComponent {
                 if (!hasModalMoved) this.setState({ hasModalMoved: true })
             },
             onPanResponderRelease: (e, gestureState) => {
+                const {
+                    fullScreenGesturesEnabled,
+                    swipeToCloseGestureEnabled,
+                    height,
+                } = this.props
                 const { isFullScreen, hasModalMoved } = this.state
                 // Close/fullscreen/minimize when gesture velocity or distance hits the thereashold
                 if (
@@ -351,12 +375,12 @@ class BottomSheet extends React.PureComponent {
         })
     }
 
-    open(props) {
-        this.setModalVisible(true, props)
+    open() {
+        this.setModalVisible(true)
     }
 
-    close(props) {
-        this.setModalVisible(false, props)
+    close() {
+        this.setModalVisible(false)
     }
 
     render() {
@@ -364,7 +388,6 @@ class BottomSheet extends React.PureComponent {
             animationType,
             swipeToCloseGestureEnabled,
             fullScreenGesturesEnabled,
-            closeOnPressMask,
             closeOnPressBack,
             children,
             sheetHeader,
@@ -374,20 +397,21 @@ class BottomSheet extends React.PureComponent {
         const { modalVisible, isFullScreen } = this.state
         const scrollViewContent = !Array.isArray(children)
             ? children
-            : children.map((item, i) =>
-                  this.animatedChildrenStyles[i] ? (
-                      <Animated.View
-                          style={{
-                              height: this.animatedChildrenStyles[i].height,
-                              opacity: this.animatedChildrenStyles[i].opacity,
-                          }}
-                      >
-                          {item}
-                      </Animated.View>
-                  ) : (
-                      item
-                  )
-              )
+            : children.map((item, i) => {
+                  if (this.animatedChildrenStyles[i] !== null) {
+                      return (
+                          <Animated.View
+                              style={{
+                                  height: this.animatedChildrenStyles[i].height,
+                                  opacity: this.animatedChildrenStyles[i]
+                                      .opacity,
+                              }}
+                          >
+                              {item}
+                          </Animated.View>
+                      )
+                  } else return item
+              })
         const showDragIcon =
             swipeToCloseGestureEnabled || fullScreenGesturesEnabled
 
@@ -398,82 +422,97 @@ class BottomSheet extends React.PureComponent {
                 visible={modalVisible}
                 supportedOrientations={SUPPORTED_ORIENTATIONS}
                 onRequestClose={() => {
-                    if (closeOnPressBack) this.setModalVisible(false)
+                    if (closeOnPressBack) this.close()
                 }}
             >
-                <Animated.View
-                    style={[
-                        styles.wrapper,
-                        customStyles.wrapper,
-                        {
-                            opacity: this.animatedOpacity,
-                            paddingBottom: this.animatedPaddingBottom,
-                        },
-                    ]}
-                >
-                    <SafeAreaView style={styles.mask}>
-                        <TouchableOpacity
-                            style={styles.mask}
-                            onLayout={({ nativeEvent }) =>
-                                (this.maskHeight = nativeEvent.layout.height)
-                            }
-                            activeOpacity={1}
-                            disabled={!closeOnPressBack || isFullScreen}
-                            onPress={this.close}
-                        />
-                    </SafeAreaView>
-                    <AnimatedSafeAreaView
-                        // Do not set pan handlers on fullScreen because Scroll View is Enabled
-                        {...(!isFullScreen && this.panResponder.panHandlers)}
-                        onLayout={({ nativeEvent }) =>
-                            (this.modalHeight = nativeEvent.layout.height)
-                        }
+                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                    <Animated.View
                         style={[
-                            styles.container,
+                            styles.wrapper,
+                            customStyles.wrapper,
                             {
-                                transform: this.pan.getTranslateTransform(),
-                                height: this.animatedHeight,
+                                opacity: this.animatedOpacity,
+                                paddingBottom: this.animatedPaddingBottom,
                             },
                         ]}
                     >
-                        <View
-                            {...(isFullScreen && this.panResponder.panHandlers)}
+                        <SafeAreaView style={styles.mask}>
+                            <TouchableOpacity
+                                style={styles.mask}
+                                onLayout={({ nativeEvent }) =>
+                                    (this.maskHeight =
+                                        nativeEvent.layout.height)
+                                }
+                                activeOpacity={1}
+                                disabled={!closeOnPressBack || isFullScreen}
+                                onPress={this.close}
+                            />
+                        </SafeAreaView>
+                        <AnimatedSafeAreaView
+                            {...(!isFullScreen &&
+                                this.panResponder.panHandlers)}
+                            style={[
+                                styles.container,
+                                { transform: this.pan.getTranslateTransform() },
+                            ]}
                         >
-                            {showDragIcon && (
-                                <View style={styles.draggableContainer}>
-                                    <View
-                                        style={[
-                                            styles.draggableIcon,
-                                            customStyles.draggableIcon,
-                                        ]}
-                                    />
-                                </View>
-                            )}
-                            <Animated.View
-                                style={{
-                                    height: this.animatedHeaderStyles.height,
-                                    opacity: this.animatedHeaderStyles.opacity,
-                                }}
+                            <Animated.View // Do not set pan handlers on fullScreen because Scroll View is Enabled
+                                onLayout={({ nativeEvent }) =>
+                                    (this.modalHeight =
+                                        nativeEvent.layout.height)
+                                }
+                                style={{ height: this.animatedHeight }}
                             >
-                                {sheetHeader}
+                                <View
+                                    // set pan handlers here on fullScreen because Scroll View is Enabled
+                                    {...(isFullScreen &&
+                                        this.panResponder.panHandlers)}
+                                >
+                                    {showDragIcon && (
+                                        <View style={styles.draggableContainer}>
+                                            <View
+                                                style={[
+                                                    styles.draggableIcon,
+                                                    customStyles.draggableIcon,
+                                                ]}
+                                            />
+                                        </View>
+                                    )}
+                                    <Animated.View
+                                        style={{
+                                            height: this.animatedHeaderStyles
+                                                .height,
+                                            opacity: this.animatedHeaderStyles
+                                                .opacity,
+                                        }}
+                                    >
+                                        {sheetHeader}
+                                    </Animated.View>
+                                </View>
+                                <ScrollView
+                                    scrollEnabled={isFullScreen}
+                                    style={[
+                                        { flex: 1 },
+                                        customStyles.container,
+                                    ]}
+                                >
+                                    {scrollViewContent}
+                                </ScrollView>
+                                {sheetFooter}
                             </Animated.View>
-                        </View>
-                        <ScrollView
-                            scrollEnabled={isFullScreen}
-                            scrollEventThrottle={2}
-                            style={[{ flex: 1 }, customStyles.container]}
-                        >
-                            {scrollViewContent}
-                        </ScrollView>
-                        {sheetFooter}
-                    </AnimatedSafeAreaView>
-                </Animated.View>
+                        </AnimatedSafeAreaView>
+                    </Animated.View>
+                </MenuProvider>
             </Modal>
         )
     }
 }
 
 const styles = {
+    backdrop: {
+        backgroundColor: 'gray',
+        opacity: 0.5,
+    },
     wrapper: {
         flex: 1,
         backgroundColor: '#00000077',
@@ -498,7 +537,7 @@ const styles = {
     },
 }
 
-const itemHasRequiredProps = (item) => {
+const hasFadeAnimationProps = (item) => {
     return (
         item &&
         item.props &&
@@ -513,12 +552,10 @@ export default BottomSheet
 BottomSheet.propTypes = {
     animationType: PropTypes.oneOf(['none', 'slide', 'fade']),
     height: PropTypes.number,
-    fadeDuration: PropTypes.number,
     openDuration: PropTypes.number,
     closeDuration: PropTypes.number,
     fullScreenGesturesEnabled: PropTypes.bool,
     swipeToCloseGestureEnabled: PropTypes.bool,
-    closeOnPressMask: PropTypes.bool,
     dragFromTopOnly: PropTypes.bool,
     closeOnPressBack: PropTypes.bool,
     customStyles: PropTypes.objectOf(PropTypes.object),
@@ -526,6 +563,7 @@ BottomSheet.propTypes = {
     onOpen: PropTypes.func,
     onFullScreen: PropTypes.func,
     onMinimize: PropTypes.func,
+    onPropsHeightChange: PropTypes.func,
     sheetHeader: PropTypes.node,
     children: PropTypes.node,
     sheetFooter: PropTypes.node,
@@ -539,7 +577,6 @@ BottomSheet.defaultProps = {
     fullScreenGesturesEnabled: false,
     swipeToCloseGestureEnabled: true,
     dragFromTopOnly: false,
-    closeOnPressMask: true,
     closeOnPressBack: true,
     customStyles: {
         borderTopRightRadius: 5,
@@ -550,6 +587,7 @@ BottomSheet.defaultProps = {
     onOpen: null,
     onFullScreen: null,
     onMinimize: null,
+    onPropsHeightChange: null,
     sheetHeader: <View />,
     children: <View />,
     sheetFooter: <View />,

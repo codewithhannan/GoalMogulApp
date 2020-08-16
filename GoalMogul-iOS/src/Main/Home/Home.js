@@ -346,7 +346,9 @@ class Home extends Component {
                 }}
                 onPress={
                     routes[index].key === 'activity'
-                        ? Actions.createPostModal
+                        ? () =>
+                              this.createPostModal &&
+                              this.createPostModal.open()
                         : Actions.createGoalModal
                 }
             >
@@ -381,6 +383,7 @@ class Home extends Component {
                 : undefined
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <CreatePostModal onRef={(r) => (this.createPostModal = r)} />
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />
                     <FlatList
