@@ -41,6 +41,7 @@ import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import { Actions } from 'react-native-router-flux'
 import RichText from '../../Common/Text/RichText'
 import _ from 'lodash'
+import { getButtonBottomSheetHeight } from '../../../styles'
 
 const { InfoIcon } = Icons
 const { width } = Dimensions.get('window')
@@ -700,7 +701,7 @@ class ProfileDetailCard extends Component {
     renderBottomSheet = () => {
         const options = this.makeProfileCardOptions()
         // Options height + bottom space + bottom sheet handler height
-        const sheetHeight = options.length * 48 + getBottomSpace() + 30
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
         return (
             <BottomButtonsSheet
                 ref={(r) => (this.bottomSheetRef = r)}

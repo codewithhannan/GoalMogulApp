@@ -179,3 +179,7 @@ export const modalHeaderBadgeShadow = {
     shadowOpacity: 0.25,
     shadowRadius: 5,
 }
+
+// ios button bottom sheet height.
+// TODO: Android might not need extra height 30 for handler
+export const getButtonBottomSheetHeight = (numOptions) => numOptions * 48 + 30
