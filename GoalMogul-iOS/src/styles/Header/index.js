@@ -10,18 +10,17 @@ export const HEADER_STYLES = {
         backgroundColor: color.GM_BLUE,
         height: (IS_SMALL_PHONE ? 70 : 90) * default_style.uiScale,
         paddingTop: IS_SMALL_PHONE ? 20 : 40,
-        paddingLeft: 16,
-        paddingRight: 16,
+        paddingHorizontal: 16,
         alignItems: 'center',
     },
     nakedButton: {
-        height: 30,
-        width: 30,
+        height: 30 * default_style.uiScale,
+        width: 30 * default_style.uiScale,
         tintColor: CONTENT_COLOR,
     },
     button: default_style.buttonIcon_1,
     buttonWrapper: {
-        padding: 6,
+        padding: 6 * default_style.uiScale,
         borderRadius: 100,
         backgroundColor: color.GM_BLUE_LIGHT_LIGHT,
         justifyContent: 'center',
@@ -39,6 +38,7 @@ export const HEADER_STYLES = {
     },
     logo: {
         width: 130 * default_style.uiScale,
+        height: 30 * default_style.uiScale,
         tintColor: CONTENT_COLOR,
     },
 }
