@@ -40,6 +40,7 @@ import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 
 import { Actions } from 'react-native-router-flux'
 import RichText from '../../Common/Text/RichText'
+import _ from 'lodash'
 
 const { InfoIcon } = Icons
 const { width } = Dimensions.get('window')
@@ -70,6 +71,31 @@ class ProfileDetailCard extends Component {
         if (image) {
             this.prefetchImage(image)
         }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        const {
+            self,
+            user,
+            friendship,
+            userId,
+            friendsCount,
+            mutualFriends,
+            needRespond,
+        } = this.props
+
+        const { imageUrl } = this.state
+
+        return (
+            !_.isEqual(self, nextProps.self) ||
+            !_.isEqual(user, nextProps.user) ||
+            !_.isEqual(friendship, nextProps.friendship) ||
+            !_.isEqual(userId, nextProps.userId) ||
+            !_.isEqual(friendsCount, nextProps.friendsCount) ||
+            !_.isEqual(mutualFriends, nextProps.mutualFriends) ||
+            !_.isEqual(needRespond, nextProps.needRespond) ||
+            !_.isEqual(imageUrl, nextState.imageUrl)
+        )
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
