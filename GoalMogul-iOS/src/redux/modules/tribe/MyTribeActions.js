@@ -942,7 +942,7 @@ export const acceptTribeInvit = (tribeId) => (dispatch, getState) => {
     const onError = (err) => {
         Alert.alert(
             'Error',
-            'Failed to accept inivitation. Please try again later.'
+            'Failed to accept invitation. Please try again later.'
         )
         new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
             .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
