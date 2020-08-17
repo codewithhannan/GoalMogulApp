@@ -29,7 +29,7 @@ import { Actions } from 'react-native-router-flux'
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
 
 /* Asset */
-import Logo from '../../../asset/header/GMText.png'
+import Logo from '../../../asset/header/Goalmogul.png'
 
 import { actionSheet, switchByButtonIndex } from '../ActionSheetFactory'
 
@@ -146,11 +146,13 @@ class SearchBarHeader extends Component {
                         style={HEADER_STYLES.nakedButton}
                     />
                 ) : (
-                    <Image
-                        source={Logo}
-                        resizeMode="contain"
-                        style={HEADER_STYLES.logo}
-                    />
+                    <View style={{ marginTop: 55 }}>
+                        <Image
+                            source={Logo}
+                            resizeMode="contain"
+                            style={HEADER_STYLES.logo}
+                        />
+                    </View>
                 )}
             </DelayedButton>
         )
@@ -160,35 +162,12 @@ class SearchBarHeader extends Component {
      * @param setting:
      * @param haveSetting:
      * @param pageSetting: if a page needs a pageSetting icon, ..., then it needs
-     *        to pass in pageSetting and handlePageSetting
+     *        to pass in pageSetting
      * @param rightIcon:
      */
     renderRightIcons() {
         const { menuOnPress, tutorialOn } = this.props
         const hasRightIconTutorial = tutorialOn && tutorialOn.rightIcon
-
-        // On other people's profile page
-        if (
-            (this.props.setting && !this.props.haveSetting) ||
-            this.props.pageSetting
-        ) {
-            const { handlePageSetting } = this.props
-            return (
-                <TouchableOpacity
-                    onPress={
-                        handlePageSetting ||
-                        this.handleFriendsSettingOnClick.bind(this)
-                    }
-                    style={{ padding: 5 }}
-                >
-                    <Icon
-                        name="dots-horizontal"
-                        pack="material-community"
-                        style={HEADER_STYLES.nakedButton}
-                    />
-                </TouchableOpacity>
-            )
-        }
 
         // Standard search bar menu
         if (this.props.rightIcon === 'menu') {

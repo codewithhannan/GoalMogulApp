@@ -19,6 +19,7 @@ import BottomButtonsSheet from '../../../Common/Modal/BottomButtonsSheet'
 import AnimatedCardWrapper from '../../../Common/Card/AnimatedCardWrapper'
 import { getFriendUserId } from '../../../../redux/middleware/utils'
 import { getBottomSpace } from 'react-native-iphone-x-helper'
+import { getButtonBottomSheetHeight } from '../../../../styles'
 
 const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel']
 const BLOCK_INDEX = 0
@@ -148,7 +149,7 @@ class FriendTabCardView extends React.PureComponent {
     renderBottomSheet = (item) => {
         const options = this.makeFriendCardOptions(item)
         // Options height + bottom space + bottom sheet handler height
-        const sheetHeight = options.length * 48 + 30
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
         return (
             <BottomButtonsSheet
                 ref={(r) => (this.bottomSheetRef = r)}

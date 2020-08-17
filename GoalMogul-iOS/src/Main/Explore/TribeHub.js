@@ -43,53 +43,58 @@ class TribeHub extends Component {
         )
     }
 
+    renderHeader() {
+        return (
+            <View style={{ backgroundColor: color.GM_BACKGROUND }}>
+                <View
+                    style={{
+                        backgroundColor: color.GM_CARD_BACKGROUND,
+                        padding: 12,
+                        marginBottom: 8,
+                        flexDirection: 'row',
+                    }}
+                >
+                    <RoundedButton
+                        onPress={() =>
+                            Actions.push(
+                                componentKeyByTab('exploreTab', 'myTribeTab')
+                            )
+                        }
+                        icon="flag"
+                        text="My Tribes"
+                    />
+                    <RoundedButton
+                        onPress={() => Actions.push('explore')}
+                        icon="search"
+                        text="Discover"
+                    />
+                </View>
+                <View
+                    style={{
+                        padding: 12,
+                        backgroundColor: color.GM_CARD_BACKGROUND,
+                        borderColor: color.GM_BORDER_COLOR,
+                        borderBottomWidth: 1,
+                    }}
+                >
+                    <Text style={default_style.titleText_1}>
+                        All Tribe Activity
+                    </Text>
+                </View>
+            </View>
+        )
+    }
+
     render() {
         const { data, loading, refreshing } = this.props
         return (
             <MenuProvider>
                 <View style={{ backgroundColor: color.GM_BACKGROUND, flex: 1 }}>
                     <SearchBarHeader rightIcon="menu" />
-                    <View
-                        style={{
-                            backgroundColor: color.GM_CARD_BACKGROUND,
-                            padding: 12,
-                            marginBottom: 8,
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <RoundedButton
-                            onPress={() =>
-                                Actions.push(
-                                    componentKeyByTab(
-                                        'exploreTab',
-                                        'myTribeTab'
-                                    )
-                                )
-                            }
-                            icon="flag"
-                            text="My Tribes"
-                        />
-                        <RoundedButton
-                            onPress={() => Actions.push('explore')}
-                            icon="search"
-                            text="Discover"
-                        />
-                    </View>
                     <FlatList
                         data={data}
                         keyExtractor={(i) => i._id}
-                        ListHeaderComponent={
-                            <View
-                                style={{
-                                    padding: 16,
-                                    backgroundColor: color.GM_CARD_BACKGROUND,
-                                }}
-                            >
-                                <Text style={default_style.titleText_1}>
-                                    All Tribe Activity
-                                </Text>
-                            </View>
-                        }
+                        ListHeaderComponent={this.renderHeader.bind(this)}
                         renderItem={this.renderItem}
                         refreshing={refreshing}
                         onRefresh={this.props.refreshTribeHubFeed}

@@ -180,6 +180,7 @@ function getCommonScenes(tab) {
             key={`${prefix}friendInvitationView`}
             component={FriendInvitationView}
         />,
+        <Scene key="myTribeMembers" component={MyTribeMembers} />,
     ]
 }
 
@@ -787,7 +788,6 @@ class RouterComponent extends Component {
                         key="myTribeDescriptionLightBox"
                         component={MyTribeDescription}
                     />
-                    <Scene key="myTribeMembers" component={MyTribeMembers} />
                     <Scene key="mutualFriends" component={MutualFriends} />
                     <Scene
                         key="meetContactSync"

@@ -5,7 +5,6 @@ import { View, Text } from 'react-native'
 
 /* Components */
 import Card from './Card'
-import ProfileActionButton from '../../Common/Button/ProfileActionButton'
 
 // TODO: use redux instead of passed in props
 class ProfileAboutMeCard extends Component {

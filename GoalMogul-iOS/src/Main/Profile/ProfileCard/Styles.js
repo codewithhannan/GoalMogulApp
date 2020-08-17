@@ -23,6 +23,6 @@ export default StyleSheet.create({
     subHeaderStyle: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 16,
+        marginBottom: 8,
     },
 })

@@ -24,6 +24,7 @@ import { createReport } from '../../../redux/modules/report/ReportActions'
 import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
 import Icons from '../../../asset/base64/Icons'
 import { getBottomSpace } from 'react-native-iphone-x-helper'
+import { getButtonBottomSheetHeight } from '../../../styles'
 
 // Assets
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel']
@@ -161,7 +162,7 @@ class FriendRequestCardView extends React.PureComponent {
     renderBottomSheet = (userDoc) => {
         const options = this.makeRequestCardOptions(userDoc)
         // Options height + bottom space + bottom sheet handler height
-        const sheetHeight = options.length * 48 + 30
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
         return (
             <BottomButtonsSheet
                 ref={(r) => (this.bottomSheetRef = r)}

@@ -13,6 +13,7 @@ import AnimatedCardWrapper from '../Common/Card/AnimatedCardWrapper'
 import { createReport } from '../../redux/modules/report/ReportActions'
 import Icons from '../../asset/base64/Icons'
 import { getBottomSpace } from 'react-native-iphone-x-helper'
+import { getButtonBottomSheetHeight } from '../../styles'
 
 const { width } = Dimensions.get('window')
 
@@ -89,7 +90,7 @@ class PYMKCard extends React.Component {
     renderBottomSheet = (userDoc) => {
         const options = this.makeFriendCardOptions(userDoc)
         // Options height + bottom space + bottom sheet handler height
-        const sheetHeight = options.length * 48 + 30
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
         return (
             <BottomButtonsSheet
                 ref={(r) => (this.bottomSheetRef = r)}

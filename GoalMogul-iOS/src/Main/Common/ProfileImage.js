@@ -38,6 +38,7 @@ class ProfileImage extends React.Component {
             imageContainerStyle,
             imageStyle,
             defaultImageSource,
+            disabledOnPress,
         } = this.props
         let imageUrl = this.props.imageUrl
         const resizeMode = setValue(this.props.resizeMode).withDefaultCase(
@@ -56,36 +57,42 @@ class ProfileImage extends React.Component {
             imageContainerStyle ||
             styles.imageContainerStyle
 
-        return (
-            <TouchableWithoutFeedback onPress={this.handleProfileImageOnPress}>
-                <View
+        let fragment = (
+            <View
+                style={
+                    imageUrl
+                        ? { borderRadius: 100, ...imageContainerStyle }
+                        : {
+                              borderRadius: 100,
+                              ...defaultImageContainerStyle,
+                          }
+                }
+            >
+                <Image
                     style={
                         imageUrl
-                            ? { borderRadius: 100, ...imageContainerStyle }
+                            ? imageStyle
+                                ? {
+                                      borderRadius: 100,
+                                      ...imageStyle,
+                                  }
+                                : default_style.profileImage_1
                             : {
                                   borderRadius: 100,
-                                  ...defaultImageContainerStyle,
+                                  ...defaultImageStyle,
                               }
                     }
-                >
-                    <Image
-                        style={
-                            imageUrl
-                                ? imageStyle
-                                    ? {
-                                          borderRadius: 100,
-                                          ...imageStyle,
-                                      }
-                                    : default_style.profileImage_1
-                                : {
-                                      borderRadius: 100,
-                                      ...defaultImageStyle,
-                                  }
-                        }
-                        source={getImageOrDefault(imageUrl, defaultImageSource)}
-                        resizeMode={resizeMode}
-                    />
-                </View>
+                    source={getImageOrDefault(imageUrl, defaultImageSource)}
+                    resizeMode={resizeMode}
+                />
+            </View>
+        )
+
+        return disabledOnPress ? (
+            fragment
+        ) : (
+            <TouchableWithoutFeedback onPress={this.handleProfileImageOnPress}>
+                {fragment}
             </TouchableWithoutFeedback>
         )
     }

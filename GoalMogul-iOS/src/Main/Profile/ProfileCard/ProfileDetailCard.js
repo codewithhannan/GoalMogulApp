@@ -5,20 +5,23 @@ import { View, Image, Text, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from '@ui-kitten/components'
 import R from 'ramda'
+import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
 
 /* Assets */
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png'
 import defaultSelfProfile from '../../../asset/utils/defaultSelfUserProfile.png'
-import love from '../../../asset/utils/love.png'
-import edit from '../../../asset/utils/edit.png'
-import cancel from '../../../asset/utils/cancel.png'
 import Icons from '../../../asset/base64/Icons'
+import { default_style, color } from '../../../styles/basic'
+import { PROFILE_STYLES } from '../../../styles/Profile'
+import { getBottomSpace } from 'react-native-iphone-x-helper'
+import { createReport } from '../../../redux/modules/report/ReportActions'
 
 /* Actions */
 import {
     openProfileDetailEditForm,
     updateFriendship,
     UserBanner,
+    blockUser,
     createOrGetDirectMessage,
 } from '../../../actions/'
 
@@ -34,11 +37,13 @@ import {
 import DelayedButton from '../../Common/Button/DelayedButton'
 
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
-import { default_style, color } from '../../../styles/basic'
+
 import { Actions } from 'react-native-router-flux'
 import RichText from '../../Common/Text/RichText'
+import _ from 'lodash'
+import { getButtonBottomSheetHeight } from '../../../styles'
 
-const { MessageIcon, AddUser, InfoIcon } = Icons
+const { InfoIcon } = Icons
 const { width } = Dimensions.get('window')
 const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]'
 
@@ -69,6 +74,31 @@ class ProfileDetailCard extends Component {
         }
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        const {
+            self,
+            user,
+            friendship,
+            userId,
+            friendsCount,
+            mutualFriends,
+            needRespond,
+        } = this.props
+
+        const { imageUrl } = this.state
+
+        return (
+            !_.isEqual(self, nextProps.self) ||
+            !_.isEqual(user, nextProps.user) ||
+            !_.isEqual(friendship, nextProps.friendship) ||
+            !_.isEqual(userId, nextProps.userId) ||
+            !_.isEqual(friendsCount, nextProps.friendsCount) ||
+            !_.isEqual(mutualFriends, nextProps.mutualFriends) ||
+            !_.isEqual(needRespond, nextProps.needRespond) ||
+            !_.isEqual(imageUrl, nextState.imageUrl)
+        )
+    }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         let prevImageUrl = ''
         if (
@@ -92,6 +122,10 @@ class ProfileDetailCard extends Component {
             }
         }
     }
+
+    openOptionModal = () => this.bottomSheetRef.open()
+
+    closeOptionModal = () => this.bottomSheetRef.close()
 
     onLayout = (e) => {
         if (this.props.onLayout) {
@@ -233,110 +267,142 @@ class ProfileDetailCard extends Component {
         }
     }
 
-    renderMessageButton() {
+    renderFriendshipStatusButton() {
         if (this.props.self) return null
-        return (
-            <View style={{ marginRight: 10 }}>
-                <ProfileActionButton
-                    source={MessageIcon}
-                    onPress={() => this.handleMessageButtonOnPress()}
-                    containerStyle={styles.buttonContainerStyle}
-                    iconStyle={{
-                        ...default_style.buttonIcon_1,
-                        tintColor: 'white',
-                    }}
-                />
-            </View>
-        )
-    }
-
-    renderProfileActionButton() {
         const containerStyle = styles.buttonContainerStyle
         const textStyle = { ...default_style.buttonText_1, color: 'white' }
-        const iconStyle = { ...default_style.buttonIcon_1, tintColor: 'white' }
+        const iconStyle = {
+            ...default_style.normalIcon_1,
+            tintColor: 'white',
+            marginRight: 8,
+        }
 
-        if (this.props.self) {
+        const ADD_FRIEND = 'Add Friend'
+        const REQUEST_PENDING = 'Cancel Request'
+        const MESSAGE = 'Message'
+        const RESPOND = 'Respond'
+
+        if (this.props.needRespond) {
             return (
-                <ProfileActionButton
-                    source={edit}
-                    onPress={() => this.handleEditOnPressed()}
-                    containerStyle={containerStyle}
-                    iconStyle={iconStyle}
-                />
+                <View style={{ marginRight: 10 }}>
+                    <ProfileActionButton
+                        iconName="account-plus"
+                        text={RESPOND}
+                        onPress={this.handleButtonOnPress.bind(this, 'respond')}
+                        iconStyle={iconStyle}
+                        containerStyle={containerStyle}
+                        textStyle={textStyle}
+                    />
+                </View>
             )
         }
 
         const status = this.props.friendship.status
 
-        if (this.props.needRespond) {
-            return (
-                <ProfileActionButton
-                    source={AddUser}
-                    text="Respond"
-                    onPress={this.handleButtonOnPress.bind(this, 'respond')}
-                    iconStyle={iconStyle}
-                    containerStyle={containerStyle}
-                    textStyle={textStyle}
-                />
-            )
-        }
-
         switch (status) {
             case undefined:
                 return (
-                    <ProfileActionButton
-                        source={AddUser}
-                        onPress={this.handleButtonOnPress.bind(
-                            this,
-                            'requestFriend'
-                        )}
-                        iconStyle={iconStyle}
-                        containerStyle={{
-                            ...containerStyle,
-                            backgroundColor: color.GM_BLUE_LIGHT,
-                        }}
-                    />
+                    <View style={{ marginRight: 10 }}>
+                        <ProfileActionButton
+                            text={ADD_FRIEND}
+                            iconName="account-plus"
+                            onPress={this.handleButtonOnPress.bind(
+                                this,
+                                'requestFriend'
+                            )}
+                            iconStyle={iconStyle}
+                            textStyle={textStyle}
+                            containerStyle={{
+                                ...containerStyle,
+                            }}
+                        />
+                    </View>
                 )
 
             case 'Accepted':
                 return (
-                    <ProfileActionButton
-                        text="Friend"
-                        source={love}
-                        onPress={this.handleButtonOnPress.bind(
-                            this,
-                            'unfriend'
-                        )}
-                        textStyle={textStyle}
-                        iconStyle={iconStyle}
-                        containerStyle={{
-                            ...containerStyle,
-                            backgroundColor: color.GM_BLUE_LIGHT,
-                        }}
-                    />
+                    <View style={{ marginRight: 10 }}>
+                        <ProfileActionButton
+                            text={MESSAGE}
+                            iconName="chat-processing"
+                            onPress={() => this.handleMessageButtonOnPress()}
+                            iconStyle={iconStyle}
+                            textStyle={textStyle}
+                            containerStyle={{
+                                ...containerStyle,
+                            }}
+                        />
+                    </View>
                 )
 
             case 'Invited':
                 return (
-                    <ProfileActionButton
-                        text="Cancel request"
-                        source={cancel}
-                        onPress={this.handleButtonOnPress.bind(
-                            this,
-                            'deleteFriend'
-                        )}
-                        containerStyle={{
-                            ...containerStyle,
-                            backgroundColor: color.GM_BLUE_LIGHT,
-                        }}
-                        textStyle={textStyle}
-                        iconStyle={iconStyle}
-                    />
+                    <View style={{ marginRight: 10 }}>
+                        <ProfileActionButton
+                            text={REQUEST_PENDING}
+                            iconName="close-circle"
+                            onPress={this.handleButtonOnPress.bind(
+                                this,
+                                'deleteFriend'
+                            )}
+                            containerStyle={{
+                                ...containerStyle,
+                                backgroundColor: color.GM_BLUE_LIGHT,
+                            }}
+                            textStyle={textStyle}
+                            iconStyle={iconStyle}
+                        />
+                    </View>
                 )
 
             default:
                 return null
         }
+    }
+
+    renderMoreProfileActionButton() {
+        if (this.props.self) {
+            return (
+                <DelayedButton
+                    onPress={() => this.handleEditOnPressed()}
+                    style={{
+                        ...styles.editButtonContainerStyle,
+                    }}
+                >
+                    <Icon
+                        name="border-color"
+                        pack="material-community"
+                        style={{
+                            ...default_style.buttonIcon_1,
+                            tintColor: 'white',
+                            paddingTop: 2,
+                        }}
+                        zIndex={1}
+                    />
+                </DelayedButton>
+            )
+        }
+
+        return (
+            <DelayedButton
+                onPress={() => this.openOptionModal()}
+                style={{
+                    ...styles.buttonContainerStyle,
+                    backgroundColor: '#F2F2F2',
+                    paddingHorizontal: 8,
+                }}
+            >
+                <Icon
+                    name="dots-horizontal"
+                    pack="material-community"
+                    style={{
+                        ...default_style.normalIcon_1,
+                        tintColor: color.TEXT_COLOR.DARK,
+                    }}
+                    zIndex={1}
+                />
+            </DelayedButton>
+        )
     }
 
     // Open iOS menu with two options
@@ -451,7 +517,7 @@ class ProfileDetailCard extends Component {
             )
         }
         return (
-            <View>
+            <View style={{ marginBottom: 4 }}>
                 {this.renderAddAction(
                     'Add a headline',
                     this.handleEditOnPressed
@@ -496,7 +562,10 @@ class ProfileDetailCard extends Component {
                             borderStyle: 'dashed',
                             borderRadius: 6,
                             padding: 4,
+                            paddingBottom: 2,
+                            paddingTop: 2,
                             alignItems: 'center',
+                            width: 120,
                         }}
                     >
                         <Icon
@@ -524,6 +593,124 @@ class ProfileDetailCard extends Component {
         )
     }
 
+    makeProfileCardOptions = () => {
+        const unfriendOption = {
+            text: 'Unfriend',
+            textStyle: { color: 'black' },
+            icon: { name: 'account-remove', pack: 'material-community' },
+            onPress: () => {
+                this.closeOptionModal()
+                // Wait for bottom sheet to close
+                // before showing unfriend alert confirmation
+                setTimeout(() => {
+                    this.handleButtonOnPress('unfriend')
+                }, 500)
+            },
+        }
+
+        const shareToDirectMessageOption = {
+            text: 'Share Profile as Direct Message',
+            textStyle: { color: 'black' },
+            icon: { name: 'account-arrow-right', pack: 'material-community' },
+            onPress: () => {
+                this.closeOptionModal()
+                // share to Direct Chat
+                // TODO: @Jay Share to direct message
+                const userToShare = this.props.user
+                const chatRoomType = 'Direct'
+                Actions.push('shareToChatLightBox', {
+                    userToShare,
+                    chatRoomType,
+                })
+            },
+        }
+
+        const shareToGroupChatOption = {
+            text: 'Share Profile to Group Chat',
+            textStyle: { color: 'black' },
+            icon: { name: 'account-arrow-right', pack: 'material-community' },
+            onPress: () => {
+                this.closeOptionModal()
+                // TODO: @Jay Share to group conversation
+                const userToShare = this.props.user
+                const chatRoomType = 'Group'
+                Actions.push('shareToChatLightBox', {
+                    userToShare,
+                    chatRoomType,
+                })
+            },
+        }
+
+        const blockOption = {
+            text: 'Block',
+            textStyle: { color: 'black' },
+            image: Icons.AccountCancel,
+            imageStyle: { tintColor: 'black' },
+            // icon: { name: 'account-cancel', pack: 'material-community' },
+            onPress: () => {
+                this.closeOptionModal()
+                setTimeout(() => {
+                    console.log(
+                        `${DEBUG_KEY} User blocks _id: `,
+                        this.props.userId
+                    )
+                    this.props.blockUser(this.props.userId, () =>
+                        alert(
+                            `You have successfully blocked ${this.props.user.name}. ${text}`
+                        )
+                    )
+                }, 500)
+            },
+        }
+
+        const reportOption = {
+            text: 'Report',
+            textStyle: { color: 'black' },
+            icon: { name: 'account-alert', pack: 'material-community' },
+            onPress: () => {
+                this.closeOptionModal()
+                setTimeout(() => {
+                    console.log(
+                        `${DEBUG_KEY} User reports profile with _id: `,
+                        this.props.userId
+                    )
+                    this.props.createReport(this.props.userId, 'User')
+                }, 500)
+            },
+        }
+
+        // friend case
+        if (this.props.friendship.status == 'Accepted') {
+            return [
+                unfriendOption,
+                shareToDirectMessageOption,
+                shareToGroupChatOption,
+                blockOption,
+                reportOption,
+            ]
+        }
+
+        return [
+            shareToDirectMessageOption,
+            shareToGroupChatOption,
+            blockOption,
+            reportOption,
+        ]
+    }
+
+    renderBottomSheet = () => {
+        const options = this.makeProfileCardOptions()
+        // Options height + bottom space + bottom sheet handler height
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.bottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
+    }
+
     render() {
         const { user, self } = this.props
         if (!user) return null
@@ -539,11 +726,19 @@ class ProfileDetailCard extends Component {
                     }}
                 />
                 <View style={styles.topWrapperStyle}>
-                    {this.renderProfileImage(profile, self)}
-                    <View style={{ flexDirection: 'row', flex: 1 }}>
-                        <View style={{ flex: 1 }} />
-                        {this.renderMessageButton()}
-                        {this.renderProfileActionButton()}
+                    <View
+                        style={{
+                            flexGrow: 1,
+                            flexDirection: 'row',
+                        }}
+                    >
+                        {this.renderProfileImage(profile, self)}
+                    </View>
+                    <View style={{ flexDirection: 'row' }}>
+                        {/* <View style={{ flex: 1 }} /> */}
+                        {this.renderFriendshipStatusButton()}
+                        {this.renderMoreProfileActionButton()}
+                        {this.renderBottomSheet()}
                     </View>
                 </View>
                 <View style={styles.containerStyle}>
@@ -551,10 +746,10 @@ class ProfileDetailCard extends Component {
                         style={{ flexDirection: 'row', alignItems: 'center' }}
                     >
                         <Text
-                            style={[
-                                styles.marginStyle,
-                                default_style.titleText_1,
-                            ]}
+                            style={{
+                                ...PROFILE_STYLES.nameTitle,
+                                marginBottom: 8,
+                            }}
                         >
                             {name}
                         </Text>
@@ -599,22 +794,26 @@ const styles = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-start',
-        paddingTop: 10,
-        paddingLeft: 20,
-        paddingRight: 20,
+        // paddingTop: 10,
+        paddingLeft: 16,
+        paddingRight: 16,
     },
     topWrapperStyle: {
-        height: default_style.uiScale * 60,
-        backgroundColor: color.GM_CARD_BACKGROUND,
-        padding: 16,
+        backgroundColor: color.BACKGROUND_COLOR,
+        paddingHorizontal: 16,
+        marginTop: 16,
+        marginBottom: 16,
+        flexDirection: 'row',
+        paddingBottom: 0,
     },
     imageContainerStyle: {
+        flex: 1,
         alignItems: 'center',
         borderRadius: default_style.uiScale * 60,
         borderColor: '#BDBDBD',
         position: 'absolute',
-        bottom: 10,
-        left: 20,
+        bottom: 0,
+        // left: 20,
         alignSelf: 'center',
         backgroundColor: color.GM_CARD_BACKGROUND,
     },
@@ -624,11 +823,23 @@ const styles = {
         borderRadius: default_style.uiScale * 60,
     },
     buttonContainerStyle: {
-        color: 'white',
+        color: color.GM_CARD_BACKGROUND,
+        backgroundColor: color.GM_BLUE,
+        borderRadius: 3,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+    },
+    editButtonContainerStyle: {
+        color: color.GM_CARD_BACKGROUND,
         backgroundColor: color.GM_BLUE,
         borderRadius: 100,
         alignItems: 'center',
         justifyContent: 'center',
+        paddingBottom: 6,
+        padding: 8,
     },
     marginStyle: {
         marginBottom: 5,
@@ -674,4 +885,6 @@ export default connect(mapStateToProps, {
     openProfileDetailEditForm,
     updateFriendship,
     createOrGetDirectMessage,
+    createReport,
+    blockUser,
 })(ProfileDetailCard)
