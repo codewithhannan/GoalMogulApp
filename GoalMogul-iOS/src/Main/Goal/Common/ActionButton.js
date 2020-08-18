@@ -77,6 +77,7 @@ class ActionButton extends React.PureComponent {
                 }}
                 onPress={this.handleOnPress}
                 disabled={buttonDisabled}
+                onLayout={this.props.onLayout}
             >
                 <View style={this.props.iconContainerStyle}>
                     <Image

@@ -50,8 +50,7 @@ import { color, default_style } from '../../../styles/basic'
 import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
-    DEVICE_MODEL,
-    IPHONE_MODELS,
+    DEVICE_PLATFORM,
 } from '../../../Utils/Constants'
 import {
     actionSheet,
@@ -73,7 +72,7 @@ import Timestamp from '../Common/Timestamp'
 const { width } = Dimensions.get('window')
 const WINDOW_WIDTH = width
 
-const { CheckIcon, BellIcon, ViewCountIcon } = Icons
+const { CheckIcon, BellIcon } = Icons
 const DEBUG_KEY = '[ UI GoalDetailCardV3.GoalDetailSection ]'
 const SHARE_TO_MENU_OPTTIONS = [
     'Share to Feed',
@@ -93,6 +92,7 @@ class GoalDetailSection extends React.PureComponent {
             showShareListModa: false,
             showlikeListModal: false,
             floatingHeartCount: 0,
+            likeButtonLeftOffset: 0,
         }
         this.handleGoalReminder = this.handleGoalReminder.bind(this)
     }
@@ -574,7 +574,10 @@ class GoalDetailSection extends React.PureComponent {
     }
 
     incrementFloatingHeartCount = () => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        // only iOS has a clean haptic system at the moment
+        if (DEVICE_PLATFORM == 'iOS') {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        }
         this.setState({
             floatingHeartCount: this.state.floatingHeartCount + 1,
         })
@@ -610,6 +613,11 @@ class GoalDetailSection extends React.PureComponent {
                     onTextPress={() => {
                         this.setState({ showlikeListModal: true })
                     }}
+                    onLayout={({ nativeEvent }) =>
+                        this.setState({
+                            likeButtonLeftOffset: nativeEvent.layout.x,
+                        })
+                    }
                 />
                 <ActionButton
                     iconSource={ShareIcon}
@@ -652,13 +660,6 @@ class GoalDetailSection extends React.PureComponent {
     render() {
         const { item } = this.props
         if (!item || _.isEmpty(item)) return null
-
-        // position the floating heart animation on like correctly
-        const isSmallerIphone = IPHONE_MODELS.includes(DEVICE_MODEL)
-        let floatingHeartLeftOffset = isSmallerIphone ? 28 : 36
-        // reduce left offset if the like count is higher
-        const likeCount = item.likeCount ? item.likeCount : 0
-        floatingHeartLeftOffset -= (likeCount.toString().length - 1) * 2
 
         return (
             <View onLayout={this.handleOnLayout}>
@@ -713,7 +714,7 @@ class GoalDetailSection extends React.PureComponent {
                     style={{
                         zIndex: 5,
                     }}
-                    leftOffset={floatingHeartLeftOffset}
+                    leftOffset={this.state.likeButtonLeftOffset}
                 />
                 {this.renderActionButtons(item)}
                 {this.renderGoalReminderDatePicker()}

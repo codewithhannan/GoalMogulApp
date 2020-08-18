@@ -2,6 +2,7 @@
 
 import Constants from 'expo-constants'
 import { Dimensions, Platform } from 'react-native'
+import * as Device from 'expo-device'
 
 const { height } = Dimensions.get('window')
 
@@ -52,6 +53,14 @@ export const DEVICE_MODEL =
     Constants.platform && Constants.platform.ios && Constants.platform.ios.model
         ? Constants.platform.ios.model.toLowerCase()
         : 'iphone 7'
+
+// 'iOS' platform includes 'iOS' and 'iPadOS' osNames
+export const DEVICE_PLATFORM =
+    Device.osName == 'Android'
+        ? 'Android'
+        : Device.osName != 'Windows'
+        ? 'iOS'
+        : 'Windows'
 
 // Simple function to identify if iphone is on zoomed mode
 export const IS_ZOOMED =
