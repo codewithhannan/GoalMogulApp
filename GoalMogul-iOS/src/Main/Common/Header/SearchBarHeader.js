@@ -146,7 +146,7 @@ class SearchBarHeader extends Component {
                         style={HEADER_STYLES.nakedButton}
                     />
                 ) : (
-                    <View style={{ marginTop: 55 }}>
+                    <View>
                         <Image
                             source={Logo}
                             resizeMode="contain"
