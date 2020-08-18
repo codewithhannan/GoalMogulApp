@@ -172,7 +172,7 @@ class SearchOverlay extends Component {
                             placeholderTextColor={color.GM_BLUE}
                             cancelButtonProps={{
                                 buttonTextStyle: {
-                                    color: '#21364C',
+                                    color: 'white',
                                 },
                             }}
                             searchIcon={() => (
