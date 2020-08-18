@@ -362,13 +362,16 @@ class OnboardingTribeSelection extends React.Component {
                     </View>
                     {this.renderListHeaderComponent()}
                     <FlatList
-                        onScroll={Animated.event([
-                            {
-                                nativeEvent: {
-                                    contentOffset: { y: this.state.scroll },
+                        onScroll={Animated.event(
+                            [
+                                {
+                                    nativeEvent: {
+                                        contentOffset: { y: this.state.scroll },
+                                    },
                                 },
-                            },
-                        ])}
+                            ],
+                            { useNativeDriver: true }
+                        )}
                         data={tribesToRender}
                         renderItem={(item, index) =>
                             this.renderItem(item, index)

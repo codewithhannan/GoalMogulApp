@@ -458,10 +458,12 @@ export class GoalDetailCardV3 extends Component {
 
         Animated.parallel([
             Animated.timing(this.state.commentBoxPadding, {
+                useNativeDriver: false,
                 toValue: e.endCoordinates.height,
                 duration: e.duration,
             }),
             Animated.timing(this.state.contentBottomPadding, {
+                useNativeDriver: false,
                 toValue: e.endCoordinates.height,
                 duration: e.duration,
             }),
@@ -480,10 +482,12 @@ export class GoalDetailCardV3 extends Component {
 
         Animated.parallel([
             Animated.timing(this.state.commentBoxPadding, {
+                useNativeDriver: false,
                 toValue: 0,
                 duration: e.duration,
             }),
             Animated.timing(this.state.contentBottomPadding, {
+                useNativeDriver: false,
                 toValue: 0,
                 duration: e.duration,
             }),

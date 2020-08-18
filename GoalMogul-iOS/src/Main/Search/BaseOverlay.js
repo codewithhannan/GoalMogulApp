@@ -19,6 +19,7 @@ export default class BaseLightbox extends Component {
         const { opacity } = this.props
         const value = opacity !== undefined ? opacity : 1
         Animated.timing(this.state.opacity, {
+            useNativeDriver: true,
             duration: 100,
             toValue: value,
         }).start()
@@ -26,6 +27,7 @@ export default class BaseLightbox extends Component {
 
     closeModal = () => {
         Animated.timing(this.state.opacity, {
+            useNativeDriver: true,
             duration: 100,
             toValue: 0,
         }).start(Actions.pop)

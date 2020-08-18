@@ -202,6 +202,7 @@ export default class MentionsTextInput extends Component {
 
     openSuggestionsPanel(height) {
         Animated.timing(this.state.suggestionRowHeight, {
+            useNativeDriver: false,
             toValue: height ? height : this.props.suggestionRowHeight,
             duration: 100,
         }).start()
@@ -214,6 +215,7 @@ export default class MentionsTextInput extends Component {
 
     closeSuggestionsPanel() {
         Animated.timing(this.state.suggestionRowHeight, {
+            useNativeDriver: false,
             toValue: 0,
             duration: 100,
         }).start()

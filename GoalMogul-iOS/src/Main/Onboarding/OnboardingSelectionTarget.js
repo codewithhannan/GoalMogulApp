@@ -225,6 +225,7 @@ class OnboardingSelectionTarget extends React.Component {
                     onKeyboardWillShow={() => {
                         // this.scrollview.props.scrollToPosition(0, 120)
                         Animated.timing(this.animations.checkBoxOpacity, {
+                            useNativeDriver: true,
                             toValue: 0.4,
                             duration: 300,
                         }).start()
@@ -232,6 +233,7 @@ class OnboardingSelectionTarget extends React.Component {
                     onKeyboardWillHide={() => {
                         // this.scrollview.props.scrollToPosition(0, 0);
                         Animated.timing(this.animations.checkBoxOpacity, {
+                            useNativeDriver: true,
                             toValue: 1,
                             duration: 300,
                         }).start()

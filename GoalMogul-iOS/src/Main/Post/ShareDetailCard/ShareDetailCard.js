@@ -128,6 +128,7 @@ class ShareDetailCard extends Component {
 
     keyboardWillShow = (e) => {
         Animated.timing(this.state.commentBoxPadding, {
+            useNativeDriver: false,
             toValue: e.endCoordinates.height,
             duration: e.duration,
         }).start()
@@ -135,6 +136,7 @@ class ShareDetailCard extends Component {
 
     keyboardWillHide = (e) => {
         Animated.timing(this.state.commentBoxPadding, {
+            useNativeDriver: false,
             toValue: 0,
             duration: e.duration,
         }).start()

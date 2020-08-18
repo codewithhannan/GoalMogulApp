@@ -104,6 +104,7 @@ class ReplyThread extends React.Component {
 
     keyboardWillShow = (e) => {
         Animated.timing(this.commentBoxPadding, {
+            useNativeDriver: false,
             toValue: e.endCoordinates.height,
             duration: e.duration,
         }).start()
@@ -111,6 +112,7 @@ class ReplyThread extends React.Component {
 
     keyboardWillHide = (e) => {
         Animated.timing(this.commentBoxPadding, {
+            useNativeDriver: false,
             toValue: 0,
             duration: e.duration,
         }).start()

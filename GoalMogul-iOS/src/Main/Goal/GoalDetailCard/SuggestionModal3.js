@@ -84,20 +84,22 @@ class SuggestionModal extends Component {
     handleExpand = () => {
         Animated.parallel([
             Animated.timing(this.fadeHeight, {
+                useNativeDriver: false,
                 duration: 100,
                 toValue: OPTIONS_HEIGHT,
             }),
             Animated.timing(this.fadeOpacity, {
+                useNativeDriver: false,
                 duration: 100,
                 toValue: 1,
             }),
             Animated.timing(this.suggestionOpacity, {
+                useNativeDriver: false,
                 duration: 100,
                 toValue: 0.001,
             }),
         ]).start(() => {
             this.setState({
-                ...this.state,
                 optionsCollapsed: false,
             })
         })
@@ -106,20 +108,22 @@ class SuggestionModal extends Component {
     handleCollapse = () => {
         Animated.parallel([
             Animated.timing(this.fadeHeight, {
+                useNativeDriver: false,
                 duration: 100,
                 toValue: 0,
             }),
             Animated.timing(this.fadeOpacity, {
+                useNativeDriver: false,
                 duration: 100,
                 toValue: OPTIONS_OPACITY,
             }),
             Animated.timing(this.suggestionOpacity, {
+                useNativeDriver: false,
                 duration: 100,
                 toValue: 1,
             }),
         ]).start(() => {
             this.setState({
-                ...this.state,
                 optionsCollapsed: true,
             })
         })

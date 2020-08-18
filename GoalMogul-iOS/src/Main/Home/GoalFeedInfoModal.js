@@ -29,6 +29,7 @@ class GoalFeedInfoModal extends React.PureComponent {
         // const { opacity } = this.props;
         // const value = opacity !== undefined ? opacity : 1;
         Animated.timing(this.state.opacity, {
+            useNativeDriver: true,
             duration: 100,
             toValue: 0.4,
         }).start()
@@ -36,6 +37,7 @@ class GoalFeedInfoModal extends React.PureComponent {
 
     closeModal = () => {
         Animated.timing(this.state.opacity, {
+            useNativeDriver: true,
             duration: 150,
             toValue: 0,
         }).start()

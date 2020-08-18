@@ -104,24 +104,46 @@ class Tutorial extends React.Component {
             Animated.delay(DURATION),
             // Show challenge
             Animated.timing(this.challengeAnim, {
+                useNativeDriver: false,
                 duration: DURATION,
                 toValue: 1,
             }),
             Animated.delay(PAUSE),
             Animated.timing(this.challengeAnim, {
+                useNativeDriver: false,
                 duration: DURATION,
                 toValue: 0,
             }),
             // Show Learn
-            Animated.timing(this.LearnAnim, { duration: DURATION, toValue: 1 }),
+            Animated.timing(this.LearnAnim, {
+                useNativeDriver: false,
+                duration: DURATION,
+                toValue: 1,
+            }),
             Animated.delay(PAUSE),
-            Animated.timing(this.LearnAnim, { duration: DURATION, toValue: 0 }),
+            Animated.timing(this.LearnAnim, {
+                useNativeDriver: false,
+                duration: DURATION,
+                toValue: 0,
+            }),
             // Show Tribe
-            Animated.timing(this.TribeAnim, { duration: DURATION, toValue: 1 }),
+            Animated.timing(this.TribeAnim, {
+                useNativeDriver: false,
+                duration: DURATION,
+                toValue: 1,
+            }),
             Animated.delay(PAUSE),
-            Animated.timing(this.TribeAnim, { duration: DURATION, toValue: 0 }),
+            Animated.timing(this.TribeAnim, {
+                useNativeDriver: false,
+                duration: DURATION,
+                toValue: 0,
+            }),
             // Show Host
-            Animated.timing(this.HostAnim, { duration: DURATION, toValue: 1 }),
+            Animated.timing(this.HostAnim, {
+                useNativeDriver: false,
+                duration: DURATION,
+                toValue: 1,
+            }),
         ])
 
         const { headerAnimation, callback } = this.animateHeader(
@@ -132,6 +154,7 @@ class Tutorial extends React.Component {
             headerAnimation,
             sequenceAnimations,
             Animated.timing(this.progress, {
+                useNativeDriver: false,
                 duration: 8 * DURATION + 4 * PAUSE + extraDuration,
                 toValue: 1,
             }),
@@ -148,10 +171,12 @@ class Tutorial extends React.Component {
         const headerAnimation = Animated.sequence([
             Animated.delay(delay),
             Animated.timing(this.settingAccount, {
+                useNativeDriver: false,
                 duration: DURATION,
                 toValue: 0,
             }),
             Animated.timing(this.setupComplete, {
+                useNativeDriver: false,
                 duration: DURATION,
                 toValue: 0.8,
             }),
@@ -192,6 +217,7 @@ class Tutorial extends React.Component {
         this.animate(
             [
                 Animated.timing(this.HostAnim, {
+                    useNativeDriver: false,
                     duration: DURATION,
                     toValue: 0,
                 }),
