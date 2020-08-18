@@ -163,7 +163,7 @@ class ActivityCard extends React.PureComponent {
 
     incrementFloatingHeartCount = () => {
         // only iOS has a clean haptic system at the moment
-        if (DEVICE_PLATFORM == 'iOS') {
+        if (DEVICE_PLATFORM == 'ios') {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
         }
         this.setState({
