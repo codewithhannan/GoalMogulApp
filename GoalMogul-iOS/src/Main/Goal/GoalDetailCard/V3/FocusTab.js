@@ -35,7 +35,6 @@ class FocusTab extends React.PureComponent {
         this.state = {
             keyboardHeight: 0,
             position: 'absolute',
-            commentBoxPadding: new Animated.Value(0),
             keyboardDidShow: false,
             // TODO: merge LikeListModal for comment with the one for goal
             showCommentLikeList: false,

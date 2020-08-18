@@ -127,30 +127,17 @@ class ShareDetailCard extends Component {
     }
 
     keyboardWillShow = (e) => {
-        console.log(`${DEBUG_KEY}: [ keyboardWillShow ]`)
-        const timeout = (TOTAL_HEIGHT * 210) / e.endCoordinates.height
-        Animated.sequence([
-            Animated.delay(timeout),
-            Animated.parallel([
-                Animated.timing(this.state.commentBoxPadding, {
-                    toValue:
-                        e.endCoordinates.height -
-                        TOTAL_HEIGHT -
-                        getBottomSpace(),
-                    duration: 210 - timeout,
-                }),
-            ]),
-        ]).start()
+        Animated.timing(this.state.commentBoxPadding, {
+            toValue: e.endCoordinates.height,
+            duration: e.duration,
+        }).start()
     }
 
-    keyboardWillHide = () => {
-        console.log(`${DEBUG_KEY}: [ keyboardWillHide ]`)
-        Animated.parallel([
-            Animated.timing(this.state.commentBoxPadding, {
-                toValue: 0,
-                duration: 210,
-            }),
-        ]).start()
+    keyboardWillHide = (e) => {
+        Animated.timing(this.state.commentBoxPadding, {
+            toValue: 0,
+            duration: e.duration,
+        }).start()
     }
 
     /**
@@ -316,50 +303,45 @@ class ShareDetailCard extends Component {
                             this.props.closeShareDetail(postId, pageId)
                         }
                     />
-                    <KeyboardAvoidingView
-                        style={{ flex: 1 }}
-                        behavior="padding"
-                    >
-                        <FlatList
-                            ref="flatList"
-                            data={data}
-                            renderItem={this.renderItem}
-                            keyExtractor={this.keyExtractor}
-                            ListHeaderComponent={this.renderShareDetailSection.apply(
-                                this
-                            )}
-                            refreshing={this.props.commentLoading}
-                            onRefresh={this.handleRefresh}
-                            ListFooterComponent={
-                                <View
-                                    style={{
-                                        height: 43,
-                                        backgroundColor: 'transparent',
-                                    }}
-                                />
-                            }
-                        />
-                        <Animated.View
-                            style={[
-                                styles.composerContainer,
-                                {
-                                    position: this.state.position,
-                                    paddingBottom: this.state.commentBoxPadding,
-                                    backgroundColor: 'white',
-                                    zIndex: 3,
-                                },
-                            ]}
-                        >
-                            <CommentBox
-                                onRef={(ref) => {
-                                    this.commentBox = ref
+                    <FlatList
+                        ref="flatList"
+                        data={data}
+                        renderItem={this.renderItem}
+                        keyExtractor={this.keyExtractor}
+                        ListHeaderComponent={this.renderShareDetailSection.apply(
+                            this
+                        )}
+                        refreshing={this.props.commentLoading}
+                        onRefresh={this.handleRefresh}
+                        ListFooterComponent={
+                            <View
+                                style={{
+                                    height: 43,
+                                    backgroundColor: 'transparent',
                                 }}
-                                hasSuggestion={false}
-                                pageId={pageId}
-                                entityId={postId}
                             />
-                        </Animated.View>
-                    </KeyboardAvoidingView>
+                        }
+                    />
+                    <Animated.View
+                        style={[
+                            styles.composerContainer,
+                            {
+                                position: this.state.position,
+                                paddingBottom: this.state.commentBoxPadding,
+                                backgroundColor: 'white',
+                                zIndex: 3,
+                            },
+                        ]}
+                    >
+                        <CommentBox
+                            onRef={(ref) => {
+                                this.commentBox = ref
+                            }}
+                            hasSuggestion={false}
+                            pageId={pageId}
+                            entityId={postId}
+                        />
+                    </Animated.View>
                 </View>
             </MenuProvider>
         )
