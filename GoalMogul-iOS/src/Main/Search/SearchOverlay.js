@@ -2,7 +2,7 @@
 
 // This component is a search overlay for three tabs, people, event and tribe
 import React, { Component } from 'react'
-import { View, Text, Platform, Keyboard } from 'react-native'
+import { View } from 'react-native'
 import { connect } from 'react-redux'
 import { SearchBar, Icon } from 'react-native-elements'
 import { MenuProvider } from 'react-native-popup-menu'
@@ -30,14 +30,12 @@ import {
 import { color, default_style } from '../../styles/basic'
 
 // Constants
-import { IPHONE_MODELS, DEVICE_MODEL } from '../../Utils/Constants'
 import {
     track,
     EVENT as E,
     SCREENS,
     wrapAnalytics,
 } from '../../monitoring/segment'
-import { IS_SMALL_PHONE } from '../../styles'
 import { HEADER_STYLES } from '../../styles/Header'
 
 const DEBUG_KEY = '[ Component Search ]'
@@ -213,9 +211,7 @@ const styles = {
         justifyContent: 'center',
         borderRadius: 100,
     },
-    searchInputStyle: {
-        ...default_style.normalText_1,
-    },
+    searchInputStyle: default_style.normalText_1,
     backdrop: {
         backgroundColor: 'gray',
         opacity: 0.7,
