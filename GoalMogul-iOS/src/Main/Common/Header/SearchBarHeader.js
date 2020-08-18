@@ -146,13 +146,11 @@ class SearchBarHeader extends Component {
                         style={HEADER_STYLES.nakedButton}
                     />
                 ) : (
-                    <View style={{ marginTop: 55 }}>
-                        <Image
-                            source={Logo}
-                            resizeMode="contain"
-                            style={HEADER_STYLES.logo}
-                        />
-                    </View>
+                    <Image
+                        source={Logo}
+                        resizeMode="contain"
+                        style={HEADER_STYLES.logo}
+                    />
                 )}
             </DelayedButton>
         )

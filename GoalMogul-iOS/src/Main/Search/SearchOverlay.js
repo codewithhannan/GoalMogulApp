@@ -37,6 +37,8 @@ import {
     SCREENS,
     wrapAnalytics,
 } from '../../monitoring/segment'
+import { IS_SMALL_PHONE } from '../../styles'
+import { HEADER_STYLES } from '../../styles/Header'
 
 const DEBUG_KEY = '[ Component Search ]'
 
@@ -45,7 +47,6 @@ class SearchOverlay extends Component {
         super(props)
         this.handleCancel = this.handleCancel.bind(this)
         this.handleOnEndSubmitting = this.handleOnEndSubmitting.bind(this)
-        this.keyboardWillHide = this.keyboardWillHide.bind(this)
         this.isCanceled = false
         this.state = {
             // We keep a local copy since debounced search takes a while to fire event to update reducer
@@ -56,28 +57,10 @@ class SearchOverlay extends Component {
 
     componentWillMount() {
         track(E.SEARCH_OPENED)
-        this.keyboardWillHideListener = Keyboard.addListener(
-            'keyboardWillHide',
-            this.keyboardWillHide
-        )
     }
 
     componentWillUnmount() {
         track(E.SEARCH_CLOSED)
-        this.keyboardWillHideListener.remove()
-    }
-
-    keyboardWillHide() {
-        if (
-            (!this.props.searchContent ||
-                this.props.searchContent.trim() === '') &&
-            (!this.state.searchContent ||
-                this.state.searchContent === '' ||
-                this.state.searchContent.trim() === '') &&
-            !this.isCanceled
-        ) {
-            // this.handleCancel();
-        }
     }
 
     // Search bar functions
@@ -124,17 +107,6 @@ class SearchOverlay extends Component {
         }
     }
 
-    searchIcon = () => (
-        <View style={{ flexDirection: 'row' }}>
-            <Icon
-                type="font-awesome"
-                name="search"
-                style={styles.searchIconStyle}
-            />
-            <Text>Search GoalMogul</Text>
-        </View>
-    )
-
     // Tabs handler functions
     _handleIndexChange = (index) => {
         console.log(`${DEBUG_KEY}: index changed to ${index}`)
@@ -168,11 +140,6 @@ class SearchOverlay extends Component {
     })
 
     render() {
-        const marginTop =
-            Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL)
-                ? 45
-                : 70
-
         return (
             <BaseOverlay
                 verticalPercent={1}
@@ -180,12 +147,7 @@ class SearchOverlay extends Component {
                 ref="baseOverlay"
             >
                 <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                    <View
-                        style={{
-                            ...styles.headerContainerStyle,
-                            paddingTop: marginTop,
-                        }}
-                    >
+                    <View style={HEADER_STYLES.headerContainer}>
                         <SearchBar
                             ref={(search) => (this.search = search)}
                             platform="ios"
@@ -195,7 +157,12 @@ class SearchOverlay extends Component {
                             inputContainerStyle={
                                 styles.searchInputContainerStyle
                             }
-                            containerStyle={styles.searchContainerStyle}
+                            containerStyle={{
+                                height:
+                                    HEADER_STYLES.headerContainer.height -
+                                    HEADER_STYLES.headerContainer.paddingTop,
+                                backgroundColor: color.GM_BLUE,
+                            }}
                             placeholder="Search GoalMogul"
                             cancelButtonTitle="Cancel"
                             onCancel={this.handleCancel}
@@ -211,8 +178,7 @@ class SearchOverlay extends Component {
                             searchIcon={() => (
                                 <SearchIcon
                                     iconContainerStyle={{
-                                        marginBottom: 1,
-                                        marginTop: 1,
+                                        marginVertical: 1,
                                     }}
                                     iconStyle={{
                                         tintColor: color.GM_BLUE,
@@ -240,32 +206,15 @@ class SearchOverlay extends Component {
 }
 
 const styles = {
-    headerContainerStyle: {
-        paddingTop: 45,
-        backgroundColor: color.GM_BLUE,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    searchContainerStyle: {
-        padding: 0,
-        marginRight: 3,
-        backgroundColor: color.GM_BLUE,
-        borderTopColor: '#ffffff',
-        borderBottomColor: '#ffffff',
-        alignItems: 'center',
-    },
     searchInputContainerStyle: {
+        height: 20,
         backgroundColor: color.GM_BLUE_LIGHT,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 16,
+        borderRadius: 100,
     },
     searchInputStyle: {
         ...default_style.normalText_1,
-    },
-    searchIconStyle: {
-        ...default_style.normalText_1,
-        top: 15,
     },
     backdrop: {
         backgroundColor: 'gray',
