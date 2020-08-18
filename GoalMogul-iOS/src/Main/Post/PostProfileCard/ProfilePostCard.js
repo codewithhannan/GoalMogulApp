@@ -322,7 +322,7 @@ class ProfilePostCard extends React.PureComponent {
             <View
                 style={[
                     styles.containerStyle,
-                    { marginTop: isSharedItem ? 0 : 8 },
+                    { marginBottom: isSharedItem ? 0 : 8 },
                 ]}
             >
                 <View
@@ -333,19 +333,19 @@ class ProfilePostCard extends React.PureComponent {
                         marginLeft: 12,
                     }}
                 >
-                        <TouchableOpacity
-                            activeOpacity={1}
-                            onPress={() => this.handleCardOnPress(item)}
-                        >
-                            {this.renderHeader(item)}
-                        </TouchableOpacity>
-                        <ProfilePostBody
-                            item={item}
-                            showRefPreview={this.props.showRefPreview}
-                            openCardContent={() => this.handleCardOnPress(item)}
-                        />
-                        </View>
-                    {this.renderActionButtons(item, hasActionButton)}
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={() => this.handleCardOnPress(item)}
+                    >
+                        {this.renderHeader(item)}
+                    </TouchableOpacity>
+                    <ProfilePostBody
+                        item={item}
+                        showRefPreview={this.props.showRefPreview}
+                        openCardContent={() => this.handleCardOnPress(item)}
+                    />
+                </View>
+                {this.renderActionButtons(item, hasActionButton)}
             </View>
         )
     }

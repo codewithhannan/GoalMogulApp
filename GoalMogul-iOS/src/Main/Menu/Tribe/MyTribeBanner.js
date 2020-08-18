@@ -65,6 +65,7 @@ const styles = {
         flexDirection: 'row',
         backgroundColor: color.GM_CARD_BACKGROUND,
         marginTop: 8,
+        marginBottom: 8,
         borderRadius: 5,
     },
     aboutContainer: {
