@@ -91,12 +91,6 @@ const LISTENER_KEY = 'ChatRoomConversation'
 const MAX_TYPING_INDICATORS_TO_DISPLAY = 3
 const CHAT_ROOM_DOCUMENT_REFRESH_INTERVAL = 3000 // milliseconds
 
-const GIFTED_CHAT_BOTTOM_OFFSET = IPHONE_MODELS_3.includes(DEVICE_MODEL)
-    ? 90
-    : IPHONE_MODELS_2.includes(DEVICE_MODEL)
-    ? 84
-    : 52
-
 /**
  * Remove button for image preview in chat inputbox
  * @param {*} props
@@ -955,7 +949,6 @@ class ChatRoomConversation extends React.Component {
                     renderSystemMessage={this.renderSystemMessage}
                     renderInputToolbar={this.renderInputToolbar}
                     renderAvatar={this.renderAvatar}
-                    bottomOffset={GIFTED_CHAT_BOTTOM_OFFSET}
                     minInputToolbarHeight={this.props.messageMediaRef ? 96 : 60}
                     deleteMessage={this.deleteMessage}
                     dismissGoalSuggestion={this.dismissGoalSuggestion}
