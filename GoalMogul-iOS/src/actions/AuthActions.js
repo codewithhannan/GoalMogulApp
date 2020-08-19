@@ -963,7 +963,7 @@ export const loadGeneralAssets = async () => {
         require('../../assets/tutorial/RightArrow.png'),
         require('../../assets/tutorial/Replay.png'),
         require('../../assets/tutorial/logo.png'),
-        //Chat
+        // Chat
         require('../asset/utils/direct_message.png'),
         require('../asset/utils/profile_people.png'),
         require('../asset/utils/sendButton.png'),

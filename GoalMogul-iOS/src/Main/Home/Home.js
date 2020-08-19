@@ -1,9 +1,8 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, AppState, ScrollView, FlatList, Image } from 'react-native'
+import { View, AppState, FlatList } from 'react-native'
 import { connect } from 'react-redux'
-import { TabView } from 'react-native-tab-view'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import _ from 'lodash'
@@ -55,17 +54,14 @@ import { saveRemoteMatches } from '../../actions/MeetActions'
 import { color } from '../../styles/basic'
 
 // Asset
-import plus from '../../asset/utils/plus.png'
 
 // Utils
 import Tooltip from '../Tutorial/Tooltip'
 import { svgMaskPath } from '../Tutorial/Utils'
-import WelcomSreen from './WelcomeScreen'
 import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
 import { track, EVENT as E } from '../../monitoring/segment'
-import DelayedButton from '../Common/Button/DelayedButton'
-import { Icon } from '@ui-kitten/components'
 import CreatePostModal from '../Post/CreatePostModal'
+import CreateContentButtons from '../Common/Button/CreateContentButtons'
 
 const DEBUG_KEY = '[ UI Home ]'
 
@@ -294,9 +290,19 @@ class Home extends Component {
                 onLayout={(e) =>
                     (this.topTabBarHeight = e.nativeEvent.layout.height)
                 }
-                style={styles.tabContainer}
             >
-                <TabButtonGroup buttons={props} />
+                <CreateContentButtons
+                    containerStyle={{
+                        marginBottom: 8,
+                    }}
+                    onCreateUpdatePress={() =>
+                        this.createPostModal && this.createPostModal.open()
+                    }
+                    onCreateGoalPress={Actions.createGoalModal}
+                />
+                <View style={styles.tabContainer}>
+                    <TabButtonGroup buttons={props} />
+                </View>
             </View>
         )
     }
@@ -325,43 +331,6 @@ class Home extends Component {
             default:
                 return null
         }
-    }
-
-    renderPlus() {
-        const { routes, index } = this.state.navigationState
-        return (
-            <DelayedButton
-                activeOpacity={0.6}
-                style={{
-                    position: 'absolute',
-                    bottom: 20,
-                    right: 29,
-                    height: 54,
-                    width: 54,
-                    borderRadius: 28,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    zIndex: 3,
-                    backgroundColor: color.GM_BLUE,
-                }}
-                onPress={
-                    routes[index].key === 'activity'
-                        ? () =>
-                              this.createPostModal &&
-                              this.createPostModal.open()
-                        : Actions.createGoalModal
-                }
-            >
-                <Image
-                    style={{
-                        height: 26,
-                        width: 26,
-                        tintColor: 'white',
-                    }}
-                    source={plus}
-                />
-            </DelayedButton>
-        )
     }
 
     render() {
@@ -397,7 +366,6 @@ class Home extends Component {
                         refreshing={this.props.refreshing}
                         onRefresh={this.handleOnRefresh}
                     />
-                    {this.renderPlus()}
                     {/* <WelcomSreen
                         isVisible={this.state.showWelcomeScreen}
                         name={this.props.user.name}

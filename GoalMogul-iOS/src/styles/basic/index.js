@@ -134,4 +134,5 @@ export const default_style = {
         height: 8 * UI_SCALE,
         backgroundColor: color.GM_BACKGROUND,
     },
+    hairlineWidth: 1,
 }
