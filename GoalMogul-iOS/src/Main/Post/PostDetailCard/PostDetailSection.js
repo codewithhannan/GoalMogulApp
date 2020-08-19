@@ -42,9 +42,8 @@ import { default_style, color } from '../../../styles/basic'
 import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
-    DEVICE_MODEL,
     IMAGE_BASE_URL,
-    IPHONE_MODELS,
+    DEVICE_PLATFORM,
 } from '../../../Utils/Constants'
 import {
     actionSheet,
@@ -85,6 +84,7 @@ class PostDetailSection extends React.PureComponent {
             showShareListModal: false,
             showlikeListModal: false,
             floatingHeartCount: 0,
+            likeButtonLeftOffset: 0,
         }
     }
 
@@ -411,7 +411,10 @@ class PostDetailSection extends React.PureComponent {
     }
 
     incrementFloatingHeartCount = () => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        // only iOS has a clean haptic system at the moment
+        if (DEVICE_PLATFORM == 'ios') {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        }
         this.setState({
             floatingHeartCount: this.state.floatingHeartCount + 1,
         })
@@ -455,6 +458,11 @@ class PostDetailSection extends React.PureComponent {
                     onTextPress={() => {
                         this.setState({ showlikeListModal: true })
                     }}
+                    onLayout={({ nativeEvent }) =>
+                        this.setState({
+                            likeButtonLeftOffset: nativeEvent.layout.x,
+                        })
+                    }
                 />
                 <ActionButton
                     iconSource={ShareIcon}
@@ -491,21 +499,6 @@ class PostDetailSection extends React.PureComponent {
         // { postExploreTab: { pageId, pageIdCount, // all the fileds for the real object }}
         if (!item || _.isEmpty(item) || !item.created) return null
 
-        // position the floating heart animation on like correctly
-        const isShare = item.postType !== 'General'
-        const isSmallerIphone = IPHONE_MODELS.includes(DEVICE_MODEL)
-        let floatingHeartLeftOffset = isShare
-            ? isSmallerIphone
-                ? 56
-                : 66
-            : isSmallerIphone
-            ? 28
-            : 36
-        // reduce left offset if the like count is higher
-        const likeCount = item.likeCount ? item.likeCount : 0
-        floatingHeartLeftOffset -= (likeCount.toString().length - 1) * 2
-
-        // console.log(`${DEBUG_KEY}: render post detail section`);
         return (
             <View style={styles.containerStyle}>
                 <CreatePostModal
@@ -545,7 +538,7 @@ class PostDetailSection extends React.PureComponent {
                     style={{
                         zIndex: 5,
                     }}
-                    leftOffset={floatingHeartLeftOffset}
+                    leftOffset={this.state.likeButtonLeftOffset}
                 />
                 {this.renderActionButtons(item)}
             </View>

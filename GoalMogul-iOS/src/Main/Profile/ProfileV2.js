@@ -1,9 +1,8 @@
 /** @format */
 
 import _ from 'lodash'
-import R from 'ramda'
 import React, { Component } from 'react'
-import { ActivityIndicator, Animated, FlatList, View } from 'react-native'
+import { ActivityIndicator, Animated, FlatList, Text, View } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
@@ -15,11 +14,9 @@ import {
     handleProfileTabOnLoadMore,
     // Page related functions
     handleTabRefresh,
-    openCreateOverlay,
     selectProfileTab,
 } from '../../actions'
 import { closeProfile } from '../../actions/ProfileActions'
-import { Logger } from '../../redux/middleware/utils/Logger'
 import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
 import { createReport } from '../../redux/modules/report/ReportActions'
 // Selector
@@ -32,9 +29,7 @@ import {
 } from '../../redux/modules/User/Selector'
 import { INITIAL_USER_PAGE } from '../../redux/modules/User/Users'
 /* Styles */
-import { color, default_style } from '../../styles/basic'
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
-import PlusButton from '../Common/Button/PlusButton'
+import { color } from '../../styles/basic'
 import GoalFilterBar from '../Common/GoalFilterBar'
 /* Components */
 import SearchBarHeader from '../Common/Header/SearchBarHeader'
@@ -48,6 +43,7 @@ import ProfileDetailCard from './ProfileCard/ProfileDetailCard'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 import EmptyResult from '../Common/Text/EmptyResult'
 import CreatePostModal from '../Post/CreatePostModal'
+import CreateContentButtons from '../Common/Button/CreateContentButtons'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
@@ -165,23 +161,6 @@ class ProfileV2 extends Component {
         return
     }
 
-    handleCreateGoal = () => {
-        const { userId, pageId } = this.props
-        this.props.openCreateOverlay(userId, pageId)
-        // As we move the create option here, we no longer need to care about the tab
-        Actions.createGoalButtonOverlay({
-            tab: 'mastermind',
-            // This is a temp hack, createGoalButtonOverlay is being depricated
-            openCreatePost: () =>
-                this.createPostModal && this.createPostModal.open(),
-            onCreate: () => this.props.openCreateOverlay(userId, pageId),
-            onClose: () => this.props.closeCreateOverlay(userId, pageId),
-            openProfile: false,
-            userId,
-            pageId,
-        })
-    }
-
     _handleIndexChange = (nextIndex) => {
         const { pageId, userId } = this.props
 
@@ -234,18 +213,6 @@ class ProfileV2 extends Component {
         }
     }
 
-    renderPlus() {
-        if (!this.props.isSelf) {
-            return null
-        }
-        return (
-            <PlusButton
-                onPress={this.handleCreateGoal}
-                plusActivated={this.props.showPlus}
-            />
-        )
-    }
-
     renderFilterBar() {
         return (
             <GoalFilterBar
@@ -273,12 +240,34 @@ class ProfileV2 extends Component {
         )
     }
 
+    renderContentCreationButtons() {
+        return (
+            <CreateContentButtons
+                containerStyle={{
+                    borderTopColor: color.GM_BACKGROUND,
+                    borderTopWidth: 8,
+                }}
+                onCreateUpdatePress={() =>
+                    this.createPostModal && this.createPostModal.open()
+                }
+                onCreateGoalPress={() =>
+                    Actions.createGoalModal({
+                        openProfile: false,
+                        pageId: this.props.pageId,
+                    })
+                }
+            />
+        )
+    }
+
     /**
      * @param {object} props { navigationState, selectedTab, userId, pageId }
      */
     renderHeader(props) {
         const renderFilter =
             props.selectedTab === 'goals' || props.selectedTab === 'needs'
+        const renderContentCreationButtons =
+            props.selectedTab === 'goals' || props.selectedTab == 'posts'
         return (
             <View
                 style={{
@@ -292,6 +281,9 @@ class ProfileV2 extends Component {
                     renderFilter,
                 })}
                 {renderFilter ? this.renderFilterBar(props) : null}
+                {renderContentCreationButtons
+                    ? this.renderContentCreationButtons()
+                    : null}
             </View>
         )
     }
@@ -347,7 +339,6 @@ class ProfileV2 extends Component {
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <CreatePostModal
                     onRef={(r) => (this.createPostModal = r)}
-                    onClose={() => this.props.openCreateOverlay(userId, pageId)}
                     openProfile={false}
                     pageId={pageId}
                 />
@@ -377,7 +368,6 @@ class ProfileV2 extends Component {
                         })}
                         ListFooterComponent={this.renderListFooter()}
                     />
-                    {this.renderPlus()}
                     <EarnBadgeModal
                         isVisible={this.state.showBadgeEarnModal}
                         closeModal={() => {
@@ -472,7 +462,6 @@ const makeMapStateToProps = () => {
 export default connect(makeMapStateToProps, {
     selectProfileTab,
     closeCreateOverlay,
-    openCreateOverlay,
     closeProfile,
     openPostDetail,
     blockUser,

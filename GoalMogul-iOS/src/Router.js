@@ -312,6 +312,12 @@ class RouterComponent extends Component {
             <Router
                 createReducer={this.reducerCreate.bind(this)}
                 onStateChange={this.stateHandler.bind(this)}
+                sceneStyle={{
+                    shadowColor: 'transparent',
+                    shadowOpacity: 0,
+                    shadowRadius: 0,
+                    elevation: 0,
+                }}
             >
                 <Modal key="modal" hideNavBar>
                     <Lightbox key="lightbox" hideNavBar>

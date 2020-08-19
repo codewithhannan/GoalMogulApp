@@ -29,11 +29,7 @@ import { likeGoal, unLikeGoal } from '../../redux/modules/like/LikeActions'
 import { imagePreviewContainerStyle } from '../../styles'
 import { default_style, color } from '../../styles/basic'
 // Constants
-import {
-    DEVICE_MODEL,
-    IMAGE_BASE_URL,
-    IPHONE_MODELS,
-} from '../../Utils/Constants'
+import { IMAGE_BASE_URL, DEVICE_PLATFORM } from '../../Utils/Constants'
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
 import DelayedButton from '../Common/Button/DelayedButton'
 import FloatingHearts from '../Common/FloatingHearts/FloatingHearts'
@@ -59,6 +55,7 @@ const SHARE_TO_MENU_OPTTIONS = [
 const CANCEL_INDEX = 3
 const { width } = Dimensions.get('window')
 const WINDOW_WIDTH = width
+const ACTION_BUTTON_GROUP_HEIGHT = 48
 
 class ActivityCard extends React.PureComponent {
     constructor(props) {
@@ -66,6 +63,9 @@ class ActivityCard extends React.PureComponent {
         this.state = {
             mediaModal: false,
             floatingHeartCount: 0,
+            actionBarOffsetY: 0,
+            likeButtonLeftOffset: 0,
+            cardHeight: 0,
         }
         this.renderCommentRef = this.renderCommentRef.bind(this)
         this.renderMedia = this.renderMedia.bind(this)
@@ -162,7 +162,10 @@ class ActivityCard extends React.PureComponent {
     }
 
     incrementFloatingHeartCount = () => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        // only iOS has a clean haptic system at the moment
+        if (DEVICE_PLATFORM == 'ios') {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        }
         this.setState({
             floatingHeartCount: this.state.floatingHeartCount + 1,
         })
@@ -208,6 +211,11 @@ class ActivityCard extends React.PureComponent {
                         this.incrementFloatingHeartCount()
                         this.props.likeGoal(isPost ? 'post' : 'goal', _id)
                     }}
+                    onLayout={({ nativeEvent }) =>
+                        this.setState({
+                            likeButtonLeftOffset: nativeEvent.layout.x,
+                        })
+                    }
                 />
                 <ActionButton
                     iconSource={ShareIcon}
@@ -372,31 +380,26 @@ class ActivityCard extends React.PureComponent {
         const { item } = this.props
         if (!item || _.isEmpty(item) || !isValidActivity(item)) return null
 
-        // position the floating heart animation on like correctly
-        const isShare =
-            item.actedUponEntityType === 'Post' &&
-            item.postRef.postType !== 'General'
-        const isSmallerIphone = IPHONE_MODELS.includes(DEVICE_MODEL)
-        let floatingHeartLeftOffset = isShare
-            ? isSmallerIphone
-                ? 56
-                : 66
-            : isSmallerIphone
-            ? 28
-            : 36
-        // reduce left offset if the like count is higher
-        const likeCount = item.likeCount ? item.likeCount : 0
-        floatingHeartLeftOffset -= (likeCount.toString().length - 1) * 2
-
         return (
-            <View style={styles.containerStyle}>
+            <View
+                style={styles.containerStyle}
+                onLayout={({ nativeEvent }) =>
+                    this.setState({
+                        cardHeight: nativeEvent.layout.height,
+                    })
+                }
+            >
                 <FloatingHearts
                     count={this.state.floatingHeartCount}
                     color={'#EB5757'}
                     style={{
                         zIndex: 5,
+                        bottom:
+                            this.state.cardHeight -
+                            this.state.actionBarOffsetY -
+                            ACTION_BUTTON_GROUP_HEIGHT,
                     }}
-                    leftOffset={floatingHeartLeftOffset}
+                    leftOffset={this.state.likeButtonLeftOffset}
                 />
                 {item.goalRef && item.goalRef.isCompleted ? (
                     <Image
@@ -435,6 +438,11 @@ class ActivityCard extends React.PureComponent {
                         borderBottomColor: '#f8f8f8',
                         borderBottomWidth: 1,
                     }}
+                    onLayout={({ nativeEvent }) =>
+                        this.setState({
+                            actionBarOffsetY: nativeEvent.layout.y,
+                        })
+                    }
                 >
                     {!(
                         item.actedUponEntityType === 'Post' &&

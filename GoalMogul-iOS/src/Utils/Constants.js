@@ -53,6 +53,9 @@ export const DEVICE_MODEL =
         ? Constants.platform.ios.model.toLowerCase()
         : 'iphone 7'
 
+// 'ios' or 'android'
+export const DEVICE_PLATFORM = Platform.OS
+
 // Simple function to identify if iphone is on zoomed mode
 export const IS_ZOOMED =
     Platform.OS === 'ios' && // This is iphone
