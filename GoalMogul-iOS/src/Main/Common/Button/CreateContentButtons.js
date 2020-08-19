@@ -66,8 +66,7 @@ const CreateContentButtons = (props) => {
 
 const styles = {
     buttonsContainer: {
-        paddingLeft: 8,
-        paddingRight: 8,
+        paddingHorizontal: 8,
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: color.GM_CARD_BACKGROUND,

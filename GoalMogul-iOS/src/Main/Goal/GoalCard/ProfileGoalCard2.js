@@ -227,7 +227,7 @@ const StatsComponent = (props) => {
 
 const styles = {
     cardContainerStyle: {
-        marginTop: 8,
+        marginBottom: 8,
         padding: 16,
         borderRadius: 2,
     },
