@@ -28,8 +28,8 @@ export default class BaseLightbox extends Component {
     closeModal = () => {
         Animated.timing(this.state.opacity, {
             useNativeDriver: true,
-            duration: 100,
-            toValue: 0,
+            duration: 60,
+            toValue: 0.7,
         }).start(Actions.pop)
     }
 
@@ -39,6 +39,8 @@ export default class BaseLightbox extends Component {
             horizontalPercent = 1,
             verticalPercent = 1,
         } = this.props
+        // Right now, we don't need to set height since
+        // most of the usecase is for full screen
         const height = verticalPercent
             ? deviceHeight * verticalPercent
             : deviceHeight
@@ -49,7 +51,7 @@ export default class BaseLightbox extends Component {
             <View
                 style={{
                     width,
-                    height,
+                    flex: 1,
                     backgroundColor: 'white',
                 }}
             >

@@ -32,6 +32,7 @@ import { getImageOrDefault, decode } from '../../redux/middleware/utils'
 
 const { width } = Dimensions.get('window')
 const { text: textStyle } = OnboardingStyles
+const AnimatedFlatList = Animatable.createAnimatableComponent(FlatList)
 
 // TODO: when categories are cleaned, this mapping needs to be updated
 // https://app.asana.com/0/1179217829906631/1184987107432454
@@ -361,7 +362,7 @@ class OnboardingTribeSelection extends React.Component {
                         </Text>
                     </View>
                     {this.renderListHeaderComponent()}
-                    <FlatList
+                    <AnimatedFlatList
                         onScroll={Animated.event(
                             [
                                 {
@@ -370,7 +371,7 @@ class OnboardingTribeSelection extends React.Component {
                                     },
                                 },
                             ],
-                            { useNativeDriver: true }
+                            { useNativeDriver: false }
                         )}
                         data={tribesToRender}
                         renderItem={(item, index) =>

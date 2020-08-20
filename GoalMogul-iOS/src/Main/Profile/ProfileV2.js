@@ -266,7 +266,8 @@ class ProfileV2 extends Component {
         const renderFilter =
             props.selectedTab === 'goals' || props.selectedTab === 'needs'
         const renderContentCreationButtons =
-            props.selectedTab === 'goals' || props.selectedTab == 'posts'
+            (props.selectedTab === 'goals' || props.selectedTab == 'posts') &&
+            props.isSelf
         return (
             <View>
                 <View
@@ -334,8 +335,8 @@ class ProfileV2 extends Component {
             navigationState,
             data,
             isMainTab,
+            isSelf,
         } = this.props
-        const shouldShowBackButton = !isMainTab
         const shouldShowPageSettings = !isMainTab
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -367,6 +368,7 @@ class ProfileV2 extends Component {
                             pageId,
                             selectedTab,
                             navigationState,
+                            isSelf,
                         })}
                         ListFooterComponent={this.renderListFooter()}
                     />

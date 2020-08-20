@@ -448,7 +448,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
     },
     wrapper: {
-        marginRight: 60,
+        marginRight: 16,
         minHeight: 20,
         justifyContent: 'flex-end',
     },

@@ -5,7 +5,7 @@ import { View, Text, Dimensions, Image } from 'react-native'
 import { connect } from 'react-redux'
 import { default_style, color } from '../../../styles/basic'
 import DelayedButton from '../../Common/Button/DelayedButton'
-import { openProfileDetail, updateFriendship } from '../../../actions'
+import { openProfile, updateFriendship } from '../../../actions'
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import Icons from '../../../asset/base64/Icons'
 import { handleRefresh } from '../../../redux/modules/meet/MeetActions'
@@ -37,7 +37,7 @@ class RequestCard extends React.PureComponent {
     }
 
     handleOpenProfile = (userId) => {
-        this.props.openProfileDetail(userId)
+        this.props.openProfile(userId)
     }
 
     getCardWidth = (parentPadding) => {
@@ -180,7 +180,7 @@ const styles = {
 }
 
 export default connect(null, {
-    openProfileDetail,
+    openProfile,
     handleRefresh,
     updateFriendship,
 })(RequestCard)

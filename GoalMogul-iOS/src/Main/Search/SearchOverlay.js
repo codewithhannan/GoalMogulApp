@@ -4,10 +4,10 @@
 import React, { Component } from 'react'
 import { View } from 'react-native'
 import { connect } from 'react-redux'
-import { SearchBar, Icon } from 'react-native-elements'
-import { MenuProvider } from 'react-native-popup-menu'
+import { SearchBar } from 'react-native-elements'
 import _ from 'lodash'
 import { TabView, SceneMap } from 'react-native-tab-view'
+import { Icon } from '@ui-kitten/components'
 
 // Component
 import BaseOverlay from './BaseOverlay'
@@ -37,6 +37,7 @@ import {
     wrapAnalytics,
 } from '../../monitoring/segment'
 import { HEADER_STYLES } from '../../styles/Header'
+import { TEXT_COLOR } from '../../styles/basic/color'
 
 const DEBUG_KEY = '[ Component Search ]'
 
@@ -53,7 +54,7 @@ class SearchOverlay extends Component {
         }
     }
 
-    componentWillMount() {
+    componentDidMount() {
         track(E.SEARCH_OPENED)
     }
 
@@ -64,10 +65,8 @@ class SearchOverlay extends Component {
     // Search bar functions
     handleCancel = () => {
         //TODO: potentially clear search state
-        console.log(`${DEBUG_KEY} handle cancel`)
         this.isCanceled = true
         this.props.clearSearchState()
-        // Actions.pop();
         this.refs.baseOverlay.closeModal()
     }
 
@@ -133,7 +132,6 @@ class SearchOverlay extends Component {
     _renderScene = SceneMap({
         people: () => <PeopleSearch type="GeneralSearch" />,
         tribes: () => <TribeSearch type="GeneralSearch" />,
-        events: () => <EventSearch type="GeneralSearch" />,
         chatRooms: () => <ChatSearch type="GeneralSearch" />,
     })
 
@@ -144,60 +142,60 @@ class SearchOverlay extends Component {
                 horizontalPercent={1}
                 ref="baseOverlay"
             >
-                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                    <View style={HEADER_STYLES.headerContainer}>
-                        <SearchBar
-                            ref={(search) => (this.search = search)}
-                            platform="ios"
-                            round
-                            autoFocus
-                            inputStyle={styles.searchInputStyle}
-                            inputContainerStyle={
-                                styles.searchInputContainerStyle
-                            }
-                            containerStyle={{
-                                height:
-                                    HEADER_STYLES.headerContainer.height -
-                                    HEADER_STYLES.headerContainer.paddingTop,
-                                backgroundColor: color.GM_BLUE,
-                            }}
-                            placeholder="Search GoalMogul"
-                            cancelButtonTitle="Cancel"
-                            onCancel={this.handleCancel}
-                            onChangeText={this.handleChangeText}
-                            clearIcon={null}
-                            showLoading={this.props.loading}
-                            placeholderTextColor={color.GM_BLUE}
-                            cancelButtonProps={{
-                                buttonTextStyle: {
-                                    color: 'white',
-                                },
-                            }}
-                            searchIcon={() => (
-                                <SearchIcon
-                                    iconContainerStyle={{
-                                        marginVertical: 1,
-                                    }}
-                                    iconStyle={{
-                                        tintColor: color.GM_BLUE,
-                                        height: 15,
-                                        width: 15,
-                                    }}
-                                />
-                            )}
-                            onEndEditing={this.handleOnEndSubmitting}
-                            value={this.state.searchContent}
-                        />
-                    </View>
-                    <TabView
-                        navigationState={this.props.navigationState}
-                        renderScene={this._renderScene}
-                        renderTabBar={this._renderHeader}
-                        onIndexChange={this._handleIndexChange}
-                        useNativeDriver
-                        swipeEnabled={false}
+                <View
+                    style={[
+                        HEADER_STYLES.headerContainer,
+                        { paddingHorizontal: 12 },
+                    ]}
+                >
+                    <SearchBar
+                        ref={(search) => (this.search = search)}
+                        platform="ios"
+                        round
+                        autoFocus
+                        inputStyle={styles.searchInputStyle}
+                        inputContainerStyle={styles.searchInputContainerStyle}
+                        containerStyle={{
+                            height:
+                                HEADER_STYLES.headerContainer.height -
+                                HEADER_STYLES.headerContainer.paddingTop,
+                            backgroundColor: color.GM_BLUE,
+                        }}
+                        placeholder="Search GoalMogul"
+                        cancelButtonTitle="Cancel"
+                        onCancel={this.handleCancel}
+                        onChangeText={this.handleChangeText}
+                        clearIcon={null}
+                        showLoading={this.props.loading}
+                        placeholderTextColor={color.GM_BLUE}
+                        cancelButtonProps={{
+                            buttonTextStyle: {
+                                color: 'white',
+                            },
+                        }}
+                        searchIcon={() => (
+                            <Icon
+                                name="search"
+                                pack="material"
+                                style={{
+                                    tintColor: color.GM_BLUE,
+                                    height: 24,
+                                    width: 24,
+                                }}
+                            />
+                        )}
+                        onEndEditing={this.handleOnEndSubmitting}
+                        value={this.state.searchContent}
                     />
-                </MenuProvider>
+                </View>
+                <TabView
+                    navigationState={this.props.navigationState}
+                    renderScene={this._renderScene}
+                    renderTabBar={this._renderHeader}
+                    onIndexChange={this._handleIndexChange}
+                    useNativeDriver
+                    swipeEnabled={false}
+                />
             </BaseOverlay>
         )
     }
@@ -206,7 +204,7 @@ class SearchOverlay extends Component {
 const styles = {
     searchInputContainerStyle: {
         height: 20,
-        backgroundColor: color.GM_BLUE_LIGHT,
+        backgroundColor: color.GM_CARD_BACKGROUND,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 100,

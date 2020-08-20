@@ -357,6 +357,7 @@ class LoginPage extends Component {
                                     }}
                                     textContentType="username"
                                     caption=" "
+                                    autoCapitalize="none"
                                 />
                                 <Field
                                     ref="password"

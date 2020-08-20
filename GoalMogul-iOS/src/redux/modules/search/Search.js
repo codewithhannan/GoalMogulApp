@@ -42,7 +42,6 @@ const INITIAL_STATE = {
         routes: [
             { key: 'people', title: 'People' },
             { key: 'tribes', title: 'Tribes' },
-            { key: 'events', title: 'Events' },
             { key: 'chatRooms', title: 'Chat' },
         ],
     },

@@ -327,6 +327,7 @@ class RegistrationAccount extends React.Component {
                     key="email"
                     inputTitle="Email"
                     ref="email"
+                    autoCapitalize="none"
                     placeholder="Your Email Address"
                     onChangeText={(val) => {
                         if (
