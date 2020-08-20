@@ -2,7 +2,7 @@
     "expo": {
         "name": "GoalMogul",
         "icon": "./assets/logo.png",
-        "sdkVersion": "37.0.0",
+        "sdkVersion": "38.0.0",
         "version": "0.7.16",
         "slug": "goalmogul",
         "orientation": "portrait",

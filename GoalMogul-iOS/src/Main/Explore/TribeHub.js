@@ -65,7 +65,7 @@ class TribeHub extends Component {
                     />
                     <RoundedButton
                         onPress={() => Actions.push('explore')}
-                        icon="search"
+                        icon="magnify"
                         text="Discover"
                     />
                 </View>
@@ -137,6 +137,7 @@ const RoundedButton = (props) => {
             onPress={onPress}
         >
             <Icon
+                pack="material-community"
                 name={icon}
                 style={{ ...default_style.smallIcon_1, marginRight: 8 }}
             />

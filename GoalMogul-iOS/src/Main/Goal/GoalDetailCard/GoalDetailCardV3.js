@@ -450,42 +450,28 @@ export class GoalDetailCardV3 extends Component {
     }
 
     keyboardWillShow = (e) => {
-        // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: keyboard will show`);
-        // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: ${Actions.currentScene}`);
-
         this.setState({
-            ...this.state,
             goalCardzIndex: 0, // set the zIndex to enable scroll on the goal card
         })
 
         this.forceUpdate() // Force update to re-render
 
-        const timeout = (TOTAL_HEIGHT * 210) / e.endCoordinates.height
-        Animated.sequence([
-            Animated.delay(timeout),
-            Animated.parallel([
-                Animated.timing(this.state.commentBoxPadding, {
-                    toValue:
-                        e.endCoordinates.height -
-                        TOTAL_HEIGHT -
-                        getBottomSpace(),
-                    duration: 210 - timeout,
-                }),
-                Animated.timing(this.state.contentBottomPadding, {
-                    toValue:
-                        e.endCoordinates.height -
-                        TOTAL_HEIGHT -
-                        getBottomSpace(),
-                    duration: 210 - timeout,
-                }),
-            ]),
+        Animated.parallel([
+            Animated.timing(this.state.commentBoxPadding, {
+                useNativeDriver: false,
+                toValue: e.endCoordinates.height,
+                duration: e.duration,
+            }),
+            Animated.timing(this.state.contentBottomPadding, {
+                useNativeDriver: false,
+                toValue: e.endCoordinates.height,
+                duration: e.duration,
+            }),
         ]).start()
     }
 
-    keyboardWillHide = () => {
-        // console.log(`${DEBUG_KEY}: [ ${this.props.pageId} ]: keyboard will hide`);
+    keyboardWillHide = (e) => {
         this.setState({
-            ...this.state,
             keyboardDidShow: false,
             goalCardzIndex: 2, // reset the zIndex to enable buttons on the goal card
         })
@@ -496,12 +482,14 @@ export class GoalDetailCardV3 extends Component {
 
         Animated.parallel([
             Animated.timing(this.state.commentBoxPadding, {
+                useNativeDriver: false,
                 toValue: 0,
-                duration: 210,
+                duration: e.duration,
             }),
             Animated.timing(this.state.contentBottomPadding, {
+                useNativeDriver: false,
                 toValue: 0,
-                duration: 210,
+                duration: e.duration,
             }),
         ]).start()
     }

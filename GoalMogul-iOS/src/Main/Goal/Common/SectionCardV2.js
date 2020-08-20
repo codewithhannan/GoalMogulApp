@@ -262,7 +262,9 @@ class SectionCardV2 extends Component {
             ? 'Back to Steps & Needs'
             : description
         const hasTextChanged =
-            this.input && this.input.props.value !== description
+            this.input &&
+            this.input.props &&
+            this.input.props.value !== description
         const showSave = hasTextChanged && this.input.props.value !== ''
 
         const textToDisplay = decode(

@@ -244,8 +244,7 @@ class ProfileV2 extends Component {
         return (
             <CreateContentButtons
                 containerStyle={{
-                    borderTopColor: color.GM_BACKGROUND,
-                    borderTopWidth: 8,
+                    marginBottom: 8,
                 }}
                 onCreateUpdatePress={() =>
                     this.createPostModal && this.createPostModal.open()
@@ -269,18 +268,21 @@ class ProfileV2 extends Component {
         const renderContentCreationButtons =
             props.selectedTab === 'goals' || props.selectedTab == 'posts'
         return (
-            <View
-                style={{
-                    backgroundColor: color.GM_CARD_BACKGROUND,
-                }}
-            >
-                {this.renderUserInfo(props)}
-                {this.renderTabs({
-                    jumpToIndex: (i) => this._handleIndexChange(i),
-                    navigationState: props.navigationState,
-                    renderFilter,
-                })}
-                {renderFilter ? this.renderFilterBar(props) : null}
+            <View>
+                <View
+                    style={{
+                        marginBottom: 8,
+                        backgroundColor: color.GM_CARD_BACKGROUND,
+                    }}
+                >
+                    {this.renderUserInfo(props)}
+                    {this.renderTabs({
+                        jumpToIndex: (i) => this._handleIndexChange(i),
+                        navigationState: props.navigationState,
+                        renderFilter,
+                    })}
+                    {renderFilter ? this.renderFilterBar(props) : null}
+                </View>
                 {renderContentCreationButtons
                     ? this.renderContentCreationButtons()
                     : null}

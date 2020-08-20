@@ -14,6 +14,7 @@ export default class ChatRoomLoaderOverlay extends React.Component {
         this.opacityAnim = new Animated.Value(1)
         setTimeout(() => {
             Animated.timing(this.opacityAnim, {
+                useNativeDriver: false,
                 toValue: 0,
                 duration: 1000,
             }).start(() =>

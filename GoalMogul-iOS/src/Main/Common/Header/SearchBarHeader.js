@@ -29,7 +29,7 @@ import { Actions } from 'react-native-router-flux'
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
 
 /* Asset */
-import Logo from '../../../asset/header/Goalmogul.png'
+import Logo from '../../../asset/header/GMText.png'
 
 import { actionSheet, switchByButtonIndex } from '../ActionSheetFactory'
 
@@ -133,7 +133,7 @@ class SearchBarHeader extends Component {
         const { backButton } = this.props
         return (
             <DelayedButton
-                activeOpacity={0.6}
+                activeOpacity={backButton ? 0.6 : 1}
                 onPress={
                     backButton ? this.handleBackOnClick.bind(this) : () => {}
                 }
@@ -146,13 +146,11 @@ class SearchBarHeader extends Component {
                         style={HEADER_STYLES.nakedButton}
                     />
                 ) : (
-                    <View>
-                        <Image
-                            source={Logo}
-                            resizeMode="contain"
-                            style={HEADER_STYLES.logo}
-                        />
-                    </View>
+                    <Image
+                        source={Logo}
+                        resizeMode="contain"
+                        style={HEADER_STYLES.logo}
+                    />
                 )}
             </DelayedButton>
         )

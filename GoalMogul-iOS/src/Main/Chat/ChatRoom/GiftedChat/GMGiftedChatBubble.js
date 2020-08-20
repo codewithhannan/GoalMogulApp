@@ -381,19 +381,23 @@ export default class ChatRoomConversationBubble extends React.Component {
         const isExpanded = !this.state.isExpanded
         if (isExpanded) {
             Animated.timing(this.state.wrapperOpacityAnim, {
+                useNativeDriver: false,
                 toValue: 0.6,
                 duration: 300,
             }).start()
             Animated.timing(this.state.timeHeightAnim, {
+                useNativeDriver: false,
                 toValue: 15,
                 duration: 300,
             }).start()
         } else {
             Animated.timing(this.state.wrapperOpacityAnim, {
+                useNativeDriver: false,
                 toValue: 1,
                 duration: 300,
             }).start()
             Animated.timing(this.state.timeHeightAnim, {
+                useNativeDriver: false,
                 toValue: 0,
                 duration: 300,
             }).start()

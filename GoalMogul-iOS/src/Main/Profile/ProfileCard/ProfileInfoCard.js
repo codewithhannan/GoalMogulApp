@@ -167,7 +167,6 @@ class ProfileInfoCard extends Component {
         )
     }
 
-
     renderOccupation(occupation, isTopElementExisting) {
         if (occupation && occupation.trim().length > 0) {
             return (
@@ -191,7 +190,6 @@ class ProfileInfoCard extends Component {
         }
         return null
     }
-
 
     renderElevatorPitch(elevatorPitch, isTopElementExisting) {
         if (elevatorPitch && elevatorPitch.trim().length > 0) {
@@ -217,9 +215,8 @@ class ProfileInfoCard extends Component {
         return null
     }
 
-
     renderAbout(about) {
-        if (about  && about.trim().length > 0) {
+        if (about && about.trim().length > 0) {
             return (
                 <View style={{ alignSelf: 'flex-start' }}>
                     <View style={profileStyles.subHeaderStyle}>
@@ -258,7 +255,6 @@ class ProfileInfoCard extends Component {
             <View style={styles.containerStyle}>
                 {this.renderAbout(about)}
                 {this.renderElevatorPitch(elevatorPitch, about)}
-                
             </View>
         )
 

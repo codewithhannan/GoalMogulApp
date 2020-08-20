@@ -1,14 +1,7 @@
 /** @format */
 
 import React from 'react'
-import {
-    Animated,
-    FlatList,
-    Keyboard,
-    KeyboardAvoidingView,
-    View,
-} from 'react-native'
-import { getBottomSpace } from 'react-native-iphone-x-helper'
+import { Animated, FlatList, Keyboard, View } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { connect } from 'react-redux'
 import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
@@ -43,7 +36,6 @@ class PostDetailCard extends React.PureComponent {
         super(props)
         this.commentBox = undefined
         this.state = {
-            position: 'absolute',
             commentBoxPadding: new Animated.Value(0),
         }
         this.handleScrollToCommentItem = this.handleScrollToCommentItem.bind(
@@ -132,30 +124,19 @@ class PostDetailCard extends React.PureComponent {
     }
 
     keyboardWillShow = (e) => {
-        console.log(`${DEBUG_KEY}: [ keyboardWillShow ]`)
-        const timeout = (TOTAL_HEIGHT * 210) / e.endCoordinates.height
-        Animated.sequence([
-            Animated.delay(timeout),
-            Animated.parallel([
-                Animated.timing(this.state.commentBoxPadding, {
-                    toValue:
-                        e.endCoordinates.height -
-                        TOTAL_HEIGHT -
-                        getBottomSpace(),
-                    duration: 210 - timeout,
-                }),
-            ]),
-        ]).start()
+        Animated.timing(this.state.commentBoxPadding, {
+            useNativeDriver: false,
+            toValue: e.endCoordinates.height,
+            duration: e.duration,
+        }).start()
     }
 
-    keyboardWillHide = () => {
-        console.log(`${DEBUG_KEY}: [ keyboardWillHide ]`)
-        Animated.parallel([
-            Animated.timing(this.state.commentBoxPadding, {
-                toValue: 0,
-                duration: 210,
-            }),
-        ]).start()
+    keyboardWillHide = (e) => {
+        Animated.timing(this.state.commentBoxPadding, {
+            useNativeDriver: false,
+            toValue: 0,
+            duration: e.duration,
+        }).start()
     }
 
     /**
@@ -326,50 +307,42 @@ class PostDetailCard extends React.PureComponent {
                             this.props.closePostDetail(postId, pageId)
                         }
                     />
-                    <KeyboardAvoidingView
-                        style={{ flex: 1 }}
-                        behavior="padding"
-                    >
-                        <FlatList
-                            ref="flatList"
-                            data={data}
-                            renderItem={this.renderItem}
-                            keyExtractor={this.keyExtractor}
-                            ListHeaderComponent={this.renderPostDetailSection.apply(
-                                this
-                            )}
-                            refreshing={this.props.commentLoading}
-                            onRefresh={this.handleRefresh}
-                            ListFooterComponent={
-                                <View
-                                    style={{
-                                        height: 90,
-                                        backgroundColor: 'transparent',
-                                    }}
-                                />
-                            }
-                        />
-                        <Animated.View
-                            style={[
-                                styles.composerContainer,
-                                {
-                                    position: this.state.position,
-                                    paddingBottom: this.state.commentBoxPadding,
-                                    backgroundColor: 'white',
-                                    zIndex: 3,
-                                },
-                            ]}
-                        >
-                            <CommentBox
-                                onRef={(ref) => {
-                                    this.commentBox = ref
+                    <FlatList
+                        ref="flatList"
+                        data={data}
+                        renderItem={this.renderItem}
+                        keyExtractor={this.keyExtractor}
+                        ListHeaderComponent={this.renderPostDetailSection.apply(
+                            this
+                        )}
+                        refreshing={this.props.commentLoading}
+                        onRefresh={this.handleRefresh}
+                        ListFooterComponent={
+                            <View
+                                style={{
+                                    height: 90,
+                                    backgroundColor: 'transparent',
                                 }}
-                                hasSuggestion={false}
-                                pageId={pageId}
-                                entityId={postId}
                             />
-                        </Animated.View>
-                    </KeyboardAvoidingView>
+                        }
+                    />
+                    <Animated.View
+                        style={[
+                            styles.composerContainer,
+                            {
+                                paddingBottom: this.state.commentBoxPadding,
+                            },
+                        ]}
+                    >
+                        <CommentBox
+                            onRef={(ref) => {
+                                this.commentBox = ref
+                            }}
+                            hasSuggestion={false}
+                            pageId={pageId}
+                            entityId={postId}
+                        />
+                    </Animated.View>
                 </View>
             </MenuProvider>
         )
@@ -383,10 +356,6 @@ const styles = {
     containerStyle: {
         backgroundColor: color.GM_CARD_BACKGROUND,
         flex: 1,
-        // shadowColor: '#000',
-        // shadowOffset: { width: 0, height: 1 },
-        // shadowOpacity: 0.3,
-        // shadowRadius: 6,
     },
     iconStyle: {
         alignSelf: 'center',
@@ -399,9 +368,12 @@ const styles = {
         opacity: 0.5,
     },
     composerContainer: {
+        position: 'absolute',
         left: 0,
         right: 0,
         bottom: 0,
+        backgroundColor: 'white',
+        zIndex: 3,
     },
 }
 

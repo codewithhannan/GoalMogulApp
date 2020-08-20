@@ -25,7 +25,6 @@ import { initSentry } from './src/monitoring/sentry'
 
 // UI theme provider
 import ThemeProvider from './theme/ThemeProvider'
-import { color } from './src/styles/basic'
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}

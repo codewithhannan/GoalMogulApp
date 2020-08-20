@@ -19,6 +19,7 @@ import {
     Image,
     Platform,
     Animated,
+    Keyboard,
 } from 'react-native'
 import _ from 'lodash'
 import { MenuProvider } from 'react-native-popup-menu'
@@ -68,8 +69,8 @@ class ReplyThread extends React.Component {
             showCommentLikeList: false,
             likeListParentId: undefined,
             likeListParentType: undefined,
-            marginTop: new Animated.Value(0),
         }
+        this.commentBoxPadding = new Animated.Value(0)
         this.openCommentLikeList = this.openCommentLikeList.bind(this)
         this.closeCommentLikeList = this.closeCommentLikeList.bind(this)
 
@@ -79,6 +80,14 @@ class ReplyThread extends React.Component {
     }
 
     componentDidMount() {
+        this.keyboardWillShowListener = Keyboard.addListener(
+            'keyboardWillShow',
+            this.keyboardWillShow
+        )
+        this.keyboardWillHideListener = Keyboard.addListener(
+            'keyboardWillHide',
+            this.keyboardWillHide
+        )
         this.clearCommentBox()
         if (this.props.focusCommentBox)
             setTimeout(() => this.commentBox.focus(), 700)
@@ -88,7 +97,25 @@ class ReplyThread extends React.Component {
         // This is second tome resetCommentBox is called because sometimes
         // due to auto correct text persists from reply thread as comment boxes are
         // using same redux area
+        this.keyboardWillShowListener.remove()
+        this.keyboardWillHideListener.remove()
         this.resetCommentBox()
+    }
+
+    keyboardWillShow = (e) => {
+        Animated.timing(this.commentBoxPadding, {
+            useNativeDriver: false,
+            toValue: e.endCoordinates.height,
+            duration: e.duration,
+        }).start()
+    }
+
+    keyboardWillHide = (e) => {
+        Animated.timing(this.commentBoxPadding, {
+            useNativeDriver: false,
+            toValue: 0,
+            duration: e.duration,
+        }).start()
     }
 
     resetCommentBox = () => {
@@ -363,10 +390,7 @@ class ReplyThread extends React.Component {
                     parentType={this.state.likeListParentType}
                     clearDataOnHide
                 />
-                <KeyboardAvoidingView
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                    style={styles.cardContainerStyle}
-                >
+                <View style={{ flex: 1 }}>
                     <ModalHeader
                         onCancel={() => {
                             // reset comment box redux area on close
@@ -375,27 +399,29 @@ class ReplyThread extends React.Component {
                         }}
                         back
                     />
-                    <View
-                        style={{
-                            flex: 1,
-                            paddingBottom: 8,
-                        }}
-                    >
-                        <FlatList
-                            ListHeaderComponent={this.renderHeader()}
-                            data={childComments}
-                            renderItem={this.renderItem}
-                        />
-                    </View>
-                    <CommentBox
-                        onRef={(ref) => (this.commentBox = ref)}
-                        hasSuggestion={!!this.props.goalId}
-                        pageId={this.props.pageId}
-                        goalId={this.props.goalId}
-                        onPost={this.clearCommentBox}
-                        isReplyCommentBox={true}
+                    <FlatList
+                        ListHeaderComponent={this.renderHeader()}
+                        data={childComments}
+                        renderItem={this.renderItem}
                     />
-                </KeyboardAvoidingView>
+                    <Animated.View
+                        style={[
+                            styles.composerContainer,
+                            {
+                                paddingBottom: this.commentBoxPadding,
+                            },
+                        ]}
+                    >
+                        <CommentBox
+                            onRef={(ref) => (this.commentBox = ref)}
+                            hasSuggestion={!!this.props.goalId}
+                            pageId={this.props.pageId}
+                            goalId={this.props.goalId}
+                            onPost={this.clearCommentBox}
+                            isReplyCommentBox={true}
+                        />
+                    </Animated.View>
+                </View>
             </MenuProvider>
         )
     }
@@ -405,6 +431,14 @@ const styles = {
     cardContainerStyle: {
         flex: 1,
         backgroundColor: 'white',
+    },
+    composerContainer: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'white',
+        zIndex: 3,
     },
     // Styles related to child comments
     replyIconStyle: {

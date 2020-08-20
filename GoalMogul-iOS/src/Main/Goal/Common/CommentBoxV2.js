@@ -565,83 +565,75 @@ class CommentBoxV2 extends Component {
             : styles.inputStyle
 
         return (
-            <View
-                style={{
-                    backgroundColor: 'white',
+            <MentionsTextInput
+                ref={(r) => (this.textInput = r)}
+                placeholder={this.state.defaultValue}
+                onChangeText={(val) =>
+                    this.props.newCommentOnTextChange(val, pageId)
+                }
+                editable={!uploading}
+                maxHeight={maxHeight}
+                multiline
+                value={newComment.contentText}
+                contentTags={newComment.contentTags}
+                contentTagsReg={newComment.contentTags.map((t) => t.tagReg)}
+                tagSearchRes={this.state.tagSearchData.data}
+                defaultValue={this.state.defaultValue}
+                onBlur={() => this.handleOnBlur(newComment)}
+                onSubmitEditing={() => this.handleOnSubmitEditing(newComment)}
+                renderSuggestionPreview={() =>
+                    this.renderSuggestionPreview(newComment, pageId)
+                }
+                renderMedia={() => this.renderMedia(newComment)}
+                renderLeftIcons={() =>
+                    this.renderLeftIcons(
+                        newComment,
+                        pageId,
+                        hasSuggestion,
+                        goalId
+                    )
+                }
+                renderPost={() => this.renderPost(newComment)}
+                textInputContainerStyle={inputContainerStyle}
+                textInputStyle={inputStyle}
+                validateTags={() => this.validateContentTags()}
+                suggestionsPanelStyle={{
+                    backgroundColor: 'rgba(100,100,100,0.1)',
                 }}
-            >
-                <MentionsTextInput
-                    ref={(r) => (this.textInput = r)}
-                    placeholder={this.state.defaultValue}
-                    onChangeText={(val) =>
-                        this.props.newCommentOnTextChange(val, pageId)
-                    }
-                    editable={!uploading}
-                    maxHeight={maxHeight}
-                    multiline
-                    value={newComment.contentText}
-                    contentTags={newComment.contentTags}
-                    contentTagsReg={newComment.contentTags.map((t) => t.tagReg)}
-                    tagSearchRes={this.state.tagSearchData.data}
-                    defaultValue={this.state.defaultValue}
-                    onBlur={() => this.handleOnBlur(newComment)}
-                    onSubmitEditing={() =>
-                        this.handleOnSubmitEditing(newComment)
-                    }
-                    renderSuggestionPreview={() =>
-                        this.renderSuggestionPreview(newComment, pageId)
-                    }
-                    renderMedia={() => this.renderMedia(newComment)}
-                    renderLeftIcons={() =>
-                        this.renderLeftIcons(
-                            newComment,
-                            pageId,
-                            hasSuggestion,
-                            goalId
-                        )
-                    }
-                    renderPost={() => this.renderPost(newComment)}
-                    textInputContainerStyle={inputContainerStyle}
-                    textInputStyle={inputStyle}
-                    validateTags={() => this.validateContentTags()}
-                    suggestionsPanelStyle={{
-                        backgroundColor: 'rgba(100,100,100,0.1)',
-                    }}
-                    loadingComponent={() => {
-                        if (this.state.tagSearchData.loading) {
-                            return (
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        height: 50,
-                                        width,
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <ActivityIndicator />
-                                </View>
-                            )
-                        }
+                loadingComponent={() => {
+                    if (this.state.tagSearchData.loading) {
                         return (
-                            <EmptyResult
-                                text={'No User Found'}
-                                textStyle={{ paddingTop: 15, height: 50 }}
-                            />
+                            <View
+                                style={{
+                                    flex: 1,
+                                    height: 50,
+                                    width,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <ActivityIndicator />
+                            </View>
                         )
-                    }}
-                    trigger={'@'}
-                    triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
-                    triggerCallback={this.callback.bind(this)}
-                    triggerLoadMore={this.handleTagSearchLoadMore}
-                    renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
-                    suggestionsData={this.state.tagSearchData.data} // array of objects
-                    keyExtractor={(item, index) => item._id}
-                    suggestionRowHeight={50}
-                    horizontal={false} // defaut is true, change the orientation of the list
-                    MaxVisibleRowCount={7} // this is required if horizontal={false}
-                />
-            </View>
+                    }
+                    return (
+                        <EmptyResult
+                            text={'No User Found'}
+                            textStyle={{ paddingTop: 15, height: 50 }}
+                        />
+                    )
+                }}
+                trigger={'@'}
+                triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
+                triggerCallback={this.callback.bind(this)}
+                triggerLoadMore={this.handleTagSearchLoadMore}
+                renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
+                suggestionsData={this.state.tagSearchData.data} // array of objects
+                keyExtractor={(item, index) => item._id}
+                suggestionRowHeight={50}
+                horizontal={false} // defaut is true, change the orientation of the list
+                MaxVisibleRowCount={7} // this is required if horizontal={false}
+            />
         )
     }
 }
@@ -700,12 +692,11 @@ const styles = {
         borderColor: '#F1F1F1',
         borderWidth: 1,
         flex: 1,
-        paddingTop: 4,
     },
     inputStyle: {
         ...default_style.normalText_1,
-        minHeight: 28,
-        maxHeight: 80,
+        minHeight: 30 * default_style.uiScale,
+        maxHeight: 80 * default_style.uiScale,
         paddingLeft: 15,
         paddingRight: 15,
         backgroundColor: 'white',

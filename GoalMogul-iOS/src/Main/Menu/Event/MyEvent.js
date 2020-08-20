@@ -336,10 +336,12 @@ class MyEvent extends Component {
             // Animated to hide the infoCard if not on about tab
             Animated.parallel([
                 Animated.timing(this.state.infoCardHeight, {
+                    useNativeDriver: false,
                     duration: 200,
                     toValue: 0,
                 }),
                 Animated.timing(this.state.infoCardOpacity, {
+                    useNativeDriver: false,
                     duration: 200,
                     toValue: 0,
                 }),
@@ -348,10 +350,12 @@ class MyEvent extends Component {
             // Animated to open the infoCard if on about tab
             Animated.parallel([
                 Animated.timing(this.state.infoCardHeight, {
+                    useNativeDriver: false,
                     duration: 200,
                     toValue: INFO_CARD_HEIGHT,
                 }),
                 Animated.timing(this.state.infoCardOpacity, {
+                    useNativeDriver: false,
                     duration: 200,
                     toValue: 1,
                 }),

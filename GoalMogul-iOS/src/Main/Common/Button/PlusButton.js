@@ -34,22 +34,27 @@ class PlusButton extends Component {
         if (this.props.plusActivated && !prevProps.plusActivated) {
             Animated.parallel([
                 Animated.timing(this.animations.plusFade, {
+                    useNativeDriver: false,
                     toValue: 1,
                     duration: 400,
                 }),
                 Animated.timing(this.animations.plusShrink, {
+                    useNativeDriver: false,
                     toValue: styles.iconContainerStyle.height,
                     duration: 400,
                 }),
                 Animated.timing(this.animations.plusBottomShift, {
+                    useNativeDriver: false,
                     toValue: styles.iconContainerStyle.bottom,
                     duration: 400,
                 }),
                 Animated.timing(this.animations.plusRightShift, {
+                    useNativeDriver: false,
                     toValue: styles.iconContainerStyle.right,
                     duration: 400,
                 }),
                 Animated.timing(this.animations.spinAnim, {
+                    useNativeDriver: false,
                     toValue: 1,
                     duration: 400,
                 }),
@@ -63,26 +68,31 @@ class PlusButton extends Component {
         if (!this.props.plusActivated) return
         Animated.parallel([
             Animated.timing(this.animations.plusFade, {
+                useNativeDriver: false,
                 toValue: 0,
                 duration: 400,
             }),
             Animated.timing(this.animations.plusShrink, {
+                useNativeDriver: false,
                 toValue: 0,
                 duration: 400,
             }),
             Animated.timing(this.animations.plusBottomShift, {
+                useNativeDriver: false,
                 toValue:
                     styles.iconContainerStyle.bottom +
                     styles.iconContainerStyle.height / 2,
                 duration: 400,
             }),
             Animated.timing(this.animations.plusRightShift, {
+                useNativeDriver: false,
                 toValue:
                     styles.iconContainerStyle.right +
                     styles.iconContainerStyle.height / 2,
                 duration: 400,
             }),
             Animated.timing(this.animations.spinAnim, {
+                useNativeDriver: false,
                 toValue: 0.5,
                 duration: 400,
             }),
