@@ -62,7 +62,7 @@ import {
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
 import EmptyResult from '../../Common/Text/EmptyResult'
-import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard'
+import PostPreviewCard from '../../Post/PostProfileCard/PostPreviewCard'
 import About from './MyTribeAbout'
 import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 
@@ -471,7 +471,7 @@ class MyTribe extends React.PureComponent {
 
     renderItem = (props) => {
         return (
-            <ProfilePostCard
+            <PostPreviewCard
                 item={props.item}
                 isTribeDetailPost={true}
                 key={props.index}

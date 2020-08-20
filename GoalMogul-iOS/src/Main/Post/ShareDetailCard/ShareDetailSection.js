@@ -64,7 +64,7 @@ import ActionButtonGroup from '../../Goal/Common/ActionButtonGroup'
 import Headline from '../../Goal/Common/Headline'
 import Timestamp from '../../Goal/Common/Timestamp'
 import GoalCard from '../../Goal/GoalCard/GoalCard'
-import ProfilePostCard from '../PostProfileCard/ProfilePostCard'
+import PostPreviewCard from '../PostProfileCard/PostPreviewCard'
 
 const DEBUG_KEY = '[ UI ShareDetailCard.ShareDetailSection ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -391,7 +391,7 @@ class ShareDetailSection extends Component {
                         marginTop: 8,
                     }}
                 >
-                    <ProfilePostCard
+                    <PostPreviewCard
                         item={refPreview}
                         hasCaret={false}
                         isSharedItem={true}

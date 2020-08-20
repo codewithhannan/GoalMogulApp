@@ -22,13 +22,13 @@ import { imagePreviewContainerStyle } from '../../../styles'
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import SparkleBadgeView from '../../Gamification/Badge/SparkleBadgeView'
 import GoalCard from '../../Goal/GoalCard/GoalCard'
-import ProfilePostCard from './ProfilePostCard'
+import PostPreviewCard from './PostPreviewCard'
 
 // Constants
-const DEBUG_KEY = '[ UI ProfilePostCard.ProfilePostBody ]'
+const DEBUG_KEY = '[ UI PostPreviewCard.PostPreviewBody ]'
 const { width } = Dimensions.get('window')
 
-class ProfilePostBody extends React.Component {
+class PostPreviewBody extends React.Component {
     state = {
         mediaModal: false,
     }
@@ -123,7 +123,7 @@ class ProfilePostBody extends React.Component {
                         borderColor: '#F2F2F2',
                     }}
                 >
-                    <ProfilePostCard
+                    <PostPreviewCard
                         item={previewItem}
                         hasCaret={false}
                         isSharedItem={true}
@@ -196,4 +196,4 @@ const getItemFromGoal = (goal, type, ref) => {
     return ret
 }
 
-export default ProfilePostBody
+export default PostPreviewBody

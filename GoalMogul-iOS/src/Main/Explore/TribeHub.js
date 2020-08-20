@@ -25,7 +25,7 @@ import { Actions } from 'react-native-router-flux'
 import { componentKeyByTab } from '../../redux/middleware/utils'
 import { Text, Icon } from '@ui-kitten/components'
 import EmptyResult from '../Common/Text/EmptyResult'
-import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard'
+import PostPreviewCard from '../Post/PostProfileCard/PostPreviewCard'
 import { MenuProvider } from 'react-native-popup-menu'
 
 class TribeHub extends Component {
@@ -36,7 +36,7 @@ class TribeHub extends Component {
 
     renderItem = ({ item }) => {
         return (
-            <ProfilePostCard
+            <PostPreviewCard
                 item={item}
                 hasActionButton={item.postType !== 'ShareGoal'}
             />

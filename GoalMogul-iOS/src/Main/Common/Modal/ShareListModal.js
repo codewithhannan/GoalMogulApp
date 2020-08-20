@@ -14,7 +14,7 @@ import Constants from 'expo-constants'
 import DelayedButton from '../Button/DelayedButton'
 import { ModalHeaderStyle } from './Styles'
 import { getShareList } from '../../../redux/modules/feed/post/PostActions'
-import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard'
+import PostPreviewCard from '../../Post/PostProfileCard/PostPreviewCard'
 
 const DEBUG_KEY = '[ UI ShareListModal ]'
 const MODAL_TRANSITION_TIME = 300
@@ -88,7 +88,7 @@ class ShareListModal extends React.PureComponent {
         }
 
         return (
-            <ProfilePostCard
+            <PostPreviewCard
                 item={item}
                 hasActionButton={false}
                 showRefPreview={false}

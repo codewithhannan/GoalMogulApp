@@ -78,7 +78,7 @@ import { StackedAvatarsV2 } from '../../Common/StackedAvatars'
 import TabButtonGroup from '../../Common/TabButtonGroup'
 // import ParticipantFilterBar from '../../Event/ParticipantFilterBar';
 import EmptyResult from '../../Common/Text/EmptyResult'
-import ProfilePostCard from '../../Post/PostProfileCard/ProfilePostCard'
+import PostPreviewCard from '../../Post/PostProfileCard/PostPreviewCard'
 import MemberListCard from '../../Tribe/MemberListCard'
 import About from './MyEventAbout'
 import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
@@ -757,7 +757,7 @@ class MyEvent extends Component {
 
             case 'posts': {
                 return (
-                    <ProfilePostCard
+                    <PostPreviewCard
                         item={props.item}
                         key={props.index}
                         hasActionButton

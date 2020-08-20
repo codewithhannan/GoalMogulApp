@@ -21,7 +21,7 @@ import { imagePreviewContainerStyle } from '../../styles'
 import { IMAGE_BASE_URL, IS_ZOOMED } from '../../Utils/Constants'
 import SparkleBadgeView from '../Gamification/Badge/SparkleBadgeView'
 import GoalCard from '../Goal/GoalCard/GoalCard'
-import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard'
+import PostPreviewCard from '../Post/PostProfileCard/PostPreviewCard'
 
 const DEBUG_KEY = '[ UI ActivityCard.ActivityBody ]'
 const { width } = Dimensions.get('window')
@@ -136,7 +136,7 @@ class ActivityBody extends React.Component {
                         borderColor: '#F2F2F2',
                     }}
                 >
-                    <ProfilePostCard
+                    <PostPreviewCard
                         item={item}
                         hasCaret={false}
                         isSharedItem={true}

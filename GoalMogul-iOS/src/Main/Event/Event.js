@@ -57,7 +57,7 @@ import { MenuFactory } from '../Common/MenuFactory'
 import { StackedAvatarsV2 } from '../Common/StackedAvatars'
 import TabButtonGroup from '../Common/TabButtonGroup'
 import EmptyResult from '../Common/Text/EmptyResult'
-import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard'
+import PostPreviewCard from '../Post/PostProfileCard/PostPreviewCard'
 import MemberListCard from '../Tribe/MemberListCard'
 import About from './About'
 import ParticipantFilterBar from './ParticipantFilterBar'
@@ -467,7 +467,7 @@ class Event extends Component {
 
             case 'posts': {
                 return (
-                    <ProfilePostCard
+                    <PostPreviewCard
                         item={props.item}
                         key={props.index}
                         hasActionButton

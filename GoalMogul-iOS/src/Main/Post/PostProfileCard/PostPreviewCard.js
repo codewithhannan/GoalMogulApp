@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import R from 'ramda'
 import timeago from 'timeago.js'
+import * as Haptics from 'expo-haptics'
 
 // Actions
 import { likeGoal, unLikeGoal } from '../../../redux/modules/like/LikeActions'
@@ -32,7 +33,7 @@ import {
     actionSheet,
     switchByButtonIndex,
 } from '../../Common/ActionSheetFactory'
-import ProfilePostBody from './ProfilePostBody'
+import PostPreviewBody from './PostPreviewBody'
 import ProfileImage from '../../Common/ProfileImage'
 import RichText from '../../Common/Text/RichText'
 import Headline from '../../Goal/Common/Headline'
@@ -44,11 +45,13 @@ import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
     SHOW_SEE_MORE_TEXT_LENGTH,
+    DEVICE_PLATFORM,
 } from '../../../Utils/Constants'
 
 import { default_style, color } from '../../../styles/basic'
 import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
+import FloatingHearts from '../../Common/FloatingHearts/FloatingHearts'
 
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -59,7 +62,22 @@ const SHARE_TO_MENU_OPTTIONS = [
 ]
 const CANCEL_INDEX = 3
 
-class ProfilePostCard extends React.PureComponent {
+class PostPreviewCard extends React.PureComponent {
+    state = {
+        floatingHeartCount: 0,
+        likeButtonLeftOffset: 0,
+    }
+
+    /**
+     * Only update when needed
+     */
+    shouldComponentUpdate(nextProps, nextState) {
+        return (
+            !_.isEqual(nextState, this.state) ||
+            !_.isEqual(nextProps.item, this.props.item)
+        )
+    }
+
     handleCardOnPress = (item) => {
         const action = () => this.props.openPostDetail(item)
         if (item) {
@@ -111,6 +129,16 @@ class ProfilePostCard extends React.PureComponent {
         return shareToActionSheet()
     }
 
+    incrementFloatingHeartCount = () => {
+        // only iOS has a clean haptic system at the moment
+        if (DEVICE_PLATFORM == 'ios') {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        }
+        this.setState({
+            floatingHeartCount: this.state.floatingHeartCount + 1,
+        })
+    }
+
     renderActionButtons(item, hasActionButton) {
         // Sanity check if ref exists
         if (!item || !hasActionButton) return null
@@ -145,8 +173,14 @@ class ProfilePostCard extends React.PureComponent {
                                 maybeLikeRef
                             )
                         }
+                        this.incrementFloatingHeartCount()
                         this.props.likeGoal('post', _id)
                     }}
+                    onLayout={({ nativeEvent }) =>
+                        this.setState({
+                            likeButtonLeftOffset: nativeEvent.layout.x,
+                        })
+                    }
                 />
                 <ActionButton
                     iconSource={ShareIcon}
@@ -335,12 +369,20 @@ class ProfilePostCard extends React.PureComponent {
                     >
                         {this.renderHeader(item)}
                     </TouchableOpacity>
-                    <ProfilePostBody
+                    <PostPreviewBody
                         item={item}
                         showRefPreview={this.props.showRefPreview}
                         openCardContent={() => this.handleCardOnPress(item)}
                     />
                 </View>
+                <FloatingHearts
+                    count={this.state.floatingHeartCount}
+                    color={'#EB5757'}
+                    style={{
+                        zIndex: 5,
+                    }}
+                    leftOffset={this.state.likeButtonLeftOffset}
+                />
                 {this.renderActionButtons(item, hasActionButton)}
             </View>
         )
@@ -374,4 +416,4 @@ export default connect(mapStateToProps, {
     openProfile,
     subscribeEntityNotification,
     unsubscribeEntityNotification,
-})(wrapAnalytics(ProfilePostCard, SCREENS.PROFILE_POST_TAB))
+})(wrapAnalytics(PostPreviewCard, SCREENS.PROFILE_POST_TAB))

@@ -37,7 +37,7 @@ import TabButtonGroup from '../Common/TabButtonGroup'
 import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
 import ProfileGoalCard from '../Goal/GoalCard/ProfileGoalCard2'
 import ProfileNeedCard from '../Goal/NeedCard/ProfileNeedCard'
-import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard'
+import PostPreviewCard from '../Post/PostProfileCard/PostPreviewCard'
 import About from './About'
 import ProfileDetailCard from './ProfileCard/ProfileDetailCard'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
@@ -203,7 +203,7 @@ class ProfileV2 extends Component {
                 return <ProfileGoalCard item={item} pageId={pageId} />
             }
             case 'posts': {
-                return <ProfilePostCard item={item} hasActionButton />
+                return <PostPreviewCard item={item} hasActionButton />
             }
             case 'needs': {
                 return <ProfileNeedCard item={item} pageId={pageId} />

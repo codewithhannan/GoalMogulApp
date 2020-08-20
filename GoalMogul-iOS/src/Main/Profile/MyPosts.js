@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 
 // Components
 import GoalFilterBar from '../Common/GoalFilterBar'
-import ProfilePostCard from '../Post/PostProfileCard/ProfilePostCard'
+import PostPreviewCard from '../Post/PostProfileCard/PostPreviewCard'
 
 // actions
 import {
@@ -73,7 +73,7 @@ class MyPosts extends Component {
 
     renderItem = ({ item }) => {
         // TODO: render item
-        return <ProfilePostCard item={item} hasActionButton />
+        return <PostPreviewCard item={item} hasActionButton />
     }
 
     render() {
