@@ -23,6 +23,7 @@ import {
     UserBanner,
 } from '../../../actions'
 import DelayedButton from '../../Common/Button/DelayedButton'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 const DEBUG_KEY = '[ UI FriendCardView ]'
 
@@ -42,7 +43,7 @@ class FriendCardView extends React.PureComponent {
     renderProfileImage(item) {
         return (
             <ProfileImage
-                imageStyle={{ height: 56, width: 56, borderRadius: 5 }}
+                imageStyle={{ height: 56, width: 56 }}
                 defaultImageStyle={{
                     height: 56,
                     width: 53,
@@ -51,7 +52,7 @@ class FriendCardView extends React.PureComponent {
                     marginRight: 1,
                 }}
                 imageContainerStyle={{ marginTop: 5 }}
-                imageUrl={item && item.profile ? item.profile.image : undefined}
+                imageUrl={getProfileImageOrDefaultFromUser(item)}
                 imageContainerStyle={styles.imageContainerStyle}
                 userId={item._id}
             />
@@ -224,11 +225,7 @@ const styles = {
     },
     // ProfileImage
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1.5,
-        borderColor: 'lightgray',
         alignItems: 'center',
-        borderRadius: 6,
         alignSelf: 'flex-start',
         backgroundColor: 'white',
     },

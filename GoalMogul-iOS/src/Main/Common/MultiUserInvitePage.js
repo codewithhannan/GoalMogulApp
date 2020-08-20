@@ -7,28 +7,28 @@
  * @format
  */
 
-import React from 'react'
+import { Icon, Input, Layout, withStyles } from '@ui-kitten/components'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
-import { withStyles, Input, Icon, Layout } from '@ui-kitten/components'
-import { connect } from 'react-redux'
+import React from 'react'
 import {
-    View,
     ActivityIndicator,
-    KeyboardAvoidingView,
-    ScrollView,
-    Text,
     Alert,
     FlatList,
     Image,
+    Text,
+    View,
 } from 'react-native'
-import { arrayUnique } from '../../redux/middleware/utils'
-import ModalHeader from './Header/ModalHeader'
 import { Actions } from 'react-native-router-flux'
-import InviteUserCard from '../Search/People/InviteUserCard'
 import defaultProfilePic from '../../asset/utils/defaultUserProfile.png'
+import {
+    arrayUnique,
+    getProfileImageOrDefaultFromUser,
+} from '../../redux/middleware/utils'
+import InviteUserCard from '../Search/People/InviteUserCard'
 import DelayedButton from './Button/DelayedButton'
-import { IMAGE_BASE_URL } from '../../Utils/Constants'
+import ModalHeader from './Header/ModalHeader'
+import ProfileImage from './ProfileImage'
 
 const AUTO_SEARCH_DELAY_MS = 800
 const DEBUG_KEY = '[ UI MultiUserInvitePage ]'
@@ -349,15 +349,7 @@ class MultiUserInvitePage extends React.PureComponent {
      */
     renderSelectedItem = ({ item }) => {
         const { profile, _id } = item
-        const { image } = profile
 
-        let imageUrl
-        if (image) {
-            imageUrl =
-                typeof image == 'string'
-                    ? `${IMAGE_BASE_URL}${image}`
-                    : imageUrl
-        }
         return (
             <Layout style={{ marginRight: 10, marginTop: 10 }}>
                 <DelayedButton
@@ -388,16 +380,10 @@ class MultiUserInvitePage extends React.PureComponent {
                             />
                         </View>
                     </Layout>
-
-                    <Image
-                        source={
-                            imageUrl ? { uri: imageUrl } : defaultProfilePic
-                        }
-                        style={
-                            imageUrl
-                                ? styles.imageStyle
-                                : styles.defaultImageStyle
-                        }
+                    <ProfileImage
+                        imageUrl={getProfileImageOrDefaultFromUser(item)}
+                        imageContainerStyle={styles.imageStyle}
+                        imageStyle={styles.imageStyle}
                     />
                 </DelayedButton>
             </Layout>

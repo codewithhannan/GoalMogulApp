@@ -58,7 +58,10 @@ import {
 } from '../../../../Utils/Constants'
 import DelayedButton from '../../../Common/Button/DelayedButton'
 import { Actions } from 'react-native-router-flux'
-import { componentKeyByTab } from '../../../../redux/middleware/utils'
+import {
+    componentKeyByTab,
+    getProfileImageOrDefaultFromUser,
+} from '../../../../redux/middleware/utils'
 
 // Constants
 const DEBUG_KEY = '[ UI CommentCard.CommentUserDetail ]'
@@ -285,11 +288,12 @@ class CommentUserDetail extends Component {
     }
 
     renderUserProfileImage(item) {
-        let imageUrl
-        if (item.owner && item.owner.profile && item.owner.profile.image) {
-            imageUrl = item.owner.profile.image
-        }
-        return <ProfileImage imageUrl={imageUrl} userId={item.owner._id} />
+        return (
+            <ProfileImage
+                imageUrl={getProfileImageOrDefaultFromUser(item.owner)}
+                userId={item.owner._id}
+            />
+        )
     }
 
     renderActionButtons() {
@@ -363,8 +367,6 @@ class CommentUserDetail extends Component {
 
         const comment = childComments[childComments.length - 1]
         const { owner } = comment
-        const imageUrl =
-            owner && owner.profile && owner.profile.image && owner.profile.image
         return (
             <DelayedButton
                 activeOpacity={0.6}
@@ -383,7 +385,7 @@ class CommentUserDetail extends Component {
                         marginTop: -12,
                         marginRight: -2,
                     }}
-                    imageUrl={imageUrl}
+                    imageUrl={getProfileImageOrDefaultFromUser(owner)}
                     disabled
                 />
                 <Text style={default_style.smallTitle_1}>{owner.name} </Text>

@@ -1,14 +1,12 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, ActionSheetIOS, Image } from 'react-native'
+import { ActionSheetIOS, Image, View } from 'react-native'
 import { connect } from 'react-redux'
-
-import DelayedButton from '../../Main/Common/Button/DelayedButton'
-import ghost from '../../asset/utils/default_profile.png'
-
 /* Actions */
-import { openCameraRoll, openCamera } from '../../actions'
+import { openCamera, openCameraRoll } from '../../actions'
+import ghost from '../../asset/utils/defaultSelfUserProfile.png'
+import DelayedButton from '../../Main/Common/Button/DelayedButton'
 
 /* Action sheet specific */
 //TODO: abstract out as util function

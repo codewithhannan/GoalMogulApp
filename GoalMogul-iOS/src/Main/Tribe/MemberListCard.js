@@ -1,26 +1,25 @@
 /** @format */
 
-import React, { Component } from 'react'
-import { View, Text, Image, TouchableOpacity } from 'react-native'
 import R from 'ramda'
+import React, { Component } from 'react'
+import { Image, Text, TouchableOpacity, View } from 'react-native'
 import { connect } from 'react-redux'
-
-// Components
-import Name from '../Common/Name'
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
-import ProfileImage from '../Common/ProfileImage'
-
 // Assets
-import defaultUserProfile from '../../asset/utils/defaultUserProfile.png'
 import FriendsSettingIcon from '../../asset/utils/friendsSettingIcon.png'
 // import meetSetting from '../../../asset/utils/meetSetting.png';
-
 // Utils
-import { switchCase } from '../../redux/middleware/utils'
+import {
+    switchCase,
+    getProfileImageOrDefaultFromUser,
+} from '../../redux/middleware/utils'
 
 // Actions
 import { openProfile } from '../../actions'
 import { default_style, color } from '../../styles/basic'
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
+// Components
+import Name from '../Common/Name'
+import ProfileImage from '../Common/ProfileImage'
 
 // Constants
 const DEBUG_KEY = '[ UI MemberListCard ]'
@@ -144,11 +143,10 @@ class MemberListCard extends Component {
     }
 
     renderProfileImage(item) {
-        const { _id } = item
         return (
             <ProfileImage
-                imageUrl={item && item.profile ? item.profile.image : undefined}
-                userId={_id}
+                imageUrl={getProfileImageOrDefaultFromUser(item)}
+                userId={item._id}
             />
         )
     }

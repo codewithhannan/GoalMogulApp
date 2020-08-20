@@ -2,13 +2,15 @@
 
 import _ from 'lodash'
 import React from 'react'
-import { Image, TouchableWithoutFeedback, View } from 'react-native'
+import { Image, View } from 'react-native'
+import defaultUserProfile from '../../asset/utils/defaultUserProfile.png'
 import { connect } from 'react-redux'
 // actions
 import { openProfile } from '../../actions'
 import { getImageOrDefault } from '../../redux/middleware/utils'
 // Constants
 import { default_style } from '../../styles/basic'
+import DelayedButton from './Button/DelayedButton'
 
 const DEBUG_KEY = '[ UI ProfileImage ]'
 /*
@@ -28,7 +30,7 @@ class ProfileImage extends React.Component {
 
         if (this.props.actionDecorator) {
             this.props.actionDecorator(() => this.props.openProfile(userId))
-        } else {
+        } else if (userId) {
             this.props.openProfile(userId)
         }
     }
@@ -36,21 +38,40 @@ class ProfileImage extends React.Component {
     render() {
         const {
             imageContainerStyle,
-            imageStyle,
-            defaultImageSource,
-            disabledOnPress,
+            disabled,
+            actionDecorator,
+            userId,
         } = this.props
-        let imageUrl = this.props.imageUrl
+        let { imageUrl, imageStyle, defaultImageSource } = this.props
+
+        if (!defaultImageSource) {
+            // TODO mod 2 on hash of userId and render blue/grey profile image based on result
+            defaultImageSource = defaultUserProfile
+        }
         const resizeMode = setValue(this.props.resizeMode).withDefaultCase(
             'cover'
         )
 
-        let defaultImageStyle
-        if (imageStyle) defaultImageStyle = { ...imageStyle }
+        imageStyle = imageStyle
+            ? {
+                  borderRadius: 100,
+                  ...imageStyle,
+              }
+            : default_style.profileImage_1
+
+        let defaultImageStyle = default_style.defaultImageStyle || {}
+        if (imageStyle)
+            defaultImageStyle = { ...defaultImageStyle, ...imageStyle }
         if (this.props.defaultImageStyle && !imageUrl)
-            defaultImageStyle = { ...this.props.defaultImageStyle }
+            defaultImageStyle = {
+                ...defaultImageStyle,
+                ...this.props.defaultImageStyle,
+            }
         if (!imageStyle && !this.props.defaultImageStyle)
-            defaultImageStyle = default_style.profileImage_2
+            defaultImageStyle = {
+                ...defaultImageStyle,
+                ...default_style.profileImage_1,
+            }
 
         const defaultImageContainerStyle =
             this.props.defaultImageContainerStyle ||
@@ -72,11 +93,6 @@ class ProfileImage extends React.Component {
                     style={
                         imageUrl
                             ? imageStyle
-                                ? {
-                                      borderRadius: 100,
-                                      ...imageStyle,
-                                  }
-                                : default_style.profileImage_1
                             : {
                                   borderRadius: 100,
                                   ...defaultImageStyle,
@@ -88,12 +104,16 @@ class ProfileImage extends React.Component {
             </View>
         )
 
-        return disabledOnPress ? (
-            fragment
-        ) : (
-            <TouchableWithoutFeedback onPress={this.handleProfileImageOnPress}>
+        const canOnPress = (actionDecorator || userId) && !disabled
+        return canOnPress ? (
+            <DelayedButton
+                touchableWithoutFeedback
+                onPress={this.handleProfileImageOnPress}
+            >
                 {fragment}
-            </TouchableWithoutFeedback>
+            </DelayedButton>
+        ) : (
+            fragment
         )
     }
 }
@@ -110,8 +130,6 @@ const styles = {
         borderRadius: 100,
         alignSelf: 'flex-start',
         backgroundColor: 'white',
-        borderColor: '#BDBDBD',
-        borderWidth: 1,
     },
 }
 

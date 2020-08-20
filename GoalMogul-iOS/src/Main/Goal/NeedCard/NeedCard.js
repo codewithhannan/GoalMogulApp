@@ -1,53 +1,45 @@
 /** @format */
 
+import _ from 'lodash'
+import R from 'ramda'
 import React, { Component } from 'react'
-import { View, Image, Text, TouchableOpacity } from 'react-native'
+import { Text, TouchableOpacity, View } from 'react-native'
 import { connect } from 'react-redux'
 import timeago from 'timeago.js'
-import R from 'ramda'
-import _ from 'lodash'
-
-// Component
-import Headline from '../Common/Headline'
-import Timestamp from '../Common/Timestamp'
-import ActionButton from '../Common/ActionButton'
-import ActionButtonGroup from '../Common/ActionButtonGroup'
-import SectionCard from '../Common/SectionCard'
-import NextButton from '../Common/NextButton'
-import {
-    actionSheet,
-    switchByButtonIndex,
-} from '../../Common/ActionSheetFactory'
-import ProfileImage from '../../Common/ProfileImage'
-import { RightArrowIcon } from '../../../Utils/Icons'
-
-// Asset
-import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png'
-import LoveIcon from '../../../asset/utils/love.png'
+import { deleteGoal } from '../../../actions'
 import BulbIcon from '../../../asset/utils/bulb.png'
 import ShareIcon from '../../../asset/utils/forward.png'
-
+import LoveIcon from '../../../asset/utils/love.png'
+import {
+    PAGE_TYPE_MAP,
+    getProfileImageOrDefaultFromUser,
+} from '../../../redux/middleware/utils'
+import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions'
 // Actions
 import { likeGoal, unLikeGoal } from '../../../redux/modules/like/LikeActions'
-
-import { createReport } from '../../../redux/modules/report/ReportActions'
-
-import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions'
-
-import { deleteGoal } from '../../../actions'
-
-import { PAGE_TYPE_MAP } from '../../../redux/middleware/utils'
-
 import {
     subscribeEntityNotification,
     unsubscribeEntityNotification,
 } from '../../../redux/modules/notification/NotificationActions'
-
+import { createReport } from '../../../redux/modules/report/ReportActions'
 // Constants
 import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
 } from '../../../Utils/Constants'
+import { RightArrowIcon } from '../../../Utils/Icons'
+import {
+    actionSheet,
+    switchByButtonIndex,
+} from '../../Common/ActionSheetFactory'
+import ProfileImage from '../../Common/ProfileImage'
+import ActionButton from '../Common/ActionButton'
+import ActionButtonGroup from '../Common/ActionButtonGroup'
+// Component
+import Headline from '../Common/Headline'
+import NextButton from '../Common/NextButton'
+import SectionCard from '../Common/SectionCard'
+import Timestamp from '../Common/Timestamp'
 
 const DEBUG_KEY = '[ UI NeedCard ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -167,10 +159,7 @@ class NeedCard extends Component {
             <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
                 <ProfileImage
                     imageStyle={{ height: 60, width: 60 }}
-                    imageUrl={
-                        owner && owner.profile ? owner.profile.image : undefined
-                    }
-                    userId={owner._id}
+                    imageUrl={getProfileImageOrDefaultFromUser(owner)}
                 />
                 <View style={{ marginLeft: 15, flex: 1 }}>
                     <Headline

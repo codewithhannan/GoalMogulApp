@@ -10,19 +10,15 @@ import { connect } from 'react-redux'
 import Headline from '../../Common/Headline'
 import Timestamp from '../../Common/Timestamp'
 import ProfileImage from '../../../Common/ProfileImage'
+import { getProfileImageOrDefaultFromUser } from '../../../../redux/middleware/utils'
 
 class SuggestionGoalPreview extends React.Component {
     renderProfileImage(item) {
-        const imageUrl =
-            item.owner && item.owner.profile && item.owner.profile.image
-                ? item.owner.profile.image
-                : undefined
-
         // Not passing in userId since we don't want to user profile here
         return (
             <ProfileImage
-                imageStyle={{ width: 55, height: 55, borderRadius: 4 }}
-                imageUrl={imageUrl}
+                imageStyle={{ width: 55, height: 55 }}
+                imageUrl={getProfileImageOrDefaultFromUser(item.owner)}
                 imageContainerStyle={styles.imageContainerStyle}
                 disabled
             />
@@ -98,11 +94,7 @@ const styles = {
         elevation: 1,
     },
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1.5,
-        borderColor: 'lightgray',
         alignItems: 'center',
-        borderRadius: 6,
         alignSelf: 'center',
         backgroundColor: 'white',
         marginLeft: 3,

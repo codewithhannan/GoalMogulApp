@@ -5,23 +5,19 @@
  */
 
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, Image } from 'react-native'
+import { Image, Text, View } from 'react-native'
 import { connect } from 'react-redux'
-
+// Actions
+import { openProfile, updateFriendship } from '../../../actions'
+// Assets
+import next from '../../../asset/utils/next.png'
+// Styles
+import { cardBoxShadow } from '../../../styles'
+import DelayedButton from '../../Common/Button/DelayedButton'
 // Components
 import Name from '../../Common/Name'
 import ProfileImage from '../../Common/ProfileImage'
-
-// Assets
-// import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png';
-import next from '../../../asset/utils/next.png'
-
-// Styles
-import { cardBoxShadow } from '../../../styles'
-
-// Actions
-import { updateFriendship, openProfile } from '../../../actions'
-import DelayedButton from '../../Common/Button/DelayedButton'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel']
 const WITHDRAW_INDEX = 0
@@ -62,21 +58,11 @@ class SuggestedCard extends Component {
     }
 
     renderProfileImage(item) {
-        const { profile, _id } = item
-        const { image } = profile
-        // let profileImage = <Image style={styles.imageStyle} source={defaultUserProfile} />;
-        // if (image) {
-        //   const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
-        //   profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
-        // }
-        // return profileImage;
-
         return (
             <ProfileImage
-                imageStyle={{ height: 60, width: 60, borderRadius: 5 }}
-                imageUrl={image}
+                imageStyle={{ height: 60, width: 60 }}
+                imageUrl={getProfileImageOrDefaultFromUser(item)}
                 imageContainerStyle={styles.imageContainerStyle}
-                userId={_id}
             />
         )
     }
@@ -321,9 +307,6 @@ const styles = {
         backgroundColor: '#ffffff',
     },
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1.5,
-        borderColor: 'lightgray',
         alignItems: 'center',
         borderRadius: 6,
         alignSelf: 'flex-start',

@@ -58,6 +58,7 @@ import { Icon } from '@ui-kitten/components'
 import { Text } from 'react-native-animatable'
 import LikeListModal from '../../../Common/Modal/LikeListModal'
 import { Actions } from 'react-native-router-flux'
+import { getProfileImageOrDefaultFromUser } from '../../../../redux/middleware/utils'
 
 const DEBUG_KEY = '[ UI CommentCard ]'
 
@@ -336,12 +337,8 @@ class ReplyThread extends React.Component {
                 >
                     <View style={{ flexDirection: 'row', marginBottom: 8 }}>
                         <ProfileImage
-                            imageUrl={
-                                owner && owner.profile
-                                    ? owner.profile.image
-                                    : undefined
-                            }
                             userId={owner._id}
+                            imageUrl={getProfileImageOrDefaultFromUser(owner)}
                         />
                         <View style={{ marginLeft: 12, marginTop: 2 }}>
                             <Headline

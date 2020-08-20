@@ -29,7 +29,10 @@ import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
 import LoveIcon from '../../../asset/utils/love.png'
 import TrashIcon from '../../../asset/utils/trash.png'
 import UndoIcon from '../../../asset/utils/undo.png'
-import { decode } from '../../../redux/middleware/utils'
+import {
+    decode,
+    getProfileImageOrDefaultFromUser,
+} from '../../../redux/middleware/utils'
 import { createCommentFromSuggestion } from '../../../redux/modules/feed/comment/CommentActions'
 import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions'
 import {
@@ -398,11 +401,7 @@ class GoalDetailSection extends React.PureComponent {
             <View>
                 <View style={{ flexDirection: 'row' }}>
                     <ProfileImage
-                        imageUrl={
-                            owner && owner.profile
-                                ? owner.profile.image
-                                : undefined
-                        }
+                        imageUrl={getProfileImageOrDefaultFromUser(owner)}
                         userId={owner._id}
                     />
                     <View style={{ marginLeft: 12, flex: 1 }}>

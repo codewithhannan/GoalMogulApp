@@ -1,21 +1,18 @@
 /** @format */
 
-import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, Image } from 'react-native'
-import { connect } from 'react-redux'
 import { Button } from '@ui-kitten/components'
-
-// Components
-
-// Assets
-import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png'
-import next from '../../../asset/utils/next.png'
-
+import React, { Component } from 'react'
+import { Image, Text, TouchableOpacity, View } from 'react-native'
+import { connect } from 'react-redux'
 // Actions
-import { updateFriendship, openProfile, UserBanner } from '../../../actions'
+import { openProfile, updateFriendship, UserBanner } from '../../../actions'
+// Components
+// Assets
+import next from '../../../asset/utils/next.png'
+import { EVENT, trackWithProperties } from '../../../monitoring/segment'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import ProfileImage from '../../Common/ProfileImage'
-import { EVENT, trackWithProperties } from '../../../monitoring/segment'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 const DEBUG_KEY = '[ Component SearchUserCard ]'
 
@@ -53,16 +50,13 @@ class SearchUserCard extends Component {
     }
 
     renderProfileImage() {
-        const { profile, _id } = this.props.item
-        const { image } = profile
+        const { item } = this.props
         return (
             <ProfileImage
-                imageStyle={{ height: 55, width: 55, borderRadius: 5 }}
-                imageUrl={image}
+                imageStyle={{ height: 48, width: 48 }}
+                imageUrl={getProfileImageOrDefaultFromUser(item)}
                 rounded
                 imageContainerStyle={styles.imageContainerStyle}
-                defaultImageSource={defaultUserProfile}
-                userId={_id}
             />
         )
     }
@@ -218,11 +212,7 @@ const styles = {
         tintColor: '#17B3EC',
     },
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1.5,
-        borderColor: 'lightgray',
         alignItems: 'center',
-        borderRadius: 6,
         alignSelf: 'center',
         backgroundColor: 'white',
     },

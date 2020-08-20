@@ -422,8 +422,7 @@ export const escapeRegExp = (string) => {
  */
 export const getImageOrDefault = (imageSource, defaultImageSource) => {
     if (!imageSource && !defaultImageSource) {
-        // No source and default source. Return default user icon
-        return DEFAULT_PROFILE_IMAGE
+        return
     }
 
     // Use passed in default image source
@@ -434,7 +433,10 @@ export const getImageOrDefault = (imageSource, defaultImageSource) => {
     }
 
     if (typeof imageSource == 'string') {
-        if (imageSource.indexOf('https://') != 0) {
+        if (
+            imageSource.indexOf('https://') != 0 &&
+            imageSource.indexOf('file:///') != 0
+        ) {
             // This is an image stored in S3 with format ProfileImage/token
             return { uri: `${IMAGE_BASE_URL}${imageSource}` }
         } else {

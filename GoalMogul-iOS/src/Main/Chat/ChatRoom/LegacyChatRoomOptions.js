@@ -17,7 +17,7 @@ import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import { openProfile } from '../../../actions'
 import Icons from '../../../asset/base64/Icons'
-import profilePic from '../../../asset/utils/defaultUserProfile.png'
+import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png'
 import editIcon from '../../../asset/utils/edit.png'
 import leaveIcon from '../../../asset/utils/logout.png'
 import muteIcon from '../../../asset/utils/mute.png'
@@ -25,6 +25,7 @@ import plusIcon from '../../../asset/utils/plus.png'
 import membersIcon from '../../../asset/utils/profile_people_black.png'
 import searchIcon from '../../../asset/utils/search.png'
 import deleteIcon from '../../../asset/utils/trash.png'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 import { deleteConversationMessages } from '../../../redux/modules/chat/ChatRoomActions'
 import { removeChatMember } from '../../../redux/modules/chat/ChatRoomMembersActions'
 import {
@@ -495,10 +496,10 @@ const mapStateToProps = (state, props) => {
             if (otherUser) {
                 otherUser = otherUser.memberRef
                 chatRoomName = otherUser.name
-                chatRoomImage =
-                    otherUser.profile && otherUser.profile.image
-                        ? { uri: `${IMAGE_BASE_URL}${otherUser.profile.image}` }
-                        : profilePic
+                chatRoomImage = getProfileImageOrDefaultFromUser(
+                    otherUser,
+                    defaultProfilePic
+                )
             }
         } else {
             chatRoomName = chatRoom.name

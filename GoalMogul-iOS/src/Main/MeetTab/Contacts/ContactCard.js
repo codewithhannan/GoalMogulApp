@@ -5,28 +5,19 @@
  */
 
 import React, { Component } from 'react'
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    Image,
-    ActionSheetIOS,
-} from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 
 // Components
 import Name from '../../Common/Name'
-
-// Assets
-import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png'
-// import meetSetting from '../../../asset/utils/meetSetting.png';
 
 // Actions
 import { openProfile } from '../../../actions'
 
 // Styles
 import { cardBoxShadow } from '../../../styles'
-import { IMAGE_BASE_URL } from '../../../Utils/Constants'
+import ProfileImage from '../../Common/ProfileImage'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 class ContactCard extends Component {
     handleOnOpenProfile = () => {
@@ -38,49 +29,26 @@ class ContactCard extends Component {
     }
 
     renderProfileImage() {
-        const { image } = this.props.item.profile
-        let profileImage = (
-            <Image style={styles.imageStyle} source={defaultUserProfile} />
+        return (
+            <ProfileImage
+                imageStyle={styles.imageStyle}
+                imageUrl={getProfileImageOrDefaultFromUser(this.props.item)}
+            />
         )
-        if (image) {
-            const imageUrl = `${IMAGE_BASE_URL}${image}`
-            profileImage = (
-                <Image style={styles.imageStyle} source={{ uri: imageUrl }} />
-            )
-        }
-        return profileImage
-    }
-
-    /*
-  NOTE: friends card doesn't have any button. only on profile page
-  */
-    renderButton(_id) {
-        return null
-        // return (
-        //   <TouchableOpacity activeOpacity={0.6} onPress={this.onButtonClicked.bind(this, _id)}>
-        //     <Image source={meetSetting} style={styles.settingIconStyle} />
-        //   </TouchableOpacity>
-        // );
     }
 
     renderInfo() {
         const { name } = this.props.item
         return (
-            <View style={styles.infoContainerStyle}>
-                <View
-                    style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        marginRight: 6,
-                        alignItems: 'center',
-                    }}
-                >
-                    <Name text={name} />
-                </View>
-
-                <View style={styles.buttonContainerStyle}>
-                    {this.renderButton()}
-                </View>
+            <View
+                style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    marginRight: 6,
+                    alignItems: 'center',
+                }}
+            >
+                <Name text={name} />
             </View>
         )
     }
@@ -154,7 +122,6 @@ const styles = {
     imageStyle: {
         height: 48,
         width: 48,
-        borderRadius: 5,
     },
     buttonContainerStyle: {
         marginLeft: 8,

@@ -21,6 +21,7 @@ import Icons from '../asset/base64/Icons'
 // Actions
 import { updateFriendship, openProfile, UserBanner } from '../actions'
 import Name from '../Main/Common/Name'
+import { getProfileImageOrDefaultFromUser } from '../redux/middleware/utils'
 
 const { CheckIcon: check, AddUser: addUser } = Icons
 const checkIconColor = '#2dca4a'
@@ -126,17 +127,15 @@ class ContactDetail extends Component {
             name,
             headline,
             _id,
-            profile,
             maybeInvitationType,
             maybeInvitationId,
         } = this.props.item
         return (
             <View style={styles.containerStyle}>
                 <ProfileImage
-                    imageStyle={{ height: 55, width: 55, borderRadius: 5 }}
-                    imageUrl={profile ? profile.image : undefined}
-                    imageContainerStyle={{ ...styles.imageContainerStyle }}
-                    userId={_id}
+                    imageStyle={{ height: 55, width: 55 }}
+                    imageUrl={getProfileImageOrDefaultFromUser(item)}
+                    imageContainerStyle={styles.imageContainerStyle}
                 />
                 {/* <View
           style={{
@@ -235,11 +234,7 @@ const styles = {
         alignItems: 'center',
     },
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1.5,
-        borderColor: 'lightgray',
         alignItems: 'center',
-        borderRadius: 6,
         alignSelf: 'center',
         backgroundColor: 'white',
     },

@@ -1,71 +1,62 @@
 /** @format */
 
+import _ from 'lodash'
+import moment from 'moment'
 import React, { Component } from 'react'
 import {
-    View,
-    ScrollView,
-    Image,
-    Text,
-    TouchableOpacity,
+    ActivityIndicator,
+    DatePickerIOS,
     Dimensions,
     FlatList,
-    DatePickerIOS,
+    Image,
     Modal,
-    Alert,
-    ActivityIndicator,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native'
-import _ from 'lodash'
-import { connect } from 'react-redux'
-import { Actions } from 'react-native-router-flux'
-import { FieldArray, Field, reduxForm, formValueSelector } from 'redux-form'
-import moment from 'moment'
+import { CopilotStep, walkthroughable } from 'react-native-copilot-gm'
+import DraggableFlatlist from 'react-native-draggable-flatlist'
+import DateTimePicker from 'react-native-modal-datetime-picker'
 import {
     Menu,
-    MenuOptions,
     MenuOption,
+    MenuOptions,
     MenuTrigger,
     renderers,
 } from 'react-native-popup-menu'
+import { Actions } from 'react-native-router-flux'
 import Slider from 'react-native-slider'
-import DraggableFlatlist from 'react-native-draggable-flatlist'
-import DateTimePicker from 'react-native-modal-datetime-picker'
-import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
-
-// Components
-import ModalHeader from '../../Common/Header/ModalHeader'
-import Button from '../Button'
-import InputField from '../../Common/TextInput/InputField'
-import MentionsTextInput from '../Common/MentionsTextInput'
-import ProfileImage from '../../Common/ProfileImage'
-import EmptyResult from '../../Common/Text/EmptyResult'
-
-// assets
-import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png'
+import { connect } from 'react-redux'
+import { Field, FieldArray, formValueSelector, reduxForm } from 'redux-form'
+import arrowRight from '../../../asset/utils/arrow_right.png'
 import CalenderIcon from '../../../asset/utils/calendar_empty.png'
-import plus from '../../../asset/utils/plus.png'
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import dropDown from '../../../asset/utils/dropDown.png'
-import arrowRight from '../../../asset/utils/arrow_right.png'
-
+import plus from '../../../asset/utils/plus.png'
 // Actions
 import {
-    validate,
-    submitGoal,
     goalToFormAdaptor,
+    submitGoal,
 } from '../../../redux/modules/goal/CreateGoalActions'
 import { searchUser } from '../../../redux/modules/search/SearchActions'
-
 // Selector
 import { getGoalDetailByTab } from '../../../redux/modules/goal/selector'
 
 // Utils
-import { arrayUnique, clearTags } from '../../../redux/middleware/utils'
+import { arrayUnique, clearTags, getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 import { default_style, color } from '../../../styles/basic'
 import {
     PRIVACY_OPTIONS,
-    DAY_IN_MS,
     PRIVACY_FRIENDS,
 } from '../../../Utils/Constants'
+// Components
+import ModalHeader from '../../Common/Header/ModalHeader'
+import ProfileImage from '../../Common/ProfileImage'
+import EmptyResult from '../../Common/Text/EmptyResult'
+import InputField from '../../Common/TextInput/InputField'
+import Button from '../Button'
+import MentionsTextInput from '../Common/MentionsTextInput'
 
 const { Popover } = renderers
 const { width } = Dimensions.get('window')
@@ -380,7 +371,7 @@ class NewGoalView extends Component {
      * @param item: suggestion item to render
      */
     renderSuggestionsRow({ item }, hidePanel, cursorPosition) {
-        const { name, profile } = item
+        const { name } = item
         return (
             <TouchableOpacity
                 onPress={() =>
@@ -395,16 +386,9 @@ class NewGoalView extends Component {
                 }}
             >
                 <ProfileImage
-                    defaultImageContainerStyle={styles.imageContainerStyle}
-                    imageContainerStyle={{
-                        ...styles.imageContainerStyle,
-                        borderWidth: 0,
-                    }}
-                    imageUrl={
-                        profile && profile.image ? profile.image : undefined
-                    }
-                    imageStyle={{ height: 30, width: 30, borderRadius: 15 }}
-                    defaultImageSource={defaultUserProfile}
+                    imageContainerStyle={styles.imageContainerStyle}
+                    imageUrl={getProfileImageOrDefaultFromUser(item)}
+                    imageStyle={{ height: 30, width: 30 }}
                 />
                 <Text style={{ fontSize: 16, color: 'darkgray' }}>{name}</Text>
             </TouchableOpacity>
@@ -1264,17 +1248,11 @@ const styles = {
         alignItems: 'center',
     },
     userImageContainerStyle: {
-        borderWidth: 0.5,
-        borderColor: 'lightgray',
         alignItems: 'center',
-        borderRadius: 100,
         alignSelf: 'flex-start',
         backgroundColor: 'white',
     },
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1,
-        borderColor: 'lightgray',
         alignItems: 'center',
         borderRadius: 100,
         alignSelf: 'center',

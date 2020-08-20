@@ -1,22 +1,17 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { Text, View } from 'react-native'
 import { connect } from 'react-redux'
-
-// Components
-import Name from '../../Common/Name'
-import ProfileImage from '../../Common/ProfileImage'
-
-// Assets
-import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png'
-
 // Actions
-import { updateFriendship, blockUser, openProfile } from '../../../actions'
-
+import { blockUser, openProfile, updateFriendship } from '../../../actions'
 // Styles
 import { cardBoxShadow } from '../../../styles'
 import DelayedButton from '../../Common/Button/DelayedButton'
+// Components
+import Name from '../../Common/Name'
+import ProfileImage from '../../Common/ProfileImage'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 const FRIENDSHIP_BUTTONS = ['Block', 'Unfriend', 'Cancel']
 const BLOCK_INDEX = 0
@@ -72,22 +67,11 @@ class FriendCard extends Component {
     }
 
     renderProfileImage(item) {
-        const { profile, _id } = item
-
-        // let profileImage = (
-        //   <Image style={styles.imageStyle} resizeMode='contain' source={defaultUserProfile} />
-        // );
-        // if (image) {
-        //   const imageUrl = `https://s3.us-west-2.amazonaws.com/goalmogul-v1/${image}`;
-        //   profileImage = <Image style={styles.imageStyle} source={{ uri: imageUrl }} />;
-        // }
-        // return profileImage;
         return (
             <ProfileImage
                 imageStyle={styles.imageStyle}
-                imageUrl={profile && profile.image ? profile.image : undefined}
+                imageUrl={getProfileImageOrDefaultFromUser(item)}
                 imageContainerStyle={styles.imageContainerStyle}
-                userId={_id}
             />
         )
     }
@@ -265,14 +249,9 @@ const styles = {
     imageStyle: {
         height: 48,
         width: 48,
-        borderRadius: 5,
     },
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 0.5,
-        borderColor: 'lightgray',
         alignItems: 'center',
-        borderRadius: 6,
         alignSelf: 'flex-start',
         backgroundColor: 'white',
     },

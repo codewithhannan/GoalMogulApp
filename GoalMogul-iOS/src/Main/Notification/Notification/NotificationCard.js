@@ -85,12 +85,10 @@ class NotificationCard extends React.PureComponent {
             parsedNoti && parsedNoti.icon ? parsedNoti.icon : undefined
         return (
             <ProfileImage
-                imageStyle={{ height: 50, width: 50, borderRadius: 5 }}
-                defaultImageStyle={styles.defaultImageStyle}
+                imageStyle={{ height: 50, width: 50 }}
                 imageUrl={imageUrl}
                 rounded
                 imageContainerStyle={styles.imageContainerStyle}
-                userId=""
             />
         )
     }
@@ -190,22 +188,9 @@ const styles = {
         alignItems: 'center',
     },
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 0.5,
-        borderColor: 'lightgray',
         alignItems: 'center',
-        borderRadius: 6,
         alignSelf: 'center',
         backgroundColor: 'white',
-    },
-    defaultImageStyle: {
-        width: 44,
-        height: 48,
-        borderRadius: 5,
-        marginLeft: 3,
-        marginRight: 3,
-        marginTop: 1,
-        marginBottom: 1,
     },
 }
 

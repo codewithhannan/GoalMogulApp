@@ -18,6 +18,7 @@ import DelayedButton from '../../Common/Button/DelayedButton'
 import threeDotsIcon from '../../../asset/utils/friendsSettingIcon.png'
 import { default_style } from '../../../styles/basic'
 import { Icon } from '@ui-kitten/components'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 const { width } = Dimensions.get('window')
 const months = [
@@ -61,13 +62,9 @@ class MyTribeAbout extends Component {
                       return (
                           <View style={{ margin: 4 }}>
                               <ProfileImage
-                                  disabledOnPress
-                                  userId={memberRef._id}
-                                  imageUrl={
-                                      memberRef.profile
-                                          ? memberRef.profile.image
-                                          : undefined
-                                  }
+                                  imageUrl={getProfileImageOrDefaultFromUser(
+                                      memberRef
+                                  )}
                               />
                           </View>
                       )
@@ -77,7 +74,7 @@ class MyTribeAbout extends Component {
         return (
             <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                 <DelayedButton
-                    activeOpacity={0.8}
+                    touchableWithoutFeedback
                     onPress={() =>
                         Actions.push('myTribeMembers', {
                             itemId: _id,
@@ -85,30 +82,33 @@ class MyTribeAbout extends Component {
                             tribeId,
                         })
                     }
-                    style={{
-                        flexDirection: 'row',
-                        flexGrow: 1,
-                        justifyContent: 'center',
-                    }}
                 >
-                    {memberPictures}
                     <View
                         style={{
-                            backgroundColor: '#F2F2F2',
-                            alignItems: 'center',
-                            borderRadius: 100,
-                            margin: 4,
+                            flexDirection: 'row',
+                            flexGrow: 1,
+                            justifyContent: 'center',
                         }}
                     >
-                        <Icon
-                            name="dots-horizontal"
-                            pack="material-community"
+                        {memberPictures}
+                        <View
                             style={{
-                                ...default_style.profileImage_2,
-                                tintColor: '#333333',
+                                backgroundColor: '#F2F2F2',
+                                alignItems: 'center',
+                                borderRadius: 100,
+                                margin: 4,
                             }}
-                            zIndex={1}
-                        />
+                        >
+                            <Icon
+                                name="dots-horizontal"
+                                pack="material-community"
+                                style={{
+                                    ...default_style.profileImage_2,
+                                    tintColor: '#333333',
+                                }}
+                                zIndex={1}
+                            />
+                        </View>
                     </View>
                 </DelayedButton>
             </View>

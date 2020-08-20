@@ -246,18 +246,6 @@ export default class MentionsTextInput extends Component {
         if (this._textInput) this._textInput.focus()
     }
 
-    renderItemSeparator = () => {
-        return (
-            <View
-                style={{
-                    width: '100%',
-                    height: 0.5,
-                    backgroundColor: 'lightgray',
-                }}
-            />
-        )
-    }
-
     renderTextInput() {
         if (
             this.props.flexGrowDirection &&
@@ -329,6 +317,13 @@ export default class MentionsTextInput extends Component {
             </View>
         )
     }
+    renderSuggestionItem(rowData) {
+        return this.props.renderSuggestionsRow(
+            rowData,
+            this.stopTracking.bind(this),
+            this.cursorPosition
+        )
+    }
 
     render() {
         return (
@@ -347,7 +342,7 @@ export default class MentionsTextInput extends Component {
                                 )
                                     ? 0
                                     : 0.5,
-                                borderBottomColor: 'lightgray',
+                                borderBottomColor: '#F2F2F2',
                             },
                         ]}
                     >
@@ -355,18 +350,11 @@ export default class MentionsTextInput extends Component {
                             keyboardShouldPersistTaps={'always'}
                             horizontal={this.props.horizontal}
                             ListEmptyComponent={this.props.loadingComponent}
-                            ItemSeparatorComponent={this.renderItemSeparator}
                             enableEmptySections
                             data={this.props.suggestionsData}
                             onLoadMore={this.triggerLoadMore}
                             keyExtractor={this.props.keyExtractor}
-                            renderItem={(rowData) => {
-                                return this.props.renderSuggestionsRow(
-                                    rowData,
-                                    this.stopTracking.bind(this),
-                                    this.cursorPosition
-                                )
-                            }}
+                            renderItem={this.renderSuggestionItem.bind(this)}
                         />
                     </Animated.View>
                 )}
@@ -390,7 +378,7 @@ export default class MentionsTextInput extends Component {
                                 )
                                     ? 0
                                     : 0.5,
-                                borderBottomColor: 'lightgray',
+                                borderBottomColor: '#F2F2F2',
                             },
                         ]}
                     >
@@ -398,18 +386,11 @@ export default class MentionsTextInput extends Component {
                             keyboardShouldPersistTaps={'always'}
                             horizontal={this.props.horizontal}
                             ListEmptyComponent={this.props.loadingComponent}
-                            ItemSeparatorComponent={this.renderItemSeparator}
                             enableEmptySections
                             data={this.props.suggestionsData}
                             onLoadMore={this.triggerLoadMore}
                             keyExtractor={this.props.keyExtractor}
-                            renderItem={(rowData) => {
-                                return this.props.renderSuggestionsRow(
-                                    rowData,
-                                    this.stopTracking.bind(this),
-                                    this.cursorPosition
-                                )
-                            }}
+                            renderItem={this.renderSuggestionItem.bind(this)}
                         />
                     </Animated.View>
                 ) : null}

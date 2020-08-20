@@ -22,7 +22,10 @@ import ShareIcon from '../../../asset/utils/forward.png'
 import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
 // Assets
 import LoveIcon from '../../../asset/utils/love.png'
-import { switchCase } from '../../../redux/middleware/utils'
+import {
+    switchCase,
+    getProfileImageOrDefaultFromUser,
+} from '../../../redux/middleware/utils'
 import { createCommentFromSuggestion } from '../../../redux/modules/feed/comment/CommentActions'
 import { openPostDetail } from '../../../redux/modules/feed/post/PostActions'
 import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions'
@@ -221,11 +224,7 @@ class ShareDetailSection extends Component {
             <View>
                 <View style={{ flexDirection: 'row' }}>
                     <ProfileImage
-                        imageUrl={
-                            owner && owner.profile
-                                ? owner.profile.image
-                                : undefined
-                        }
+                        imageUrl={getProfileImageOrDefaultFromUser(owner)}
                         userId={owner._id}
                     />
                     <View style={{ marginLeft: 12, marginTop: 2, flex: 1 }}>

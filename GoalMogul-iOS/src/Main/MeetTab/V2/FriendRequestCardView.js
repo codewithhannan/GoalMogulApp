@@ -9,8 +9,6 @@ import { View, Text, ActionSheetIOS } from 'react-native'
 import { connect } from 'react-redux'
 
 // Components
-import Name from '../../Common/Name'
-import ProfileImage from '../../Common/ProfileImage'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
 // Actions

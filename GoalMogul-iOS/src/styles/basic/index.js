@@ -124,6 +124,10 @@ export const default_style = {
         width: 20 * UI_SCALE,
         margin: 10 * UI_SCALE,
     },
+    defaultImageStyle: {
+        borderColor: '#cacaca',
+        borderWidth: 0.5,
+    },
     cardSeparator: {
         width: '100%',
         height: 5 * UI_SCALE,

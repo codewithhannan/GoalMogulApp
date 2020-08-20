@@ -10,6 +10,7 @@ import ProfileImage from '../../Common/ProfileImage'
 import Name from '../../Common/Name'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { Icon } from '@ui-kitten/components'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 /**
  * This class render user object
@@ -24,7 +25,7 @@ class UserCardHeader extends React.PureComponent {
     }
 
     renderHeader(user) {
-        const { name, profile, mutualFriendCount, _id } = user
+        const { name, profile, mutualFriendCount } = user
         if (!profile) {
             // TODO: add sentry error logging
             return null
@@ -37,8 +38,7 @@ class UserCardHeader extends React.PureComponent {
                 style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}
             >
                 <ProfileImage
-                    imageUrl={profile ? profile.image : undefined}
-                    userId={_id}
+                    imageUrl={getProfileImageOrDefaultFromUser(user)}
                 />
                 <View style={{ marginLeft: 7, flex: 1 }}>
                     <View

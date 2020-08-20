@@ -56,6 +56,7 @@ import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
 } from '../../../../Utils/Constants'
+import { getProfileImageOrDefaultFromUser } from '../../../../redux/middleware/utils'
 
 const DEBUG_KEY = '[ UI CommentCard.ChildCommentCard ]'
 const { width } = Dimensions.get('window')
@@ -240,11 +241,12 @@ class ChildCommentCard extends Component {
     }
 
     renderUserProfileImage(item) {
-        let imageUrl
-        if (item.owner && item.owner.profile && item.owner.profile.image) {
-            imageUrl = item.owner.profile.image
-        }
-        return <ProfileImage imageUrl={imageUrl} userId={item.owner._id} />
+        return (
+            <ProfileImage
+                imageUrl={getProfileImageOrDefaultFromUser(item.owner)}
+                userId={item.owner._id}
+            />
+        )
     }
 
     renderActionButtons() {

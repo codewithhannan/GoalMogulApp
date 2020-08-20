@@ -20,6 +20,7 @@ import {
     openGoalDetail,
     openGoalDetailById,
 } from '../../../redux/modules/home/mastermind/actions'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationNeedCard ]'
@@ -72,17 +73,10 @@ class NotificationCard extends React.Component {
     renderProfileImage(item) {
         const { goalRef } = item
 
-        // TODO: user object (owner) sanity check
-        let imageUrl
-        if (goalRef && goalRef.owner && goalRef.owner.profile) {
-            imageUrl = goalRef.owner.profile.image
-        }
-
         return (
             <ProfileImage
-                imageStyle={{ height: 50, width: 50, borderRadius: 5 }}
-                defaultImageStyle={styles.defaultImageStyle}
-                imageUrl={imageUrl}
+                imageStyle={{ height: 50, width: 50 }}
+                imageUrl={getProfileImageOrDefaultFromUser(goalRef.owner)}
                 rounded
                 imageContainerStyle={styles.imageContainerStyle}
             />
@@ -196,11 +190,7 @@ const styles = {
         alignItems: 'center',
     },
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 0.5,
-        borderColor: 'lightgray',
         alignItems: 'center',
-        borderRadius: 6,
         alignSelf: 'center',
         backgroundColor: 'white',
     },
@@ -216,15 +206,6 @@ const styles = {
         height: 16,
         width: 18,
         borderRadius: 8,
-    },
-    defaultImageStyle: {
-        width: 44,
-        height: 48,
-        borderRadius: 5,
-        marginLeft: 3,
-        marginRight: 3,
-        marginTop: 1,
-        marginBottom: 1,
     },
 }
 

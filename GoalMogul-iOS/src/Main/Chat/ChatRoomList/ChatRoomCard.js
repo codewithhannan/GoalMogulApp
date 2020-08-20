@@ -5,7 +5,8 @@ import React from 'react'
 import { Text, View } from 'react-native'
 import { connect } from 'react-redux'
 import timeago from 'timeago.js'
-import profilePic from '../../../asset/utils/defaultUserProfile.png'
+import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png'
+import { getProfileImageOrDefault } from '../../../redux/middleware/utils'
 import { GROUP_CHAT_DEFAULT_ICON_URL } from '../../../Utils/Constants'
 import DelayedButton from '../../Common/Button/DelayedButton'
 // Components
@@ -249,17 +250,21 @@ class ChatRoomCard extends React.Component {
         // extract profile
         let cardImage
         if (item.isFriend || item.roomType == 'Direct') {
-            cardImage = item.isFriend
+            const cardUser = item.isFriend
                 ? item
                 : item.members &&
                   item.members.find(
                       (memDoc) =>
                           memDoc.memberRef._id != this.props.currentUserId
                   )
-            if (cardImage) {
-                cardImage = cardImage.profile || cardImage.memberRef.profile
+            let cardUserProfile
+            if (cardUser) {
+                cardUserProfile = cardUser.profile || cardUser.memberRef.profile
             }
-            cardImage = (cardImage && cardImage.image) || profilePic
+            cardImage = getProfileImageOrDefault(
+                cardUserProfile && cardUserProfile.image,
+                defaultProfilePic
+            )
         } else {
             cardImage = (item && item.picture) || GROUP_CHAT_DEFAULT_ICON_URL
         }

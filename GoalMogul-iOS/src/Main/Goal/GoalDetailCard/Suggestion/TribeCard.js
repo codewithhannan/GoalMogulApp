@@ -149,18 +149,13 @@ const styles = {
     },
     // Image related styles
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1.5,
-        borderColor: 'lightgray',
         alignItems: 'center',
-        borderRadius: 6,
         alignSelf: 'center',
         marginLeft: 15,
     },
     imageStyle: {
         width: ProfileImageWidth,
         height: ProfileImageWidth,
-        borderRadius: 5,
     },
     // Timestamp style
     timeStampContainerStyle: {

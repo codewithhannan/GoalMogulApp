@@ -48,6 +48,7 @@ import {
 
 import { default_style, color } from '../../../styles/basic'
 import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -261,12 +262,7 @@ class ProfilePostCard extends React.PureComponent {
                     style={{ flexDirection: 'row', alignItems: 'flex-start' }}
                 >
                     <ProfileImage
-                        imageUrl={
-                            owner && owner.profile
-                                ? owner.profile.image
-                                : undefined
-                        }
-                        userId={owner ? owner._id : undefined}
+                        imageUrl={getProfileImageOrDefaultFromUser(owner)}
                         actionDecorator={this.props.actionDecorator}
                     />
                     <View style={{ marginLeft: 12, marginTop: 2, flex: 1 }}>

@@ -1,62 +1,59 @@
 /** @format */
 
 // This is new implementation of CommentBox to include tagging
+import _ from 'lodash'
+import R from 'ramda'
 import React, { Component } from 'react'
 import {
     ActivityIndicator,
-    View,
-    Text,
-    SafeAreaView,
-    Image,
-    TouchableOpacity,
-    Keyboard,
     Dimensions,
+    Image,
+    Keyboard,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native'
 import { connect } from 'react-redux'
-import _ from 'lodash'
-import R from 'ramda'
+import { openCamera, openCameraRoll } from '../../../actions'
+// Actions
+import {
+    createComment,
+    createSuggestion,
+    newCommentOnMediaRefChange,
+    newCommentOnTagsChange,
+    newCommentOnTagsRegChange,
+    newCommentOnTextChange,
+    openCurrentSuggestion,
+    postComment,
+    removeSuggestion,
+} from '../../../redux/modules/feed/comment/CommentActions'
+import { searchUser } from '../../../redux/modules/search/SearchActions'
+// Selectors
+import { getNewCommentByTab } from '../../../redux/modules/feed/comment/CommentSelector'
 
+// Utils
+import { 
+    arrayUnique,
+    clearTags,
+    getProfileImageOrDefaultFromUser
+} from '../../../redux/middleware/utils'
+import { default_style } from '../../../styles/basic'
+
+// Assets
+import PhotoIcon from '../../../asset/utils/cameraRoll.png'
+import LightBulb from '../../../asset/utils/makeSuggestion.png'
 // Components
 import MentionsTextInput from './MentionsTextInput'
-import SuggestionPreview, {
-    RemoveComponent,
-} from '../GoalDetailCard/SuggestionPreview'
-import ProfileImage from '../../Common/ProfileImage'
 import {
     actionSheet,
     switchByButtonIndex,
 } from '../../Common/ActionSheetFactory'
 import EmptyResult from '../../Common/Text/EmptyResult'
-
-// Actions
-import {
-    createComment,
-    openCurrentSuggestion,
-    removeSuggestion,
-    createSuggestion,
-    postComment,
-    newCommentOnMediaRefChange,
-    newCommentOnTextChange,
-    newCommentOnTagsChange,
-    newCommentOnTagsRegChange,
-} from '../../../redux/modules/feed/comment/CommentActions'
-
-import { searchUser } from '../../../redux/modules/search/SearchActions'
-
-import { openCamera, openCameraRoll } from '../../../actions'
-
-// Selectors
-import { getNewCommentByTab } from '../../../redux/modules/feed/comment/CommentSelector'
-
-// Utils
-import { arrayUnique, clearTags } from '../../../redux/middleware/utils'
-
-// Assets
-import PhotoIcon from '../../../asset/utils/cameraRoll.png'
-import LightBulb from '../../../asset/utils/makeSuggestion.png'
-import DefaultUserProfile from '../../../asset/utils/defaultUserProfile.png'
+import SuggestionPreview, {
+    RemoveComponent,
+} from '../GoalDetailCard/SuggestionPreview'
 import DelayedButton from '../../Common/Button/DelayedButton'
-import { default_style } from '../../../styles/basic'
+import ProfileImage from '../../Common/ProfileImage'
 
 // Consts
 const maxHeight = 120
@@ -416,7 +413,7 @@ class CommentBoxV2 extends Component {
     renderMedia(newComment) {
         const { mediaRef } = newComment
         if (!mediaRef) return null
-        const onPress = () => console.log('Media on Pressed')
+        const onPress = () => {}
         const onRemove = () =>
             this.props.newCommentOnMediaRefChange(undefined, this.props.pageId)
 
@@ -427,8 +424,8 @@ class CommentBoxV2 extends Component {
                 onPress={onPress}
             >
                 <ProfileImage
-                    imageStyle={{ width: 50, height: 50 }}
-                    defaultImageSource={{ uri: mediaRef }}
+                    imageStyle={{ width: 50, height: 50, borderRadius: 0 }}
+                    imageUrl={mediaRef}
                     imageContainerStyle={{
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -522,7 +519,7 @@ class CommentBoxV2 extends Component {
      * @param item: suggestion item to render
      */
     renderSuggestionsRow({ item }, hidePanel, cursorPosition) {
-        const { name, profile } = item
+        const { name } = item
         return (
             <TouchableOpacity
                 onPress={() =>
@@ -534,15 +531,14 @@ class CommentBoxV2 extends Component {
                     flexDirection: 'row',
                     alignItems: 'center',
                     backgroundColor: 'white',
+                    borderTopColor: '#F2F2F2',
+                    borderTopWidth: 0.5,
                 }}
             >
                 <ProfileImage
                     imageContainerStyle={styles.imageContainerStyle}
-                    imageUrl={
-                        profile && profile.image ? profile.image : undefined
-                    }
-                    imageStyle={{ height: 31, width: 30, borderRadius: 3 }}
-                    defaultImageSource={DefaultUserProfile}
+                    imageUrl={getProfileImageOrDefaultFromUser(item)}
+                    imageStyle={{ height: 30, width: 30 }}
                 />
                 <Text style={{ fontSize: 16, color: 'darkgray' }}>{name}</Text>
             </TouchableOpacity>
@@ -710,24 +706,20 @@ const styles = {
     mediaContainerStyle: {
         flexDirection: 'row',
         height: 50,
-        marginBottom: 8,
-        borderWidth: 1,
-        borderRadius: 2,
-        borderColor: '#ddd',
-        borderBottomWidth: 0,
+        borderColor: '#cacaca',
+        borderTopWidth: 0.5,
         backgroundColor: '#fff',
     },
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1,
-        borderColor: 'lightgray',
         alignItems: 'center',
-        borderRadius: 3,
         alignSelf: 'center',
         backgroundColor: 'white',
-        marginLeft: 10,
-        marginRight: 10,
-        margin: 5,
+        margin: 4,
+        marginHorizontal: 12,
+    },
+    headingTextStyle: {
+        fontSize: 13,
+        color: '#666',
     },
 }
 

@@ -1,30 +1,25 @@
 /** @format */
 
 // This component is a ref on Comment / Post
-import React, { Component } from 'react'
-import { View, Image, Text } from 'react-native'
-import { connect } from 'react-redux'
 // import Decode from 'unescape'; TODO: removed once new decode is good to go
 import _ from 'lodash'
-
-import { switchCaseFWithVal, decode } from '../../redux/middleware/utils'
-
-// Actions
-import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
-
-import { openGoalDetailById } from '../../redux/modules/home/mastermind/actions'
-
+import React, { Component } from 'react'
+import { Image, Text, View } from 'react-native'
+import { connect } from 'react-redux'
+import goalIcon from '../../asset/header/logo.png'
 // Assets
 import badge from '../../asset/utils/badge.png'
+import defaultProfilePic from '../../asset/utils/defaultUserProfile.png'
 import helpIcon from '../../asset/utils/help.png'
-import profilePic from '../../asset/utils/defaultUserProfile.png'
-import stepIcon from '../../asset/utils/steps.png'
 import postIcon from '../../asset/utils/post.png'
-import goalIcon from '../../asset/header/home-logo.png'
-
+import stepIcon from '../../asset/utils/steps.png'
+import { decode, switchCaseFWithVal } from '../../redux/middleware/utils'
+// Actions
+import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
+import { openGoalDetailById } from '../../redux/modules/home/mastermind/actions'
+import DelayedButton from './Button/DelayedButton'
 // Components
 import ProfileImage from './ProfileImage'
-import DelayedButton from './Button/DelayedButton'
 
 const DEBUG_KEY = '[ UI RefPreview ]'
 
@@ -183,14 +178,12 @@ const switchCaseItem = (val, type) =>
                 return {
                     title: 'User',
                     content: 'Content deleted',
-                    defaultPicture: profilePic,
                 }
             }
             return {
                 title: item.name,
                 content: item.profile ? item.profile.about : undefined,
                 picture: item.profile ? item.profile.image : undefined,
-                defaultPicture: profilePic,
             }
         },
         SharePost: (item) => {

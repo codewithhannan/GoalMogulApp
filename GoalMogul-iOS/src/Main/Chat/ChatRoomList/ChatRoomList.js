@@ -76,6 +76,15 @@ class ChatRoomList extends React.Component {
         )
     }
 
+    /**
+     * Only update the component when chat room list is updated
+     * @param {*} nextProps
+     * @param {*} nextState
+     */
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(this.props.data, nextProps.data)
+    }
+
     componentWillUnmount() {
         const listenerKey = `ChatRoomList:${this.props.currentTabKey}`
         MessageStorageService.offIncomingMessageStored(listenerKey)

@@ -3,7 +3,6 @@
 import React, { Component } from 'react'
 import {
     View,
-    Image,
     TouchableOpacity,
     ActionSheetIOS,
     Dimensions,
@@ -20,9 +19,6 @@ import { DotIndicator } from 'react-native-indicators'
 import FormHeader from '../../Common/Header/FormHeader'
 import LoadingModal from '../../Common/Modal/LoadingModal'
 
-/* Asset */
-import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png'
-
 /* Actions */
 import {
     submitUpdatingProfile,
@@ -37,9 +33,10 @@ import {
 } from '../../../redux/modules/User/Selector'
 
 /** Constants */
-import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import { color, default_style } from '../../../styles/basic'
 import { Icon } from '@ui-kitten/components'
+import ProfileImage from '../../Common/ProfileImage'
+import { getProfileImageOrDefault } from '../../../redux/middleware/utils'
 
 const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel']
 const TAKING_PICTURE_INDEX = 0
@@ -103,35 +100,6 @@ class ProfileDetailEditForm extends Component {
     }
 
     renderImage = ({ input: { value } }) => {
-        const hasImageModified =
-            JSON.stringify(this.props.initialValues.profile.image) !==
-            JSON.stringify(value)
-
-        let image = null
-        if (value) {
-            if (hasImageModified) {
-                image = value
-            } else {
-                image = `${IMAGE_BASE_URL}${value}`
-            }
-        }
-
-        const imageStyle = image
-            ? styles.imageStyle
-            : {
-                  width: 30,
-                  height: 30,
-                  margin: 40 * default_style.uiScale,
-              }
-        const imageWrapperStyle = [
-            styles.imageWrapperStyle,
-            image
-                ? {}
-                : {
-                      borderColor: '#BDBDBD',
-                      borderWidth: 2,
-                  },
-        ]
         return (
             <View style={{ width: '100%' }}>
                 <View
@@ -145,12 +113,10 @@ class ProfileDetailEditForm extends Component {
                     onPress={this.chooseImage}
                 >
                     <View style={styles.imageContainerStyle}>
-                        <View style={imageWrapperStyle}>
-                            <Image
-                                source={
-                                    image ? { uri: image } : defaultProfilePic
-                                }
-                                style={imageStyle}
+                        <View style={styles.imageWrapperStyle}>
+                            <ProfileImage
+                                imageStyle={styles.imageStyle}
+                                imageUrl={getProfileImageOrDefault(value)}
                             />
                         </View>
                     </View>

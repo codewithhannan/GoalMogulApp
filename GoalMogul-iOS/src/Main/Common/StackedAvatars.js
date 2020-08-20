@@ -1,12 +1,11 @@
 /** @format */
 
-import React from 'react'
-import { View, Image } from 'react-native'
 import _ from 'lodash'
-import ProfileImage from './ProfileImage'
-
+import React from 'react'
+import { Image, View } from 'react-native'
 // Assets
-import DefaultUserProfile from '../../asset/utils/defaultUserProfile.png'
+import defaultProfileImage from '../../asset/utils/defaultUserProfile.png'
+import ProfileImage from './ProfileImage'
 
 /* This is a simple logic to render stacked avatars.
  * Could be refactored to user
@@ -61,7 +60,6 @@ export const StackedAvatarsV2 = (props) => {
                         }}
                         imageUrl={participantRef.profile.image}
                         imageStyle={{ ...styles.pictureStyle }}
-                        defaultImageSource={DefaultUserProfile}
                     />
                 )
             })
@@ -103,8 +101,7 @@ export const StackedAvatarsV2 = (props) => {
                             zIndex: index + 1,
                         }}
                         imageUrl={memberRef.profile.image}
-                        imageStyle={{ ...styles.pictureStyle }}
-                        defaultImageSource={DefaultUserProfile}
+                        imageStyle={styles.pictureStyle}
                     />
                 )
             })
@@ -119,8 +116,8 @@ export const StackedAvatarsV2 = (props) => {
                             ...styles.bottomPictureContainerStyle,
                             left: index * 13,
                         }}
-                        imageUrl={DefaultUserProfile}
-                        imageStyle={{ ...styles.pictureStyle }}
+                        imageUrl={undefined}
+                        imageStyle={styles.pictureStyle}
                     />
                 )
             }

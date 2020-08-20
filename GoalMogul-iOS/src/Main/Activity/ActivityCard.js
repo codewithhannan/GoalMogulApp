@@ -12,6 +12,7 @@ import {
     View,
 } from 'react-native'
 import { connect } from 'react-redux'
+import { getProfileImageOrDefaultFromUser } from '../../redux/middleware/utils'
 // Actions
 import { openProfile } from '../../actions'
 // Assets
@@ -259,7 +260,7 @@ class ActivityCard extends React.PureComponent {
         const { content, mediaRef, suggestion } = commentRef
         const { text, tags, links } = content
 
-        const { profile, _id, name } = actor
+        const { _id, name } = actor
         return (
             <View
                 style={{
@@ -273,13 +274,9 @@ class ActivityCard extends React.PureComponent {
                     imageStyle={{
                         height: 35 * default_style.uiScale,
                         width: 35 * default_style.uiScale,
-                        borderRadius: 100,
                     }}
-                    imageUrl={profile ? profile.image : undefined}
-                    imageContainerStyle={{
-                        ...styles.imageContainerStyle,
-                        marginTop: 6,
-                    }}
+                    imageUrl={getProfileImageOrDefaultFromUser(actor)}
+                    imageContainerStyle={styles.imageContainerStyle}
                     userId={_id}
                 />
                 <DelayedButton
@@ -461,9 +458,7 @@ const styles = {
         marginTop: 8,
     },
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 0.5,
-        borderColor: 'lightgray',
+        marginTop: 4,
         alignItems: 'center',
         borderRadius: 100,
         alignSelf: 'flex-start',

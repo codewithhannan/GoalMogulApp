@@ -5,9 +5,12 @@ import React from 'react'
 import { Dimensions, Image, Text, View } from 'react-native'
 import Modal from 'react-native-modal'
 import cancel from '../../../../asset/utils/cancel_no_background.png'
-import profilePic from '../../../../asset/utils/defaultUserProfile.png'
-import { IMAGE_BASE_URL } from '../../../../Utils/Constants'
+import {
+    getProfileImageOrDefault,
+    getProfileImageOrDefaultFromUser,
+} from '../../../../redux/middleware/utils'
 import DelayedButton from '../../../Common/Button/DelayedButton'
+import ProfileImage from '../../../Common/ProfileImage'
 
 const { width } = Dimensions.get('window')
 
@@ -22,11 +25,6 @@ class SuggestionDetailModal extends React.PureComponent {
         if (owner && owner.name) {
             headerText = owner.name
         }
-
-        const imageSource =
-            owner && owner.profile && owner.profile.image
-                ? { uri: `${IMAGE_BASE_URL}${owner.profile.image}` }
-                : profilePic
 
         return (
             <View style={styles.headerContainerStyle}>
@@ -56,9 +54,9 @@ class SuggestionDetailModal extends React.PureComponent {
                         flexDirection: 'row',
                     }}
                 >
-                    <Image
-                        source={imageSource}
-                        style={styles.headerImageStyle}
+                    <ProfileImage
+                        imageUrl={getProfileImageOrDefaultFromUser(owner)}
+                        imageStyle={styles.headerImageStyle}
                     />
                     <Text style={styles.headerTextStyle}>{headerText}</Text>
                 </View>
@@ -124,10 +122,8 @@ const styles = {
         alignItems: 'center',
     },
     headerImageStyle: {
-        borderRadius: 5,
         height: 24,
         width: 24,
-        padding: 1,
         backgroundColor: '#fff',
     },
     headerTextStyle: {

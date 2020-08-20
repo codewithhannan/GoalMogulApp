@@ -30,6 +30,7 @@ import {
     makeCaretOptions,
     PAGE_TYPE_MAP,
     decode,
+    getProfileImageOrDefaultFromUser,
 } from '../../../redux/middleware/utils'
 import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions'
 import { shareGoalToMastermind } from '../../../redux/modules/goal/GoalDetailActions'
@@ -291,12 +292,7 @@ class GoalCard extends React.PureComponent {
             <View>
                 <View style={{ flexDirection: 'row' }}>
                     <ProfileImage
-                        imageUrl={
-                            owner && owner.profile
-                                ? owner.profile.image
-                                : undefined
-                        }
-                        userId={owner ? owner._id : undefined}
+                        imageUrl={getProfileImageOrDefaultFromUser(owner)}
                     />
                     <View style={{ marginLeft: 12, marginTop: 2, flex: 1 }}>
                         <Headline

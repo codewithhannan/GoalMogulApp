@@ -1,57 +1,60 @@
 /** @format */
 
+import _ from 'lodash'
+import R from 'ramda'
 import React, { Component } from 'react'
 import {
     View,
     Image,
     Text,
     TouchableOpacity,
-    TouchableWithoutFeedback,
     ImageBackground,
     ActivityIndicator,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
-import _ from 'lodash'
-import R from 'ramda'
-
-/* Components */
-import ViewableSettingMenu from '../Goal/ViewableSettingMenu'
-import ImageModal from '../Common/ImageModal'
-import EmptyResult from '../Common/Text/EmptyResult'
-import ProfileImage from '../Common/ProfileImage'
-import MentionsTextInput from '../Goal/Common/MentionsTextInput'
-import DelayedButton from '../Common/Button/DelayedButton'
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
 
 // assets
-import defaultUserProfile from '../../asset/utils/defaultUserProfile.png'
 import cancel from '../../asset/utils/cancel_no_background.png'
-import imageOverlay from '../../asset/utils/imageOverlay.png'
 import expand from '../../asset/utils/expand.png'
-
-// Utils
-import { arrayUnique, clearTags } from '../../redux/middleware/utils'
-import {
-    track,
-    trackWithProperties,
-    EVENT as E,
-} from '../../monitoring/segment'
+import imageOverlay from '../../asset/utils/imageOverlay.png'
 
 // Actions
-import { openCameraRoll, openCamera, getPhotosAsync } from '../../actions'
+import { openCameraRoll, openCamera } from '../../actions'
+
+// Utils
 import {
-    submitCreatingPost,
-    postToFormAdapter,
+    EVENT as E,
+    track,
+    trackWithProperties,
+} from '../../monitoring/segment'
+// Utils
+import {
+    arrayUnique,
+    clearTags,
+    getProfileImageOrDefaultFromUser,
+} from '../../redux/middleware/utils'
+import {
     fetchPostDrafts,
+    postToFormAdapter,
     savePostDrafts,
+    submitCreatingPost,
 } from '../../redux/modules/feed/post/PostActions'
 import { searchUser } from '../../redux/modules/search/SearchActions'
 import { IMAGE_BASE_URL, PRIVACY_FRIENDS } from '../../Utils/Constants'
 import { default_style, color } from '../../styles/basic'
-import DraftsView from './DraftsView'
 import BottomSheet from '../Common/Modal/BottomSheet'
 import { Icon } from '@ui-kitten/components'
+
+/* Components */
+import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
+import DelayedButton from '../Common/Button/DelayedButton'
+import ImageModal from '../Common/ImageModal'
+import ProfileImage from '../Common/ProfileImage'
+import EmptyResult from '../Common/Text/EmptyResult'
+import MentionsTextInput from '../Goal/Common/MentionsTextInput'
+import ViewableSettingMenu from '../Goal/ViewableSettingMenu'
+import DraftsView from './DraftsView'
 
 const DEBUG_KEY = '[ UI CreatePostModal ]'
 const INITIAL_TAG_SEARCH = {
@@ -501,8 +504,6 @@ class CreatePostModal extends Component {
                             this.bottomSheetRef.maskHeight >= 25
                         const heightChange =
                             height - this.state.textContentHeight
-                        console.log(height, heightChange)
-                        console.log(hasEnoughSpaceAboveModal)
                         if (height > TEXT_INPUT_DEAFULT_HEIGHT) {
                             // height increased
                             if (heightChange > 0)
@@ -556,7 +557,7 @@ class CreatePostModal extends Component {
      * @param item: suggestion item to render
      */
     renderSuggestionsRow({ item }, hidePanel, cursorPosition) {
-        const { name, profile } = item
+        const { name } = item
         return (
             <TouchableOpacity
                 onPress={() =>
@@ -572,11 +573,8 @@ class CreatePostModal extends Component {
             >
                 <ProfileImage
                     imageContainerStyle={styles.imageContainerStyle}
-                    imageUrl={
-                        profile && profile.image ? profile.image : undefined
-                    }
-                    imageStyle={{ height: 31, width: 30, borderRadius: 3 }}
-                    defaultImageSource={defaultUserProfile}
+                    imageUrl={getProfileImageOrDefaultFromUser(item)}
+                    imageStyle={{ height: 30, width: 30 }}
                 />
                 <Text style={{ fontSize: 16, color: 'darkgray' }}>{name}</Text>
             </TouchableOpacity>
@@ -974,9 +972,6 @@ const styles = {
         backgroundColor: 'white',
     },
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1,
-        borderColor: 'lightgray',
         alignItems: 'center',
         borderRadius: 3,
         alignSelf: 'center',

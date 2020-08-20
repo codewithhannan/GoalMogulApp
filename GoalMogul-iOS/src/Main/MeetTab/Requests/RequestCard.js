@@ -1,28 +1,20 @@
 /** @format */
 
 import React, { Component } from 'react'
-import {
-    View,
-    Text,
-    Image,
-    ActionSheetIOS,
-    TouchableOpacity,
-} from 'react-native'
+import { View, Text, ActionSheetIOS, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { Button } from 'react-native-elements'
 
 // Components
 import Name from '../../Common/Name'
 
-// Assets
-import defaultUserProfile from '../../../asset/utils/defaultUserProfile.png'
-
 // Actions
 import { updateFriendship, openProfile } from '../../../actions'
 
 // Styles
 import { cardBoxShadow } from '../../../styles'
-import { IMAGE_BASE_URL } from '../../../Utils/Constants'
+import ProfileImage from '../../Common/ProfileImage'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 const FRIENDSHIP_BUTTONS = ['Withdraw request', 'Cancel']
 const WITHDRAW_INDEX = 0
@@ -107,19 +99,12 @@ class RequestCard extends Component {
     }
 
     renderProfileImage(item) {
-        const { profile } = item.user
-        if (!profile) return null
-        const { image } = profile
-        let profileImage = (
-            <Image style={styles.imageStyle} source={defaultUserProfile} />
+        return (
+            <ProfileImage
+                imageStyle={styles.imageStyle}
+                imageUrl={getProfileImageOrDefaultFromUser(item.user)}
+            />
         )
-        if (image) {
-            const imageUrl = `${IMAGE_BASE_URL}${image}`
-            profileImage = (
-                <Image style={styles.imageStyle} source={{ uri: imageUrl }} />
-            )
-        }
-        return profileImage
     }
 
     renderButton(item) {
@@ -282,7 +267,6 @@ const styles = {
     imageStyle: {
         height: 48,
         width: 48,
-        borderRadius: 5,
     },
     buttonContainerStyle: {
         marginLeft: 8,

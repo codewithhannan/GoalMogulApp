@@ -7,13 +7,9 @@ import { Icon } from '@ui-kitten/components'
 import R from 'ramda'
 import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
 
-/* Assets */
-import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png'
-import defaultSelfProfile from '../../../asset/utils/defaultSelfUserProfile.png'
 import Icons from '../../../asset/base64/Icons'
 import { default_style, color } from '../../../styles/basic'
 import { PROFILE_STYLES } from '../../../styles/Profile'
-import { getBottomSpace } from 'react-native-iphone-x-helper'
 import { createReport } from '../../../redux/modules/report/ReportActions'
 
 /* Actions */
@@ -42,6 +38,8 @@ import { Actions } from 'react-native-router-flux'
 import RichText from '../../Common/Text/RichText'
 import _ from 'lodash'
 import { getButtonBottomSheetHeight } from '../../../styles'
+import ProfileImage from '../../Common/ProfileImage'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 const { InfoIcon } = Icons
 const { width } = Dimensions.get('window')
@@ -466,37 +464,16 @@ class ProfileDetailCard extends Component {
         )
     }
 
-    renderProfileImage(profile, isSelf) {
-        const { image } = profile
-        const style = image
-            ? styles.imageStyle
-            : {
-                  width: 30 * default_style.uiScale,
-                  height: 30 * default_style.uiScale,
-                  margin: 40 * default_style.uiScale,
-              }
-        const containerStyle = [
-            styles.imageContainerStyle,
-            image
-                ? {}
-                : {
-                      borderColor: '#BDBDBD',
-                      borderRadius: width * 0.15,
-                      borderWidth: 2,
-                  },
-        ]
-        const imageUrl = `${IMAGE_BASE_URL}${image}`
+    renderProfileImage() {
+        const { user } = this.props
         return (
-            <View style={containerStyle}>
-                <Image
-                    style={style}
-                    source={
-                        image
-                            ? { uri: imageUrl }
-                            : isSelf
-                            ? defaultSelfProfile
-                            : defaultProfilePic
-                    }
+            <View style={styles.imageContainerStyle}>
+                <ProfileImage
+                    imageStyle={{
+                        width: default_style.uiScale * 120,
+                        height: default_style.uiScale * 120,
+                    }}
+                    imageUrl={getProfileImageOrDefaultFromUser(user)}
                 />
             </View>
         )
@@ -810,10 +787,8 @@ const styles = {
         flex: 1,
         alignItems: 'center',
         borderRadius: default_style.uiScale * 60,
-        borderColor: '#BDBDBD',
         position: 'absolute',
         bottom: 0,
-        // left: 20,
         alignSelf: 'center',
         backgroundColor: color.GM_CARD_BACKGROUND,
     },

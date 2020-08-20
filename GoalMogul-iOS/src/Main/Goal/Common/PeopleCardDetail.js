@@ -16,6 +16,7 @@ import ProfileImage from '../../Common/ProfileImage'
 // Assets
 import badge from '../../../asset/utils/badge.png'
 import Icons from '../../../asset/base64/Icons'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 // Actions
 
@@ -86,18 +87,16 @@ class ContactDetail extends Component {
         )
     }
 
-    renderProfileImage(profile, _id) {
+    renderProfileImage() {
         return (
             <ProfileImage
                 imageContainerStyle={{
                     height: 30,
                     width: 30,
-                    borderRadius: 15,
                 }}
-                imageStyle={{ height: 30, width: 30, borderRadius: 15 }}
-                defaultImageStyle={{ height: 30, width: 26, borderRadius: 15 }}
-                imageUrl={profile.image}
-                userId={_id}
+                imageStyle={{ height: 30, width: 30 }}
+                defaultImageStyle={{ height: 30, width: 30 }}
+                imageUrl={getProfileImageOrDefaultFromUser(this.props.item)}
             />
         )
     }
@@ -105,10 +104,10 @@ class ContactDetail extends Component {
     render() {
         const { item } = this.props
         if (!item) return null
-        const { name, headline, _id, profile } = item
+        const { name, headline } = item
         return (
             <View style={styles.containerStyle}>
-                {this.renderProfileImage(profile, _id)}
+                {this.renderProfileImage()}
                 <View style={styles.bodyContainerStyle}>
                     <Text
                         style={styles.nameTextStyle}

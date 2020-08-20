@@ -58,7 +58,7 @@ class SearchTribeCard extends Component {
         const { picture } = this.props.item
         return (
             <ProfileImage
-                imageStyle={{ height: 55, width: 55, borderRadius: 5 }}
+                imageStyle={{ height: 55, width: 55 }}
                 imageUrl={picture}
                 rounded
                 imageContainerStyle={styles.imageContainerStyle}
@@ -216,11 +216,7 @@ const styles = {
         tintColor: '#17B3EC',
     },
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1.5,
-        borderColor: 'lightgray',
         alignItems: 'center',
-        borderRadius: 6,
         alignSelf: 'center',
         backgroundColor: 'white',
     },

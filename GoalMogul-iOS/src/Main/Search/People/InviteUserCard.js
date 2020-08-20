@@ -18,7 +18,9 @@ import { EVENT, trackWithProperties } from '../../../monitoring/segment'
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png'
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import { Image, View } from 'react-native'
-import { default_style, color } from '../../../styles/basic'
+import { default_style, color, text } from '../../../styles/basic'
+import ProfileImage from '../../Common/ProfileImage'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 const DEBUG_KEY = '[ UI InviteUserCard ]'
 
@@ -35,30 +37,13 @@ class InviteUserCard extends React.PureComponent {
     }
 
     renderProfileImage(item) {
-        const { profile } = item
-        const { image } = profile
-
-        let imageUrl
-        if (image) {
-            imageUrl =
-                typeof image == 'string'
-                    ? `${IMAGE_BASE_URL}${image}`
-                    : imageUrl
-        }
         return (
             <Layout style={{ marginLeft: 16, marginRight: 8 }}>
-                <View style={styles.imageContainerStyle}>
-                    <Image
-                        source={
-                            imageUrl ? { uri: imageUrl } : defaultProfilePic
-                        }
-                        style={
-                            imageUrl
-                                ? styles.imageStyle
-                                : styles.defaultImageStyle
-                        }
-                    />
-                </View>
+                <ProfileImage
+                    imageUrl={getProfileImageOrDefaultFromUser(item)}
+                    imageContainerStyle={styles.imageContainerStyle}
+                    imageStyle={styles.imageStyle}
+                />
             </Layout>
         )
     }
@@ -67,8 +52,8 @@ class InviteUserCard extends React.PureComponent {
         const { eva } = this.props
         const button = this.getButtonStatus(status)
         if (!button) return null
-        const { buttonStatus, text } = button
-        return text == 'Invited' || text == 'Requested' ? (
+        const { buttonStatus, content } = button
+        return content == 'Invited' || content == 'Requested' ? (
             <View
                 style={{
                     justifyContent: 'center',
@@ -94,7 +79,7 @@ class InviteUserCard extends React.PureComponent {
                             color: color.GM_DOT_GRAY,
                         }}
                     >
-                        {text}
+                        {content}
                     </Text>
                 </Button>
             </View>
@@ -115,7 +100,7 @@ class InviteUserCard extends React.PureComponent {
                         fontFamily: text.FONT_FAMILY.BOLD,
                     }}
                 >
-                    {text}
+                    {content}
                 </Text>
             </View>
         )
@@ -126,22 +111,22 @@ class InviteUserCard extends React.PureComponent {
             case 'invited':
                 return {
                     buttonStatus: 'info',
-                    text: 'Invited',
+                    content: 'Invited',
                 }
             case 'requested':
                 return {
                     buttonStatus: 'warning',
-                    text: 'Requested',
+                    content: 'Requested',
                 }
             case 'member':
                 return {
                     buttonStatus: 'basic',
-                    text: 'Member',
+                    content: 'Member',
                 }
             case 'admin':
                 return {
                     buttonStatus: 'basic',
-                    text: 'Admin',
+                    content: 'Admin',
                 }
             default: {
                 return undefined
@@ -218,25 +203,15 @@ class InviteUserCard extends React.PureComponent {
 
 const styles = {
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1.5,
-        borderColor: 'lightgray',
         alignItems: 'center',
         height: 34,
         width: 34,
-        borderRadius: 17,
         justifyContent: 'center',
         backgroundColor: 'white',
     },
     imageStyle: {
         height: 34,
         width: 34,
-        borderRadius: 17,
-    },
-    defaultImageStyle: {
-        height: 26,
-        width: 26,
-        borderRadius: 13,
     },
     adminMemberTextStyle: {
         color: '#42C0F5',

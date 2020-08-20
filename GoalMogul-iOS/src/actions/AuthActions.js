@@ -885,7 +885,6 @@ export const loadGeneralAssets = async () => {
         require('../asset/utils/bulb.png'),
         require('../asset/utils/privacy.png'),
         require('../asset/utils/edit.png'),
-        require('../asset/utils/default_profile.png'),
         require('../asset/utils/defaultUserProfile.png'),
         require('../asset/utils/meetSetting.png'),
         require('../asset/utils/back.png'),
@@ -951,7 +950,6 @@ export const loadGeneralAssets = async () => {
         require('../asset/footer/navigation/chat.png'),
         require('../asset/header/menu.png'),
         require('../asset/header/setting.png'),
-        require('../asset/header/home-logo.png'),
         require('../asset/header/logo.png'),
         require('../asset/header/GMText.png'),
         // Banners

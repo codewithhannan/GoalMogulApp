@@ -12,6 +12,7 @@ import Styles from './Styles'
 
 // Actions
 import { unblockUser, getBlockedUsers } from '../../../../actions'
+import { getProfileImageOrDefaultFromUser } from '../../../../redux/middleware/utils'
 
 class FriendCard extends Component {
     onUnBlocked = (blockId) => {
@@ -25,11 +26,11 @@ class FriendCard extends Component {
         })
     }
 
-    renderProfileImage = (url) => {
+    renderProfileImage = () => {
         return (
             <ProfileImage
                 imageStyle={Styles.imageStyle}
-                imageUrl={url}
+                imageUrl={getProfileImageOrDefaultFromUser(this.props.item)}
                 imageContainerStyle={styles.imageContainerStyle}
             />
         )
@@ -55,11 +56,11 @@ class FriendCard extends Component {
         const { user, blockId } = item
         // console.log('item is: ', item);
         if (user) {
-            const { name, profile } = user
+            const { name } = user
             return (
                 <View style={{ height: 60, flex: 1 }}>
                     <View style={{ flexDirection: 'row', padding: 10 }}>
-                        {this.renderProfileImage(profile.image)}
+                        {this.renderProfileImage()}
                         <View
                             style={{ flex: 1, marginLeft: 10, marginRight: 10 }}
                         >
@@ -79,9 +80,6 @@ class FriendCard extends Component {
 
 const styles = {
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 0.5,
-        borderColor: 'lightgray',
         alignItems: 'center',
         borderRadius: 6,
         alignSelf: 'flex-start',

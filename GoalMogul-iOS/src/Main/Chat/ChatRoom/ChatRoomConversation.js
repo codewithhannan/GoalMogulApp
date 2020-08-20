@@ -42,11 +42,10 @@ import { TypingAnimation } from 'react-native-typing-animation'
 import { connect } from 'react-redux'
 import UUID from 'uuid/v4'
 import { openCamera, openCameraRoll, openProfile } from '../../../actions'
-import profilePic from '../../../asset/utils/defaultUserProfile.png'
+import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png'
 import NextButton from '../../../asset/utils/next.png'
 // Components
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal'
-import { getProfileImageOrDefault } from '../../../redux/middleware/utils'
 // Actions
 import {
     changeMessageMediaRef,
@@ -64,6 +63,12 @@ import MessageStorageService from '../../../services/chat/MessageStorageService'
 import LiveChatService, {
     OUTGOING_EVENT_NAMES,
 } from '../../../socketio/services/LiveChatService'
+
+// utils
+import {
+    getProfileImageOrDefaultFromUser,
+    getProfileImageOrDefault,
+} from '../../../redux/middleware/utils'
 import { color } from '../../../styles/basic'
 import {
     DEVICE_MODEL,
@@ -988,12 +993,10 @@ const mapStateToProps = (state, props) => {
             if (otherUser) {
                 otherUser = otherUser.memberRef
                 chatRoomName = otherUser.name
-                chatRoomImage =
-                    otherUser.profile && otherUser.profile.image
-                        ? {
-                              uri: `${IMAGE_BASE_URL}${otherUser.profile.image}`,
-                          }
-                        : profilePic
+                chatRoomImage = getProfileImageOrDefaultFromUser(
+                    otherUser,
+                    defaultProfilePic
+                )
             }
         } else {
             chatRoomName = chatRoom.name

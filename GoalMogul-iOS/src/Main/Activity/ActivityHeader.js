@@ -32,7 +32,11 @@ import RichText from '../Common/Text/RichText'
 import DelayedButton from '../Common/Button/DelayedButton'
 
 // Utils
-import { makeCaretOptions, PAGE_TYPE_MAP } from '../../redux/middleware/utils'
+import {
+    makeCaretOptions,
+    PAGE_TYPE_MAP,
+    getProfileImageOrDefaultFromUser,
+} from '../../redux/middleware/utils'
 
 // Constants
 import {
@@ -219,11 +223,9 @@ class ActivityHeader extends Component {
                     style={{ flexDirection: 'row', alignItems: 'flex-start' }}
                 >
                     <ProfileImage
-                        imageUrl={
-                            userToRender && userToRender.profile
-                                ? userToRender.profile.image
-                                : undefined
-                        }
+                        imageUrl={getProfileImageOrDefaultFromUser(
+                            userToRender
+                        )}
                         userId={userToRender._id}
                     />
                     <View style={{ marginLeft: 12, flex: 1 }}>

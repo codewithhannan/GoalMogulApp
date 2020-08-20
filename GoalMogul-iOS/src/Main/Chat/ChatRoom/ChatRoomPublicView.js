@@ -14,10 +14,11 @@ import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import { openProfile } from '../../../actions'
 import Icons from '../../../asset/base64/Icons'
-import profilePic from '../../../asset/utils/defaultUserProfile.png'
+import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png'
 import leaveIcon from '../../../asset/utils/logout.png'
 import plusIcon from '../../../asset/utils/plus.png'
 import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 import {
     cancelJoinRequest,
     sendJoinRequest,
@@ -316,12 +317,10 @@ const makeMapStateToProps = () => {
                 if (otherUser) {
                     otherUser = otherUser.memberRef
                     chatRoomName = otherUser.name
-                    chatRoomImage =
-                        otherUser.profile && otherUser.profile.image
-                            ? {
-                                  uri: `${IMAGE_BASE_URL}${otherUser.profile.image}`,
-                              }
-                            : profilePic
+                    chatRoomImage = getProfileImageOrDefaultFromUser(
+                        otherUser,
+                        defaultProfilePic
+                    )
                 }
             } else {
                 chatRoomName = chatRoom.name

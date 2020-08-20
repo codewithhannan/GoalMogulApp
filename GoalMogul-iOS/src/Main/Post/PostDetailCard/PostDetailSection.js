@@ -23,7 +23,11 @@ import ShareIcon from '../../../asset/utils/forward.png'
 import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
 // Assets
 import LoveIcon from '../../../asset/utils/love.png'
-import { switchCase } from '../../../redux/middleware/utils'
+// Actions
+import {
+    switchCase,
+    getProfileImageOrDefaultFromUser,
+} from '../../../redux/middleware/utils'
 import { createCommentFromSuggestion } from '../../../redux/modules/feed/comment/CommentActions'
 import { openPostDetail } from '../../../redux/modules/feed/post/PostActions'
 import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions'
@@ -33,7 +37,6 @@ import {
     subscribeEntityNotification,
     unsubscribeEntityNotification,
 } from '../../../redux/modules/notification/NotificationActions'
-// Actions
 import { createReport } from '../../../redux/modules/report/ReportActions'
 // Styles
 import { imagePreviewContainerStyle } from '../../../styles'
@@ -242,11 +245,7 @@ class PostDetailSection extends React.PureComponent {
                     style={{ flexDirection: 'row', alignItems: 'flex-start' }}
                 >
                     <ProfileImage
-                        imageUrl={
-                            owner && owner.profile
-                                ? owner.profile.image
-                                : undefined
-                        }
+                        imageUrl={getProfileImageOrDefaultFromUser(owner)}
                         userId={owner._id}
                     />
                     <View style={{ marginLeft: 12, marginTop: 2, flex: 1 }}>

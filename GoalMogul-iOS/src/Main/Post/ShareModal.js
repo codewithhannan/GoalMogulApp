@@ -1,52 +1,47 @@
 /** @format */
 
+import _ from 'lodash'
+import R from 'ramda'
 import React from 'react'
 import {
-    View,
+    ActivityIndicator,
+    Image,
     KeyboardAvoidingView,
     ScrollView,
-    Image,
     Text,
-    SafeAreaView,
     TouchableOpacity,
-    ActivityIndicator,
+    View,
 } from 'react-native'
-import { Field, reduxForm, formValueSelector } from 'redux-form'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
-import R from 'ramda'
-import _ from 'lodash'
-import Fuse from 'fuse.js'
-
+import { Field, formValueSelector, reduxForm } from 'redux-form'
+// Assets
+import defaultUserProfile from '../../asset/utils/defaultUserProfile.png'
 // Utils
 import {
-    switchCase,
     arrayUnique,
     clearTags,
+    switchCase,
+    getProfileImageOrDefaultFromUser,
 } from '../../redux/middleware/utils'
-
-// Components
-import ModalHeader from '../Common/Header/ModalHeader'
-import ViewableSettingMenu from '../Goal/ViewableSettingMenu'
-import RefPreview from '../Common/RefPreview'
-import EmptyResult from '../Common/Text/EmptyResult'
-import ProfileImage from '../Common/ProfileImage'
-import MentionsTextInput from '../Goal/Common/MentionsTextInput'
-
 // Actions
 import {
     cancelShare,
     submitShare,
 } from '../../redux/modules/feed/post/ShareActions'
-
-// Assets
-import defaultUserProfile from '../../asset/utils/defaultUserProfile.png'
 import {
-    searchUser,
-    searchTribeMember,
     searchEventParticipants,
+    searchTribeMember,
+    searchUser,
 } from '../../redux/modules/search/SearchActions'
 import { IMAGE_BASE_URL, PRIVACY_FRIENDS } from '../../Utils/Constants'
+// Components
+import ModalHeader from '../Common/Header/ModalHeader'
+import ProfileImage from '../Common/ProfileImage'
+import RefPreview from '../Common/RefPreview'
+import EmptyResult from '../Common/Text/EmptyResult'
+import MentionsTextInput from '../Goal/Common/MentionsTextInput'
+import ViewableSettingMenu from '../Goal/ViewableSettingMenu'
 
 // Constants
 const DEBUG_KEY = '[ UI ShareModal ]'
@@ -308,7 +303,7 @@ class ShareModal extends React.Component {
      * @param item: suggestion item to render
      */
     renderSuggestionsRow({ item }, hidePanel, cursorPosition) {
-        const { name, profile } = item
+        const { name } = item
         return (
             <TouchableOpacity
                 onPress={() =>
@@ -324,11 +319,8 @@ class ShareModal extends React.Component {
             >
                 <ProfileImage
                     imageContainerStyle={styles.imageContainerStyle}
-                    imageUrl={
-                        profile && profile.image ? profile.image : undefined
-                    }
-                    imageStyle={{ height: 31, width: 30, borderRadius: 3 }}
-                    defaultImageSource={defaultUserProfile}
+                    imageUrl={getProfileImageOrDefaultFromUser(item)}
+                    imageStyle={{ height: 31, width: 30 }}
                 />
                 <Text style={{ fontSize: 16, color: 'darkgray' }}>{name}</Text>
             </TouchableOpacity>
@@ -382,26 +374,15 @@ class ShareModal extends React.Component {
     // Render user info
     renderUserInfo(user) {
         const name = user && user.name ? user.name : 'Jordan Gardner'
-        let imageUrl = user && user.profile ? user.profile.image : undefined
-        let profileImage = (
-            <Image
-                style={styles.imageStyle}
-                resizeMode="contain"
-                source={defaultUserProfile}
-            />
-        )
-        if (imageUrl) {
-            imageUrl = `${IMAGE_BASE_URL}${imageUrl}`
-            profileImage = (
-                <Image style={styles.imageStyle} source={{ uri: imageUrl }} />
-            )
-        }
 
         const callback = R.curry((value) => this.props.change('privacy', value))
 
         return (
             <View style={{ flexDirection: 'row', marginBottom: 15 }}>
-                {profileImage}
+                <ProfileImage
+                    imageUrl={getProfileImageOrDefaultFromUser(user)}
+                    imageStyle={styles.imageStyle}
+                />
                 <View style={{ flexDirection: 'column', marginLeft: 15 }}>
                     <Text style={{ fontSize: 18, marginBottom: 8 }}>
                         {name}
@@ -604,7 +585,6 @@ const styles = {
     imageStyle: {
         height: 54,
         width: 54,
-        borderRadius: 5,
     },
     inputStyle: {
         paddingTop: 6,
@@ -641,11 +621,7 @@ const styles = {
         padding: 5,
     },
     imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1,
-        borderColor: 'lightgray',
         alignItems: 'center',
-        borderRadius: 3,
         alignSelf: 'center',
         backgroundColor: 'white',
         marginLeft: 10,

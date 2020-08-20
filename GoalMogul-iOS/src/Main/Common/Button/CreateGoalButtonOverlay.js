@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
-import goal from '../../../asset/header/home-logo.png'
+import goal from '../../../asset/header/logo.png'
 /* asset */
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import post from '../../../asset/utils/post.png'

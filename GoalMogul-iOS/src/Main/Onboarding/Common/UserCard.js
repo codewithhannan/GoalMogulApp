@@ -4,7 +4,11 @@ import React from 'react'
 import _ from 'lodash'
 import { View, Text, ActivityIndicator } from 'react-native'
 import ProfileImage from '../../Common/ProfileImage'
-import { getPhoneNumber, getEmail } from '../../../redux/middleware/utils'
+import {
+    getPhoneNumber,
+    getEmail,
+    getProfileImageOrDefaultFromUser,
+} from '../../../redux/middleware/utils'
 import { color, text } from '../../../styles/basic'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
@@ -16,10 +20,6 @@ import DelayedButton from '../../Common/Button/DelayedButton'
  * @link https://www.figma.com/file/T1ZgWm5TKDA4gtBS5gSjtc/GoalMogul-App?node-id=24%3A195
  */
 class UserCard extends React.Component {
-    getProfileImage(item) {
-        return _.get(item, 'profile.image', undefined)
-    }
-
     /** Render user already on GoalMogul */
     renderAddButton(item, callback) {
         const { invited, inviting } = item
@@ -170,12 +170,11 @@ class UserCard extends React.Component {
         }
 
         const isMatchedContacts = type == 'matchedContacts'
-        const profileImageSource = this.getProfileImage()
         return (
             <View style={styles.containerStyle}>
                 <ProfileImage
                     imageStyle={styles.imageStyle}
-                    imageUrl={profileImageSource}
+                    imageUrl={getProfileImageOrDefaultFromUser(item)}
                     imageContainerStyle={styles.imageContainerStyle}
                 />
                 {isMatchedContacts
@@ -202,17 +201,12 @@ const styles = {
     imageContainerStyle: {
         height: 38,
         width: 38,
-        borderRadius: 19,
-        borderColor: 'lightgray',
-        padding: 1,
-        borderWidth: 0.5,
         justifyContent: 'center',
         alignItems: 'center',
     },
     imageStyle: {
         height: 36,
         width: 36,
-        borderRadius: 18,
     },
     // General button style
     buttonStyle: {

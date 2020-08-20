@@ -9,7 +9,6 @@ const Styles = StyleSheet.create({
     imageStyle: {
         height: 48,
         width: 48,
-        borderRadius: 5,
         alignSelf: 'center',
     },
     buttonTextStyle: {
