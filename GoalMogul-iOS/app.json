@@ -58,6 +58,10 @@
                     }
                 }
             ]
+        },
+        "android": {
+            "package": "com.goalmogul.goalmogulbeta",
+            "googleServicesFile": "./config/google-services.json"
         }
     }
 }
