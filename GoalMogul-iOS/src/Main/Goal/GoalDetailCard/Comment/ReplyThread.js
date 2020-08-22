@@ -49,7 +49,7 @@ import {
 } from '../../../../redux/modules/feed/comment/CommentSelector'
 
 // Assets
-import { default_style } from '../../../../styles/basic'
+import { default_style, color } from '../../../../styles/basic'
 import ProfileImage from '../../../Common/ProfileImage'
 import { IMAGE_BASE_URL } from '../../../../Utils/Constants'
 import expand from '../../../../asset/utils/expand.png'
@@ -59,6 +59,7 @@ import { Text } from 'react-native-animatable'
 import LikeListModal from '../../../Common/Modal/LikeListModal'
 import { Actions } from 'react-native-router-flux'
 import { getProfileImageOrDefaultFromUser } from '../../../../redux/middleware/utils'
+import DelayedButton from '../../../Common/Button/DelayedButton'
 
 const DEBUG_KEY = '[ UI CommentCard ]'
 
@@ -275,9 +276,8 @@ class ReplyThread extends React.Component {
     }
 
     renderStatus() {
-        const { likeCount, childComments, maybeLikeRef } = this.props.item
+        const { likeCount, childComments, _id } = this.props.item
         const commentCount = childComments.length
-        const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
 
         return (
             <View
@@ -292,28 +292,43 @@ class ReplyThread extends React.Component {
                     paddingRight: 16,
                 }}
             >
-                <Icon
-                    pack="material-community"
-                    style={[
-                        default_style.normalIcon_1,
-                        { tintColor: '#828282', marginRight: 4 },
-                    ]}
-                    name="message-outline"
-                />
-                <Text style={default_style.normalText_1}>{commentCount}</Text>
-                <Icon
-                    pack="material-community"
-                    style={[
-                        default_style.normalIcon_1,
-                        {
-                            tintColor: selfLiked ? '#EB5757' : '#828282',
-                            marginLeft: 16,
-                            marginRight: 4,
-                        },
-                    ]}
-                    name={selfLiked ? 'heart' : 'heart-outline'}
-                />
-                <Text style={default_style.normalText_1}>{likeCount}</Text>
+                <DelayedButton
+                    onPress={() => this.openCommentLikeList('Comment', _id)}
+                    activeOpacity={0.6}
+                    style={{ flexDirection: 'row', alignItems: 'center' }}
+                >
+                    <Icon
+                        pack="material-community"
+                        style={[
+                            default_style.normalIcon_1,
+                            {
+                                tintColor: color.GM_RED,
+                                marginRight: 4,
+                            },
+                        ]}
+                        name={'heart'}
+                    />
+                    <Text style={default_style.normalText_1}>{likeCount}</Text>
+                </DelayedButton>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginLeft: 16,
+                    }}
+                >
+                    <Icon
+                        pack="material-community"
+                        style={[
+                            default_style.normalIcon_1,
+                            { tintColor: color.GM_YELLOW, marginRight: 4 },
+                        ]}
+                        name="message"
+                    />
+                    <Text style={default_style.normalText_1}>
+                        {commentCount}
+                    </Text>
+                </View>
             </View>
         )
     }

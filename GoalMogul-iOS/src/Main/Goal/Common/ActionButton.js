@@ -19,14 +19,12 @@ class ActionButton extends React.PureComponent {
     handleOnPress = () => {
         if (this.state.buttonDisabled) return
         this.setState({
-            ...this.state,
             buttonDisabled: true,
         })
         this.props.onPress()
         // console.log(`${DEBUG_KEY}: set timeout`);
         setTimeout(() => {
             this.setState({
-                ...this.state,
                 buttonDisabled: false,
             })
         }, 800)
@@ -54,13 +52,7 @@ class ActionButton extends React.PureComponent {
                 style={textContainerStyle}
                 disabled={buttonDisabled}
             >
-                <Text
-                    style={{
-                        ...default_style.buttonText_1,
-                        ...styles.textStyle,
-                        ...this.props.textStyle,
-                    }}
-                >
+                <Text style={[styles.textStyle, this.props.textStyle]}>
                     {count > 0 ? `${count} ` : ''}
                     {unitText ? unitText + (count > 1 ? 's' : '') : ''}
                 </Text>
@@ -70,24 +62,20 @@ class ActionButton extends React.PureComponent {
         return (
             <DelayedButton
                 touchableWithoutFeedback
-                style={{
-                    ...styles.containerStyle,
-                    ...containerStyle,
-                    opacity: 1,
-                }}
+                activeOpacity={0.6}
                 onPress={this.handleOnPress}
                 disabled={buttonDisabled}
                 onLayout={this.props.onLayout}
             >
-                <View style={styles.containerStyle}>
+                <View style={[styles.containerStyle, containerStyle]}>
                     <View style={this.props.iconContainerStyle}>
                         <Image
                             resizeMode="contain"
                             source={this.props.iconSource}
-                            style={{
-                                ...default_style.buttonIcon_1,
-                                ...this.props.iconStyle,
-                            }}
+                            style={[
+                                default_style.buttonIcon_1,
+                                this.props.iconStyle,
+                            ]}
                         />
                     </View>
                     {countText}

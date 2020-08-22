@@ -41,16 +41,13 @@ import CommentCard from '../../Goal/GoalDetailCard/Comment/CommentCard'
 import ShareDetailSection from './ShareDetailSection'
 
 const DEBUG_KEY = '[ UI ShareDetailCard ]'
-const TABBAR_HEIGHT = 48.5
-const TOTAL_HEIGHT = TABBAR_HEIGHT
 
 class ShareDetailCard extends Component {
     constructor(props) {
         super(props)
         this.commentBox = undefined
         this.state = {
-            position: 'absolute',
-            commentBoxPadding: new Animated.Value(0),
+            bottomPadding: new Animated.Value(0),
         }
         this.handleScrollToCommentItem = this.handleScrollToCommentItem.bind(
             this
@@ -127,7 +124,7 @@ class ShareDetailCard extends Component {
     }
 
     keyboardWillShow = (e) => {
-        Animated.timing(this.state.commentBoxPadding, {
+        Animated.timing(this.state.bottomPadding, {
             useNativeDriver: false,
             toValue: e.endCoordinates.height,
             duration: e.duration,
@@ -135,7 +132,7 @@ class ShareDetailCard extends Component {
     }
 
     keyboardWillHide = (e) => {
-        Animated.timing(this.state.commentBoxPadding, {
+        Animated.timing(this.state.bottomPadding, {
             useNativeDriver: false,
             toValue: 0,
             duration: e.duration,
@@ -290,21 +287,26 @@ class ShareDetailCard extends Component {
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                <View style={styles.containerStyle}>
-                    <LikeListModal
-                        isVisible={this.state.showCommentLikeList}
-                        closeModal={this.closeCommentLikeList}
-                        parentId={this.state.likeListParentId}
-                        parentType={this.state.likeListParentType}
-                        clearDataOnHide
-                    />
-                    <SearchBarHeader
-                        backButton
-                        title={title}
-                        onBackPress={() =>
-                            this.props.closeShareDetail(postId, pageId)
-                        }
-                    />
+                <LikeListModal
+                    isVisible={this.state.showCommentLikeList}
+                    closeModal={this.closeCommentLikeList}
+                    parentId={this.state.likeListParentId}
+                    parentType={this.state.likeListParentType}
+                    clearDataOnHide
+                />
+                <SearchBarHeader
+                    backButton
+                    title={title}
+                    onBackPress={() =>
+                        this.props.closeShareDetail(postId, pageId)
+                    }
+                />
+                <Animated.View
+                    style={[
+                        styles.containerStyle,
+                        { paddingBottom: this.state.bottomPadding },
+                    ]}
+                >
                     <FlatList
                         ref="flatList"
                         data={data}
@@ -324,17 +326,7 @@ class ShareDetailCard extends Component {
                             />
                         }
                     />
-                    <Animated.View
-                        style={[
-                            styles.composerContainer,
-                            {
-                                position: this.state.position,
-                                paddingBottom: this.state.commentBoxPadding,
-                                backgroundColor: 'white',
-                                zIndex: 3,
-                            },
-                        ]}
-                    >
+                    <View style={styles.composerContainer}>
                         <CommentBox
                             onRef={(ref) => {
                                 this.commentBox = ref
@@ -343,8 +335,8 @@ class ShareDetailCard extends Component {
                             pageId={pageId}
                             entityId={postId}
                         />
-                    </Animated.View>
-                </View>
+                    </View>
+                </Animated.View>
             </MenuProvider>
         )
     }
@@ -369,6 +361,8 @@ const styles = {
         left: 0,
         right: 0,
         bottom: 0,
+        backgroundColor: 'white',
+        zIndex: 3,
     },
 }
 

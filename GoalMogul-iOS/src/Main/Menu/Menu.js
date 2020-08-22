@@ -35,12 +35,10 @@ import {
     DEVICE_MODEL,
 } from '../../Utils/Constants'
 import { default_style } from '../../styles/basic'
+import { IS_SMALL_PHONE } from '../../styles'
 
 const DEBUG_KEY = '[ UI Menu ]'
 const { AccountMultiple, MessageIcon } = Icons
-
-const IS_SMALL_PHONE =
-    Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL)
 
 const marginBottom = IS_SMALL_PHONE ? 10 : 40
 

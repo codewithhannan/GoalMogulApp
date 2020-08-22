@@ -44,12 +44,13 @@ import { searchUser } from '../../../redux/modules/search/SearchActions'
 import { getGoalDetailByTab } from '../../../redux/modules/goal/selector'
 
 // Utils
-import { arrayUnique, clearTags, getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
-import { default_style, color } from '../../../styles/basic'
 import {
-    PRIVACY_OPTIONS,
-    PRIVACY_FRIENDS,
-} from '../../../Utils/Constants'
+    arrayUnique,
+    clearTags,
+    getProfileImageOrDefaultFromUser,
+} from '../../../redux/middleware/utils'
+import { default_style, color } from '../../../styles/basic'
+import { PRIVACY_OPTIONS, PRIVACY_FRIENDS } from '../../../Utils/Constants'
 // Components
 import ModalHeader from '../../Common/Header/ModalHeader'
 import ProfileImage from '../../Common/ProfileImage'

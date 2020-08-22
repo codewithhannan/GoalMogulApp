@@ -258,24 +258,12 @@ class ProfileInfoCard extends Component {
             </View>
         )
 
-        const cardSeparator = <View style={default_style.cardSeparator} />
-
         return (
             <View>
                 {about || elevatorPitch ? detailsCard : null}
-                {about || elevatorPitch || occupation ? cardSeparator : null}
                 <View style={styles.containerStyle}>
                     {this.renderFriendInfo()}
                     {this.renderOccupation(occupation, about || elevatorPitch)}
-                    {/* <CoinProfileInfoModal
-                        isVisible={this.state.showCoinProfileInfoModal}
-                        closeModal={() => {
-                            this.setState({
-                                ...this.state,
-                                showCoinProfileInfoModal: false,
-                            })
-                        }}
-                    /> */}
                 </View>
             </View>
         )
@@ -287,6 +275,7 @@ const styles = {
         display: 'flex',
         paddingHorizontal: 16,
         paddingVertical: 24,
+        marginBottom: 8,
         backgroundColor: color.GM_CARD_BACKGROUND,
         flex: 1,
     },

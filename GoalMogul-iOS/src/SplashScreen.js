@@ -26,9 +26,8 @@ import { DEVICE_MODEL, IPHONE_MODELS, IS_ZOOMED } from './Utils/Constants'
 // Components
 import { RightArrowIcon } from './Utils/Icons'
 import { color } from './styles/basic'
+import { IS_SMALL_PHONE } from './styles'
 
-const IS_SMALL_PHONE =
-    Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL)
 const width = Dimensions.get('window').width
 const DEBUG_KEY = '[ UI SplashScreen ]'
 

@@ -128,15 +128,15 @@ export const default_style = {
         borderColor: '#cacaca',
         borderWidth: 0.5,
     },
-    cardSeparator: {
-        width: '100%',
-        height: 5 * UI_SCALE,
-        backgroundColor: color.GM_BACKGROUND,
+    cardHorizontalSeparator: {
+        alignSelf: 'center',
+        width: '95%',
+        backgroundColor: color.GM_BORDER_COLOR,
+        height: 1,
     },
-    activitySeparator: {
-        width: '100%',
-        height: 8 * UI_SCALE,
-        backgroundColor: color.GM_BACKGROUND,
+    cardVerticalSeparator: {
+        height: '75%',
+        width: 1,
+        backgroundColor: color.GM_BORDER_COLOR,
     },
-    hairlineWidth: 1,
 }

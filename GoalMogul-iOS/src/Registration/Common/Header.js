@@ -15,14 +15,12 @@ import { registrationBack, registrationLogin } from '../../actions'
 import DelayedButton from '../../Main/Common/Button/DelayedButton'
 import { IPHONE_MODELS, DEVICE_MODEL } from '../../Utils/Constants'
 import { color } from '../../styles/basic'
+import { IS_SMALL_PHONE } from '../../styles'
 
 // const IMAGE_HEIGHT_SMALL = 60;
 // const IMAGE_HEIGHT = 80;
 // const VIEW_HEIGHT = 207;
 // const VIEW_AMOUNT = 20;
-
-const IS_SMALL_PHONE =
-    Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL)
 
 class Header extends Component {
     handleBackOnClick() {

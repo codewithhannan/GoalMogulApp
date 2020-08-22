@@ -302,7 +302,6 @@ class CommentUserDetail extends Component {
 
         const likeCount = item.likeCount || 0
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
-        const buttonContainerStyle = { flex: 0 }
 
         return (
             <View
@@ -344,7 +343,6 @@ class CommentUserDetail extends Component {
                             parentRef
                         )
                     }}
-                    containerStyle={buttonContainerStyle}
                 />
                 <ActionButton
                     iconSource={CommentIcon}
@@ -354,7 +352,7 @@ class CommentUserDetail extends Component {
                     onPress={() => {
                         this.openReplyThread(_id, true)
                     }}
-                    containerStyle={{ ...buttonContainerStyle, marginLeft: 16 }}
+                    containerStyle={{ marginLeft: 16 }}
                 />
             </View>
         )

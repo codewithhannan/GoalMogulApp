@@ -32,10 +32,10 @@ import { searchUser } from '../../../redux/modules/search/SearchActions'
 import { getNewCommentByTab } from '../../../redux/modules/feed/comment/CommentSelector'
 
 // Utils
-import { 
+import {
     arrayUnique,
     clearTags,
-    getProfileImageOrDefaultFromUser
+    getProfileImageOrDefaultFromUser,
 } from '../../../redux/middleware/utils'
 import { default_style } from '../../../styles/basic'
 

@@ -45,6 +45,7 @@ import { IMAGE_BASE_URL, PRIVACY_FRIENDS } from '../../Utils/Constants'
 import { default_style, color } from '../../styles/basic'
 import BottomSheet from '../Common/Modal/BottomSheet'
 import { Icon } from '@ui-kitten/components'
+import { IS_SMALL_PHONE } from '../../styles'
 
 /* Components */
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
@@ -65,7 +66,7 @@ const INITIAL_TAG_SEARCH = {
 }
 const ON_CANCEL_OPTIONS = ['Save Draft', 'Discard', 'Cancel']
 const ON_CANCEL_CANCEL_INDEX = 2
-const TEXT_INPUT_DEAFULT_HEIGHT = 100
+const TEXT_INPUT_DEAFULT_HEIGHT = 80
 
 class CreatePostModal extends Component {
     constructor(props) {
@@ -75,7 +76,7 @@ class CreatePostModal extends Component {
             drafts: [],
             mediaModal: false,
             keyword: '',
-            tagSearchData: { ...INITIAL_TAG_SEARCH },
+            tagSearchData: INITIAL_TAG_SEARCH,
             textContentHeight: TEXT_INPUT_DEAFULT_HEIGHT,
             textInputHeight: TEXT_INPUT_DEAFULT_HEIGHT,
             draftHeaderHeight: 0,
@@ -424,7 +425,11 @@ class CreatePostModal extends Component {
                 : E.CREATE_POST_MODAL_CANCELLED,
             { DurationSec: durationSec }
         )
-        this.handleDraftCancel(callback)
+        this.handleDraftCancel(() => {
+            if (callback) callback()
+            // reset form vals
+            this.initializeForm()
+        })
     }
 
     handleDraftCancel = (callback) => {
@@ -447,6 +452,12 @@ class CreatePostModal extends Component {
                 R.equals(1),
                 () => {
                     if (callback) callback()
+                },
+            ],
+            [
+                R.equals(2),
+                () => {
+                    this.bottomSheetRef.open()
                 },
             ],
         ])
@@ -496,20 +507,34 @@ class CreatePostModal extends Component {
                         ...styles.inputStyle,
                         height: this.state.textInputHeight,
                     }}
-                    onContentSizeChange={(e) => {
+                    onContentSizeChange={({ nativeEvent }) => {
                         // Modal height needs to be adjusted when post text content size increases/decreases
-                        const height = e.nativeEvent.contentSize.height
-                        const hasEnoughSpaceAboveModal =
-                            !this.bottomSheetRef.maskHeight ||
-                            this.bottomSheetRef.maskHeight >= 25
+                        const height = nativeEvent.contentSize.height
+                        // At initialization bottomSheetRef.maskHeight can be null so we make a safe assumption
+                        const spaceAboveModal =
+                            this.bottomSheetRef &&
+                            this.bottomSheetRef.maskHeight
+                                ? this.bottomSheetRef.maskHeight
+                                : TEXT_INPUT_DEAFULT_HEIGHT
+                        // this is to leave some space above modal for user to easily interact with modal
+                        const spaceAvailableAboveModal =
+                            spaceAboveModal - (IS_SMALL_PHONE ? 50 : 70)
                         const heightChange =
                             height - this.state.textContentHeight
+
                         if (height > TEXT_INPUT_DEAFULT_HEIGHT) {
                             // height increased
                             if (heightChange > 0)
-                                hasEnoughSpaceAboveModal &&
+                                if (spaceAvailableAboveModal >= heightChange)
                                     this.setState({
                                         textContentHeight: height,
+                                    })
+                                else
+                                    this.setState({
+                                        textContentHeight:
+                                            height -
+                                            (heightChange -
+                                                spaceAvailableAboveModal),
                                     })
                             // height decreased
                             else
@@ -840,11 +865,12 @@ class CreatePostModal extends Component {
                 ref={(r) => (this.bottomSheetRef = r)}
                 height={modalHeight}
                 onOpen={() => {
-                    this.initializeForm()
                     this.textInput && this.textInput.focus()
                 }}
                 onClose={(callback) => this.handleCancel(callback)}
                 onPropsHeightChange={() =>
+                    // once BottomSheet adjusts its height based on new textContentHeight
+                    // CreatePostModal will adjust the height of it's textInput container
                     this.setState((state) => ({
                         textInputHeight: state.textContentHeight + 5,
                     }))

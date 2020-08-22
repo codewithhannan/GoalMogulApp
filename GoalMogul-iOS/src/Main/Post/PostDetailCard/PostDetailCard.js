@@ -36,7 +36,7 @@ class PostDetailCard extends React.PureComponent {
         super(props)
         this.commentBox = undefined
         this.state = {
-            commentBoxPadding: new Animated.Value(0),
+            bottomPadding: new Animated.Value(0),
         }
         this.handleScrollToCommentItem = this.handleScrollToCommentItem.bind(
             this
@@ -124,7 +124,7 @@ class PostDetailCard extends React.PureComponent {
     }
 
     keyboardWillShow = (e) => {
-        Animated.timing(this.state.commentBoxPadding, {
+        Animated.timing(this.state.bottomPadding, {
             useNativeDriver: false,
             toValue: e.endCoordinates.height,
             duration: e.duration,
@@ -132,7 +132,7 @@ class PostDetailCard extends React.PureComponent {
     }
 
     keyboardWillHide = (e) => {
-        Animated.timing(this.state.commentBoxPadding, {
+        Animated.timing(this.state.bottomPadding, {
             useNativeDriver: false,
             toValue: 0,
             duration: e.duration,
@@ -272,14 +272,12 @@ class PostDetailCard extends React.PureComponent {
     renderPostDetailSection() {
         const { postDetail } = this.props
         return (
-            <View style={{ marginBottom: 1 }}>
-                <PostDetailSection
-                    item={postDetail}
-                    onSuggestion={() => this.dialogOnFocus()}
-                    pageId={this.props.pageId}
-                    postId={this.props.postId}
-                />
-            </View>
+            <PostDetailSection
+                item={postDetail}
+                onSuggestion={() => this.dialogOnFocus()}
+                pageId={this.props.pageId}
+                postId={this.props.postId}
+            />
         )
     }
 
@@ -301,14 +299,21 @@ class PostDetailCard extends React.PureComponent {
                     initializeFromState
                     initialPost={postDetail}
                 />
-                <View style={styles.containerStyle}>
-                    <SearchBarHeader
-                        backButton
-                        title="Post"
-                        onBackPress={() =>
-                            this.props.closePostDetail(postId, pageId)
-                        }
-                    />
+                <SearchBarHeader
+                    backButton
+                    title="Post"
+                    onBackPress={() =>
+                        this.props.closePostDetail(postId, pageId)
+                    }
+                />
+                <Animated.View
+                    style={[
+                        styles.containerStyle,
+                        {
+                            paddingBottom: this.state.bottomPadding,
+                        },
+                    ]}
+                >
                     <FlatList
                         ref="flatList"
                         data={data}
@@ -319,23 +324,8 @@ class PostDetailCard extends React.PureComponent {
                         )}
                         refreshing={this.props.commentLoading}
                         onRefresh={this.handleRefresh}
-                        ListFooterComponent={
-                            <View
-                                style={{
-                                    height: 90,
-                                    backgroundColor: 'transparent',
-                                }}
-                            />
-                        }
                     />
-                    <Animated.View
-                        style={[
-                            styles.composerContainer,
-                            {
-                                paddingBottom: this.state.commentBoxPadding,
-                            },
-                        ]}
-                    >
+                    <View style={styles.composerContainer}>
                         <CommentBox
                             onRef={(ref) => {
                                 this.commentBox = ref
@@ -344,15 +334,12 @@ class PostDetailCard extends React.PureComponent {
                             pageId={pageId}
                             entityId={postId}
                         />
-                    </Animated.View>
-                </View>
+                    </View>
+                </Animated.View>
             </MenuProvider>
         )
     }
 }
-
-// onRefresh={this.handleRefresh.bind()}
-// refreshing={this.props.refreshing}
 
 const styles = {
     containerStyle: {
@@ -370,7 +357,6 @@ const styles = {
         opacity: 0.5,
     },
     composerContainer: {
-        position: 'absolute',
         left: 0,
         right: 0,
         bottom: 0,

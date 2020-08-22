@@ -124,7 +124,6 @@ class MyTribeMembers extends React.PureComponent {
                                     borderTopColor: color.GM_BORDER_COLOR,
                                 }}
                             >
-                                {/* <View style={{ ...default_style.activitySeparator }} />         */}
                                 <Text style={default_style.titleText_1}>
                                     Admin
                                 </Text>

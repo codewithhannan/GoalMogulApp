@@ -61,7 +61,7 @@ export const MenuFactory = (
                         <MenuOption value={item} text={item} />
                     )}
                     keyExtractor={(item, index) => index.toString()}
-                    style={{ height: 40 }}
+                    style={{ flex: 1 }}
                 />
             </MenuOptions>
         </Menu>

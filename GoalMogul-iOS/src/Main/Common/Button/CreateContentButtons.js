@@ -39,7 +39,7 @@ const CreateContentButtons = (props) => {
             </DelayedButton>
 
             {/* Hairline button seperator */}
-            <View style={styles.createContentButtonSeperator} />
+            <View style={default_style.cardVerticalSeparator} />
 
             {/* Create Goal */}
             <DelayedButton
