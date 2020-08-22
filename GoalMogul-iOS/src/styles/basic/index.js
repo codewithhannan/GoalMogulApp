@@ -73,9 +73,9 @@ export const default_style = {
         letterSpacing: text.LETTER_SPACING.REGULAR,
     },
     smallText_2: {
-        fontFamily: text.FONT_FAMILY.REGULAR,
-        fontSize: 9 * UI_SCALE,
-        color: color.TEXT_COLOR.DARK,
+        fontFamily: text.FONT_FAMILY.MEDIUM,
+        fontSize: 10 * UI_SCALE,
+        color: color.TEXT_COLOR.OFF_DARK,
         letterSpacing: text.LETTER_SPACING.REGULAR,
     },
     smallIcon_1: {

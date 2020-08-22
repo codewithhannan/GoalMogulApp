@@ -18,8 +18,6 @@ const styles = {
         justifyContent: 'space-around',
         flexDirection: 'row',
         padding: 10,
-        borderTopWidth: 0.5,
-        borderTopColor: '#f1f1f1',
     },
 }
 

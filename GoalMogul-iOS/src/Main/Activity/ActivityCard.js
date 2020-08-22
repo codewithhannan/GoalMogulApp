@@ -10,6 +10,7 @@ import {
     ImageBackground,
     TouchableWithoutFeedback,
     View,
+    Text,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { getProfileImageOrDefaultFromUser } from '../../redux/middleware/utils'
@@ -17,10 +18,6 @@ import { getProfileImageOrDefaultFromUser } from '../../redux/middleware/utils'
 import { openProfile } from '../../actions'
 // Assets
 import { ConfettiFadedBackgroundTopHalf } from '../../asset/background'
-import CommentIcon from '../../asset/utils/comment.png'
-import ShareIcon from '../../asset/utils/forward.png'
-import LoveOutlineIcon from '../../asset/utils/love-outline.png'
-import LoveIcon from '../../asset/utils/love.png'
 import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
 import { chooseShareDest } from '../../redux/modules/feed/post/ShareActions'
 import { refreshActivityFeed } from '../../redux/modules/home/feed/actions'
@@ -45,6 +42,7 @@ import CommentRef from '../Goal/GoalDetailCard/Comment/CommentRef'
 import ActivityBody from './ActivityBody'
 import ActivityHeader from './ActivityHeader'
 import ActivitySummary from './ActivitySummary'
+import ActionBar from '../Common/ContentCards/ActionBar'
 
 const DEBUG_KEY = '[ UI ActivityCard ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -56,7 +54,7 @@ const SHARE_TO_MENU_OPTTIONS = [
 const CANCEL_INDEX = 3
 const { width } = Dimensions.get('window')
 const WINDOW_WIDTH = width
-const ACTION_BUTTON_GROUP_HEIGHT = 48
+const ACTION_BUTTON_GROUP_HEIGHT = 68
 
 class ActivityCard extends React.PureComponent {
     constructor(props) {
@@ -181,8 +179,8 @@ class ActivityCard extends React.PureComponent {
         const { maybeLikeRef, _id } = item
 
         const likeCount = item.likeCount ? item.likeCount : 0
-        const commentCount = item.commentCount ? item.commentCount : 0
         const shareCount = item.shareCount ? item.shareCount : 0
+        const commentCount = item.commentCount ? item.commentCount : 0
 
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
 
@@ -191,62 +189,64 @@ class ActivityCard extends React.PureComponent {
         const isShare = isPost && postRef.postType !== 'General'
 
         return (
-            <ActionButtonGroup>
-                <ActionButton
-                    iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
-                    count={likeCount}
-                    unitText="Like"
-                    textStyle={{ color: selfLiked ? '#000' : '#828282' }}
-                    iconStyle={{
-                        tintColor: selfLiked ? '#EB5757' : '#828282',
-                    }}
-                    onPress={() => {
-                        console.log(`${DEBUG_KEY}: user clicks Like Icon.`)
-                        if (selfLiked) {
-                            return this.props.unLikeGoal(
-                                isPost ? 'post' : 'goal',
-                                _id,
-                                maybeLikeRef
-                            )
-                        }
-                        this.incrementFloatingHeartCount()
-                        this.props.likeGoal(isPost ? 'post' : 'goal', _id)
-                    }}
-                    onLayout={({ nativeEvent }) =>
-                        this.setState({
-                            likeButtonLeftOffset: nativeEvent.layout.x,
-                        })
+            <ActionBar
+                isContentLiked={selfLiked}
+                isShareContent={isShare}
+                actionSummaries={{
+                    likeCount,
+                    shareCount,
+                    commentCount,
+                }}
+                onContainerLayout={({ nativeEvent }) =>
+                    this.setState({
+                        actionBarOffsetY: nativeEvent.layout.y,
+                    })
+                }
+                onLikeSummaryPress={() => {
+                    // TODO open liker list
+                }}
+                onLikeButtonPress={() => {
+                    if (selfLiked) {
+                        return this.props.unLikeGoal(
+                            isPost ? 'post' : 'goal',
+                            _id,
+                            maybeLikeRef
+                        )
                     }
-                />
-                <ActionButton
-                    iconSource={ShareIcon}
-                    count={shareCount}
-                    unitText="Share"
-                    textStyle={{ color: '#828282' }}
-                    iconStyle={{ tintColor: '#828282' }}
-                    onPress={() => this.handleShareOnClick(actedUponEntityType)}
-                    disabled={isShare}
-                />
-                <ActionButton
-                    iconSource={CommentIcon}
-                    count={commentCount}
-                    unitText="Comment"
-                    textStyle={{ color: '#828282' }}
-                    iconStyle={{ tintColor: '#828282' }}
-                    onPress={() => {
-                        console.log(
-                            `${DEBUG_KEY}: user clicks suggest icon actedWith: ${actedWith}`
-                        )
-                        this.props.onPress(
-                            item,
-                            (actedWith === 'Comment' ||
-                                actedWith === 'Like' ||
-                                actedWith === 'Goal') &&
-                                actedUponEntityType === 'Goal'
-                        )
-                    }}
-                />
-            </ActionButtonGroup>
+                    this.incrementFloatingHeartCount()
+                    this.props.likeGoal(isPost ? 'post' : 'goal', _id)
+                }}
+                onLikeButtonLayout={({ nativeEvent }) =>
+                    this.setState({
+                        likeButtonLeftOffset: nativeEvent.layout.x,
+                    })
+                }
+                onShareSummaryPress={() => {
+                    // TODO open sharers list
+                }}
+                onShareButtonPress={() =>
+                    this.handleShareOnClick(actedUponEntityType)
+                }
+                onCommentSummaryPress={() =>
+                    this.props.onPress(
+                        item,
+                        (actedWith === 'Comment' ||
+                            actedWith === 'Like' ||
+                            actedWith === 'Goal') &&
+                            actedUponEntityType === 'Goal',
+                        { shouldNotFocusCommentBox: true }
+                    )
+                }
+                onCommentButtonPress={() =>
+                    this.props.onPress(
+                        item,
+                        (actedWith === 'Comment' ||
+                            actedWith === 'Like' ||
+                            actedWith === 'Goal') &&
+                            actedUponEntityType === 'Goal'
+                    )
+                }
+            />
         )
     }
 
@@ -430,22 +430,10 @@ class ActivityCard extends React.PureComponent {
                         openCardContent={() => this.handleCardOnPress(item)}
                     />
                 </View>
-                <View
-                    style={{
-                        borderBottomColor: '#f8f8f8',
-                        borderBottomWidth: 1,
-                    }}
-                    onLayout={({ nativeEvent }) =>
-                        this.setState({
-                            actionBarOffsetY: nativeEvent.layout.y,
-                        })
-                    }
-                >
-                    {!(
-                        item.actedUponEntityType === 'Post' &&
-                        item.postRef.postType === 'ShareGoal'
-                    ) && this.renderActionButtons(item)}
-                </View>
+                {!(
+                    item.actedUponEntityType === 'Post' &&
+                    item.postRef.postType === 'ShareGoal'
+                ) && this.renderActionButtons(item)}
                 {this.renderComment(item)}
             </View>
         )

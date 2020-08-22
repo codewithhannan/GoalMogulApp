@@ -863,6 +863,7 @@ export const loadInitialAssets = () => {
         'SFProDisplay-Bold': require('../../assets/fonts/SFProDisplay-Bold.otf'),
         'SFProDisplay-Regular': require('../../assets/fonts/SFProDisplay-Regular.otf'),
         'SFProDisplay-Semibold': require('../../assets/fonts/SFProDisplay-Semibold.otf'),
+        'SFProDisplay-Medium': require('../../assets/fonts/SFProDisplay-Medium.otf'),
     })
 
     return Promise.all([...imageAssetPromises, ...fontPromise]).catch((err) => {

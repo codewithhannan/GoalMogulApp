@@ -71,6 +71,7 @@ import IndividualActionButton from '../Common/IndividualActionButton'
 // Components
 import ProgressBar from '../Common/ProgressBar'
 import Timestamp from '../Common/Timestamp'
+import ActionBar from '../../Common/ContentCards/ActionBar'
 
 const { width } = Dimensions.get('window')
 const WINDOW_WIDTH = width
@@ -591,68 +592,65 @@ class GoalDetailSection extends React.PureComponent {
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
 
         return (
-            <ActionButtonGroup>
-                <ActionButton
-                    iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
-                    count={likeCount}
-                    unitText="Like"
-                    textStyle={{ color: selfLiked ? '#000' : '#828282' }}
-                    iconStyle={{ tintColor: selfLiked ? '#EB5757' : '#828282' }}
-                    onPress={() => {
-                        if (maybeLikeRef && maybeLikeRef.length > 0) {
-                            return this.props.unLikeGoal(
-                                'goal',
-                                _id,
-                                maybeLikeRef
-                            )
-                        }
-                        this.incrementFloatingHeartCount()
-                        this.props.likeGoal('goal', _id)
-                    }}
-                    onTextPress={() => {
-                        this.setState({ showlikeListModal: true })
-                    }}
-                    onLayout={({ nativeEvent }) =>
-                        this.setState({
-                            likeButtonLeftOffset: nativeEvent.layout.x,
-                        })
+            <ActionBar
+                isContentLiked={selfLiked}
+                actionSummaries={{
+                    likeCount,
+                    shareCount,
+                    commentCount,
+                }}
+                onLikeSummaryPress={() =>
+                    this.setState({ showlikeListModal: true })
+                }
+                onLikeButtonPress={() => {
+                    if (maybeLikeRef && maybeLikeRef.length > 0) {
+                        return this.props.unLikeGoal('goal', _id, maybeLikeRef)
                     }
-                />
-                <ActionButton
-                    iconSource={ShareIcon}
-                    count={shareCount}
-                    unitText="Share"
-                    textStyle={{ color: '#828282' }}
-                    iconStyle={{ tintColor: '#828282' }}
-                    onPress={() => this.handleShareOnClick(item)}
-                    onTextPress={() => {
-                        this.setState({ showShareListModal: true })
-                    }}
-                />
-                <ActionButton
-                    iconSource={CommentIcon}
-                    count={commentCount}
-                    unitText="Comment"
-                    textStyle={{ color: '#828282' }}
-                    iconStyle={{ tintColor: '#828282' }}
-                    onPress={() => {
-                        this.props.createCommentFromSuggestion(
-                            {
-                                commentDetail: {
-                                    parentType: 'Goal',
-                                    parentRef: _id,
-                                    commentType: 'Suggestion',
-                                    replyToRef: undefined,
-                                },
-                                suggestionForRef: _id,
-                                suggestionFor: 'Goal',
+                    this.incrementFloatingHeartCount()
+                    this.props.likeGoal('goal', _id)
+                }}
+                onLikeButtonLayout={({ nativeEvent }) =>
+                    this.setState({
+                        likeButtonLeftOffset: nativeEvent.layout.x,
+                    })
+                }
+                onShareSummaryPress={() =>
+                    this.setState({ showShareListModal: true })
+                }
+                onShareButtonPress={() => this.handleShareOnClick(item)}
+                onCommentSummaryPress={() => {
+                    this.props.createCommentFromSuggestion(
+                        {
+                            commentDetail: {
+                                parentType: 'Goal',
+                                parentRef: _id,
+                                commentType: 'Suggestion',
+                                replyToRef: undefined,
                             },
-                            this.props.pageId
-                        )
-                        this.props.onSuggestion()
-                    }}
-                />
-            </ActionButtonGroup>
+                            suggestionForRef: _id,
+                            suggestionFor: 'Goal',
+                        },
+                        this.props.pageId
+                    )
+                    this.props.onSuggestion()
+                }}
+                onCommentButtonPress={() => {
+                    this.props.createCommentFromSuggestion(
+                        {
+                            commentDetail: {
+                                parentType: 'Goal',
+                                parentRef: _id,
+                                commentType: 'Suggestion',
+                                replyToRef: undefined,
+                            },
+                            suggestionForRef: _id,
+                            suggestionFor: 'Goal',
+                        },
+                        this.props.pageId
+                    )
+                    this.props.onSuggestion()
+                }}
+            />
         )
     }
 

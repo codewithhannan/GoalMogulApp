@@ -66,6 +66,7 @@ import ActionButtonGroup from '../../Goal/Common/ActionButtonGroup'
 import Headline from '../../Goal/Common/Headline'
 import Timestamp from '../../Goal/Common/Timestamp'
 import CreatePostModal from '../CreatePostModal'
+import ActionBar from '../../Common/ContentCards/ActionBar'
 
 const DEBUG_KEY = '[ UI PostDetailCard.PostDetailSection ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -434,58 +435,53 @@ class PostDetailSection extends React.PureComponent {
         const isShare = item.postType !== 'General'
 
         return (
-            <ActionButtonGroup>
-                <ActionButton
-                    iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
-                    count={likeCount}
-                    unitText="Like"
-                    textStyle={{ color: selfLiked ? '#000' : '#828282' }}
-                    iconStyle={{
-                        tintColor: selfLiked ? '#EB5757' : '#828282',
-                    }}
-                    onPress={() => {
-                        if (maybeLikeRef && maybeLikeRef.length > 0) {
-                            return this.props.unLikeGoal(
-                                'post',
-                                _id,
-                                maybeLikeRef
-                            )
-                        }
-                        this.incrementFloatingHeartCount()
-                        this.props.likeGoal('post', _id)
-                    }}
-                    onTextPress={() => {
-                        this.setState({ showlikeListModal: true })
-                    }}
-                    onLayout={({ nativeEvent }) =>
-                        this.setState({
-                            likeButtonLeftOffset: nativeEvent.layout.x,
-                        })
+            <ActionBar
+                isContentLiked={selfLiked}
+                isShareContent={isShare}
+                actionSummaries={{
+                    likeCount,
+                    shareCount,
+                    commentCount,
+                }}
+                onLikeSummaryPress={() =>
+                    this.setState({ showlikeListModal: true })
+                }
+                onLikeButtonPress={() => {
+                    if (maybeLikeRef && maybeLikeRef.length > 0) {
+                        return this.props.unLikeGoal('post', _id, maybeLikeRef)
                     }
-                />
-                <ActionButton
-                    iconSource={ShareIcon}
-                    count={shareCount}
-                    unitText="Share"
-                    textStyle={{ color: '#828282' }}
-                    iconStyle={{ tintColor: '#828282' }}
-                    onPress={() => this.handleShareOnClick(item)}
-                    disabled={isShare}
-                    onTextPress={() => {
-                        this.setState({ showShareListModal: true })
-                    }}
-                />
-                <ActionButton
-                    iconSource={CommentIcon}
-                    count={commentCount}
-                    unitText="Comment"
-                    textStyle={{ color: '#828282' }}
-                    iconStyle={{ tintColor: '#828282' }}
-                    onPress={() => {
-                        this.props.onSuggestion()
-                    }}
-                />
-            </ActionButtonGroup>
+                    this.incrementFloatingHeartCount()
+                    this.props.likeGoal('post', _id)
+                }}
+                onLikeButtonLayout={({ nativeEvent }) =>
+                    this.setState({
+                        likeButtonLeftOffset: nativeEvent.layout.x,
+                    })
+                }
+                onShareSummaryPress={() =>
+                    this.setState({ showShareListModal: true })
+                }
+                onShareButtonPress={() => this.handleShareOnClick(item)}
+                onCommentSummaryPress={() => {
+                    // TODO scroll down to comments section
+                }}
+                onCommentButtonPress={() => {
+                    this.props.createCommentFromSuggestion(
+                        {
+                            commentDetail: {
+                                parentType: 'Goal',
+                                parentRef: _id,
+                                commentType: 'Suggestion',
+                                replyToRef: undefined,
+                            },
+                            suggestionForRef: _id,
+                            suggestionFor: 'Goal',
+                        },
+                        this.props.pageId
+                    )
+                    this.props.onSuggestion()
+                }}
+            />
         )
     }
 
@@ -539,7 +535,7 @@ class PostDetailSection extends React.PureComponent {
                     }}
                     leftOffset={this.state.likeButtonLeftOffset}
                 />
-                {this.renderActionButtons(item)}
+                {this.renderActionButtons()}
             </View>
         )
     }

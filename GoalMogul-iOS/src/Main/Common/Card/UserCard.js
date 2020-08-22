@@ -12,6 +12,8 @@ import ProfileImage from '../ProfileImage'
 import Name from '../../Goal/Common/Name'
 import { UserBanner, openProfile } from '../../../actions'
 import DelayedButton from '../Button/DelayedButton'
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
+import { color } from '../../../styles/basic'
 
 class UserCard extends React.PureComponent {
     handleOpenProfile = (_id) => {
@@ -25,56 +27,66 @@ class UserCard extends React.PureComponent {
         this.props.openProfile(_id)
     }
 
+    renderHeadline(headline, occupation) {
+        if (!headline && !occupation) {
+            return
+        }
+        return (
+            <View style={{ flex: 1, marginTop: 5 }}>
+                <Text
+                    style={styles.titleTextStyle}
+                    numberOfLines={2}
+                    ellipsizeMode="tail"
+                >
+                    {headline || occupation}
+                </Text>
+            </View>
+        )
+    }
+
     render() {
         const { item } = this.props
         if (!item) return null
-        const { name, headline, _id, profile, occupation } = this.props.item
+        const { name, headline, _id, occupation } = item
         return (
-            <View style={styles.containerStyle}>
-                <ProfileImage
-                    imageStyle={{ height: 55, width: 55, borderRadius: 5 }}
-                    imageUrl={profile ? profile.image : undefined}
-                    imageContainerStyle={{ ...styles.imageContainerStyle }}
-                    userId={_id}
-                    actionDecorator={this.props.callback}
-                />
-                <DelayedButton
-                    style={styles.bodyContainerStyle}
-                    activeOpacity={0.6}
-                    onPress={() => this.handleOpenProfile(_id)}
-                >
-                    {/* Name and banner  */}
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            marginTop: 3,
-                        }}
-                    >
-                        <Name text={name} />
-                        <UserBanner
-                            user={item}
-                            iconStyle={{
-                                marginTop: 1,
-                                marginLeft: 5,
-                                height: 18,
-                                width: 15,
+            <DelayedButton
+                underlayColor={color.GM_BORDER_COLOR}
+                touchableHighlight
+                onPress={() => this.handleOpenProfile(_id)}
+            >
+                <View style={styles.containerStyle}>
+                    <ProfileImage
+                        imageStyle={{ height: 48, width: 48 }}
+                        imageUrl={getProfileImageOrDefaultFromUser(item)}
+                        userId={_id}
+                        actionDecorator={this.props.callback}
+                    />
+                    <View style={styles.containerContentWrapper}>
+                        {/* Name and banner  */}
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                marginTop: 3,
                             }}
-                        />
-                    </View>
-
-                    {/* Headline */}
-                    <View style={{ flex: 1, marginTop: 5 }}>
-                        <Text
-                            style={styles.titleTextStyle}
-                            numberOfLines={2}
-                            ellipsizeMode="tail"
                         >
-                            {headline || occupation}
-                        </Text>
+                            <Name text={name} />
+                            <UserBanner
+                                user={item}
+                                iconStyle={{
+                                    marginTop: 1,
+                                    marginLeft: 5,
+                                    height: 18,
+                                    width: 15,
+                                }}
+                            />
+                        </View>
+
+                        {/* Headline */}
+                        {this.renderHeadline(headline, occupation)}
                     </View>
-                </DelayedButton>
-            </View>
+                </View>
+            </DelayedButton>
         )
     }
 }
@@ -85,17 +97,14 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        marginLeft: 15,
-        marginRight: 15,
-        marginTop: 10,
-        marginBottom: 10,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
     },
-    bodyContainerStyle: {
-        justifyContent: 'flex-start',
+    containerContentWrapper: {
+        justifyContent: 'center',
         alignItems: 'flex-start',
         flex: 1,
         marginLeft: 8,
-        marginRight: 8,
     },
     titleTextStyle: {
         fontSize: 11,
@@ -103,15 +112,6 @@ const styles = {
     },
     imageStyle: {
         marginRight: 3,
-    },
-    imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1.5,
-        borderColor: 'lightgray',
-        alignItems: 'center',
-        borderRadius: 6,
-        alignSelf: 'center',
-        backgroundColor: 'white',
     },
 }
 

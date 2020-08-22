@@ -12,7 +12,12 @@ export const GM_DOT_GRAY = '#E0E0E0'
 export const GM_BACKGROUND = '#E4E8EA'
 export const GM_CARD_BACKGROUND = 'white'
 export const GM_BORDER_COLOR = '#F2F2F2'
+export const GM_MID_GREY = '#828282'
+export const GM_RED = '#EB5757'
+export const GM_GREEN = '#27AE60'
+export const GM_YELLOW = '#F2C94C'
 export const TEXT_COLOR = {
     DARK: '#333',
+    OFF_DARK: '#3B414B',
     LIGHT: 'white',
 }

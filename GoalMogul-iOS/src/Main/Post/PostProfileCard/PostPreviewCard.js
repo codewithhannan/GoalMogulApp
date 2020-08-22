@@ -52,6 +52,7 @@ import { default_style, color } from '../../../styles/basic'
 import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 import FloatingHearts from '../../Common/FloatingHearts/FloatingHearts'
+import ActionBar from '../../Common/ContentCards/ActionBar'
 
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -156,54 +157,44 @@ class PostPreviewCard extends React.PureComponent {
         const isShare = item.postType !== 'General'
 
         return (
-            <ActionButtonGroup>
-                <ActionButton
-                    iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
-                    count={likeCount}
-                    unitText="Like"
-                    textStyle={{ color: selfLiked ? '#000' : '#828282' }}
-                    iconStyle={{
-                        tintColor: selfLiked ? '#EB5757' : '#828282',
-                    }}
-                    onPress={() => {
-                        if (maybeLikeRef && maybeLikeRef.length > 0) {
-                            return this.props.unLikeGoal(
-                                'post',
-                                _id,
-                                maybeLikeRef
-                            )
-                        }
-                        this.incrementFloatingHeartCount()
-                        this.props.likeGoal('post', _id)
-                    }}
-                    onLayout={({ nativeEvent }) =>
-                        this.setState({
-                            likeButtonLeftOffset: nativeEvent.layout.x,
-                        })
+            <ActionBar
+                isContentLiked={selfLiked}
+                isShareContent={isShare}
+                actionSummaries={{
+                    likeCount,
+                    shareCount,
+                    commentCount,
+                }}
+                onLikeSummaryPress={() => {
+                    // TODO show list of likers
+                }}
+                onLikeButtonPress={() => {
+                    if (maybeLikeRef && maybeLikeRef.length > 0) {
+                        return this.props.unLikeGoal('post', _id, maybeLikeRef)
                     }
-                />
-                <ActionButton
-                    iconSource={ShareIcon}
-                    count={shareCount}
-                    unitText="Share"
-                    textStyle={{ color: '#828282' }}
-                    iconStyle={{ tintColor: '#828282' }}
-                    onPress={() => this.handleShareOnClick(item)}
-                    disabled={isShare}
-                />
-                <ActionButton
-                    iconSource={CommentIcon}
-                    count={commentCount}
-                    unitText="Comment"
-                    textStyle={{ color: '#828282' }}
-                    iconStyle={{ tintColor: '#828282' }}
-                    onPress={() => {
-                        this.props.openPostDetail(item, {
-                            initialFocusCommentBox: true,
-                        })
-                    }}
-                />
-            </ActionButtonGroup>
+                    this.incrementFloatingHeartCount()
+                    this.props.likeGoal('post', _id)
+                }}
+                onLikeButtonLayout={({ nativeEvent }) =>
+                    this.setState({
+                        likeButtonLeftOffset: nativeEvent.layout.x,
+                    })
+                }
+                onShareSummaryPress={() => {
+                    // TODO show list of shares
+                }}
+                onShareButtonPress={() => this.handleShareOnClick(item)}
+                onCommentSummaryPress={() => {
+                    this.props.openPostDetail(item, {
+                        initialFocusCommentBox: false,
+                    })
+                }}
+                onCommentButtonPress={() => {
+                    this.props.openPostDetail(item, {
+                        initialFocusCommentBox: true,
+                    })
+                }}
+            />
         )
     }
 

@@ -58,7 +58,12 @@ class DelayedButton extends React.PureComponent {
     }
 
     render() {
-        const { touchableWithoutFeedback, touchableHighlight } = this.props
+        const {
+            touchableWithoutFeedback,
+            touchableHighlight,
+            hidden,
+        } = this.props
+        if (hidden) return null
         if (touchableHighlight) {
             return (
                 <TouchableHighlight

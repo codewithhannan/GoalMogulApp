@@ -550,6 +550,7 @@ export class GoalDetailCardV3 extends Component {
             console.log(
                 `${DEBUG_KEY}: [ ${this.props.pageId} ]: [ handleReplyTo ]`
             )
+            // TODO scroll to bottom of comments
             this.commentBox.focus(type)
         } else {
             console.warn(
@@ -811,7 +812,6 @@ export class GoalDetailCardV3 extends Component {
                 activeOpacity={0.6}
                 style={{
                     backgroundColor: color.GM_CARD_BACKGROUND,
-                    borderTopWidth: 0.5,
                     borderBottomWidth: 0.5,
                     borderColor: '#e5e5e5',
                     minHeight: TABBAR_HEIGHT,

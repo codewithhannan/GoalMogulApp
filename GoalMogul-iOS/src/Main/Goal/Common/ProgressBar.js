@@ -145,7 +145,7 @@ const ProgressBar = (props) => {
 
     if (onPress)
         return (
-            <DelayedButton activeOpacity={0.6} onPress={onPress}>
+            <DelayedButton touchableWithoutFeedback onPress={onPress}>
                 {progressBar}
             </DelayedButton>
         )

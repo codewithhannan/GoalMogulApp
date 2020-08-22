@@ -65,6 +65,7 @@ import Headline from '../../Goal/Common/Headline'
 import Timestamp from '../../Goal/Common/Timestamp'
 import GoalCard from '../../Goal/GoalCard/GoalCard'
 import PostPreviewCard from '../PostProfileCard/PostPreviewCard'
+import ActionBar from '../../Common/ContentCards/ActionBar'
 
 const DEBUG_KEY = '[ UI ShareDetailCard.ShareDetailSection ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -437,61 +438,46 @@ class ShareDetailSection extends Component {
         const isShare = item.postType !== 'General'
 
         return (
-            <View style={{ marginTop: 1 }}>
-                <ActionButtonGroup>
-                    <ActionButton
-                        iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
-                        count={likeCount}
-                        unitText="Like"
-                        textStyle={{ color: selfLiked ? '#000' : '#828282' }}
-                        iconStyle={{
-                            tintColor: selfLiked ? '#EB5757' : '#828282',
-                        }}
-                        onPress={() => {
-                            console.log(`${DEBUG_KEY}: user clicks Like Icon.`)
-                            if (maybeLikeRef && maybeLikeRef.length > 0) {
-                                return this.props.unLikeGoal(
-                                    'post',
-                                    _id,
-                                    maybeLikeRef
-                                )
-                            }
-                            this.incrementFloatingHeartCount()
-                            this.props.likeGoal('post', _id)
-                        }}
-                        onTextPress={() => {
-                            this.setState({ showlikeListModal: true })
-                        }}
-                        onLayout={({ nativeEvent }) =>
-                            this.setState({
-                                likeButtonLeftOffset: nativeEvent.layout.x,
-                            })
-                        }
-                    />
-                    <ActionButton
-                        iconSource={ShareIcon}
-                        count={shareCount}
-                        unitText="Share"
-                        textStyle={{ color: '#828282' }}
-                        iconStyle={{ tintColor: '#828282' }}
-                        onPress={() => this.handleShareOnClick()}
-                        disabled={isShare}
-                    />
-                    <ActionButton
-                        iconSource={CommentIcon}
-                        count={commentCount}
-                        unitText="Comment"
-                        textStyle={{ color: '#828282' }}
-                        iconStyle={{ tintColor: '#828282' }}
-                        onPress={() => {
-                            console.log(
-                                `${DEBUG_KEY}: user clicks suggest icon`
-                            )
-                            this.props.onSuggestion()
-                        }}
-                    />
-                </ActionButtonGroup>
-            </View>
+            <ActionBar
+                containerStyle={{ marginTop: 1 }}
+                isContentLiked={selfLiked}
+                isShareContent={isShare}
+                actionSummaries={{
+                    likeCount,
+                    shareCount,
+                    commentCount,
+                }}
+                onLikeSummaryPress={() =>
+                    this.setState({ showlikeListModal: true })
+                }
+                onLikeButtonPress={() => {
+                    if (maybeLikeRef && maybeLikeRef.length > 0) {
+                        return this.props.unLikeGoal('post', _id, maybeLikeRef)
+                    }
+                    this.incrementFloatingHeartCount()
+                    this.props.likeGoal('post', _id)
+                }}
+                onLikeButtonLayout={({ nativeEvent }) =>
+                    this.setState({
+                        likeButtonLeftOffset: nativeEvent.layout.x,
+                    })
+                }
+                onShareSummaryPress={() =>
+                    this.setState({ showShareListModal: true })
+                }
+                onShareButtonPress={() =>
+                    // TODO standardize w other components that pass 'item' in as a param to this
+                    this.handleShareOnClick()
+                }
+                onCommentSummaryPress={() =>
+                    // TODO standardize w other components that call 'this.props.createCommentFromSuggestion'
+                    this.props.onSuggestion()
+                }
+                onCommentButtonPress={() =>
+                    // TODO standardize w other components that call 'this.props.createCommentFromSuggestion'
+                    this.props.onSuggestion()
+                }
+            />
         )
     }
 

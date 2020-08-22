@@ -58,19 +58,20 @@ class ActivityFeed extends Component {
         return (
             <ActivityCard
                 item={item}
-                onPress={(curItem, isGoal) => {
+                onPress={(curItem, isGoal, options = {}) => {
+                    const { shouldNotFocusCommentBox } = options
                     if (isGoal) {
                         // Open goal and focus on comment
                         const initialProps = {
                             focusType: 'comment',
                             focusRef: undefined,
                             initialShowSuggestionModal: false,
-                            initialFocusCommentBox: true,
+                            initialFocusCommentBox: !shouldNotFocusCommentBox,
                         }
                         return this.props.openGoalDetail(curItem, initialProps)
                     }
                     const initialProps = {
-                        initialFocusCommentBox: true,
+                        initialFocusCommentBox: !shouldNotFocusCommentBox,
                     }
                     this.props.openPostDetail(curItem, initialProps)
                 }}

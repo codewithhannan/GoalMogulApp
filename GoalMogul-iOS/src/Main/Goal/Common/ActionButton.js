@@ -37,13 +37,13 @@ class ActionButton extends React.PureComponent {
         const {
             containerStyle,
             count,
-            disabled,
+            hidden,
             onTextPress,
             textContainerStyle,
             unitText,
         } = this.props
-        if (disabled) return null
-        const buttonDisabled = disabled === true || this.state.buttonDisabled
+        if (hidden) return null
+        const buttonDisabled = this.state.buttonDisabled
 
         const countText = (
             <DelayedButton
@@ -69,7 +69,7 @@ class ActionButton extends React.PureComponent {
 
         return (
             <DelayedButton
-                activeOpacity={0.8}
+                touchableWithoutFeedback
                 style={{
                     ...styles.containerStyle,
                     ...containerStyle,
@@ -79,17 +79,19 @@ class ActionButton extends React.PureComponent {
                 disabled={buttonDisabled}
                 onLayout={this.props.onLayout}
             >
-                <View style={this.props.iconContainerStyle}>
-                    <Image
-                        resizeMode="contain"
-                        source={this.props.iconSource}
-                        style={{
-                            ...default_style.buttonIcon_1,
-                            ...this.props.iconStyle,
-                        }}
-                    />
+                <View style={styles.containerStyle}>
+                    <View style={this.props.iconContainerStyle}>
+                        <Image
+                            resizeMode="contain"
+                            source={this.props.iconSource}
+                            style={{
+                                ...default_style.buttonIcon_1,
+                                ...this.props.iconStyle,
+                            }}
+                        />
+                    </View>
+                    {countText}
                 </View>
-                {countText}
             </DelayedButton>
         )
     }

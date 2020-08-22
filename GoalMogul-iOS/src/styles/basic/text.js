@@ -28,6 +28,7 @@ export const FONT_FAMILY = {
     BOLD: 'SFProDisplay-Bold',
     REGULAR: 'SFProDisplay-Regular',
     SEMI_BOLD: 'SFProDisplay-Semibold',
+    MEDIUM: 'SFProDisplay-Medium',
 }
 
 export const LETTER_SPACING = {

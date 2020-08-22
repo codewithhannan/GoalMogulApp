@@ -232,6 +232,7 @@ class PostDetailCard extends React.PureComponent {
 
     /**
      * Only pass in 'Reply' as type if it's a reply
+     * TODO conform to name with similar handler {@function GoalDetailCardV3.handleReplyTo()}
      */
     dialogOnFocus = (type) => {
         if (!this.commentBox) {
@@ -240,6 +241,7 @@ class PostDetailCard extends React.PureComponent {
             )
             return
         }
+        // TODO scroll to bottom of comments
         this.commentBox.focus(type)
     }
 
