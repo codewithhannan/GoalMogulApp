@@ -13,7 +13,7 @@ import { connect } from 'react-redux'
 import OnboardingHeader from './Common/OnboardingHeader'
 
 import { text, color } from '../../styles/basic'
-import OnboardingStyles from '../../styles/Onboarding'
+import OnboardingStyles, { getCardBottomOffset } from '../../styles/Onboarding'
 
 import { PRIVACY_POLICY_URL } from '../../Utils/Constants'
 import { uploadContacts } from '../../redux/modules/registration/RegistrationActions'
@@ -162,7 +162,12 @@ class OnboardingSyncContact extends React.Component {
 
     render() {
         return (
-            <View style={OnboardingStyles.container.page}>
+            <View
+                style={[
+                    OnboardingStyles.container.page,
+                    { paddingBottom: getCardBottomOffset() },
+                ]}
+            >
                 <OnboardingHeader />
                 <View style={[OnboardingStyles.container.card]}>
                     <View

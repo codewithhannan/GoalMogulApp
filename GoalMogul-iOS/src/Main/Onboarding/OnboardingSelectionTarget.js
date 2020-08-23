@@ -220,7 +220,7 @@ class OnboardingSelectionTarget extends React.Component {
                     keyExtractor={this.keyExtractor}
                     contentContainerStyle={[
                         OnboardingStyles.container.card,
-                        { padding: 16 },
+                        { padding: 16, justifyContent: null, alignItems: null },
                     ]}
                     onKeyboardWillShow={() => {
                         // this.scrollview.props.scrollToPosition(0, 120)

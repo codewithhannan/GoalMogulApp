@@ -1,14 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react'
-import {
-    View,
-    Text,
-    TouchableWithoutFeedback,
-    Keyboard,
-    TouchableOpacity,
-    Linking,
-} from 'react-native'
+import { View, Text, Animated, Keyboard, Linking } from 'react-native'
 import _ from 'lodash'
 import { connect } from 'react-redux'
 import {
@@ -18,12 +11,6 @@ import {
     formValueSelector,
 } from 'redux-form'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
-/* Components */
-import Header from './Registration/Common/Header'
-
-/* Styles */
-import Styles from './Registration/Styles'
 
 /* Actions */
 import { registerUser, loginUser } from './actions'
@@ -55,18 +42,59 @@ const FIELD_REQUIREMENT = {
     },
 }
 
+const DEFAULT_SPACE_ABOVE_LOGIN_BUTTON_NO_KEYBOARD = 112
+const DEFAULT_SPACE_ABOVE_LOGIN_BUTTON_WITH_KEYBOARD = 24
+
 class LoginPage extends Component {
     constructor(props) {
         super(props)
         this.state = {
             showRecaptcha: false,
             numFailLoginAttempt: 0,
+            spaceAboveLoginButton: new Animated.Value(
+                DEFAULT_SPACE_ABOVE_LOGIN_BUTTON_NO_KEYBOARD
+            ),
+            shouldScrollToLoginButton: false,
+            errMsg: undefined,
+            // TODO are these still relevant?
             username: undefined,
             password: undefined,
-            errMsg: undefined,
             // Disable user agreement
             // userAgreementChecked: false,
         }
+    }
+    componentDidMount() {
+        Keyboard.addListener('keyboardDidShow', this._keyboardDidShow)
+        Keyboard.addListener('keyboardWillShow', this._keyboardWillShow)
+        Keyboard.addListener('keyboardWillHide', this._keyboardWillHide)
+    }
+    componentWillUnmount() {
+        Keyboard.removeListener('keyboardDidShow', this._keyboardDidShow)
+        Keyboard.removeListener('keyboardWillShow', this._keyboardWillShow)
+        Keyboard.removeListener('keyboardWillHide', this._keyboardWillHide)
+    }
+
+    _keyboardDidShow = () => {
+        if (this.state.shouldScrollToLoginButton) {
+            this.scrollView.props.scrollToFocusedInput(this.loginButton)
+            this.setState({
+                shouldScrollToLoginButton: false,
+            })
+        }
+    }
+    _keyboardWillShow = () => {
+        Animated.timing(this.state.spaceAboveLoginButton, {
+            useNativeDriver: false,
+            toValue: DEFAULT_SPACE_ABOVE_LOGIN_BUTTON_WITH_KEYBOARD,
+            duration: 250,
+        }).start()
+    }
+    _keyboardWillHide = () => {
+        Animated.timing(this.state.spaceAboveLoginButton, {
+            useNativeDriver: false,
+            toValue: DEFAULT_SPACE_ABOVE_LOGIN_BUTTON_NO_KEYBOARD,
+            duration: 250,
+        }).start()
     }
 
     validate = (values) => {
@@ -139,10 +167,6 @@ class LoginPage extends Component {
             ...this.state,
             numFailLoginAttempt: 0,
         })
-    }
-
-    handleContainerOnPressed() {
-        Keyboard.dismiss()
     }
 
     setErrorMessage = (errMsg) => {
@@ -241,6 +265,12 @@ class LoginPage extends Component {
         }, 100)
     }
 
+    scrollToLoginButton() {
+        this.setState({
+            shouldScrollToLoginButton: true,
+        })
+    }
+
     renderError(error) {
         return error ? (
             <View
@@ -285,8 +315,7 @@ class LoginPage extends Component {
                         default_style.subTitleText_1,
                         {
                             fontFamily: text.FONT_FAMILY.SEMI_BOLD,
-                            color: '#828282',
-                            fontWeight: '700',
+                            color: color.GM_MID_GREY,
                         },
                     ]}
                 >
@@ -314,25 +343,20 @@ class LoginPage extends Component {
     }
 
     render() {
-        const { handleSubmit, username, password } = this.props
+        const { handleSubmit } = this.props
         return (
             <View style={[OnboardingStyles.container.page]}>
-                <OnboardingHeader />
                 <KeyboardAwareScrollView
                     bounces={false}
-                    innerRef={(ref) => {
-                        this.scrollview = ref
-                    }}
-                    extraScrollHeight={13}
-                    contentContainerStyle={[
-                        {
-                            backgroundColor: color.GM_CARD_BACKGROUND,
-                            flexGrow: 1, // this will fix scrollview scroll issue by passing parent view width and height to it
-                        },
-                    ]}
+                    enableOnAndroid={true}
+                    innerRef={(ref) => (this.scrollView = ref)}
                 >
-                    <TouchableWithoutFeedback
-                        onPress={this.handleContainerOnPressed.bind(this)}
+                    <OnboardingHeader />
+                    <View
+                        style={{
+                            flex: 1,
+                            backgroundColor: color.GM_CARD_BACKGROUND,
+                        }}
                     >
                         <View style={[OnboardingStyles.container.card]}>
                             <View
@@ -351,10 +375,29 @@ class LoginPage extends Component {
                                     disabled={this.props.loading}
                                     returnKeyType="next"
                                     onSubmitEditing={() => {
-                                        this.refs['password']
-                                            .getRenderedComponent()
-                                            .focus()
+                                        /**
+                                         * Most cases the user has filled password and is focussed on user is:
+                                         * A. Credentials were autofilled
+                                         * B. user needs to fix email/phone and submit again
+                                         * Either case, by pressing enter they would expect it to submit
+                                         * If they want to correct password, they would just tap the input
+                                         */
+                                        if (
+                                            this.props.password &&
+                                            this.props.password.length
+                                        ) {
+                                            handleSubmit(
+                                                this.handleLoginPressed
+                                            )
+                                        } else {
+                                            this.refs['password']
+                                                .getRenderedComponent()
+                                                .focus()
+                                        }
                                     }}
+                                    onFocus={this.scrollToLoginButton.bind(
+                                        this
+                                    )}
                                     textContentType="username"
                                     caption=" "
                                     autoCapitalize="none"
@@ -371,6 +414,9 @@ class LoginPage extends Component {
                                     onSubmitEditing={handleSubmit(
                                         this.handleLoginPressed
                                     )}
+                                    onFocus={this.scrollToLoginButton.bind(
+                                        this
+                                    )}
                                     textContentType="password"
                                     secureTextEntry
                                     caption=" "
@@ -381,6 +427,7 @@ class LoginPage extends Component {
                                         {
                                             color: color.GM_BLUE,
                                             padding: 8,
+                                            paddingTop: 0,
                                             alignSelf: 'flex-end',
                                         },
                                     ]}
@@ -400,16 +447,21 @@ class LoginPage extends Component {
                                     checked={this.state.userAgreementChecked}
                                 /> */}
                                 {/* Comment below when user agreement check is in use */}
-                                <View style={{ height: 40 }} />
                             </View>
+                            <Animated.View
+                                style={{
+                                    height: this.state.spaceAboveLoginButton,
+                                }}
+                            />
                             <View
                                 style={{
-                                    // height: 150,
-                                    justifyContent: 'flex-start',
+                                    alignItems: 'center',
+                                    width: '100%',
                                 }}
                             >
                                 <DelayedButton
-                                    activeOpacity={0.6}
+                                    onRef={(ref) => (this.loginButton = ref)}
+                                    activeOpacity={0.8}
                                     onPress={handleSubmit(
                                         this.handleLoginPressed
                                     )}
@@ -425,11 +477,7 @@ class LoginPage extends Component {
                                                 : color.GM_BLUE,
                                         },
                                     ]}
-                                    disabled={
-                                        this.props.loading
-                                        // Disable user agreement check
-                                        // || !this.state.userAgreementChecked
-                                    }
+                                    disabled={this.props.loading}
                                 >
                                     <Text
                                         style={[
@@ -444,7 +492,7 @@ class LoginPage extends Component {
                                 {this.renderSignUp()}
                             </View>
                         </View>
-                    </TouchableWithoutFeedback>
+                    </View>
                     {this.renderRecaptcha()}
                 </KeyboardAwareScrollView>
             </View>
@@ -488,7 +536,7 @@ const styles = {
 }
 
 const mapStateToProps = (state) => {
-    const selector = formValueSelector('createChatRoomModal')
+    const selector = formValueSelector('loginForm')
     const { loading } = state.auth
 
     return {

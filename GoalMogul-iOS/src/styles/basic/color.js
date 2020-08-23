@@ -6,6 +6,7 @@
  */
 
 export const GM_BLUE = '#45C9F6'
+export const GM_BLUE_DEEP = '#42C0F5'
 export const GM_BLUE_LIGHT = '#9EE6FF'
 export const GM_BLUE_LIGHT_LIGHT = '#DEF7FF'
 export const GM_DOT_GRAY = '#E0E0E0'

@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import { View, Text, Dimensions, Image } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import OnboardingHeader from './Common/OnboardingHeader'
-import OnboardingStyles from '../../styles/Onboarding'
+import OnboardingStyles, { getCardBottomOffset } from '../../styles/Onboarding'
 import DelayedButton from '../Common/Button/DelayedButton'
 import Icons from '../../asset/base64/Icons'
 import { markUserAsOnboarded } from '../../redux/modules/registration/RegistrationActions'
@@ -42,7 +42,12 @@ class OnboardingWelcome extends React.Component {
 
     render() {
         return (
-            <View style={[OnboardingStyles.container.page]}>
+            <View
+                style={[
+                    OnboardingStyles.container.page,
+                    { paddingBottom: getCardBottomOffset() },
+                ]}
+            >
                 <OnboardingHeader />
                 <View
                     style={[OnboardingStyles.container.card, { paddingTop: 0 }]}

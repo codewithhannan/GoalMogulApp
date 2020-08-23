@@ -26,7 +26,7 @@ export const default_style = {
     },
     subTitleText_1: {
         fontFamily: text.FONT_FAMILY.REGULAR,
-        fontSize: 17 * UI_SCALE,
+        fontSize: 16 * UI_SCALE,
         fontWeight: '400',
         color: color.TEXT_COLOR.DARK,
         letterSpacing: text.LETTER_SPACING.WIDE,

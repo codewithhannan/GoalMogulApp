@@ -14,7 +14,7 @@ import { connect } from 'react-redux'
 import OnboardingHeader from './Common/OnboardingHeader'
 import DelayedButton from '../Common/Button/DelayedButton'
 import { default_style, text } from '../../styles/basic'
-import OnboardingStyles from '../../styles/Onboarding'
+import OnboardingStyles, { getCardBottomOffset } from '../../styles/Onboarding'
 import { fetchAppUserProfile } from '../../actions'
 import { refreshGoalFeed } from '../../redux/modules/home/mastermind/actions'
 import { refreshActivityFeed } from '../../redux/modules/home/feed/actions'
@@ -64,7 +64,12 @@ class OnboardingIntroTransition extends React.Component {
         const { name } = this.props
 
         return (
-            <View style={OnboardingStyles.container.page}>
+            <View
+                style={[
+                    OnboardingStyles.container.page,
+                    { paddingBottom: getCardBottomOffset() },
+                ]}
+            >
                 <OnboardingHeader />
                 <View style={[OnboardingStyles.container.card]}>
                     <View

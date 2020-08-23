@@ -26,7 +26,7 @@ import DelayedButton from '../Common/Button/DelayedButton'
 import ImagePicker from './Common/ImagePicker'
 
 import { color } from '../../styles/basic'
-import OnboardingStyles from '../../styles/Onboarding'
+import OnboardingStyles, { getCardBottomOffset } from '../../styles/Onboarding'
 
 import { openCamera, openCameraRoll } from '../../actions'
 import { registrationAddProfilePhoto } from '../../redux/modules/registration/RegistrationActions'
@@ -51,7 +51,12 @@ class OnboardingAddPhotos extends Component {
         const { openCamera, openCameraRoll, profilePic } = this.props
 
         return (
-            <View style={[OnboardingStyles.container.page]}>
+            <View
+                style={[
+                    OnboardingStyles.container.page,
+                    { paddingBottom: getCardBottomOffset() },
+                ]}
+            >
                 <OnboardingHeader />
                 <View style={[OnboardingStyles.container.card]}>
                     <View
@@ -87,47 +92,41 @@ class OnboardingAddPhotos extends Component {
                             This way your friends can recgonize you
                         </Text>
                     </View>
-                    <View>
-                        <DelayedButton
-                            style={[
-                                buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
-                                    .containerStyle,
-                                {
-                                    marginBottom: 8,
-                                    backgroundColor:
-                                        profilePic == undefined
-                                            ? color.GM_BLUE_LIGHT
-                                            : color.GM_BLUE,
-                                },
-                            ]}
-                            onPress={this.onContinue}
-                            disabled={profilePic == undefined}
+                    <DelayedButton
+                        style={[
+                            buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
+                                .containerStyle,
+                            {
+                                marginBottom: 8,
+                                backgroundColor:
+                                    profilePic == undefined
+                                        ? color.GM_BLUE_LIGHT
+                                        : color.GM_BLUE,
+                            },
+                        ]}
+                        onPress={this.onContinue}
+                        disabled={profilePic == undefined}
+                    >
+                        <Text
+                            style={
+                                buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle
+                            }
                         >
-                            <Text
-                                style={
-                                    buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
-                                        .textStyle
-                                }
-                            >
-                                Add Photo
-                            </Text>
-                        </DelayedButton>
-                        <DelayedButton
-                            style={[
-                                buttonStyle.GM_WHITE_BG_GRAY_TEXT
-                                    .containerStyle,
-                            ]}
-                            onPress={this.onSkip}
+                            Add Photo
+                        </Text>
+                    </DelayedButton>
+                    <DelayedButton
+                        style={[
+                            buttonStyle.GM_WHITE_BG_GRAY_TEXT.containerStyle,
+                        ]}
+                        onPress={this.onSkip}
+                    >
+                        <Text
+                            style={buttonStyle.GM_WHITE_BG_GRAY_TEXT.textStyle}
                         >
-                            <Text
-                                style={
-                                    buttonStyle.GM_WHITE_BG_GRAY_TEXT.textStyle
-                                }
-                            >
-                                Skip
-                            </Text>
-                        </DelayedButton>
-                    </View>
+                            Skip
+                        </Text>
+                    </DelayedButton>
                 </View>
             </View>
         )

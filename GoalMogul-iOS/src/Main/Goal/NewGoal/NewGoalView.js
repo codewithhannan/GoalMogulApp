@@ -30,7 +30,6 @@ import Slider from 'react-native-slider'
 import { connect } from 'react-redux'
 import { Field, FieldArray, formValueSelector, reduxForm } from 'redux-form'
 import arrowRight from '../../../asset/utils/arrow_right.png'
-import CalenderIcon from '../../../asset/utils/calendar_empty.png'
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import dropDown from '../../../asset/utils/dropDown.png'
 import plus from '../../../asset/utils/plus.png'
@@ -58,6 +57,7 @@ import EmptyResult from '../../Common/Text/EmptyResult'
 import InputField from '../../Common/TextInput/InputField'
 import Button from '../Button'
 import MentionsTextInput from '../Common/MentionsTextInput'
+import { Icon } from '@ui-kitten/components'
 
 const { Popover } = renderers
 const { width } = Dimensions.get('window')
@@ -876,13 +876,13 @@ class NewGoalView extends Component {
                     justifyContent: 'center',
                 }}
             >
-                <Image
-                    resizeMode="contain"
-                    source={CalenderIcon}
-                    style={{
-                        ...default_style.buttonIcon_1,
-                        tintColor: '#DADADA',
-                    }}
+                <Icon
+                    name="calendar-blank-outline"
+                    pack="material-community"
+                    style={[
+                        default_style.buttonIcon_1,
+                        { tintColor: '#DADADA' },
+                    ]}
                 />
             </View>
         )

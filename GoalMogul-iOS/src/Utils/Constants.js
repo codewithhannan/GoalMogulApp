@@ -56,6 +56,8 @@ export const DEVICE_MODEL =
 // 'ios' or 'android'
 export const DEVICE_PLATFORM = Platform.OS
 
+export const IS_BIG_IPHONE = IPHONE_MODELS_3.includes(DEVICE_MODEL)
+
 // Simple function to identify if iphone is on zoomed mode
 export const IS_ZOOMED =
     Platform.OS === 'ios' && // This is iphone

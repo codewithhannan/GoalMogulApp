@@ -1,6 +1,6 @@
 /**
  * Onboarding flow account registration page.
- * Inputs are: Full Name, Email, Phone number, Password
+ * Inputs are: Full Name, Email, Gender, Date of Birth
  *
  * Currenty, we don't verify phone number during registration
  * to minimize the effort. In this component, there are two approaches
@@ -16,7 +16,7 @@
  */
 
 import React from 'react'
-import { View, Text, Alert } from 'react-native'
+import { View, Text, Alert, Keyboard } from 'react-native'
 import { connect } from 'react-redux'
 import * as WebBrowser from 'expo-web-browser'
 import * as Linking from 'expo-linking'
@@ -38,6 +38,8 @@ import {
 } from '../../redux/modules/registration/RegistrationActions'
 import UserAgreementCheckBox from './UserAgreementCheckBox'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { DEVICE_PLATFORM } from '../../Utils/Constants'
+import { getBottomSpace } from 'react-native-iphone-x-helper'
 
 const NEXT_STEP = 'registration_add_photo'
 const FIELD_REQUIREMENTS = {
@@ -48,11 +50,6 @@ const FIELD_REQUIREMENTS = {
     },
     name: {
         require_name: 'Name is required',
-    },
-    phone: {},
-    password: {
-        password_too_short: 'Password should have at least 8 characters',
-        missing_password: 'Password is required',
     },
 }
 
@@ -65,7 +62,7 @@ class RegistrationAccount extends React.Component {
             nameStatus: undefined,
             phoneStatus: undefined,
             passwordStatus: undefined,
-            userAgreementChecked: false,
+            userAgreementChecked: true,
         }
     }
 
@@ -258,9 +255,9 @@ class RegistrationAccount extends React.Component {
 
     renderInputs = () => {
         const {
-            phone,
+            gender,
             email,
-            password,
+            dateOfBirth,
             name,
             countryCode,
             registerErrMsg,
@@ -270,7 +267,7 @@ class RegistrationAccount extends React.Component {
                 style={{
                     flexGrow: 1,
                     justifyContent: 'center',
-                    paddingBottom: 10,
+                    paddingBottom: 8,
                     width: '100%',
                 }}
             >
@@ -313,7 +310,7 @@ class RegistrationAccount extends React.Component {
                     caption={
                         !this.state.nameStatus ||
                         this.state.nameStatus == FIELD_REQUIREMENTS.done
-                            ? ' '
+                            ? 'So your friends can recognize you'
                             : this.state.nameStatus
                     }
                     status={
@@ -350,12 +347,14 @@ class RegistrationAccount extends React.Component {
                     onBlur={() => this.validateEmail(email)}
                     onSubmitEditing={() => {
                         this.validateEmail(email)
-                        this.refs['phone'].focus()
+                        // TODO
+                        // this.scrollView.props.scrollToFocusedInput()
+                        Keyboard.dismiss()
                     }}
                     caption={
                         !this.state.emailStatus ||
                         this.state.emailStatus == FIELD_REQUIREMENTS.done
-                            ? ' '
+                            ? `We'll send a link to set your password here`
                             : this.state.emailStatus
                     }
                     status={
@@ -366,79 +365,30 @@ class RegistrationAccount extends React.Component {
                     }
                 />
                 <InputBox
-                    key="phone"
-                    inputTitle="Phone Number"
-                    ref="phone"
-                    countryCode={countryCode}
-                    placeholder="Your Phone Number"
+                    key="gender"
+                    inputTitle="Gender"
+                    ref="gender"
                     onChangeText={(val) =>
-                        this.props.registrationTextInputChange('phone', val)
+                        this.props.registrationTextInputChange('gender', val)
                     }
-                    onCountryCodeSelected={(val) =>
-                        this.props.registrationTextInputChange(
-                            'countryCode',
-                            val
-                        )
-                    }
-                    value={phone}
-                    autoCompleteType="tel"
-                    keyboardType="phone-pad" // iOS specific type
-                    optional
-                    returnKeyType="next"
+                    value={gender}
                     disabled={this.props.loading}
-                    caption=" "
-                    onEndEditing={() => this.refs['password'].focus()}
+                    caption="This is used to customize your experience"
                 />
                 <InputBox
-                    key="password"
-                    inputTitle="Password"
-                    ref="password"
-                    placeholder="Password"
-                    secureTextEntry
+                    key="dateOfBirth"
+                    inputTitle="Date of birth"
+                    ref="dateOfBirth"
                     onChangeText={(val) => {
-                        if (
-                            this.state.passwordStatus !=
-                                FIELD_REQUIREMENTS.done &&
-                            val &&
-                            val.trim().length
-                        ) {
-                            this.setState({
-                                ...this.state,
-                                passwordStatus: FIELD_REQUIREMENTS.done,
-                            })
-                        }
-                        this.props.registrationTextInputChange('password', val)
+                        this.props.registrationTextInputChange(
+                            'dateOfBirth',
+                            val
+                        )
                     }}
-                    value={password}
-                    textContentType="newPassword"
+                    placeholder={`You must be at least 13yrs of age`}
+                    value={dateOfBirth}
                     returnKeyType="done"
-                    onBlur={() => {
-                        this.validatePassword(password)
-                    }}
-                    onSubmitEditing={() => {
-                        this.validatePassword(password)
-                    }}
-                    onEndEditing={(event) => {
-                        if (event.nativeEvent.text.length === 0) {
-                            this.props.registrationTextInputChange(
-                                'password',
-                                ''
-                            )
-                            this.validatePassword(password)
-                        }
-                    }}
-                    caption={
-                        !this.state.passwordStatus ||
-                        this.state.passwordStatus == FIELD_REQUIREMENTS.done
-                            ? ' '
-                            : this.state.passwordStatus
-                    }
-                    status={
-                        this.state.passwordStatus &&
-                        this.state.passwordStatus !== FIELD_REQUIREMENTS.done
-                            ? 'danger'
-                            : 'basic'
-                    }
+                    caption={`We won't share this information with anyone`}
                     disabled={this.props.loading}
                 />
                 <UserAgreementCheckBox
@@ -448,10 +398,9 @@ class RegistrationAccount extends React.Component {
                             userAgreementChecked: val,
                         })
                     }
+                    isAutoAccepted={true}
                     checked={this.state.userAgreementChecked}
                 />
-                {/* {this.renderLogin()} */}
-                <View style={{ flex: 1 }} />
             </View>
         )
     }
@@ -459,17 +408,19 @@ class RegistrationAccount extends React.Component {
     render() {
         return (
             <View style={[OnboardingStyles.container.page, { zIndex: 1 }]}>
-                <OnboardingHeader />
-                <View style={OnboardingStyles.container.card}>
-                    <KeyboardAwareScrollView
-                        contentContainerStyle={[
-                            {
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                flexGrow: 1,
-                            },
-                        ]}
-                    >
+                <KeyboardAwareScrollView
+                    bounces={false}
+                    enableOnAndroid={true}
+                    enableAutomaticScroll={DEVICE_PLATFORM === 'ios'}
+                    contentContainerStyle={[
+                        {
+                            paddingBottom: getBottomSpace(),
+                        },
+                    ]}
+                    innerRef={(ref) => (this.scrollView = ref)}
+                >
+                    <OnboardingHeader />
+                    <View style={OnboardingStyles.container.card}>
                         {this.renderInputs()}
                         <OnboardingFooter
                             buttonText="Continue"
@@ -480,9 +431,8 @@ class RegistrationAccount extends React.Component {
                                     FIELD_REQUIREMENTS.done ||
                                 this.state.emailStatus !==
                                     FIELD_REQUIREMENTS.done ||
-                                this.state.passwordStatus !==
-                                    FIELD_REQUIREMENTS.done ||
-                                !this.state.userAgreementChecked
+                                !this.props.dateOfBirth ||
+                                !this.props.gender
                             }
                         />
                         <DelayedButton
@@ -501,8 +451,8 @@ class RegistrationAccount extends React.Component {
                                 Cancel
                             </Text>
                         </DelayedButton>
-                    </KeyboardAwareScrollView>
-                </View>
+                    </View>
+                </KeyboardAwareScrollView>
                 {/* As documented in the header, this is for phone verification method 2
                 <PhoneVerificationMoal
                     isOpen={this.state.isModalOpen}
@@ -542,23 +492,21 @@ const styles = {
 const mapStateToProps = (state) => {
     const {
         name,
-        password,
         email,
+        gender,
+        dateOfBirth,
         error,
         loading,
-        countryCode,
-        phone,
         registerErrMsg,
     } = state.registration
 
     return {
         name,
         email,
-        password,
+        gender,
+        dateOfBirth,
         error,
         loading,
-        countryCode,
-        phone,
         registerErrMsg,
     }
 }

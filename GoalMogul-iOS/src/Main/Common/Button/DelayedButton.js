@@ -62,6 +62,7 @@ class DelayedButton extends React.PureComponent {
             touchableWithoutFeedback,
             touchableHighlight,
             hidden,
+            onRef,
         } = this.props
         if (hidden) return null
         if (touchableHighlight) {
@@ -71,6 +72,7 @@ class DelayedButton extends React.PureComponent {
                     disabled={this.state.disabled || this.props.disabled}
                     underlayColor="#E0E0E0"
                     {...this.props}
+                    ref={onRef || (() => {})}
                 >
                     {this.props.children}
                 </TouchableHighlight>
@@ -82,6 +84,7 @@ class DelayedButton extends React.PureComponent {
                     {...this.props}
                     onPress={this.handleOnPress}
                     disabled={this.state.disabled}
+                    ref={onRef || (() => {})}
                 >
                     {this.props.children}
                 </TouchableWithoutFeedback>
@@ -92,6 +95,7 @@ class DelayedButton extends React.PureComponent {
                 {...this.props}
                 onPress={this.handleOnPress}
                 disabled={this.state.disabled || this.props.disabled}
+                ref={onRef || (() => {})}
             >
                 {this.props.children}
             </TouchableOpacity>

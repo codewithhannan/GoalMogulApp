@@ -1,11 +1,14 @@
 /** @format */
-
 import { getBottomSpace } from 'react-native-iphone-x-helper'
 import { text, color } from '../basic'
 import { UI_SCALE } from '..'
+import { Platform } from 'react-native'
 
-export const getCardBottomMargin = () => {
-    return getBottomSpace()
+export const getCardBottomOffset = () => {
+    return Platform.select({
+        ios: getBottomSpace(),
+        default: 0,
+    })
 }
 
 export default OnboardingStyles = {
@@ -13,12 +16,13 @@ export default OnboardingStyles = {
         page: {
             backgroundColor: 'white',
             flex: 1,
-            paddingBottom: getCardBottomMargin(),
         },
         card: {
             backgroundColor: color.GM_CARD_BACKGROUND,
             flexGrow: 1,
             padding: 16,
+            justifyContent: 'center',
+            alignItems: 'center',
         },
     },
     input: {
