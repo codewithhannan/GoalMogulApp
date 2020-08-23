@@ -43,6 +43,7 @@ import { connect } from 'react-redux'
 import UUID from 'uuid/v4'
 import { openCamera, openCameraRoll, openProfile } from '../../../actions'
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png'
+import defaultGroupChatPic from '../../../asset/icons/AccountMulti.png'
 import NextButton from '../../../asset/utils/next.png'
 // Components
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal'
@@ -90,6 +91,8 @@ import { GMGiftedChat } from './GiftedChat/GMGiftedChat'
 import ChatRoomConversationInputToolbar from './GiftedChat/GMGiftedChatInputToolbar'
 import GMGiftedMessage from './GiftedChat/GMGiftedMessage'
 import Send from './GiftedChat/GMGiftedSend'
+import { HEADER_STYLES } from '../../../styles/Header'
+import { chat_style } from '../../../styles/Chat'
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]'
 const LISTENER_KEY = 'ChatRoomConversation'
@@ -890,6 +893,7 @@ class ChatRoomConversation extends React.Component {
     }
 
     render() {
+        const { useDefaultChatRoomImage } = this.props
         const { _id, name, profile } = this.props.user
         return (
             <Layout style={styles.homeContainerStyle}>
@@ -899,7 +903,23 @@ class ChatRoomConversation extends React.Component {
                 <ModalHeader
                     title={this.props.chatRoomName}
                     titleIcon={this.props.chatRoomImage}
-                    actionText={`\u2026` /* ellipsis */}
+                    titleIconContainerStyle={
+                        useDefaultChatRoomImage
+                            ? chat_style.headerDefaultIconContainer
+                            : undefined
+                    }
+                    titleIconStyle={
+                        useDefaultChatRoomImage
+                            ? chat_style.headerDefaultIcon
+                            : undefined
+                    }
+                    actionIcon={
+                        <Icon
+                            name="dots-horizontal"
+                            pack="material-community"
+                            style={HEADER_STYLES.nakedButton}
+                        />
+                    }
                     onAction={this.openOptions}
                     back={true}
                     onCancel={this.closeConversation}
@@ -983,6 +1003,7 @@ const mapStateToProps = (state, props) => {
     let chatRoomName = 'Loading'
     let chatRoomImage = null
     let chatRoomMembersMap = {}
+    let useDefaultChatRoomImage = false
     if (chatRoom) {
         if (chatRoom.roomType == 'Direct') {
             let otherUser =
@@ -993,6 +1014,7 @@ const mapStateToProps = (state, props) => {
             if (otherUser) {
                 otherUser = otherUser.memberRef
                 chatRoomName = otherUser.name
+                useDefaultChatRoomImage = !_.has(otherUser, 'profile.image')
                 chatRoomImage = getProfileImageOrDefaultFromUser(
                     otherUser,
                     defaultProfilePic
@@ -1000,11 +1022,12 @@ const mapStateToProps = (state, props) => {
             }
         } else {
             chatRoomName = chatRoom.name
-            chatRoomImage = {
-                uri: chatRoom.picture
-                    ? `${IMAGE_BASE_URL}${chatRoom.picture}`
-                    : GROUP_CHAT_DEFAULT_ICON_URL,
-            }
+            useDefaultChatRoomImage = chatRoom.picture == undefined
+            chatRoomImage = chatRoom.picture
+                ? {
+                      uri: `${IMAGE_BASE_URL}${chatRoom.picture}`,
+                  }
+                : defaultGroupChatPic
         }
         chatRoomMembersMap = chatRoom.members
             ? chatRoom.members.reduce((map, memberDoc) => {
@@ -1022,6 +1045,7 @@ const mapStateToProps = (state, props) => {
         chatRoom,
         chatRoomName,
         chatRoomImage,
+        useDefaultChatRoomImage,
         chatRoomMembersMap,
         messages,
         limit,

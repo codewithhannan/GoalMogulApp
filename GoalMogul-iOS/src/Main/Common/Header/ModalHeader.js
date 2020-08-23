@@ -37,6 +37,9 @@ const ModalHeader = (props) => {
         back,
         actionHidden,
         titleIcon,
+        titleIconContainerStyle,
+        titleIconStyle,
+        actionIcon,
         tutorialOn,
     } = props
     const cancel = cancelText || 'Cancel'
@@ -72,14 +75,17 @@ const ModalHeader = (props) => {
                     />
                 </View>
             )}
-            <Text
-                style={[
-                    styles.actionTextStyle,
-                    { opacity: actionDisabled ? 0.6 : 1 },
-                ]}
-            >
-                {actionText}
-            </Text>
+            {actionIcon}
+            {actionText && (
+                <Text
+                    style={[
+                        styles.actionTextStyle,
+                        { opacity: actionDisabled ? 0.6 : 1 },
+                    ]}
+                >
+                    {actionText}
+                </Text>
+            )}
         </DelayedButton>
     )
 
@@ -90,6 +96,25 @@ const ModalHeader = (props) => {
                 <WalkableView>{actionComponent}</WalkableView>
             </CopilotStep>
         )
+    }
+
+    let titleIconFragment = null
+    if (titleIcon) {
+        if (titleIconContainerStyle || titleIconStyle) {
+            titleIconFragment = (
+                <View style={titleIconContainerStyle}>
+                    <Image
+                        style={titleIconStyle}
+                        source={titleIcon}
+                        resizeMode="contain"
+                    />
+                </View>
+            )
+        } else {
+            titleIconFragment = (
+                <Image style={styles.titleTextIconStyle} source={titleIcon} />
+            )
+        }
     }
 
     return (
@@ -108,12 +133,7 @@ const ModalHeader = (props) => {
                 </TouchableOpacity>
 
                 <View style={styles.titleTextContainerStyle}>
-                    {titleIcon && (
-                        <Image
-                            style={styles.titleTextIconStyle}
-                            source={titleIcon}
-                        />
-                    )}
+                    {titleIconFragment}
                     <Text style={styles.titleTextStyle} numberOfLines={1}>
                         {title}
                     </Text>
@@ -136,7 +156,6 @@ const styles = {
         ...default_style.buttonIcon_1,
         tintColor: null,
         borderRadius: 100,
-        marginTop: 4,
         marginRight: 6,
         padding: 1,
         backgroundColor: '#fff',

@@ -6,28 +6,58 @@ import { Text, View } from 'react-native'
 import { connect } from 'react-redux'
 import timeago from 'timeago.js'
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png'
-import { getProfileImageOrDefault } from '../../../redux/middleware/utils'
-import { GROUP_CHAT_DEFAULT_ICON_URL } from '../../../Utils/Constants'
+import defaultGroupChatPic from '../../../asset/icons/AccountMulti.png'
+import { getImageOrDefault } from '../../../redux/middleware/utils'
 import DelayedButton from '../../Common/Button/DelayedButton'
 // Components
 import ProfileImage from '../../Common/ProfileImage'
 import Timestamp from '../../Goal/Common/Timestamp'
+import { default_style } from '../../../styles/basic'
 
 class ChatRoomCard extends React.Component {
     handleCardOnPress = () => {
         this.props.onItemSelect(this.props.item)
     }
 
-    renderCardImage(imageUrl) {
-        if (!imageUrl) {
-            return null
+    renderCardImage(item) {
+        let cardImage
+        let useDefaultImage // boolean indicator for using default image
+        if (item.isFriend || item.roomType == 'Direct') {
+            const cardUser = item.isFriend
+                ? item
+                : item.members &&
+                  item.members.find(
+                      (memDoc) =>
+                          memDoc.memberRef._id != this.props.currentUserId
+                  )
+            let cardUserProfile
+            if (cardUser) {
+                cardUserProfile = cardUser.profile || cardUser.memberRef.profile
+            }
+            useDefaultImage = cardUserProfile && cardUserProfile.image
+            cardImage = getImageOrDefault(
+                cardUserProfile && cardUserProfile.image,
+                defaultProfilePic
+            )
+        } else {
+            useDefaultImage = item && item.picture
+            cardImage = (item && item.picture) || defaultGroupChatPic
         }
+
         return (
             <ProfileImage
-                imageStyle={{ height: 45, width: 45 }}
-                imageUrl={imageUrl}
+                imageStyle={
+                    useDefaultImage
+                        ? default_style.profileImage_1
+                        : { height: 18, width: 24, borderRadius: 0 }
+                }
+                imageUrl={cardImage}
                 rounded
-                imageContainerStyle={styles.imageContainerStyle}
+                imageContainerStyle={
+                    useDefaultImage
+                        ? styles.imageContainerStyle
+                        : styles.defaultImageContainerStyle
+                }
             />
         )
     }
@@ -247,28 +277,6 @@ class ChatRoomCard extends React.Component {
         const { item } = this.props
         if (!item) return null
 
-        // extract profile
-        let cardImage
-        if (item.isFriend || item.roomType == 'Direct') {
-            const cardUser = item.isFriend
-                ? item
-                : item.members &&
-                  item.members.find(
-                      (memDoc) =>
-                          memDoc.memberRef._id != this.props.currentUserId
-                  )
-            let cardUserProfile
-            if (cardUser) {
-                cardUserProfile = cardUser.profile || cardUser.memberRef.profile
-            }
-            cardImage = getProfileImageOrDefault(
-                cardUserProfile && cardUserProfile.image,
-                defaultProfilePic
-            )
-        } else {
-            cardImage = (item && item.picture) || GROUP_CHAT_DEFAULT_ICON_URL
-        }
-
         const maybeUnreadHighlight =
             item.unreadMessageCount > 0
                 ? {
@@ -292,7 +300,7 @@ class ChatRoomCard extends React.Component {
                         flexGrow: 1,
                     }}
                 >
-                    {this.renderCardImage(cardImage)}
+                    {this.renderCardImage(item)}
                     {this.renderCardContent(item)}
                     {this.renderTimestamp(item)}
                 </View>
@@ -314,6 +322,13 @@ const styles = {
         alignItems: 'center',
         alignSelf: 'center',
         backgroundColor: 'white',
+    },
+    defaultImageContainerStyle: {
+        ...default_style.profileImage_1,
+        ...default_style.defaultImageStyle,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
     },
 }
 
