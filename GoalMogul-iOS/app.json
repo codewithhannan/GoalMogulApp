@@ -60,7 +60,7 @@
             ]
         },
         "android": {
-            "package": "com.goalmogul.android",
+            "package": "com.goalmogul.goalmogulbeta",
             "googleServicesFile": "./config/google-services.json"
         }
     }
