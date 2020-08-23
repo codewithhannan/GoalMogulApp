@@ -4,6 +4,7 @@ import R from 'ramda'
 import React, { Component } from 'react'
 import { Image, Text, TouchableOpacity, View } from 'react-native'
 import { connect } from 'react-redux'
+
 // Assets
 import FriendsSettingIcon from '../../asset/utils/friendsSettingIcon.png'
 // import meetSetting from '../../../asset/utils/meetSetting.png';
@@ -20,6 +21,7 @@ import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
 // Components
 import Name from '../Common/Name'
 import ProfileImage from '../Common/ProfileImage'
+import UserTopGoals from '../Common/Card/CardComponent/UserTopGoals'
 
 // Constants
 const DEBUG_KEY = '[ UI MemberListCard ]'
@@ -212,13 +214,10 @@ class MemberListCard extends Component {
                     onPress={() => this.props.openProfile(_id)}
                 >
                     {this.renderInfo(item)}
-                    <Text
-                        style={styles.jobTitleTextStyle}
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                    >
-                        {headline}
-                    </Text>
+                    <UserTopGoals
+                        user={item}
+                        style={{ marginLeft: 0, marginTop: 4 }}
+                    />
                 </TouchableOpacity>
                 {this.renderSettingIcon()}
             </View>
@@ -230,7 +229,7 @@ const styles = {
     containerStyle: {
         flexDirection: 'row',
         paddingLeft: 10,
-        paddingRight: 10,
+        paddingRight: 60,
         paddingTop: 8,
         paddingBottom: 8,
         alignItems: 'center',
@@ -248,12 +247,6 @@ const styles = {
     buttonContainerStyle: {
         marginLeft: 8,
         flexDirection: 'row',
-    },
-    jobTitleTextStyle: {
-        ...default_style.smallTitle_1,
-        color: color.GM_BLUE,
-        paddingTop: 5,
-        paddingBottom: 3,
     },
 }
 

@@ -2,8 +2,8 @@
 
 import React from 'react'
 import { View, Text } from 'react-native'
-import DelayedButton from '../../Common/Button/DelayedButton'
-import { color, default_style } from '../../../styles/basic'
+import DelayedButton from '../../Button/DelayedButton'
+import { color, default_style } from '../../../../styles/basic'
 
 class UserTopGoals extends React.PureComponent {
     /**
@@ -11,10 +11,14 @@ class UserTopGoals extends React.PureComponent {
      * If top goal exists, then title is "Top Goal: ", otherwise, title is "Headline: "
      */
     getText = (user) => {
-        const { topGoals, headline } = user
+        // Depends on the page, currently PYMK page has a list of Goals, where memberList it only has 1 topGoal
+        const { topGoals, headline, topGoal } = user
         let title // title to display
         let text // text to display
-        if (topGoals && topGoals.length) {
+        if (topGoal && topGoal.trim().length) {
+            text = topGoal
+            title = 'Top Goal: '
+        } else if (topGoals && topGoals.length) {
             text = topGoals[0]
             title = 'Top Goal: '
         } else if (headline && headline.trim().length) {
@@ -40,7 +44,7 @@ class UserTopGoals extends React.PureComponent {
         }
 
         return (
-            <View style={styles.goalContainerStyle}>
+            <View style={[styles.goalContainerStyle, this.props.style]}>
                 <Text
                     numberOfLines={2}
                     ellipsizeMode="tail"

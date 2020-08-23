@@ -119,7 +119,6 @@ class MyTribeMembers extends React.PureComponent {
                             <View
                                 style={{
                                     ...styles.headerContainer,
-                                    alignItems: 'center',
                                     borderTopWidth: 8,
                                     borderTopColor: color.GM_BORDER_COLOR,
                                 }}
@@ -134,7 +133,6 @@ class MyTribeMembers extends React.PureComponent {
                             <View
                                 style={{
                                     ...styles.headerContainer,
-                                    alignItems: 'center',
                                 }}
                             >
                                 <Text style={default_style.titleText_1}>

@@ -242,7 +242,7 @@ export const fetchTribeDetail = (tribeId, pageId, callback, showIndicator) => (
         console.log(`${DEBUG_KEY}: failed to load tribe detail with err: `, err)
     }
 
-    API.get(`${BASE_ROUTE}/documents/${tribeId}`, token)
+    API.get(`${BASE_ROUTE}/documents/${tribeId}?getMemberTopGoals=true`, token)
         .then((res) => {
             if (res.status === 200 || res.data) {
                 onSuccess(res.data)
