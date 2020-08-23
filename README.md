@@ -13,7 +13,11 @@ React native iOS app
 
 ## Android version code convention
 The largest version code Android supports is 2100000000. Our break down is 
-{ 04 }                     {0}                                          {00}           {08}              {01}
-minimum API level 4 APK    either screen sizes or GL texture formats    Major version   minor version    patch version
+{ 04 } {0} {00} {08} {01}
+1. Minimum API level 4 APK 
+2. Either screen sizes or GL texture formats    
+3. Major version   
+4. Minor version    
+5. Patch version
 
 Hence, the integer 040000801 refers to app version 0.8.1 that runs on minimum Android API level 4 with default screen size. We need to truncate the first 0 to make it a number. The eventual representation in app.json is "versionCode": "40000801".

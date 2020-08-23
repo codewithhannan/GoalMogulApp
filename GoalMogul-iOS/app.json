@@ -62,7 +62,7 @@
         "android": {
             "package": "com.goalmogul.goalmogulbeta",
             "googleServicesFile": "./config/google-services.json",
-            "versionCode": 000000801
+            "versionCode": "801"
         }
     }
 }
