@@ -407,9 +407,23 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     // User has logged in but token is corrupted or lost
     // or token has expired
     if (!token || created <= minTokenCreationLimit) {
-        // User has to log in.
-        dispatchHideSplashScreen(dispatch)
-        return
+        // Refresh token
+        const refreshedTokenObject = await refreshToken()
+
+        // User needs to log in if could'nt refresh token
+        if (!refreshedTokenObject) {
+            dispatchHideSplashScreen(dispatch)
+            return
+        }
+
+        // parsedTokenObjectToUpdate may contain isOnboarded flag
+        // refreshedTokenObject contains the latest token.
+        // Updating token in secure store can happen in the background
+        // meanwhile user data can be loaded
+        updateTokenObject({
+            ...parsedTokenObjectToUpdate,
+            ...refreshedTokenObject,
+        })
     }
 
     // Saturate User.js and AuthReducers.js with user token and userId for other actions to work
@@ -489,11 +503,8 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     // Fetch user profile
     fetchAppUserProfile(token, userId)(dispatch, getState)
 
-    /** Refresh token **/
     const newTokenObject = await refreshToken()
-
-    // parsedTokenObjectToUpdate may contain update to isOnboarded
-    // newTokenObject contains the latest token
+    if (!newTokenObject) return
     updateTokenObject({ ...parsedTokenObjectToUpdate, ...newTokenObject })
 }
 
