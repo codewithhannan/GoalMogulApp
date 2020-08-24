@@ -27,10 +27,12 @@ class MyTribeBanner extends React.PureComponent {
                     <Image style={styles.imageStyle} source={bulbIcon}></Image>
                 </View>
                 <View style={styles.aboutContainer}>
-                    <Text style={styles.header}>Get tips and suggestions</Text>
+                    <Text style={styles.header}>
+                        Get encouragement and insights
+                    </Text>
                     <Text style={styles.copy}>
-                        By sharing your goals to the selected tribe, you can
-                        recieve tips and suggestions even faster.
+                        Share your goals to this Tribe so you can get motivation
+                        & suggestions from an incredibly supportive community
                     </Text>
                     {/* TODO: Add your onClick handler here, for the share your goal button. */}
                     <TouchableOpacity
@@ -49,7 +51,7 @@ class MyTribeBanner extends React.PureComponent {
                                 { marginTop: 12, color: color.GM_BLUE },
                             ]}
                         >
-                            Share Your Goal
+                            Share your goal and get inspired!
                         </Text>
                     </TouchableOpacity>
                 </View>

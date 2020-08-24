@@ -92,7 +92,8 @@ class FriendTab extends React.Component {
                             { marginBottom: styles.padding },
                         ]}
                     >
-                        Great friends help each other achieve so much more!
+                        How well do your friends know you if they don't know
+                        your goals?
                     </Text>
                     <DelayedButton
                         onPress={() => this.openInviteFriendModal()}
