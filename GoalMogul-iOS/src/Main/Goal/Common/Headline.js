@@ -176,8 +176,15 @@ class Headline extends React.PureComponent {
         // If item belongs to self, then caret displays delete
         let menu
         if (caret && !_.isEmpty(caret)) {
+            // tribe admin has the privilege of deleting others' posts
+            let adminPrivilege = false
+            if (this.props.userTribeStatus == 'Admin') {
+                adminPrivilege = true
+            }
             const { options, onPress, shouldExtendOptionLength } = isSelf
                 ? caret.self
+                : adminPrivilege
+                ? caret.admin
                 : caret.others
             menu = (
                 <MenuFactory

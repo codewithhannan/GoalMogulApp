@@ -249,6 +249,37 @@ class PostPreviewCard extends React.PureComponent {
                 },
                 shouldExtendOptionLength: false,
             },
+            admin: {
+                options: [
+                    { option: 'Delete' },
+                    { option: 'Report' },
+                    {
+                        option: maybeIsSubscribed
+                            ? CARET_OPTION_NOTIFICATION_UNSUBSCRIBE
+                            : CARET_OPTION_NOTIFICATION_SUBSCRIBE,
+                    },
+                ],
+                onPress: (key) => {
+                    if (key === 'Delete') {
+                        return this.props.deletePost(_id)
+                    }
+                    if (key === 'Report') {
+                        return this.props.createReport(_id, 'profile', 'Post')
+                    }
+                    if (key === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
+                        return this.props.unsubscribeEntityNotification(
+                            _id,
+                            'Post'
+                        )
+                    }
+                    if (key === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
+                        return this.props.subscribeEntityNotification(
+                            _id,
+                            'Post'
+                        )
+                    }
+                },
+            },
             others: {
                 options: [
                     { option: 'Report' },
@@ -300,9 +331,15 @@ class PostPreviewCard extends React.PureComponent {
                             hasCaret={this.props.hasCaret}
                             textStyle={default_style.titleText_2}
                             belongsToTribe={
-                                this.props.isTribeDetailPost
+                                this.props.tribeDetailPostData
                                     ? undefined
                                     : belongsToTribe
+                            }
+                            userTribeStatus={
+                                this.props.tribeDetailPostData
+                                    ? this.props.tribeDetailPostData
+                                          .userTribeStatus
+                                    : undefined
                             }
                         />
                         <View style={{ marginTop: 2 }} />

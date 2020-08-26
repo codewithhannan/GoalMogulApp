@@ -470,10 +470,13 @@ class MyTribe extends React.PureComponent {
     }
 
     renderItem = (props) => {
+        let tribeDetailPostData = {
+            userTribeStatus: this.props.userTribeStatus,
+        }
         return (
             <PostPreviewCard
                 item={props.item}
-                isTribeDetailPost={true}
+                tribeDetailPostData={tribeDetailPostData}
                 key={props.index}
                 hasActionButton
             />
