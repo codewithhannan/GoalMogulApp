@@ -26,6 +26,7 @@ import OnboardingFooter from './Common/OnboardingFooter'
 import { CheckBox } from 'react-native-elements'
 import { Actions } from 'react-native-router-flux'
 import { Icon } from '@ui-kitten/components'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 class OnboardingSelectionTarget extends React.Component {
     constructor(props) {
@@ -277,7 +278,12 @@ const mapStateToProps = (state) => {
     }
 }
 
+const AnalyticsWrapper = wrapAnalytics(
+    OnboardingSelectionTarget,
+    SCREENS.REG_SURVEY
+)
+
 export default connect(mapStateToProps, {
     registrationTargetSelection,
     uploadSurvey,
-})(OnboardingSelectionTarget)
+})(AnalyticsWrapper)

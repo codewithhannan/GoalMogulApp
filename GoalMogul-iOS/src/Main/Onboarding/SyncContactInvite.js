@@ -17,6 +17,7 @@ import { TabView } from 'react-native-tab-view'
 import TabButtonGroup from '../Common/TabButtonGroup'
 import UserCard from './Common/UserCard'
 import { contactSyncLoadMore } from '../../actions'
+import { EVENT as E } from '../../monitoring/segment'
 
 const { text: textStyle } = OnboardingStyles
 /**
@@ -65,13 +66,17 @@ class SyncContactInvite extends React.Component {
      */
     inviteUser = (type) => (item) => {
         if (type == 'contacts') {
-            this.props.inviteUser(item)
+            this.props.inviteUser(
+                item,
+                E.REG_CONTACT_INVITE_CLICKED,
+                E.REG_CONTACT_INTIVE_SENT
+            )
             return
         }
 
         if (type == 'matchedContacts') {
             // Send friend request
-            this.props.inviteExistingUser(item._id)
+            this.props.inviteExistingUser(item._id, E.REG_CONTACT_MEMBER_ADDED)
             return
         }
 
@@ -208,6 +213,7 @@ const styles = {
 }
 
 const mapStateToProps = (state) => {
+    const { userId } = state.user
     return {
         // NOTE: local contacts are fired by callback of
         // redux/modules/registration/RegistrationActions#uploadContacts
@@ -217,6 +223,7 @@ const mapStateToProps = (state) => {
         // for registration + meet tab loading contacts
         contacts: state.contactSync.contacts,
         matchedContacts: state.registration.matchedContacts,
+        userId,
     }
 }
 

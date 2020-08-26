@@ -17,6 +17,12 @@ import OnboardingStyles from '../../styles/Onboarding'
 
 import OnboardingFooter from './Common/OnboardingFooter'
 import { Actions } from 'react-native-router-flux'
+import {
+    wrapAnalytics,
+    SCREENS,
+    EVENT as E,
+    trackWithProperties,
+} from '../../monitoring/segment'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const { text: textStyle } = OnboardingStyles
@@ -42,6 +48,11 @@ class OnboardingCommunity extends React.Component {
     }
 
     onSwipedAll = (index) => {
+        trackWithProperties(E.REG_COMMUNITY_SWIPED, {
+            Index: index,
+            UserId: this.props.userId,
+        })
+
         if (index == this.props.communityGuidelines.length - 1) {
             this.setState({ ...this.state, swipeAll: true })
         }
@@ -192,10 +203,17 @@ const styles = {
 }
 
 const mapStateToProps = (state) => {
+    const { userId } = state.user
     const { communityGuidelines } = state.registration
     return {
         communityGuidelines,
+        userId,
     }
 }
 
-export default connect(mapStateToProps, {})(OnboardingCommunity)
+const AnalyticsWrapper = wrapAnalytics(
+    OnboardingCommunity,
+    SCREENS.REG_COMMUNITY
+)
+
+export default connect(mapStateToProps, {})(AnalyticsWrapper)

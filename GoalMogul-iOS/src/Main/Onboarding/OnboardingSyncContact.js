@@ -21,6 +21,12 @@ import { REGISTRATION_SYNC_CONTACT_NOTES } from '../../redux/modules/registratio
 import DelayedButton from '../Common/Button/DelayedButton'
 import SyncContactInfoModal from './SyncContactInfoModal'
 import Icons from '../../asset/base64/Icons'
+import {
+    wrapAnalytics,
+    SCREENS,
+    trackWithProperties,
+    EVENT as E,
+} from '../../monitoring/segment'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const { button: buttonStyle, text: textStyle } = OnboardingStyles
@@ -46,7 +52,11 @@ class OnboardingSyncContact extends React.Component {
     closeModal = () =>
         this.setState({ ...this.state, syncContactInfoModalVisible: false })
 
+    // Contact member not found. User chose to skip invite from contact
     onModalNotNow = () => {
+        trackWithProperties(E.REG_CONTACT_INVITE_SKIPPED, {
+            UserId: this.props.userId,
+        })
         this.closeModal()
         setTimeout(() => {
             this.onNotNow()
@@ -69,6 +79,10 @@ class OnboardingSyncContact extends React.Component {
      * 3. If found, go to invite page with 2 tabs
      */
     onSyncContact = () => {
+        trackWithProperties(E.REG_CONTACT_SYNC, {
+            UserId: this.props.userId,
+        })
+
         this.openModal()
 
         // Match is not found
@@ -107,6 +121,9 @@ class OnboardingSyncContact extends React.Component {
     }
 
     onNotNow = () => {
+        trackWithProperties(E.REG_CONTACT_SYNC_SKIP, {
+            UserId: this.props.userId,
+        })
         const screenTransitionCallback = () => {
             Actions.push('registration_transition')
         }
@@ -180,9 +197,9 @@ class OnboardingSyncContact extends React.Component {
                         {this.renderImage()}
                         <View>
                             <Text style={textStyle.title}>
-                                Find friends who already
+                                Connect Contacts and Quickly Find Your Friends
                             </Text>
-                            <Text style={textStyle.title}>use GoalMogul!</Text>
+                            {/* <Text style={textStyle.title}>use GoalMogul!</Text> */}
                         </View>
                         <Text style={styles.noteTextStyle}>
                             {REGISTRATION_SYNC_CONTACT_NOTES}
@@ -229,9 +246,15 @@ const styles = {
 }
 
 const mapStateToProps = (state) => {
-    return {}
+    const { userId } = state.user
+    return { userId }
 }
+
+const AnalyticsWrapper = wrapAnalytics(
+    OnboardingSyncContact,
+    SCREENS.REG_CONTACTY_SYNC
+)
 
 export default connect(mapStateToProps, {
     uploadContacts,
-})(OnboardingSyncContact)
+})(AnalyticsWrapper)

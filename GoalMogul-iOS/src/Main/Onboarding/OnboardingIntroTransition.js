@@ -90,23 +90,23 @@ class OnboardingIntroTransition extends React.Component {
                                 },
                             ]}
                         >
-                            Hi{name ? `, ${name}` : ''}!
+                            Hey{name ? `, ${name}` : ''}!
                         </Text>
-                        <Text style={[textStyle.paragraph, { marginTop: 24 }]}>
-                            We are going to ask you{' '}
+                        <Text
+                            style={[
+                                textStyle.paragraph,
+                                { marginVertical: 24 },
+                            ]}
+                        >
+                            Almost done! Please answer these{' '}
                             <Text
                                 style={{
                                     fontFamily: text.FONT_FAMILY.SEMI_BOLD,
                                 }}
                             >
-                                three
+                                two (2)
                             </Text>{' '}
-                            questions
-                        </Text>
-                        <Text
-                            style={[textStyle.paragraph, { marginBottom: 24 }]}
-                        >
-                            to tailor your experience!
+                            questions to personalize your experience!
                         </Text>
                     </View>
                     <DelayedButton

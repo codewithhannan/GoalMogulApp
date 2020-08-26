@@ -289,7 +289,11 @@ export const registrationNextIntro = (skip) => {
 }
 
 // Actions to Open Camera to take photos
-export const openCamera = (callback) => async (dispatch) => {
+export const openCamera = (
+    callback,
+    maybeTrackCameraOpen,
+    maybeTrackImageSelected
+) => async (dispatch, getState) => {
     const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
 
     const permissionGranted = await ImageUtils.checkPermission(permissions)
@@ -297,7 +301,11 @@ export const openCamera = (callback) => async (dispatch) => {
     if (!permissionGranted) {
         return
     }
-    track(E.REG_CAMERA)
+
+    if (maybeTrackCameraOpen) {
+        maybeTrackCameraOpen()
+    }
+
     const result = await ImagePicker.launchCameraAsync({
         mediaTypes: 'Images',
     }).catch((error) => console.log(permissions, { error }))
@@ -305,6 +313,9 @@ export const openCamera = (callback) => async (dispatch) => {
     if (!result.cancelled) {
         if (callback) {
             return callback(result)
+        }
+        if (maybeTrackImageSelected) {
+            maybeTrackImageSelected()
         }
         return dispatch({
             type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
@@ -330,14 +341,23 @@ export const getPhotosAsync = async () => {
 }
 
 // Action to open camera roll modal
-export const openCameraRoll = (callback, maybeOptions) => async (dispatch) => {
+export const openCameraRoll = (
+    callback,
+    maybeOptions,
+    maybeTrackCamRollOpen,
+    maybeTrackImageSelected
+) => async (dispatch) => {
     const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
 
     const permissionGranted = await ImageUtils.checkPermission(permissions)
     if (!permissionGranted) {
+        // TODO: fire event to say permission not granted
         return
     }
-    track(E.REG_CAMROLL)
+
+    if (maybeTrackCamRollOpen) {
+        maybeTrackCamRollOpen()
+    }
 
     const disableEditing = maybeOptions && maybeOptions.disableEditing
 
@@ -354,6 +374,9 @@ export const openCameraRoll = (callback, maybeOptions) => async (dispatch) => {
     if (!result.cancelled) {
         if (callback) {
             return callback(result)
+        }
+        if (maybeTrackImageSelected) {
+            maybeTrackImageSelected()
         }
         return dispatch({
             type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,

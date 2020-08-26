@@ -14,6 +14,7 @@ import OnboardingStyles, { getCardBottomOffset } from '../../styles/Onboarding'
 import DelayedButton from '../Common/Button/DelayedButton'
 import Icons from '../../asset/base64/Icons'
 import { markUserAsOnboarded } from '../../redux/modules/registration/RegistrationActions'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const { text: textStyle, button: buttonStyle } = OnboardingStyles
@@ -102,6 +103,8 @@ class OnboardingWelcome extends React.Component {
     }
 }
 
+const AnalyticsWrapper = wrapAnalytics(OnboardingWelcome, SCREENS.REG_WELCOME)
+
 export default connect(null, {
     markUserAsOnboarded,
-})(OnboardingWelcome)
+})(AnalyticsWrapper)

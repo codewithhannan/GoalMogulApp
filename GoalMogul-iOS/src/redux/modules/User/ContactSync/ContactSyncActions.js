@@ -15,6 +15,7 @@ import {
     getPhoneNumber,
 } from '../../../middleware/utils'
 import { DropDownHolder } from '../../../../Main/Common/Modal/DropDownModal'
+import { trackWithProperties } from '../../../../monitoring/segment'
 
 const DEBUG_KEY = '[ Actions ContactSyncActions ]'
 /**
@@ -22,17 +23,44 @@ const DEBUG_KEY = '[ Actions ContactSyncActions ]'
  * Order is: phone number and then email
  * @param {object} contact
  */
-export const inviteUser = (contact) => async (dispatch, getState) => {
-    const { user } = getState().user
+export const inviteUser = (
+    contact,
+    maybeTrackingClickEventName,
+    maybeTrackingResultEventName
+) => async (dispatch, getState) => {
+    const { user, userId } = getState().user
 
     const phoneNumber = getPhoneNumber(contact)
     if (phoneNumber) {
-        await inviteUserWithText(phoneNumber, user)
+        if (maybeTrackingClickEventName) {
+            trackWithProperties(maybeTrackingClickEventName, {
+                UserId: userId,
+                Channel: 'Message',
+            })
+        }
+
+        const res = await inviteUserWithText(phoneNumber, user)
+        if (res !== 'cancelled') {
+            // Track action being finished
+            if (maybeTrackingResultEventName) {
+                trackWithProperties(maybeTrackingResultEventName, {
+                    UserId: userId,
+                    Channel: 'Message',
+                })
+            }
+        }
         return
     }
 
     const email = getEmail(contact)
     if (email) {
+        // Currently we can't track if email is fulfilled or not
+        if (maybeTrackingClickEventName) {
+            trackWithProperties(maybeTrackingClickEventName, {
+                UserId: userId,
+                Channel: 'Email',
+            })
+        }
         inviteUserWithEmail(email, user)
     }
 }
@@ -54,6 +82,7 @@ const inviteUserWithText = async (phoneNumber, user) => {
             `${message}`
         )
         console.log(`${DEBUG_KEY}: result is: `, result)
+        return result
     } else {
         // misfortune... there's no SMS available on this device
         DropDownHolder.alert(
@@ -62,6 +91,7 @@ const inviteUserWithText = async (phoneNumber, user) => {
             "We're sorry that your phone doesn't support SMS."
         )
     }
+    return undefined
 }
 
 const inviteUserWithEmail = (email, user) => {

@@ -107,6 +107,12 @@ export const uploadSurvey = () => async (dispatch, getState) => {
     const targets = getState().registration.userTargets
     const contents = getSurveyFromTargets(targets)
 
+    trackWithProperties(E.REG_SURVEY_SELECTED, {
+        NumOptionSelected: targets.filter((i) => i.selected).length,
+        OtherSelected: targets.filter((i) => i.title === 'Other')[0].selected,
+        UserId: userId,
+    })
+
     const res = await API.post('secure/user/survey/create', { contents }, token)
     if (res.status >= 300 || res.status < 200) {
         // Failed to create survey for this user
@@ -188,9 +194,15 @@ export const uploadSelectedTribes = () => async (dispatch, getState) => {
 
     const tribes = getState().registration.tribes
 
+    const tribeIds = tribes.filter((t) => t.selected).map((t) => t._id)
     const body = {
-        tribeIds: tribes.filter((t) => t.selected).map((t) => t._id),
+        tribeIds,
     }
+
+    trackWithProperties(E.REG_TRIBE_SELECTED, {
+        TribeIds: tribeIds,
+    })
+
     const res = await API.post('secure/tribe/batch-join-tribes', body, token)
     if (res.status < 200 || res.status > 299) {
         console.log('update selected tribes: ', res)
@@ -361,7 +373,7 @@ export const registrationAddProfilePhoto = (maybeOnSuccess) => async (
 ) => {
     // Obtain pre-signed url
     const imageUri = getState().registration.profilePic
-    const token = getState().user.token
+    const { userId, token } = getState().user
 
     if (imageUri) {
         await ImageUtils.getImageSize(imageUri)
@@ -423,6 +435,9 @@ export const registrationAddProfilePhoto = (maybeOnSuccess) => async (
                 console.log('profile picture error: ', err)
             })
 
+        trackWithProperties(E.REG_ADD_PHOTO_UPLOADED, {
+            UserId: userId,
+        })
         // After profile image is uploaded, async refresh profile
         fetchAppUserProfile()(dispatch, getState)
     }
@@ -435,7 +450,18 @@ export const registrationAddProfilePhoto = (maybeOnSuccess) => async (
  * Current user invites existing member after contact sync match
  * @param {String} userId UserId for current user to invite
  */
-export const inviteExistingUser = (userId) => async (dispatch, getState) => {
+export const inviteExistingUser = (userId, maybeTrackingEventName) => async (
+    dispatch,
+    getState
+) => {
+    const currentUserId = getState().user && getState().user.userId
+    if (maybeTrackingEventName) {
+        trackWithProperties(maybeTrackingEventName, {
+            UserId: currentUserId,
+            InviteeId: userId,
+        })
+    }
+
     // Dispatch to update user status to loading indicator
     dispatch({
         type: REGISTRATION_USER_INVITE,
@@ -614,7 +640,9 @@ export const uploadContacts = ({
 export const markUserAsOnboarded = () => async (dispatch, getState) => {
     const { userId, token } = getState().user
     Logger.log(`${DEBUG_KEY}: [ markUserAsOnboarded ] for user: `, userId, 1)
-    track(E.ONBOARDING_DONE)
+    trackWithProperties(E.ONBOARDING_DONE, {
+        UserId: userId,
+    })
 
     // Update onboarding status on SecureStore
     // This should be fired regardless of API call succeeds or not

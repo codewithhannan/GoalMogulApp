@@ -30,12 +30,22 @@ import OnboardingStyles, { getCardBottomOffset } from '../../styles/Onboarding'
 
 import { openCamera, openCameraRoll } from '../../actions'
 import { registrationAddProfilePhoto } from '../../redux/modules/registration/RegistrationActions'
+import {
+    trackWithProperties,
+    EVENT as E,
+    wrapAnalytics,
+    SCREENS,
+} from '../../monitoring/segment'
 
 const { text: textStyle, button: buttonStyle } = OnboardingStyles
 
 class OnboardingAddPhotos extends Component {
     /**Navigate to next step. */
     onSkip = () => {
+        trackWithProperties(E.REG_ADD_PHOTO_SKIPPED, {
+            UserId: this.props.userId,
+        })
+
         Actions.push('registration_contact_sync')
     }
 
@@ -45,6 +55,39 @@ class OnboardingAddPhotos extends Component {
 
         // Upload image
         this.props.registrationAddProfilePhoto()
+    }
+
+    openCamera = () => {
+        const trackOpenCamera = () =>
+            trackWithProperties(E.REG_CAMERA, {
+                UserId: this.props.userId,
+            })
+
+        const trackImageAttached = () =>
+            trackWithProperties(E.REG_ADD_PHOTO_ATTACHED, {
+                UserId: this.props.userId,
+            })
+
+        this.props.openCamera(null, trackOpenCamera, trackImageAttached)
+    }
+
+    openCameraRoll = () => {
+        const trackOpenCameraRoll = () =>
+            trackWithProperties(E.REG_CAMROLL, {
+                UserId: this.props.userId,
+            })
+
+        const trackImageAttached = () =>
+            trackWithProperties(E.REG_ADD_PHOTO_ATTACHED, {
+                UserId: this.props.userId,
+            })
+
+        this.props.openCameraRoll(
+            null,
+            null,
+            trackOpenCameraRoll,
+            trackImageAttached
+        )
     }
 
     render() {
@@ -68,8 +111,8 @@ class OnboardingAddPhotos extends Component {
                         }}
                     >
                         <ImagePicker
-                            handleTakingPicture={openCamera}
-                            handleCameraRoll={openCameraRoll}
+                            handleTakingPicture={this.openCamera}
+                            handleCameraRoll={this.openCameraRoll}
                             imageUri={profilePic}
                             style={styles.imagePickerStyles}
                             bordered
@@ -81,7 +124,7 @@ class OnboardingAddPhotos extends Component {
                                 { marginBottom: 16, textAlign: 'center' },
                             ]}
                         >
-                            Now, add a photo
+                            Add a photo
                         </Text>
                         <Text
                             style={[
@@ -89,7 +132,7 @@ class OnboardingAddPhotos extends Component {
                                 { textAlign: 'center' },
                             ]}
                         >
-                            This way your friends can recgonize you
+                            This way people will recognize you
                         </Text>
                     </View>
                     <DelayedButton
@@ -141,12 +184,18 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     const { profilePic } = state.registration
+    const { userId } = state.user
 
-    return { profilePic }
+    return { profilePic, userId }
 }
+
+const AnalyticsWrapper = wrapAnalytics(
+    OnboardingAddPhotos,
+    SCREENS.REG_ADD_PHOTO
+)
 
 export default connect(mapStateToProps, {
     openCamera,
     openCameraRoll,
     registrationAddProfilePhoto,
-})(OnboardingAddPhotos)
+})(AnalyticsWrapper)

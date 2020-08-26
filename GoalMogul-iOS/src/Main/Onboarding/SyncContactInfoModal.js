@@ -72,7 +72,7 @@ class SyncContactInfoModal extends React.Component {
                 >
                     {errMessage
                         ? errMessage
-                        : "We couldn't find any contact that is on GoalMogul."}
+                        : "We couldn't find any of your contacts that are already on GoalMogul."}
                 </Text>
                 <DelayedButton
                     onPress={errMessage ? this.onSyncContact : this.onInvite}

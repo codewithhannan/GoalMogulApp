@@ -110,18 +110,33 @@ const EVENT = {
     PROFILE_REFRESHED: 'Profile Refreshed',
     PROFILE_PHOTO_UPDATED: 'Profile Photo Updated',
 
-    // Registration
-    REG_ACCOUNT_CREATED: 'Registration Account Created',
-    REG_INTRO: 'Registration Intro Opened',
-    REG_INTRO_SKIP: 'Registration Intro Skiped',
-    REG_PROFILE: 'Registration AddProfile Opened',
+    /** Registration */ 
+    REG_ACCOUNT_CREATED: 'Registration Account Created', //ok
+    // add profile photo
+    REG_ADD_PHOTO_SKIPPED: 'Registration AddPhoto Skipped',
+    REG_ADD_PHOTO_ATTACHED: 'Registration AddPhoto Attached',
+    REG_ADD_PHOTO_UPLOADED: 'Registration AddPhoto Uploaded',
     REG_CAMERA: 'Registration Camera Opened',
     REG_CAMROLL: 'Registration CameraRoll Opened',
-    REG_CONTACT: 'Registration Contact Opened',
-    REG_CONTACT_SKIP: 'Registration Contact Skiped',
+    // contact sync
     REG_CONTACT_SYNC: 'Registration Contact Synced',
-    REG_CONTACT_SYNC_SKIP: 'Registration Contact Sync Skiped',
-    REG_SUCCESS: 'Registration Success',
+    REG_CONTACT_SYNC_SKIP: 'Registration ContactSync Skiped',
+    REG_CONTACT_INVITE_SKIPPED: 'Registration ContactInvite Skipped',
+    REG_CONTACT_INVITE_CLICKED: 'Registration ContactInvite Clicked',
+    REG_CONTACT_INTIVE_SENT: 'Registration ContactInvite Sent',
+    REG_CONTACT_MEMBER_ADDED: 'Registration ContactMember Added',
+    // survey
+    REG_SURVEY_SELECTED: 'Registration Survey Selected',
+    // tribe selection
+    REG_TRIBE_SELECTED: 'Registration Tribe selected',
+    // community guideline
+    REG_COMMUNITY_SWIPED: 'Registration CommunityGuideline Swiped',
+    // Deprecated Registration events
+    REG_INTRO: 'Registration Intro Opened', // no longer has this page since v0.7.x
+    REG_INTRO_SKIP: 'Registration Intro Skiped', // no longer has this page since v0.7.x
+    REG_PROFILE: 'Registration AddProfile Opened', // no longer has this page since v0.7.x
+    REG_CONTACT_SKIP: 'Registration Contact Skiped', // no longer needs this event
+    REG_CONTACT: 'Registration ContactSync Opened', // replaced by screen impression
 
     // Search
     SEARCH_OPENED: 'Search Opened',
@@ -198,6 +213,15 @@ const SCREENS = {
     EXPLORE_EVENT_TAB: 'ExploreEventTab',
     EXPLORE_TRIBE_TAB: 'ExploreTribeTab',
     EXPLORE_PEOPLE_TAB: 'ExplorePeopleTab',
+
+    // Onboarding section
+    REG_REISTER_ACCOUNT: 'RegistrationAccountView',
+    REG_ADD_PHOTO: 'RegistrationAddPhotoView',
+    REG_CONTACTY_SYNC: 'RegistrationContactSyncView',
+    REG_SURVEY: 'RegistrationSurveyView',
+    REG_TRIBES: 'RegistrationTribeView',
+    REG_COMMUNITY: 'RegistrationCommunityGuidelineView',
+    REG_WELCOME: 'RegistrationWelcomeView',
 }
 
 const allEventNames = new Set<string>()

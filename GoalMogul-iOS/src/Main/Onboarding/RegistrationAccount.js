@@ -40,6 +40,7 @@ import UserAgreementCheckBox from './UserAgreementCheckBox'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { DEVICE_PLATFORM } from '../../Utils/Constants'
 import { getBottomSpace } from 'react-native-iphone-x-helper'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 const NEXT_STEP = 'registration_add_photo'
 const FIELD_REQUIREMENTS = {
@@ -511,6 +512,11 @@ const mapStateToProps = (state) => {
     }
 }
 
+const AnalyticsWrapper = wrapAnalytics(
+    RegistrationAccount,
+    SCREENS.REG_REISTER_ACCOUNT
+)
+
 export default connect(mapStateToProps, {
     registrationLogin,
     registerAccount,
@@ -518,4 +524,4 @@ export default connect(mapStateToProps, {
     registrationTextInputChange,
     onVerifyPhoneNumber,
     cancelRegistration,
-})(RegistrationAccount)
+})(AnalyticsWrapper)

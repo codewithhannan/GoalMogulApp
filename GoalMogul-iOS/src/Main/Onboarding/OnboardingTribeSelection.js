@@ -29,6 +29,7 @@ import * as Animatable from 'react-native-animatable'
 
 import { Icon, CheckBox } from '@ui-kitten/components'
 import { getImageOrDefault, decode } from '../../redux/middleware/utils'
+import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 const { width } = Dimensions.get('window')
 const { text: textStyle } = OnboardingStyles
@@ -491,8 +492,13 @@ const mapStateToProps = (state) => {
     }
 }
 
+const AnalyticsWrapper = wrapAnalytics(
+    OnboardingTribeSelection,
+    SCREENS.REG_TRIBES
+)
+
 export default connect(mapStateToProps, {
     registrationTribeSelection,
     registrationFetchTribes,
     uploadSelectedTribes,
-})(OnboardingTribeSelection)
+})(AnalyticsWrapper)
