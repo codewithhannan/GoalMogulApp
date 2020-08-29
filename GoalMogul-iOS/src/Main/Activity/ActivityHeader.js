@@ -42,7 +42,7 @@ import {
 import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
-    SHOW_SEE_MORE_TEXT_LENGTH,
+    CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
 } from '../../Utils/Constants'
 
 import { default_style, color } from '../../styles/basic'
@@ -50,12 +50,20 @@ import { default_style, color } from '../../styles/basic'
 const DEBUG_KEY = '[ UI ActivityHeader ]'
 
 class ActivityHeader extends Component {
+    state = {
+        hasLongText: false,
+    }
+
+    onTextLayout(e) {
+        const firstLine = e.nativeEvent.lines[0]
+        const lastLine = e.nativeEvent.lines[e.nativeEvent.lines.length - 1]
+        this.setState({
+            hasLongText: lastLine.text.length > firstLine.text.length,
+        })
+    }
+
     renderSeeMore(postRef, actedUponEntityType) {
-        const hasLongText =
-            postRef &&
-            postRef.content &&
-            postRef.content.text &&
-            postRef.content.text.length > SHOW_SEE_MORE_TEXT_LENGTH
+        const hasLongText = this.state.hasLongText
         const showSeeMore = actedUponEntityType === 'Post' && hasLongText
 
         if (!showSeeMore) return null
@@ -72,7 +80,7 @@ class ActivityHeader extends Component {
                 <Text
                     style={{
                         ...default_style.normalText_1,
-                        color: color.GM_BLUE,
+                        color: color.GM_MID_GREY,
                     }}
                 >
                     See more
@@ -260,8 +268,9 @@ class ActivityHeader extends Component {
                         color: 'black',
                     }}
                     textContainerStyle={{ flexDirection: 'row', marginTop: 5 }}
-                    numberOfLines={3}
+                    numberOfLines={CONTENT_PREVIEW_MAX_NUMBER_OF_LINES}
                     ellipsizeMode="tail"
+                    onTextLayout={this.onTextLayout.bind(this)}
                     onUserTagPressed={(user) => {
                         console.log(
                             `${DEBUG_KEY}: user tag press for user: `,

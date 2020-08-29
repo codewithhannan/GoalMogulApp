@@ -47,6 +47,7 @@ import {
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
     IMAGE_BASE_URL,
     DEVICE_PLATFORM,
+    CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
 } from '../../../Utils/Constants'
 import {
     actionSheet,
@@ -84,12 +85,24 @@ class PostDetailSection extends React.PureComponent {
         this.state = {
             mediaModal: false,
             numberOfLines: undefined,
+            hasLongText: false,
             seeMore: true,
             showShareListModal: false,
             showlikeListModal: false,
             floatingHeartCount: 0,
             likeButtonLeftOffset: 0,
         }
+    }
+
+    onTextLayout(e) {
+        const firstLine = e.nativeEvent.lines[0]
+        const lastLine = e.nativeEvent.lines[e.nativeEvent.lines.length - 1]
+        const numberOfRenderedLines = e.nativeEvent.lines.length
+        this.setState({
+            hasLongText:
+                lastLine.text.length > firstLine.text.length ||
+                numberOfRenderedLines > CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
+        })
     }
 
     // shouldComponentUpdate(nextProps, nextState) {
@@ -144,7 +157,7 @@ class PostDetailSection extends React.PureComponent {
             // See less
             this.setState({
                 ...this.state,
-                numberOfLines: 2,
+                numberOfLines: CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
                 seeMore: false,
             })
             return
@@ -158,7 +171,7 @@ class PostDetailSection extends React.PureComponent {
     }
 
     renderSeeMore(text) {
-        if (text && text.length > 120) {
+        if (text && this.state.hasLongText) {
             return (
                 <TouchableOpacity
                     activeOpacity={0.6}
@@ -286,6 +299,7 @@ class PostDetailSection extends React.PureComponent {
                         )
                         this.props.openProfile(user)
                     }}
+                    onTextLayout={this.onTextLayout.bind(this)}
                     numberOfLines={this.state.numberOfLines}
                 />
                 {this.renderSeeMore(content.text)}
@@ -604,7 +618,7 @@ const styles = {
     },
     seeMoreTextStyle: {
         ...default_style.normalText_1,
-        color: color.GM_BLUE,
+        color: color.GM_MID_GREY,
     },
     statsContainerStyle: {
         borderTopWidth: 0.5,

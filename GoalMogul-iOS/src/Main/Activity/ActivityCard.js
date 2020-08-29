@@ -27,7 +27,11 @@ import { likeGoal, unLikeGoal } from '../../redux/modules/like/LikeActions'
 import { imagePreviewContainerStyle } from '../../styles'
 import { default_style, color } from '../../styles/basic'
 // Constants
-import { IMAGE_BASE_URL, DEVICE_PLATFORM } from '../../Utils/Constants'
+import {
+    IMAGE_BASE_URL,
+    DEVICE_PLATFORM,
+    CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
+} from '../../Utils/Constants'
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
 import DelayedButton from '../Common/Button/DelayedButton'
 import FloatingHearts from '../Common/FloatingHearts/FloatingHearts'
@@ -312,7 +316,7 @@ class ActivityCard extends React.PureComponent {
                             flexDirection: 'row',
                             marginTop: 5,
                         }}
-                        numberOfLines={3}
+                        numberOfLines={CONTENT_PREVIEW_MAX_NUMBER_OF_LINES}
                         ellipsizeMode="tail"
                         onUserTagPressed={(user) => {
                             console.log(

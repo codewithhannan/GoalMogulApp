@@ -175,7 +175,7 @@ export const CARET_OPTION_NOTIFICATION_UNSUBSCRIBE = 'Unfollow'
 
 export const GROUP_CHAT_DEFAULT_ICON_URL = 'https://i.imgur.com/dP71It0.png'
 
-export const SHOW_SEE_MORE_TEXT_LENGTH = 110
+export const CONTENT_PREVIEW_MAX_NUMBER_OF_LINES = 5
 
 export const EMPTY_GOAL = {
     _id: '',

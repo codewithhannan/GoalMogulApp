@@ -54,6 +54,7 @@ import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
     DEVICE_PLATFORM,
+    CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
 } from '../../../Utils/Constants'
 import {
     actionSheet,
@@ -89,8 +90,10 @@ const CANCEL_INDEX = 3
 class GoalDetailSection extends React.PureComponent {
     constructor(props) {
         super(props)
+
         this.state = {
-            numberOfLines: 2,
+            numberOfLines: CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
+            hasLongText: false,
             seeMore: false,
             goalReminderDatePicker: false,
             showShareListModa: false,
@@ -105,6 +108,17 @@ class GoalDetailSection extends React.PureComponent {
         if (this.props.onRef !== null) {
             this.props.onRef(this)
         }
+    }
+
+    onTextLayout(e) {
+        const firstLine = e.nativeEvent.lines[0]
+        const lastLine = e.nativeEvent.lines[e.nativeEvent.lines.length - 1]
+        const numberOfRenderedLines = e.nativeEvent.lines.length
+        this.setState({
+            hasLongText:
+                lastLine.text.length > firstLine.text.length ||
+                numberOfRenderedLines > CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
+        })
     }
 
     openHeadlineMenu() {
@@ -218,22 +232,20 @@ class GoalDetailSection extends React.PureComponent {
         if (this.state.seeMore) {
             // See less
             this.setState({
-                ...this.state,
-                numberOfLines: 2,
+                numberOfLines: CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
                 seeMore: false,
             })
             return
         }
         // See more
         this.setState({
-            ...this.state,
             numberOfLines: undefined,
             seeMore: true,
         })
     }
 
     renderSeeMore(text) {
-        if (text && text.length > 120) {
+        if (text && this.state.hasLongText) {
             return (
                 <TouchableOpacity
                     activeOpacity={0.6}
@@ -447,9 +459,8 @@ class GoalDetailSection extends React.PureComponent {
                     textContainerStyle={{ flexDirection: 'row' }}
                     textStyle={{
                         ...default_style.normalText_1,
-                        color: '#828282',
                         flexWrap: 'wrap',
-                        marginTop: 5,
+                        marginTop: 12,
                     }}
                     multiline
                     onUserTagPressed={(user) => {
@@ -459,6 +470,7 @@ class GoalDetailSection extends React.PureComponent {
                         )
                         this.props.openProfile(user)
                     }}
+                    onTextLayout={this.onTextLayout.bind(this)}
                     numberOfLines={this.state.numberOfLines}
                 />
                 {this.renderSeeMore(text)}
@@ -753,7 +765,7 @@ const styles = {
     },
     seeMoreTextStyle: {
         ...default_style.normalText_1,
-        color: color.GM_BLUE,
+        color: color.GM_MID_GREY,
     },
     statsContainerStyle: {
         borderTopWidth: 0.5,

@@ -16,12 +16,8 @@ import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import timeago from 'timeago.js'
 import { deletePost, openProfile } from '../../../actions'
-import CommentIcon from '../../../asset/utils/comment.png'
 import expand from '../../../asset/utils/expand.png'
-import ShareIcon from '../../../asset/utils/forward.png'
-import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
 // Assets
-import LoveIcon from '../../../asset/utils/love.png'
 import {
     switchCase,
     getProfileImageOrDefaultFromUser,
@@ -46,6 +42,7 @@ import {
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
     IMAGE_BASE_URL,
     DEVICE_PLATFORM,
+    CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
 } from '../../../Utils/Constants'
 import {
     actionSheet,
@@ -82,9 +79,21 @@ class ShareDetailSection extends Component {
         mediaModal: false,
         numberOfLines: undefined,
         seeMore: true,
+        hasLongText: false,
         showlikeListModal: false,
         floatingHeartCount: 0,
         likeButtonLeftOffset: 0,
+    }
+
+    onTextLayout(e) {
+        const firstLine = e.nativeEvent.lines[0]
+        const lastLine = e.nativeEvent.lines[e.nativeEvent.lines.length - 1]
+        const numberOfRenderedLines = e.nativeEvent.lines.length
+        this.setState({
+            hasLongText:
+                lastLine.text.length > firstLine.text.length ||
+                numberOfRenderedLines > CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
+        })
     }
 
     handleShareOnClick = () => {
@@ -131,22 +140,20 @@ class ShareDetailSection extends Component {
         if (this.state.seeMore) {
             // See less
             this.setState({
-                ...this.state,
-                numberOfLines: 2,
+                numberOfLines: CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
                 seeMore: false,
             })
             return
         }
         // See more
         this.setState({
-            ...this.state,
             numberOfLines: undefined,
             seeMore: true,
         })
     }
 
     renderSeeMore(text) {
-        if (text && text.length > 120) {
+        if (text && this.state.hasLongText) {
             return (
                 <TouchableOpacity
                     activeOpacity={0.6}
@@ -259,6 +266,7 @@ class ShareDetailSection extends Component {
                     textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
                     numberOfLines={this.state.numberOfLines}
                     ellipsizeMode="tail"
+                    onTextLayout={this.onTextLayout.bind(this)}
                     onUserTagPressed={(user) => {
                         console.log(
                             `${DEBUG_KEY}: user tag press for user: `,
@@ -582,7 +590,7 @@ const styles = {
     },
     seeMoreTextStyle: {
         ...default_style.normalText_1,
-        color: color.GM_BLUE,
+        color: color.GM_MID_GREY,
     },
     statsContainerStyle: {
         borderTopWidth: 0.5,

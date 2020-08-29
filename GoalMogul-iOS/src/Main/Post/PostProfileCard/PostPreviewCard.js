@@ -20,15 +20,7 @@ import {
     unsubscribeEntityNotification,
 } from '../../../redux/modules/notification/NotificationActions'
 
-// Assets
-import LoveIcon from '../../../asset/utils/love.png'
-import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
-import CommentIcon from '../../../asset/utils/comment.png'
-import ShareIcon from '../../../asset/utils/forward.png'
-
 // Components
-import ActionButton from '../../Goal/Common/ActionButton'
-import ActionButtonGroup from '../../Goal/Common/ActionButtonGroup'
 import {
     actionSheet,
     switchByButtonIndex,
@@ -44,8 +36,8 @@ import DelayedButton from '../../Common/Button/DelayedButton'
 import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
-    SHOW_SEE_MORE_TEXT_LENGTH,
     DEVICE_PLATFORM,
+    CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
 } from '../../../Utils/Constants'
 
 import { default_style, color } from '../../../styles/basic'
@@ -67,6 +59,15 @@ class PostPreviewCard extends React.PureComponent {
     state = {
         floatingHeartCount: 0,
         likeButtonLeftOffset: 0,
+        hasLongText: false,
+    }
+
+    onTextLayout(e) {
+        const firstLine = e.nativeEvent.lines[0]
+        const lastLine = e.nativeEvent.lines[e.nativeEvent.lines.length - 1]
+        this.setState({
+            hasLongText: lastLine.text.length > firstLine.text.length,
+        })
     }
 
     /**
@@ -199,11 +200,7 @@ class PostPreviewCard extends React.PureComponent {
     }
 
     renderSeeMore(item) {
-        const showSeeMore =
-            item &&
-            item.content &&
-            item.content.text &&
-            item.content.text.length > SHOW_SEE_MORE_TEXT_LENGTH
+        const showSeeMore = this.state.hasLongText
 
         if (!showSeeMore) return null
         return (
@@ -219,7 +216,7 @@ class PostPreviewCard extends React.PureComponent {
                 <Text
                     style={{
                         ...default_style.normalText_1,
-                        color: color.GM_BLUE,
+                        color: color.GM_MID_GREY,
                     }}
                 >
                     See more
@@ -352,8 +349,9 @@ class PostPreviewCard extends React.PureComponent {
                     contentLinks={links || []}
                     textStyle={default_style.normalText_1}
                     textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
-                    numberOfLines={3}
+                    numberOfLines={CONTENT_PREVIEW_MAX_NUMBER_OF_LINES}
                     ellipsizeMode="tail"
+                    onTextLayout={this.onTextLayout.bind(this)}
                     onUserTagPressed={(user) => {
                         console.log(
                             `${DEBUG_KEY}: user tag press for user: `,
