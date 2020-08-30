@@ -538,10 +538,11 @@ export default (state = INITIAL_STATE, action) => {
             sanityCheck(newState, userId, PROFILE_UPDATE_SUCCESS)
 
             const userToUpdate = _.get(newState, `${userId}.user`)
-            newState = _.set(newState, `${userId}.user`, {
-                ...userToUpdate,
-                ...user,
-            })
+            newState = _.set(
+                newState,
+                `${userId}.user`,
+                _.merge(userToUpdate, user)
+            )
 
             if (!pageId || _.isEmpty(pageId)) {
                 console.warn(

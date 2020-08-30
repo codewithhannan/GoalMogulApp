@@ -52,8 +52,6 @@ class ProfileDetailEditForm extends Component {
     }
 
     submit = (values) => {
-        if (!values.profile.location || values.profile.location === '')
-            values.profile.location = ' '
         const hasImageModified =
             JSON.stringify(this.props.initialValues.profile.image) !==
             JSON.stringify(values.profile.image)
@@ -387,7 +385,6 @@ const mapStateToProps = (state, props) => {
 
     const uploading = getUserDataByPageId(state, userId, pageId, 'uploading')
     const user = getUserData(state, userId, 'user')
-    user.profile.location = user.profile.location === ' ' && ''
 
     return {
         // uploading: state.profile.uploading,

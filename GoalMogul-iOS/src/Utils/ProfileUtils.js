@@ -46,13 +46,15 @@ const ProfileUtils = {
             elevatorPitch,
         }
 
-        Object.keys(profile).forEach(
-            (key) =>
-                (profile[key] == undefined ||
-                    profile[key] == null ||
-                    _.isEmpty(profile[key])) &&
-                delete profile[key]
-        )
+        Object.keys(profile).forEach((key) => {
+            if (
+                profile[key] == undefined ||
+                profile[key] == null ||
+                _.isEmpty(profile[key])
+            ) {
+                key == 'image' ? delete profile[key] : (profile[key] = '')
+            }
+        })
 
         const url =
             'https://goalmogul-api-dev.herokuapp.com/api/secure/user/profile'
