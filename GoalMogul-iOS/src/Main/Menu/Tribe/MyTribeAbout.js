@@ -53,8 +53,9 @@ class MyTribeAbout extends Component {
             ? members
                   .filter(
                       (member) =>
-                          member.category === 'Admin' ||
-                          member.category === 'Member'
+                          member &&
+                          (member.category === 'Admin' ||
+                              member.category === 'Member')
                   )
                   .map((member, index) => {
                       const { memberRef } = member

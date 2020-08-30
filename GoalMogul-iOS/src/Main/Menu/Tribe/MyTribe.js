@@ -511,7 +511,9 @@ class MyTribe extends React.PureComponent {
         const members = item
             ? item.members
                   .filter(
-                      (m) => m.category === 'Admin' || m.category === 'Member'
+                      (m) =>
+                          m &&
+                          (m.category === 'Admin' || m.category === 'Member')
                   )
                   .map((m) => m.memberRef)
             : []

@@ -240,9 +240,11 @@ export const getMyTribeUserStatus = createSelector(
     [getMyTribeMembers, getUserId],
     (members, userId) => {
         if (!members) return ''
-
         let status
         members.map((member) => {
+            if (!member || !member.memberRef || !member.category) {
+                return ''
+            }
             const { memberRef, category } = member
             if (memberRef && memberRef._id === userId) {
                 status = category
@@ -261,8 +263,11 @@ export const myTribeMemberSelector = createSelector(
     [getMyTribeMembersFilter, getMyTribeMembers],
     (filterOptions, members) => {
         if (!members || _.isEmpty(members)) return []
-        return members.filter((member) =>
-            filterOptions.includes(member.category)
+        return members.filter(
+            (member) =>
+                member &&
+                member.memberRef &&
+                filterOptions.includes(member.category)
         )
     }
 )
@@ -313,7 +318,7 @@ export const getMyTribeMemberNavigationState = createSelector(
 
         let isAdmin
         members.forEach((member) => {
-            if (member.memberRef && member.memberRef._id === userId) {
+            if (member && member.memberRef && member.memberRef._id === userId) {
                 if (member.category === 'Admin') {
                     isAdmin = true
                 }
