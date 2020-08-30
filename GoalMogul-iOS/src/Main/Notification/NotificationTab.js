@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, FlatList, Text, TouchableOpacity } from 'react-native'
+import { View, FlatList, Text } from 'react-native'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import { Actions } from 'react-native-router-flux'
@@ -12,30 +12,33 @@ import NotificationCard from './Notification/NotificationCard'
 import NotificationNeedCard from './Need/NotificationNeedCard'
 import EmptyResult from '../Common/Text/EmptyResult'
 import DelayedButton from '../Common/Button/DelayedButton'
-import { RightArrowIcon } from '../../Utils/Icons'
+import InviteFriendModal from '../MeetTab/Modal/InviteFriendModal'
 
 // Actions
 import {
-    seeMoreNotification,
-    seeLessNotification,
+    refreshNeeds,
     refreshNotificationTab,
-    clearUnreadCount,
+    loadMoreNotifications,
     markAllNotificationAsRead,
 } from '../../redux/modules/notification/NotificationTabActions'
 
 // Selectors
-import {
-    getNotifications,
-    getNotificationNeeds,
-} from '../../redux/modules/notification/NotificationSelector'
+import { getNotificationNeeds } from '../../redux/modules/notification/NotificationSelector'
 
 // Styles
-import { color, default_style } from '../../styles/basic'
+import { color, default_style, text } from '../../styles/basic'
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationTab ]'
 
 class NotificationTab extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            showInviteFriendModal: false,
+        }
+    }
+
     componentDidMount() {
         // Refresh notification tab
         console.log(`${DEBUG_KEY}: component did mount`)
@@ -58,226 +61,213 @@ class NotificationTab extends Component {
         }
     }
 
-    componentWillUnmount() {
-        // Remove timer before exiting to prevent app from crashing
-    }
-
-    /**
-     * This function is no longer in used since we refresh the tab through when
-     * we see there is unread count
-     */
-    refreshNotification() {
-        console.log(`${DEBUG_KEY}: refreshing notification`)
-        // Stop timer before sending the mark all notification as read to prevent race condition
-        // this.stopTimer();
-        this.props.refreshNotificationTab()
-        // this.props.clearUnreadCount();
-        // this.props.markAllNotificationAsRead();
-        // // Reset timer after we successfully mark all current notification as read
-        // this.setTimer();
-    }
-
     keyExtractor = (item) => item._id
 
     handleRefresh = () => {
         this.props.refreshNotificationTab()
+        this.props.refreshNeeds()
     }
 
-    renderSeeMore = (item) => {
-        // const onPress = item.type === 'seemore'
-        //   ? () => this.props.seeMoreNotification()
-        //   : () => this.props.seeLessNotification();
-        if (item.type !== 'seemore') return
-
-        const onPress =
-            item.notificationType === 'notification'
-                ? () => Actions.push('notificationList')
-                : () => Actions.push('notificationNeedList')
-        return <SeeMoreButton text={item.text} onPress={onPress} />
+    handleOnLoadMore = () => {
+        this.props.loadMoreNotifications()
     }
 
-    renderHeader = (item) => {
-        return <TitleComponent item={item} />
+    openInviteFriendModal = () => {
+        this.setState({ ...this.state, showInviteFriendModal: true })
     }
 
-    renderItem = (props) => {
-        const { item } = props
+    closeInviteFriendModal = () => {
+        this.setState({ ...this.state, showInviteFriendModal: false })
+    }
 
-        // TODO: update this to the latest type
-        if (item.type === 'seemore' || item.type === 'seeless') {
-            return this.renderSeeMore(item)
-        }
-        if (item.type === 'header') {
-            return this.renderHeader(item)
-        }
-        if (item.type === 'need') {
-            return <NotificationNeedCard item={item} />
-        }
+    renderSectionTitle = (item) => {
+        return (
+            <View style={styles.titleComponentContainerStyle}>
+                <Text style={default_style.titleText_1}>{item.text}</Text>
+            </View>
+        )
+    }
+
+    renderHeader = () => {
+        return (
+            <View style={{ flex: 1, backgroundColor: color.GM_BACKGROUND }}>
+                {this.renderSectionTitle({
+                    text: 'Things your friends need',
+                    type: 'header',
+                    length: 1,
+                })}
+                {this.renderFriendsNeeds()}
+                {this.renderSectionTitle({
+                    text: 'Notifications',
+                    type: 'header',
+                    length: 1,
+                })}
+            </View>
+        )
+    }
+
+    renderNeeds({ item }) {
+        return <NotificationNeedCard item={item} />
+    }
+
+    renderItem({ item }) {
         if (item.type === 'empty') {
             return (
-                <EmptyResult
-                    text="You have no notifications"
-                    textStyle={{ paddingTop: 260 }}
-                />
+                <View
+                    style={{
+                        backgroundColor: 'white',
+                        height: '100%',
+                        width: '100%',
+                        alignItems: 'center',
+                    }}
+                >
+                    <EmptyResult
+                        text="You have no notifications"
+                        textStyle={{ paddingTop: 120 }}
+                    />
+                </View>
             )
         }
         return <NotificationCard item={item} />
     }
 
+    renderFriendsNeeds() {
+        if (this.props.needData.length < 2 && !this.props.refreshing) {
+            return (
+                <View
+                    style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        backgroundColor: color.GM_CARD_BACKGROUND,
+                        paddingTop: 35,
+                        paddingBottom: 10,
+                        marginBottom: 10,
+                    }}
+                >
+                    <View style={{ marginBottom: 10 }}>
+                        <Text style={default_style.titleText_1}>
+                            You don't have many friends yet!
+                        </Text>
+                    </View>
+                    <View style={{ marginBottom: 20 }}>
+                        <Text style={default_style.subTitleText_2}>
+                            Invite some friends to share their goals with you!
+                        </Text>
+                    </View>
+
+                    <DelayedButton
+                        style={{
+                            width: '90%',
+                            backgroundColor: color.GM_BLUE,
+                            alignItems: 'center',
+                            paddingVertical: 12,
+                            marginBottom: 30,
+                            borderRadius: 3,
+                        }}
+                        onPress={this.openInviteFriendModal}
+                    >
+                        <Text
+                            style={
+                                (default_style.buttonText_1,
+                                {
+                                    color: color.TEXT_COLOR.LIGHT,
+                                    fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                                })
+                            }
+                        >
+                            Invite My Friends
+                        </Text>
+                    </DelayedButton>
+                </View>
+            )
+        } else {
+            return (
+                <View>
+                    <FlatList
+                        data={this.props.needData.slice(0, 2)}
+                        renderItem={this.renderNeeds}
+                        keyExtractor={this.keyExtractor}
+                    />
+                    <DelayedButton
+                        style={{
+                            backgroundColor: color.GM_CARD_BACKGROUND,
+                            alignItems: 'center',
+                            paddingVertical: 12,
+                            marginBottom: 8,
+                        }}
+                        onPress={() => {
+                            Actions.push('notificationNeedList')
+                        }}
+                    >
+                        <Text style={default_style.buttonText_1}>See More</Text>
+                    </DelayedButton>
+                </View>
+            )
+        }
+    }
+
     render() {
-        const { data } = this.props
-        let dataToRender = data
-        if (_.isEmpty(data) || data.length === 0) {
+        const { notifData, refreshing } = this.props
+        let dataToRender = notifData
+        if ((_.isEmpty(notifData) || notifData.length === 0) && !refreshing) {
+            //if (true) {
             dataToRender = [{ type: 'empty', _id: 'empty' }]
         }
 
         return (
-            <View style={{ flex: 1, backgroundColor: 'white' }}>
+            <View style={{ flex: 1 }}>
                 <SearchBarHeader rightIcon="menu" />
                 <FlatList
+                    style={{
+                        backgroundColor: color.GM_BACKGROUND,
+                        paddingBottom: 0,
+                        marginBottom: 0,
+                    }}
                     data={dataToRender}
                     renderItem={this.renderItem}
+                    ListHeaderComponent={this.renderHeader}
                     keyExtractor={this.keyExtractor}
                     onRefresh={this.handleRefresh}
-                    refreshing={this.props.refreshing}
+                    onEndReached={this.handleOnLoadMore}
+                    onEndReachedThreshold={2}
+                    refreshing={refreshing}
+                />
+                <InviteFriendModal
+                    isVisible={this.state.showInviteFriendModal | false}
+                    closeModal={this.closeInviteFriendModal}
                 />
             </View>
         )
     }
 }
 
-const TestData = [
-    { _id: '0', type: 'header', text: 'Notifications' },
-    { _id: '1' },
-    { _id: '2' },
-    { _id: '3', type: 'seemore', text: 'See More' },
-    { _id: '4', type: 'header', text: "Friend's Needs" },
-    { _id: '5', type: 'need' },
-]
-
-const SeeMoreButton = (props) => {
-    const { onPress, text } = props
-    return (
-        <DelayedButton
-            activeOpacity={0.6}
-            style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: 10,
-            }}
-            onPress={() => onPress()}
-        >
-            <Text style={styles.seeMoreTextStyle}>{text}</Text>
-            <RightArrowIcon
-                iconContainerStyle={{
-                    alignSelf: 'center',
-                    alignItems: 'center',
-                }}
-                iconStyle={{ tintColor: '#17B3EC', ...styles.iconStyle }}
-            />
-            {/* <View style={{ alignSelf: 'center', alignItems: 'center' }}>
-        <Icon
-          name='ios-arrow-round-forward'
-          type='ionicon'
-          color='#17B3EC'
-          iconStyle={styles.iconStyle}
-        />
-      </View> */}
-        </DelayedButton>
-    )
-}
-
-/**
- * Title component at the start of each notification type
- */
-const TitleComponent = (props) => {
-    const { text, notificationType, length } = props.item
-    let seeAll = null
-    if (
-        length !== undefined &&
-        length === 0 &&
-        notificationType === 'notification'
-    ) {
-        const { seeAllContainerStyle, seeAllTextStyle } = styles
-        const onPress = () => Actions.push('notificationList')
-        seeAll = (
-            <DelayedButton
-                style={{
-                    ...seeAllContainerStyle,
-                    paddingLeft: 5,
-                    alignSelf: 'flex-end',
-                }}
-                activeOpacity={0.6}
-                onPress={onPress}
-            >
-                <Text style={seeAllTextStyle}>Manage All</Text>
-            </DelayedButton>
-        )
-    }
-
-    return (
-        <View style={styles.titleComponentContainerStyle}>
-            <Text style={{ fontSize: 11, color: '#6d6d6d', fontWeight: '600' }}>
-                {text}
-            </Text>
-            {seeAll}
-        </View>
-    )
-}
-
 const mapStateToProps = (state) => {
-    const notificationData = getNotifications(state)
-    // .filter(d => {
-    //   if (d && d.parsedNoti && d.parsedNoti.error) return false;
-    //   return true;
-    // });
-    // console.log(`${DEBUG_KEY}: notificationData: `, notificationData.length);
-
     const notificationNeedData = getNotificationNeeds(state)
     const { needs, notifications, unread } = state.notification
     const { shouldUpdateUnreadCount } = unread
 
     return {
         refreshing: needs.refreshing || notifications.refreshing,
-        data: [...notificationData, ...notificationNeedData],
-        loading: needs.loading || notifications.loading,
+        notifData: notifications.data,
+        needData: notificationNeedData,
+        loading: notifications.loading,
         shouldUpdateUnreadCount,
     }
 }
 
 const styles = {
-    seeMoreTextStyle: {
-        ...default_style.normalText_1,
-        fontWeight: '600',
-        color: '#17B3EC',
-        alignSelf: 'center',
-    },
     iconStyle: {
         alignSelf: 'center',
-        // fontSize: 20,
         height: 15,
         width: 20,
         marginLeft: 5,
     },
     titleComponentContainerStyle: {
-        paddingLeft: 12, // Needs to be aligned with NotificationCard padding
-        padding: 12,
-        borderColor: 'lightgray',
-        borderBottomWidth: 0.5,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    seeAllContainerStyle: {
-        backgroundColor: 'white',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    seeAllTextStyle: {
-        color: color.GM_BLUE,
-        fontSize: 12,
-        fontWeight: '700',
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        borderColor: color.GM_BORDER_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
+        borderBottomWidth: 1,
     },
 }
 
@@ -285,9 +275,8 @@ export default connect(
     mapStateToProps,
     {
         refreshNotificationTab,
-        seeMoreNotification,
-        seeLessNotification,
-        clearUnreadCount,
+        loadMoreNotifications,
+        refreshNeeds,
         markAllNotificationAsRead,
     },
     null,

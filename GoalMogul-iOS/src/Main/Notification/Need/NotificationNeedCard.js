@@ -14,12 +14,14 @@ import DelayedButton from '../../Common/Button/DelayedButton'
 // Assets
 import bulb from '../../../asset/utils/bulb.png'
 import forward from '../../../asset/utils/right_arrow.png'
+import { Icon } from '@ui-kitten/components'
 
 // Actions
 import {
     openGoalDetail,
     openGoalDetailById,
 } from '../../../redux/modules/home/mastermind/actions'
+import { color } from '../../../styles/basic'
 import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 // Constants
@@ -72,13 +74,11 @@ class NotificationCard extends React.Component {
 
     renderProfileImage(item) {
         const { goalRef } = item
-
         return (
             <ProfileImage
                 imageStyle={{ height: 50, width: 50 }}
                 imageUrl={getProfileImageOrDefaultFromUser(goalRef.owner)}
                 rounded
-                imageContainerStyle={styles.imageContainerStyle}
             />
         )
     }
@@ -120,8 +120,6 @@ class NotificationCard extends React.Component {
             <View
                 style={{
                     flexDirection: 'row',
-                    borderLeftWidth: 0.5,
-                    borderColor: '#dbdbdb',
                     marginLeft: 2,
                 }}
             >
@@ -129,28 +127,21 @@ class NotificationCard extends React.Component {
                     activeOpacity={0.6}
                     style={{
                         ...styles.iconContainerStyle,
-                        backgroundColor: '#fdf9e5',
+                        backgroundColor: '#FFFAEC',
                     }}
                     onPress={() => this.handleOnSuggestion(item)}
                 >
-                    <Image
-                        style={{ ...styles.iconStyle, tintColor: '#f6c44f' }}
-                        source={bulb}
+                    <Icon
+                        name="lightbulb-on-outline"
+                        pack="material-community"
+                        style={[
+                            styles.iconStyle,
+                            {
+                                tintColor: '#F2C94C',
+                            },
+                        ]}
                     />
                 </TouchableOpacity>
-                {/* 
-          // Removed for version 0.3.4
-          <TouchableOpacity 
-            activeOpacity={0.6}
-            style={{ ...styles.iconContainerStyle, backgroundColor: '#ebf9fe' }}
-            onPress={() => this.handleOnOpen(item)}
-          >
-            <Image
-              style={{ ...styles.iconStyle, tintColor: '#3aa5ce' }}
-              source={forward}
-            />
-          </TouchableOpacity> 
-        */}
             </View>
         )
     }
@@ -188,11 +179,9 @@ const styles = {
         paddingTop: 10,
         paddingBottom: 10,
         alignItems: 'center',
-    },
-    imageContainerStyle: {
-        alignItems: 'center',
-        alignSelf: 'center',
-        backgroundColor: 'white',
+        borderBottomWidth: 1,
+        borderBottomColor: color.GM_BORDER_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
     },
     iconContainerStyle: {
         height: 36,
@@ -203,9 +192,9 @@ const styles = {
         marginLeft: 12,
     },
     iconStyle: {
-        height: 16,
+        height: 18,
         width: 18,
-        borderRadius: 8,
+        borderRadius: 9,
     },
 }
 

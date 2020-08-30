@@ -227,9 +227,7 @@ class RouterComponent extends Component {
 
         if (state.key === 'notificationTab') {
             if (Actions.refs.notification !== undefined) {
-                Actions.refs.notification
-                    .getWrappedInstance()
-                    .refreshNotification()
+                Actions.refs.notification.getWrappedInstance().handleRefresh()
             }
         }
 

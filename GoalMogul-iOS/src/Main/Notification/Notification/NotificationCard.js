@@ -15,15 +15,14 @@ import ProfileImage from '../../Common/ProfileImage'
 import Timestamp from '../../Goal/Common/Timestamp'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
-// Asset
-import FriendsSettingIcon from '../../../asset/utils/friendsSettingIcon.png'
-
 // Actions
 import {
     openNotificationDetail,
     removeNotification,
 } from '../../../redux/modules/notification/NotificationActions'
 import { Logger } from '../../../redux/middleware/utils/Logger'
+import { Icon } from '@ui-kitten/components'
+import { color } from '../../../styles/basic'
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationCard ]'
@@ -87,8 +86,6 @@ class NotificationCard extends React.PureComponent {
             <ProfileImage
                 imageStyle={{ height: 50, width: 50 }}
                 imageUrl={imageUrl}
-                rounded
-                imageContainerStyle={styles.imageContainerStyle}
             />
         )
     }
@@ -106,9 +103,16 @@ class NotificationCard extends React.PureComponent {
                     paddingBottom: 10,
                 }}
             >
-                <Image
-                    style={{ width: 23, height: 19, tintColor: '#21364C' }}
-                    source={FriendsSettingIcon}
+                <Icon
+                    name="dots-horizontal"
+                    pack="material-community"
+                    style={[
+                        {
+                            tintColor: '#828282',
+                            width: 18,
+                            height: 18,
+                        },
+                    ]}
                 />
             </TouchableOpacity>
         )
@@ -186,11 +190,9 @@ const styles = {
         paddingTop: 10,
         paddingBottom: 10,
         alignItems: 'center',
-    },
-    imageContainerStyle: {
-        alignItems: 'center',
-        alignSelf: 'center',
-        backgroundColor: 'white',
+        borderBottomWidth: 1,
+        borderBottomColor: color.GM_BORDER_COLOR,
+        backgroundColor: color.GM_CARD_BACKGROUND,
     },
 }
 
