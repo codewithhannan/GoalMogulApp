@@ -7,25 +7,36 @@
  */
 
 import React from 'react'
-import { View, Image } from 'react-native'
+import { View, Image, Dimensions, StatusBar } from 'react-native'
 import HeaderImage from '../../../asset/header/header-logo.png'
 import { color } from '../../../styles/basic'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 class OnboardingHeader extends React.Component {
+    getScreenHeight = () => {
+        return Math.round(Dimensions.get('window').height)
+    }
+
     render() {
+        const screenHeight = this.getScreenHeight()
+
+        // Below is from https://github.com/ovr/react-native-status-bar-height#readme
+        // that takes care of both iphone and android status bar height
+        const statusBarHeight = getStatusBarHeight()
+
         return (
             <View style={styles.containerStyle}>
-                <View style={{ height: 34, width: '100%' }} />
+                <View style={{ height: statusBarHeight, width: '100%' }} />
                 <View
                     style={{
-                        height: 116,
+                        height: screenHeight / 9.5,
                         justifyContent: 'center',
                         alignItems: 'center',
                     }}
                 >
                     <Image
                         source={HeaderImage}
-                        style={{ height: 48 }}
+                        style={{ height: screenHeight / 20 }}
                         resizeMode="contain"
                     />
                 </View>

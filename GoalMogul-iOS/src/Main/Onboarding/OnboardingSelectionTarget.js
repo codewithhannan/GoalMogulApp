@@ -102,7 +102,10 @@ class OnboardingSelectionTarget extends React.Component {
                 >
                     <TextInput
                         placeholder="What would you like to get out of this app?"
-                        style={[OnboardingStyles.input.text]}
+                        style={[
+                            OnboardingStyles.input.text,
+                            { textAlignVertical: 'top' },
+                        ]}
                         value={extra}
                         onChangeText={(val) =>
                             this.props.registrationTargetSelection(

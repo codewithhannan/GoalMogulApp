@@ -7,7 +7,7 @@
  */
 
 import React from 'react'
-import { View, Text, Dimensions, Image } from 'react-native'
+import { View, Text, Dimensions, Image, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import Carousel from 'react-native-snap-carousel'
 import OnboardingHeader from './Common/OnboardingHeader'
@@ -24,7 +24,6 @@ import {
     trackWithProperties,
 } from '../../monitoring/segment'
 
-const screenWidth = Math.round(Dimensions.get('window').width)
 const { text: textStyle } = OnboardingStyles
 
 class OnboardingCommunity extends React.Component {
@@ -58,8 +57,22 @@ class OnboardingCommunity extends React.Component {
         }
     }
 
+    getCurrentScreenWidth = () => {
+        return Math.round(Dimensions.get('window').width)
+    }
+
+    getImageWidth = () => {
+        const currentScreenWidth = this.getCurrentScreenWidth()
+
+        return Platform.select({
+            ios: currentScreenWidth - 32 - 10 - 10,
+            android: currentScreenWidth - 32 - 10 - 70,
+        })
+    }
+
     renderCard = ({ index, item }) => {
         const { title, subTitle, picture } = item
+        const width = this.getImageWidth()
         return (
             <View
                 style={{
@@ -76,23 +89,24 @@ class OnboardingCommunity extends React.Component {
                 }}
                 key={index}
             >
-                <View>
+                <View style={{ paddingTop: 12 }}>
                     {picture ? (
                         <Image
                             style={{
-                                width: screenWidth - 32 - 10 - 10,
-                                height: screenWidth - 32 - 10,
+                                width,
+                                height: width,
                                 backgroundColor: color.GM_CARD_BACKGROUND,
                                 borderTopLeftRadius: 10,
                                 borderTopRightRadius: 10,
                             }}
                             source={picture}
+                            resizeMode="contain"
                         />
                     ) : (
                         <View
                             style={{
-                                width: screenWidth - 32 - 10 - 10,
-                                height: screenWidth - 32 - 10,
+                                width,
+                                height: width,
                                 backgroundColor: 'gray',
                                 borderTopLeftRadius: 10,
                                 borderTopRightRadius: 10,
@@ -102,7 +116,7 @@ class OnboardingCommunity extends React.Component {
                 </View>
 
                 <View
-                    style={{ width: '70%', justifyContent: 'center', flex: 1 }}
+                    style={{ width: '80%', justifyContent: 'center', flex: 1 }}
                 >
                     <Text
                         style={[
@@ -165,8 +179,8 @@ class OnboardingCommunity extends React.Component {
                             }}
                             data={this.props.communityGuidelines}
                             renderItem={this.renderCard}
-                            sliderWidth={screenWidth}
-                            itemWidth={screenWidth - 32}
+                            sliderWidth={this.getCurrentScreenWidth()}
+                            itemWidth={this.getCurrentScreenWidth() - 32}
                             layout={'stack'}
                             layoutCardOffset={10}
                             onSnapToItem={this.onSwipedAll}

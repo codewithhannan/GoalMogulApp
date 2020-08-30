@@ -262,6 +262,8 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
         email,
         countryCode,
         phone,
+        gender,
+        dateOfBirth,
     } = getState().registration
 
     const phoneNumber = constructPhoneNumber(countryCode, phone)
@@ -270,6 +272,8 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
         password,
         email,
         phone: phoneNumber,
+        gender: gender === 'Prefer not to say' ? undefined : gender,
+        dateOfBirth,
     }
 
     dispatch({

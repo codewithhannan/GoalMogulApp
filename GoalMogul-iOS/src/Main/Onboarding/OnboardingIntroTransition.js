@@ -95,7 +95,7 @@ class OnboardingIntroTransition extends React.Component {
                         <Text
                             style={[
                                 textStyle.paragraph,
-                                { marginVertical: 24 },
+                                { marginVertical: 24, textAlign: 'center' },
                             ]}
                         >
                             Almost done! Please answer these{' '}
