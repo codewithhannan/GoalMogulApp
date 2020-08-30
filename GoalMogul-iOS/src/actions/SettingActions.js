@@ -8,7 +8,11 @@ import * as Permissions from 'expo-permissions'
 import { Alert, Platform } from 'react-native'
 
 import { api as API } from '../redux/middleware/api'
-import { componentKeyByTab } from '../redux/middleware/utils'
+import {
+    componentKeyByTab,
+    is2xxRespose,
+    is5xxResponse,
+} from '../redux/middleware/utils'
 import { getUserData } from '../redux/modules/User/Selector'
 
 import {
@@ -98,59 +102,64 @@ export const onResendEmailPress = (callback, userId) => (
 export const onUpdateEmailSubmit = (values, callback) => {
     return async (dispatch, getState) => {
         const { token, userId } = getState().user
-        const url =
-            'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account'
-        const headers = {
-            method: 'PUT',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                token,
-                email: values.email,
-            }),
-        }
+        const url = 'secure/user/account'
         const { tab } = getState().navigation
         const componentToPopTo = componentKeyByTab(tab, 'setting')
-        const message = await fetch(url, headers)
-            .then((res) => res.json())
-            .then((res) => {
-                console.log('update email address with response: ', res)
-                if (res.success) {
-                    trackWithProperties(E.EMAIL_UPDATED, {
-                        UserId: userId,
-                        Email: values.email,
-                    })
-                    dispatch({
-                        type: SETTING_EMAIL_UPDATE_SUCCESS,
-                        payload: {
-                            email: values.email,
-                            userId,
-                        },
-                    })
-                    Actions.popTo(`${componentToPopTo}`) // It was setting
-                    if (callback) {
-                        callback(
-                            "Your email has been updated. We'll send you a verification email shortly."
-                        )
-                    }
-                    return
-                }
-                return res.message
-            })
-            .catch((err) => {
-                console.log('error updating email: ', err)
-                throw new SubmissionError({
-                    _error: err,
-                })
-            })
 
-        if (message) {
+        let res
+        try {
+            res = await API.put(
+                url,
+                {
+                    email: values.email,
+                    currentPassword: values.password,
+                },
+                token
+            )
+
+            if (is2xxRespose(res.status)) {
+                trackWithProperties(E.EMAIL_UPDATED, {
+                    UserId: userId,
+                    Email: values.email,
+                })
+                dispatch({
+                    type: SETTING_EMAIL_UPDATE_SUCCESS,
+                    payload: {
+                        email: values.email,
+                        userId,
+                    },
+                })
+                Actions.popTo(`${componentToPopTo}`) // It was setting
+                if (callback) {
+                    callback(
+                        "Your email has been updated. We'll send you a verification email shortly."
+                    )
+                }
+                return
+            }
+        } catch (err) {
             throw new SubmissionError({
-                _error: message,
+                _error: err,
             })
+            // TODO: sentry error logging
         }
+
+        if (!res || is5xxResponse(res.status)) {
+            throw new SubmissionError({
+                _error: 'Please try again later',
+            })
+            // TODO: sentry error logging
+        }
+
+        // No need to add sentry logging as this is caused by user error
+        let message = res.message
+        if (message && message.includes('Password')) {
+            message = 'Incorrect password'
+        }
+
+        throw new SubmissionError({
+            _error: message,
+        })
     }
 }
 

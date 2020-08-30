@@ -45,7 +45,7 @@ class EditEmailForm extends Component {
     /* Refactor error function out */
     renderError(error) {
         return error ? (
-            <View style={{ marginTop: 5 }}>
+            <View style={{ marginTop: 16, paddingHorizontal: 20 }}>
                 <Text style={styles.errorStyle}>{error}</Text>
             </View>
         ) : null
@@ -110,7 +110,12 @@ class EditEmailForm extends Component {
                         component={this.renderInput}
                         validate={validateEmail}
                     />
-
+                    <Field
+                        name="password"
+                        label="Password"
+                        component={this.renderInput}
+                        secureTextEntry
+                    />
                     <TouchableOpacity
                         activeOpacity={0.6}
                         onPress={handleSubmit(this.handleOnSubmitPress)}
