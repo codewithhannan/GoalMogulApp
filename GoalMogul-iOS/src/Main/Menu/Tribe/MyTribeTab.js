@@ -1,9 +1,10 @@
 /** @format */
 
 import React from 'react'
-import { View, FlatList, TouchableOpacity, Image } from 'react-native'
+import { Alert, View, FlatList, TouchableOpacity, Image } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuProvider } from 'react-native-popup-menu'
+import _ from 'lodash'
 
 // Actions
 import {
@@ -21,6 +22,7 @@ import SearchBarHeader from '../../Common/Header/SearchBarHeader'
 import MyTribeFilterBar from './MyTribeFilterBar'
 import TabButtonGroup from '../../Common/TabButtonGroup'
 import EmptyResult from '../../Common/Text/EmptyResult'
+import EarnBadgeModal from '../../Gamification/Badge/EarnBadgeModal'
 
 // Assets
 import plus from '../../../asset/utils/plus.png'
@@ -32,6 +34,12 @@ import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 const DEBUG_KEY = '[ UI MyTribeTab ]'
 
 class MyTribeTab extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            showBadgeEarnModal: false,
+        }
+    }
     componentDidMount() {
         const { initial } = this.props
         if (initial && initial.openNewTribeModal) {
@@ -73,7 +81,29 @@ class MyTribeTab extends React.Component {
             <TouchableOpacity
                 activeOpacity={0.6}
                 style={styles.iconContainerStyle}
-                onPress={() => this.props.openNewTribeModal()}
+                onPress={() => {
+                    if (this.props.isSilverBadgePlus) {
+                        this.props.openNewTribeModal()
+                    } else {
+                        Alert.alert(
+                            'Cannot create new Tribe',
+                            'Attain a silver badge to create your own tribe!',
+                            [
+                                {
+                                    text: 'Learn more',
+                                    onPress: () => {
+                                        this.setState({
+                                            showBadgeEarnModal: true,
+                                        })
+                                    },
+                                },
+                                {
+                                    text: 'Cancel',
+                                },
+                            ]
+                        )
+                    }
+                }}
             >
                 <Image style={styles.iconStyle} source={plus} />
             </TouchableOpacity>
@@ -115,6 +145,15 @@ class MyTribeTab extends React.Component {
                         }
                         onEndThreshold={0}
                     />
+                    <EarnBadgeModal
+                        isVisible={this.state.showBadgeEarnModal}
+                        closeModal={() => {
+                            this.setState({
+                                showBadgeEarnModal: false,
+                            })
+                        }}
+                        user={this.props.user}
+                    />
                     {this.renderCreateTribeButton()}
                 </MenuProvider>
             </View>
@@ -124,12 +163,21 @@ class MyTribeTab extends React.Component {
 
 const mapStateToProps = (state) => {
     const { showModal, loading, data, navigationState } = state.myTribeTab
+    const { user } = state.user
+    const level = _.get(
+        user,
+        'profile.badges.milestoneBadge.currentMilestone',
+        1
+    )
+    const isSilverBadgePlus = level >= 2
 
     return {
+        user,
         data,
         loading,
         showModal,
         navigationState,
+        isSilverBadgePlus,
     }
 }
 
