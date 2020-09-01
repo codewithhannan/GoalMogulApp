@@ -35,9 +35,9 @@ import GoalFilterBar from '../Common/GoalFilterBar'
 import SearchBarHeader from '../Common/Header/SearchBarHeader'
 import TabButtonGroup from '../Common/TabButtonGroup'
 import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
-import ProfileGoalCard from '../Goal/GoalCard/ProfileGoalCard2'
+import ProfileGoalCard from '../Goal/GoalCard/ProfileGoalCard'
 import ProfileNeedCard from '../Goal/NeedCard/ProfileNeedCard'
-import PostPreviewCard from '../Post/PostProfileCard/PostPreviewCard'
+import PostPreviewCard from '../Post/PostPreviewCard/PostPreviewCard'
 import About from './About'
 import ProfileDetailCard from './ProfileCard/ProfileDetailCard'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
@@ -71,7 +71,6 @@ class ProfileV2 extends Component {
             this.props.userPageLoading === false
         ) {
             this.setState({
-                ...this.state,
                 hasLoadedProfile: true,
             })
         }
@@ -91,7 +90,6 @@ class ProfileV2 extends Component {
         ) {
             // Showing modal to congrats user earning a new badge
             this.setState({
-                ...this.state,
                 showBadgeEarnModal: true,
             })
             return

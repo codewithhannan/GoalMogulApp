@@ -496,7 +496,7 @@ const styles = {
         borderRadius: 50,
     },
     pillSelectedStyle: {
-        backgroundColor: color.GM_BORDER_COLOR,
+        backgroundColor: color.GM_LIGHT_GRAY,
         borderColor: color.GM_MID_GREY,
     },
     labelStyle: {

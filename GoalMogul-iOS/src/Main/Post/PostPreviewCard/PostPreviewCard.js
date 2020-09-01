@@ -42,7 +42,10 @@ import {
 
 import { default_style, color } from '../../../styles/basic'
 import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
-import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
+import {
+    getProfileImageOrDefaultFromUser,
+    isSharedPost,
+} from '../../../redux/middleware/utils'
 import FloatingHearts from '../../Common/FloatingHearts/FloatingHearts'
 import ActionBar from '../../Common/ContentCards/ActionBar'
 
@@ -155,7 +158,7 @@ class PostPreviewCard extends React.PureComponent {
 
         // User shouldn't share a share. When Activity on a post which is a share,
         // We disable the share button.
-        const isShare = item.postType !== 'General'
+        const isShare = isSharedPost(item.postType)
 
         return (
             <ActionBar
@@ -348,7 +351,7 @@ class PostPreviewCard extends React.PureComponent {
                     contentTags={tags}
                     contentLinks={links || []}
                     textStyle={default_style.normalText_1}
-                    textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
+                    textContainerStyle={{ flexDirection: 'row', marginTop: 16 }}
                     numberOfLines={CONTENT_PREVIEW_MAX_NUMBER_OF_LINES}
                     ellipsizeMode="tail"
                     onTextLayout={this.onTextLayout.bind(this)}

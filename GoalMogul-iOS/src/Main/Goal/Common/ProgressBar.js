@@ -93,7 +93,15 @@ const getProgress = (steps, needs, goalRef) => {
 }
 
 const ProgressBar = (props) => {
-    const { startTime, endTime, steps, needs, goalRef, onPress } = props
+    const {
+        startTime,
+        endTime,
+        steps,
+        needs,
+        goalRef,
+        onPress,
+        containerStyle,
+    } = props
     const percentage = getProgress(steps || [], needs || [], goalRef) * 100
     // min sections 3 max 10
     const sections =
@@ -145,7 +153,11 @@ const ProgressBar = (props) => {
 
     if (onPress)
         return (
-            <DelayedButton touchableWithoutFeedback onPress={onPress}>
+            <DelayedButton
+                style={containerStyle}
+                touchableWithoutFeedback
+                onPress={onPress}
+            >
                 {progressBar}
             </DelayedButton>
         )

@@ -78,7 +78,7 @@ import { StackedAvatarsV2 } from '../../Common/StackedAvatars'
 import TabButtonGroup from '../../Common/TabButtonGroup'
 // import ParticipantFilterBar from '../../Event/ParticipantFilterBar';
 import EmptyResult from '../../Common/Text/EmptyResult'
-import PostPreviewCard from '../../Post/PostProfileCard/PostPreviewCard'
+import PostPreviewCard from '../../Post/PostPreviewCard/PostPreviewCard'
 import MemberListCard from '../../Tribe/MemberListCard'
 import About from './MyEventAbout'
 import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'

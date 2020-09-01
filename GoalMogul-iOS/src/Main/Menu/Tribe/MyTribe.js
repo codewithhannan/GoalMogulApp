@@ -7,7 +7,6 @@ import {
     Dimensions,
     FlatList,
     Image,
-    Platform,
     Text,
     TouchableOpacity,
     View,
@@ -62,7 +61,7 @@ import {
 // Components
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
 import EmptyResult from '../../Common/Text/EmptyResult'
-import PostPreviewCard from '../../Post/PostProfileCard/PostPreviewCard'
+import PostPreviewCard from '../../Post/PostPreviewCard/PostPreviewCard'
 import About from './MyTribeAbout'
 import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 

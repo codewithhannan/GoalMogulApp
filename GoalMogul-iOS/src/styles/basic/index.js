@@ -70,13 +70,13 @@ export const default_style = {
         fontFamily: text.FONT_FAMILY.REGULAR,
         fontSize: 11 * UI_SCALE,
         color: color.TEXT_COLOR.DARK,
-        letterSpacing: text.LETTER_SPACING.REGULAR,
+        letterSpacing: text.LETTER_SPACING.WIDE,
     },
     smallText_2: {
         fontFamily: text.FONT_FAMILY.MEDIUM,
         fontSize: 10 * UI_SCALE,
         color: color.TEXT_COLOR.OFF_DARK,
-        letterSpacing: text.LETTER_SPACING.REGULAR,
+        letterSpacing: text.LETTER_SPACING.WIDE,
     },
     smallIcon_1: {
         height: 13 * UI_SCALE,
@@ -131,12 +131,12 @@ export const default_style = {
     cardHorizontalSeparator: {
         alignSelf: 'center',
         width: '95%',
-        backgroundColor: color.GM_BORDER_COLOR,
+        backgroundColor: color.GM_LIGHT_GRAY,
         height: 1,
     },
     cardVerticalSeparator: {
         height: '75%',
         width: 1,
-        backgroundColor: color.GM_BORDER_COLOR,
+        backgroundColor: color.GM_LIGHT_GRAY,
     },
 }

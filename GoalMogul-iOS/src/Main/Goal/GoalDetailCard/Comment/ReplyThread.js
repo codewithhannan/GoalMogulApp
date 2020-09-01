@@ -12,12 +12,10 @@ import React from 'react'
 import {
     View,
     FlatList,
-    KeyboardAvoidingView,
     TouchableWithoutFeedback,
     ImageBackground,
     TouchableOpacity,
     Image,
-    Platform,
     Animated,
     Keyboard,
 } from 'react-native'
@@ -72,7 +70,7 @@ class ReplyThread extends React.Component {
             likeListParentId: undefined,
             likeListParentType: undefined,
         }
-        this.commentBoxPadding = new Animated.Value(0)
+        this.contentBottomPadding = new Animated.Value(0)
         this.openCommentLikeList = this.openCommentLikeList.bind(this)
         this.closeCommentLikeList = this.closeCommentLikeList.bind(this)
 
@@ -105,7 +103,7 @@ class ReplyThread extends React.Component {
     }
 
     keyboardWillShow = (e) => {
-        Animated.timing(this.commentBoxPadding, {
+        Animated.timing(this.contentBottomPadding, {
             useNativeDriver: false,
             toValue: e.endCoordinates.height,
             duration: e.duration,
@@ -113,7 +111,7 @@ class ReplyThread extends React.Component {
     }
 
     keyboardWillHide = (e) => {
-        Animated.timing(this.commentBoxPadding, {
+        Animated.timing(this.contentBottomPadding, {
             useNativeDriver: false,
             toValue: 0,
             duration: e.duration,
@@ -122,6 +120,7 @@ class ReplyThread extends React.Component {
 
     resetCommentBox = () => {
         const { newComment, pageId } = this.props
+        if (!newComment) return
         this.props.createEmptyComment(
             {
                 commentType: 'Comment',
@@ -152,6 +151,7 @@ class ReplyThread extends React.Component {
 
     clearCommentBox = () => {
         const { newComment, itemId, pageId } = this.props
+        if (!newComment) return
         this.props.createEmptyComment(
             {
                 commentType: 'Reply',
@@ -402,28 +402,26 @@ class ReplyThread extends React.Component {
                     parentType={this.state.likeListParentType}
                     clearDataOnHide
                 />
-                <View style={{ flex: 1 }}>
-                    <ModalHeader
-                        onCancel={() => {
-                            // reset comment box redux area on close
-                            this.resetCommentBox()
-                            Actions.pop()
-                        }}
-                        back
-                    />
+                <ModalHeader
+                    onCancel={() => {
+                        // reset comment box redux area on close
+                        this.resetCommentBox()
+                        Actions.pop()
+                    }}
+                    back
+                />
+                <Animated.View
+                    style={{
+                        flex: 1,
+                        paddingBottom: this.contentBottomPadding,
+                    }}
+                >
                     <FlatList
                         ListHeaderComponent={this.renderHeader()}
                         data={childComments}
                         renderItem={this.renderItem}
                     />
-                    <Animated.View
-                        style={[
-                            styles.composerContainer,
-                            {
-                                paddingBottom: this.commentBoxPadding,
-                            },
-                        ]}
-                    >
+                    <View style={styles.composerContainer}>
                         <CommentBox
                             onRef={(ref) => (this.commentBox = ref)}
                             hasSuggestion={!!this.props.goalId}
@@ -432,8 +430,8 @@ class ReplyThread extends React.Component {
                             onPost={this.clearCommentBox}
                             isReplyCommentBox={true}
                         />
-                    </Animated.View>
-                </View>
+                    </View>
+                </Animated.View>
             </MenuProvider>
         )
     }
@@ -445,7 +443,6 @@ const styles = {
         backgroundColor: 'white',
     },
     composerContainer: {
-        position: 'absolute',
         left: 0,
         right: 0,
         bottom: 0,

@@ -28,7 +28,6 @@ import {
     GOAL_DETAIL_CLOSE,
     GOAL_DETAIL_UPDATE_STEP_NEED_SUCCESS,
     GOAL_DETAIL_MARK_NEED_AS_COMPLETE_SUCCESS,
-    GOAL_DETAIL_MARK_STEP_AS_COMPLETE_SUCCESS,
     GOAL_DETAIL_SHARE_TO_MASTERMIND_SUCCESS,
     GOAL_DETAIL_MARK_AS_COMPLETE_SUCCESS,
     GOAL_DETAIL_SWITCH_TAB_V2,
@@ -43,11 +42,7 @@ import {
 
 import { COMMENT_DELETE_SUCCESS } from '../feed/comment/CommentReducers'
 
-import {
-    COMMENT_NEW_POST_SUCCESS,
-    COMMENT_NEW_POST_FAIL,
-    COMMENT_NEW_POST_START,
-} from '../feed/comment/NewCommentReducers'
+import { COMMENT_NEW_POST_SUCCESS } from '../feed/comment/NewCommentReducers'
 
 import {
     LIKE_POST,
@@ -64,6 +59,15 @@ import {
     MYTRIBE_GOAL_REFRESH_DONE,
     MYTRIBE_GOAL_LOAD_DONE,
 } from '../tribe/Tribes'
+import { arrayUnique } from '../../middleware/utils'
+
+export const MY_GOALS_REFRESH_START = 'my_goals_refresh_start'
+export const MY_GOALS_REFRESH_SUCCESS = 'my_goals_refresh_success'
+export const MY_GOALS_REFRESH_FAIL = 'my_goals_refresh_fail'
+
+export const MY_GOALS_LOAD_MORE_START = 'my_goals_load_more_start'
+export const MY_GOALS_LOAD_MORE_SUCCESS = 'my_goals_load_more_success'
+export const MY_GOALS_LOAD_MORE_FAIL = 'my_goals_load_more_fail'
 
 /**
  * List of const to add
@@ -144,10 +148,66 @@ export const INITIAL_GOAL_PAGE = {
     navigationStateV2: { ...INITIAL_NAVIGATION_STATE_V2 },
 }
 
-const INITIAL_STATE = {}
+const INITIAL_STATE = {
+    myGoals: {
+        refreshing: false,
+        loading: false,
+        filter: false,
+        limit: 10,
+        skip: 0,
+        data: [],
+    },
+}
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
+        /* My Goals related */
+        case MY_GOALS_REFRESH_START: {
+            let newState = _.cloneDeep(state)
+            newState = _.set(newState, 'myGoals.refreshing', true)
+            return newState
+        }
+
+        case MY_GOALS_REFRESH_SUCCESS: {
+            const { data } = action.payload
+            let newState = _.cloneDeep(state)
+            newState = _.set(newState, 'myGoals.refreshing', false)
+            newState = _.set(newState, 'myGoals.data', data)
+            newState = _.set(newState, 'myGoals.skip', data.length)
+            return newState
+        }
+
+        case MY_GOALS_REFRESH_FAIL: {
+            let newState = _.cloneDeep(state)
+            _.set(newState, 'myGoals.refreshing', false)
+            return newState
+        }
+
+        case MY_GOALS_LOAD_MORE_START: {
+            let newState = _.cloneDeep(state)
+            newState = _.set(newState, 'myGoals.loading', true)
+            return newState
+        }
+
+        case MY_GOALS_LOAD_MORE_SUCCESS: {
+            const { data } = action.payload
+            let newState = _.cloneDeep(state)
+
+            const oldData = _.get(newState, 'myGoals.data', [])
+            let newData = arrayUnique(oldData.concat(data))
+
+            newState = _.set(newState, 'myGoals.loading', false)
+            newState = _.set(newState, 'myGoals.data', newData)
+            newState = _.set(newState, 'myGoals.skip', newData.length)
+            return newState
+        }
+
+        case MY_GOALS_LOAD_MORE_FAIL: {
+            let newState = _.cloneDeep(state)
+            newState = _.set(newState, 'myGoals.loading', false)
+            return newState
+        }
+
         /* Goal Detail related */
         case GOAL_DETAIL_FETCH_DONE: {
             const { goal, goalId, pageId } = action.payload

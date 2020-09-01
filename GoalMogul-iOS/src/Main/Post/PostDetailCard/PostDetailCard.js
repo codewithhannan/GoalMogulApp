@@ -301,7 +301,7 @@ class PostDetailCard extends React.PureComponent {
                 />
                 <SearchBarHeader
                     backButton
-                    title="Post"
+                    title="Update"
                     onBackPress={() =>
                         this.props.closePostDetail(postId, pageId)
                     }

@@ -115,6 +115,10 @@ const switchPostType = (postType, ref, goalRef) =>
             postType,
             postRef: ref,
         },
+        GoalStorylineUpdate: {
+            postType,
+            goalRef,
+        },
         ShareUser: {
             postType,
             userRef: ref,

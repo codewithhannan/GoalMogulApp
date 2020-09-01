@@ -26,6 +26,9 @@ const PADDING_BOTTOM = IS_SMALL_PHONE ? 0 : 40
  * @param sheetHeader: fades in on fullscreen, needs a height style to work
  * @param sheetFooter: always visible and sticks to bottom of the sheet
  * @param childeren: all components wrapped inside bottomSheet will be passed in as children prop
+ * @param keyboardShouldPersistTaps: "never": closes keyboard on tap,
+ *                                   "always": never closes keyboard on tap,
+ *                                   "handled": closes keyboard on tap if tap is not being handled by a child component
  *
  * BotomSheet also wraps its components inside a MenuProvider from 'react-native-popup-menu' library
  *
@@ -494,7 +497,9 @@ class BottomSheet extends React.PureComponent {
                                 </Animated.View>
                             </View>
                             <ScrollView
-                                keyboardShouldPersistTaps="handled"
+                                keyboardShouldPersistTaps={
+                                    this.props.keyboardShouldPersistTaps
+                                }
                                 scrollEnabled={isFullScreen}
                                 style={[{ flex: 1 }, customStyles.container]}
                             >
@@ -560,6 +565,7 @@ BottomSheet.propTypes = {
     swipeToCloseGestureEnabled: PropTypes.bool,
     dragFromTopOnly: PropTypes.bool,
     closeOnPressBack: PropTypes.bool,
+    keyboardShouldPersistTaps: PropTypes.string,
     customStyles: PropTypes.objectOf(PropTypes.object),
     onClose: PropTypes.func,
     onOpen: PropTypes.func,
@@ -574,12 +580,13 @@ BottomSheet.propTypes = {
 BottomSheet.defaultProps = {
     animationType: 'none',
     height: 150,
-    openDuration: 400,
-    closeDuration: 400,
+    openDuration: 100,
+    closeDuration: 100,
     fullScreenGesturesEnabled: false,
     swipeToCloseGestureEnabled: true,
     dragFromTopOnly: false,
     closeOnPressBack: true,
+    keyboardShouldPersistTaps: 'handled',
     customStyles: {
         borderTopRightRadius: 5,
         borderTopLeftRadius: 5,

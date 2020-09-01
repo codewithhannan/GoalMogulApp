@@ -6,10 +6,11 @@ import {
     Dimensions,
     ImageBackground,
     TouchableWithoutFeedback,
+    Text,
 } from 'react-native'
 import _ from 'lodash'
 
-import { switchCase } from '../../../redux/middleware/utils'
+import { switchCase, isSharedPost } from '../../../redux/middleware/utils'
 
 // Components
 import ImageModal from '../../Common/ImageModal'
@@ -23,6 +24,8 @@ import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import SparkleBadgeView from '../../Gamification/Badge/SparkleBadgeView'
 import GoalCard from '../../Goal/GoalCard/GoalCard'
 import PostPreviewCard from './PostPreviewCard'
+import ShareCard from '../../Common/Card/ShareCard'
+import { default_style } from '../../../styles/basic'
 
 // Constants
 const DEBUG_KEY = '[ UI PostPreviewCard.PostPreviewBody ]'
@@ -45,7 +48,7 @@ class PostPreviewBody extends React.Component {
                 activeOpacity={1}
                 onPress={() => this.setState({ mediaModal: true })}
             >
-                <View>
+                <View style={{ marginTop: 8 }}>
                     <ImageBackground
                         style={{
                             ...styles.mediaStyle,
@@ -59,7 +62,7 @@ class PostPreviewBody extends React.Component {
                             opacity: 0.8,
                             resizeMode: 'cover',
                         }}
-                    ></ImageBackground>
+                    />
                     {this.renderPostImageModal(imageUrl)}
                 </View>
             </TouchableWithoutFeedback>
@@ -79,15 +82,42 @@ class PostPreviewBody extends React.Component {
     renderBadgeEarnImage(milestoneIdentifier) {
         return (
             <SparkleBadgeView
+                containerStyle={{ marginTop: 8 }}
                 milestoneIdentifier={milestoneIdentifier}
                 onPress={this.props.openCardContent}
             />
         )
     }
 
-    renderPostBody(item) {
+    renderUpdateAttachments(item) {
+        const { belongsToGoalStoryline, mediaRef } = item
+        return (
+            <View>
+                {this.renderPostImage(mediaRef)}
+                {belongsToGoalStoryline && [
+                    <Text
+                        style={[
+                            default_style.normalText_2,
+                            { marginTop: 8, marginBottom: 4 },
+                        ]}
+                    >
+                        Attached
+                    </Text>,
+                    <ShareCard
+                        goal={belongsToGoalStoryline.goalRef}
+                        containerStyle={{ width: '100%' }}
+                    />,
+                ]}
+            </View>
+        )
+    }
+
+    render() {
+        const { item } = this.props
+        if (!item) return null
+
         const { postType } = item
-        if (postType === 'General') {
+        if (!isSharedPost(postType)) {
             const milestoneIdentifier = _.get(
                 item,
                 'milestoneCelebration.milestoneIdentifier'
@@ -95,7 +125,7 @@ class PostPreviewBody extends React.Component {
             if (milestoneIdentifier !== undefined) {
                 return this.renderBadgeEarnImage(milestoneIdentifier)
             }
-            return this.renderPostImage(item.mediaRef)
+            return this.renderUpdateAttachments(item)
         }
 
         if (this.props.showRefPreview === false) return null
@@ -108,6 +138,7 @@ class PostPreviewBody extends React.Component {
                         borderWidth: 1,
                         borderColor: '#F2F2F2',
                         borderRadius: 5,
+                        marginTop: 8,
                     }}
                 >
                     <GoalCard item={previewItem} isSharedItem={true} />
@@ -121,6 +152,7 @@ class PostPreviewBody extends React.Component {
                     style={{
                         borderWidth: 1,
                         borderColor: '#F2F2F2',
+                        marginTop: 8,
                     }}
                 >
                     <PostPreviewCard
@@ -133,7 +165,7 @@ class PostPreviewBody extends React.Component {
         }
 
         return (
-            <View>
+            <View style={{ marginTop: 8 }}>
                 <RefPreview
                     item={previewItem}
                     postType={postType}
@@ -141,13 +173,6 @@ class PostPreviewBody extends React.Component {
                 />
             </View>
         )
-    }
-
-    render() {
-        const { item } = this.props
-        if (!item) return null
-
-        return <View style={{ marginTop: 8 }}>{this.renderPostBody(item)}</View>
     }
 }
 

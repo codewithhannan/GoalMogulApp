@@ -14,7 +14,11 @@ import { Actions } from 'react-native-router-flux'
 // Components
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal'
 
-import { isString, queryBuilderBasicBuilder } from '../../middleware/utils'
+import {
+    isString,
+    queryBuilderBasicBuilder,
+    isSharedPost,
+} from '../../middleware/utils'
 import { api as API } from '../../middleware/api'
 
 import { openProfile } from '../../../actions'
@@ -241,7 +245,7 @@ const checkIfShare = (path = []) => {
     if (postTypeIndex === -1) return false
     if (
         path.length > postTypeIndex + 1 &&
-        path[postTypeIndex + 1] !== 'General'
+        isSharedPost(path[postTypeIndex + 1])
     ) {
         return true
     }

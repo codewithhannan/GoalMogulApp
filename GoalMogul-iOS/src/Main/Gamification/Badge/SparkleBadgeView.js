@@ -37,7 +37,7 @@ const SparkleBadgeView = (props) => {
             style={containerStyle}
             imageStyle={containerImageStyle}
         >
-            <View style={{ ...styles.shadow, alignItems: 'center' }}>
+            <View style={{ alignItems: 'center' }}>
                 <View style={{ height: 5, width: '100%' }} />
                 <View
                     style={{
@@ -79,15 +79,6 @@ const SparkleBadgeView = (props) => {
         )
     }
     return view
-}
-
-const styles = {
-    shadow: {
-        shadowColor: '#000',
-        shadowOffset: { width: 1, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 5,
-    },
 }
 
 const getIconSource = (milestoneIdentifier) => {

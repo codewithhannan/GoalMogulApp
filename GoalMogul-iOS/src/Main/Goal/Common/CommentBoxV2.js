@@ -95,6 +95,7 @@ class CommentBoxV2 extends Component {
         this.focus = this.focus.bind(this)
         this.focus = this.focus.bind(this)
         this.handleOnSubmitEditing = this.handleOnSubmitEditing.bind(this)
+        this.renderLoadingComponent = this.renderLoadingComponent.bind(this)
     }
 
     componentDidMount() {
@@ -545,6 +546,30 @@ class CommentBoxV2 extends Component {
         )
     }
 
+    renderLoadingComponent() {
+        if (this.state.tagSearchData.loading) {
+            return (
+                <View
+                    style={{
+                        flex: 1,
+                        height: 50,
+                        width,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <ActivityIndicator />
+                </View>
+            )
+        }
+        return (
+            <EmptyResult
+                text={'No User Found'}
+                textStyle={{ paddingTop: 15, height: 50 }}
+            />
+        )
+    }
+
     render() {
         const { pageId, newComment, hasSuggestion, goalId } = this.props
         console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment)
@@ -596,36 +621,14 @@ class CommentBoxV2 extends Component {
                 suggestionsPanelStyle={{
                     backgroundColor: 'rgba(100,100,100,0.1)',
                 }}
-                loadingComponent={() => {
-                    if (this.state.tagSearchData.loading) {
-                        return (
-                            <View
-                                style={{
-                                    flex: 1,
-                                    height: 50,
-                                    width,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                }}
-                            >
-                                <ActivityIndicator />
-                            </View>
-                        )
-                    }
-                    return (
-                        <EmptyResult
-                            text={'No User Found'}
-                            textStyle={{ paddingTop: 15, height: 50 }}
-                        />
-                    )
-                }}
+                loadingComponent={this.renderLoadingComponent}
                 trigger={'@'}
                 triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
                 triggerCallback={this.callback.bind(this)}
                 triggerLoadMore={this.handleTagSearchLoadMore}
                 renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
                 suggestionsData={this.state.tagSearchData.data} // array of objects
-                keyExtractor={(item, index) => item._id}
+                keyExtractor={(item) => item._id}
                 suggestionRowHeight={50}
                 horizontal={false} // defaut is true, change the orientation of the list
                 MaxVisibleRowCount={7} // this is required if horizontal={false}

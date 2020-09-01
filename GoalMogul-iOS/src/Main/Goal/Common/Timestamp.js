@@ -3,7 +3,7 @@
 import React from 'react'
 import { Image, Text, View } from 'react-native'
 import Icons from '../../../asset/base64/Icons'
-import { default_style } from '../../../styles/basic'
+import { default_style, color } from '../../../styles/basic'
 import { DotIcon } from '../../../Utils/Icons'
 
 const { ViewCountIcon } = Icons
@@ -30,7 +30,13 @@ const Timestamp = (props) => {
                     tintColor: '#636363',
                 }}
             />
-            <Text style={{ ...default_style.smallText_1, marginLeft: 3 }}>
+            <Text
+                style={{
+                    ...default_style.smallText_1,
+                    color: color.TEXT_COLOR.OFF_DARK,
+                    marginLeft: 3,
+                }}
+            >
                 {viewCount}
             </Text>
         </View>

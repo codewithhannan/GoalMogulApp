@@ -5,7 +5,7 @@
 import React from 'react'
 import _ from 'lodash'
 import { Text, View } from 'react-native'
-import { switchCase } from '../../redux/middleware/utils'
+import { switchCase, isSharedPost } from '../../redux/middleware/utils'
 import { default_style, text } from '../../styles/basic'
 
 class ActivitySummary extends React.Component {
@@ -52,9 +52,9 @@ class ActivitySummary extends React.Component {
                 },
                 Post: (val) => {
                     if (!val.postRef && !val.postRef.postType) return ''
-                    if (val.postRef.postType === 'General') {
+                    if (!isSharedPost(val.postRef.postType)) {
                         return (
-                            `${val.action.toLowerCase()}d a ${val.actedWith} ` +
+                            `${val.action.toLowerCase()}d an Update ` +
                             `${
                                 val.belongsToEvent || val.belongsToTribe
                                     ? 'in'
@@ -63,13 +63,13 @@ class ActivitySummary extends React.Component {
                         )
                     }
                     return (
-                        `shared a ${switchPostType(val.postRef.postType)} ` +
+                        `shared ${switchPostType(val.postRef.postType)} ` +
                         `${
                             val.belongsToEvent || val.belongsToTribe ? 'to' : ''
                         }`
                     )
                 },
-                Comment: (val) => `commented on ${val.actedUponEntityType}`,
+                Comment: (val) => `commented on a ${val.actedUponEntityType}`,
                 Like: (val) => `liked a ${val.actedUponEntityType}`,
             },
             Update: {
@@ -172,12 +172,12 @@ const getSummaryText = (cases) => ({
 
 const switchPostType = (postType) =>
     switchCase({
-        ShareNeed: 'need',
-        SharePost: 'post',
-        ShareGoal: 'goal',
-        ShareUser: 'user',
-        ShareStep: 'step',
-    })('ShareNeed')(postType)
+        ShareNeed: 'a need',
+        SharePost: 'an update',
+        ShareGoal: 'a goal',
+        ShareUser: 'a user',
+        ShareStep: 'a step',
+    })('an update')(postType)
 
 const styles = {
     boldTextStyle: {

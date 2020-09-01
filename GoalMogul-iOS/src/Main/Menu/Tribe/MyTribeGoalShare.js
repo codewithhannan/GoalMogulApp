@@ -22,7 +22,7 @@ import { openNewShareToTribeView } from '../../../redux/modules/feed/post/ShareA
 import { getUserGoalsForTribeShare } from '../../../redux/modules/tribe/TribeSelector'
 /* Components */
 import GoalFilterBar from '../../Common/GoalFilterBar'
-import ProfileGoalCard from '../../Goal/GoalCard/ProfileGoalCard2'
+import CompactGoalCard from '../../Goal/GoalCard/CompactGoalCard'
 import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 import EmptyResult from '../../Common/Text/EmptyResult'
 import ModalHeader from '../../Common/Header/ModalHeader'
@@ -53,7 +53,7 @@ class UserGoalsView extends Component {
 
     renderItem = ({ item }) => {
         return (
-            <ProfileGoalCard
+            <CompactGoalCard
                 item={item}
                 onPress={() =>
                     this.props.openNewShareToTribeView(

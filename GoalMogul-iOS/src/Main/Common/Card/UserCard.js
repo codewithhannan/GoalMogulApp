@@ -50,7 +50,7 @@ class UserCard extends React.PureComponent {
         const { name, headline, _id, occupation } = item
         return (
             <DelayedButton
-                underlayColor={color.GM_BORDER_COLOR}
+                underlayColor={color.GM_LIGHT_GRAY}
                 touchableHighlight
                 onPress={() => this.handleOpenProfile(_id)}
             >

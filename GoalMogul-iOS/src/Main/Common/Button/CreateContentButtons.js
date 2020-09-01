@@ -89,7 +89,7 @@ const styles = {
     createContentButtonSeperator: {
         height: '75%',
         width: default_style.hairlineWidth,
-        backgroundColor: color.GM_BORDER_COLOR,
+        backgroundColor: color.GM_LIGHT_GRAY,
     },
 }
 

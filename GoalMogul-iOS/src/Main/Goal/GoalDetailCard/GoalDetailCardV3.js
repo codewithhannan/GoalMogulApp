@@ -6,7 +6,6 @@ import React, { Component } from 'react'
 import {
     Animated,
     Dimensions,
-    Image,
     Keyboard,
     StyleSheet,
     Text,
@@ -15,7 +14,6 @@ import {
 } from 'react-native'
 import { copilot } from 'react-native-copilot-gm'
 import { DotIndicator } from 'react-native-indicators'
-import { getBottomSpace } from 'react-native-iphone-x-helper'
 import { MenuProvider } from 'react-native-popup-menu'
 import { TabView } from 'react-native-tab-view'
 import { connect } from 'react-redux'
@@ -92,8 +90,6 @@ const HEADER_HEIGHT = 240 // Need to be calculated in the state later based on c
 const COLLAPSED_HEIGHT = TABBAR_HEIGHT + Constants.statusBarHeight
 const DEBUG_KEY = '[ UI GoalDetailCardV3 ]'
 
-// const COMMENTBOX_HEIGHT = 43;
-const TOTAL_HEIGHT = TABBAR_HEIGHT
 const COMPONENT_NAME = 'goalDetail'
 
 export class GoalDetailCardV3 extends Component {
@@ -417,7 +413,6 @@ export class GoalDetailCardV3 extends Component {
 
         this.setState(
             {
-                ...this.state,
                 cardHeight: newCardHeight,
                 goalDetailSectionHeight,
                 focusedItemHeight,

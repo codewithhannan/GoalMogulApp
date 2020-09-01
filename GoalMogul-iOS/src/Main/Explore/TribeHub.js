@@ -25,7 +25,7 @@ import { Actions } from 'react-native-router-flux'
 import { componentKeyByTab } from '../../redux/middleware/utils'
 import { Text, Icon } from '@ui-kitten/components'
 import EmptyResult from '../Common/Text/EmptyResult'
-import PostPreviewCard from '../Post/PostProfileCard/PostPreviewCard'
+import PostPreviewCard from '../Post/PostPreviewCard/PostPreviewCard'
 import { MenuProvider } from 'react-native-popup-menu'
 
 class TribeHub extends Component {
@@ -73,7 +73,7 @@ class TribeHub extends Component {
                     style={{
                         padding: 12,
                         backgroundColor: color.GM_CARD_BACKGROUND,
-                        borderColor: color.GM_BORDER_COLOR,
+                        borderColor: color.GM_LIGHT_GRAY,
                         borderBottomWidth: 1,
                     }}
                 >

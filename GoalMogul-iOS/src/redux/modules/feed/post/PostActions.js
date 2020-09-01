@@ -30,6 +30,7 @@ import {
     sanitizeTags,
     constructPageId,
     componentKeyByTab,
+    isSharedPost,
 } from '../../../middleware/utils'
 
 import ImageUtils from '../../../../Utils/ImageUtils'
@@ -67,7 +68,7 @@ export const openPostDetail = (post, initialProps) => (dispatch, getState) => {
 
     // Generate pageId on open
     const pageId = constructPageId('post')
-    if (post.postType && post.postType !== 'General') {
+    if (isSharedPost(post.postType)) {
         return openShareDetail(post, pageId, initialProps)(dispatch, getState)
     }
 
@@ -383,18 +384,6 @@ const sendCreatePostRequest = (
 }
 
 /**
- * Transform a post to only update
- * @param {} post
- */
-const postToUpdateAdaptor = (post) => {
-    const { content, privacy } = post
-    return {
-        content,
-        privacy,
-    }
-}
-
-/**
  * Mark user view goal
  * @param {string} postId
  */
@@ -427,6 +416,20 @@ export const markUserViewPost = (postId) => (dispatch, getState) => {
 }
 
 /**
+ * Transform a post to only update
+ * @param {} post
+ */
+const postToUpdateAdaptor = (post) => {
+    const { content, privacy, mediaRef } = post
+
+    return {
+        content,
+        privacy,
+        mediaRef,
+    }
+}
+
+/**
  * Transform values in CreatePostModal to Server readable format
  */
 const newPostAdaptor = (values, userId) => {
@@ -436,6 +439,7 @@ const newPostAdaptor = (values, userId) => {
         post,
         belongsToTribe,
         belongsToEvent,
+        belongsToGoalStoryline,
         tags,
     } = values
     // Tags sanitization will reassign index as well as removing the unused tags
@@ -465,9 +469,13 @@ const newPostAdaptor = (values, userId) => {
             // links: [] no link is needed for now
         },
         mediaRef,
-        postType: 'General',
+        postType:
+            belongsToGoalStoryline !== undefined
+                ? 'GoalStorylineUpdate'
+                : 'General',
         belongsToTribe,
         belongsToEvent,
+        belongsToGoalStoryline,
     }
 }
 /**

@@ -10,6 +10,7 @@ import {
     TouchableOpacity,
     ImageBackground,
     ActivityIndicator,
+    Keyboard,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
@@ -56,6 +57,7 @@ import EmptyResult from '../Common/Text/EmptyResult'
 import MentionsTextInput from '../Goal/Common/MentionsTextInput'
 import ViewableSettingMenu from '../Goal/ViewableSettingMenu'
 import DraftsView from './DraftsView'
+import AttachGoal from './AttachGoal'
 
 const DEBUG_KEY = '[ UI CreatePostModal ]'
 const INITIAL_TAG_SEARCH = {
@@ -80,6 +82,11 @@ class CreatePostModal extends Component {
             textContentHeight: TEXT_INPUT_DEAFULT_HEIGHT,
             textInputHeight: TEXT_INPUT_DEAFULT_HEIGHT,
             draftHeaderHeight: 0,
+            attachedGoalTitle: _.get(
+                props,
+                'initialPost.belongsToGoalStoryline.goalRef.title',
+                ''
+            ),
         }
         this.updateSearchRes = this.updateSearchRes.bind(this)
     }
@@ -181,7 +188,6 @@ class CreatePostModal extends Component {
     updateSearchRes(res, searchContent) {
         if (searchContent !== this.state.keyword) return
         this.setState({
-            ...this.state,
             // keyword,
             tagSearchData: {
                 ...this.state.tagSearchData,
@@ -200,7 +206,6 @@ class CreatePostModal extends Component {
         this.reqTimer = setTimeout(() => {
             console.log(`${DEBUG_KEY}: requesting for keyword: `, keyword)
             this.setState({
-                ...this.state,
                 keyword,
                 tagSearchData: {
                     ...this.state.tagSearchData,
@@ -233,7 +238,6 @@ class CreatePostModal extends Component {
 
         if (loading) return
         this.setState({
-            ...this.state,
             keyword,
             tagSearchData: {
                 ...this.state.tagSearchData,
@@ -243,7 +247,6 @@ class CreatePostModal extends Component {
 
         this.props.searchUser(keyword, skip, limit, (res) => {
             this.setState({
-                ...this.state,
                 keyword,
                 tagSearchData: {
                     ...this.state.tagSearchData,
@@ -257,25 +260,23 @@ class CreatePostModal extends Component {
     /* Tagging related function ends */
 
     initializeForm() {
-        const { belongsToTribe, belongsToEvent } = this.props
+        const { belongsToTribe, belongsToGoalStoryline } = this.props
         const defaulVals = {
             viewableSetting: PRIVACY_FRIENDS,
             mediaRef: undefined,
             post: '',
             tags: [],
             belongsToTribe,
-            belongsToEvent,
+            belongsToGoalStoryline,
         }
 
         // Initialize based on the props, if it's opened through edit button
         const { initializeFromState, initialPost } = this.props
         const initialVals = initializeFromState
-            ? { ...postToFormAdapter(initialPost) }
-            : { ...defaulVals }
+            ? postToFormAdapter(initialPost)
+            : defaulVals
 
-        this.props.initialize({
-            ...initialVals,
-        })
+        this.props.initialize(initialVals)
 
         fetchPostDrafts().then((drafts) => {
             if (drafts && drafts.length > 0) {
@@ -285,6 +286,29 @@ class CreatePostModal extends Component {
                 })
             }
         })
+    }
+
+    resetForm() {
+        const defaulVals = {
+            viewableSetting: PRIVACY_FRIENDS,
+            mediaRef: undefined,
+            post: '',
+            tags: [],
+            belongsToTribe: undefined,
+            belongsToGoalStoryline: undefined,
+        }
+        this.props.initialize(defaulVals)
+        this.setState({
+            attachedGoalTitle: '',
+        })
+
+        const { drafts } = this.state
+        if (drafts && drafts.length > 0) {
+            this.setState({
+                draftIndex: drafts.length,
+                drafts: drafts,
+            })
+        }
     }
 
     handleOpenCamera = () => {
@@ -351,6 +375,16 @@ class CreatePostModal extends Component {
 
     handleDraftUpdateError(error) {}
 
+    isMediaNotUploaded() {
+        const { initializeFromState, initialPost, mediaRef } = this.props
+        return (
+            (initializeFromState &&
+                initialPost &&
+                initialPost.mediaRef !== mediaRef) ||
+            (!initializeFromState && mediaRef)
+        )
+    }
+
     /**
      * This is a hacky solution due to the fact that redux-form
      * handleSubmit values differ from the values actually stored.
@@ -368,17 +402,12 @@ class CreatePostModal extends Component {
         const {
             initializeFromState,
             initialPost,
-            mediaRef,
             belongsToTribe,
             belongsToEvent,
             openProfile,
         } = this.props
 
-        const needUpload =
-            (initializeFromState &&
-                initialPost.mediaRef &&
-                initialPost.mediaRef !== mediaRef) ||
-            (!initializeFromState && mediaRef)
+        const needUpload = this.isMediaNotUploaded()
 
         const needOpenProfile =
             belongsToTribe === undefined &&
@@ -399,6 +428,7 @@ class CreatePostModal extends Component {
         )
         const callback = (props) => {
             if (this.props.callBack) this.props.callBack(props)
+            this.resetForm()
             this.close()
         }
 
@@ -428,7 +458,7 @@ class CreatePostModal extends Component {
         this.handleDraftCancel(() => {
             if (callback) callback()
             // reset form vals
-            this.initializeForm()
+            this.resetForm()
         })
     }
 
@@ -437,7 +467,7 @@ class CreatePostModal extends Component {
         // TODO: check if draft is already saved
         const draftSaved =
             ((!post || post.trim() === '') && !mediaRef) ||
-            !this.isSaveDraftDisabled()
+            !this.isDraftNotSaved()
 
         if (draftSaved) return callback ? callback() : null
 
@@ -608,20 +638,17 @@ class CreatePostModal extends Component {
 
     // Current media type is only picture
     renderMedia() {
-        const { initializeFromState, post, mediaRef, uploading } = this.props
+        const { mediaRef, uploading } = this.props
         let imageUrl = mediaRef
-        if (initializeFromState && mediaRef) {
-            const hasImageModified = post.mediaRef && post.mediaRef !== mediaRef
-            if (!hasImageModified) {
-                // If editing a tribe and image hasn't changed, then image source should
-                // be from server
-                imageUrl = `${IMAGE_BASE_URL}${mediaRef}`
-            }
+
+        if (!this.isMediaNotUploaded()) {
+            // if nor stored locally image source must be from server
+            imageUrl = `${IMAGE_BASE_URL}${mediaRef}`
         }
 
-        // Do not render cancel button if editing since we
+        // Do not render cancel button if editing post since we
         // don't allow editing image
-        const cancelButton = initializeFromState ? null : (
+        const cancelButton = this.isEditMediaDisabled() ? null : (
             <TouchableOpacity
                 activeOpacity={0.6}
                 onPress={() => this.props.change('mediaRef', false)}
@@ -653,23 +680,6 @@ class CreatePostModal extends Component {
                             resizeMode: 'cover',
                         }}
                     >
-                        <View
-                            style={{
-                                alignSelf: 'center',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <Image
-                                source={imageOverlay}
-                                style={{
-                                    alignSelf: 'center',
-                                    justifyContent: 'center',
-                                    height: 45,
-                                    width: 50,
-                                    tintColor: '#fafafa',
-                                }}
-                            />
-                        </View>
                         <TouchableOpacity
                             activeOpacity={0.6}
                             onPress={() => this.setState({ mediaModal: true })}
@@ -694,22 +704,12 @@ class CreatePostModal extends Component {
     }
 
     renderImageModal() {
-        const { initializeFromState, initialPost, mediaRef } = this.props
-
-        // This is not a local file if
-        // this is an edit and mediaRef has not changed yet
         return (
             <ImageModal
                 mediaRef={this.props.mediaRef}
                 mediaModal={this.state.mediaModal}
                 closeModal={() => this.setState({ mediaModal: false })}
-                isLocalFile={
-                    !(
-                        initializeFromState &&
-                        initialPost.mediaRef &&
-                        initialPost.mediaRef === mediaRef
-                    )
-                }
+                isLocalFile={this.isMediaNotUploaded()}
             />
         )
     }
@@ -731,7 +731,7 @@ class CreatePostModal extends Component {
         )
     }
 
-    isSaveDraftDisabled() {
+    isDraftNotSaved() {
         if (this.props.initializeFromState) return false
         const { drafts, draftIndex } = this.state
         if (
@@ -743,30 +743,191 @@ class CreatePostModal extends Component {
         return false
     }
 
-    renderActionIcons() {
-        // If user already has the image, they need to delete the image and then
-        // these icons would show up to attach another image
-        const { uploading } = this.props
-        const actionIconStyle = [
-            default_style.buttonIcon_1,
-            { color: '#E0E0E0' },
-        ]
-        const actionIconWrapperStyle = styles.actionIconWrapperStyle
+    isEditMediaDisabled() {
+        return (
+            this.props.initializeFromState &&
+            this.props.mediaRef &&
+            !this.isMediaNotUploaded()
+        )
+    }
+
+    renderAttachGoalButton() {
+        const {
+            initializeFromState,
+            uploading,
+            belongsToGoalStoryline,
+        } = this.props
+        // Do not allow user to change the attached goal if editing this update
+        const disabled =
+            uploading ||
+            (initializeFromState &&
+                belongsToGoalStoryline &&
+                belongsToGoalStoryline.goalRef)
+
+        const isGoalAttached = this.state.attachedGoalTitle.length > 0
+        const attactGoalButtonTextWidth = 123 * default_style.uiScale
+
+        const attachGoalButton = (
+            <DelayedButton
+                style={{ flexDirection: 'row' }}
+                disabled={disabled}
+                onPress={() => {
+                    if (isGoalAttached) {
+                        // Clear goalRef on Press of a goal is attached
+                        this.setState({ attachedGoalTitle: '' })
+                        this.props.change('belongsToGoalStoryline', undefined)
+                    } else {
+                        Keyboard.dismiss()
+                        // Wait for keyboard to dissmiss before opening
+                        setTimeout(
+                            () =>
+                                this.attachGoalModal &&
+                                this.attachGoalModal.open(),
+                            200
+                        )
+                    }
+                }}
+            >
+                {!isGoalAttached && (
+                    <Icon
+                        pack="material-community"
+                        name="plus"
+                        style={[
+                            default_style.normalIcon_1,
+                            { tintColor: '#BDBDBD' },
+                        ]}
+                    />
+                )}
+                <Text
+                    style={[
+                        default_style.normalText_2,
+                        {
+                            color: isGoalAttached ? 'white' : '#9A9A9A',
+                            marginHorizontal: 3,
+                            width: attactGoalButtonTextWidth,
+                        },
+                    ]}
+                    numberOfLines={1}
+                >
+                    {isGoalAttached
+                        ? this.state.attachedGoalTitle
+                        : 'Add to a Goal Storyline'}
+                </Text>
+                {!disabled && isGoalAttached && (
+                    <Icon
+                        pack="material-community"
+                        name="close"
+                        style={[
+                            default_style.normalIcon_1,
+                            { tintColor: 'white' },
+                        ]}
+                    />
+                )}
+            </DelayedButton>
+        )
+        const attachGoalButtonStyle = {
+            backgroundColor: isGoalAttached
+                ? color.GM_BLUE_DEEP
+                : color.GM_CARD_BACKGROUND,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: 3,
+            paddingHorizontal: 6,
+            borderColor: isGoalAttached ? color.GM_BLUE_DEEP : '#E8E8E8',
+            borderWidth: 1,
+            borderRadius: 2,
+            marginLeft: 8,
+        }
+
+        return (
+            <AttachGoal
+                onRef={(ref) => (this.attachGoalModal = ref)}
+                triggerComponent={attachGoalButton}
+                triggerWrapperStyle={attachGoalButtonStyle}
+                onSelect={(item) => {
+                    this.setState({ attachedGoalTitle: item.title })
+                    this.props.change('belongsToGoalStoryline', {
+                        goalRef: item._id,
+                    })
+                }}
+                onClose={() => {
+                    this.textInput && this.textInput.focus()
+                }}
+            />
+        )
+    }
+
+    renderActionIcons(actionDisabled) {
+        const saveDraftDisabled = actionDisabled || !this.isDraftNotSaved()
 
         return (
             <View
                 style={{
                     flexDirection: 'row',
-                    paddingTop: 16,
-                    borderTopWidth: 1,
-                    borderColor: '#F2F2F2',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginVertical: 16,
                 }}
             >
+                <View style={{ flexDirection: 'row' }}>
+                    <ViewableSettingMenu
+                        viewableSetting={this.props.viewableSetting}
+                        callback={R.curry((value) =>
+                            this.props.change('viewableSetting', value)
+                        )}
+                    />
+                    {this.renderAttachGoalButton()}
+                </View>
                 <DelayedButton
                     activeOpacity={0.6}
+                    style={{ padding: 2 }}
+                    onPress={this.handleSaveDraft}
+                    disabled={saveDraftDisabled}
+                >
+                    <Text
+                        style={{
+                            ...default_style.titleText_2,
+                            color: saveDraftDisabled
+                                ? color.GM_CARD_BACKGROUND
+                                : color.GM_BLUE,
+                        }}
+                    >
+                        Save Draft
+                    </Text>
+                </DelayedButton>
+            </View>
+        )
+    }
+
+    renderMediaIcons() {
+        // If user already has the image, they need to delete the image and then
+        // these icons would show up to attach another image
+        const { uploading } = this.props
+        const disabled = uploading || this.isEditMediaDisabled()
+
+        const actionIconStyle = [
+            default_style.buttonIcon_1,
+            { color: '#E0E0E0' },
+        ]
+        const actionIconWrapperStyle = [
+            styles.actionIconWrapperStyle,
+            { opacity: disabled ? 0.6 : 1 },
+        ]
+
+        return (
+            <View
+                style={{
+                    flexDirection: 'row',
+                }}
+            >
+                {/* Camera Button */}
+                <DelayedButton
+                    touchableHighlight
+                    underlayColor="gray"
                     style={actionIconWrapperStyle}
                     onPress={this.handleOpenCamera}
-                    disabled={uploading}
+                    disabled={disabled}
                 >
                     <Icon
                         name="camera"
@@ -774,11 +935,13 @@ class CreatePostModal extends Component {
                         style={actionIconStyle}
                     />
                 </DelayedButton>
+                {/* Media roll button */}
                 <DelayedButton
-                    activeOpacity={0.6}
+                    touchableHighlight
+                    underlayColor="gray"
                     style={actionIconWrapperStyle}
                     onPress={this.handleOpenCameraRoll}
-                    disabled={uploading}
+                    disabled={disabled}
                 >
                     <Icon
                         name="image-area"
@@ -833,31 +996,53 @@ class CreatePostModal extends Component {
         )
     }
 
+    renderCreateButton(actionDisabled) {
+        const modalActionText = this.props.initializeFromState
+            ? 'Update'
+            : 'Publish'
+
+        return (
+            <DelayedButton
+                activeOpacity={0.6}
+                style={{
+                    backgroundColor: color.GM_BLUE,
+                    marginHorizontal: 16,
+                    marginVertical: 8,
+                    padding: 8,
+                    alignItems: 'center',
+                    opacity: actionDisabled ? 0.5 : 1,
+                }}
+                onPress={this.props.handleSubmit(this.handleCreate)}
+                disabled={actionDisabled}
+            >
+                <Text style={[default_style.buttonText_1, { color: 'white' }]}>
+                    {modalActionText}
+                </Text>
+            </DelayedButton>
+        )
+    }
+
     open = () => this.bottomSheetRef.open()
 
     close = () => this.bottomSheetRef.close()
 
     render() {
         const {
-            handleSubmit,
             initializeFromState,
             post,
             mediaRef,
             uploading,
             user,
-            viewableSetting,
         } = this.props
         const { profile } = user
 
         const actionDisabled =
             uploading || ((!post || post.trim() === '') && !mediaRef)
-        const saveDraftDisabled = actionDisabled || !this.isSaveDraftDisabled()
         const showDraftHeader =
             !initializeFromState && this.state.drafts.length > 0
 
-        const modalActionText = initializeFromState ? 'Update' : 'Publish'
         const modalHeight =
-            246 + this.state.textContentHeight + this.state.draftHeaderHeight
+            230 + this.state.textContentHeight + this.state.draftHeaderHeight
         const draftModalHeight = (modalHeight * 3) / 4
 
         return (
@@ -882,29 +1067,8 @@ class CreatePostModal extends Component {
                         paddingBotttom: 16,
                     },
                 }}
-                sheetFooter={
-                    <DelayedButton
-                        style={{
-                            backgroundColor: color.GM_BLUE,
-                            marginHorizontal: 16,
-                            marginVertical: 8,
-                            padding: 8,
-                            alignItems: 'center',
-                            opacity: actionDisabled ? 0.5 : 1,
-                        }}
-                        onPress={handleSubmit(this.handleCreate)}
-                        disabled={actionDisabled}
-                    >
-                        <Text
-                            style={[
-                                default_style.buttonText_1,
-                                { color: 'white' },
-                            ]}
-                        >
-                            {modalActionText}
-                        </Text>
-                    </DelayedButton>
-                }
+                sheetFooter={this.renderCreateButton(actionDisabled)}
+                keyboardShouldPersistTaps={'always'}
             >
                 {showDraftHeader && this.renderDraftsHeader(draftModalHeight)}
                 <View style={{ flexDirection: 'row', marginTop: 16 }}>
@@ -913,41 +1077,8 @@ class CreatePostModal extends Component {
                     />
                     {this.renderPost()}
                 </View>
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        marginVertical: 16,
-                    }}
-                >
-                    <View style={{ flexDirection: 'row' }}>
-                        <ViewableSettingMenu
-                            viewableSetting={viewableSetting}
-                            callback={R.curry((value) =>
-                                this.props.change('viewableSetting', value)
-                            )}
-                        />
-                    </View>
-                    <DelayedButton
-                        activeOpacity={0.6}
-                        style={{ padding: 2 }}
-                        onPress={this.handleSaveDraft}
-                        disabled={saveDraftDisabled}
-                    >
-                        <Text
-                            style={{
-                                ...default_style.titleText_2,
-                                color: saveDraftDisabled
-                                    ? color.GM_CARD_BACKGROUND
-                                    : color.GM_BLUE,
-                            }}
-                        >
-                            Save Draft
-                        </Text>
-                    </DelayedButton>
-                </View>
-                {this.renderActionIcons()}
+                {this.renderActionIcons(actionDisabled)}
+                {this.renderMediaIcons()}
                 {this.renderImageModal()}
             </BottomSheet>
         )
@@ -1020,15 +1151,19 @@ CreatePostModal = reduxForm({
     enableReinitialize: true,
 })(CreatePostModal)
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
     const selector = formValueSelector('createPostModal')
     const { user } = state.user
     const { profile } = user
+    const goalRef =
+        _.get(props, 'initialPost.belongsToGoalStoryline.goalRef._id') ||
+        _.get(props, 'initialPostbelongsToGoalStoryline.goalRef', undefined)
 
     return {
         user,
         profile,
         viewableSetting: selector(state, 'viewableSetting'),
+        belongsToGoalStoryline: goalRef !== undefined ? { goalRef } : undefined,
         post: selector(state, 'post'),
         tags: selector(state, 'tags'),
         mediaRef: selector(state, 'mediaRef'),

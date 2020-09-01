@@ -53,6 +53,7 @@ class Setting extends Component {
                     renderScene={this._renderScene}
                     renderTabBar={this.renderTabs.bind(this)}
                     onIndexChange={this.handleIndexChange}
+                    swipeEnabled={false}
                     useNativeDriver
                 />
             </View>

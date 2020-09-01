@@ -6,6 +6,7 @@ import {
     Dimensions,
     ImageBackground,
     TouchableWithoutFeedback,
+    Text,
 } from 'react-native'
 import _ from 'lodash'
 
@@ -21,7 +22,10 @@ import { imagePreviewContainerStyle } from '../../styles'
 import { IMAGE_BASE_URL, IS_ZOOMED } from '../../Utils/Constants'
 import SparkleBadgeView from '../Gamification/Badge/SparkleBadgeView'
 import GoalCard from '../Goal/GoalCard/GoalCard'
-import PostPreviewCard from '../Post/PostProfileCard/PostPreviewCard'
+import PostPreviewCard from '../Post/PostPreviewCard/PostPreviewCard'
+import { isSharedPost } from '../../redux/middleware/utils'
+import ShareCard from '../Common/Card/ShareCard'
+import { default_style } from '../../styles/basic'
 
 const DEBUG_KEY = '[ UI ActivityCard.ActivityBody ]'
 const { width } = Dimensions.get('window')
@@ -36,6 +40,7 @@ class ActivityBody extends React.Component {
 
         return (
             <ProgressBar
+                containerStyle={{ marginTop: 8 }}
                 onPress={this.props.openCardContent}
                 startTime={start}
                 endTime={end}
@@ -60,7 +65,7 @@ class ActivityBody extends React.Component {
                 activeOpacity={1}
                 onPress={() => this.setState({ mediaModal: true })}
             >
-                <View>
+                <View style={{ marginTop: 8 }}>
                     <ImageBackground
                         style={{
                             ...styles.mediaStyle,
@@ -84,6 +89,7 @@ class ActivityBody extends React.Component {
     renderBadgeEarnImage(milestoneIdentifier) {
         return (
             <SparkleBadgeView
+                containerStyle={{ marginTop: 8 }}
                 milestoneIdentifier={milestoneIdentifier}
                 onPress={this.props.openCardContent}
             />
@@ -100,10 +106,33 @@ class ActivityBody extends React.Component {
         )
     }
 
+    renderUpdateAttachments(item) {
+        const { belongsToGoalStoryline, mediaRef } = item
+        return (
+            <View>
+                {this.renderPostImage(mediaRef)}
+                {belongsToGoalStoryline && [
+                    <Text
+                        style={[
+                            default_style.normalText_2,
+                            { marginTop: 8, marginBottom: 4 },
+                        ]}
+                    >
+                        Attached
+                    </Text>,
+                    <ShareCard
+                        goal={belongsToGoalStoryline.goalRef}
+                        containerStyle={{ width: '100%' }}
+                    />,
+                ]}
+            </View>
+        )
+    }
+
     renderPostBody(postRef) {
         if (!postRef) return null
         const { postType, goalRef, needRef, stepRef, userRef } = postRef
-        if (postType === 'General') {
+        if (!isSharedPost(postType)) {
             const milestoneIdentifier = _.get(
                 postRef,
                 'milestoneCelebration.milestoneIdentifier'
@@ -111,7 +140,7 @@ class ActivityBody extends React.Component {
             if (milestoneIdentifier !== undefined) {
                 return this.renderBadgeEarnImage(milestoneIdentifier)
             }
-            return this.renderPostImage(postRef.mediaRef)
+            return this.renderUpdateAttachments(postRef)
         }
 
         let item = goalRef
@@ -134,6 +163,7 @@ class ActivityBody extends React.Component {
                     style={{
                         borderWidth: 1,
                         borderColor: '#F2F2F2',
+                        marginTop: 8,
                     }}
                 >
                     <PostPreviewCard
@@ -151,6 +181,7 @@ class ActivityBody extends React.Component {
                     style={{
                         borderWidth: 1,
                         borderColor: '#F2F2F2',
+                        marginTop: 8,
                     }}
                 >
                     <GoalCard item={item} isSharedItem={true} />
@@ -158,16 +189,24 @@ class ActivityBody extends React.Component {
             )
         }
 
-        return <RefPreview item={item} postType={postType} goalRef={goalRef} />
+        return (
+            <View style={{ marginTop: 8 }}>
+                <RefPreview item={item} postType={postType} goalRef={goalRef} />
+            </View>
+        )
     }
 
     // Render Activity Card body
-    renderCardContent(item) {
+    render() {
+        const { item } = this.props
+        if (!item) return null
+
         const { postRef, goalRef, actedUponEntityType } = item
         if (goalRef === null) {
             console.log(`${DEBUG_KEY}: rendering card content: `, item)
         }
 
+        let content = null
         if (actedUponEntityType === 'Post') {
             return this.renderPostBody(postRef)
         }
@@ -181,19 +220,6 @@ class ActivityBody extends React.Component {
             `${DEBUG_KEY}: incorrect actedUponEntityType: ${actedUponEntityType}`
         )
         return null
-    }
-
-    render() {
-        const { item } = this.props
-        if (!item) return null
-
-        const content = this.renderCardContent(item)
-
-        return content ? (
-            <View style={{ marginTop: 16 }}>{content}</View>
-        ) : (
-            <View />
-        )
     }
 }
 

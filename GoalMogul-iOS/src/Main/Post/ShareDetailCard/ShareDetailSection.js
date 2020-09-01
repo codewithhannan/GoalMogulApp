@@ -21,6 +21,7 @@ import expand from '../../../asset/utils/expand.png'
 import {
     switchCase,
     getProfileImageOrDefaultFromUser,
+    isSharedPost,
 } from '../../../redux/middleware/utils'
 import { createCommentFromSuggestion } from '../../../redux/modules/feed/comment/CommentActions'
 import { openPostDetail } from '../../../redux/modules/feed/post/PostActions'
@@ -56,12 +57,10 @@ import RefPreview from '../../Common/RefPreview'
 import RichText from '../../Common/Text/RichText'
 import SparkleBadgeView from '../../Gamification/Badge/SparkleBadgeView'
 // Components
-import ActionButton from '../../Goal/Common/ActionButton'
-import ActionButtonGroup from '../../Goal/Common/ActionButtonGroup'
 import Headline from '../../Goal/Common/Headline'
 import Timestamp from '../../Goal/Common/Timestamp'
 import GoalCard from '../../Goal/GoalCard/GoalCard'
-import PostPreviewCard from '../PostProfileCard/PostPreviewCard'
+import PostPreviewCard from '../PostPreviewCard/PostPreviewCard'
 import ActionBar from '../../Common/ContentCards/ActionBar'
 
 const DEBUG_KEY = '[ UI ShareDetailCard.ShareDetailSection ]'
@@ -352,7 +351,7 @@ class ShareDetailSection extends Component {
     // TODO: Switch to decide amoung renderImage, RefPreview and etc.
     renderCardContent(item) {
         const { postType, mediaRef, goalRef } = item
-        if (postType === 'General') {
+        if (!isSharedPost(postType)) {
             const milestoneIdentifier = _.get(
                 item,
                 'milestoneCelebration.milestoneIdentifier'
@@ -443,7 +442,7 @@ class ShareDetailSection extends Component {
 
         // User shouldn't share a share. When Activity on a post which is a share,
         // We disable the share button.
-        const isShare = item.postType !== 'General'
+        const isShare = isSharedPost(item.postType)
 
         return (
             <ActionBar

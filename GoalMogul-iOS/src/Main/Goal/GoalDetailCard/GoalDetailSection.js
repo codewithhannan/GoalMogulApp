@@ -20,13 +20,9 @@ import timeago from 'timeago.js'
 import { deleteGoal, openProfile } from '../../../actions'
 import { ConfettiFadedBackgroundTopHalf } from '../../../asset/background'
 import Icons from '../../../asset/base64/Icons'
-// import BulbIcon from '../../../asset/utils/bulb.png';
-import CommentIcon from '../../../asset/utils/comment.png'
 import EditIcon from '../../../asset/utils/edit.png'
 import ShareIcon from '../../../asset/utils/forward.png'
-import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
 // Assets
-import LoveIcon from '../../../asset/utils/love.png'
 import TrashIcon from '../../../asset/utils/trash.png'
 import UndoIcon from '../../../asset/utils/undo.png'
 import {
@@ -65,8 +61,6 @@ import LikeListModal from '../../Common/Modal/LikeListModal'
 import ShareListModal from '../../Common/Modal/ShareListModal'
 import ProfileImage from '../../Common/ProfileImage'
 import RichText from '../../Common/Text/RichText'
-import ActionButton from '../Common/ActionButton'
-import ActionButtonGroup from '../Common/ActionButtonGroup'
 import Headline from '../Common/Headline'
 import IndividualActionButton from '../Common/IndividualActionButton'
 // Components

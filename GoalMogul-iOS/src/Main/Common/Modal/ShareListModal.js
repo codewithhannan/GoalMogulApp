@@ -14,7 +14,7 @@ import Constants from 'expo-constants'
 import DelayedButton from '../Button/DelayedButton'
 import { ModalHeaderStyle } from './Styles'
 import { getShareList } from '../../../redux/modules/feed/post/PostActions'
-import PostPreviewCard from '../../Post/PostProfileCard/PostPreviewCard'
+import PostPreviewCard from '../../Post/PostPreviewCard/PostPreviewCard'
 
 const DEBUG_KEY = '[ UI ShareListModal ]'
 const MODAL_TRANSITION_TIME = 300

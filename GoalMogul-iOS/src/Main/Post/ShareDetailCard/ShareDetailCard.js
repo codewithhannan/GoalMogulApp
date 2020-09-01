@@ -399,7 +399,7 @@ const makeMapStateToProps = () => {
 const switchCaseTitle = (postType) =>
     switchCase({
         ShareUser: 'Shared User',
-        SharePost: 'Shared Post',
+        SharePost: 'Shared Update',
         ShareGoal: 'Shared Goal',
         ShareNeed: 'Shared Need',
         ShareStep: 'Shared Step',

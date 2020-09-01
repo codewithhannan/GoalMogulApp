@@ -22,28 +22,16 @@ const POST_INITIAL_STATE = {
 }
 
 const INITIAL_STATE = {
-    post: {
-        ...POST_INITIAL_STATE,
-    },
-    newPost: {
-        ...NEW_POST_INITIAL_STATE,
-    },
+    post: POST_INITIAL_STATE,
+    newPost: NEW_POST_INITIAL_STATE,
     // Post detail in meet tab
-    postProfileTab: {
-        ...POST_INITIAL_STATE,
-    },
+    postProfileTab: POST_INITIAL_STATE,
     // Post detail in notification tab
-    postNotificationTab: {
-        ...POST_INITIAL_STATE,
-    },
+    postNotificationTab: POST_INITIAL_STATE,
     // Post detail in explore tab
-    postExploreTab: {
-        ...POST_INITIAL_STATE,
-    },
+    postExploreTab: POST_INITIAL_STATE,
     // Post detail in chatTab
-    postChatTab: {
-        ...POST_INITIAL_STATE,
-    },
+    postChatTab: POST_INITIAL_STATE,
 }
 
 export const POST_DETAIL_FETCH = 'post_detail_fetch'
@@ -152,12 +140,12 @@ export default (state = INITIAL_STATE, action) => {
 
         case POST_NEW_POST_SUBMIT_SUCCESS: {
             const newState = _.cloneDeep(state)
-            return _.set(newState, 'newPost', { ...NEW_POST_INITIAL_STATE })
+            return _.set(newState, 'newPost', NEW_POST_INITIAL_STATE)
         }
 
         // When a comment is deleted for a goal, decrement the comment count
         case COMMENT_DELETE_SUCCESS: {
-            const { tab, commentId } = action.payload
+            const { tab } = action.payload
             const newState = _.cloneDeep(state)
             const path =
                 !tab || tab === 'homeTab'
@@ -169,7 +157,7 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         case COMMENT_NEW_POST_SUCCESS: {
-            const { tab, commentId } = action.payload
+            const { tab } = action.payload
             const newState = _.cloneDeep(state)
             const path =
                 !tab || tab === 'homeTab'

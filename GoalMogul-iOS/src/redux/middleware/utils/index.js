@@ -281,6 +281,10 @@ export const componentKeyByTab = (tab, key) => {
     return ret
 }
 
+export const isSharedPost = (postType) => {
+    return postType !== 'General' && postType !== 'GoalStorylineUpdate'
+}
+
 /**
  *
  */
@@ -296,7 +300,7 @@ export const makeCaretOptions = (type, goalRef, postRef) => {
         }
 
         // This is a post
-        if (postRef.postType === 'General') {
+        if (!isSharedPost(postRef.postType)) {
             return [{ option: 'Edit Post' }, { option: 'Delete' }]
         }
 

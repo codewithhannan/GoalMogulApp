@@ -173,6 +173,9 @@ const switchCaseItem = (val, type) =>
         General: () => ({
             title: undefined, // This case will never happen since it's creating a post
         }),
+        GoalStorylineUpdate: () => ({
+            title: undefined, // This case will never happen since it's creating a post
+        }),
         ShareUser: (item) => {
             if (invalidItem(item)) {
                 return {

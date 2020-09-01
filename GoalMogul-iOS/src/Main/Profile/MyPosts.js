@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 
 // Components
 import GoalFilterBar from '../Common/GoalFilterBar'
-import PostPreviewCard from '../Post/PostProfileCard/PostPreviewCard'
+import PostPreviewCard from '../Post/PostPreviewCard/PostPreviewCard'
 
 // actions
 import {

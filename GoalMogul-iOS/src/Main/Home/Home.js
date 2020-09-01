@@ -15,7 +15,11 @@ import SearchBarHeader from '../Common/Header/SearchBarHeader'
 
 import Mastermind from './Mastermind'
 import ActivityFeed from './ActivityFeed'
+import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
+import CreatePostModal from '../Post/CreatePostModal'
+import CreateContentButtons from '../Common/Button/CreateContentButtons'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
+import { track, EVENT as E } from '../../monitoring/segment'
 
 // Actions
 import {
@@ -53,15 +57,9 @@ import { saveRemoteMatches } from '../../actions/MeetActions'
 // Styles
 import { color } from '../../styles/basic'
 
-// Asset
-
 // Utils
 import Tooltip from '../Tutorial/Tooltip'
 import { svgMaskPath } from '../Tutorial/Utils'
-import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
-import { track, EVENT as E } from '../../monitoring/segment'
-import CreatePostModal from '../Post/CreatePostModal'
-import CreateContentButtons from '../Common/Button/CreateContentButtons'
 
 const DEBUG_KEY = '[ UI Home ]'
 

@@ -93,17 +93,17 @@ class ViewableSettingMenu extends Component {
                 onPress={this.handleOnClick}
             >
                 <Icon
-                    style={{
-                        ...default_style.normalIcon_1,
-                        tintColor: '#BDBDBD',
-                    }}
+                    style={[
+                        default_style.normalIcon_1,
+                        { tintColor: '#BDBDBD' },
+                    ]}
                     pack="material-community"
                     name={materialCommunityIconName}
                 />
                 <Text
                     style={[
                         default_style.normalText_2,
-                        { width: 45, color: '#9A9A9A', marginHorizontal: 5 },
+                        { width: 45, color: '#9A9A9A', marginHorizontal: 3 },
                     ]}
                 >
                     {text}

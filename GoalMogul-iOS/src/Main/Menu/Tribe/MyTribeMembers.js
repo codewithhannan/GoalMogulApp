@@ -120,7 +120,7 @@ class MyTribeMembers extends React.PureComponent {
                                 style={{
                                     ...styles.headerContainer,
                                     borderTopWidth: 8,
-                                    borderTopColor: color.GM_BORDER_COLOR,
+                                    borderTopColor: color.GM_LIGHT_GRAY,
                                 }}
                             >
                                 <Text style={default_style.titleText_1}>
@@ -216,7 +216,7 @@ class MyTribeMembers extends React.PureComponent {
 
 const styles = {
     containerStyle: {
-        backgroundColor: color.GM_BORDER_COLOR,
+        backgroundColor: color.GM_LIGHT_GRAY,
     },
     aboutContainer: {
         padding: 20,
@@ -232,7 +232,7 @@ const styles = {
         padding: 16,
         marginBottom: 8,
         borderBottomWidth: 1,
-        borderBottomColor: color.GM_BORDER_COLOR,
+        borderBottomColor: color.GM_LIGHT_GRAY,
     },
     searchBar: {
         container: {

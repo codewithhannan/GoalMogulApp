@@ -10,10 +10,12 @@ import {
     ImageBackground,
     TouchableWithoutFeedback,
     View,
-    Text,
 } from 'react-native'
 import { connect } from 'react-redux'
-import { getProfileImageOrDefaultFromUser } from '../../redux/middleware/utils'
+import {
+    getProfileImageOrDefaultFromUser,
+    isSharedPost,
+} from '../../redux/middleware/utils'
 // Actions
 import { openProfile } from '../../actions'
 // Assets
@@ -39,8 +41,6 @@ import ImageModal from '../Common/ImageModal'
 import ProfileImage from '../Common/ProfileImage'
 import RichText from '../Common/Text/RichText'
 // Components
-import ActionButton from '../Goal/Common/ActionButton'
-import ActionButtonGroup from '../Goal/Common/ActionButtonGroup'
 import Headline from '../Goal/Common/Headline'
 import CommentRef from '../Goal/GoalDetailCard/Comment/CommentRef'
 import ActivityBody from './ActivityBody'
@@ -190,7 +190,7 @@ class ActivityCard extends React.PureComponent {
 
         // User shouldn't share a share. When Activity on a post which is a share,
         // We disable the share button.
-        const isShare = isPost && postRef.postType !== 'General'
+        const isShare = isPost && isSharedPost(postRef.postType)
 
         return (
             <ActionBar
@@ -418,9 +418,8 @@ class ActivityCard extends React.PureComponent {
                 <View
                     style={{
                         marginTop: 12,
-                        marginBottom: 15,
-                        marginRight: 15,
-                        marginLeft: 15,
+                        marginBottom: 16,
+                        marginHorizontal: 16,
                     }}
                 >
                     <DelayedButton

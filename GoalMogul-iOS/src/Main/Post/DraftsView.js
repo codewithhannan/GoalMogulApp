@@ -26,16 +26,17 @@ import { color } from '../../styles/basic'
 const { width } = Dimensions.get('window')
 
 /**
- * @param onDraftSelect(index)
+ * @param onSelect(index)
+ * @param onDelete(index)
  * @param drafts
  */
 class DraftsView extends Component {
     renderItem({ item: { post, mediaRef }, index }) {
-        const cancelIconStyle = {
+        const deleteIconStyle = {
             ...default_style.smallIcon_1,
-            tintColor: '#EB5757',
+            tintColor: color.GM_RED,
         }
-        const textWidth = width - 3 * 16 - cancelIconStyle.width - 30
+        const textWidth = width - 3 * 16 - deleteIconStyle.width - 30
 
         return (
             <MenuOption onSelect={() => this.props.onSelect(index)}>
@@ -77,7 +78,7 @@ class DraftsView extends Component {
                             style={styles.cancelWrapper}
                         >
                             <Image
-                                style={cancelIconStyle}
+                                style={deleteIconStyle}
                                 source={cancelImage}
                             />
                         </DelayedButton>
@@ -130,14 +131,15 @@ class DraftsView extends Component {
                     }}
                 >
                     <FlatList
-                        keyboardShouldPersistTaps="handled"
+                        keyboardShouldPersistTaps="always"
                         data={this.props.drafts}
+                        keyExtractor={(item) => item._id}
                         ItemSeparatorComponent={this.renderItemSeparator}
                         style={{
                             maxHeight: this.props.maxModalHeight,
                             paddingVertical: 5,
                         }}
-                        renderItem={this.renderItem}
+                        renderItem={(props) => this.renderItem(props)}
                     />
                 </MenuOptions>
             </Menu>

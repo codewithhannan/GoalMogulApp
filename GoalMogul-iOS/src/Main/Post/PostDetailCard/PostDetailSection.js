@@ -17,16 +17,12 @@ import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import timeago from 'timeago.js'
 import { deletePost, openProfile } from '../../../actions'
-import CommentIcon from '../../../asset/utils/comment.png'
 import expand from '../../../asset/utils/expand.png'
-import ShareIcon from '../../../asset/utils/forward.png'
-import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
-// Assets
-import LoveIcon from '../../../asset/utils/love.png'
 // Actions
 import {
     switchCase,
     getProfileImageOrDefaultFromUser,
+    isSharedPost,
 } from '../../../redux/middleware/utils'
 import { createCommentFromSuggestion } from '../../../redux/modules/feed/comment/CommentActions'
 import { openPostDetail } from '../../../redux/modules/feed/post/PostActions'
@@ -62,12 +58,11 @@ import RefPreview from '../../Common/RefPreview'
 import RichText from '../../Common/Text/RichText'
 import SparkleBadgeView from '../../Gamification/Badge/SparkleBadgeView'
 // Components
-import ActionButton from '../../Goal/Common/ActionButton'
-import ActionButtonGroup from '../../Goal/Common/ActionButtonGroup'
 import Headline from '../../Goal/Common/Headline'
 import Timestamp from '../../Goal/Common/Timestamp'
 import CreatePostModal from '../CreatePostModal'
 import ActionBar from '../../Common/ContentCards/ActionBar'
+import ShareCard from '../../Common/Card/ShareCard'
 
 const DEBUG_KEY = '[ UI PostDetailCard.PostDetailSection ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -104,13 +99,6 @@ class PostDetailSection extends React.PureComponent {
                 numberOfRenderedLines > CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
         })
     }
-
-    // shouldComponentUpdate(nextProps, nextState) {
-    //   const seeMoreChanged = nextState.seeMore !== this.state.seeMore;
-    //   const itemChanged = _.isEqual(nextProps.item, this.props.item);
-    //   console.log(`${DEBUG_KEY}: [ shouldComponentUpdate ]: seeMoreChanged: ${seeMoreChanged || itemChanged}, ${seeMoreChanged}, itemChanged: ${itemChanged}`);
-    //   return seeMoreChanged || itemChanged;
-    // }
 
     handleShareOnClick = () => {
         const { item } = this.props
@@ -156,7 +144,6 @@ class PostDetailSection extends React.PureComponent {
         if (this.state.seeMore) {
             // See less
             this.setState({
-                ...this.state,
                 numberOfLines: CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
                 seeMore: false,
             })
@@ -164,7 +151,6 @@ class PostDetailSection extends React.PureComponent {
         }
         // See more
         this.setState({
-            ...this.state,
             numberOfLines: undefined,
             seeMore: true,
         })
@@ -252,7 +238,6 @@ class PostDetailSection extends React.PureComponent {
                 },
             },
         }
-        // console.log('item is: ', item);
         return (
             <View>
                 <View
@@ -290,7 +275,7 @@ class PostDetailSection extends React.PureComponent {
                         flexWrap: 'wrap',
                         color: 'black',
                     }}
-                    textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
+                    textContainerStyle={{ flexDirection: 'row', marginTop: 16 }}
                     ellipsizeMode="tail"
                     onUserTagPressed={(user) => {
                         console.log(
@@ -318,7 +303,7 @@ class PostDetailSection extends React.PureComponent {
             <TouchableWithoutFeedback
                 onPress={() => this.setState({ mediaModal: true })}
             >
-                <View style={{ marginTop: 10 }}>
+                <View style={{ marginTop: 8 }}>
                     <ImageBackground
                         style={{
                             ...styles.mediaStyle,
@@ -366,11 +351,6 @@ class PostDetailSection extends React.PureComponent {
         )
     }
 
-    // <Modal
-    //   animationType="fade"
-    //   transparent={false}
-    //   visible={this.state.mediaModal}
-    // >
     renderPostImageModal(imageUrl) {
         return (
             <ImageModal
@@ -385,10 +365,33 @@ class PostDetailSection extends React.PureComponent {
         return <SparkleBadgeView milestoneIdentifier={milestoneIdentifier} />
     }
 
+    renderUpdateAttachments(item) {
+        const { belongsToGoalStoryline, mediaRef } = item
+        return (
+            <View style={{ marginBottom: 16 }}>
+                {this.renderPostImage(mediaRef)}
+                {belongsToGoalStoryline && [
+                    <Text
+                        style={[
+                            default_style.normalText_2,
+                            { marginTop: 8, marginBottom: 4 },
+                        ]}
+                    >
+                        Attached
+                    </Text>,
+                    <ShareCard
+                        goal={belongsToGoalStoryline.goalRef}
+                        containerStyle={{ width: '100%' }}
+                    />,
+                ]}
+            </View>
+        )
+    }
+
     // TODO: Switch to decide amoung renderImage, RefPreview and etc.
     renderCardContent(item) {
         const { postType, mediaRef, goalRef } = item
-        if (postType === 'General') {
+        if (!isSharedPost(postType)) {
             const milestoneIdentifier = _.get(
                 item,
                 'milestoneCelebration.milestoneIdentifier'
@@ -396,7 +399,7 @@ class PostDetailSection extends React.PureComponent {
             if (milestoneIdentifier !== undefined) {
                 return this.renderBadgeEarnImage(milestoneIdentifier)
             }
-            return this.renderPostImage(mediaRef)
+            return this.renderUpdateAttachments(item)
         }
         const refPreview = switchItem(item, postType)
         let onPress
@@ -446,7 +449,7 @@ class PostDetailSection extends React.PureComponent {
 
         // User shouldn't share a share. When Activity on a post which is a share,
         // We disable the share button.
-        const isShare = item.postType !== 'General'
+        const isShare = isSharedPost(item.postType)
 
         return (
             <ActionBar
@@ -536,7 +539,7 @@ class PostDetailSection extends React.PureComponent {
                     entityType="Post"
                 />
                 <View style={{ paddingHorizontal: 16 }}>
-                    <View style={{ marginTop: 16, marginBottom: 10 }}>
+                    <View style={{ marginTop: 16 }}>
                         {this.renderUserDetail(item)}
                         {this.renderCardContent(item)}
                     </View>
