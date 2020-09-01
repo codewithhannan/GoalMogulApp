@@ -179,8 +179,7 @@ const styles = {
         paddingTop: 10,
         paddingBottom: 10,
         alignItems: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: color.GM_BORDER_COLOR,
+        marginBottom: 1,
         backgroundColor: color.GM_CARD_BACKGROUND,
     },
     iconContainerStyle: {

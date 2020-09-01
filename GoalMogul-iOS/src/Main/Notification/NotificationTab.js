@@ -265,9 +265,8 @@ const styles = {
     titleComponentContainerStyle: {
         paddingHorizontal: 16,
         paddingVertical: 12,
-        borderColor: color.GM_BORDER_COLOR,
         backgroundColor: color.GM_CARD_BACKGROUND,
-        borderBottomWidth: 1,
+        marginBottom: 1,
     },
 }
 
