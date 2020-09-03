@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, Image, Text, Dimensions } from 'react-native'
+import { Alert, View, Image, Text, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from '@ui-kitten/components'
 import R from 'ramda'
@@ -26,10 +26,6 @@ import { getUserData } from '../../../redux/modules/User/Selector'
 
 /* Components */
 import ProfileActionButton from '../../Common/Button/ProfileActionButton'
-import {
-    actionSheet,
-    switchByButtonIndex,
-} from '../../Common/ActionSheetFactory'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
@@ -44,15 +40,6 @@ import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/util
 const { InfoIcon } = Icons
 const { width } = Dimensions.get('window')
 const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]'
-
-const CANCEL_REQUEST_OPTIONS = ['Withdraw request', 'Cancel']
-const CANCEL_REQUEST_CANCEL_INDEX = 1
-
-const UNFRIEND_REQUEST_OPTIONS = ['Unfriend', 'Cancel']
-const UNFRIEND_REQUEST_CANCEL_INDEX = 1
-
-const RESPOND_REQUEST_OPTIONS = ['Accept friend request', 'Dismiss', 'Cancel']
-const RESPOND_REQUEST_CANCEL_INDEX = 2
 
 // TODO: use redux instead of passed in props
 class ProfileDetailCard extends Component {
@@ -122,8 +109,10 @@ class ProfileDetailCard extends Component {
     }
 
     openOptionModal = () => this.bottomSheetRef.open()
-
     closeOptionModal = () => this.bottomSheetRef.close()
+    openFriendRequestOptionModal = () => this.friendRequestBottomSheetRef.open()
+    closeFriendRequestOptionModal = () =>
+        this.friendRequestBottomSheetRef.close()
 
     onLayout = (e) => {
         if (this.props.onLayout) {
@@ -151,6 +140,62 @@ class ProfileDetailCard extends Component {
         }
     }
 
+    makeFriendshipStatusOptions = () => {
+        return [
+            {
+                text: 'Accept Friend Request',
+                textStyle: { color: 'black' },
+                onPress: () => {
+                    this.props.updateFriendship(
+                        this.props.userId,
+                        this.props.friendship._id,
+                        'acceptFriend',
+                        'requests.incoming',
+                        undefined
+                    )
+                    // close bottom sheet
+                    this.closeFriendRequestOptionModal()
+                },
+            },
+            {
+                text: 'Dismiss',
+                textStyle: { color: 'black' },
+                onPress: () => {
+                    this.props.updateFriendship(
+                        this.props.userId,
+                        this.props.friendship._id,
+                        'deleteFriend',
+                        'requests.incoming',
+                        undefined
+                    )
+                    // close bottom sheet
+                    this.closeFriendRequestOptionModal()
+                },
+            },
+            {
+                text: 'Cancel',
+                textStyle: { color: 'black' },
+                onPress: () => {
+                    // close bottom sheet
+                    this.closeFriendRequestOptionModal()
+                },
+            },
+        ]
+    }
+
+    renderFriendshipStatusBottomSheet = () => {
+        const options = this.makeFriendshipStatusOptions()
+        // Options height + bottom space + bottom sheet handler height
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.friendRequestBottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
+    }
+
     // type: ['unfriend', 'deleteFriend', 'requestFriend']
     handleButtonOnPress = (type) => {
         if (type === 'requestFriend') {
@@ -165,10 +210,10 @@ class ProfileDetailCard extends Component {
         }
 
         if (type === 'deleteFriend') {
-            const cancelRequestSwitchCases = switchByButtonIndex([
-                [
-                    R.equals(0),
-                    () => {
+            Alert.alert('Are you sure to withdraw friend request?', '', [
+                {
+                    text: 'Confirm',
+                    onPress: () => {
                         console.log(
                             `${DEBUG_KEY} User withdraw request _id: `,
                             this.props.friendship._id
@@ -181,22 +226,18 @@ class ProfileDetailCard extends Component {
                             undefined
                         )
                     },
-                ],
+                },
+                {
+                    text: 'Cancel',
+                },
             ])
-
-            const cancelActionSheet = actionSheet(
-                CANCEL_REQUEST_OPTIONS,
-                CANCEL_REQUEST_CANCEL_INDEX,
-                cancelRequestSwitchCases
-            )
-            return cancelActionSheet()
         }
 
         if (type === 'unfriend') {
-            const unFriendRequestSwitchCases = switchByButtonIndex([
-                [
-                    R.equals(0),
-                    () => {
+            Alert.alert('Are you sure to unfriend?', '', [
+                {
+                    text: 'Confirm',
+                    onPress: () => {
                         console.log(
                             `${DEBUG_KEY} User unfriend _id: `,
                             this.props.friendship._id
@@ -209,59 +250,15 @@ class ProfileDetailCard extends Component {
                             undefined
                         )
                     },
-                ],
+                },
+                {
+                    text: 'Cancel',
+                },
             ])
-
-            const unFriendActionSheet = actionSheet(
-                UNFRIEND_REQUEST_OPTIONS,
-                UNFRIEND_REQUEST_CANCEL_INDEX,
-                unFriendRequestSwitchCases
-            )
-            return unFriendActionSheet()
         }
 
         if (type === 'respond') {
-            const respondRequestSwitchCases = switchByButtonIndex([
-                [
-                    R.equals(1),
-                    () => {
-                        console.log(
-                            `${DEBUG_KEY} User refuse _id: `,
-                            this.props.friendship._id
-                        )
-                        this.props.updateFriendship(
-                            this.props.userId,
-                            this.props.friendship._id,
-                            'deleteFriend',
-                            'requests.incoming',
-                            undefined
-                        )
-                    },
-                ],
-                [
-                    R.equals(0),
-                    () => {
-                        console.log(
-                            `${DEBUG_KEY} User accept _id: `,
-                            this.props.friendship._id
-                        )
-                        this.props.updateFriendship(
-                            this.props.userId,
-                            this.props.friendship._id,
-                            'acceptFriend',
-                            'requests.incoming',
-                            undefined
-                        )
-                    },
-                ],
-            ])
-
-            const respondActionSheet = actionSheet(
-                RESPOND_REQUEST_OPTIONS,
-                RESPOND_REQUEST_CANCEL_INDEX,
-                respondRequestSwitchCases
-            )
-            return respondActionSheet()
+            this.openFriendRequestOptionModal()
         }
     }
 
@@ -401,48 +398,6 @@ class ProfileDetailCard extends Component {
                 />
             </DelayedButton>
         )
-    }
-
-    // Open iOS menu with two options
-    handleMoreButtonOnPress = () => {
-        const moreButtonOptions = switchByButtonIndex([
-            [
-                R.equals(0),
-                () => {
-                    // share to Direct Chat
-                    // TODO: @Jay Share to direct message
-                    const userToShare = this.props.user
-                    const chatRoomType = 'Direct'
-                    Actions.push('shareToChatLightBox', {
-                        userToShare,
-                        chatRoomType,
-                    })
-                },
-            ],
-            [
-                R.equals(1),
-                () => {
-                    // TODO: @Jay Share to group conversation
-                    const userToShare = this.props.user
-                    const chatRoomType = 'Group'
-                    Actions.push('shareToChatLightBox', {
-                        userToShare,
-                        chatRoomType,
-                    })
-                },
-            ],
-        ])
-
-        const moreButtonActionSheet = actionSheet(
-            [
-                'Share Profile as Direct Message',
-                'Share Profile to Group Chat',
-                'Cancel',
-            ],
-            2,
-            moreButtonOptions
-        )
-        return moreButtonActionSheet()
     }
 
     // Open direct message with this person
@@ -633,7 +588,7 @@ class ProfileDetailCard extends Component {
                     )
                     this.props.blockUser(this.props.userId, () =>
                         alert(
-                            `You have successfully blocked ${this.props.user.name}. ${text}`
+                            `You have successfully blocked ${this.props.user.name}`
                         )
                     )
                 }, 500)
@@ -716,6 +671,7 @@ class ProfileDetailCard extends Component {
                         {this.renderFriendshipStatusButton()}
                         {this.renderMoreProfileActionButton()}
                         {this.renderBottomSheet()}
+                        {this.renderFriendshipStatusBottomSheet()}
                     </View>
                 </View>
                 <View style={styles.containerStyle}>

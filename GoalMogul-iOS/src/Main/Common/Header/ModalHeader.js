@@ -76,7 +76,7 @@ const ModalHeader = (props) => {
                 </View>
             )}
             {actionIcon}
-            {actionText && (
+            {!!actionText && (
                 <Text
                     style={[
                         styles.actionTextStyle,

@@ -215,12 +215,10 @@ class FriendCard extends Component {
                 {this.renderProfileImage(item)}
 
                 <View style={styles.bodyContainerStyle}>
-                    {this.renderInfo(item)}
-                    {/* 
-            {this.renderOccupation(item)}
-            {this.renderHeadline(item)}
-          */}
-                    {this.renderGoals(item)}
+                    {/* {this.renderInfo(item)} */}
+                    {this.renderOccupation(item)}
+                    {this.renderHeadline(item)}
+                    {/* {this.renderGoals(item)} */}
                 </View>
             </DelayedButton>
         )
