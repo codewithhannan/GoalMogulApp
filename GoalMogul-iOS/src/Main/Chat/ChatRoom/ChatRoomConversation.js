@@ -20,11 +20,11 @@
 import { Icon, Layout } from '@ui-kitten/components'
 import * as FileSystem from 'expo-file-system'
 import * as Permissions from 'expo-permissions'
+import { MenuProvider } from 'react-native-popup-menu'
 import _ from 'lodash'
 import R from 'ramda'
 import React from 'react'
 import {
-    ActionSheetIOS,
     Alert,
     CameraRoll,
     Clipboard,
@@ -72,11 +72,8 @@ import {
 } from '../../../redux/middleware/utils'
 import { color } from '../../../styles/basic'
 import {
-    DEVICE_MODEL,
     GROUP_CHAT_DEFAULT_ICON_URL,
     IMAGE_BASE_URL,
-    IPHONE_MODELS_2,
-    IPHONE_MODELS_3,
 } from '../../../Utils/Constants'
 import { toHashCode } from '../../../Utils/ImageUtils'
 import {
@@ -91,8 +88,11 @@ import { GMGiftedChat } from './GiftedChat/GMGiftedChat'
 import ChatRoomConversationInputToolbar from './GiftedChat/GMGiftedChatInputToolbar'
 import GMGiftedMessage from './GiftedChat/GMGiftedMessage'
 import Send from './GiftedChat/GMGiftedSend'
+import { IS_SMALL_PHONE, getButtonBottomSheetHeight } from '../../../styles'
+import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
 import { HEADER_STYLES } from '../../../styles/Header'
 import { chat_style } from '../../../styles/Chat'
+import AttachGoal from '../../Post/AttachGoal'
 
 const DEBUG_KEY = '[ UI ChatRoomConversation ]'
 const LISTENER_KEY = 'ChatRoomConversation'
@@ -492,102 +492,121 @@ class ChatRoomConversation extends React.Component {
             }
         )
     }
-    onShareContentButtonPress = () => {
+
+    /** Bottom Sheet related section */
+    openOptionModal = () => this.bottomSheetRef.open()
+
+    closeOptionModal = () => this.bottomSheetRef.close()
+
+    makeShareOptions = () => {
         const { user, chatRoom, messages } = this.props
-        const options = [
-            'Share a Friend',
-            'Share a Tribe',
-            'Share an Event',
-            'Cancel',
-        ]
-        const cancelButtonIndex = options.length - 1
-        ActionSheetIOS.showActionSheetWithOptions(
-            {
-                options,
-                cancelButtonIndex,
+        const shareGoalOption = {
+            text: 'Share a Goal',
+            textStyle: { color: 'black' },
+            icon: { name: 'bullseye-arrow', pack: 'material-community' },
+            onPress: () => {
+                this.closeOptionModal()
+                // Wait for bottom sheet to close
+                // before showing unfriend alert confirmation
+                setTimeout(() => {
+                    if (this.attachGoalModal) {
+                        this.attachGoalModal.open()
+                    }
+                }, 500)
             },
-            (buttonIndex) => {
-                let onItemSelect
-                switch (buttonIndex) {
-                    case 0:
-                        const searchFor = {
-                            type: 'directChat',
-                        }
-                        const cardIconStyle = { tintColor: color.GM_BLUE_LIGHT }
-                        const cardIconSource = NextButton
-                        const callback = (selectedUserId) =>
-                            this.props.sendMessage(
-                                [
-                                    {
-                                        sharedEntity: {
-                                            userRef: selectedUserId,
-                                        },
-                                        text: '',
-                                        user,
-                                        createdAt: new Date(),
-                                        _id: UUID(),
-                                    },
-                                ],
-                                null,
-                                chatRoom,
-                                messages
-                            )
-                        Actions.push('searchPeopleLightBox', {
-                            searchFor,
-                            cardIconSource,
-                            cardIconStyle,
-                            callback,
-                        })
-                        break
-                    case 1:
-                        onItemSelect = (selectedTribeId) => {
-                            Actions.pop()
-                            this.props.sendMessage(
-                                [
-                                    {
-                                        sharedEntity: {
-                                            tribeRef: selectedTribeId,
-                                        },
-                                        text: '',
-                                        user,
-                                        createdAt: new Date(),
-                                        _id: UUID(),
-                                    },
-                                ],
-                                null,
-                                chatRoom,
-                                messages
-                            )
-                        }
-                        Actions.push('searchTribeLightBox', { onItemSelect })
-                        break
-                    case 2:
-                        onItemSelect = (selectedEventId) => {
-                            Actions.pop()
-                            this.props.sendMessage(
-                                [
-                                    {
-                                        sharedEntity: {
-                                            eventRef: selectedEventId,
-                                        },
-                                        text: '',
-                                        user,
-                                        createdAt: new Date(),
-                                        _id: UUID(),
-                                    },
-                                ],
-                                null,
-                                chatRoom,
-                                messages
-                            )
-                            Actions.pop()
-                        }
-                        Actions.push('searchEventLightBox', { onItemSelect })
-                        break
+        }
+
+        // Current version we don't support share an update
+        // const shareUpdateOption = {
+        //     text: 'Share an Update',
+        //     textStyle: { color: 'black' },
+        //     icon: { name: 'feather', pack: 'material-community' },
+        //     onPress: () => {},
+        // }
+
+        const shareUserOption = {
+            text: 'Share a Friend',
+            textStyle: { color: 'black' },
+            icon: { name: 'account', pack: 'material-community' },
+            onPress: () => {
+                this.closeOptionModal()
+                // Wait for bottom sheet to close
+                // before showing unfriend alert confirmation
+                const searchFor = {
+                    type: 'directChat',
                 }
-            }
-        )
+                const cardIconStyle = { tintColor: color.GM_BLUE_LIGHT }
+                const cardIconSource = NextButton
+                const callback = (selectedUserId) =>
+                    this.props.sendMessage(
+                        [
+                            {
+                                sharedEntity: {
+                                    userRef: selectedUserId,
+                                },
+                                text: '',
+                                user,
+                                createdAt: new Date(),
+                                _id: UUID(),
+                            },
+                        ],
+                        null,
+                        chatRoom,
+                        messages
+                    )
+                Actions.push('searchPeopleLightBox', {
+                    searchFor,
+                    cardIconSource,
+                    cardIconStyle,
+                    callback,
+                })
+            },
+        }
+
+        // Current version we don't support share a tribe
+        // const shareTribeOption = {
+        //     text: 'Share a Tribe',
+        //     textStyle: { color: 'black' },
+        //     icon: { name: 'flag', pack: 'material-community' },
+        //     onPress: () => {
+        //         this.closeOptionModal()
+        //         // Wait for bottom sheet to close
+        //         // before showing unfriend alert confirmation
+        //         setTimeout(() => {
+        //             const onItemSelect = (selectedTribeId) => {
+        //                 Actions.pop()
+        //                 this.props.sendMessage(
+        //                     [
+        //                         {
+        //                             sharedEntity: {
+        //                                 tribeRef: selectedTribeId,
+        //                             },
+        //                             text: '',
+        //                             user,
+        //                             createdAt: new Date(),
+        //                             _id: UUID(),
+        //                         },
+        //                     ],
+        //                     null,
+        //                     chatRoom,
+        //                     messages
+        //                 )
+        //             }
+        //             Actions.push('searchTribeLightBox', { onItemSelect })
+        //         }, 500)
+        //     },
+        // }
+
+        return [
+            shareGoalOption,
+            // shareUpdateOption,
+            shareUserOption,
+            // shareTribeOption,
+        ]
     }
+
+    /** Bottom Sheet related section ends */
+
     onChatTextInputChanged = (text) => {
         const { userId, chatRoomId } = this.props
         const typingStatus = text.length > 0
@@ -688,7 +707,7 @@ class ChatRoomConversation extends React.Component {
                     paddingRight: 6,
                     ...styles.iconContainerStyle,
                 }}
-                onPress={this.onShareContentButtonPress}
+                onPress={this.openOptionModal}
             >
                 <Icon
                     name="lightbulb-on-outline"
@@ -892,93 +911,143 @@ class ChatRoomConversation extends React.Component {
         )
     }
 
+    renderBottomButtonSheet = () => {
+        const options = this.makeShareOptions()
+        // Options height + bottom space + bottom sheet handler height
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.bottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
+    }
+
+    renderAttachGoal = () => {
+        const { user, chatRoom, messages } = this.props
+        return (
+            <AttachGoal
+                topOffSet={IS_SMALL_PHONE ? 48 : 82}
+                onRef={(r) => (this.attachGoalModal = r)}
+                onSelect={(goalDoc) => {
+                    this.attachGoalModal.close()
+                    if (goalDoc && goalDoc._id) {
+                        this.props.sendMessage(
+                            [
+                                {
+                                    sharedEntity: {
+                                        goalRef: goalDoc,
+                                    },
+                                    text: '',
+                                    user,
+                                    createdAt: new Date(),
+                                    _id: UUID(),
+                                },
+                            ],
+                            null,
+                            chatRoom,
+                            messages
+                        )
+                    }
+                }}
+            />
+        )
+    }
+
     render() {
         const { useDefaultChatRoomImage } = this.props
         const { _id, name, profile } = this.props.user
         return (
-            <Layout style={styles.homeContainerStyle}>
-                {this.props.showInitialLoader ? (
-                    <ChatRoomLoaderOverlay />
-                ) : null}
-                <ModalHeader
-                    title={this.props.chatRoomName}
-                    titleIcon={this.props.chatRoomImage}
-                    titleIconContainerStyle={
-                        useDefaultChatRoomImage
-                            ? chat_style.headerDefaultIconContainer
-                            : undefined
-                    }
-                    titleIconStyle={
-                        useDefaultChatRoomImage
-                            ? chat_style.headerDefaultIcon
-                            : undefined
-                    }
-                    actionIcon={
-                        <Icon
-                            name="dots-horizontal"
-                            pack="material-community"
-                            style={HEADER_STYLES.nakedButton}
-                        />
-                    }
-                    onAction={this.openOptions}
-                    back={true}
-                    onCancel={this.closeConversation}
-                    containerStyles={{
-                        elevation: 3,
-                        shadowColor: '#666',
-                        shadowOffset: { width: 0, height: 1 },
-                        shadowOpacity: 0.15,
-                        shadowRadius: 3,
-                    }}
-                    backButtonStyle={{
-                        tintColor: '#21364C',
-                    }}
-                    actionTextStyle={{
-                        color: '#fff',
-                    }}
-                    titleTextStyle={{
-                        color: '#fff',
-                    }}
-                />
-                <GMGiftedChat
-                    ref={(chatRef) => (this._giftedChat = chatRef)}
-                    messages={(this.props.ghostMessages || []).concat(
-                        (this.props.messages || []).sort(
-                            (doc1, doc2) => doc2.createdAt - doc1.createdAt
-                        )
-                    )}
-                    user={{
-                        _id,
-                        name,
-                        avatar: getProfileImageOrDefault(profile.image),
-                    }}
-                    placeholder={`Send a message to '${this.props.chatRoomName}'`}
-                    isAnimated={true}
-                    alwaysShowSend={true}
-                    renderAvatarOnTop={true}
-                    loadEarlier={this.props.hasNextPage}
-                    isLoadingEarlier={this.props.loading}
-                    onLoadEarlier={this.loadEarlierMessages}
-                    onPressAvatar={this.openUserProfile}
-                    onLongPress={this.onMessageLongPress}
-                    renderFooter={this.renderTypingIndicatorFooter}
-                    onSend={this.sendMessage}
-                    onInputTextChanged={this.onChatTextInputChanged}
-                    renderAccessory={this.renderAccessory}
-                    renderSend={null /*this.renderSendButton*/}
-                    renderComposer={this.renderComposer}
-                    // maxComposerHeight={120 - 18} // padding
-                    maxComposerHeight={196}
-                    minComposerHeight={108}
-                    renderMessage={this.renderMessage}
-                    renderSystemMessage={this.renderSystemMessage}
-                    renderInputToolbar={this.renderInputToolbar}
-                    renderAvatar={this.renderAvatar}
-                    minInputToolbarHeight={this.props.messageMediaRef ? 96 : 60}
-                    deleteMessage={this.deleteMessage}
-                    dismissGoalSuggestion={this.dismissGoalSuggestion}
-                />
-            </Layout>
+            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <Layout style={styles.homeContainerStyle}>
+                    {this.props.showInitialLoader ? (
+                        <ChatRoomLoaderOverlay />
+                    ) : null}
+                    <ModalHeader
+                        title={this.props.chatRoomName}
+                        titleIcon={this.props.chatRoomImage}
+                        titleIconContainerStyle={
+                            useDefaultChatRoomImage
+                                ? chat_style.headerDefaultIconContainer
+                                : undefined
+                        }
+                        titleIconStyle={
+                            useDefaultChatRoomImage
+                                ? chat_style.headerDefaultIcon
+                                : undefined
+                        }
+                        actionIcon={
+                            <Icon
+                                name="dots-horizontal"
+                                pack="material-community"
+                                style={HEADER_STYLES.nakedButton}
+                            />
+                        }
+                        onAction={this.openOptions}
+                        back={true}
+                        onCancel={this.closeConversation}
+                        containerStyles={{
+                            elevation: 3,
+                            shadowColor: '#666',
+                            shadowOffset: { width: 0, height: 1 },
+                            shadowOpacity: 0.15,
+                            shadowRadius: 3,
+                        }}
+                        backButtonStyle={{
+                            tintColor: '#21364C',
+                        }}
+                        actionTextStyle={{
+                            color: '#fff',
+                        }}
+                        titleTextStyle={{
+                            color: '#fff',
+                        }}
+                    />
+                    <GMGiftedChat
+                        ref={(chatRef) => (this._giftedChat = chatRef)}
+                        messages={(this.props.ghostMessages || []).concat(
+                            (this.props.messages || []).sort(
+                                (doc1, doc2) => doc2.createdAt - doc1.createdAt
+                            )
+                        )}
+                        user={{
+                            _id,
+                            name,
+                            avatar: getProfileImageOrDefault(profile.image),
+                        }}
+                        placeholder={`Send a message to '${this.props.chatRoomName}'`}
+                        isAnimated={true}
+                        alwaysShowSend={true}
+                        renderAvatarOnTop={true}
+                        loadEarlier={this.props.hasNextPage}
+                        isLoadingEarlier={this.props.loading}
+                        onLoadEarlier={this.loadEarlierMessages}
+                        onPressAvatar={this.openUserProfile}
+                        onLongPress={this.onMessageLongPress}
+                        renderFooter={this.renderTypingIndicatorFooter}
+                        onSend={this.sendMessage}
+                        onInputTextChanged={this.onChatTextInputChanged}
+                        renderAccessory={this.renderAccessory}
+                        renderSend={null /*this.renderSendButton*/}
+                        renderComposer={this.renderComposer}
+                        // maxComposerHeight={120 - 18} // padding
+                        maxComposerHeight={196}
+                        minComposerHeight={108}
+                        renderMessage={this.renderMessage}
+                        renderSystemMessage={this.renderSystemMessage}
+                        renderInputToolbar={this.renderInputToolbar}
+                        renderAvatar={this.renderAvatar}
+                        minInputToolbarHeight={
+                            this.props.messageMediaRef ? 96 : 60
+                        }
+                        deleteMessage={this.deleteMessage}
+                        dismissGoalSuggestion={this.dismissGoalSuggestion}
+                    />
+                    {this.renderBottomButtonSheet()}
+                    {this.renderAttachGoal()}
+                </Layout>
+            </MenuProvider>
         )
     }
 }
@@ -1137,6 +1206,10 @@ const styles = {
         flex: 1,
         marginTop: 12,
         marginLeft: 9,
+    },
+    backdrop: {
+        backgroundColor: 'gray',
+        opacity: 0.5,
     },
 }
 

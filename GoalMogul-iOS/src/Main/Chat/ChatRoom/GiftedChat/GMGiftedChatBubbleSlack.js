@@ -23,6 +23,7 @@ import { color } from '../../../../styles/basic'
 import { MemberDocumentFetcher } from '../../../../Utils/UserUtils'
 import CommentRef from '../../../Goal/GoalDetailCard/Comment/CommentRef'
 import ChatMessageImage from '../../Modals/ChatMessageImage'
+import ShareCard from '../../../Common/Card/ShareCard'
 
 const { isSameDay } = utils
 
@@ -203,47 +204,28 @@ export default class Bubble extends React.Component {
     renderSharedContent() {
         const { currentMessage } = this.props
         if (currentMessage.sharedEntity) {
-            let userRef, tribeRef, eventRef, suggestionType
+            let userRef, tribeRef, goalRef
             if (currentMessage.sharedEntity.userRef) {
-                suggestionType = 'User'
                 userRef = currentMessage.sharedEntity.userRef
-                if (typeof userRef != 'object') {
-                    userRef = {
-                        _id: userRef,
-                        name: 'GoalMogul member',
-                    }
+                if (typeof userRef == 'object') {
+                    userRef = userRef._id
                 }
+                return <ShareCard userRef={userRef} />
             } else if (currentMessage.sharedEntity.tribeRef) {
-                suggestionType = 'Tribe'
                 tribeRef = currentMessage.sharedEntity.tribeRef
-                if (typeof tribeRef != 'object') {
-                    tribeRef = {
-                        _id: tribeRef,
-                        name: 'GoalMogul tribe',
-                    }
+                if (typeof tribeRef == 'object') {
+                    tribeRef = tribeRef._id
                 }
-            } else if (currentMessage.sharedEntity.eventRef) {
-                suggestionType = 'Event'
-                eventRef = currentMessage.sharedEntity.eventRef
-                if (typeof eventRef != 'object') {
-                    eventRef = {
-                        _id: eventRef,
-                        name: 'GoalMogul event',
-                    }
+                return <ShareCard tribeRef={tribeRef} />
+            } else if (currentMessage.sharedEntity.goalRef) {
+                goalRef = currentMessage.sharedEntity.goalRef
+                if (typeof goalRef == 'object') {
+                    goalRef = goalRef._id
                 }
+                return <ShareCard goalRef={goalRef} />
             } else {
                 return null
             }
-            return (
-                <CommentRef
-                    containerStyles={{
-                        width: 240,
-                        marginLeft: 12,
-                        marginRight: 12,
-                    }}
-                    item={{ suggestionType, userRef, tribeRef, eventRef }}
-                />
-            )
         }
         return null
     }

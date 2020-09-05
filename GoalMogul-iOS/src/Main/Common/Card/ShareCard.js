@@ -17,31 +17,72 @@ import {
 } from '../../../styles/basic/color'
 import UserCardHeader from '../../MeetTab/Common/UserCardHeader'
 import { FONT_FAMILY } from '../../../styles/basic/text'
-import { openProfile } from '../../../actions'
+import { openProfile, fetchUserProfile } from '../../../actions'
 import { chat_style } from '../../../styles/Chat'
 import { openGoalDetailById } from '../../../redux/modules/home/mastermind/actions'
+import ProfileImage from '../ProfileImage'
+import { myTribeDetailOpenWithId } from '../../../redux/modules/tribe/MyTribeActions'
+import { default_style, text } from '../../../styles/basic'
+import { getChatroomSharedEntity } from '../../../redux/modules/chat/ChatSelector'
+import { refreshGoalDetailById } from '../../../redux/modules/goal/GoalDetailActions'
 
 const { width } = Dimensions.get('window')
+const SHARE_CARD_PAGE_ID = 'share_card'
 
+/**
+ * @param {String} tribeRef (optional) tribeId
+ * @param {String} goalRef (optional)  goalId
+ * @param {String} userRef (optional)  userId
+ */
 class ShareCard extends React.Component {
-    handleCardOnPress = () => {
-        const { user, goal } = this.props
-        if (user) {
-            return this.props.openProfile(user._id)
+    componentDidMount() {
+        // Load entity into redux
+        const { userRef, goalRef, tribeRef } = this.props
+
+        if (userRef) {
+            this.props.fetchUserProfile(userRef, SHARE_CARD_PAGE_ID, true)
         }
 
-        if (goal && goal._id) {
-            return this.props.openGoalDetailById(goal._id)
+        if (goalRef) {
+            this.props.refreshGoalDetailById(
+                goalRef,
+                SHARE_CARD_PAGE_ID,
+                null,
+                true
+            )
+        }
+
+        if (tribeRef) {
+            // TODO: fetch tribe detail by id
+        }
+    }
+
+    handleCardOnPress = () => {
+        const { userRef, goalRef, tribeRef } = this.props
+        if (userRef) {
+            return this.props.openProfile(userRef)
+        }
+
+        if (goalRef) {
+            return this.props.openGoalDetailById(goalRef)
+        }
+
+        if (tribeRef) {
+            return this.props.myTribeDetailOpenWithId(tribeRef)
         }
     }
 
     getHeaderFromProps() {
-        if (this.props.user) {
+        if (this.props.userRef) {
             return CARD_INFO.user
         }
 
-        if (this.props.goal) {
+        if (this.props.goalRef) {
             return CARD_INFO.goal
+        }
+
+        if (this.props.tribeRef) {
+            return CARD_INFO.tribe
         }
 
         return null
@@ -77,33 +118,50 @@ class ShareCard extends React.Component {
     }
 
     renderContent = () => {
-        let { user, goal, tribe } = this.props
+        let { userRef, goalRef, tribeRef, entity } = this.props
         let content = null
         let containerStyleOverride = {}
-        if (user) {
-            // render user
-            content = <UserCardHeader user={this.props.user} />
-            containerStyleOverride = { ...styles.container }
+        if (userRef) {
+            if (entity) {
+                // render user
+                content = <UserCardHeader user={entity} />
+                containerStyleOverride = {
+                    ...styles.container,
+                    marginBottom: 0,
+                }
+            } else {
+                // default content
+            }
         }
 
-        if (goal && goal.title) {
-            // Render goal title
-            content = (
-                <Text style={chat_style.chatMessageTextStyle} numberOfLines={2}>
-                    {goal.title}
-                </Text>
-            )
+        if (goalRef) {
+            if (entity) {
+                // Render goal title
+                content = (
+                    <Text
+                        style={chat_style.chatMessageTextStyle}
+                        numberOfLines={2}
+                    >
+                        {entity.title}
+                    </Text>
+                )
+            } else {
+                // render default content
+            }
         }
 
-        // TODO: tribe
-        // return (
-        //     <View style={{ marginTop: 12 }}>
-        //         <Text>
-
-        //         </Text>
-        //         {/* TODO: render image */}
-        //     </View>
-        // )
+        if (tribeRef) {
+            if (entity) {
+                // render tribe
+                containerStyleOverride = {
+                    ...styles.container,
+                    marginBottom: 0,
+                }
+                content = <TribeCompactCard item={entity} />
+            } else {
+                // render default content
+            }
+        }
 
         return (
             <View style={{ marginTop: 8, ...containerStyleOverride }}>
@@ -128,6 +186,50 @@ class ShareCard extends React.Component {
             </DelayedButton>
         )
     }
+}
+
+/**
+ * Render tribe compact card.
+ * TODO: migrate to become an independent component
+ * @param {*} tribeDoc
+ */
+const TribeCompactCard = (props) => {
+    const { item } = props
+    const { name, memberCount, picture } = item
+
+    return (
+        <View style={{ flexDirection: 'row' }}>
+            <ProfileImage
+                imageUrl={picture}
+                icon={
+                    picture ? undefined : (
+                        <Icon
+                            name="flag"
+                            pack="material-community"
+                            style={{
+                                height: 16,
+                                width: 16,
+                                tintColor: '#4F4F4F',
+                            }}
+                        />
+                    )
+                }
+                imageContainerStyle={{
+                    height: 40,
+                    width: 40,
+                    backgroundColor: GM_LIGHT_GRAY,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            />
+            <View style={{ marginLeft: 8, justifyContent: 'space-evenly' }}>
+                <Text style={default_style.titleText_2}>{name}</Text>
+                <Text style={[default_style.smallText_1, { color: '#555555' }]}>
+                    {memberCount} {memberCount > 1 ? 'members' : 'member'}
+                </Text>
+            </View>
+        </View>
+    )
 }
 
 const styles = {
@@ -184,11 +286,34 @@ const CARD_INFO = {
         title: 'USER',
     },
     tribe: {
-        // TODO
+        icon: {
+            name: 'flag',
+            pack: 'material-community',
+            style: { height: 12, tintColor: GM_CARD_BACKGROUND },
+            iconContainerStyle: {
+                padding: 4,
+                backgroundColor: '#4F4F4F',
+                borderRadius: 3,
+                marginRight: 8,
+            },
+        },
+        title: 'TRIBE',
     },
 }
 
-export default connect(null, {
+const mapStateToProps = (state, props) => {
+    // props should contain one of userRef, goalRef, tribeRef
+    const entity = getChatroomSharedEntity(state, props)
+
+    return {
+        entity,
+    }
+}
+
+export default connect(mapStateToProps, {
     openProfile,
     openGoalDetailById,
+    myTribeDetailOpenWithId,
+    refreshGoalDetailById,
+    fetchUserProfile,
 })(ShareCard)

@@ -35,6 +35,7 @@ import {
     PROFILE_CLOSE_PROFILE,
     PROFILE_OPEN_PROFILE_DETAIL,
     PROFILE_CLOSE_PROFILE_DETAIL,
+    PROFILE_FETCHING,
 } from './types'
 
 import {
@@ -149,8 +150,18 @@ const fetchProfileFail = (pageId, userId, res, dispatch) => {
  * This method only fetches user profile. It is primarily used after user updates
  * the profile. Need to update the profile page
  */
-export const fetchUserProfile = (userId, pageId) => (dispatch, getState) => {
+export const fetchUserProfile = (userId, pageId, shouldSkipFailureHandling) => (
+    dispatch,
+    getState
+) => {
     const { token } = getState().user
+    dispatch({
+        type: PROFILE_FETCHING,
+        payload: {
+            userId,
+            pageId,
+        },
+    })
     API.get(`secure/user/profile?userId=${userId}`, token)
         .then((res) => {
             if (res.status === 200) {
@@ -159,9 +170,12 @@ export const fetchUserProfile = (userId, pageId) => (dispatch, getState) => {
                 prefetchImage(res.data.profile.image)
                 return
             }
+
+            if (shouldSkipFailureHandling) return
             fetchProfileFail(pageId, userId, res, dispatch)
         })
         .catch((err) => {
+            if (shouldSkipFailureHandling) return
             fetchProfileFail(pageId, userId, err, dispatch)
         })
 }

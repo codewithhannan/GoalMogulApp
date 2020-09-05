@@ -41,6 +41,7 @@ class ProfileImage extends React.Component {
             disabled,
             actionDecorator,
             userId,
+            icon, // React component
         } = this.props
         let { imageUrl, imageStyle, defaultImageSource } = this.props
 
@@ -89,18 +90,28 @@ class ProfileImage extends React.Component {
                           }
                 }
             >
-                <Image
-                    style={
-                        imageUrl
-                            ? imageStyle
-                            : {
-                                  borderRadius: 100,
-                                  ...defaultImageStyle,
-                              }
-                    }
-                    source={getImageOrDefault(imageUrl, defaultImageSource)}
-                    resizeMode={resizeMode}
-                />
+                {
+                    // Render icon as the image if icon is provided
+                    icon ? (
+                        icon
+                    ) : (
+                        <Image
+                            style={
+                                imageUrl
+                                    ? imageStyle
+                                    : {
+                                          borderRadius: 100,
+                                          ...defaultImageStyle,
+                                      }
+                            }
+                            source={getImageOrDefault(
+                                imageUrl,
+                                defaultImageSource
+                            )}
+                            resizeMode={resizeMode}
+                        />
+                    )
+                }
             </View>
         )
 

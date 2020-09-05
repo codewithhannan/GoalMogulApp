@@ -1,4 +1,6 @@
 /**
+ * This component corresponds to My Goals2.2-1 design. New user page
+ * condensed goal layout
  * https://www.figma.com/file/5CNnuTKGZeoJDGaC2rku7v/Happy-Flow?node-id=994%3A1956
  *
  * @format

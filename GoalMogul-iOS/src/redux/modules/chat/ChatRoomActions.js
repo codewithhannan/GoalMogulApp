@@ -653,6 +653,7 @@ async function fetchEvent(eventId, token) {
     }
 }
 export function _transformUserForGiftedChat(userDoc) {
+    if (!userDoc || typeof userDoc != 'object') return undefined
     const { _id, name, profile } = userDoc
     const profileImage = getProfileImageOrDefault(profile && profile.image)
     return {

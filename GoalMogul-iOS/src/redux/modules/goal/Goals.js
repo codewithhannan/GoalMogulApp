@@ -318,16 +318,37 @@ export default (state = INITIAL_STATE, action) => {
             return newState
         }
 
+        /**
+         * Setup the goal and page default object if not previously existed
+         */
         case GOAL_DETAIL_FETCH: {
             const { goalId, pageId } = action.payload
-            const newState = _.cloneDeep(state)
-            const shouldUpdate = sanityCheckByPageId(
-                newState,
-                goalId,
-                pageId,
-                GOAL_DETAIL_FETCH
-            )
-            if (!shouldUpdate) return newState
+            let newState = _.cloneDeep(state)
+            if (!_.has(newState, goalId)) {
+                newState = _.set(newState, goalId, INITIAL_GOAL_OBJECT)
+            }
+
+            if (!_.has(newState, `${goalId}.${pageId}`)) {
+                newState = _.set(
+                    newState,
+                    `${goalId}.${pageId}`,
+                    INITIAL_GOAL_PAGE
+                )
+            }
+
+            let reference = [pageId]
+            // Update the reference
+            const oldReference = _.get(newState, `${goalId}.reference`)
+            if (oldReference !== undefined) {
+                if (!oldReference.some((r) => r === pageId)) {
+                    // Add new pageId to reference
+                    reference = reference.concat(oldReference)
+                } else {
+                    // No ops since reference is already there
+                    reference = oldReference
+                }
+            }
+            newState = _.set(newState, `${goalId}.reference`, reference)
             return _.set(newState, `${goalId}.${pageId}.loading`, true)
         }
 

@@ -70,7 +70,7 @@ class DelayedButton extends React.PureComponent {
                 <TouchableHighlight
                     onPress={this.handleOnPress}
                     disabled={this.state.disabled || this.props.disabled}
-                    underlayColor="#E0E0E0"
+                    underlayColor="gray"
                     {...this.props}
                     ref={onRef || (() => {})}
                 >

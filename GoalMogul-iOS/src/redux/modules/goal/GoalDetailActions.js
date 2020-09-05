@@ -132,10 +132,12 @@ export const scheduleNotification = (date, goal, hasAskedPermissions) => async (
 /**
  * Refresh goal detail and comments by goal Id
  */
-export const refreshGoalDetailById = (goalId, pageId, onErrorCallback) => (
-    dispatch,
-    getState
-) => {
+export const refreshGoalDetailById = (
+    goalId,
+    pageId,
+    onErrorCallback,
+    shouldSkipRefreshComments
+) => (dispatch, getState) => {
     const { tab } = getState().navigation
     const { token } = getState().user
 
@@ -198,6 +200,7 @@ export const refreshGoalDetailById = (goalId, pageId, onErrorCallback) => (
             onError(err)
         })
 
+    if (shouldSkipRefreshComments) return
     refreshComments('Goal', goalId, tab, pageId)(dispatch, getState)
 }
 

@@ -2,7 +2,7 @@
 
 import { StyleSheet } from 'react-native'
 import { UI_SCALE } from '..'
-import { default_style } from '../basic'
+import { default_style, color } from '../basic'
 
 export const chat_style = {
     headerDefaultIcon: {
@@ -18,5 +18,9 @@ export const chat_style = {
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 6,
+    },
+    chatMessageTextStyle: {
+        ...default_style.subTitleText_1,
+        color: color.TEXT_COLOR.OFF_DARK,
     },
 }

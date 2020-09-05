@@ -40,6 +40,7 @@ import {
     PROFILE_IMAGE_UPLOAD_SUCCESS,
     PROFILE_SUBMIT_UPDATE,
     PROFILE_UPDATE_SUCCESS,
+    PROFILE_FETCHING,
     PROFILE_FETCHING_SUCCESS,
     PROFILE_FETCHING_FAIL,
     PROFILE_SWITCH_TAB,
@@ -269,6 +270,7 @@ export default (state = INITIAL_STATE, action) => {
             return newState
         }
 
+        case PROFILE_FETCHING: // this is to make sure that page and initial user object is initialized
         case PROFILE_OPEN_PROFILE_DETAIL: {
             let newState = _.cloneDeep(state)
             const { userId, pageId } = action.payload

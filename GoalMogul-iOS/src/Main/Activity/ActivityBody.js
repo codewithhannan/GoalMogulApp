@@ -121,7 +121,7 @@ class ActivityBody extends React.Component {
                         Attached
                     </Text>,
                     <ShareCard
-                        goal={belongsToGoalStoryline.goalRef}
+                        goalRef={belongsToGoalStoryline.goalRef._id}
                         containerStyle={{ width: '100%' }}
                     />,
                 ]}
