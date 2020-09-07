@@ -222,7 +222,7 @@ class CommentUserDetail extends Component {
     // user basic information
     renderBody() {
         const { item, reportType, goalRef, userId } = this.props
-        const { _id, suggestion, owner, parentRef, parentType } = item
+        const { _id, owner, parentRef, parentType } = item
 
         // User is comment owner if user is the creator of the goal or
         // user is the creator of the comment
@@ -326,22 +326,23 @@ class CommentUserDetail extends Component {
                         tintColor: selfLiked ? '#EB5757' : '#828282',
                     }}
                     onPress={() => {
-                        console.log(`${DEBUG_KEY}: user clicks like icon.`)
+                        // console.log(`${DEBUG_KEY}: user clicks like icon.`)
                         if (selfLiked) {
-                            return this.props.unLikeGoal(
+                            this.props.unLikeGoal(
                                 'comment',
                                 _id,
                                 maybeLikeRef,
                                 this.props.pageId,
                                 parentRef
                             )
+                        } else {
+                            this.props.likeGoal(
+                                'comment',
+                                _id,
+                                this.props.pageId,
+                                parentRef
+                            )
                         }
-                        this.props.likeGoal(
-                            'comment',
-                            _id,
-                            this.props.pageId,
-                            parentRef
-                        )
                     }}
                 />
                 <ActionButton

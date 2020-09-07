@@ -69,13 +69,13 @@ class ReplyThread extends React.Component {
             showCommentLikeList: false,
             likeListParentId: undefined,
             likeListParentType: undefined,
+            savedComment: props.newComment,
         }
         this.contentBottomPadding = new Animated.Value(0)
         this.openCommentLikeList = this.openCommentLikeList.bind(this)
         this.closeCommentLikeList = this.closeCommentLikeList.bind(this)
 
         this.clearCommentBox = this.clearCommentBox.bind(this)
-        this.resetCommentBox = this.resetCommentBox.bind(this)
         this.renderItem = this.renderItem.bind(this)
     }
 
@@ -119,10 +119,11 @@ class ReplyThread extends React.Component {
     }
 
     resetCommentBox = () => {
+        const { savedComment } = this.state
         const { newComment, pageId } = this.props
-        if (!newComment) return
+        if (!newComment && !savedComment) return
         this.props.createEmptyComment(
-            {
+            savedComment || {
                 commentType: 'Comment',
                 replyToRef: undefined,
                 parentType: newComment.parentType,
@@ -151,6 +152,7 @@ class ReplyThread extends React.Component {
 
     clearCommentBox = () => {
         const { newComment, itemId, pageId } = this.props
+
         if (!newComment) return
         this.props.createEmptyComment(
             {

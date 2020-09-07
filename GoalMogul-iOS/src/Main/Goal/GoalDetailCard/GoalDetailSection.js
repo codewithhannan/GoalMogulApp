@@ -504,7 +504,7 @@ class GoalDetailSection extends React.PureComponent {
     renderCardContent(item) {
         const { start, end, steps, needs } = item
         return (
-            <View style={{ marginTop: 20, marginBottom: 20 }}>
+            <View style={{ marginTop: 12, marginBottom: 12 }}>
                 <ProgressBar
                     startTime={start}
                     endTime={end}
@@ -609,7 +609,7 @@ class GoalDetailSection extends React.PureComponent {
                     this.setState({ showlikeListModal: true })
                 }
                 onLikeButtonPress={() => {
-                    if (maybeLikeRef && maybeLikeRef.length > 0) {
+                    if (selfLiked) {
                         return this.props.unLikeGoal('goal', _id, maybeLikeRef)
                     }
                     this.incrementFloatingHeartCount()
@@ -625,35 +625,9 @@ class GoalDetailSection extends React.PureComponent {
                 }
                 onShareButtonPress={() => this.handleShareOnClick(item)}
                 onCommentSummaryPress={() => {
-                    this.props.createCommentFromSuggestion(
-                        {
-                            commentDetail: {
-                                parentType: 'Goal',
-                                parentRef: _id,
-                                commentType: 'Suggestion',
-                                replyToRef: undefined,
-                            },
-                            suggestionForRef: _id,
-                            suggestionFor: 'Goal',
-                        },
-                        this.props.pageId
-                    )
-                    this.props.onSuggestion()
+                    // TODO scroll down to comments section
                 }}
                 onCommentButtonPress={() => {
-                    this.props.createCommentFromSuggestion(
-                        {
-                            commentDetail: {
-                                parentType: 'Goal',
-                                parentRef: _id,
-                                commentType: 'Suggestion',
-                                replyToRef: undefined,
-                            },
-                            suggestionForRef: _id,
-                            suggestionFor: 'Goal',
-                        },
-                        this.props.pageId
-                    )
                     this.props.onSuggestion()
                 }}
             />
@@ -691,7 +665,7 @@ class GoalDetailSection extends React.PureComponent {
                         entityId={item._id}
                         entityType="Goal"
                     />
-                    <View style={{ ...styles.containerStyle }}>
+                    <View style={styles.containerStyle}>
                         {item.isCompleted ? (
                             <Image
                                 source={ConfettiFadedBackgroundTopHalf}
@@ -742,15 +716,6 @@ const styles = {
         marginTop: 10,
         margin: 20,
     },
-    imageContainerStyle: {
-        borderWidth: 0.5,
-        padding: 1.5,
-        borderColor: 'lightgray',
-        alignItems: 'center',
-        borderRadius: 6,
-        alignSelf: 'flex-start',
-        backgroundColor: 'white',
-    },
     seeMoreTextContainerStyle: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -760,23 +725,6 @@ const styles = {
     seeMoreTextStyle: {
         ...default_style.normalText_1,
         color: color.GM_MID_GREY,
-    },
-    statsContainerStyle: {
-        borderTopWidth: 0.5,
-        borderTopColor: '#f1f1f1',
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 3,
-    },
-    likeCountContainerStyle: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        flex: 1,
-        paddingHorizontal: 3,
-        paddingVertical: 7,
-    },
-    statsBaseTextStyle: {
-        fontSize: 11,
     },
 }
 

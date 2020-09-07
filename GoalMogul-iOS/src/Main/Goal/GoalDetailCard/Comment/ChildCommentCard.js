@@ -282,20 +282,21 @@ class ChildCommentCard extends Component {
                     onPress={() => {
                         console.log(`${DEBUG_KEY}: user clicks like icon.`)
                         if (selfLiked) {
-                            return this.props.unLikeGoal(
+                            this.props.unLikeGoal(
                                 'comment',
                                 _id,
                                 maybeLikeRef,
                                 this.props.pageId,
                                 parentRef
                             )
+                        } else {
+                            this.props.likeGoal(
+                                'comment',
+                                _id,
+                                this.props.pageId,
+                                parentRef
+                            )
                         }
-                        this.props.likeGoal(
-                            'comment',
-                            _id,
-                            this.props.pageId,
-                            parentRef
-                        )
                     }}
                     containerStyle={buttonContainerStyle}
                 />

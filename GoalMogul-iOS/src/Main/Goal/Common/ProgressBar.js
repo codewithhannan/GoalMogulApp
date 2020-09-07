@@ -127,7 +127,7 @@ const ProgressBar = (props) => {
         )
 
     const progressBar = (
-        <View>
+        <View style={containerStyle}>
             {startTimeTextView && endTimeTextView && (
                 <View
                     style={{
@@ -153,11 +153,7 @@ const ProgressBar = (props) => {
 
     if (onPress)
         return (
-            <DelayedButton
-                style={containerStyle}
-                touchableWithoutFeedback
-                onPress={onPress}
-            >
+            <DelayedButton touchableWithoutFeedback onPress={onPress}>
                 {progressBar}
             </DelayedButton>
         )

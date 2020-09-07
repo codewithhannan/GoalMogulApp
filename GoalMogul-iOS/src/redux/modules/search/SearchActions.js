@@ -18,11 +18,24 @@ import {
     SEARCH_PRELOAD_LOAD_DONE,
 } from './Search'
 
-import { switchCase, arrayUnique } from '../../middleware/utils'
+import {
+    switchCase,
+    arrayUnique,
+    is2xxRespose,
+    is4xxResponse,
+} from '../../middleware/utils'
 import { rsvpEvent } from '../event/EventActions'
 import { Actions } from 'react-native-router-flux'
 import { Logger } from '../../middleware/utils/Logger'
 import { trackWithProperties, EVENT as E } from '../../../monitoring/segment'
+import { SentryRequestBuilder } from '../../../monitoring/sentry'
+import {
+    SENTRY_MESSAGE_TYPE,
+    SENTRY_MESSAGE_LEVEL,
+    SENTRY_CONTEXT,
+    SENTRY_TAGS,
+    SENTRY_TAG_VALUE,
+} from '../../../monitoring/sentry/Constants'
 
 const DEBUG_KEY = '[ Action Search ]'
 
@@ -114,7 +127,7 @@ export const handleSearch = (searchContent, type) => {
  * Actions to search current user's friend  when do tagging in
  * comments / goal description / post / share
  */
-export const searchUser = (searchContent, skip, limit, callback) => (
+export const searchUser = (searchContent, skip, limit, callback) => async (
     dispatch,
     getState
 ) => {
@@ -126,25 +139,32 @@ export const searchUser = (searchContent, skip, limit, callback) => (
         UserId: userId,
         Term: searchContent,
     })
-    API.get(
+
+    const res = await API.get(
         `secure/user/friendship/es?skip=${skip}&limit=${limit}&query=${searchContent}`,
         token
     )
-        .then((res) => {
-            if (res.status === 200) {
-                callback(res, searchContent)
-                return
-            }
-            callback({ data: [] })
-        })
-        .catch((err) => {
-            console.log(
-                `${DEBUG_KEY}.searchUser search user with content
-        ${searchContent} fails with err: `,
-                err
-            )
-            callback({ data: [] })
-        })
+    if (is2xxRespose(res.status)) {
+        callback(res, searchContent)
+        return
+    } else {
+        if (is4xxResponse(res.status)) {
+            // TODO Sentry
+            new SentryRequestBuilder(res.message, SENTRY_MESSAGE_TYPE.MESSAGE)
+                .withLevel(SENTRY_MESSAGE_LEVEL.WARNING)
+                .withTag(
+                    SENTRY_TAGS.SEARCH.SEARCH_USER_ACTION,
+                    SENTRY_TAG_VALUE.ACTIONS.FAILED
+                )
+                .withExtraContext(SENTRY_CONTEXT.SEARCH.QUERY, searchContent)
+                .send()
+        }
+        console.log(
+            `${DEBUG_KEY}.searchUser search user with content ${searchContent} fails with response: `,
+            res
+        )
+        callback({ data: [] })
+    }
 }
 
 /**

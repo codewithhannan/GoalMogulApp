@@ -40,15 +40,13 @@ class ActivityBody extends React.Component {
 
         return (
             <ProgressBar
-                containerStyle={{ marginTop: 8 }}
+                containerStyle={{ marginTop: 12 }}
                 onPress={this.props.openCardContent}
                 startTime={start}
                 endTime={end}
                 steps={steps}
                 needs={needs}
                 goalRef={goalRef}
-                width={IS_ZOOMED ? 216 : 268} // TODO: use ratio with screen size rather static number
-                size="large"
             />
         )
     }
@@ -108,10 +106,13 @@ class ActivityBody extends React.Component {
 
     renderUpdateAttachments(item) {
         const { belongsToGoalStoryline, mediaRef } = item
+        const showGoalRefCard =
+            _.has(belongsToGoalStoryline, 'goalRef._id') &&
+            _.has(belongsToGoalStoryline, 'goalRef.title')
         return (
             <View>
                 {this.renderPostImage(mediaRef)}
-                {belongsToGoalStoryline && [
+                {showGoalRefCard && [
                     <Text
                         style={[
                             default_style.normalText_2,

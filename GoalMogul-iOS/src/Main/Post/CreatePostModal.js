@@ -89,6 +89,9 @@ class CreatePostModal extends Component {
             ),
         }
         this.updateSearchRes = this.updateSearchRes.bind(this)
+        this.handleTextInputSizeChange = this.handleTextInputSizeChange.bind(
+            this
+        )
     }
 
     componentDidMount() {
@@ -499,6 +502,46 @@ class CreatePostModal extends Component {
         return onCancelActionSheet()
     }
 
+    handleTextInputSizeChange({ nativeEvent }) {
+        // Modal height needs to be adjusted when post text content size increases/decreases
+        const height = nativeEvent.contentSize.height
+        // At initialization bottomSheetRef.maskHeight can be null so we make a safe assumption
+        const spaceAboveModal =
+            this.bottomSheetRef && this.bottomSheetRef.maskHeight
+                ? this.bottomSheetRef.maskHeight
+                : TEXT_INPUT_DEAFULT_HEIGHT
+        // this is to leave some space above modal for user to easily interact with modal
+        const spaceAvailableAboveModal =
+            spaceAboveModal - (IS_SMALL_PHONE ? 50 : 70)
+        const heightChange = height - this.state.textContentHeight
+
+        if (height > TEXT_INPUT_DEAFULT_HEIGHT) {
+            // height increased
+            if (heightChange > 0) {
+                if (spaceAvailableAboveModal >= heightChange) {
+                    this.setState({
+                        textContentHeight: height,
+                    })
+                } else {
+                    this.setState({
+                        textContentHeight:
+                            height - (heightChange - spaceAvailableAboveModal),
+                    })
+                }
+            }
+            // height decreased
+            else {
+                this.setState({
+                    textContentHeight: height,
+                })
+            }
+        } else {
+            this.setState({
+                textContentHeight: TEXT_INPUT_DEAFULT_HEIGHT,
+            })
+        }
+    }
+
     renderTagSearchLoadingComponent(loading) {
         if (loading) {
             return (
@@ -531,51 +574,14 @@ class CreatePostModal extends Component {
         return (
             <View style={{ zIndex: 3, flex: 1 }}>
                 <MentionsTextInput
+                    autoFocus={true}
                     onRef={(r) => (this.textInput = r)}
                     textInputContainerStyle={styles.inputContainerStyle}
                     textInputStyle={{
                         ...styles.inputStyle,
                         height: this.state.textInputHeight,
                     }}
-                    onContentSizeChange={({ nativeEvent }) => {
-                        // Modal height needs to be adjusted when post text content size increases/decreases
-                        const height = nativeEvent.contentSize.height
-                        // At initialization bottomSheetRef.maskHeight can be null so we make a safe assumption
-                        const spaceAboveModal =
-                            this.bottomSheetRef &&
-                            this.bottomSheetRef.maskHeight
-                                ? this.bottomSheetRef.maskHeight
-                                : TEXT_INPUT_DEAFULT_HEIGHT
-                        // this is to leave some space above modal for user to easily interact with modal
-                        const spaceAvailableAboveModal =
-                            spaceAboveModal - (IS_SMALL_PHONE ? 50 : 70)
-                        const heightChange =
-                            height - this.state.textContentHeight
-
-                        if (height > TEXT_INPUT_DEAFULT_HEIGHT) {
-                            // height increased
-                            if (heightChange > 0)
-                                if (spaceAvailableAboveModal >= heightChange)
-                                    this.setState({
-                                        textContentHeight: height,
-                                    })
-                                else
-                                    this.setState({
-                                        textContentHeight:
-                                            height -
-                                            (heightChange -
-                                                spaceAvailableAboveModal),
-                                    })
-                            // height decreased
-                            else
-                                this.setState({
-                                    textContentHeight: height,
-                                })
-                        } else
-                            this.setState({
-                                textContentHeight: TEXT_INPUT_DEAFULT_HEIGHT,
-                            })
-                    }}
+                    onContentSizeChange={this.handleTextInputSizeChange}
                     placeholder={placeholder}
                     onChangeText={(val) => onChange(val)}
                     editable={editable}
@@ -764,7 +770,8 @@ class CreatePostModal extends Component {
                 belongsToGoalStoryline &&
                 belongsToGoalStoryline.goalRef)
 
-        const isGoalAttached = this.state.attachedGoalTitle.length > 0
+        const isGoalAttached =
+            belongsToGoalStoryline && belongsToGoalStoryline.goalRef
         const attactGoalButtonTextWidth = 123 * default_style.uiScale
 
         const attachGoalButton = (
@@ -1049,9 +1056,6 @@ class CreatePostModal extends Component {
             <BottomSheet
                 ref={(r) => (this.bottomSheetRef = r)}
                 height={modalHeight}
-                onOpen={() => {
-                    this.textInput && this.textInput.focus()
-                }}
                 onClose={(callback) => this.handleCancel(callback)}
                 onPropsHeightChange={() =>
                     // once BottomSheet adjusts its height based on new textContentHeight
@@ -1068,7 +1072,6 @@ class CreatePostModal extends Component {
                     },
                 }}
                 sheetFooter={this.renderCreateButton(actionDisabled)}
-                keyboardShouldPersistTaps={'always'}
             >
                 {showDraftHeader && this.renderDraftsHeader(draftModalHeight)}
                 <View style={{ flexDirection: 'row', marginTop: 16 }}>
@@ -1100,10 +1103,9 @@ const styles = {
         paddingHorizontal: 12,
         paddingVertical: 6,
     },
-    inputStyle: default_style.subTitleText_1,
-    titleTextStyle: {
-        ...default_style.smallTitle_1,
-        padding: 2,
+    inputStyle: {
+        ...default_style.subTitleText_1,
+        marginRight: 32,
     },
     mediaStyle: {
         height: 74,

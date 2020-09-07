@@ -32,7 +32,6 @@ class DelayedButton extends React.PureComponent {
         // Remember the timer handle
         this.timerHandle = setTimeout(() => {
             this.setState({
-                ...this.state,
                 disabled: false,
             })
             this.timerHandle = 0
@@ -51,7 +50,6 @@ class DelayedButton extends React.PureComponent {
         const { onPress } = this.props
         onPress()
         this.setState({
-            ...this.state,
             disabled: true,
         })
         this.setTimer(delay)

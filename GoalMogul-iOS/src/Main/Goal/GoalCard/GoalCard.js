@@ -2,29 +2,15 @@
 
 import _ from 'lodash'
 import R from 'ramda'
+import * as Haptics from 'expo-haptics'
 import React from 'react'
-import {
-    // MaskedViewIOS,
-    Dimensions,
-    Image,
-    Text,
-    View,
-} from 'react-native'
-// import {
-//   FlingGestureHandler,
-//   Directions,
-//   State
-// } from 'react-native-gesture-handler';
+import { Dimensions, Image, Text, View } from 'react-native'
 import { connect } from 'react-redux'
 import timeago from 'timeago.js'
 import { deleteGoal } from '../../../actions'
 // Asset
 import { ConfettiFadedBackgroundTopHalf } from '../../../asset/background'
-import CommentIcon from '../../../asset/utils/comment.png'
-import ShareIcon from '../../../asset/utils/forward.png'
 import HelpIcon from '../../../asset/utils/help.png'
-import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
-import LoveIcon from '../../../asset/utils/love.png'
 import StepIcon from '../../../asset/utils/steps.png'
 import {
     makeCaretOptions,
@@ -48,21 +34,22 @@ import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
     IS_ZOOMED,
+    DEVICE_PLATFORM,
 } from '../../../Utils/Constants'
 import {
     actionSheet,
     switchByButtonIndex,
 } from '../../Common/ActionSheetFactory'
+// Components
 import DelayedButton from '../../Common/Button/DelayedButton'
 import ProfileImage from '../../Common/ProfileImage'
-import ActionButton from '../Common/ActionButton'
-import ActionButtonGroup from '../Common/ActionButtonGroup'
 import GoalCardHeader from '../Common/GoalCardHeader'
-// Components
 import Headline from '../Common/Headline'
 import ProgressBar from '../Common/ProgressBar'
 import Timestamp from '../Common/Timestamp'
 import { default_style, color } from '../../../styles/basic'
+import ActionBar from '../../Common/ContentCards/ActionBar'
+import FloatingHearts from '../../Common/FloatingHearts/FloatingHearts'
 
 const { height, width } = Dimensions.get('window')
 const WINDOW_WIDTH = width
@@ -102,6 +89,8 @@ class GoalCard extends React.PureComponent {
                     { key: 'needs', title: 'Needs' },
                 ],
             },
+            floatingHeartCount: 0,
+            likeButtonLeftOffset: 0,
         }
         this.updateRoutes = this.updateRoutes.bind(this)
     }
@@ -132,6 +121,16 @@ class GoalCard extends React.PureComponent {
                 navigationState: { ...newNavigationState },
             })
         }
+    }
+
+    incrementFloatingHeartCount = () => {
+        // only iOS has a clean haptic system at the moment
+        if (DEVICE_PLATFORM === 'ios') {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        }
+        this.setState({
+            floatingHeartCount: this.state.floatingHeartCount + 1,
+        })
     }
 
     handleOnPress() {
@@ -185,7 +184,7 @@ class GoalCard extends React.PureComponent {
         const { start, end, needs, steps } = item
 
         return (
-            <View style={{ marginTop: 14 }}>
+            <View style={{ marginTop: 12 }}>
                 <ProgressBar
                     startTime={start}
                     endTime={end}
@@ -333,7 +332,6 @@ class GoalCard extends React.PureComponent {
 
     renderActionButtons(item) {
         const { maybeLikeRef, _id } = item
-
         const likeCount = item.likeCount ? item.likeCount : 0
         const commentCount = item.commentCount ? item.commentCount : 0
         const shareCount = item.shareCount ? item.shareCount : 0
@@ -341,50 +339,44 @@ class GoalCard extends React.PureComponent {
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
 
         return (
-            <ActionButtonGroup>
-                <ActionButton
-                    iconSource={selfLiked ? LoveIcon : LoveOutlineIcon}
-                    count={likeCount}
-                    unitText="Like"
-                    textStyle={{ color: selfLiked ? '#000' : '#828282' }}
-                    iconStyle={{
-                        tintColor: selfLiked ? '#EB5757' : '#828282',
-                    }}
-                    onPress={() => {
-                        if (selfLiked) {
-                            return this.props.unLikeGoal(
-                                'goal',
-                                _id,
-                                maybeLikeRef
-                            )
-                        }
-                        this.props.likeGoal('goal', _id)
-                    }}
-                />
-                <ActionButton
-                    iconSource={ShareIcon}
-                    count={shareCount}
-                    unitText="Share"
-                    textStyle={{ color: '#828282' }}
-                    iconStyle={{ tintColor: '#828282' }}
-                    onPress={() => this.handleShareOnClick(item)}
-                />
-                <ActionButton
-                    iconSource={CommentIcon}
-                    count={commentCount}
-                    unitText="Comment"
-                    textStyle={{ color: '#828282' }}
-                    iconStyle={{ tintColor: '#828282' }}
-                    onPress={() => {
-                        this.props.onPress(this.props.item, {
-                            type: 'comment',
-                            _id: undefined,
-                            initialShowSuggestionModal: false,
-                            initialFocusCommentBox: true,
-                        })
-                    }}
-                />
-            </ActionButtonGroup>
+            <ActionBar
+                isContentLiked={selfLiked}
+                actionSummaries={{
+                    likeCount,
+                    shareCount,
+                    commentCount,
+                }}
+                onLikeSummaryPress={() =>
+                    this.setState({ showlikeListModal: true })
+                }
+                onLikeButtonPress={() => {
+                    if (selfLiked) {
+                        return this.props.unLikeGoal('goal', _id, maybeLikeRef)
+                    }
+                    this.incrementFloatingHeartCount()
+                    this.props.likeGoal('goal', _id)
+                }}
+                onLikeButtonLayout={({ nativeEvent }) =>
+                    this.setState({
+                        likeButtonLeftOffset: nativeEvent.layout.x,
+                    })
+                }
+                onShareSummaryPress={() =>
+                    this.setState({ showShareListModal: true })
+                }
+                onShareButtonPress={() => this.handleShareOnClick(item)}
+                onCommentSummaryPress={() => {
+                    // TODO scroll down to comments section
+                }}
+                onCommentButtonPress={() => {
+                    this.props.onPress(this.props.item, {
+                        type: 'comment',
+                        _id: undefined,
+                        initialShowSuggestionModal: false,
+                        initialFocusCommentBox: true,
+                    })
+                }}
+            />
         )
     }
 
@@ -394,6 +386,14 @@ class GoalCard extends React.PureComponent {
 
         return (
             <View style={styles.containerStyle}>
+                <FloatingHearts
+                    count={this.state.floatingHeartCount}
+                    color={'#EB5757'}
+                    style={{
+                        zIndex: 5,
+                    }}
+                    leftOffset={this.state.likeButtonLeftOffset}
+                />
                 {item.isCompleted && (
                     <Image
                         source={ConfettiFadedBackgroundTopHalf}
@@ -415,7 +415,7 @@ class GoalCard extends React.PureComponent {
                         <View
                             style={{
                                 marginTop: 14,
-                                marginBottom: 15,
+                                marginBottom: 12,
                                 marginRight: 12,
                                 marginLeft: 12,
                             }}

@@ -18,12 +18,15 @@ export default class MentionsTextInput extends Component {
     constructor() {
         super()
         this.state = {
-            isTrackingStarted: false,
             suggestionRowHeight: new Animated.Value(0),
         }
         this.isTrackingStarted = false
         this.previousChar = ' '
         this.cursorPosition = 0
+        this.onChangeText = this.onChangeText.bind(this)
+        this.handleOnSelectionChange = this.handleOnSelectionChange.bind(this)
+        this.stopTracking = this.stopTracking.bind(this)
+        this.renderSuggestionItem = this.renderSuggestionItem.bind(this)
     }
 
     componentDidMount() {
@@ -65,6 +68,7 @@ export default class MentionsTextInput extends Component {
         this.props.onChangeText(val) // pass changed text back
         // TODO: Update the logic to start tracking
         const lastChar = val.substr(val.length - 1) // This is the char at the end of the content
+
         const wordBoundry =
             this.props.triggerLocation === 'new-word-only'
                 ? this.previousChar.trim().length === 0
@@ -93,9 +97,6 @@ export default class MentionsTextInput extends Component {
         ) {
             // console.log(`${DEBUG_KEY}: start tracking`);
             this.startTracking()
-            // } else if (val === "" || (lastChar === ' ' && this.state.isTrackingStarted)) {
-            // (lastChar === ' ' && this.state.isTrackingStarted) is moved to identifyKeyword
-            // to determine if we want to stop tracking
         } else if (val === '') {
             this.stopTracking()
         }
@@ -224,17 +225,11 @@ export default class MentionsTextInput extends Component {
     startTracking() {
         this.isTrackingStarted = true
         this.openSuggestionsPanel()
-        this.setState({
-            isTrackingStarted: true,
-        })
     }
 
     stopTracking() {
         this.isTrackingStarted = false
         this.closeSuggestionsPanel()
-        this.setState({
-            isTrackingStarted: false,
-        })
     }
 
     resetTextbox() {
@@ -271,13 +266,11 @@ export default class MentionsTextInput extends Component {
                         <TextInput
                             {...this.props}
                             ref={(component) => (this._textInput = component)}
-                            onChangeText={this.onChangeText.bind(this)}
+                            onChangeText={this.onChangeText}
                             multiline
                             value={this.props.value}
                             style={this.props.textInputStyle}
-                            onSelectionChange={this.handleOnSelectionChange.bind(
-                                this
-                            )}
+                            onSelectionChange={this.handleOnSelectionChange}
                             placeholder={
                                 this.props.placeholder
                                     ? this.props.placeholder
@@ -299,10 +292,8 @@ export default class MentionsTextInput extends Component {
                         {...this.props}
                         autoCorrect
                         ref={(component) => (this._textInput = component)}
-                        onChangeText={this.onChangeText.bind(this)}
-                        onSelectionChange={this.handleOnSelectionChange.bind(
-                            this
-                        )}
+                        onChangeText={this.onChangeText}
+                        onSelectionChange={this.handleOnSelectionChange}
                         multiline={true}
                         value={this.props.value}
                         style={this.props.textInputStyle}
@@ -317,83 +308,55 @@ export default class MentionsTextInput extends Component {
             </View>
         )
     }
+
     renderSuggestionItem(rowData) {
         return this.props.renderSuggestionsRow(
             rowData,
-            this.stopTracking.bind(this),
+            this.stopTracking,
             this.cursorPosition
         )
     }
 
+    renderSuggestions() {
+        return (
+            <Animated.View
+                style={[
+                    this.props.suggestionsPanelStyle,
+                    {
+                        height: this.state.suggestionRowHeight,
+                        borderBottomWidth: _.isEmpty(this.props.suggestionsData)
+                            ? 0
+                            : 0.5,
+                        borderBottomColor: '#F2F2F2',
+                    },
+                ]}
+            >
+                <FlatList
+                    keyboardShouldPersistTaps={'always'}
+                    horizontal={this.props.horizontal}
+                    ListEmptyComponent={this.props.loadingComponent}
+                    enableEmptySections
+                    data={this.props.suggestionsData}
+                    onLoadMore={this.props.triggerLoadMore}
+                    keyExtractor={this.props.keyExtractor}
+                    renderItem={this.renderSuggestionItem}
+                />
+            </Animated.View>
+        )
+    }
+
     render() {
+        const renderSuggestionsOnBottom =
+            this.props.suggestionPosition &&
+            this.props.suggestionPosition === 'bottom'
         return (
             <View>
-                {this.props.suggestionPosition &&
-                this.props.suggestionPosition === 'bottom' ? null : (
-                    <Animated.View
-                        style={[
-                            {
-                                ...this.props.suggestionsPanelStyle,
-                            },
-                            {
-                                height: this.state.suggestionRowHeight,
-                                borderBottomWidth: _.isEmpty(
-                                    this.props.suggestionsData
-                                )
-                                    ? 0
-                                    : 0.5,
-                                borderBottomColor: '#F2F2F2',
-                            },
-                        ]}
-                    >
-                        <FlatList
-                            keyboardShouldPersistTaps={'always'}
-                            horizontal={this.props.horizontal}
-                            ListEmptyComponent={this.props.loadingComponent}
-                            enableEmptySections
-                            data={this.props.suggestionsData}
-                            onLoadMore={this.triggerLoadMore}
-                            keyExtractor={this.props.keyExtractor}
-                            renderItem={this.renderSuggestionItem.bind(this)}
-                        />
-                    </Animated.View>
-                )}
-
-                {this.props.renderSuggestionPreview
-                    ? this.props.renderSuggestionPreview()
-                    : null}
-                {this.props.renderMedia ? this.props.renderMedia() : null}
+                {!renderSuggestionsOnBottom && this.renderSuggestions()}
+                {this.props.renderSuggestionPreview &&
+                    this.props.renderSuggestionPreview()}
+                {this.props.renderMedia && this.props.renderMedia()}
                 {this.renderTextInput()}
-                {this.props.suggestionPosition &&
-                this.props.suggestionPosition === 'bottom' ? (
-                    <Animated.View
-                        style={[
-                            {
-                                ...this.props.suggestionsPanelStyle,
-                            },
-                            {
-                                height: this.state.suggestionRowHeight,
-                                borderBottomWidth: _.isEmpty(
-                                    this.props.suggestionsData
-                                )
-                                    ? 0
-                                    : 0.5,
-                                borderBottomColor: '#F2F2F2',
-                            },
-                        ]}
-                    >
-                        <FlatList
-                            keyboardShouldPersistTaps={'always'}
-                            horizontal={this.props.horizontal}
-                            ListEmptyComponent={this.props.loadingComponent}
-                            enableEmptySections
-                            data={this.props.suggestionsData}
-                            onLoadMore={this.triggerLoadMore}
-                            keyExtractor={this.props.keyExtractor}
-                            renderItem={this.renderSuggestionItem.bind(this)}
-                        />
-                    </Animated.View>
-                ) : null}
+                {renderSuggestionsOnBottom && this.renderSuggestions()}
             </View>
         )
     }

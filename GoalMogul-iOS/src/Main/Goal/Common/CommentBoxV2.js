@@ -74,28 +74,24 @@ class CommentBoxV2 extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            newValue: '',
             height: 34,
             defaultValue: DEFAULT_WRITE_COMMENT_PLACEHOLDER,
             keyword: '',
-            tagSearchData: { ...INITIAL_TAG_SEARCH },
-            testTaggingSuggestionData: [
-                {
-                    name: 'Jay Patel',
-                    _id: '123',
-                },
-                {
-                    name: 'Jia Zeng',
-                    _id: '1234',
-                },
-            ],
-            // position: 'absolute'
+            tagSearchData: INITIAL_TAG_SEARCH,
         }
         this.updateSearchRes = this.updateSearchRes.bind(this)
         this.focus = this.focus.bind(this)
-        this.focus = this.focus.bind(this)
         this.handleOnSubmitEditing = this.handleOnSubmitEditing.bind(this)
         this.renderLoadingComponent = this.renderLoadingComponent.bind(this)
+        this.renderPost = this.renderPost.bind(this)
+        this.renderSuggestionsRow = this.renderSuggestionsRow.bind(this)
+        this.callback = this.callback.bind(this)
+        this.validateContentTags = this.validateContentTags.bind(this)
+        this.renderLeftIcons = this.renderLeftIcons.bind(this)
+        this.renderMedia = this.renderMedia.bind(this)
+        this.handleTagSearchLoadMore = this.handleTagSearchLoadMore.bind(this)
+        this.renderSuggestionPreview = this.renderSuggestionPreview.bind(this)
+        this.handleOnBlur = this.handleOnBlur.bind(this)
     }
 
     componentDidMount() {
@@ -174,8 +170,7 @@ class CommentBoxV2 extends Component {
 
         // Clear tag search data state
         this.setState({
-            ...this.state,
-            tagSearchData: { ...INITIAL_TAG_SEARCH },
+            tagSearchData: INITIAL_TAG_SEARCH,
         })
     }
 
@@ -198,7 +193,6 @@ class CommentBoxV2 extends Component {
     updateSearchRes(res, searchContent) {
         if (searchContent !== this.state.keyword) return
         this.setState({
-            ...this.state,
             // keyword,
             tagSearchData: {
                 ...this.state.tagSearchData,
@@ -216,9 +210,7 @@ class CommentBoxV2 extends Component {
 
         this.reqTimer = setTimeout(() => {
             // TODO: send search request
-            console.log(`${DEBUG_KEY}: requesting for keyword: `, keyword)
             this.setState({
-                ...this.state,
                 keyword,
                 tagSearchData: {
                     ...this.state.tagSearchData,
@@ -238,7 +230,6 @@ class CommentBoxV2 extends Component {
 
         if (loading) return
         this.setState({
-            ...this.state,
             tagSearchData: {
                 ...this.state.tagSearchData,
                 loading: true,
@@ -247,7 +238,6 @@ class CommentBoxV2 extends Component {
 
         this.props.searchUser(keyword, skip, limit, (res) => {
             this.setState({
-                ...this.state,
                 keyword,
                 tagSearchData: {
                     ...this.state.tagSearchData,
@@ -284,18 +274,8 @@ class CommentBoxV2 extends Component {
      */
     handleImageIconOnClick = () => {
         const mediaRefCases = switchByButtonIndex([
-            [
-                R.equals(0),
-                () => {
-                    this.handleOpenCameraRoll()
-                },
-            ],
-            [
-                R.equals(1),
-                () => {
-                    this.handleOpenCamera()
-                },
-            ],
+            [R.equals(0), this.handleOpenCameraRoll],
+            [R.equals(1), this.handleOpenCamera],
         ])
 
         const addMediaRefActionSheet = actionSheet(
@@ -306,14 +286,13 @@ class CommentBoxV2 extends Component {
         return addMediaRefActionSheet()
     }
 
-    handleOnBlur = (newComment) => {
-        console.log(`${DEBUG_KEY}: [ handleOnBlur ]`)
+    handleOnBlur = () => {
+        const { newComment } = this.props
         const { resetCommentType, onSubmitEditing } = this.props
         const { contentText } = newComment
         // On Blur if no content then set default value to comment the goal / post
         if (!contentText || contentText === '' || contentText.trim() === '') {
             this.setState({
-                ...this.state,
                 defaultValue: this.props.isReplyCommentBox
                     ? DEFAULT_REPLY_TO_PLACEHOLDER
                     : DEFAULT_WRITE_COMMENT_PLACEHOLDER,
@@ -330,12 +309,12 @@ class CommentBoxV2 extends Component {
     /**
      * NOTE: this function might not be called by TextInput somehow.
      */
-    handleOnSubmitEditing = (newComment) => {
+    handleOnSubmitEditing = () => {
         const { onSubmitEditing } = this.props
         if (onSubmitEditing) {
             onSubmitEditing()
         }
-        this.handleOnBlur(newComment)
+        this.handleOnBlur()
     }
 
     focus() {
@@ -348,8 +327,8 @@ class CommentBoxV2 extends Component {
         })
     }
 
-    //tintColor: '#f5d573'
-    renderSuggestionIcon(newComment, pageId, goalId) {
+    renderSuggestionIcon() {
+        const { newComment, pageId, goalId } = this.props
         const { mediaRef, commentType } = newComment
         const disableButton = mediaRef !== undefined && mediaRef !== ''
         if (commentType === 'Reply') return null
@@ -358,7 +337,6 @@ class CommentBoxV2 extends Component {
             <DelayedButton
                 activeOpacity={0.6}
                 onPress={() => {
-                    console.log('suggestion on click in comment box')
                     Keyboard.dismiss()
                     this.props.createSuggestion(goalId, pageId)
                 }}
@@ -372,7 +350,8 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderLeftIcons(newComment, pageId, hasSuggestion, goalId) {
+    renderLeftIcons() {
+        const { newComment, pageId, hasSuggestion, goalId } = this.props
         const suggestionIcon = hasSuggestion
             ? this.renderSuggestionIcon(newComment, pageId, goalId)
             : null
@@ -390,7 +369,8 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderImageIcon(newComment) {
+    renderImageIcon() {
+        const { newComment } = this.props
         const { commentType } = newComment
         // Disable image icon if there is a valid suggestion
         const disableButton = commentType === 'Suggestion'
@@ -411,7 +391,8 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderMedia(newComment) {
+    renderMedia() {
+        const { newComment } = this.props
         const { mediaRef } = newComment
         if (!mediaRef) return null
         const onPress = () => {}
@@ -453,23 +434,16 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderPost(newComment) {
+    renderPost() {
+        const { newComment } = this.props
         const { uploading, contentText, commentType, mediaRef } = newComment
-        // console.log(`${DEBUG_KEY}: new comment is: `, newComment);
-
         const isInValidComment =
             (commentType === 'Comment' || commentType === 'Reply') &&
             (!contentText || contentText === '' || contentText.trim() === '') &&
             mediaRef === undefined
 
-        const isValidSuggestion = validSuggestion(newComment)
-
-        // console.log(`${DEBUG_KEY}: invalid comment: `, isInValidComment);
-        // console.log(`${DEBUG_KEY}: comment is: `, newComment);
-        // const disable = uploading ||
-        //   ((contentText === undefined || contentText === '' || contentText.trim() === '')
-        //   && _.isEmpty(tmpSuggestion) && _.isEmpty(suggestion));
-        const disable = uploading || isInValidComment || !isValidSuggestion
+        const isInValidSuggestion = !validSuggestion(newComment)
+        const disable = uploading || isInValidComment || isInValidSuggestion
 
         const color = disable ? '#cbd6d8' : '#17B3EC'
         return (
@@ -493,7 +467,8 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderSuggestionPreview(newComment, pageId) {
+    renderSuggestionPreview() {
+        const { pageId, newComment } = this.props
         const { showAttachedSuggestion, suggestion, uploading } = newComment
 
         if (showAttachedSuggestion) {
@@ -571,13 +546,10 @@ class CommentBoxV2 extends Component {
     }
 
     render() {
-        const { pageId, newComment, hasSuggestion, goalId } = this.props
-        console.log(`${DEBUG_KEY}: new comment in commentbox: `, newComment)
-
+        const { pageId, newComment } = this.props
         if (!newComment || !newComment.parentRef) return null
         const { uploading } = newComment
 
-        const inputContainerStyle = styles.inputContainerStyle
         const inputStyle = uploading
             ? {
                   ...styles.inputStyle,
@@ -600,33 +572,24 @@ class CommentBoxV2 extends Component {
                 contentTagsReg={newComment.contentTags.map((t) => t.tagReg)}
                 tagSearchRes={this.state.tagSearchData.data}
                 defaultValue={this.state.defaultValue}
-                onBlur={() => this.handleOnBlur(newComment)}
-                onSubmitEditing={() => this.handleOnSubmitEditing(newComment)}
-                renderSuggestionPreview={() =>
-                    this.renderSuggestionPreview(newComment, pageId)
-                }
-                renderMedia={() => this.renderMedia(newComment)}
-                renderLeftIcons={() =>
-                    this.renderLeftIcons(
-                        newComment,
-                        pageId,
-                        hasSuggestion,
-                        goalId
-                    )
-                }
-                renderPost={() => this.renderPost(newComment)}
-                textInputContainerStyle={inputContainerStyle}
+                onBlur={this.handleOnBlur}
+                onSubmitEditing={this.handleOnSubmitEditing}
+                renderSuggestionPreview={this.renderSuggestionPreview}
+                renderMedia={this.renderMedia}
+                renderLeftIcons={this.renderLeftIcons}
+                renderPost={this.renderPost}
+                textInputContainerStyle={styles.inputContainerStyle}
                 textInputStyle={inputStyle}
-                validateTags={() => this.validateContentTags()}
+                validateTags={this.validateContentTags}
                 suggestionsPanelStyle={{
                     backgroundColor: 'rgba(100,100,100,0.1)',
                 }}
                 loadingComponent={this.renderLoadingComponent}
                 trigger={'@'}
                 triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
-                triggerCallback={this.callback.bind(this)}
+                triggerCallback={this.callback}
                 triggerLoadMore={this.handleTagSearchLoadMore}
-                renderSuggestionsRow={this.renderSuggestionsRow.bind(this)}
+                renderSuggestionsRow={this.renderSuggestionsRow}
                 suggestionsData={this.state.tagSearchData.data} // array of objects
                 keyExtractor={(item) => item._id}
                 suggestionRowHeight={50}
@@ -640,7 +603,10 @@ class CommentBoxV2 extends Component {
 const validSuggestion = (newComment) => {
     const { commentType, suggestion } = newComment
     if (commentType === 'Comment' || commentType === 'Reply') return true
-    if (isInvalidObject(suggestion)) return false
+
+    if (isInvalidObject(suggestion)) {
+        return false
+    }
     const {
         suggestionFor,
         suggestionForRef,
@@ -649,7 +615,6 @@ const validSuggestion = (newComment) => {
         suggestionLink,
         selectedItem,
     } = suggestion
-    // console.log(`${DEBUG_KEY}: suggestion is:`, suggestion);
     if (
         isInvalidObject(suggestionFor) ||
         isInvalidObject(suggestionForRef) ||

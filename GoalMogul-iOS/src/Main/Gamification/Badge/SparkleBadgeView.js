@@ -17,6 +17,7 @@ import {
 import { SpackleBackgroundImage } from '../../../asset/image'
 import { Bronze3D, Silver3D, Gold3D } from '../../../asset/banner'
 import DelayedButton from '../../Common/Button/DelayedButton'
+import style from '../../Tutorial/style'
 
 const width = Dimensions.get('window').width
 
@@ -34,8 +35,8 @@ const SparkleBadgeView = (props) => {
     const view = (
         <ImageBackground
             source={backgroundImageSource || SpackleBackgroundImage}
-            style={containerStyle}
-            imageStyle={containerImageStyle}
+            style={[styles.containerStyle, containerStyle]}
+            imageStyle={[styles.containerImageStyle, containerImageStyle]}
         >
             <View style={{ alignItems: 'center' }}>
                 <View style={{ height: 5, width: '100%' }} />
@@ -94,8 +95,7 @@ const getIconSource = (milestoneIdentifier) => {
     return Bronze3D
 }
 
-SparkleBadgeView.defaultProps = {
-    // Image background style
+const styles = {
     containerStyle: {
         height: width / 3,
         width: width / 3,
@@ -115,6 +115,15 @@ SparkleBadgeView.defaultProps = {
         height: width / 3,
         width: width / 3,
         borderRadius: 12,
+    },
+}
+
+SparkleBadgeView.defaultProps = {
+    // Image background style
+    containerStyle: {
+    },
+    // Image backgroudn image style
+    containerImageStyle: {
     },
 }
 

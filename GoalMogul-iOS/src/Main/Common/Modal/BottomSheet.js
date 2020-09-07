@@ -316,6 +316,10 @@ class BottomSheet extends React.PureComponent {
             onStartShouldSetPanResponder: () =>
                 this.props.swipeToCloseGestureEnabled ||
                 this.props.fullScreenGesturesEnabled,
+            onMoveShouldSetPanResponder: () =>
+                this.props.swipeToCloseGestureEnabled ||
+                this.props.fullScreenGesturesEnabled,
+
             onPanResponderMove: (e, gestureState) => {
                 const { isFullScreen } = this.state
                 const { fullScreenGesturesEnabled } = this.props
@@ -349,7 +353,7 @@ class BottomSheet extends React.PureComponent {
                     height,
                 } = this.props
                 const { isFullScreen } = this.state
-                // Close/fullscreen/minimize when gesture velocity or distance hits the thereashold
+                // Close/fullscreen/minimize when gesture distance hits the thereashold
                 if (
                     swipeToCloseGestureEnabled &&
                     !isFullScreen &&

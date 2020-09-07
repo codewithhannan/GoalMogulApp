@@ -167,10 +167,6 @@ class FocusTab extends React.PureComponent {
                 ? goalDetail.commentCount
                 : 100
 
-        // const resetCommentTypeFunc = focusType === 'comment'
-        //   ? () => this.props.resetCommentType('Comment', pageId)
-        //   : () => this.props.resetCommentType('Suggestion', pageId);
-
         return (
             <View
                 style={{ flex: 1, backgroundColor: 'transparent' }}

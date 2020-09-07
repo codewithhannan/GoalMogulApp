@@ -367,10 +367,13 @@ class PostDetailSection extends React.PureComponent {
 
     renderUpdateAttachments(item) {
         const { belongsToGoalStoryline, mediaRef } = item
+        const showGoalRefCard =
+            _.has(belongsToGoalStoryline, 'goalRef._id') &&
+            _.has(belongsToGoalStoryline, 'goalRef.title')
         return (
             <View style={{ marginBottom: 16 }}>
                 {this.renderPostImage(mediaRef)}
-                {belongsToGoalStoryline && [
+                {showGoalRefCard && [
                     <Text
                         style={[
                             default_style.normalText_2,
@@ -483,19 +486,6 @@ class PostDetailSection extends React.PureComponent {
                     // TODO scroll down to comments section
                 }}
                 onCommentButtonPress={() => {
-                    this.props.createCommentFromSuggestion(
-                        {
-                            commentDetail: {
-                                parentType: 'Goal',
-                                parentRef: _id,
-                                commentType: 'Suggestion',
-                                replyToRef: undefined,
-                            },
-                            suggestionForRef: _id,
-                            suggestionFor: 'Goal',
-                        },
-                        this.props.pageId
-                    )
                     this.props.onSuggestion()
                 }}
             />

@@ -44,6 +44,9 @@ const SENTRY_TAGS = {
     REGISTRATION: {
         ACTION: 'registration action',
     },
+    SEARCH: {
+        SEARCH_USER_ACTION: 'search user action',
+    },
 }
 
 const SENTRY_TAG_VALUE = {
@@ -94,6 +97,9 @@ const SENTRY_CONTEXT = {
     },
     LOGIN: {
         USERNAME: 'username',
+    },
+    SEARCH: {
+        QUERY: 'search query',
     },
 }
 
