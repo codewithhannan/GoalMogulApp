@@ -265,7 +265,8 @@ class ProfileV2 extends Component {
             props.selectedTab === 'goals' || props.selectedTab === 'needs'
         const renderContentCreationButtons =
             (props.selectedTab === 'goals' || props.selectedTab == 'posts') &&
-            props.isSelf
+            props.isSelf &&
+            false // disable for now to show more on the profile page
         return (
             <View>
                 <View

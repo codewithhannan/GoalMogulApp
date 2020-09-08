@@ -382,7 +382,7 @@ class GoalCard extends React.PureComponent {
 
     render() {
         const { item, isSharedItem } = this.props
-        if (!item) return
+        if (!item) return null
 
         return (
             <View style={styles.containerStyle}>
