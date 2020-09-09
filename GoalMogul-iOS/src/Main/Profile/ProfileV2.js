@@ -346,11 +346,9 @@ class ProfileV2 extends Component {
                 />
                 <SearchBarHeader
                     backButton={!this.props.isMainTab}
-                    setting={shouldShowPageSettings}
                     rightIcon={this.props.isMainTab ? 'menu' : null}
                     onBackPress={this.handleOnBackPress}
                     userId={userId}
-                    handlePageSetting={this.handlePageSetting}
                 />
                 <View style={styles.containerStyle}>
                     <FlatList

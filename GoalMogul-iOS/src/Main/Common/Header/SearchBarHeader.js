@@ -31,8 +31,6 @@ import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
 /* Asset */
 import Logo from '../../../asset/header/GMText.png'
 
-import { actionSheet, switchByButtonIndex } from '../ActionSheetFactory'
-
 /* Component */
 import DelayedButton from '../Button/DelayedButton'
 
@@ -51,10 +49,6 @@ import { HEADER_STYLES } from '../../../styles/Header'
 import { getUserData } from '../../../redux/modules/User/Selector'
 import { Icon } from '@ui-kitten/components'
 
-// For profile friend setting ActionSheetIOS
-const FRIENDSHIP_SETTING_BUTTONS = ['Block', 'Report', 'Cancel']
-const CANCEL_INDEX = 2
-
 const DEBUG_KEY = '[ Component SearchBarHeader ]'
 const WalkableView = walkthroughable(View)
 
@@ -65,10 +59,6 @@ const WalkableView = walkthroughable(View)
   setting: true or false
 */
 class SearchBarHeader extends Component {
-    state = {
-        overlay: false,
-    }
-
     handleBackOnClick() {
         if (this.props.onBackPress) {
             this.props.onBackPress()
@@ -84,45 +74,6 @@ class SearchBarHeader extends Component {
     handleSettingOnClick() {
         // TODO: open account setting page
         this.props.openSetting()
-    }
-
-    handleFriendsSettingOnClick = () => {
-        const text = 'Please go to Settings to manage blocked users.'
-        const switchCases = switchByButtonIndex([
-            [
-                R.equals(0),
-                () => {
-                    console.log(
-                        `${DEBUG_KEY} User blocks _id: `,
-                        this.props.profileUserId
-                    )
-                    this.props.blockUser(
-                        this.props.profileUserId,
-                        () =>
-                            alert(
-                                `You have successfully blocked ${this.props.profileUserName}. ${text}`
-                            ),
-                        { name: this.props.profileUserName } // To show block confirmation alert
-                    )
-                },
-            ],
-            [
-                R.equals(1),
-                () => {
-                    console.log(
-                        `${DEBUG_KEY} User reports profile with _id: `,
-                        this.props.profileUserId
-                    )
-                    this.props.createReport(this.props.profileUserId, 'User')
-                },
-            ],
-        ])
-        const friendsSettingActionSheet = actionSheet(
-            FRIENDSHIP_SETTING_BUTTONS,
-            CANCEL_INDEX,
-            switchCases
-        )
-        friendsSettingActionSheet()
     }
 
     handleMenuIconOnClick = () => {
@@ -166,6 +117,24 @@ class SearchBarHeader extends Component {
     renderRightIcons() {
         const { menuOnPress, tutorialOn } = this.props
         const hasRightIconTutorial = tutorialOn && tutorialOn.rightIcon
+
+        if (
+            (this.props.setting && !this.props.haveSetting) ||
+            this.props.pageSetting
+        ) {
+            return (
+                <TouchableOpacity
+                    onPress={this.props.handlePageSetting}
+                    style={{ padding: 5 }}
+                >
+                    <Icon
+                        name="dots-horizontal"
+                        pack="material-community"
+                        style={HEADER_STYLES.nakedButton}
+                    />
+                </TouchableOpacity>
+            )
+        }
 
         // Standard search bar menu
         if (this.props.rightIcon === 'menu') {
