@@ -5,10 +5,9 @@ import {
     Animated,
     FlatList,
     Keyboard,
-    KeyboardAvoidingView,
     View,
+    KeyboardAvoidingView,
 } from 'react-native'
-import { getBottomSpace } from 'react-native-iphone-x-helper'
 import { MenuProvider } from 'react-native-popup-menu'
 import { connect } from 'react-redux'
 import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
@@ -48,10 +47,12 @@ class ShareDetailCard extends Component {
         this.commentBox = undefined
         this.state = {
             bottomPadding: new Animated.Value(0),
+            commentBoxHeight: 80,
         }
         this.handleScrollToCommentItem = this.handleScrollToCommentItem.bind(
             this
         )
+        this.onCommentBoxLayout = this.onCommentBoxLayout.bind(this)
     }
 
     componentDidMount() {
@@ -279,6 +280,12 @@ class ShareDetailCard extends Component {
         )
     }
 
+    onCommentBoxLayout({ nativeEvent }) {
+        this.setState({
+            commentBoxHeight: nativeEvent.layout.height,
+        })
+    }
+
     render() {
         const { comments, shareDetail, pageId, postId, postType } = this.props
         const data = comments
@@ -301,11 +308,14 @@ class ShareDetailCard extends Component {
                         this.props.closeShareDetail(postId, pageId)
                     }
                 />
-                <Animated.View
+                <KeyboardAvoidingView
                     style={[
                         styles.containerStyle,
-                        { paddingBottom: this.state.bottomPadding },
+                        {
+                            paddingBottom: this.state.commentBoxHeight,
+                        },
                     ]}
+                    behavior={'height'}
                 >
                     <FlatList
                         ref="flatList"
@@ -326,7 +336,17 @@ class ShareDetailCard extends Component {
                             />
                         }
                     />
-                    <View style={styles.composerContainer}>
+                </KeyboardAvoidingView>
+
+                <Animated.View
+                    style={[
+                        styles.composerContainer,
+                        {
+                            paddingBottom: this.state.bottomPadding,
+                        },
+                    ]}
+                >
+                    <View onLayout={this.onCommentBoxLayout.bind(this)}>
                         <CommentBox
                             onRef={(ref) => {
                                 this.commentBox = ref
@@ -358,11 +378,12 @@ const styles = {
         opacity: 0.5,
     },
     composerContainer: {
-        left: 0,
-        right: 0,
-        bottom: 0,
         backgroundColor: 'white',
         zIndex: 3,
+        width: '100%',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
     },
 }
 

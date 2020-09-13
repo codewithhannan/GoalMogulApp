@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
+import { color } from '../../../styles/basic'
 
 const DEBUG_KEY = '[ UI MentionsTextInput ]'
 
@@ -274,7 +275,7 @@ export default class MentionsTextInput extends Component {
                             placeholder={
                                 this.props.placeholder
                                     ? this.props.placeholder
-                                    : 'Write a comment...'
+                                    : 'Write a reply...'
                             }
                         />
                     </View>
@@ -283,11 +284,20 @@ export default class MentionsTextInput extends Component {
             )
         }
         return (
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {this.props.renderLeftIcons
-                    ? this.props.renderLeftIcons()
-                    : null}
-                <View style={this.props.textInputContainerStyle}>
+            <View
+                style={{
+                    alignItems: 'center',
+                    borderTopColor: color.GM_LIGHT_GRAY,
+                    borderTopWidth: 0.5,
+                }}
+            >
+                <View
+                    style={{
+                        ...this.props.textInputContainerStyle,
+                        flex: 1,
+                        width: '100%',
+                    }}
+                >
                     <TextInput
                         {...this.props}
                         autoCorrect
@@ -296,7 +306,11 @@ export default class MentionsTextInput extends Component {
                         onSelectionChange={this.handleOnSelectionChange}
                         multiline={true}
                         value={this.props.value}
-                        style={this.props.textInputStyle}
+                        style={{
+                            paddingTop: 12,
+                            fontSize: 14,
+                            ...this.props.textInputStyle,
+                        }}
                         placeholder={
                             this.props.placeholder
                                 ? this.props.placeholder
@@ -304,7 +318,18 @@ export default class MentionsTextInput extends Component {
                         }
                     />
                 </View>
-                {this.props.renderPost ? this.props.renderPost() : null}
+                <View
+                    style={{
+                        flex: 1,
+                        width: '100%',
+                        flexDirection: 'row',
+                    }}
+                >
+                    {this.props.renderLeftIcons
+                        ? this.props.renderLeftIcons()
+                        : null}
+                    {this.props.renderPost ? this.props.renderPost() : null}
+                </View>
             </View>
         )
     }

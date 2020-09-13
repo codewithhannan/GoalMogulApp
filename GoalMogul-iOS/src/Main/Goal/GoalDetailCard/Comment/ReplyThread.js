@@ -18,6 +18,7 @@ import {
     Image,
     Animated,
     Keyboard,
+    KeyboardAvoidingView,
 } from 'react-native'
 import _ from 'lodash'
 import { MenuProvider } from 'react-native-popup-menu'
@@ -70,11 +71,13 @@ class ReplyThread extends React.Component {
             likeListParentId: undefined,
             likeListParentType: undefined,
             savedComment: props.newComment,
+            commentBoxHeight: 80,
         }
         this.contentBottomPadding = new Animated.Value(0)
         this.openCommentLikeList = this.openCommentLikeList.bind(this)
         this.closeCommentLikeList = this.closeCommentLikeList.bind(this)
 
+        this.onCommentBoxLayout = this.onCommentBoxLayout.bind(this)
         this.clearCommentBox = this.clearCommentBox.bind(this)
         this.renderItem = this.renderItem.bind(this)
     }
@@ -391,6 +394,12 @@ class ReplyThread extends React.Component {
         )
     }
 
+    onCommentBoxLayout({ nativeEvent }) {
+        this.setState({
+            commentBoxHeight: nativeEvent.layout.height,
+        })
+    }
+
     render() {
         const { item } = this.props
         if (!item) return <ModalHeader back />
@@ -412,18 +421,28 @@ class ReplyThread extends React.Component {
                     }}
                     back
                 />
-                <Animated.View
+                <KeyboardAvoidingView
                     style={{
+                        paddingBottom: this.state.commentBoxHeight,
                         flex: 1,
-                        paddingBottom: this.contentBottomPadding,
                     }}
+                    behavior={'height'}
                 >
                     <FlatList
                         ListHeaderComponent={this.renderHeader()}
                         data={childComments}
                         renderItem={this.renderItem}
                     />
-                    <View style={styles.composerContainer}>
+                </KeyboardAvoidingView>
+                <Animated.View
+                    style={[
+                        styles.composerContainer,
+                        {
+                            paddingBottom: this.contentBottomPadding,
+                        },
+                    ]}
+                >
+                    <View onLayout={this.onCommentBoxLayout.bind(this)}>
                         <CommentBox
                             onRef={(ref) => (this.commentBox = ref)}
                             hasSuggestion={!!this.props.goalId}
@@ -446,8 +465,9 @@ const styles = {
     },
     composerContainer: {
         left: 0,
-        right: 0,
         bottom: 0,
+        width: '100%',
+        position: 'absolute',
         backgroundColor: 'white',
         zIndex: 3,
     },

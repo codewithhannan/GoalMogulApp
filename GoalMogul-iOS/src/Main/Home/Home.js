@@ -290,17 +290,15 @@ class Home extends Component {
                 }
             >
                 <CreateContentButtons
-                    containerStyle={{
-                        marginBottom: 8,
-                    }}
                     onCreateUpdatePress={() =>
                         this.createPostModal && this.createPostModal.open()
                     }
                     onCreateGoalPress={Actions.createGoalModal}
                 />
-                <View style={styles.tabContainer}>
+                {/* Hid switching tabs to clean up the main view to just friend's Goals and Updates */}
+                {/* <View style={styles.tabContainer}>
                     <TabButtonGroup buttons={props} />
-                </View>
+                </View> */}
             </View>
         )
     }

@@ -71,7 +71,14 @@ class AttachGoal extends Component {
 
     renderItem({ item }) {
         return (
-            <MenuOption onSelect={() => this.props.onSelect(item)}>
+            <MenuOption
+                customStyles={{
+                    optionTouchable: {
+                        underlayColor: 'white',
+                    },
+                }}
+                onSelect={() => this.props.onSelect(item)}
+            >
                 <CompactGoalCard item={item} disabled={true} />
             </MenuOption>
         )

@@ -4,6 +4,7 @@
 import _ from 'lodash'
 import R from 'ramda'
 import React, { Component } from 'react'
+import { Icon } from '@ui-kitten/components'
 import {
     ActivityIndicator,
     Dimensions,
@@ -37,10 +38,9 @@ import {
     clearTags,
     getProfileImageOrDefaultFromUser,
 } from '../../../redux/middleware/utils'
-import { default_style } from '../../../styles/basic'
+import { default_style, color } from '../../../styles/basic'
 
 // Assets
-import PhotoIcon from '../../../asset/utils/cameraRoll.png'
 import LightBulb from '../../../asset/utils/makeSuggestion.png'
 // Components
 import MentionsTextInput from './MentionsTextInput'
@@ -67,8 +67,8 @@ const INITIAL_TAG_SEARCH = {
     loading: false,
 }
 
-const DEFAULT_WRITE_COMMENT_PLACEHOLDER = 'Write a Comment...'
-const DEFAULT_REPLY_TO_PLACEHOLDER = 'Reply to...'
+const DEFAULT_WRITE_COMMENT_PLACEHOLDER = 'Write a reply...'
+const DEFAULT_REPLY_TO_PLACEHOLDER = 'Reply to the thread...'
 
 class CommentBoxV2 extends Component {
     constructor(props) {
@@ -341,10 +341,22 @@ class CommentBoxV2 extends Component {
                     this.props.createSuggestion(goalId, pageId)
                 }}
                 disabled={disableButton}
+                style={{
+                    paddingTop: 12,
+                    paddingBottom: 4,
+                }}
             >
-                <Image
-                    source={LightBulb}
-                    style={{ ...styles.iconStyle, tintColor: '' }}
+                <Icon
+                    name="lightbulb-on-outline"
+                    pack="material-community"
+                    style={[
+                        styles.iconStyle,
+                        {
+                            position: 'relative',
+                            bottom: 2,
+                            tintColor: '#F2C94C',
+                        },
+                    ]}
                 />
             </DelayedButton>
         )
@@ -361,10 +373,11 @@ class CommentBoxV2 extends Component {
                     flexDirection: 'row',
                     marginLeft: 5,
                     marginRight: 5,
+                    flexGrow: 1,
                 }}
             >
-                {suggestionIcon}
                 {this.renderImageIcon(newComment)}
+                {suggestionIcon}
             </View>
         )
     }
@@ -376,16 +389,24 @@ class CommentBoxV2 extends Component {
         const disableButton = commentType === 'Suggestion'
         return (
             <TouchableOpacity
-                activeOpacity={0.6}
+                activeOpacity={0.9}
                 onPress={this.handleImageIconOnClick}
                 disabled={disableButton}
+                style={{
+                    paddingTop: 12,
+                    paddingBottom: 4,
+                    paddingRight: 8,
+                }}
             >
-                <Image
-                    source={PhotoIcon}
-                    style={{
-                        ...styles.iconStyle,
-                        tintColor: '#cbd6d8',
-                    }}
+                <Icon
+                    name="image-outline"
+                    pack="material-community"
+                    style={[
+                        styles.iconStyle,
+                        {
+                            tintColor: '#4F4F4F',
+                        },
+                    ]}
                 />
             </TouchableOpacity>
         )
@@ -445,24 +466,25 @@ class CommentBoxV2 extends Component {
         const isInValidSuggestion = !validSuggestion(newComment)
         const disable = uploading || isInValidComment || isInValidSuggestion
 
-        const color = disable ? '#cbd6d8' : '#17B3EC'
+        const tintColor = disable ? 'lightgray' : color.GM_BLUE
         return (
             <DelayedButton
                 activeOpacity={0.6}
                 onPress={() => this.handleOnPost(uploading)}
                 disabled={disable}
             >
-                <Text
+                <View
                     style={{
-                        ...default_style.titleText_2,
-                        color,
-                        padding: 13,
-                        letterSpacing: 0.5,
-                        paddingBottom: 15,
+                        padding: 12,
+                        paddingBottom: 4,
                     }}
                 >
-                    Post
-                </Text>
+                    <Icon
+                        name="send"
+                        pack="material-community"
+                        style={[styles.iconStyle, { tintColor }]}
+                    />
+                </View>
             </DelayedButton>
         )
     }
@@ -556,7 +578,6 @@ class CommentBoxV2 extends Component {
                   color: '#b9c3c4',
               }
             : styles.inputStyle
-
         return (
             <MentionsTextInput
                 ref={(r) => (this.textInput = r)}
@@ -652,10 +673,6 @@ export const isInvalidObject = (o) => {
 const styles = {
     inputContainerStyle: {
         justifyContent: 'center',
-        borderRadius: 18,
-        borderColor: '#F1F1F1',
-        borderWidth: 1,
-        flex: 1,
     },
     inputStyle: {
         ...default_style.normalText_1,
@@ -664,11 +681,12 @@ const styles = {
         paddingLeft: 15,
         paddingRight: 15,
         backgroundColor: 'white',
-        borderRadius: 22,
     },
     iconStyle: {
         ...default_style.buttonIcon_1,
         margin: 4,
+        height: 30,
+        width: 30,
     },
     // Media preview styles
     mediaContainerStyle: {

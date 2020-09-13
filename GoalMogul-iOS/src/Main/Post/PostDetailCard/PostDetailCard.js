@@ -1,7 +1,13 @@
 /** @format */
 
 import React from 'react'
-import { Animated, FlatList, Keyboard, View } from 'react-native'
+import {
+    Animated,
+    FlatList,
+    Keyboard,
+    View,
+    KeyboardAvoidingView,
+} from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { connect } from 'react-redux'
 import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
@@ -37,10 +43,12 @@ class PostDetailCard extends React.PureComponent {
         this.commentBox = undefined
         this.state = {
             bottomPadding: new Animated.Value(0),
+            commentBoxHeight: 80,
         }
         this.handleScrollToCommentItem = this.handleScrollToCommentItem.bind(
             this
         )
+        this.onCommentBoxLayout = this.onCommentBoxLayout.bind(this)
     }
 
     componentDidMount() {
@@ -281,6 +289,12 @@ class PostDetailCard extends React.PureComponent {
         )
     }
 
+    onCommentBoxLayout({ nativeEvent }) {
+        this.setState({
+            commentBoxHeight: nativeEvent.layout.height,
+        })
+    }
+
     render() {
         const { comments, pageId, postId, postDetail } = this.props
         const data = comments
@@ -306,13 +320,14 @@ class PostDetailCard extends React.PureComponent {
                         this.props.closePostDetail(postId, pageId)
                     }
                 />
-                <Animated.View
+                <KeyboardAvoidingView
                     style={[
                         styles.containerStyle,
                         {
-                            paddingBottom: this.state.bottomPadding,
+                            paddingBottom: this.state.commentBoxHeight,
                         },
                     ]}
+                    behavior={'height'}
                 >
                     <FlatList
                         ref="flatList"
@@ -325,7 +340,16 @@ class PostDetailCard extends React.PureComponent {
                         refreshing={this.props.commentLoading}
                         onRefresh={this.handleRefresh}
                     />
-                    <View style={styles.composerContainer}>
+                </KeyboardAvoidingView>
+                <Animated.View
+                    style={[
+                        styles.composerContainer,
+                        {
+                            paddingBottom: this.state.bottomPadding,
+                        },
+                    ]}
+                >
+                    <View onLayout={this.onCommentBoxLayout.bind(this)}>
                         <CommentBox
                             onRef={(ref) => {
                                 this.commentBox = ref
@@ -357,11 +381,12 @@ const styles = {
         opacity: 0.5,
     },
     composerContainer: {
-        left: 0,
-        right: 0,
-        bottom: 0,
         backgroundColor: 'white',
         zIndex: 3,
+        width: '100%',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
     },
 }
 
