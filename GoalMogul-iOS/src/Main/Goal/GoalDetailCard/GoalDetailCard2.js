@@ -214,7 +214,7 @@ class GoalDetailCard2 extends Component {
         if (!data || data.length === 0) {
             emptyResult =
                 routes[index].key === 'comments'
-                    ? 'No comments'
+                    ? 'No replies'
                     : 'No needs and steps'
         }
         // console.log('transformed comments to render are: ', comments);

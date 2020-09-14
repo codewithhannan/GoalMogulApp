@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 
 // Asset
 import bulb from '../../../asset/utils/bulb.png'
+import CommentIcon from '../../../asset/utils/comment.png'
 import forward from '../../../asset/utils/forward.png'
 import Icons from '../../../asset/base64/Icons'
 import back from '../../../asset/utils/back.png'
@@ -122,16 +123,17 @@ class SectionCardV2 extends Component {
         return (
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Image
-                    source={bulb}
+                    source={CommentIcon}
                     style={{
                         ...default_style.smallIcon_1,
-                        tintColor: '#FCB110',
+                        tintColor: color.GM_MID_GREY,
                     }}
                 />
                 <Text style={styles.actionTextStyle}>
-                    {commentCount} comments
+                    {commentCount} replies
                 </Text>
-                <DelayedButton
+                {/* Note hiding 'Share' button on steps and needs */}
+                {/* <DelayedButton
                     activeOpacity={0.6}
                     style={{
                         flexDirection: 'row',
@@ -148,7 +150,7 @@ class SectionCardV2 extends Component {
                         source={forward}
                     />
                     <Text style={styles.actionTextStyle}>Share</Text>
-                </DelayedButton>
+                </DelayedButton> */}
             </View>
         )
     }
