@@ -82,7 +82,11 @@ class ChatRoomList extends React.Component {
      * @param {*} nextState
      */
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(this.props.data, nextProps.data)
+        return (
+            !_.isEqual(this.props.data, nextProps.data) ||
+            !_.isEqual(this.props.refreshing, nextProps.refreshing) ||
+            !_.isEqual(this.props.loading, nextProps.loading)
+        )
     }
 
     componentWillUnmount() {
