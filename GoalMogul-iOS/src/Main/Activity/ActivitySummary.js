@@ -69,8 +69,20 @@ class ActivitySummary extends React.Component {
                         }`
                     )
                 },
-                Comment: (val) => `commented on a ${val.actedUponEntityType}`,
-                Like: (val) => `liked a ${val.actedUponEntityType}`,
+                // NOTE: the clean approach is to change the backend that populate the field
+                // actedUponEntityType from Post to Update
+                Comment: (val) =>
+                    `commented on ${
+                        val.actedUponEntityType === 'Post'
+                            ? 'an Update'
+                            : `a ${val.actedUponEntityType}`
+                    }`,
+                Like: (val) =>
+                    `liked ${
+                        val.actedUponEntityType === 'Post'
+                            ? 'an Update'
+                            : `a ${val.actedUponEntityType}`
+                    }`,
             },
             Update: {
                 Goal: () => 'completed the goal',

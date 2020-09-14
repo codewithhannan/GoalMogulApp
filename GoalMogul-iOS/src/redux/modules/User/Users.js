@@ -142,7 +142,7 @@ export const INITIAL_USER_PAGE = {
         routes: [
             { key: 'about', title: 'About' },
             { key: 'goals', title: 'Goals' },
-            { key: 'posts', title: 'Posts' },
+            { key: 'posts', title: 'Updates' },
             { key: 'needs', title: 'Needs' },
         ],
     },

@@ -835,8 +835,8 @@ export class GoalDetailCardV3 extends Component {
                         }}
                     >
                         View{commentCount > 2 ? ' all' : ''}
-                        {commentCount > 0 && ` ${commentCount}`} comment
-                        {commentCount !== 1 && 's'}
+                        {commentCount > 0 && ` ${commentCount}`}
+                        {commentCount !== 1 ? ' reply' : ' replies'}
                     </Text>
                     <TouchableOpacity
                         activeOpacity={0.6}
