@@ -64,7 +64,7 @@ import RichText from '../../Common/Text/RichText'
 import Headline from '../Common/Headline'
 import IndividualActionButton from '../Common/IndividualActionButton'
 // Components
-import ProgressBar from '../Common/ProgressBar'
+import GoalCardBody from '../Common/GoalCardBody'
 import Timestamp from '../Common/Timestamp'
 import ActionBar from '../../Common/ContentCards/ActionBar'
 
@@ -503,16 +503,17 @@ class GoalDetailSection extends React.PureComponent {
 
     renderCardContent(item) {
         const { start, end, steps, needs } = item
+
         return (
-            <View style={{ marginTop: 12, marginBottom: 12 }}>
-                <ProgressBar
-                    startTime={start}
-                    endTime={end}
-                    steps={steps}
-                    needs={needs}
-                    goalRef={item}
-                />
-            </View>
+            <GoalCardBody
+                containerStyle={{ marginVertical: 12 }}
+                startTime={start}
+                endTime={end}
+                steps={steps}
+                needs={needs}
+                goalRef={item}
+                pageId={this.props.pageId}
+            />
         )
     }
 

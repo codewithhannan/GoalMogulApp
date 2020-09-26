@@ -45,7 +45,7 @@ import DelayedButton from '../../Common/Button/DelayedButton'
 import ProfileImage from '../../Common/ProfileImage'
 import GoalCardHeader from '../Common/GoalCardHeader'
 import Headline from '../Common/Headline'
-import ProgressBar from '../Common/ProgressBar'
+import GoalCardBody from '../Common/GoalCardBody'
 import Timestamp from '../Common/Timestamp'
 import { default_style, color } from '../../../styles/basic'
 import ActionBar from '../../Common/ContentCards/ActionBar'
@@ -184,17 +184,14 @@ class GoalCard extends React.PureComponent {
         const { start, end, needs, steps } = item
 
         return (
-            <View style={{ marginTop: 12 }}>
-                <ProgressBar
-                    startTime={start}
-                    endTime={end}
-                    steps={steps}
-                    needs={needs}
-                    goalRef={item}
-                    width={IS_ZOOMED ? 216 : 268} // TODO: use ratio with screen size rather static number
-                    size="large"
-                />
-            </View>
+            <GoalCardBody
+                containerStyle={{ marginTop: 12 }}
+                startTime={start}
+                endTime={end}
+                steps={steps}
+                needs={needs}
+                goalRef={item}
+            />
         )
     }
 

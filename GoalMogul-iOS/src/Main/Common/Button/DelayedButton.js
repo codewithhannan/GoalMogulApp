@@ -81,7 +81,7 @@ class DelayedButton extends React.PureComponent {
                 <TouchableWithoutFeedback
                     {...this.props}
                     onPress={this.handleOnPress}
-                    disabled={this.state.disabled}
+                    disabled={this.state.disabled || this.props.disabled}
                     ref={onRef || (() => {})}
                 >
                     {this.props.children}

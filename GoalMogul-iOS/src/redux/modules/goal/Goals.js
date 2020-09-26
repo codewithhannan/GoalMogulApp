@@ -69,6 +69,14 @@ export const MY_GOALS_LOAD_MORE_START = 'my_goals_load_more_start'
 export const MY_GOALS_LOAD_MORE_SUCCESS = 'my_goals_load_more_success'
 export const MY_GOALS_LOAD_MORE_FAIL = 'my_goals_load_more_fail'
 
+export const GOAL_UPDATES_REFRESH_START = 'goal_updates_refresh_start'
+export const GOAL_UPDATES_REFRESH_SUCCESS = 'goal_updates_refresh_success'
+export const GOAL_UPDATES_REFRESH_FAIL = 'goal_updates_refresh_fail'
+
+export const GOAL_UPDATES_LOAD_MORE_START = 'goal_updates_load_more_start'
+export const GOAL_UPDATES_LOAD_MORE_SUCCESS = 'goal_updates_load_more_success'
+export const GOAL_UPDATES_LOAD_MORE_FAIL = 'goal_updates_load_more_fail'
+
 /**
  * List of const to add
  *
@@ -130,6 +138,15 @@ const INITIAL_GOAL_OBJECT = {
     reference: [],
 }
 
+// Sample goal object in the map
+export const INITIAL_UPDATES_OBJECT = {
+    refreshing: false,
+    loading: false,
+    limit: 10,
+    skip: 0,
+    data: [],
+}
+
 export const INITIAL_NAVIGATION_STATE_V2 = {
     index: 0,
     routes: [
@@ -145,7 +162,7 @@ export const INITIAL_GOAL_PAGE = {
     loading: false, // Indicator if goal on this page is loading
     updating: false, // Indicator if goal on this page is updating
     // Potential navigation state and etc. First focus on integration with Profile
-    navigationStateV2: { ...INITIAL_NAVIGATION_STATE_V2 },
+    navigationStateV2: INITIAL_NAVIGATION_STATE_V2,
 }
 
 const INITIAL_STATE = {
@@ -203,8 +220,67 @@ export default (state = INITIAL_STATE, action) => {
         }
 
         case MY_GOALS_LOAD_MORE_FAIL: {
+            const { goalId, pageId } = action.payload
+            const path = `updates.${goalId}.${pageId}`
             let newState = _.cloneDeep(state)
-            newState = _.set(newState, 'myGoals.loading', false)
+            newState = _.set(newState, `${path}.loading`, false)
+            return newState
+        }
+
+        /* Goal updates related */
+        case GOAL_UPDATES_REFRESH_START: {
+            const { goalId, pageId } = action.payload
+            const path = `updates.${goalId}.${pageId}`
+            let newState = _.cloneDeep(state)
+            newState = _.set(newState, `${path}.refreshing`, true)
+            return newState
+        }
+
+        case GOAL_UPDATES_REFRESH_SUCCESS: {
+            const { goalId, pageId, data } = action.payload
+            const path = `updates.${goalId}.${pageId}`
+            let newState = _.cloneDeep(state)
+            newState = _.set(newState, `${path}.refreshing`, false)
+            newState = _.set(newState, `${path}.data`, data)
+            newState = _.set(newState, `${path}.skip`, data.length)
+            return newState
+        }
+
+        case GOAL_UPDATES_REFRESH_FAIL: {
+            const { goalId, pageId } = action.payload
+            const path = `updates.${goalId}.${pageId}`
+            let newState = _.cloneDeep(state)
+            _.set(newState, `${path}.refreshing`, false)
+            return newState
+        }
+
+        case GOAL_UPDATES_LOAD_MORE_START: {
+            const { goalId, pageId } = action.payload
+            const path = `updates.${goalId}.${pageId}`
+            let newState = _.cloneDeep(state)
+            newState = _.set(newState, `${path}.loading`, true)
+            return newState
+        }
+
+        case GOAL_UPDATES_LOAD_MORE_SUCCESS: {
+            const { goalId, pageId, data } = action.payload
+            const path = `updates.${goalId}.${pageId}`
+            let newState = _.cloneDeep(state)
+
+            const oldData = _.get(newState, `${path}.data`, [])
+            let newData = arrayUnique(oldData.concat(data))
+
+            newState = _.set(newState, `${path}.loading`, false)
+            newState = _.set(newState, `${path}.data`, newData)
+            newState = _.set(newState, `${path}.skip`, newData.length)
+            return newState
+        }
+
+        case GOAL_UPDATES_LOAD_MORE_FAIL: {
+            const { goalId, pageId } = action.payload
+            const path = `updates.${goalId}.${pageId}`
+            let newState = _.cloneDeep(state)
+            newState = _.set(newState, `${path}.loading`, false)
             return newState
         }
 

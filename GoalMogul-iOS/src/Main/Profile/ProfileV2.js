@@ -344,42 +344,41 @@ class ProfileV2 extends Component {
                     openProfile={false}
                     pageId={pageId}
                 />
+                <EarnBadgeModal
+                    isVisible={this.state.showBadgeEarnModal}
+                    closeModal={() => {
+                        this.setState({
+                            ...this.state,
+                            showBadgeEarnModal: false,
+                        })
+                    }}
+                    user={this.props.user}
+                />
                 <SearchBarHeader
                     backButton={!this.props.isMainTab}
                     rightIcon={this.props.isMainTab ? 'menu' : null}
                     onBackPress={this.handleOnBackPress}
                     userId={userId}
                 />
-                <View style={styles.containerStyle}>
-                    <FlatList
-                        data={data}
-                        renderItem={this.renderItem}
-                        keyExtractor={(i) => i._id}
-                        onRefresh={this.handleRefresh}
-                        onEndReached={this.handleOnLoadMore}
-                        onEndReachedThreshold={0}
-                        refreshing={false}
-                        ListEmptyComponent={this.renderListEmptyState()}
-                        ListHeaderComponent={this.renderHeader({
-                            userId,
-                            pageId,
-                            selectedTab,
-                            navigationState,
-                            isSelf,
-                        })}
-                        ListFooterComponent={this.renderListFooter()}
-                    />
-                    <EarnBadgeModal
-                        isVisible={this.state.showBadgeEarnModal}
-                        closeModal={() => {
-                            this.setState({
-                                ...this.state,
-                                showBadgeEarnModal: false,
-                            })
-                        }}
-                        user={this.props.user}
-                    />
-                </View>
+                <FlatList
+                    data={data}
+                    renderItem={this.renderItem}
+                    keyExtractor={(i) => i._id}
+                    onRefresh={this.handleRefresh}
+                    onEndReached={this.handleOnLoadMore}
+                    onEndReachedThreshold={0}
+                    refreshing={false}
+                    ListEmptyComponent={this.renderListEmptyState()}
+                    ListHeaderComponent={this.renderHeader({
+                        userId,
+                        pageId,
+                        selectedTab,
+                        navigationState,
+                        isSelf,
+                    })}
+                    ListFooterComponent={this.renderListFooter()}
+                    style={styles.containerStyle}
+                />
             </MenuProvider>
         )
     }

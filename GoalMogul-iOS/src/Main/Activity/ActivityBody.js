@@ -11,7 +11,7 @@ import {
 import _ from 'lodash'
 
 // Components
-import ProgressBar from '../Goal/Common/ProgressBar'
+import GoalCardBody from '../Goal/Common/GoalCardBody'
 import ImageModal from '../Common/ImageModal'
 import RefPreview from '../Common/RefPreview'
 
@@ -39,9 +39,8 @@ class ActivityBody extends React.Component {
         const { start, end, steps, needs } = goalRef
 
         return (
-            <ProgressBar
-                containerStyle={{ marginTop: 12 }}
-                onPress={this.props.openCardContent}
+            <GoalCardBody
+                onProgressBarPress={this.props.openCardContent}
                 startTime={start}
                 endTime={end}
                 steps={steps}
@@ -77,7 +76,7 @@ class ActivityBody extends React.Component {
                             opacity: 0.8,
                             resizeMode: 'cover',
                         }}
-                    ></ImageBackground>
+                    />
                     {this.renderPostImageModal(imageUrl)}
                 </View>
             </TouchableWithoutFeedback>
@@ -116,7 +115,7 @@ class ActivityBody extends React.Component {
                     <Text
                         style={[
                             default_style.normalText_2,
-                            { marginTop: 8, marginBottom: 4 },
+                            { marginTop: 12, marginBottom: 4 },
                         ]}
                     >
                         Attached

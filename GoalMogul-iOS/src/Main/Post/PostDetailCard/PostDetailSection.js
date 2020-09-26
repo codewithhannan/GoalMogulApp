@@ -377,7 +377,7 @@ class PostDetailSection extends React.PureComponent {
                     <Text
                         style={[
                             default_style.normalText_2,
-                            { marginTop: 8, marginBottom: 4 },
+                            { marginTop: 12, marginBottom: 4 },
                         ]}
                     >
                         Attached

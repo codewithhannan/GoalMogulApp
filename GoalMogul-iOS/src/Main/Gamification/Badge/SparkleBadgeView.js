@@ -120,11 +120,9 @@ const styles = {
 
 SparkleBadgeView.defaultProps = {
     // Image background style
-    containerStyle: {
-    },
+    containerStyle: {},
     // Image backgroudn image style
-    containerImageStyle: {
-    },
+    containerImageStyle: {},
 }
 
 SparkleBadgeView.prototype = {

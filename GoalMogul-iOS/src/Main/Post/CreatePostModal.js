@@ -14,14 +14,21 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
+import { Icon } from '@ui-kitten/components'
 
 // assets
 import cancel from '../../asset/utils/cancel_no_background.png'
 import expand from '../../asset/utils/expand.png'
-import imageOverlay from '../../asset/utils/imageOverlay.png'
 
 // Actions
 import { openCameraRoll, openCamera } from '../../actions'
+import {
+    fetchPostDrafts,
+    postToFormAdapter,
+    savePostDrafts,
+    submitCreatingPost,
+} from '../../redux/modules/feed/post/PostActions'
+import { searchUser } from '../../redux/modules/search/SearchActions'
 
 // Utils
 import {
@@ -35,20 +42,13 @@ import {
     clearTags,
     getProfileImageOrDefaultFromUser,
 } from '../../redux/middleware/utils'
-import {
-    fetchPostDrafts,
-    postToFormAdapter,
-    savePostDrafts,
-    submitCreatingPost,
-} from '../../redux/modules/feed/post/PostActions'
-import { searchUser } from '../../redux/modules/search/SearchActions'
+
 import { IMAGE_BASE_URL, PRIVACY_FRIENDS } from '../../Utils/Constants'
 import { default_style, color } from '../../styles/basic'
-import BottomSheet from '../Common/Modal/BottomSheet'
-import { Icon } from '@ui-kitten/components'
 import { IS_SMALL_PHONE } from '../../styles'
 
 /* Components */
+import BottomSheet from '../Common/Modal/BottomSheet'
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
 import DelayedButton from '../Common/Button/DelayedButton'
 import ImageModal from '../Common/ImageModal'
@@ -88,6 +88,7 @@ class CreatePostModal extends Component {
                 ''
             ),
         }
+        this.onOpen = this.onOpen.bind(this)
         this.updateSearchRes = this.updateSearchRes.bind(this)
         this.handleTextInputSizeChange = this.handleTextInputSizeChange.bind(
             this
@@ -96,6 +97,9 @@ class CreatePostModal extends Component {
 
     componentDidMount() {
         if (this.props.onRef) this.props.onRef(this)
+    }
+
+    onOpen() {
         this.startTime = new Date()
         track(
             this.props.initializeFromState
@@ -103,6 +107,13 @@ class CreatePostModal extends Component {
                 : E.CREATE_POST_MODAL_OPENED
         )
         this.initializeForm()
+        this.setState({
+            attachedGoalTitle: _.get(
+                this.props,
+                'initialPost.belongsToGoalStoryline.goalRef.title',
+                ''
+            ),
+        })
     }
 
     /**
@@ -760,19 +771,20 @@ class CreatePostModal extends Component {
     renderAttachGoalButton() {
         const {
             initializeFromState,
+            initializeFromGoal,
             uploading,
-            belongsToGoalStoryline,
         } = this.props
+        const belongsToGoalStoryline = _.get(
+            this.props,
+            'formVals.values.belongsToGoalStoryline',
+            undefined
+        )
+        const isGoalAttached =
+            belongsToGoalStoryline && !!belongsToGoalStoryline.goalRef
         // Do not allow user to change the attached goal if editing this update
         const disabled =
             uploading ||
-            (initializeFromState &&
-                belongsToGoalStoryline &&
-                belongsToGoalStoryline.goalRef)
-
-        const isGoalAttached =
-            belongsToGoalStoryline && belongsToGoalStoryline.goalRef
-        const attactGoalButtonTextWidth = 123 * default_style.uiScale
+            ((initializeFromState || initializeFromGoal) && isGoalAttached)
 
         const attachGoalButton = (
             <DelayedButton
@@ -782,7 +794,7 @@ class CreatePostModal extends Component {
                     if (isGoalAttached) {
                         // Clear goalRef on Press of a goal is attached
                         this.setState({ attachedGoalTitle: '' })
-                        this.props.change('belongsToGoalStoryline', undefined)
+                        this.props.change('belongsToGoalStoryline', false)
                     } else {
                         Keyboard.dismiss()
                         // Wait for keyboard to dissmiss before opening
@@ -811,7 +823,7 @@ class CreatePostModal extends Component {
                         {
                             color: isGoalAttached ? 'white' : '#9A9A9A',
                             marginHorizontal: 3,
-                            width: attactGoalButtonTextWidth,
+                            maxWidth: 123 * default_style.uiScale,
                         },
                     ]}
                     numberOfLines={1}
@@ -850,6 +862,7 @@ class CreatePostModal extends Component {
         return (
             <AttachGoal
                 onRef={(ref) => (this.attachGoalModal = ref)}
+                triggerDisabled={disabled}
                 triggerComponent={attachGoalButton}
                 triggerWrapperStyle={attachGoalButtonStyle}
                 onSelect={(item) => {
@@ -1029,9 +1042,9 @@ class CreatePostModal extends Component {
         )
     }
 
-    open = () => this.bottomSheetRef.open()
+    open = () => this.bottomSheetRef && this.bottomSheetRef.open()
 
-    close = () => this.bottomSheetRef.close()
+    close = () => this.bottomSheetRef && this.bottomSheetRef.close()
 
     render() {
         const {
@@ -1054,8 +1067,10 @@ class CreatePostModal extends Component {
 
         return (
             <BottomSheet
+                openDuration={200}
                 ref={(r) => (this.bottomSheetRef = r)}
                 height={modalHeight}
+                onOpen={this.onOpen}
                 onClose={(callback) => this.handleCancel(callback)}
                 onPropsHeightChange={() =>
                     // once BottomSheet adjusts its height based on new textContentHeight
@@ -1159,7 +1174,7 @@ const mapStateToProps = (state, props) => {
     const { profile } = user
     const goalRef =
         _.get(props, 'initialPost.belongsToGoalStoryline.goalRef._id') ||
-        _.get(props, 'initialPostbelongsToGoalStoryline.goalRef', undefined)
+        _.get(props, 'initialPost.belongsToGoalStoryline.goalRef', undefined)
 
     return {
         user,

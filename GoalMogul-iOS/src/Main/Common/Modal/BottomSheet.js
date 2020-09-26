@@ -23,6 +23,8 @@ const PADDING_BOTTOM = IS_SMALL_PHONE ? 0 : 40
 
 /**
  * Bottom sheet props:
+ * @param onOpen: Called right before open animation
+ * @param onClose: Called right after close animation
  * @param sheetHeader: fades in on fullscreen, needs a height style to work
  * @param sheetFooter: always visible and sticks to bottom of the sheet
  * @param childeren: all components wrapped inside bottomSheet will be passed in as children prop
@@ -262,11 +264,9 @@ class BottomSheet extends React.PureComponent {
         } = this.props
         if (visible) {
             this.setState({ modalVisible: true })
-            // when onOpen uses refs for components inside some delay is needded
             // for the refs to get initialized
-            if (typeof onOpen === 'function') setTimeout(onOpen, openDuration)
+            if (typeof onOpen === 'function') onOpen()
             Animated.sequence([
-                Animated.delay(typeof onOpen === 'function' ? openDuration : 0),
                 Animated.parallel([
                     Animated.timing(this.pan, {
                         useNativeDriver: false,

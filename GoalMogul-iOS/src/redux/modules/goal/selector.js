@@ -2,7 +2,7 @@
 
 import { createSelector } from 'reselect'
 import _ from 'lodash'
-import { INITIAL_GOAL_PAGE } from './Goals'
+import { INITIAL_GOAL_PAGE, INITIAL_UPDATES_OBJECT } from './Goals'
 
 import { getCommentWithPageInfo } from '../feed/comment/CommentSelector'
 
@@ -10,6 +10,9 @@ const DEBUG_KEY = '[ Selector Goal ]'
 
 const getNeeds = (state) => state.goalDetail.goal.needs
 const getSteps = (state) => state.goalDetail.goal.steps
+
+const getGoalUpdates = (state, goalId, pageId) =>
+    _.get(state, `goals.updates.${goalId}.${pageId}`, INITIAL_UPDATES_OBJECT)
 
 const getComments = (state) => state.comment
 
@@ -274,6 +277,10 @@ const getGoalPage = (state, goalId, pageId) => {
 
 export const makeGetGoalDetailById = () => {
     return createSelector([getGoal], (goal) => goal)
+}
+
+export const makeGetGoalUpdatesById = () => {
+    return createSelector([getGoalUpdates], (data) => data)
 }
 
 export const makeGetGoalPageDetailByPageId = () => {

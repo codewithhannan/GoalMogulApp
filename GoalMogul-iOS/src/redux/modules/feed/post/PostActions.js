@@ -483,7 +483,13 @@ const newPostAdaptor = (values, userId) => {
  */
 export const postToFormAdapter = (values) => {
     console.log(`${DEBUG_KEY}: values are:`, values)
-    const { privacy, content, mediaRef } = values
+    const {
+        privacy,
+        content,
+        mediaRef,
+        belongsToTribe,
+        belongsToGoalStoryline,
+    } = values
 
     return {
         post: content.text,
@@ -493,6 +499,8 @@ export const postToFormAdapter = (values) => {
         tags: _.isEmpty(content.tags)
             ? []
             : constructTags(content.tags, content.text),
+        belongsToTribe,
+        belongsToGoalStoryline,
     }
 }
 

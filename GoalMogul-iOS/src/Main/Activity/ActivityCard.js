@@ -418,7 +418,7 @@ class ActivityCard extends React.PureComponent {
                 <View
                     style={{
                         marginTop: 12,
-                        marginBottom: 16,
+                        marginBottom: 12,
                         marginHorizontal: 16,
                     }}
                 >

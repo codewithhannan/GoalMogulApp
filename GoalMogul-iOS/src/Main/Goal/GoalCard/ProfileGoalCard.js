@@ -13,8 +13,7 @@ import _ from 'lodash'
 
 // Components
 import Timestamp from '../Common/Timestamp'
-import ProgressBar from '../Common/ProgressBar'
-import PriorityBar from '../../Common/PriorityBar'
+import GoalCardBody from '../Common/GoalCardBody'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
 // Assets
@@ -144,18 +143,13 @@ class ProfileGoalCard extends React.Component {
     renderProgressBar(item) {
         const { start, end, steps, needs } = item
         return (
-            <View style={{ marginTop: 12 }}>
-                <ProgressBar
-                    startTime={start}
-                    endTime={end}
-                    steps={steps}
-                    needs={needs}
-                    goalRef={item}
-                    barHeight={11}
-                    isProfileGoalCard
-                    size="small"
-                />
-            </View>
+            <GoalCardBody
+                startTime={start}
+                endTime={end}
+                steps={steps}
+                needs={needs}
+                goalRef={item}
+            />
         )
     }
 
