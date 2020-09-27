@@ -17,12 +17,12 @@ import {
 import * as SMS from 'expo-sms'
 import { connect } from 'react-redux'
 import Modal from 'react-native-modalbox'
-import ModalHeader from '../../Common/Header/ModalHeader'
 import { color, default_style } from '../../../styles/basic'
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { generateInvitationLink } from '../../../redux/middleware/utils'
 import { FONT_FAMILY } from '../../../styles/basic/text'
+import { Icon } from '@ui-kitten/components'
 
 const DEBUG_KEY = '[UI InviteFriendModal]'
 const DEFAULT_STATE = {
@@ -58,20 +58,52 @@ const DEFAULT_CARDS = [
         type: 'sms',
         text: 'Message',
         image: undefined,
+        icon: {
+            name: 'sms',
+            pack: 'material',
+            style: {
+                height: 24,
+                tintColor: color.GM_MID_GREY,
+            },
+        },
     },
     {
         type: 'email',
         text: 'Email',
         image: undefined,
+        icon: {
+            name: 'email-outline',
+            pack: 'material-community',
+            style: {
+                height: 24,
+                tintColor: color.GM_MID_GREY,
+            },
+        },
     },
     {
         type: 'clipboard',
-        text: 'Copy',
+        text: 'Copy link',
         image: undefined,
+        icon: {
+            name: 'link-variant',
+            pack: 'material-community',
+            style: {
+                height: 24,
+                tintColor: color.GM_MID_GREY,
+            },
+        },
     },
     {
         type: 'native',
         text: 'More',
+        icon: {
+            name: 'more-horiz',
+            pack: 'material',
+            style: {
+                height: 24,
+                tintColor: color.GM_MID_GREY,
+            },
+        },
     },
 ]
 
@@ -92,6 +124,12 @@ class InviteFriendModal extends React.PureComponent {
         if (this.props.closeModal) {
             this.props.closeModal()
             this.setState({ ...DEFAULT_STATE })
+        }
+    }
+
+    onScrollFlatList(offset, screenHeight) {
+        if (offset < -0.001 * screenHeight) {
+            this.closeModal()
         }
     }
 
@@ -135,7 +173,8 @@ class InviteFriendModal extends React.PureComponent {
     }
 
     copyToClipboard = async (message, url) => {
-        await Clipboard.setString(`${message}\n\n${url}`)
+        // only copy link
+        await Clipboard.setString(url)
         Alert.alert('Copied to clipboard')
     }
 
@@ -190,7 +229,7 @@ class InviteFriendModal extends React.PureComponent {
 
     renderCard = (item) => {
         if (!item) return null
-        const { text, image } = item
+        const { text, image, icon } = item
 
         return (
             <DelayedButton
@@ -208,10 +247,11 @@ class InviteFriendModal extends React.PureComponent {
                         { flexDirection: 'row', flex: 1, alignItems: 'center' },
                     ]}
                 >
+                    <Icon {...icon} />
                     <Text
                         style={[
                             default_style.titleText_2,
-                            { fontWeight: '300' },
+                            { fontWeight: '300', marginLeft: 16 },
                         ]}
                     >
                         {text}
@@ -223,11 +263,12 @@ class InviteFriendModal extends React.PureComponent {
     }
 
     render() {
-        const { width } = Dimensions.get('window')
+        const { width, height } = Dimensions.get('window')
         const inviteLink = this.getInviteLink()
 
         return (
             <Modal
+                swipeToClose={true}
                 isOpen={this.props.isVisible}
                 backdropOpacity={0.6}
                 coverScreen={true}
@@ -239,7 +280,7 @@ class InviteFriendModal extends React.PureComponent {
                     flex: 1,
                     marginTop: 50,
                 }}
-                useNativeDriver={false}
+                useNativeDriver={true}
             >
                 <View
                     style={{
@@ -288,6 +329,12 @@ class InviteFriendModal extends React.PureComponent {
                         contentContainerStyle={{
                             paddingBottom: 30,
                             flexGrow: 1,
+                        }}
+                        onScroll={(e) => {
+                            this.onScrollFlatList(
+                                e.nativeEvent.contentOffset.y,
+                                height
+                            )
                         }}
                     >
                         <View
