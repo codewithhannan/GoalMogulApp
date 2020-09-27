@@ -118,6 +118,7 @@ import TribeHub from './Main/Explore/TribeHub'
 import MyTribeGoalShare from './Main/Menu/Tribe/MyTribeGoalShare'
 import MainProfile from './Main/Profile/MainProfile'
 import ReplyThread from './Main/Goal/GoalDetailCard/Comment/ReplyThread'
+import TribeDiscover from './Main/Tribe/TribeDiscover'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -529,7 +530,10 @@ class RouterComponent extends Component {
                                                 key="shareExploreTab"
                                                 component={ShareDetailCard}
                                             />
-
+                                            <Scene
+                                                key="tribeDiscover"
+                                                component={TribeDiscover}
+                                            />
                                             {getCommonScenes('exploreTab')}
                                         </Stack>
 

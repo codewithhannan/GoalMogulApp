@@ -9,31 +9,27 @@
 
 import React from 'react'
 import _ from 'lodash'
-import { View, Text, FlatList, Animated, Image, Dimensions } from 'react-native'
+import { View, Text } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
-import right_arrow_icon from '../../asset/utils/right_arrow.png'
 import OnboardingHeader from './Common/OnboardingHeader'
-import DelayedButton from '../Common/Button/DelayedButton'
 
 import { text, color, default_style } from '../../styles/basic'
 import OnboardingStyles from '../../styles/Onboarding'
 
 import {
     registrationTribeSelection,
-    registrationFetchTribes,
     uploadSelectedTribes,
+    registrationFetchTribes,
 } from '../../redux/modules/registration/RegistrationActions'
 import OnboardingFooter from './Common/OnboardingFooter'
-import * as Animatable from 'react-native-animatable'
 
-import { Icon, CheckBox } from '@ui-kitten/components'
-import { getImageOrDefault, decode } from '../../redux/middleware/utils'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
+import TribeDiscover from '../Tribe/TribeDiscover'
+import DelayedButton from '../Common/Button/DelayedButton'
+import { Icon } from '@ui-kitten/components'
 
-const { width } = Dimensions.get('window')
 const { text: textStyle } = OnboardingStyles
-const AnimatedFlatList = Animatable.createAnimatableComponent(FlatList)
 
 // TODO: when categories are cleaned, this mapping needs to be updated
 // https://app.asana.com/0/1179217829906631/1184987107432454
@@ -59,24 +55,25 @@ const CATEGORY = {
         category: 'Career/Business',
     },
 }
+
 class OnboardingTribeSelection extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            scroll: new Animated.Value(1),
             category: CATEGORY.all.title,
         }
     }
 
     componentDidMount() {
-        setTimeout(() => {
-            this.scrollView.bounce(1000)
-        }, 1000)
-
         this.props.registrationFetchTribes()
     }
 
-    handleAnimatableTextRef = (ref) => (this.scrollView = ref)
+    selectCategory = (category) => {
+        this.setState({
+            ...this.state,
+            category,
+        })
+    }
 
     onNext = () => {
         Actions.push('registration_community_guideline')
@@ -90,179 +87,44 @@ class OnboardingTribeSelection extends React.Component {
         screenTransitionCallback()
     }
 
-    selectCategory = (category) => {
-        this.setState({
-            ...this.state,
-            category,
-        })
-    }
-
     keyExtractor = (item) => item._id
 
-    renderItem = ({ item, index, separators }) => {
-        const { selected, name, picture, description, memberCount } = item
-        const containerStyle = selected
-            ? styles.tribeCardSelectedContainerStyle
-            : styles.tribeCardContainerStyle
-
-        return (
-            <DelayedButton
-                style={containerStyle}
-                onPress={() =>
-                    this.props.registrationTribeSelection(item._id, !selected)
-                }
-                activeOpacity={0.9}
-            >
-                <View
-                    style={{
-                        flex: 1,
-                        borderTopLeftRadius: 3,
-                        borderTopRightRadius: 3,
-                    }}
-                >
-                    <View
-                        style={{
-                            position: 'absolute',
-                            bottom: 16,
-                            left: 16,
-                            zIndex: 2,
-                            borderRadius: 10,
-                            borderWidth: 0.5,
-                            backgroundColor: selected
-                                ? color.GM_BLUE
-                                : color.GM_CARD_BACKGROUND,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            borderColor: selected ? color.GM_BLUE : '#8C8C8C',
-                        }}
-                    >
-                        <Icon
-                            name="check"
-                            pack="material-community"
-                            style={{
-                                tintColor: selected
-                                    ? color.GM_CARD_BACKGROUND
-                                    : '#8C8C8C',
-                                height: 20,
-                                width: 20,
-                            }}
-                        />
-                    </View>
-                    <Image
-                        style={{
-                            height: (width - 32) / 2.2,
-                            width: width - 32,
-                            borderTopLeftRadius: 5,
-                            borderTopRightRadius: 5,
-                        }}
-                        source={getImageOrDefault(picture)}
-                    />
-                </View>
-                <View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            width: '100%',
-                            paddingVertical: 8,
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Text
-                            style={[
-                                default_style.titleText_1,
-                                {
-                                    letterSpacing: text.LETTER_SPACING.REGULAR,
-                                    flex: 1,
-                                },
-                            ]}
-                        >
-                            {name}
-                        </Text>
-                        <Text
-                            style={[
-                                default_style.normalText_1,
-                                {
-                                    color: '#828282',
-                                    letterSpacing: text.LETTER_SPACING.REGULAR,
-                                },
-                            ]}
-                        >
-                            {memberCount}{' '}
-                            {memberCount > 1 ? 'members' : 'member'}
-                        </Text>
-                    </View>
-                    <Text
-                        style={[
-                            default_style.normalText_1,
-                            {
-                                color: '#828282',
-                                letterSpacing: text.LETTER_SPACING.REGULAR,
-                            },
-                        ]}
-                    >
-                        {decode(description)}
-                    </Text>
-                </View>
-            </DelayedButton>
-        )
+    renderHeader() {
+        return <OnboardingHeader />
     }
 
-    renderScroll = () => {
-        // Only render scroll when iphone model < 8
-        const opacity = this.state.scroll.interpolate({
-            inputRange: [0, 120],
-            outputRange: [1, 0],
-            extrapolate: 'clamp',
-        })
-
+    renderHeaderText() {
         return (
-            <Animatable.View
+            <View
                 style={{
-                    opacity,
-                    position: 'absolute',
-                    bottom: 10,
-                    alignSelf: 'center',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: color.GM_CARD_BACKGROUND,
+                    paddingTop: 24,
+                    padding: 16,
                 }}
-                ref={this.handleAnimatableTextRef}
             >
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: '#DEF7FF',
-                        padding: 7,
-                        width: 94,
-                        borderRadius: 4,
-                    }}
-                >
-                    <Image
-                        source={right_arrow_icon}
-                        style={{
-                            transform: [{ rotate: '90deg' }],
-                            tintColor: '#2F80ED',
-                            height: 12,
-                            width: 15,
-                            marginRight: 5,
-                        }}
-                    />
-                    <Text
-                        style={{
-                            fontSize: text.TEXT_FONT_SIZE.FONT_2,
-                            fontFamily: text.FONT_FAMILY.BOLD,
-                            color: '#2F80ED',
-                            paddingTop: 2,
+                <Text style={[textStyle.title, { marginBottom: 12 }]}>
+                    Join some Tribes!
+                </Text>
+                <Text
+                    style={[
+                        textStyle.subTitle,
+                        {
+                            color: color.TEXT_COLOR.DARK,
+                            fontFamily: text.FONT_FAMILY.REGULAR,
                             textAlign: 'center',
-                        }}
-                    >
-                        Scroll
-                    </Text>
-                </View>
-            </Animatable.View>
+                            flexWrap: 'wrap',
+                        },
+                    ]}
+                >
+                    It'll be easier to connet to others with similar goals.
+                </Text>
+            </View>
         )
     }
 
-    renderListHeaderComponent = () => {
+    renderCategorySelector = () => {
         return (
             <View
                 style={{
@@ -326,6 +188,7 @@ class OnboardingTribeSelection extends React.Component {
             tribes,
             category: this.state.category,
         })
+
         return (
             <View
                 style={[
@@ -333,63 +196,22 @@ class OnboardingTribeSelection extends React.Component {
                     { paddingBottom: 0, backgroundColor: '#EAE8EA' },
                 ]}
             >
-                <OnboardingHeader />
-                <View style={{ flex: 1, justifyContent: 'center' }}>
-                    <View
-                        style={{
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: color.GM_CARD_BACKGROUND,
-                            paddingTop: 24,
-                            padding: 16,
-                        }}
-                    >
-                        <Text style={[textStyle.title, { marginBottom: 12 }]}>
-                            Join some Tribes!
-                        </Text>
-                        <Text
-                            style={[
-                                textStyle.subTitle,
-                                {
-                                    color: color.TEXT_COLOR.DARK,
-                                    fontFamily: text.FONT_FAMILY.REGULAR,
-                                    textAlign: 'center',
-                                    flexWrap: 'wrap',
-                                },
-                            ]}
-                        >
-                            It'll be easier to connet to others with similar
-                            goals.
-                        </Text>
-                    </View>
-                    {this.renderListHeaderComponent()}
-                    <AnimatedFlatList
-                        onScroll={Animated.event(
-                            [
-                                {
-                                    nativeEvent: {
-                                        contentOffset: { y: this.state.scroll },
-                                    },
-                                },
-                            ],
-                            { useNativeDriver: false }
-                        )}
-                        data={tribesToRender}
-                        renderItem={(item, index) =>
-                            this.renderItem(item, index)
-                        }
-                        keyExtractor={this.keyExtractor}
-                        numColumns={1}
-                        // style={{ marginTop: 10 }}
-                        contentContainerStyle={{
-                            backgroundColor: color.GM_CARD_BACKGROUND,
-                            paddingBottom: 16,
-                        }}
-                        bounces={false}
-                    />
-                    {this.renderScroll()}
-                </View>
-
+                <TribeDiscover
+                    canSelect
+                    renderHeader={this.renderHeader}
+                    renderHeaderText={this.renderHeaderText}
+                    renderCategorySelector={this.renderCategorySelector}
+                    itemOnPress={(tribeDoc) =>
+                        this.props.registrationTribeSelection(
+                            tribeDoc._id,
+                            !tribeDoc.selected
+                        )
+                    }
+                    handleRefresh={this.props.registrationFetchTribes}
+                    tribesToRender={tribesToRender}
+                    bounces={false}
+                    useTribesToRender
+                />
                 <OnboardingFooter
                     totalStep={3}
                     currentStep={2}
@@ -407,7 +229,9 @@ const filterTribesByCategory = ({ tribes, category }) => {
     // Get the category by title from CATEGORY
     const categoryToFilter = _.filter(CATEGORY, (c) => c.title === category)[0]
         .category
-    return tribes.filter((tribeDoc) => tribeDoc.category === categoryToFilter)
+    return tribes
+        ? tribes.filter((tribeDoc) => tribeDoc.category === categoryToFilter)
+        : []
 }
 
 const BUTTON_LIST = [
@@ -437,52 +261,6 @@ const BUTTON_LIST = [
         title: CATEGORY.realEstate.title,
     },
 ]
-
-const styles = {
-    tribeCardContainerStyle: {
-        backgroundColor: 'white',
-        borderRadius: 5,
-        justifyContent: 'center',
-        flex: 1,
-        marginTop: 20,
-        marginLeft: 16,
-        marginRight: 16,
-        shadowOffset: {
-            width: -2,
-            height: 2,
-        },
-        shadowRadius: 3,
-        shadowOpacity: 0.9,
-        shadowColor: 'rgba(0,0,0,0.1)',
-        borderWidth: 0.5,
-        borderColor: '#FAFAFA',
-    },
-    tribeCardSelectedContainerStyle: {
-        backgroundColor: '#F6FDFF',
-        borderRadius: 5,
-        justifyContent: 'center',
-        flex: 1,
-        marginTop: 20,
-        marginLeft: 16,
-        marginRight: 16,
-        shadowOffset: {
-            width: -2,
-            height: 2,
-        },
-        shadowRadius: 3,
-        shadowOpacity: 0.9,
-        shadowColor: 'rgba(0,0,0,0.1)',
-        borderWidth: 0.5,
-        borderColor: color.GM_BLUE,
-    },
-    tribeCardImageStyle: {
-        width: 42,
-        height: 42,
-        marginTop: 20,
-        borderTopRightRadius: 3,
-        borderTopLeftRadius: 3,
-    },
-}
 
 const mapStateToProps = (state) => {
     const { tribes } = state.registration

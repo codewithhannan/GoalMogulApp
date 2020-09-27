@@ -21,7 +21,6 @@ import {
 // Components
 import TribeCard from './TribeCard'
 import TribeTabFilterBar from './TribeTabFilterBar'
-import EmptyResult from '../Common/Text/EmptyResult'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
 class TribeTab extends React.Component {

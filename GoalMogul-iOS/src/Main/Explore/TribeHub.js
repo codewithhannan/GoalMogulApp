@@ -64,7 +64,7 @@ class TribeHub extends Component {
                         text="My Tribes"
                     />
                     <RoundedButton
-                        onPress={() => Actions.push('explore')}
+                        onPress={() => Actions.push('tribeDiscover')}
                         icon="magnify"
                         text="Discover"
                     />
