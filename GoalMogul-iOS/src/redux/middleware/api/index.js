@@ -4,12 +4,13 @@ import R from 'ramda'
 import getEnvVars from '../../../../environment'
 import { decode } from '../utils'
 import { Logger } from '../utils/Logger'
+import TokenService from '../../../services/token/TokenService'
 
 const DEBUG_KEY = '[ API ]'
 const config = getEnvVars()
 
 export const singleFetch = (path, payload, method, token, logLevel) =>
-    fetchData(path, payload, method, token, logLevel).then((res) => {
+    fetchData(path, payload, method, logLevel).then((res) => {
         if (!res.ok || !res.status === 200) {
             console.log(
                 `Fetch failed with error status: ${res.status} for path: ${path}`
@@ -31,7 +32,20 @@ export const singleFetch = (path, payload, method, token, logLevel) =>
     })
 
 const fetchData = R.curry(
-    (path, payload = {}, method = 'get', token, logLevel) => {
+    async (path, payload = {}, method = 'get', logLevel) => {
+        // Get token
+        let authToken
+        if (path && !path.startsWith('pub/')) {
+            // Need to get token since this is not a public endpoint
+            try {
+                authToken = await TokenService.getAuthToken()
+            } catch (err) {
+                // TODO: sentry logging error for this request
+                // TODO: we can add retry later on
+                // Best effort
+            }
+        }
+
         // Generate headers
         const headers = ((requestType) => {
             switch (requestType) {
@@ -41,7 +55,7 @@ const fetchData = R.curry(
                         headers: {
                             Accept: 'application/json',
                             'Content-Type': 'application/json',
-                            'x-access-token': token,
+                            'x-access-token': authToken,
                         },
                     }
                 }
@@ -56,7 +70,7 @@ const fetchData = R.curry(
                         },
                         body: JSON.stringify({
                             ...payload,
-                            token,
+                            token: authToken,
                         }),
                     }
                 }

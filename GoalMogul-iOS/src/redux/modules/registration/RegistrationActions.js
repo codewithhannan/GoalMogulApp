@@ -32,6 +32,7 @@ import {
 } from '../../../actions/types'
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal'
 import { api as API } from '../../middleware/api'
+import TokenService from '../../../services/token/TokenService'
 import {
     track,
     EVENT as E,
@@ -59,6 +60,7 @@ import { Logger } from '../../middleware/utils/Logger'
 import LiveChatService from '../../../socketio/services/LiveChatService'
 import MessageStorageService from '../../../services/chat/MessageStorageService'
 import { auth as Auth } from '../auth/Auth'
+import { is2xxRespose } from '../../middleware/utils'
 
 const DEBUG_KEY = '[ Action RegistrationActions ]'
 /**
@@ -284,7 +286,14 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
     try {
         const res = await API.post('pub/user/', { ...data })
 
-        if (res.status >= 200 && res.status <= 299 && !res.message) {
+        if (is2xxRespose(res.status)) {
+            TokenService.mountUser(res.userId)
+            TokenService.populateAndPersistToken(
+                res.token,
+                res.refreshToken,
+                false
+            )
+
             // Save token for auto login
             await Auth.saveKey(
                 email,

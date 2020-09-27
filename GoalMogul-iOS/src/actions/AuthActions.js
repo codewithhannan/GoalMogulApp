@@ -65,6 +65,8 @@ import {
 } from '../redux/middleware/utils'
 import { Asset } from 'expo-asset'
 import * as Font from 'expo-font'
+import TokenService from '../services/token/TokenService'
+import getEnvVars from '../../environment'
 
 const DEBUG_KEY = '[ Action Auth ]'
 
@@ -242,6 +244,9 @@ const authenticate = (
                 created: Date.now(),
             }
 
+            TokenService.mountUser(res.userId)
+            TokenService.populateAndPersistToken(res.token, res.refreshToken)
+
             await mountUserWithToken(
                 {
                     payload,
@@ -379,52 +384,15 @@ const mountUserWithToken = (
  * TODO: there might be refactoring can be done by merging with {@code loginUser} function
  */
 export const tryAutoLoginV2 = () => async (dispatch, getState) => {
-    // Only load token object { token, userId, created, isOnboarded } to reduce loading time
-    const tokenObject = await Auth.getByKey(AUTH_TOKEN_OBJECT)
-
-    // User hasn't logged in before
-    if (!tokenObject) {
+    const refreshTokenObject = await TokenService.checkAndGetValidRefreshToken()
+    if (refreshTokenObject == null) {
+        // When refresh token is null, it means either user hasn't logged in before
+        // or the refreshToken has expired. User needs to login
         dispatchHideSplashScreen(dispatch)
         return
     }
 
-    // Token object was saved through JSON.stringify(tokenObject).
-    // Hence parsing here
-    const parsedTokenObject = JSON.parse(tokenObject)
-
-    // Create a copy to save as the latest token object at the end
-    // in case there is any updates to the isOnboarded or token or created
-    let parsedTokenObjectToUpdate = _.cloneDeep(parsedTokenObject)
-
-    if (!parsedTokenObject) {
-        // No token object has been preserved. User has to log in.
-        dispatchHideSplashScreen(dispatch)
-        return
-    }
-
-    const { created, token, userId, isOnboarded } = parsedTokenObject
-    const minTokenCreationLimit = Date.now() - 2 * DAY_IN_MS
-    // User has logged in but token is corrupted or lost
-    // or token has expired
-    if (!token || created <= minTokenCreationLimit) {
-        // Refresh token
-        const refreshedTokenObject = await refreshToken()
-
-        // User needs to log in if could'nt refresh token
-        if (!refreshedTokenObject) {
-            dispatchHideSplashScreen(dispatch)
-            return
-        }
-
-        // parsedTokenObjectToUpdate may contain isOnboarded flag
-        // refreshedTokenObject contains the latest token.
-        // Updating token in secure store can happen in the background
-        // meanwhile user data can be loaded
-        updateTokenObject({
-            ...parsedTokenObjectToUpdate,
-            ...refreshedTokenObject,
-        })
-    }
+    const { token, userId, isOnboarded } = refreshTokenObject
 
     // Saturate User.js and AuthReducers.js with user token and userId for other actions to work
     dispatch({
@@ -453,8 +421,9 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
             // Go to onboarding flow
             Actions.replace('registration_add_photo')
         } else {
-            // Update token object to update
-            parsedTokenObjectToUpdate.isOnBoarded = true
+            // This is to update the TokenService isOnboarded flag
+            TokenService.populateAndPersistToken(undefined, token, true)
+
             // Go to home page
             Actions.replace('drawer')
         }
@@ -502,10 +471,6 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
 
     // Fetch user profile
     fetchAppUserProfile(token, userId)(dispatch, getState)
-
-    const newTokenObject = await refreshToken()
-    if (!newTokenObject) return
-    updateTokenObject({ ...parsedTokenObjectToUpdate, ...newTokenObject })
 }
 
 /**
@@ -734,6 +699,7 @@ export const logout = () => async (dispatch, getState) => {
     }
     await unsubscribeNotifications()(dispatch, getState)
     await Auth.reset(callback)
+    await TokenService.unmountUser()
     Actions.reset('root')
     // clear chat service details
     LiveChatService.unMountUser()

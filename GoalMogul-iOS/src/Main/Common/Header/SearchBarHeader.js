@@ -254,7 +254,8 @@ const mapStateToProps = (state, props) => {
     const user = getUserData(state, profileUserId, 'user')
     const profileUserName = user.name
 
-    const haveSetting = appUserId.toString() === profileUserId.toString()
+    const haveSetting =
+        appUserId && appUserId.toString() === profileUserId.toString()
 
     return {
         haveSetting,
