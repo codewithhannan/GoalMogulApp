@@ -8,13 +8,14 @@ import {
     PROFILE_FETCHING_FAIL,
     HOME_SWITCH_TAB,
 } from './types'
+import TokenService from '../services/token/TokenService'
 
 const DEBUG_KEY = '[ HomeActions ]'
 
 // Fetching profile
 export const fetchProfile = (userId, callback) => {
-    return (dispatch, getState) => {
-        const token = getState().user.token
+    return async (dispatch, getState) => {
+        const token = await TokenService.getAuthToken()
         const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/profile?userId=${userId}`
         const headers = {
             method: 'GET',

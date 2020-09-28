@@ -12,6 +12,7 @@ import {
     componentKeyByTab,
     is2xxRespose,
     is5xxResponse,
+    is4xxResponse,
 } from '../redux/middleware/utils'
 import { getUserData } from '../redux/modules/User/Selector'
 
@@ -32,6 +33,8 @@ import {
     SETTING_BLOCK_UNBLOCK_REQUEST_DONE,
     SETTING_BLOCK_REFRESH_DONE,
     SETTING_NOTIFICATION_TOKEN_PUSH_SUCCESS,
+    SETTING_INVITE_CODE_UPDATE_SUCCESS,
+    SETTING_INVITE_CODE_UPDATE,
 } from './types'
 
 import { SETTING_BLOCK_PAGE_CLOSE } from '../reducers/Setting'
@@ -96,6 +99,50 @@ export const onResendEmailPress = (callback, userId) => (
         .catch((err) => {
             console.log('error getting email verification: ', err)
         })
+}
+
+export const updateInviteCode = (inviteCode) => async (dispatch, getState) => {
+    // Mark updating to true
+    dispatch({
+        type: SETTING_INVITE_CODE_UPDATE,
+    })
+
+    let res
+    try {
+        res = await API.put('secure/user/account', { inviteCode }, undefined)
+    } catch (err) {
+        Alert.alert('Edit failed', 'Please try again later.')
+        return
+    }
+
+    console.log('[upateInviteCode]: ', res)
+    if (is2xxRespose(res.status)) {
+        dispatch({
+            type: SETTING_INVITE_CODE_UPDATE_SUCCESS,
+            payload: {
+                inviteCode,
+            },
+        })
+        Alert.alert('Success', 'You have successfully updated your invite code')
+        return
+    }
+
+    if (is4xxResponse(res.status)) {
+        dispatch({
+            type: SETTING_INVITE_CODE_UPDATE_SUCCESS,
+        })
+        Alert.alert('Edit failed', `${res.message}`)
+        return
+    }
+
+    if (is5xxResponse(res.status)) {
+        dispatch({
+            type: SETTING_INVITE_CODE_UPDATE_SUCCESS,
+        })
+        Alert.alert('Edit failed', 'Please try again later.')
+        // Show alert to ask user try again later
+        return
+    }
 }
 
 // Update user email

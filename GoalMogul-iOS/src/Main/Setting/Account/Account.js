@@ -85,6 +85,18 @@ class Account extends Component {
                         }}
                     />
                     <SettingCard
+                        title="Invite code"
+                        key="inviteCode"
+                        explanation="Customize your invite code"
+                        onPress={() => {
+                            const componentKeyToOpen = componentKeyByTab(
+                                tab,
+                                'editInviteCodeForm'
+                            )
+                            Actions.push(`${componentKeyToOpen}`)
+                        }}
+                    />
+                    <SettingCard
                         title="Blocked Users"
                         key="blockedusers"
                         explanation="Manage blocked users"

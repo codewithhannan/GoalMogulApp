@@ -187,6 +187,7 @@ const SCREENS = {
     SETTING: 'Setting',
     EMAIL: 'Email',
     EDIT_EMAIL_FORM: 'EditEmailForm',
+    EDIT_INVITE_CODE_FORM: 'EditInviteCodeForm',
     EDIT_PWD_FORM: 'EditPasswordForm',
     PHONE_VERIFICATION: 'PhoneVerification',
     ADD_PHONE_NUMBER: 'AddPhoneNumber',

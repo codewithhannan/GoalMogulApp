@@ -449,6 +449,9 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         authToken: token,
     })
 
+    // Fetch user profile
+    fetchAppUserProfile(token, userId)(dispatch, getState)
+
     // Step 4 Refresh feed and all goals
     refreshActivityFeed()(dispatch, getState)
     refreshGoalFeed()(dispatch, getState)
@@ -463,14 +466,11 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     // Load unread notification
     loadUnreadNotification()(dispatch, getState)
 
-    // Load tutorial state
-    loadTutorialState(payload.userId)(dispatch, getState)
-
     // Load remote matches
     loadRemoteMatches(payload.userId)(dispatch, getState)
 
-    // Fetch user profile
-    fetchAppUserProfile(token, userId)(dispatch, getState)
+    // Load tutorial state
+    loadTutorialState(payload.userId)(dispatch, getState)
 }
 
 /**
@@ -628,7 +628,6 @@ export const fetchAppUserProfile = (token, userId) => async (
             `secure/user/profile?userId=${userIdToUse}`,
             tokenToUse
         )
-
         // Profile fetch failed
         if (res.status > 299 || res.status < 200) {
             new SentryRequestBuilder(message, SENTRY_MESSAGE_TYPE.MESSAGE)

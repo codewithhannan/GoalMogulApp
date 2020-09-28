@@ -10,6 +10,8 @@ import {
     SETTING_EMAIL_UPDATE_SUCCESS,
     ACCOUNT_UPDATE_PASSWORD_DONE,
     ACCOUNT_UPDATE_PASSWORD,
+    SETTING_INVITE_CODE_UPDATE_SUCCESS,
+    SETTING_INVITE_CODE_UPDATE,
 } from '../actions/types'
 
 import {
@@ -34,6 +36,7 @@ export const INITIAL_STATE = {
     },
     profile: {},
     updatingPassword: false,
+    updatingInviteCode: false,
     updateAccountSetting: false, // Boolean indicator for account setting is being updated
 }
 
@@ -57,6 +60,24 @@ export default (state = INITIAL_STATE, action) => {
                 ...user,
             }
             return _.set(newState, 'user', newUser)
+        }
+
+        case SETTING_INVITE_CODE_UPDATE: {
+            let newState = _.cloneDeep(state)
+            newState = _.set(newState, 'updatingInviteCode', true)
+            return newState
+        }
+
+        case SETTING_INVITE_CODE_UPDATE_SUCCESS: {
+            let newState = _.cloneDeep(state)
+            const { inviteCode } = action.payload
+            // On updating invite code failed, this field is undefined
+            if (inviteCode) {
+                newState = _.set(newState, 'user.inviteCode', inviteCode)
+            }
+            console.log('invite to update is: ', inviteCode)
+            newState = _.set(newState, 'updatingInviteCode', false)
+            return newState
         }
 
         case PROFILE_BADGE_EARN_MODAL_SHOWN: {

@@ -88,6 +88,9 @@ export const SETTING_RESENT_EMAIL_VERIFICATION =
     'setting_resent_email_verification'
 export const SETTING_EMAIL_UPDATE_SUCCESS = 'setting_email_update_success'
 export const SETTING_PHONE_UPDATE_SUCCESS = 'setting_phone_update_success'
+export const SETTING_INVITE_CODE_UPDATE = 'setting_invite_code_update'
+export const SETTING_INVITE_CODE_UPDATE_SUCCESS =
+    'setting_invite_code_update_success'
 export const SETTING_PHONE_VERIFICATION_SUCCESS =
     'setting_phone_verification_success'
 export const SETTING_FRIEND_SETTING_SELECTION =

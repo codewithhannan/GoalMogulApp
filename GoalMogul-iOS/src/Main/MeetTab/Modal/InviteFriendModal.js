@@ -16,11 +16,15 @@ import {
 } from 'react-native'
 import * as SMS from 'expo-sms'
 import { connect } from 'react-redux'
+import { Actions } from 'react-native-router-flux'
 import Modal from 'react-native-modalbox'
 import { color, default_style } from '../../../styles/basic'
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import DelayedButton from '../../Common/Button/DelayedButton'
-import { generateInvitationLink } from '../../../redux/middleware/utils'
+import {
+    generateInvitationLink,
+    componentKeyByTab,
+} from '../../../redux/middleware/utils'
 import { FONT_FAMILY } from '../../../styles/basic/text'
 import { Icon } from '@ui-kitten/components'
 
@@ -135,6 +139,17 @@ class InviteFriendModal extends React.PureComponent {
 
     getInviteLink = () => {
         return generateInvitationLink(this.props.inviteCode)
+    }
+
+    openEditInviteCodeForm = () => {
+        const componentKeyToOpen = componentKeyByTab(
+            this.props.tab,
+            'editInviteCodeForm'
+        )
+        this.closeModal()
+        setTimeout(() => {
+            Actions.push(`${componentKeyToOpen}`)
+        }, 300)
     }
 
     inviteSms = async (message, url) => {
@@ -385,6 +400,20 @@ class InviteFriendModal extends React.PureComponent {
                                     {inviteLink}
                                 </Text>
                             </View>
+                            <Text
+                                onPress={this.openEditInviteCodeForm}
+                                style={[
+                                    default_style.smallTitle_1,
+                                    {
+                                        color: color.GM_BLUE,
+                                        paddingTop: 8,
+                                        paddingLeft: 10,
+                                        alignSelf: 'flex-end',
+                                    },
+                                ]}
+                            >
+                                Customize invite code
+                            </Text>
                         </View>
                         <View
                             style={{
@@ -418,10 +447,12 @@ const styles = {
 const mapStateToProps = (state) => {
     const { user } = state.user
     const { inviteCode } = user
+    const { tab } = state.navigation
 
     return {
         user,
         inviteCode,
+        tab,
     }
 }
 

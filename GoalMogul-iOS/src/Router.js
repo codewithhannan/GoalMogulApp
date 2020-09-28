@@ -119,6 +119,7 @@ import MyTribeGoalShare from './Main/Menu/Tribe/MyTribeGoalShare'
 import MainProfile from './Main/Profile/MainProfile'
 import ReplyThread from './Main/Goal/GoalDetailCard/Comment/ReplyThread'
 import TribeDiscover from './Main/Tribe/TribeDiscover'
+import EditInviteCodeForm from './Main/Setting/Account/EditInviteCodeForm'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -141,6 +142,10 @@ function getCommonScenes(tab) {
         <Scene key={`${prefix}setting`} component={Setting} />,
         <Scene key={`${prefix}email`} component={Email} />,
         <Scene key={`${prefix}editEmailForm`} component={EditEmailForm} />,
+        <Scene
+            key={`${prefix}editInviteCodeForm`}
+            component={EditInviteCodeForm}
+        />,
         <Scene
             key={`${prefix}editPasswordForm`}
             component={EditPasswordForm}

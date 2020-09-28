@@ -27,10 +27,10 @@ export const getUserData = (state, userId, path) => {
     const pathToCheck =
         path && path.trim() !== '' ? `${userId}.${path}` : `${userId}`
     if (!_.has(users, pathToCheck)) {
-        console.warn(
-            `${DEBUG_KEY}: no data for userId: ${userId} with path:`,
-            path
-        )
+        // console.warn(
+        //     `${DEBUG_KEY}: no data for userId: ${userId} with path:`,
+        //     path
+        // )
         return {}
     }
     return _.get(users, pathToCheck)
