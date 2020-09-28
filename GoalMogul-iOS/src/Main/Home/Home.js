@@ -362,28 +362,6 @@ class Home extends Component {
                         refreshing={this.props.refreshing}
                         onRefresh={this.handleOnRefresh}
                     />
-                    {/* <WelcomSreen
-                        isVisible={this.state.showWelcomeScreen}
-                        name={this.props.user.name}
-                        closeModal={() => {
-                            this.setState(
-                                {
-                                    showWelcomeScreen: false,
-                                },
-                                () => {
-                                    setTimeout(() => {
-                                        console.log(
-                                            `${DEBUG_KEY}: [ WelcomSreen onClose ]: startTutorial: create_goal, page: home`
-                                        )
-                                        this.props.startTutorial(
-                                            'create_goal',
-                                            'home'
-                                        )
-                                    }, 400)
-                                }
-                            )
-                        }}
-                    /> */}
                     <EarnBadgeModal
                         isVisible={this.state.showBadgeEarnModal}
                         closeModal={() => {

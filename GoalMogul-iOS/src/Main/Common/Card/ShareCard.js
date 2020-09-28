@@ -135,7 +135,11 @@ class ShareCard extends React.Component {
         }
 
         if (goalRef) {
-            if (entity) {
+            if (
+                entity &&
+                typeof entity.title === 'string' &&
+                entity.title.trim().length > 0
+            ) {
                 // Render goal title
                 content = (
                     <Text
@@ -147,6 +151,14 @@ class ShareCard extends React.Component {
                 )
             } else {
                 // render default content
+                content = (
+                    <Text
+                        style={chat_style.chatMessageTextStyle}
+                        numberOfLines={1}
+                    >
+                        NOT FOUND
+                    </Text>
+                )
             }
         }
 

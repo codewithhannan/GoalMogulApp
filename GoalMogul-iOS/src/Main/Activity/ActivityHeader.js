@@ -149,7 +149,7 @@ class ActivityHeader extends Component {
             if (key === 'Delete') {
                 return onDelete()
             }
-            if (key === 'Edit Post') {
+            if (key === 'Edit Update') {
                 const initial = {
                     initialShowPostModal: true,
                 }

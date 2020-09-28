@@ -194,18 +194,21 @@ class GoalCardBody extends React.Component {
 
     // Turn it into class or figure our function component mounting
     render() {
-        const { data, isSelf } = this.props
-
-        return (
+        const { data, isSelf, onPress } = this.props
+        const goalBody = (
             <View style={this.props.containerStyle}>
-                {isSelf || (Array.isArray(data) && data.length > 0) ? (
-                    this.renderUpdates()
-                ) : (
-                    <View style={{ marginTop: CONTAINER_MARGIN }} />
-                )}
+                {(isSelf || (Array.isArray(data) && data.length > 0)) &&
+                    this.renderUpdates()}
                 <ProgressBar {...this.props} />
             </View>
         )
+        if (onPress)
+            return (
+                <DelayedButton touchableWithoutFeedback onPress={onPress}>
+                    {goalBody}
+                </DelayedButton>
+            )
+        return goalBody
     }
 }
 

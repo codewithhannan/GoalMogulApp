@@ -177,8 +177,8 @@ class GoalDetailSection extends React.PureComponent {
     }
 
     handleOnLayout = (event) => {
-        // const { height } = event.nativeEvent.layout;
-        this.props.onContentSizeChange('goalDetailSectionCard', event)
+        if (this.props.onContentSizeChange)
+            this.props.onContentSizeChange('goalDetailSectionCard', event)
     }
 
     handleShareOnClick = () => {
@@ -685,7 +685,6 @@ class GoalDetailSection extends React.PureComponent {
                         </View>
                     </View>
                 </View>
-
                 <FloatingHearts
                     count={this.state.floatingHeartCount}
                     color={'#EB5757'}

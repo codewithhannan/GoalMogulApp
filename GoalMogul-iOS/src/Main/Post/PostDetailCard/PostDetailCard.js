@@ -349,7 +349,7 @@ class PostDetailCard extends React.PureComponent {
                         },
                     ]}
                 >
-                    <View onLayout={this.onCommentBoxLayout.bind(this)}>
+                    <View onLayout={this.onCommentBoxLayout}>
                         <CommentBox
                             onRef={(ref) => {
                                 this.commentBox = ref

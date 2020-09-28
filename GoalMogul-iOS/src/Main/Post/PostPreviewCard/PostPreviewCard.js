@@ -234,12 +234,12 @@ class PostPreviewCard extends React.PureComponent {
 
         const caret = {
             self: {
-                options: [{ option: 'Edit Post' }, { option: 'Delete' }],
+                options: [{ option: 'Edit Update' }, { option: 'Delete' }],
                 onPress: (key) => {
                     if (key === 'Delete') {
                         return this.props.deletePost(_id)
                     }
-                    if (key === 'Edit Post') {
+                    if (key === 'Edit Update') {
                         // Open post detail with a callback to open post edition
                         const initial = {
                             initialShowPostModal: true,

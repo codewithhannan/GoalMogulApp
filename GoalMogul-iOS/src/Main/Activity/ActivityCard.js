@@ -76,7 +76,7 @@ class ActivityCard extends React.PureComponent {
 
     handleCardOnPress = (item, props) => {
         const { goalRef, postRef, actedUponEntityType } = item
-        const propsToPass = props ? props : {}
+        const propsToPass = props || {}
         if (actedUponEntityType === 'Post') {
             return this.props.openPostDetail({ ...postRef })
         }
@@ -293,7 +293,11 @@ class ActivityCard extends React.PureComponent {
                     }}
                     activeOpacity={1}
                     onPress={() =>
-                        this.handleCardOnPress(item, { focusType: 'comment' })
+                        this.handleCardOnPress(item, {
+                            focusType: 'comment',
+                            initialScrollToComment: true,
+                            commentId: commentRef._id,
+                        })
                     }
                 >
                     <Headline

@@ -40,7 +40,8 @@ class ActivityBody extends React.Component {
 
         return (
             <GoalCardBody
-                onProgressBarPress={this.props.openCardContent}
+                containerStyle={{ marginTop: 12 }}
+                onPress={this.props.openCardContent}
                 startTime={start}
                 endTime={end}
                 steps={steps}

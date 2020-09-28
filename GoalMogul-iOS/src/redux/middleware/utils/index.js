@@ -301,7 +301,7 @@ export const makeCaretOptions = (type, goalRef, postRef) => {
 
         // This is a post
         if (!isSharedPost(postRef.postType)) {
-            return [{ option: 'Edit Post' }, { option: 'Delete' }]
+            return [{ option: 'Edit Update' }, { option: 'Delete' }]
         }
 
         // This is a share

@@ -191,14 +191,14 @@ class PostDetailSection extends React.PureComponent {
 
         const caret = {
             self: {
-                options: [{ option: 'Edit Post' }, { option: 'Delete' }],
+                options: [{ option: 'Edit Update' }, { option: 'Delete' }],
                 onPress: (key) => {
                     if (key === 'Delete') {
                         this.props.deletePost(_id)
                         Actions.pop()
                         return
                     }
-                    if (key === 'Edit Post') {
+                    if (key === 'Edit Update') {
                         // TODO: open edit modal
                         this.createPostModal && this.createPostModal.open()
                         return
