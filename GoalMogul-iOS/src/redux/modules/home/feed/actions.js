@@ -5,6 +5,7 @@ import {
     HOME_REFRESH_GOAL_DONE,
     HOME_LOAD_GOAL,
     HOME_LOAD_GOAL_DONE,
+    HOME_USER_FRIENDS_COUNT,
 } from '../../../../reducers/Home'
 
 import { api as API } from '../../../middleware/api'
@@ -146,4 +147,15 @@ const loadFeed = (
             // }
             callback([])
         })
+}
+
+// for showing 'get your silver badge!' toast
+export const loadUserFriendsCount = () => (dispatch, getState) => {
+    const { token } = getState().user
+    API.get(`secure/user/friendship/count`, token).then(({ count }) => {
+        dispatch({
+            type: HOME_USER_FRIENDS_COUNT,
+            payload: count,
+        })
+    })
 }

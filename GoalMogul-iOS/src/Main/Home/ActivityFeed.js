@@ -1,8 +1,12 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, FlatList, ActivityIndicator } from 'react-native'
+import { View, FlatList, ActivityIndicator, Image, Text } from 'react-native'
 import { connect } from 'react-redux'
+import _ from 'lodash'
+
+import LionMascot from '../../asset/image/LionMascot_shadow.png'
+import TribeEmptyState from '../../asset/image/TribeEmptyState.png'
 
 // Components
 import ActivityCard from '../Activity/ActivityCard'
@@ -12,13 +16,18 @@ import {
     openPostDetail,
     markUserViewPost,
 } from '../../redux/modules/feed/post/PostActions'
-import { loadMoreFeed } from '../../redux/modules/home/feed/actions'
+import {
+    loadMoreFeed,
+    loadUserFriendsCount,
+} from '../../redux/modules/home/feed/actions'
 import { markUserViewGoal } from '../../redux/modules/goal/GoalDetailActions'
 import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
 
-import { color } from '../../styles/basic'
+import { color, default_style } from '../../styles/basic'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 import { ActivityGhost } from '../Common/Ghosts'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import { Actions } from 'react-native-router-flux'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
@@ -33,6 +42,23 @@ class ActivityFeed extends Component {
             itemVisiblePercentThreshold: 100,
             minimumViewTime: 1500,
         }
+    }
+
+    componentDidMount() {
+        if (this.props.data && this.props.data.length) {
+            this.props.loadUserFriendsCount()
+        }
+    }
+    componentDidUpdate() {
+        if (this.props.data && this.props.data.length) {
+            this.props.loadUserFriendsCount()
+        }
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        return (
+            !_.isEqual(this.props, nextProps) ||
+            !_.isEqual(this.state, nextState)
+        )
     }
 
     handleOnViewableItemsChanged = ({ viewableItems, changed }) => {
@@ -53,7 +79,243 @@ class ActivityFeed extends Component {
 
     _keyExtractor = (item) => item._id
 
+    renderInviteSomeFreindsCard() {
+        return (
+            <View
+                style={{
+                    backgroundColor: color.GM_CARD_BACKGROUND,
+                    marginTop: 8,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    paddingHorizontal: 96,
+                    paddingVertical: 24,
+                }}
+            >
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        width: 120,
+                    }}
+                >
+                    <Image
+                        source={LionMascot}
+                        style={{
+                            height: 136,
+                            width: 90,
+                            resizeMode: 'contain',
+                        }}
+                    />
+                </View>
+                <View style={{}}>
+                    <Text
+                        style={{
+                            ...default_style.titleText_1,
+                        }}
+                    >
+                        Your feed has no activity
+                    </Text>
+                    <Text
+                        style={{
+                            ...default_style.normalText_1,
+                            marginTop: 12,
+                        }}
+                    >
+                        Enjoy sharing your goals with friends to make your
+                        friendships more fulfilling!
+                    </Text>
+
+                    {/* TODO: @jia how can we have this open the <InviteFriendModal /> component instead? */}
+                    <TouchableWithoutFeedback
+                        onPress={() => Actions.push('friendInvitationView')}
+                        style={{
+                            backgroundColor: color.GM_BLUE,
+                            paddingVertical: 12,
+                            paddingHorizontal: 16,
+                            marginTop: 12,
+                            borderRadius: 3,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                ...default_style.buttonText_1,
+                                color: color.TEXT_COLOR.LIGHT,
+                                textAlign: 'center',
+                            }}
+                        >
+                            Invite Friends
+                        </Text>
+                    </TouchableWithoutFeedback>
+                </View>
+            </View>
+        )
+    }
+
+    renderGetYourSilverBadgeCard() {
+        return (
+            <View
+                style={{
+                    backgroundColor: color.GM_CARD_BACKGROUND,
+                    marginTop: 8,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    paddingHorizontal: 96,
+                    paddingVertical: 24,
+                }}
+            >
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        width: 120,
+                        alignItems: 'center',
+                    }}
+                >
+                    <Image
+                        source={LionMascot}
+                        style={{
+                            height: 136,
+                            width: 90,
+                            resizeMode: 'contain',
+                        }}
+                    />
+                </View>
+                <View style={{}}>
+                    <Text
+                        style={{
+                            ...default_style.titleText_1,
+                        }}
+                    >
+                        Invite {7 - this.props.userFriendsCount} more friends to
+                        get your Silver badge!
+                    </Text>
+                    <Text
+                        style={{
+                            ...default_style.normalText_1,
+                            marginTop: 12,
+                        }}
+                    >
+                        {this.props.randomNumber > 0.5
+                            ? 'Help each other crush your goals, bring new energy to old friendships.'
+                            : 'Sharing goals will bring you closer to your friends.'}
+                    </Text>
+
+                    {/* TODO: @jia how can we have this open the <InviteFriendModal /> component instead? */}
+                    <TouchableWithoutFeedback
+                        onPress={() => Actions.push('friendInvitationView')}
+                        style={{
+                            backgroundColor: color.GM_BLUE,
+                            paddingVertical: 12,
+                            paddingHorizontal: 16,
+                            marginTop: 12,
+                            borderRadius: 3,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                ...default_style.buttonText_1,
+                                color: color.TEXT_COLOR.LIGHT,
+                                textAlign: 'center',
+                            }}
+                        >
+                            Invite Friends
+                        </Text>
+                    </TouchableWithoutFeedback>
+                </View>
+            </View>
+        )
+    }
+
+    renderJoinSomeTribesCard() {
+        return (
+            <View
+                style={{
+                    backgroundColor: color.GM_CARD_BACKGROUND,
+                    marginTop: 8,
+                    justifyContent: 'center',
+                    paddingVertical: 8,
+                }}
+            >
+                <View
+                    style={{
+                        width: '100%',
+                        borderBottomColor: color.GM_LIGHT_GRAY,
+                        borderBottomWidth: 1,
+                        paddingHorizontal: 16,
+                        paddingVertical: 8,
+                    }}
+                >
+                    <Text
+                        style={{
+                            ...default_style.titleText_1,
+                        }}
+                    >
+                        Browse our Community
+                    </Text>
+                </View>
+                <View
+                    style={{
+                        paddingHorizontal: 16,
+                        justifyContent: 'center',
+                    }}
+                >
+                    <View
+                        style={{
+                            alignItems: 'center',
+                            paddingVertical: 24,
+                        }}
+                    >
+                        <Image
+                            source={TribeEmptyState}
+                            style={{
+                                height: 160,
+                                resizeMode: 'contain',
+                            }}
+                        />
+                    </View>
+                    <Text
+                        style={{
+                            ...default_style.titleText_2,
+                            textAlign: 'center',
+                            lineHeight: 24,
+                        }}
+                    >
+                        Join our encouraging community of achievers.{'\n'}
+                        Pay it forward and brighten someone’s day!{'\n'}
+                        Join a Tribe and help someone.{'\n'}
+                    </Text>
+                    <TouchableWithoutFeedback
+                        onPress={() => Actions.push('tribeDiscover')}
+                        style={{
+                            backgroundColor: color.GM_LIGHT_GRAY,
+                            paddingVertical: 12,
+                            paddingHorizontal: 16,
+                            borderRadius: 3,
+                            width: '100%',
+                            marginBottom: 24,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                ...default_style.buttonText_1,
+                                color: color.TEXT_COLOR.DARK,
+                                textAlign: 'center',
+                            }}
+                        >
+                            Discover Tribes
+                        </Text>
+                    </TouchableWithoutFeedback>
+                </View>
+            </View>
+        )
+    }
+
     renderItem = ({ item }) => {
+        if (item.cardType == 'InviteSomeFriends') {
+            return this.renderInviteSomeFreindsCard()
+        } else if (item.cardType == 'JoinSomeTribes') {
+            return this.renderJoinSomeTribesCard()
+        } else if (item.cardType == 'GetYourSilverBadge') {
+            return this.renderGetYourSilverBadgeCard()
+        }
         // TODO: render item
         return (
             <ActivityCard
@@ -97,6 +359,7 @@ class ActivityFeed extends Component {
     }
 
     render() {
+        const { data, userFriendsCount } = this.props
         // const showGhostCards =
         //     this.props.refreshing &&
         //     (!this.props.data || this.props.data.length === 0)
@@ -110,10 +373,25 @@ class ActivityFeed extends Component {
         //         />
         //     )
         // }
+        let processedData = _.clone(data)
+
+        if (!processedData.length) {
+            processedData.push({
+                cardType: 'InviteSomeFriends',
+            })
+            processedData.push({
+                cardType: 'JoinSomeTribes',
+            })
+        } else if (userFriendsCount < 7) {
+            // second item on list
+            processedData.splice(1, 0, {
+                cardType: 'GetYourSilverBadge',
+            })
+        }
         return (
             <FlatList
                 scrollEnabled={false}
-                data={this.props.data}
+                data={processedData}
                 renderItem={this.renderItem}
                 numColumns={1}
                 keyExtractor={this._keyExtractor}
@@ -137,12 +415,22 @@ class ActivityFeed extends Component {
 }
 
 const mapStateToProps = (state) => {
-    const { refreshing, loading, loadingMore, data } = state.home.activityfeed
+    const {
+        refreshing,
+        loading,
+        loadingMore,
+        data,
+        userFriendsCount,
+        randomNumber,
+    } = state.home.activityfeed
+
     return {
         data,
         refreshing,
         loading,
         loadingMore, // For footer indicator
+        userFriendsCount,
+        randomNumber,
     }
 }
 
@@ -170,6 +458,7 @@ export default connect(
     mapStateToProps,
     {
         loadMoreFeed,
+        loadUserFriendsCount,
         openPostDetail,
         openGoalDetail,
         markUserViewPost,

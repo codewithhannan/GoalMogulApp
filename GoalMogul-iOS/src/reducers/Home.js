@@ -51,6 +51,8 @@ export const HOME_REFRESH_FEED_DONE = 'home_refresh_feed_done'
 export const HOME_LOAD_FEED_DONE = 'home_load_feed_done'
 export const HOME_SET_FEED_INDEX = 'home_set_feed_index' // set current goal viewing index
 export const HOME_UPDATE_FEED_FILTER = 'home_update_feed_filter'
+// for showing 'get your silver badge!' toast
+export const HOME_USER_FRIENDS_COUNT = 'home_user_friends_count'
 
 const DEBUG_KEY = '[ Action Home ]'
 const INITIAL_STATE = {
@@ -91,6 +93,9 @@ const INITIAL_STATE = {
         loading: false,
         loadingMore: false,
         refreshing: false,
+        // for showing 'get your silver badge!' toast
+        userFriendsCount: Number.MAX_SAFE_INTEGER,
+        randomNumber: Math.random(),
     },
 }
 
@@ -109,6 +114,15 @@ export default (state = INITIAL_STATE, action) => {
             let newState = _.cloneDeep(state)
             newState = _.set(newState, `${action.payload}.showPlus`, true)
             return { ...newState }
+        }
+
+        case HOME_USER_FRIENDS_COUNT: {
+            let newState = _.cloneDeep(state)
+            return _.set(
+                newState,
+                `activityfeed.userFriendsCount`,
+                action.payload
+            )
         }
 
         /**
