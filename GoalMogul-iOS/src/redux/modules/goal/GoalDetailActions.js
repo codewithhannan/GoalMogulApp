@@ -612,18 +612,25 @@ export const shareGoalToMastermind = (goalId, pageId) => (
     dispatch,
     getState
 ) => {
-    Alert.alert('Are you sure you want to share this to the Goal Feed?', '', [
-        {
-            text: 'Confirm',
-            onPress: () =>
-                shareToMastermind(goalId, pageId, dispatch, getState),
-        },
-        {
-            text: 'Cancel',
-            onPress: () => console.log('User cancel share to goal feed'),
-            style: 'cancel',
-        },
-    ])
+    Alert.alert(
+        'Are you sure to publish this to the top of the Home Feed?',
+        '',
+        [
+            {
+                text: 'Confirm',
+                onPress: () =>
+                    shareToMastermind(goalId, pageId, dispatch, getState),
+            },
+            {
+                text: 'Cancel',
+                onPress: () =>
+                    console.log(
+                        'User cancel publish to the top of the Home Feed'
+                    ),
+                style: 'cancel',
+            },
+        ]
+    )
 }
 
 const shareToMastermind = (goalId, pageId, dispatch, getState) => {
@@ -652,7 +659,11 @@ const shareToMastermind = (goalId, pageId, dispatch, getState) => {
         })
         // Alert.alert('Success', 'You have successfully shared this goal to mastermind.');
         console.log(`${DEBUG_KEY}: shareToMastermind succeed with res: `, res)
-        DropDownHolder.alert('success', 'Successfully shared Goal to Feed', '')
+        DropDownHolder.alert(
+            'success',
+            'Successfully publish to the Home Feed',
+            ''
+        )
     }
 
     const onError = (err) => {

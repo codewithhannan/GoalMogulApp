@@ -15,6 +15,8 @@ import { connect } from 'react-redux'
 import {
     getProfileImageOrDefaultFromUser,
     isSharedPost,
+    sharingPrivacyAlert,
+    SHAREING_PRIVACY_ALERT_TYPE,
 } from '../../redux/middleware/utils'
 // Actions
 import { openProfile } from '../../actions'
@@ -47,15 +49,19 @@ import ActivityBody from './ActivityBody'
 import ActivityHeader from './ActivityHeader'
 import ActivitySummary from './ActivitySummary'
 import ActionBar from '../Common/ContentCards/ActionBar'
+import { shareGoalToMastermind } from '../../redux/modules/goal/GoalDetailActions'
 
 const DEBUG_KEY = '[ UI ActivityCard ]'
-const SHARE_TO_MENU_OPTTIONS = [
-    'Share to Feed',
-    'Share to an Event',
+// Share option for own goal
+const SHARE_TO_MENU_OPTTIONS_GOAL = [
+    'Publish to Home Feed',
     'Share to a Tribe',
     'Cancel',
 ]
-const CANCEL_INDEX = 3
+const CANCEL_INDEX_GOAL = 2
+// Share option for own update
+const SHARE_TO_MENU_OPTTIONS = ['Share to a Tribe', 'Cancel']
+const CANCEL_INDEX = 1
 const { width } = Dimensions.get('window')
 const WINDOW_WIDTH = width
 const ACTION_BUTTON_GROUP_HEIGHT = 68
@@ -106,61 +112,71 @@ class ActivityCard extends React.PureComponent {
             this.props.refreshActivityFeed()
         }
         // Share ref is the id of the item to share
-        const { _id } = itemToShare
-        const shareToSwitchCases = switchByButtonIndex([
-            [
-                R.equals(0),
-                () => {
-                    // User choose to share to feed
-                    console.log(`${DEBUG_KEY} User choose destination: Feed `)
-                    this.props.chooseShareDest(
-                        shareType,
-                        _id,
-                        'feed',
-                        itemToShare,
-                        undefined,
-                        shareToFeedCallback
-                    )
-                    // TODO: update reducer state
-                },
-            ],
-            [
-                R.equals(1),
-                () => {
-                    // User choose to share to an event
-                    console.log(`${DEBUG_KEY} User choose destination: Event `)
-                    this.props.chooseShareDest(
-                        shareType,
-                        _id,
-                        'event',
-                        itemToShare,
-                        undefined,
-                        callback
-                    )
-                },
-            ],
-            [
-                R.equals(2),
-                () => {
-                    // User choose to share to a tribe
-                    console.log(`${DEBUG_KEY} User choose destination: Tribe `)
-                    this.props.chooseShareDest(
-                        shareType,
-                        _id,
-                        'tribe',
-                        itemToShare,
-                        undefined,
-                        callback
-                    )
-                },
-            ],
-        ])
+        const { _id, privacy } = itemToShare
+        let options
+        let cancelIndex
+        let cases
+        if (actedUponEntityType === 'Post') {
+            options = SHARE_TO_MENU_OPTTIONS
+            cancelIndex = CANCEL_INDEX
+            cases = switchByButtonIndex([
+                [
+                    R.equals(0),
+                    () => {
+                        // User choose to share to a tribe
+                        console.log(
+                            `${DEBUG_KEY} User choose destination: Tribe `
+                        )
+                        if (privacy !== 'public') {
+                            return sharingPrivacyAlert(
+                                SHAREING_PRIVACY_ALERT_TYPE.update
+                            )
+                        }
+                        this.props.chooseShareDest(
+                            shareType,
+                            _id,
+                            'tribe',
+                            itemToShare,
+                            undefined,
+                            callback
+                        )
+                    },
+                ],
+            ])
+        } else {
+            options = SHARE_TO_MENU_OPTTIONS_GOAL
+            cancelIndex = CANCEL_INDEX_GOAL
+            cases = switchByButtonIndex([
+                [
+                    R.equals(0),
+                    () => {
+                        // User choose to Publish to Home Feed
+                        this.props.shareGoalToMastermind(_id)
+                    },
+                ],
+                [
+                    R.equals(1),
+                    () => {
+                        // User choose to share to a tribe
+                        if (privacy !== 'public') {
+                            return sharingPrivacyAlert(
+                                SHAREING_PRIVACY_ALERT_TYPE.goal
+                            )
+                        }
+                        this.props.chooseShareDest(
+                            shareType,
+                            _id,
+                            'tribe',
+                            itemToShare,
+                            undefined,
+                            callback
+                        )
+                    },
+                ],
+            ])
+        }
 
-        const shareToActionSheet = actionSheet(
-            SHARE_TO_MENU_OPTTIONS,
-            CANCEL_INDEX,
-            shareToSwitchCases
-        )
+        const shareToActionSheet = actionSheet(options, cancelIndex, cases)
         return shareToActionSheet()
     }
 
@@ -174,23 +190,28 @@ class ActivityCard extends React.PureComponent {
         })
     }
 
-    renderActionButtons({ postRef, goalRef, actedUponEntityType, actedWith }) {
+    renderActionButtons(
+        { postRef, goalRef, actedUponEntityType, actedWith },
+        currentUserId
+    ) {
         const isPost = actedUponEntityType === 'Post'
         const item = isPost ? postRef : goalRef
         // Sanity check if ref exists
         if (!item) return null
 
-        const { maybeLikeRef, _id } = item
+        const { maybeLikeRef, _id, owner } = item
 
         const likeCount = item.likeCount ? item.likeCount : 0
         const shareCount = item.shareCount ? item.shareCount : 0
         const commentCount = item.commentCount ? item.commentCount : 0
 
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
-
-        // User shouldn't share a share. When Activity on a post which is a share,
-        // We disable the share button.
-        const isShare = isPost && isSharedPost(postRef.postType)
+        const selfOwned = owner && owner._id === currentUserId
+        // Disable share for certain condition
+        // 1. User shouldn't share a share. When Activity on a post which is a share,
+        //    We disable the share button.
+        // 2. It's not self owned
+        const isShare = (isPost && isSharedPost(postRef.postType)) || !selfOwned
 
         return (
             <ActionBar
@@ -229,7 +250,7 @@ class ActivityCard extends React.PureComponent {
                     // TODO open sharers list
                 }}
                 onShareButtonPress={() =>
-                    this.handleShareOnClick(actedUponEntityType)
+                    this.handleShareOnClick(actedUponEntityType, selfOwned)
                 }
                 onCommentSummaryPress={() =>
                     this.props.onPress(
@@ -382,7 +403,7 @@ class ActivityCard extends React.PureComponent {
     }
 
     render() {
-        const { item } = this.props
+        const { item, userId } = this.props
         if (!item || _.isEmpty(item) || !isValidActivity(item)) return null
 
         return (
@@ -440,7 +461,7 @@ class ActivityCard extends React.PureComponent {
                 {!(
                     item.actedUponEntityType === 'Post' &&
                     item.postRef.postType === 'ShareGoal'
-                ) && this.renderActionButtons(item)}
+                ) && this.renderActionButtons(item, userId)}
                 {this.renderComment(item)}
             </View>
         )
@@ -515,4 +536,5 @@ export default connect(mapStateToProps, {
     openGoalDetail,
     refreshActivityFeed,
     openProfile,
+    shareGoalToMastermind,
 })(ActivityCard)

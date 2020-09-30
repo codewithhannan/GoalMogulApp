@@ -45,18 +45,15 @@ import { wrapAnalytics, SCREENS } from '../../../monitoring/segment'
 import {
     getProfileImageOrDefaultFromUser,
     isSharedPost,
+    sharingPrivacyAlert,
+    SHAREING_PRIVACY_ALERT_TYPE,
 } from '../../../redux/middleware/utils'
 import FloatingHearts from '../../Common/FloatingHearts/FloatingHearts'
 import ActionBar from '../../Common/ContentCards/ActionBar'
 
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]'
-const SHARE_TO_MENU_OPTTIONS = [
-    'Share to Feed',
-    'Share to an Event',
-    'Share to a Tribe',
-    'Cancel',
-]
-const CANCEL_INDEX = 3
+const SHARE_TO_MENU_OPTTIONS = ['Share to a Tribe', 'Cancel']
+const CANCEL_INDEX = 1
 
 class PostPreviewCard extends React.PureComponent {
     state = {
@@ -95,30 +92,18 @@ class PostPreviewCard extends React.PureComponent {
     }
 
     handleShareOnClick = (item) => {
-        const { _id } = item
+        const { _id, privacy } = item
         const shareType = 'SharePost'
 
         const shareToSwitchCases = switchByButtonIndex([
             [
                 R.equals(0),
                 () => {
-                    // User choose to share to feed
-                    console.log(`${DEBUG_KEY} User choose destination: Feed `)
-                    this.props.chooseShareDest(shareType, _id, 'feed', item)
-                    // TODO: update reducer state
-                },
-            ],
-            [
-                R.equals(1),
-                () => {
-                    // User choose to share to an event
-                    console.log(`${DEBUG_KEY} User choose destination: Event `)
-                    this.props.chooseShareDest(shareType, _id, 'event', item)
-                },
-            ],
-            [
-                R.equals(2),
-                () => {
+                    if (privacy !== 'public') {
+                        return sharingPrivacyAlert(
+                            SHAREING_PRIVACY_ALERT_TYPE.update
+                        )
+                    }
                     // User choose to share to a tribe
                     console.log(`${DEBUG_KEY} User choose destination: Tribe `)
                     this.props.chooseShareDest(shareType, _id, 'tribe', item)
@@ -144,21 +129,25 @@ class PostPreviewCard extends React.PureComponent {
         })
     }
 
-    renderActionButtons(item, hasActionButton) {
+    renderActionButtons = (item, hasActionButton) => {
         // Sanity check if ref exists
         if (!item || !hasActionButton) return null
 
-        const { maybeLikeRef, _id } = item
+        const { userId: currentUserId } = this.props
+        const { maybeLikeRef, _id, owner } = item
 
         const likeCount = item.likeCount ? item.likeCount : 0
         const commentCount = item.commentCount ? item.commentCount : 0
         const shareCount = item.shareCount ? item.shareCount : 0
 
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
+        const selfOwned = owner && owner._id === currentUserId
 
-        // User shouldn't share a share. When Activity on a post which is a share,
-        // We disable the share button.
-        const isShare = isSharedPost(item.postType)
+        // Disable share for certain condition
+        // 1. User shouldn't share a share. When Activity on a post which is a share,
+        //    We disable the share button.
+        // 2. It's not self owned
+        const isShare = isSharedPost(item.postType) || !selfOwned
 
         return (
             <ActionBar

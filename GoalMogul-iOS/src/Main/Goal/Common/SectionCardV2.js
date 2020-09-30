@@ -29,14 +29,6 @@ import { color, default_style } from '../../../styles/basic'
 import { TABBAR_HEIGHT } from '../../../styles/Goal'
 
 // Constants
-const DEBUG_KEY = '[ UI GoalCard.Need/Step SectionCardV2 ]'
-const SHARE_TO_MENU_OPTTIONS = [
-    'Share to Feed',
-    'Share to an Event',
-    'Share to a Tribe',
-    'Cancel',
-]
-const CANCEL_INDEX = 3
 const { CheckIcon: checkIcon } = Icons
 
 // SectionCardV2.defaultPros = {
@@ -56,66 +48,6 @@ class SectionCardV2 extends Component {
         }
     }
 
-    handleShareOnClick = () => {
-        const { item, goalRef, type } = this.props
-        const { _id } = item
-        const shareType =
-            type === 'need' || type === 'Need' ? 'ShareNeed' : 'ShareStep'
-
-        const shareToSwitchCases = switchByButtonIndex([
-            [
-                R.equals(0),
-                () => {
-                    // User choose to share to feed
-                    console.log(`${DEBUG_KEY} User choose destination: Feed `)
-                    this.props.chooseShareDest(
-                        shareType,
-                        _id,
-                        'feed',
-                        item,
-                        goalRef._id
-                    )
-                    // TODO: update reducer state
-                },
-            ],
-            [
-                R.equals(1),
-                () => {
-                    // User choose to share to an event
-                    console.log(`${DEBUG_KEY} User choose destination: Event `)
-                    this.props.chooseShareDest(
-                        shareType,
-                        _id,
-                        'event',
-                        item,
-                        goalRef._id
-                    )
-                },
-            ],
-            [
-                R.equals(2),
-                () => {
-                    // User choose to share to a tribe
-                    console.log(`${DEBUG_KEY} User choose destination: Tribe `)
-                    this.props.chooseShareDest(
-                        shareType,
-                        _id,
-                        'tribe',
-                        item,
-                        goalRef._id
-                    )
-                },
-            ],
-        ])
-
-        const shareToActionSheet = actionSheet(
-            SHARE_TO_MENU_OPTTIONS,
-            CANCEL_INDEX,
-            shareToSwitchCases
-        )
-        return shareToActionSheet()
-    }
-
     // Render Suggestion icon and number of comments
     renderActionIcons() {
         const commentCount =
@@ -132,25 +64,6 @@ class SectionCardV2 extends Component {
                 <Text style={styles.actionTextStyle}>
                     {commentCount} replies
                 </Text>
-                {/* Note hiding 'Share' button on steps and needs */}
-                {/* <DelayedButton
-                    activeOpacity={0.6}
-                    style={{
-                        flexDirection: 'row',
-                        marginLeft: 10,
-                        alignItems: 'center',
-                    }}
-                    onPress={() => this.handleShareOnClick()}
-                >
-                    <Image
-                        style={{
-                            ...default_style.smallIcon_1,
-                            tintColor: '#828282',
-                        }}
-                        source={forward}
-                    />
-                    <Text style={styles.actionTextStyle}>Share</Text>
-                </DelayedButton> */}
             </View>
         )
     }

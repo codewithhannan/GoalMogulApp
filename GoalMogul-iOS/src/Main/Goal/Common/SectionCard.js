@@ -29,76 +29,8 @@ import { default_style } from '../../../styles/basic'
 
 // Constants
 const { CheckIcon: checkIcon } = Icons
-const DEBUG_KEY = '[ UI GoalCard.Need/Step SectionCard ]'
-const SHARE_TO_MENU_OPTTIONS = [
-    'Share to Feed',
-    'Share to an Event',
-    'Share to a Tribe',
-    'Cancel',
-]
-const CANCEL_INDEX = 3
 
 class SectionCard extends Component {
-    handleShareOnClick = () => {
-        const { item, goalRef, type } = this.props
-        const { _id } = item
-        const shareType =
-            type === 'need' || type === 'Need' ? 'ShareNeed' : 'ShareStep'
-
-        const shareToSwitchCases = switchByButtonIndex([
-            [
-                R.equals(0),
-                () => {
-                    // User choose to share to feed
-                    console.log(`${DEBUG_KEY} User choose destination: Feed `)
-                    this.props.chooseShareDest(
-                        shareType,
-                        _id,
-                        'feed',
-                        item,
-                        goalRef._id
-                    )
-                    // TODO: update reducer state
-                },
-            ],
-            [
-                R.equals(1),
-                () => {
-                    // User choose to share to an event
-                    console.log(`${DEBUG_KEY} User choose destination: Event `)
-                    this.props.chooseShareDest(
-                        shareType,
-                        _id,
-                        'event',
-                        item,
-                        goalRef._id
-                    )
-                },
-            ],
-            [
-                R.equals(2),
-                () => {
-                    // User choose to share to a tribe
-                    console.log(`${DEBUG_KEY} User choose destination: Tribe `)
-                    this.props.chooseShareDest(
-                        shareType,
-                        _id,
-                        'tribe',
-                        item,
-                        goalRef._id
-                    )
-                },
-            ],
-        ])
-
-        const shareToActionSheet = actionSheet(
-            SHARE_TO_MENU_OPTTIONS,
-            CANCEL_INDEX,
-            shareToSwitchCases
-        )
-        return shareToActionSheet()
-    }
-
     renderActionIcons(item, type) {
         const suggestionButton = this.props.isSelf ? null : (
             <TouchableOpacity
@@ -114,13 +46,6 @@ class SectionCard extends Component {
         return (
             <View style={{ flex: flexSize, flexDirection: 'row' }}>
                 {suggestionButton}
-                <TouchableOpacity
-                    activeOpacity={0.6}
-                    style={styles.iconContainerStyle}
-                    onPress={() => this.handleShareOnClick()}
-                >
-                    <Image style={styles.iconStyle} source={forward} />
-                </TouchableOpacity>
             </View>
         )
     }

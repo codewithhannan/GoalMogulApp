@@ -11,6 +11,7 @@ import {
     Text,
     TouchableOpacity,
     View,
+    Alert,
 } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
@@ -34,7 +35,11 @@ import {
     searchTribeMember,
     searchUser,
 } from '../../redux/modules/search/SearchActions'
-import { IMAGE_BASE_URL, PRIVACY_FRIENDS } from '../../Utils/Constants'
+import {
+    IMAGE_BASE_URL,
+    PRIVACY_FRIENDS,
+    PRIVACY_PUBLIC,
+} from '../../Utils/Constants'
 // Components
 import ModalHeader from '../Common/Header/ModalHeader'
 import ProfileImage from '../Common/ProfileImage'
@@ -265,7 +270,7 @@ class ShareModal extends React.Component {
 
     initializeForm() {
         this.props.initialize({
-            privacy: PRIVACY_FRIENDS,
+            privacy: PRIVACY_PUBLIC,
             tags: [],
         })
     }
@@ -390,6 +395,12 @@ class ShareModal extends React.Component {
                     <ViewableSettingMenu
                         viewableSetting={this.props.privacy}
                         callback={callback}
+                        handleOnClick={() => {
+                            Alert.alert(
+                                'Public Permission',
+                                'This share has to be public to share to a Tribe'
+                            )
+                        }}
                     />
                 </View>
             </View>

@@ -42,55 +42,8 @@ import SectionCard from '../Common/SectionCard'
 import Timestamp from '../Common/Timestamp'
 
 const DEBUG_KEY = '[ UI NeedCard ]'
-const SHARE_TO_MENU_OPTTIONS = [
-    'Share to Feed',
-    'Share to an Event',
-    'Share to a Tribe',
-    'Cancel',
-]
-const CANCEL_INDEX = 3
 
 class NeedCard extends Component {
-    handleShareOnClick = () => {
-        const { item } = this.props
-        const { _id } = item
-
-        const shareToSwitchCases = switchByButtonIndex([
-            [
-                R.equals(0),
-                () => {
-                    // User choose to share to feed
-                    console.log(`${DEBUG_KEY} User choose destination: Feed `)
-                    this.props.chooseShareDest('ShareNeed', _id, 'feed', item)
-                    // TODO: update reducer state
-                },
-            ],
-            [
-                R.equals(1),
-                () => {
-                    // User choose to share to an event
-                    console.log(`${DEBUG_KEY} User choose destination: Event `)
-                    this.props.chooseShareDest('ShareNeed', _id, 'event', item)
-                },
-            ],
-            [
-                R.equals(2),
-                () => {
-                    // User choose to share to a tribe
-                    console.log(`${DEBUG_KEY} User choose destination: Tribe `)
-                    this.props.chooseShareDest('ShareNeed', _id, 'tribe', item)
-                },
-            ],
-        ])
-
-        const shareToActionSheet = actionSheet(
-            SHARE_TO_MENU_OPTTIONS,
-            CANCEL_INDEX,
-            shareToSwitchCases
-        )
-        return shareToActionSheet()
-    }
-
     // card central content
     renderCardContent(item) {
         const { description } = item
@@ -284,13 +237,6 @@ class NeedCard extends Component {
                         }
                         this.props.likeGoal('post', _id)
                     }}
-                />
-                <ActionButton
-                    iconSource={ShareIcon}
-                    count={shareCount}
-                    textStyle={{ color: '#a8e1a0' }}
-                    iconStyle={{ tintColor: '#a8e1a0', height: 32, width: 32 }}
-                    onPress={() => this.handleShareOnClick()}
                 />
                 <ActionButton
                     iconSource={BulbIcon}

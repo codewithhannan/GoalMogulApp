@@ -17,6 +17,8 @@ import {
     PAGE_TYPE_MAP,
     decode,
     getProfileImageOrDefaultFromUser,
+    sharingPrivacyAlert,
+    SHAREING_PRIVACY_ALERT_TYPE,
 } from '../../../redux/middleware/utils'
 import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions'
 import { shareGoalToMastermind } from '../../../redux/modules/goal/GoalDetailActions'
@@ -67,12 +69,11 @@ const TabIconMap = {
 
 const DEBUG_KEY = '[ UI GoalCard ]'
 const SHARE_TO_MENU_OPTTIONS = [
-    'Share to Feed',
-    'Share to an Event',
+    'Publish to Home Feed',
     'Share to a Tribe',
     'Cancel',
 ]
-const CANCEL_INDEX = 3
+const CANCEL_INDEX = 2
 
 /**
  * @param isSharedItem: when true, component renders a concise view of GoalCard
@@ -141,31 +142,25 @@ class GoalCard extends React.PureComponent {
 
     handleShareOnClick = () => {
         const { item } = this.props
-        const { _id } = item
+        const { _id, privacy } = item
 
         const shareToSwitchCases = switchByButtonIndex([
             [
                 R.equals(0),
                 () => {
-                    // User choose to share to feed
-                    console.log(`${DEBUG_KEY} User choose destination: Feed `)
-                    this.props.chooseShareDest('ShareGoal', _id, 'feed', item)
-                    // TODO: update reducer state
+                    // User choose to share to home feed
+                    this.props.shareGoalToMastermind(_id)
                 },
             ],
             [
                 R.equals(1),
                 () => {
-                    // User choose to share to an event
-                    console.log(`${DEBUG_KEY} User choose destination: Event `)
-                    this.props.chooseShareDest('ShareGoal', _id, 'event', item)
-                },
-            ],
-            [
-                R.equals(2),
-                () => {
                     // User choose to share to a tribe
-                    console.log(`${DEBUG_KEY} User choose destination: Tribe `)
+                    if (privacy !== 'public') {
+                        return sharingPrivacyAlert(
+                            SHAREING_PRIVACY_ALERT_TYPE.goal
+                        )
+                    }
                     this.props.chooseShareDest('ShareGoal', _id, 'tribe', item)
                 },
             ],
@@ -228,10 +223,6 @@ class GoalCard extends React.PureComponent {
                         initialProps = { initialShowGoalModal: true }
                         this.props.openGoalDetail(item, initialProps)
                         return
-                    }
-                    if (key === 'Share to Goal Feed') {
-                        // It has no pageId so it won't have loading animation
-                        return this.props.shareGoalToMastermind(_id)
                     }
                     if (key === 'Mark as Complete') {
                         initialProps = {

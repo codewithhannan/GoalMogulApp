@@ -28,6 +28,8 @@ import UndoIcon from '../../../asset/utils/undo.png'
 import {
     decode,
     getProfileImageOrDefaultFromUser,
+    sharingPrivacyAlert,
+    SHAREING_PRIVACY_ALERT_TYPE,
 } from '../../../redux/middleware/utils'
 import { createCommentFromSuggestion } from '../../../redux/modules/feed/comment/CommentActions'
 import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions'
@@ -74,12 +76,11 @@ const WINDOW_WIDTH = width
 const { CheckIcon, BellIcon } = Icons
 const DEBUG_KEY = '[ UI GoalDetailCardV3.GoalDetailSection ]'
 const SHARE_TO_MENU_OPTTIONS = [
-    'Share to Feed',
-    'Share to an Event',
+    'Publish to Home Feed',
     'Share to a Tribe',
     'Cancel',
 ]
-const CANCEL_INDEX = 3
+const CANCEL_INDEX = 2
 
 class GoalDetailSection extends React.PureComponent {
     constructor(props) {
@@ -182,32 +183,27 @@ class GoalDetailSection extends React.PureComponent {
     }
 
     handleShareOnClick = () => {
-        const { item } = this.props
-        const { _id } = item
+        const { item, pageId } = this.props
+        const { _id, privacy } = item
         const shareType = 'ShareGoal'
 
         const shareToSwitchCases = switchByButtonIndex([
             [
                 R.equals(0),
                 () => {
-                    // User choose to share to feed
-                    console.log(`${DEBUG_KEY} User choose destination: Feed `)
-                    this.props.chooseShareDest(shareType, _id, 'feed', item)
-                    // TODO: update reducer state
+                    // User choose to Publish to Home Feed
+                    this.props.shareGoalToMastermind(_id, pageId)
                 },
             ],
             [
                 R.equals(1),
                 () => {
-                    // User choose to share to an event
-                    console.log(`${DEBUG_KEY} User choose destination: Event `)
-                    this.props.chooseShareDest(shareType, _id, 'event', item)
-                },
-            ],
-            [
-                R.equals(2),
-                () => {
                     // User choose to share to a tribe
+                    if (privacy !== 'public') {
+                        return sharingPrivacyAlert(
+                            SHAREING_PRIVACY_ALERT_TYPE.goal
+                        )
+                    }
                     console.log(`${DEBUG_KEY} User choose destination: Tribe `)
                     this.props.chooseShareDest(shareType, _id, 'tribe', item)
                 },
@@ -288,13 +284,6 @@ class GoalDetailSection extends React.PureComponent {
                         name: 'goal_detail_goal_detail_page_0',
                     },
                     {
-                        option: 'Share to Goal Feed',
-                        iconSource: ShareIcon,
-                        tutorialText: this.props.tutorialText[1],
-                        order: 1,
-                        name: 'goal_detail_goal_detail_page_1',
-                    },
-                    {
                         option: isCompleted
                             ? 'Unmark as Complete'
                             : 'Mark as Complete',
@@ -356,11 +345,6 @@ class GoalDetailSection extends React.PureComponent {
                     }
                     if (val === 'Edit Goal')
                         return this.props.editGoal(item, this.props.pageId)
-                    if (val === 'Share to Goal Feed')
-                        return this.props.shareGoalToMastermind(
-                            _id,
-                            this.props.pageId
-                        )
                     if (
                         val === 'Unmark as Complete' ||
                         val === 'Mark as Complete'
@@ -590,7 +574,7 @@ class GoalDetailSection extends React.PureComponent {
         })
     }
 
-    renderActionButtons(item) {
+    renderActionButtons(item, isOwnGoal) {
         const { maybeLikeRef, _id } = item
         const likeCount = item.likeCount ? item.likeCount : 0
         const commentCount = item.commentCount ? item.commentCount : 0
@@ -606,6 +590,9 @@ class GoalDetailSection extends React.PureComponent {
                     shareCount,
                     commentCount,
                 }}
+                // Use this flag to hide share button
+                // if not own goal, then hide the button
+                isShareContent={!isOwnGoal}
                 onLikeSummaryPress={() =>
                     this.setState({ showlikeListModal: true })
                 }
@@ -636,7 +623,7 @@ class GoalDetailSection extends React.PureComponent {
     }
 
     render() {
-        const { item } = this.props
+        const { item, isOwnGoal } = this.props
         if (!item || _.isEmpty(item)) return null
 
         return (
@@ -693,7 +680,7 @@ class GoalDetailSection extends React.PureComponent {
                     }}
                     leftOffset={this.state.likeButtonLeftOffset}
                 />
-                {this.renderActionButtons(item)}
+                {this.renderActionButtons(item, isOwnGoal)}
                 {this.renderGoalReminderDatePicker()}
             </View>
         )
@@ -728,13 +715,17 @@ const styles = {
     },
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
     const { userId } = state.user
     const { tutorialText } = state.tutorials.goal_detail.goal_detail_page
+    const ownerId = _.get(props, 'item.owner._id')
+    const isOwnGoal =
+        userId && ownerId && userId.toString() === ownerId.toString()
 
     return {
         userId,
         tutorialText,
+        isOwnGoal,
     }
 }
 

@@ -30,6 +30,9 @@ class ViewableSettingMenu extends Component {
     }
 
     handleOnClick = () => {
+        if (this.props.handleOnClick) {
+            return this.props.handleOnClick()
+        }
         const viewableSettingSwitchCases = switchByButtonIndex(
             PRIVACY_OPTIONS.map(({ value }, index) => {
                 return [

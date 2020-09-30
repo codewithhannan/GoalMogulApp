@@ -13,6 +13,8 @@ import TrashIcon from '../../../asset/utils/trash.png'
 import Icons from '../../../asset/base64/Icons'
 import { IMAGE_BASE_URL, USER_INVITE_URL } from '../../../Utils/Constants'
 import DEFAULT_PROFILE_IMAGE from '../../../asset/utils/defaultUserProfile.png'
+import { Alert } from 'react-native'
+import { Logger } from './Logger'
 
 const { CheckIcon } = Icons
 /**
@@ -319,7 +321,6 @@ export const makeCaretOptions = (type, goalRef, postRef) => {
         }
         const { isCompleted } = goalRef
         return [
-            { option: 'Share to Goal Feed', iconSource: ShareIcon },
             {
                 option: isCompleted ? 'Unmark as Complete' : 'Mark as Complete',
                 iconSource: isCompleted ? UndoIcon : CheckIcon,
@@ -566,4 +567,50 @@ export const getFriendUserId = (maybeFriendshipRef, userId) => {
         if (p.users_id !== userId) ret = p.users_id
     })
     return ret
+}
+
+export const SHAREING_PRIVACY_ALERT_TYPE = {
+    goal: 'goal',
+    update: 'update',
+    goal_and_update: 'goal_and_update',
+}
+export const sharingPrivacyAlert = (type) => {
+    const getMessage = (alertType) => {
+        switch (alertType) {
+            case SHAREING_PRIVACY_ALERT_TYPE.update:
+                return {
+                    first: 'this Update',
+                    second: "'Edit Update'",
+                }
+            case SHAREING_PRIVACY_ALERT_TYPE.goal:
+                return {
+                    first: 'this Goal',
+                    second: "'Edit Goal'",
+                }
+            case SHAREING_PRIVACY_ALERT_TYPE.goal_and_update:
+                return {
+                    first: 'both Update and attached goal',
+                    second: "'Edit Update'",
+                }
+            default:
+                Logger.log(
+                    '[Utils] [sharingPrivacyAlert] invalid type: ',
+                    type,
+                    3
+                )
+                return undefined
+        }
+    }
+    const message = getMessage(type)
+    if (!message) return
+    const { first, second } = message
+
+    return Alert.alert(
+        'Public Permissions',
+        'You need to make ' +
+            first +
+            " publicly visible to share it into the Tribe so others can see it.\nTap the '...' and select " +
+            second +
+            ' to change its privacy settings'
+    )
 }
