@@ -324,8 +324,15 @@ class MyTribe extends React.PureComponent {
             },
         })({
             text: 'Join Tribe',
-            onPress: () =>
-                this.props.requestJoinTribe(item._id, true, this.props.pageId),
+            onPress: () => {
+                this.props.requestJoinTribe(item._id, true, this.props.pageId)
+                this.props.refreshMyTribeDetail(
+                    this.props.tribeId,
+                    this.props.pageId,
+                    null,
+                    false
+                )
+            },
         })(status)
 
     renderUserStatusButton() {
