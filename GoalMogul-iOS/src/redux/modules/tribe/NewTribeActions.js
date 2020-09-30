@@ -40,7 +40,7 @@ export const cancelCreatingNewTribe = () => (dispatch) => {
  * Following are the params for the values submitted to the server
  * @param name
  * @param options:
-		{membersCanInvite, isPubliclyVisible, membershipLimit, description, picture}
+		{membersCanInvite, isAutoAcceptEnabled, isPubliclyVisible, membershipLimit, description, picture}
  */
 export const createNewTribe = (values, needUpload, isEdit, tribeId) => (
     dispatch,
@@ -223,6 +223,7 @@ const formToTribeAdapter = (values, tribeId, isEdit) => {
     const {
         name,
         membersCanInvite,
+        isAutoAcceptEnabled,
         isPubliclyVisible,
         membershipLimit,
         description,
@@ -234,6 +235,7 @@ const formToTribeAdapter = (values, tribeId, isEdit) => {
             tribeId,
             details: {
                 membersCanInvite,
+                isAutoAcceptEnabled,
                 isPubliclyVisible,
                 membershipLimit: membershipLimit || Number.MAX_SAFE_INTEGER,
                 description,
@@ -247,6 +249,7 @@ const formToTribeAdapter = (values, tribeId, isEdit) => {
         name,
         options: {
             membersCanInvite,
+            isAutoAcceptEnabled,
             isPubliclyVisible,
             membershipLimit: membershipLimit || Number.MAX_SAFE_INTEGER,
             description,
@@ -260,6 +263,7 @@ export const tribeToFormAdapter = (tribe) => {
     const {
         name,
         membersCanInvite,
+        isAutoAcceptEnabled,
         isPubliclyVisible,
         membershipLimit,
         description,
@@ -275,6 +279,7 @@ export const tribeToFormAdapter = (tribe) => {
     return {
         name,
         membersCanInvite,
+        isAutoAcceptEnabled,
         isPubliclyVisible,
         membershipLimit: membershipLimitToShow,
         description,

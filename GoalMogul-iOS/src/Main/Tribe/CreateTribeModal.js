@@ -76,6 +76,7 @@ class CreateTribeModal extends React.Component {
         const defaulVals = {
             name: undefined,
             membersCanInvite: false,
+            isAutoAcceptEnabled: false,
             isPubliclyVisible: false,
             membershipLimit: undefined,
             description: '',
@@ -407,6 +408,23 @@ class CreateTribeModal extends React.Component {
                     }
                 />
                 <CheckBox
+                    title="Auto accept join request"
+                    textStyle={{ fontWeight: 'normal' }}
+                    checked={this.props.isAutoAcceptEnabled}
+                    checkedIcon={
+                        <MaterialIcons name="done" color="#111" size={21} />
+                    }
+                    uncheckedIcon={
+                        <MaterialIcons name="done" color="#CCC" size={21} />
+                    }
+                    onPress={() =>
+                        this.props.change(
+                            'isAutoAcceptEnabled',
+                            !this.props.isAutoAcceptEnabled
+                        )
+                    }
+                />
+                <CheckBox
                     title="Publicly visible"
                     textStyle={{ fontWeight: 'normal' }}
                     checked={this.props.isPubliclyVisible}
@@ -506,6 +524,7 @@ const mapStateToProps = (state) => {
         profile,
         name: selector(state, 'name'),
         membersCanInvite: selector(state, 'membersCanInvite'),
+        isAutoAcceptEnabled: selector(state, 'isAutoAcceptEnabled'),
         isPubliclyVisible: selector(state, 'isPubliclyVisible'),
         membershipLimit: selector(state, 'membershipLimit'),
         description: selector(state, 'description'),
