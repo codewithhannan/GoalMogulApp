@@ -23,7 +23,12 @@ import {
     MYTRIBE_DETAIL_OPEN,
     MYTRIBE_DETAIL_CLOSE,
     MYTRIBE_DELETE_SUCCESS,
+    MYTRIBE_UPDATE_MEMBER_SUCCESS,
+    MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS,
+    MEMBER_UPDATE_TYPE,
 } from './Tribes'
+
+import { TRIBE_TYPE } from './TribeHubActions'
 
 import { TRIBE_NEW_SUBMIT_SUCCESS } from './NewTribeReducers'
 
@@ -38,32 +43,23 @@ const INITIAL_PAGE_STATE = {
 }
 
 const INITIAL_STATE = {
-    data: [],
-    hasNextPage: undefined,
-    limit: 20,
-    skip: 0,
-    loading: false,
-    // ['name', 'created']
     sortBy: 'created',
     // ['Admin', 'Member', 'JoinRequester', 'Invitee']
-    filterForMembershipCategory: 'Admin',
-    showModal: false,
+    filterForMembershipCategory: 'MyTribes',
     navigationState: {
         index: 0,
         routes: [
-            { key: 'Admin', title: 'Admin' },
-            { key: 'Member', title: 'Member' },
-            { key: 'JoinRequester', title: 'Requested' },
+            { key: 'MyTribes', title: 'My Tribes' },
             { key: 'Invitee', title: 'Invited' },
+            { key: 'JoinRequester', title: 'Requested' },
         ],
     },
     // Below are tribe hub related data
     favorite: _.cloneDeep(INITIAL_PAGE_STATE),
-    managed: _.cloneDeep(INITIAL_PAGE_STATE),
-    others: {
-        ..._.cloneDeep(INITIAL_PAGE_STATE),
-        // might need to add extra state for "others" tribes
-    },
+    admin: _.cloneDeep(INITIAL_PAGE_STATE),
+    member: _.cloneDeep(INITIAL_PAGE_STATE),
+    requested: _.cloneDeep(INITIAL_PAGE_STATE),
+    invited: _.cloneDeep(INITIAL_PAGE_STATE),
     feed: _.cloneDeep(INITIAL_PAGE_STATE),
 }
 
@@ -73,7 +69,6 @@ const sortByList = ['name', 'created']
 export const MYTRIBETAB_OPEN = 'mytribetab_open'
 export const MYTRIBETAB_CLOSE = 'mytribetab_close'
 export const MYTRIBETAB_REFRESH_DONE = 'mytribetab_refresh_done'
-export const MYTRIBETAB_LOAD_DONE = 'mytribetab_load_done'
 export const MYTRIBETAB_LOAD = 'mytribetab_load'
 export const MYTRIBETAB_SORTBY = 'mytribetab_sortby'
 export const MYTRIBETAB_UPDATE_FILTEROPTIONS = 'mytribetab_update_filteroptions'
@@ -109,12 +104,13 @@ export default (state = INITIAL_STATE, action) => {
             const { data } = action.payload
             if (!data) return newState
 
-            const oldData = _.get(newState, 'data')
+            const admin = TRIBE_TYPE.admin
+            const oldData = _.get(newState, `${admin}.data`)
             const newData = arrayUnique(oldData.concat(data)).sort(
                 (item1, item2) =>
                     new Date(item2.created) - new Date(item1.created)
             )
-            newState = _.set(newState, 'data', newData)
+            newState = _.set(newState, `${admin}.data`, newData)
             return newState
         }
 
@@ -128,43 +124,16 @@ export default (state = INITIAL_STATE, action) => {
         // One tribe is deleted
         case MYTRIBE_DELETE_SUCCESS: {
             const { tribeId } = action.payload
-            const newState = _.cloneDeep(state)
-            const oldData = _.get(newState, 'data')
-            const newData = oldData.filter((t) => t._id !== tribeId)
-            return _.set(newState, 'data', newData)
-        }
-
-        // Tribe refresh done
-        case MYTRIBETAB_REFRESH_DONE: {
-            const { skip, data, hasNextPage } = action.payload
             let newState = _.cloneDeep(state)
-            newState = _.set(newState, 'loading', false)
 
-            if (skip !== undefined) {
-                newState = _.set(newState, 'skip', skip)
-            }
-            newState = _.set(newState, 'hasNextPage', hasNextPage)
-            return _.set(newState, 'data', data)
-        }
+            const admin = TRIBE_TYPE.admin
+            const curAdminTribeRef = _.get(newState, `${admin}.data`)
+            const newAdminTribeRef = curAdminTribeRef.filter(
+                (d) => d && d !== tribeId
+            )
+            newState = _.set(newState, `${admin}.data`, newAdminTribeRef)
 
-        // Tribe load done.
-        case MYTRIBETAB_LOAD_DONE: {
-            const { skip, data, hasNextPage } = action.payload
-            let newState = _.cloneDeep(state)
-            newState = _.set(newState, 'loading', false)
-
-            if (skip !== undefined) {
-                newState = _.set(newState, 'skip', skip)
-            }
-            newState = _.set(newState, 'hasNextPage', hasNextPage)
-            const oldData = _.get(newState, 'data')
-            return _.set(newState, 'data', arrayUnique(oldData.concat(data)))
-        }
-
-        // Tribe tab starts any type of loading
-        case MYTRIBETAB_LOAD: {
-            let newState = _.cloneDeep(state)
-            return _.set(newState, 'loading', true)
+            return newState
         }
 
         // case related to filtering
@@ -188,21 +157,13 @@ export default (state = INITIAL_STATE, action) => {
             const { index } = action.payload
             let newState = _.cloneDeep(state)
 
-            // Update the corresponding state for filter since we just change
-            // the filter bar option to tabs
-            const { routes } = _.get(newState, 'navigationState')
-            newState = _.set(
-                newState,
-                'filterForMembershipCategory',
-                routes[index].key
-            )
             return _.set(newState, 'navigationState.index', index)
         }
 
         case TRIBE_HUB_REFRESH: {
             const { type } = action.payload
             let newState = _.cloneDeep(state)
-            if (!_.has(newState, `${type}.loading`)) {
+            if (!_.has(newState, `${type}.refreshing`)) {
                 // For debugging purpose since type passed isn't one of defined ['favorite', 'managed', 'others']
                 console.error(
                     `${DEBUG_KEY}: ${action.type}: incorrect type: ${type} used in action`
@@ -229,7 +190,7 @@ export default (state = INITIAL_STATE, action) => {
 
         case TRIBE_HUB_REFRESH_DONE: {
             const { data, type } = action.payload
-
+            let newState = _.cloneDeep(state)
             if (!_.has(newState, `${type}`)) {
                 // For debugging purpose since type passed isn't one of defined ['favorite', 'managed', 'others']
                 console.error(
@@ -237,19 +198,18 @@ export default (state = INITIAL_STATE, action) => {
                 )
                 return newState
             }
-
             // Set tribe reference
             // NOTE: we might lose reference here
             const tribeRef = data
                 .map((d) => d._id)
                 .filter((d) => d !== undefined)
+            //TODO: instead of set data, set reference.
             newState = _.set(newState, `${type}.data`, tribeRef)
 
             // Set page metadata
             newState = _.set(newState, `${type}.refreshing`, false)
             newState = _.set(newState, `${type}.skip`, data.length)
             newState = _.set(newState, `${type}.hasNextPage`, !data.length)
-
             return newState
         }
 
@@ -270,14 +230,15 @@ export default (state = INITIAL_STATE, action) => {
             const newTribeRef = data
                 .map((d) => d._id)
                 .filter((d) => d !== undefined)
-            newState = _.set(
-                newState,
-                `${type}.data`,
-                _.uniq(curTribeRef, newTribeRef)
-            )
+            // newState = _.set(
+            //     newState,
+            //     `${type}.data`,
+            //     _.uniq(curTribeRef, newTribeRef)
+            // )
+            newState = _.set(newState, `${type}.data`, newTribeRef)
 
             // Set page metadata
-            newState = _.set(newState, `${type}.refreshing`, false)
+            newState = _.set(newState, `${type}.loading`, false)
             // Use data length and current data length to compute new skip
             newState = _.set(
                 newState,
@@ -286,6 +247,62 @@ export default (state = INITIAL_STATE, action) => {
             )
             newState = _.set(newState, `${type}.hasNextPage`, !data.length)
 
+            return newState
+        }
+
+        case MYTRIBE_UPDATE_MEMBER_SUCCESS: {
+            const { tribeId, updateType } = action.payload
+            let newState = _.cloneDeep(state)
+            if (
+                updateType == MEMBER_UPDATE_TYPE.acceptMember ||
+                updateType == MEMBER_UPDATE_TYPE.removeMember
+            ) {
+                const invited = TRIBE_TYPE.invited
+                const curInvitedTribeRef = _.get(newState, `${invited}.data`)
+                const newInvitedTribeRef = curInvitedTribeRef.filter(
+                    (d) => d !== tribeId
+                )
+                newState = _.set(
+                    newState,
+                    `${invited}.data`,
+                    newInvitedTribeRef
+                )
+
+                if (updateType == MEMBER_UPDATE_TYPE.acceptMember) {
+                    const member = TRIBE_TYPE.member
+                    const curMemberTribeRef = _.get(newState, `${member}.data`)
+                    const newMemberTribeRef = curMemberTribeRef.concat([
+                        tribeId,
+                    ])
+                    newState = _.set(
+                        newState,
+                        `${member}.data`,
+                        newMemberTribeRef
+                    )
+                } else {
+                    const member = TRIBE_TYPE.member
+                    const curMemberTribeRef = _.get(newState, `${member}.data`)
+                    const newMemberTribeRef = curMemberTribeRef.filter(
+                        (d) => d !== tribeId
+                    )
+                    newState = _.set(
+                        newState,
+                        `${member}.data`,
+                        newMemberTribeRef
+                    )
+                }
+            }
+            return newState
+        }
+
+        case MYTRIBE_REQUEST_CANCEL_JOIN_SUCCESS: {
+            const { tribeId } = action.payload
+            let newState = _.cloneDeep(state)
+            requested = TRIBE_TYPE.requested
+
+            const curTribeRef = _.get(newState, `${requested}.data`)
+            const newTribeRef = curTribeRef.filter((d) => d !== tribeId)
+            newState = _.set(newState, `${requested}.data`, newTribeRef)
             return newState
         }
 

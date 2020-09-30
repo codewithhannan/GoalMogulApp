@@ -229,7 +229,7 @@ const styles = {
     containerStyle: {
         flexDirection: 'row',
         paddingLeft: 10,
-        paddingRight: 60,
+        paddingRight: 20,
         paddingTop: 8,
         paddingBottom: 8,
         alignItems: 'center',

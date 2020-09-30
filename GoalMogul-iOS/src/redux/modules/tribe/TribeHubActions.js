@@ -5,7 +5,7 @@
  * - Your tribes (favorite tribe, managed tribes, others)
  * - Discover (tribe recommendations)
  *
- * All tribes loaded in tribe hub has pageId: "tribe_hub" rather than
+ * All tribes loaded in tribe hub has pageId: "tribe_hub_pageId" rather than
  * pageId constructed from function constructPageId('tribe')
  *
  * @format
@@ -20,6 +20,7 @@ import {
     TRIBE_HUB_REFRESH,
     TRIBE_HUB_LOAD_DONE,
     TRIBE_HUB_LOAD,
+    MYTRIBETAB_UPDATE_TAB,
 } from './MyTribeTabReducers'
 import { api as API } from '../../middleware/api'
 import { queryBuilder } from '../../middleware/utils'
@@ -30,42 +31,52 @@ const DEBUG_KEY = '[ Actions Tribe Hub ]'
 export const BASE_ROUTE = 'secure/tribe'
 
 export const TRIBE_TYPE = {
-    managed: 'managed',
+    admin: 'admin',
+    member: 'member',
+    invited: 'invited',
+    requested: 'requested',
     favorite: 'favorite',
-    others: 'others',
 }
 
 const ROUTES = {
     tribes: (type) => {
         switch (type) {
-            case TRIBE_TYPE.managed:
+            case TRIBE_TYPE.admin:
                 return () => `${BASE_ROUTE}?filterForMembershipCategory=Admin`
             case TRIBE_TYPE.favorite:
                 return () => `${BASE_ROUTE}` // TODO: tribe: API was not made yet
-            case TRIBE_TYPE.others:
+            case TRIBE_TYPE.member:
                 return () => `${BASE_ROUTE}?filterForMembershipCategory=Member`
+            case TRIBE_TYPE.requested:
+                return () =>
+                    `${BASE_ROUTE}?filterForMembershipCategory=JoinRequester`
+            case TRIBE_TYPE.invited:
+                return () => `${BASE_ROUTE}?filterForMembershipCategory=Invitee`
         }
     },
     feed: (skip, limit) =>
         `${BASE_ROUTE}/feed?${queryBuilder(skip, limit, {})}`,
 }
 
-const PAGE_ID = 'tribe_hub'
+const PAGE_ID = 'tribe_hub_pageId'
 
 /**
  * Refresh all types of tribe for tribe hub
  */
 export const refreshTribeHub = () => (dispatch, getState) => {
-    refreshTribes(TRIBE_TYPE.managed)(dispatch, getState)
+    refreshTribes(TRIBE_TYPE.admin)(dispatch, getState)
     refreshTribes(TRIBE_TYPE.favorite)(dispatch, getState)
-    refreshTribes(TRIBE_TYPE.others)(dispatch, getState)
+    refreshTribes(TRIBE_TYPE.member)(dispatch, getState)
+    refreshTribes(TRIBE_TYPE.invited)(dispatch, getState)
+    refreshTribes(TRIBE_TYPE.requested)(dispatch, getState)
 }
 
 /**
  * Refresh tribes based of a type {@code TRIBE_TYPE}
- * @param {*} type: ['managed', 'favorite', 'others']
+ * @param {*} type: see TRIBE_TYPE
  */
 export const refreshTribes = (type) => (dispatch, getState) => {
+    //TODO:for admin page, it should not have limit
     const tribeHub = getState().myTribeTab // TODO: tribe hub: rename myTribeTab to tribeHub
     if (!_.has(tribeHub, type)) {
         // For debugging purpose since type passed isn't one of defined ['favorite', 'managed', 'others']
@@ -256,6 +267,18 @@ export const loadMoreTribeHubFeed = () => (dispatch, getState) => {
  * @param {String} action: ['favorite', 'unfavorite']
  */
 export const favoriteTribe = (tribeId, action) => (dispatch, getState) => {}
+
+/**
+ * Action to update index when switch tabs.
+ */
+export const myTribeSelectTab = (index) => (dispatch, getState) => {
+    dispatch({
+        type: MYTRIBETAB_UPDATE_TAB,
+        payload: {
+            index,
+        },
+    })
+}
 
 /**
  * Send get request for tribe related queries based off routes

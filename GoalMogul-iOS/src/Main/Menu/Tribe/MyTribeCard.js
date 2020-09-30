@@ -1,7 +1,13 @@
 /** @format */
 
 import React from 'react'
-import { View, Image, Text, TouchableWithoutFeedback } from 'react-native'
+import {
+    View,
+    Image,
+    Text,
+    TouchableWithoutFeedback,
+    TouchableOpacity,
+} from 'react-native'
 import timeago from 'timeago.js'
 import { connect } from 'react-redux'
 
@@ -13,9 +19,15 @@ import tribeDefaultIcon from '../../../asset/explore/tribe.png'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
 // Actions
-import { tribeDetailOpen } from '../../../redux/modules/tribe/MyTribeActions'
+import {
+    tribeDetailOpen,
+    requestJoinTribe,
+    acceptTribeInvit,
+    declineTribeInvit,
+} from '../../../redux/modules/tribe/MyTribeActions'
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import { decode } from '../../../redux/middleware/utils'
+import { default_style, color } from '../../../styles/basic'
 
 const DEBUG_KEY = '[UI Tribe Card] '
 
@@ -33,7 +45,7 @@ class MyTribeCard extends React.Component {
 
         return (
             <View style={timeStampContainerStyle}>
-                <Text style={timeStampTextStyle}>
+                <Text style={[default_style.smallText_2, timeStampTextStyle]}>
                     {timeago().format(timeStamp)}
                 </Text>
             </View>
@@ -69,7 +81,7 @@ class MyTribeCard extends React.Component {
         return (
             <View style={{ flexDirection: 'row' }}>
                 <Text
-                    style={styles.titleTextStyle}
+                    style={[default_style.titleText_2, styles.titleTextStyle]}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                 >
@@ -84,7 +96,10 @@ class MyTribeCard extends React.Component {
         return (
             <View style={{ flexDirection: 'row' }}>
                 <Text
-                    style={styles.descriptionTextStyle}
+                    style={[
+                        default_style.normalText_2,
+                        styles.descriptionTextStyle,
+                    ]}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                 >
@@ -101,7 +116,12 @@ class MyTribeCard extends React.Component {
 
         return (
             <View>
-                <Text style={styles.memberInfoTextStyle}>
+                <Text
+                    style={[
+                        default_style.normalText_2,
+                        styles.memberInfoTextStyle,
+                    ]}
+                >
                     <Text>{memberCount}</Text>
                     {member}
                 </Text>
@@ -109,16 +129,103 @@ class MyTribeCard extends React.Component {
         )
     }
 
+    renderTribeAction() {
+        const tribeId = this.props.item._id
+        if (this.props.tribeAction && this.props.tribeAction == 'requested') {
+            return (
+                <View style={styles.tribeActionStyle}>
+                    <TouchableOpacity
+                        style={[
+                            styles.buttonStyle,
+                            {
+                                backgroundColor: color.GM_BACKGROUND,
+                            },
+                        ]}
+                        onPress={() =>
+                            this.props.requestJoinTribe(
+                                tribeId,
+                                false,
+                                this.props.pageId
+                            )
+                        }
+                    >
+                        <Text
+                            style={[
+                                default_style.buttonText_2,
+                                {
+                                    color: color.TEXT_COLOR.DARK,
+                                },
+                            ]}
+                        >
+                            Withdraw
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            )
+        }
+        if (this.props.tribeAction && this.props.tribeAction == 'invited') {
+            return (
+                <View style={styles.tribeActionStyle}>
+                    <TouchableOpacity
+                        style={[styles.buttonStyle]}
+                        onPress={() => this.props.acceptTribeInvit(tribeId)}
+                    >
+                        <Text
+                            style={[
+                                default_style.buttonText_2,
+                                {
+                                    color: color.TEXT_COLOR.LIGHT,
+                                },
+                            ]}
+                        >
+                            Accept
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[
+                            styles.buttonStyle,
+                            {
+                                backgroundColor: color.GM_BACKGROUND,
+                            },
+                        ]}
+                        onPress={() => this.props.declineTribeInvit(tribeId)}
+                    >
+                        <Text
+                            style={[
+                                default_style.buttonText_2,
+                                {
+                                    color: color.TEXT_COLOR.DARK,
+                                },
+                            ]}
+                        >
+                            Decline
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            )
+        }
+    }
+
     render() {
         return (
-            <DelayedButton onPress={this.onCardPress} delay={2000}>
-                <View style={styles.containerStyle}>
+            <DelayedButton
+                activeOpacity={1}
+                onPress={this.onCardPress}
+                delay={2000}
+            >
+                <View
+                    style={[
+                        styles.containerStyle,
+                        this.props.tribeAction ? { height: 120 } : null,
+                    ]}
+                >
                     {this.renderTribeImage()}
                     {this.renderTimeStamp()}
                     <View style={styles.detailContainerStyle}>
                         {this.renderTribeTitle()}
                         {this.renderDescription()}
                         {this.renderTribeInfo()}
+                        {this.renderTribeAction()}
                     </View>
                 </View>
             </DelayedButton>
@@ -131,7 +238,8 @@ const CardHeight = 80
 const styles = {
     containerStyle: {
         flexDirection: 'row',
-        marginTop: 1,
+        marginTop: 8,
+        paddingBottom: 8,
         height: CardHeight,
         backgroundColor: 'white',
         borderBottomWidth: 1,
@@ -141,10 +249,11 @@ const styles = {
     imageContainerStyle: {
         borderWidth: 0.5,
         padding: 1,
+        marginTop: 8,
         borderColor: 'lightgray',
         alignItems: 'center',
         borderRadius: 6,
-        alignSelf: 'center',
+        alignSelf: 'flex-start',
         marginLeft: 15,
     },
     imageStyle: {
@@ -161,7 +270,6 @@ const styles = {
     },
     timeStampTextStyle: {
         color: '#28485e',
-        fontSize: 9,
         fontWeight: '700',
     },
     // Tribe detail related style
@@ -177,22 +285,35 @@ const styles = {
     titleTextStyle: {
         flex: 1,
         flexWrap: 'wrap',
-        fontSize: 13,
-        fontWeight: '700',
         marginRight: 80,
     },
     descriptionTextStyle: {
         flex: 1,
         flexWrap: 'wrap',
-        fontSize: 13,
-        color: '#859199',
+        color: color.GM_MID_GREY,
     },
     memberInfoTextStyle: {
-        fontSize: 10,
         color: '#b3b8b9',
+    },
+    tribeActionStyle: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+    },
+    buttonStyle: {
+        marginTop: 12,
+        marginRight: 12,
+        width: 120,
+        backgroundColor: color.GM_BLUE,
+        paddingVertical: 10,
+        flexDirection: 'row',
+        borderRadius: 3,
+        justifyContent: 'center',
     },
 }
 
 export default connect(null, {
     tribeDetailOpen,
+    requestJoinTribe,
+    acceptTribeInvit,
+    declineTribeInvit,
 })(MyTribeCard)

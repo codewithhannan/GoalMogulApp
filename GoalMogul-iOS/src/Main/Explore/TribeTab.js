@@ -63,6 +63,7 @@ class TribeTab extends React.Component {
                 <TouchableOpacity
                     onPress={() =>
                         Actions.push('myTribeTab', {
+                            pageId: 'tribe_hub_pageId',
                             initial: { openNewTribeModal: true },
                         })
                     }

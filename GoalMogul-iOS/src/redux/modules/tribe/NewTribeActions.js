@@ -14,7 +14,7 @@ import {
     TRIBE_NEW_UPLOAD_PICTURE_SUCCESS,
 } from './NewTribeReducers'
 
-import { refreshTribe } from './MyTribeTabActions'
+import { refreshTribes } from './TribeHubActions'
 import { MYTRIBE_EDIT_SUCCESS } from './Tribes'
 
 const BASE_ROUTE = 'secure/tribe'
@@ -76,7 +76,7 @@ export const createNewTribe = (values, needUpload, isEdit, tribeId) => (
                     },
                 },
             })
-            refreshTribe()(dispatch, getState)
+            refreshTribes('admin')(dispatch, getState)
         }
         Actions.pop()
         Alert.alert(

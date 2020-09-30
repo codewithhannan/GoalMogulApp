@@ -545,7 +545,10 @@ export default (state = INITIAL_STATE, action) => {
                 newMembers = updateMemberStatus(oldMembers, userId, 'Admin')
             } else if (updateType == MEMBER_UPDATE_TYPE.removeMember) {
                 newMembers = oldMembers.filter(
-                    (member) => member.memberRef._id !== userId
+                    (member) =>
+                        member &&
+                        member.memberRef &&
+                        member.memberRef._id !== userId
                 )
             } else if (
                 updateType == MEMBER_UPDATE_TYPE.demoteMember ||
@@ -656,15 +659,23 @@ export default (state = INITIAL_STATE, action) => {
             let tribeToUpdate = _.get(newState, tribeId)
 
             const oldMembers = _.get(tribeToUpdate, 'tribe.members')
-            let newMembers = oldMembers.filter(
-                (m) => !m.memberRef || m.memberRef._id !== userId
-            )
-            newMembers = newMembers.concat(member)
+            // on my Tribe Tab page, we haven't fetched tribe.members yet
+            if (oldMembers) {
+                let newMembers = oldMembers.filter(
+                    (m) => m && m.memberRef && m.memberRef._id !== userId
+                )
+                newMembers = newMembers.concat(member)
+                tribeToUpdate = _.set(
+                    tribeToUpdate,
+                    'tribe.members',
+                    newMembers
+                )
+            } else {
+                tribeToUpdate = _.set(tribeToUpdate, 'tribe.members', [member])
+            }
 
             tribeToUpdate = _.set(tribeToUpdate, 'hasRequested', true)
             tribeToUpdate = _.set(tribeToUpdate, `${pageId}.updating`, false)
-            tribeToUpdate = _.set(tribeToUpdate, 'tribe.members', newMembers)
-
             newState = _.set(newState, tribeId, tribeToUpdate)
             return newState
         }
@@ -746,7 +757,7 @@ export default (state = INITIAL_STATE, action) => {
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
                     .send()
                 console.error(
-                    `${DEBUG_KEY}: tribeId: ${tribeId} is not in redux for action`,
+                    `${DEBUG_KEY}: tribeId: ${tribeId} or pageID ${pageId} is not in redux for action`,
                     action
                 )
                 return newState
@@ -755,14 +766,21 @@ export default (state = INITIAL_STATE, action) => {
             let tribeToUpdate = _.get(newState, tribeId)
 
             const oldMembers = _.get(tribeToUpdate, 'tribe.members')
-            // Keep members that have no memberRef (invitee) or are not current user
-            let newMembers = oldMembers.filter(
-                (m) => !m.memberRef || m.memberRef._id !== userId
-            )
+
+            if (oldMembers) {
+                // Keep members that have no memberRef (invitee) or are not current user
+                let newMembers = oldMembers.filter(
+                    (m) => !m.memberRef || m.memberRef._id !== userId
+                )
+                tribeToUpdate = _.set(
+                    tribeToUpdate,
+                    'tribe.members',
+                    newMembers
+                )
+            }
 
             tribeToUpdate = _.set(tribeToUpdate, 'hasRequested', false)
             tribeToUpdate = _.set(tribeToUpdate, `${pageId}.updating`, false)
-            tribeToUpdate = _.set(tribeToUpdate, 'tribe.members', newMembers)
 
             newState = _.set(newState, tribeId, tribeToUpdate)
             return newState
@@ -970,16 +988,28 @@ export default (state = INITIAL_STATE, action) => {
                 }
 
                 if (tribe !== undefined) {
-                    tribeToUpdate = _.set(tribeToUpdate, 'tribe', tribe)
+                    // only update tribe's fields if not exist, do not overwrite tribe object
+                    const oldTribe = _.get(tribeToUpdate, 'tribe')
+                    const updatedTribe = updateTribe(oldTribe, tribe)
+                    tribeToUpdate = _.set(tribeToUpdate, 'tribe', updatedTribe)
                 }
 
                 // Put pageId onto reference if not previously existed
-                const oldReference = _.get(newState, `${tribeId}.reference`)
-                const newReference = _.uniq(oldReference.concat(pageId))
+                let newReference = [`${pageId}`]
+                if (_.has(newState, tribeId)) {
+                    const oldReference = _.get(newState, `${tribeId}.reference`)
+                    newReference = _.uniq(oldReference.concat(pageId))
+                }
                 tribeToUpdate = _.set(tribeToUpdate, 'reference', newReference)
+                if (!_.has(tribeToUpdate, pageId)) {
+                    tribeToUpdate = _.set(
+                        tribeToUpdate,
+                        pageId,
+                        _.cloneDeep(INITIAL_TRIBE_PAGE)
+                    )
+                }
                 newState = _.set(newState, tribeId, tribeToUpdate)
             })
-
             return newState
         }
 

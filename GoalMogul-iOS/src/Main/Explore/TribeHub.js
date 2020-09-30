@@ -1,9 +1,9 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, TouchableOpacity, FlatList } from 'react-native'
+import { View, TouchableOpacity, FlatList, Image } from 'react-native'
 import { connect } from 'react-redux'
-
+import _ from 'lodash'
 /* Components */
 import SearchBarHeader from '../Common/Header/SearchBarHeader'
 
@@ -12,11 +12,15 @@ import {
     refreshTribeHubFeed,
     loadMoreTribeHubFeed,
     refreshTribeHub,
+    TRIBE_TYPE,
 } from '../../redux/modules/tribe/TribeHubActions'
 import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
 
-import { makeTribeFeedSelector } from '../../redux/modules/tribe/TribeSelector'
-
+import {
+    makeTribeFeedSelector,
+    makeTribesSelector,
+} from '../../redux/modules/tribe/TribeSelector'
+import { openNewTribeModal } from '../../redux/modules/tribe/NewTribeActions'
 // Styles
 import { default_style, color } from '../../styles/basic'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
@@ -27,11 +31,13 @@ import { Text, Icon } from '@ui-kitten/components'
 import EmptyResult from '../Common/Text/EmptyResult'
 import PostPreviewCard from '../Post/PostPreviewCard/PostPreviewCard'
 import { MenuProvider } from 'react-native-popup-menu'
+import EmptyTribe from '../../asset/image/empty_tribe.png'
 
 class TribeHub extends Component {
     componentDidMount() {
         // this.props.refreshTribeHub()
         this.props.refreshTribeHubFeed()
+        this.props.refreshTribeHub()
     }
 
     renderItem = ({ item }) => {
@@ -40,6 +46,80 @@ class TribeHub extends Component {
                 item={item}
                 hasActionButton={item.postType !== 'ShareGoal'}
             />
+        )
+    }
+
+    renderEmptyTribeFeedPage() {
+        return (
+            <View
+                style={{ backgroundColor: color.GM_CARD_BACKGROUND, flex: 1 }}
+            >
+                <SearchBarHeader rightIcon="menu" />
+                <View style={{ ...styles.emptyTribeImageContainerStyle }}>
+                    <Image
+                        source={EmptyTribe}
+                        resizeMode="contain"
+                        style={{ ...styles.emptyTribeImageStyle }}
+                    />
+                </View>
+                <View style={{ flex: 1 }}>
+                    <View
+                        style={{
+                            padding: 10,
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Text style={[default_style.titleText_1]}>
+                            Join our encouraging community of achievers. Pay it
+                            forward and brighten someone's day!
+                        </Text>
+                        <Text style={[default_style.titleText_1]}>
+                            Join a Tribe and help someone.
+                        </Text>
+                    </View>
+
+                    <View style={{ paddingHorizontal: 10, paddingTop: 12 }}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={{ ...styles.emptyTribeButtonStyle }}
+                            onPress={() => Actions.push('explore')}
+                        >
+                            <Text
+                                style={[
+                                    default_style.titleText_1,
+                                    styles.buttonText,
+                                    { color: color.GM_CARD_BACKGROUND },
+                                ]}
+                            >
+                                Discover Tribes
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                    {this.props.isSilverBadgePlus && (
+                        <View style={{ paddingHorizontal: 10 }}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={{
+                                    ...styles.emptyTribeButtonStyle,
+                                    backgroundColor: color.GM_CARD_BACKGROUND,
+                                }}
+                                onPress={() => this.props.openNewTribeModal()}
+                            >
+                                <Text
+                                    style={[
+                                        default_style.titleText_1,
+                                        styles.buttonText,
+                                        { color: color.GM_MID_GREY },
+                                    ]}
+                                >
+                                    Create a Tribe
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </View>
+            </View>
         )
     }
 
@@ -57,7 +137,8 @@ class TribeHub extends Component {
                     <RoundedButton
                         onPress={() =>
                             Actions.push(
-                                componentKeyByTab('exploreTab', 'myTribeTab')
+                                componentKeyByTab('exploreTab', 'myTribeTab'),
+                                { pageId: 'tribe_hub_pageId' }
                             )
                         }
                         icon="flag"
@@ -86,7 +167,25 @@ class TribeHub extends Component {
     }
 
     render() {
-        const { data, loading, refreshing } = this.props
+        const {
+            data,
+            loading,
+            refreshing,
+            adminTribes,
+            memberTribes,
+            requestedTribes,
+            invitedTribes,
+        } = this.props
+        if (
+            !adminTribes.length &&
+            !memberTribes.length &&
+            !requestedTribes.length &&
+            !invitedTribes.length &&
+            !loading &&
+            !refreshing
+        ) {
+            return this.renderEmptyTribeFeedPage()
+        }
         return (
             <MenuProvider>
                 <View style={{ backgroundColor: color.GM_BACKGROUND, flex: 1 }}>
@@ -148,19 +247,60 @@ const RoundedButton = (props) => {
 
 const makeMapStateToProps = () => {
     const getTribeFeed = makeTribeFeedSelector()
+    const managedTribeSelector = makeTribesSelector()
 
     const mapStateToProps = (state) => {
         const { loading, refreshing } = state.myTribeTab.feed
         const data = getTribeFeed(state)
 
+        let adminTribes = managedTribeSelector(state, TRIBE_TYPE.admin)
+        let memberTribes = managedTribeSelector(state, TRIBE_TYPE.member)
+        let requestedTribes = managedTribeSelector(state, TRIBE_TYPE.requested)
+        let invitedTribes = managedTribeSelector(state, TRIBE_TYPE.invited)
+        const { user } = state.user
+        const level = _.get(
+            user,
+            'profile.badges.milestoneBadge.currentMilestone',
+            1
+        )
+        const isSilverBadgePlus = level >= 2
+
         return {
             data,
             loading,
             refreshing,
+            isSilverBadgePlus,
+            adminTribes,
+            memberTribes,
+            requestedTribes,
+            invitedTribes,
         }
     }
 
     return mapStateToProps
+}
+
+const styles = {
+    emptyTribeButtonStyle: {
+        backgroundColor: color.GM_BLUE,
+        borderRadius: 3,
+        marginBottom: 8,
+    },
+    buttonText: {
+        ...default_style.buttonText_1,
+        textAlign: 'center',
+        margin: 7,
+    },
+    emptyTribeImageContainerStyle: {
+        flex: 1,
+        alignItems: 'center',
+        marginTop: 100,
+        paddingHorizontal: 20,
+        paddingBottom: 20,
+    },
+    emptyTribeImageStyle: {
+        flex: 1,
+    },
 }
 
 export default connect(makeMapStateToProps, {
@@ -168,4 +308,5 @@ export default connect(makeMapStateToProps, {
     loadMoreTribeHubFeed,
     refreshTribeHub,
     openPostDetail,
+    openNewTribeModal,
 })(wrapAnalytics(TribeHub, SCREENS.EXPLORE_PAGE))
