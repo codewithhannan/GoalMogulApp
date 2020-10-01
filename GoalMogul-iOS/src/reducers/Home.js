@@ -88,11 +88,10 @@ const INITIAL_STATE = {
             completedOnly: 'false',
             priorities: '',
         },
-        refreshing: false,
         hasNextPage: undefined,
         loading: false,
         loadingMore: false,
-        refreshing: false,
+        refreshing: true,
         // for showing 'get your silver badge!' toast
         userFriendsCount: Number.MAX_SAFE_INTEGER,
         randomNumber: Math.random(),

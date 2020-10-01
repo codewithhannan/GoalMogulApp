@@ -359,7 +359,7 @@ class ActivityFeed extends Component {
     }
 
     render() {
-        const { data, userFriendsCount } = this.props
+        const { data, userFriendsCount, refreshing, loading } = this.props
         // const showGhostCards =
         //     this.props.refreshing &&
         //     (!this.props.data || this.props.data.length === 0)
@@ -375,14 +375,17 @@ class ActivityFeed extends Component {
         // }
         let processedData = _.clone(data)
 
-        if (!processedData.length) {
+        if (!processedData.length && !refreshing) {
             processedData.push({
                 cardType: 'InviteSomeFriends',
             })
             processedData.push({
                 cardType: 'JoinSomeTribes',
             })
-        } else if (userFriendsCount < 7) {
+        } else if (
+            userFriendsCount < 7 &&
+            (!refreshing || processedData.length)
+        ) {
             // second item on list
             processedData.splice(1, 0, {
                 cardType: 'GetYourSilverBadge',
