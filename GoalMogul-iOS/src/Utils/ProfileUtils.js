@@ -1,14 +1,17 @@
 /** @format */
 
 import _ from 'lodash'
+import TokenService from '../services/token/TokenService'
 const ProfileUtils = {
-    updateAccount(values) {
-        const { name, headline, token } = values
+    async updateAccount(values) {
+        const { name, headline } = values
 
         const user = {
             name,
             headline,
         }
+
+        const authToken = await TokenService.getAuthToken()
 
         const url =
             'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account'
@@ -21,14 +24,14 @@ const ProfileUtils = {
             body: JSON.stringify({
                 name,
                 headline,
-                token,
+                token: authToken,
             }),
         }
 
         return ProfileUtils.custumeFetch(url, headers, user)
     },
 
-    updateProfile(values) {
+    async updateProfile(values) {
         const {
             image,
             about,
@@ -56,6 +59,8 @@ const ProfileUtils = {
             }
         })
 
+        const authToken = await TokenService.getAuthToken()
+
         const url =
             'https://goalmogul-api-dev.herokuapp.com/api/secure/user/profile'
         const headers = {
@@ -66,18 +71,18 @@ const ProfileUtils = {
             },
             body: JSON.stringify({
                 ...profile,
-                token,
+                token: authToken,
             }),
         }
-
         return ProfileUtils.custumeFetch(url, headers, profile)
     },
 
-    updatePassword(values) {
+    async updatePassword(values) {
         const { oldPassword, newPassword, token } = values
         console.log('in utils old password is: ', oldPassword)
         console.log('in utils new password is: ', newPassword)
         console.log('in utils values is: ', values)
+        const authToken = await TokenService.getAuthToken()
         const url =
             'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account/password'
         const headers = {
@@ -89,7 +94,7 @@ const ProfileUtils = {
             body: JSON.stringify({
                 oldPassword,
                 newPassword,
-                token,
+                token: authToken,
             }),
         }
         return ProfileUtils.custumeFetch(url, headers, null)

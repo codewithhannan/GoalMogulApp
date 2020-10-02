@@ -4,7 +4,7 @@ import * as Contacts from 'expo-contacts'
 import * as FileSystem from 'expo-file-system'
 
 import { api as API, BASE_API_URL } from '../redux/middleware/api'
-
+import TokenService from '../services/token/TokenService'
 const pageSize = 3
 const DEBUG_KEY = '[ Utils ContactUtils ]'
 
@@ -13,7 +13,6 @@ const ContactUtils = {
         let pageOffset = 0
         let uploadPromise = []
         console.log(`${DEBUG_KEY}: [ handleUploadContacts ]`)
-
         const total = await ContactUtils.getContactSize()
         console.log('total number of contact is: ', total)
 
@@ -37,7 +36,7 @@ const ContactUtils = {
             `${DEBUG_KEY}: [ handleUploadContacts ] contacts load with length: `,
             contacts && contacts.data ? contacts.data.length : 0
         )
-        uploadPromise.push(ContactUtils.uploadContacts(contacts.data, token))
+        uploadPromise.push(ContactUtils.uploadContacts(contacts.data))
         // }
 
         // Pass loaded contacts through callback to reducer. This is currently passed in through MeetActions
@@ -62,13 +61,13 @@ const ContactUtils = {
   @param token: user token
   @return update result promise
   */
-    uploadContacts(contacts, token) {
-        return new Promise((resolve, reject) => {
+    uploadContacts(contacts) {
+        return new Promise(async (resolve, reject) => {
             const url = `${BASE_API_URL}secure/user/contactsync`
 
             const contactListJSONString = JSON.stringify(contacts)
             const uri = `${FileSystem.documentDirectory}contactsList.txt`
-
+            const authToken = await TokenService.getAuthToken()
             FileSystem.writeAsStringAsync(uri, contactListJSONString)
                 .then(() => {
                     var formData = new FormData()
@@ -103,7 +102,9 @@ const ContactUtils = {
                         }
                     }
                     xhr.open('POST', url, true)
-                    xhr.setRequestHeader('x-access-token', token)
+                    // TODO: migrate this (and all other custom requests) to the centralized API library
+                    // so that all request structuring and tokens are centralized
+                    xhr.setRequestHeader('x-access-token', authToken)
                     xhr.setRequestHeader('Content-Type', 'multipart/form-data')
                     xhr.send(formData)
                 })
@@ -117,6 +118,7 @@ const ContactUtils = {
   */
     async fetchMatchedContacts(token, skip, limit) {
         console.log(`${DEBUG_KEY}: [ fetchMatchedContacts ]`)
+        const authToken = await TokenService.getAuthToken()
         const url = `${BASE_API_URL}secure/user/contactSync/stored-matches`
         // const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/user/contactSync/stored-matches?limit=${limit}&skip=${skip}`;
         // const url = `http://192.168.0.3:8081/api/secure/user/contactSync/stored-matches?limit=${limit}&skip=${skip}`;
@@ -125,7 +127,7 @@ const ContactUtils = {
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'x-access-token': token,
+                'x-access-token': authToken,
             },
         }
         return ContactUtils.custumeFetch(url, headers, null)

@@ -5,6 +5,7 @@ import { Image } from 'react-native'
 import * as ImageManipulator from 'expo-image-manipulator'
 import * as Permissions from 'expo-permissions'
 import _ from 'lodash'
+import TokenService from '../services/token/TokenService'
 
 const ImageTypes = [
     'ProfileImage',
@@ -27,14 +28,15 @@ const getImageUrl = (type) => {
 
 const ImageUtils = {
     getPresignedUrl(file, token, dispatch, type) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const url = getImageUrl(type)
+            const authToken = await TokenService.getAuthToken()
             const param = {
                 url,
                 method: 'post',
                 data: {
                     fileType: 'image/jpeg',
-                    token,
+                    token: authToken,
                 },
             }
             axios(param)
@@ -157,7 +159,6 @@ const ImageUtils = {
     /**
      * Upload image to S3 server
      * @param(required) imageUri
-     * @param(required) token
      * @param(required) dispatch
      * @param(required) path
      * @return
@@ -179,7 +180,7 @@ const ImageUtils = {
                     )
                     return ImageUtils.getPresignedUrl(
                         image.uri,
-                        token,
+                        undefined, // token is extracted from TokenService now instead of storing it in redux state
                         (objectKey) => {
                             dispatch({
                                 type,

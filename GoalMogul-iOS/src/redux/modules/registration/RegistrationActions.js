@@ -286,6 +286,11 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
     try {
         const res = await API.post('pub/user/', { ...data })
 
+        Logger.log(
+            '[RegistrationActions] [registerAccount] registration response is: ',
+            res,
+            1
+        )
         if (is2xxRespose(res.status)) {
             TokenService.mountUser(res.userId)
             TokenService.populateAndPersistToken(

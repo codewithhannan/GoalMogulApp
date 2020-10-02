@@ -406,6 +406,11 @@ class TokenService {
     async checkAndGetValidRefreshToken() {
         // First try to check from cache
         const tokenObject = this._refreshTokenObject
+        Logger.log(
+            '[TokenService] [checkAndGetValidRefreshToken] refreshTokenObject loaded from cache is ',
+            tokenObject,
+            1
+        )
         if (
             tokenObject &&
             _.get(tokenObject, 'token') &&

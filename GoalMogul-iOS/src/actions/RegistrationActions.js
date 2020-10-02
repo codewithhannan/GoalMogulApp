@@ -69,6 +69,7 @@ const validateEmail = (email) => {
     return re.test(String(email).toLowerCase())
 }
 
+// Note: this method is deprecated
 export const registrationNextAddProfile = (value) => {
     // TODO: verify with server if email has already existed
     // If exist, prompt user to log in

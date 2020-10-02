@@ -157,36 +157,6 @@ const authenticate = (
             type: LOGIN_USER_LOADING,
         })
 
-        try {
-            if (token) {
-                // If token is more than 2 days old, re-authorize
-                const payload = JSON.parse(token)
-                const minTokenCreationLimit = Date.now() - 2 * DAY_IN_MS
-
-                if (payload.created > minTokenCreationLimit) {
-                    await mountUserWithToken(
-                        {
-                            payload,
-                            username,
-                            password,
-                            onSuccess,
-                        },
-                        flags
-                    )(dispatch, getState)
-                    return
-                }
-            }
-        } catch (error) {
-            new SentryRequestBuilder(error, SENTRY_MESSAGE_TYPE.ERROR)
-                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
-                .withTag(
-                    SENTRY_TAGS.ACTION.LOGIN_IN,
-                    SENTRY_TAG_VALUE.ACTIONS.FAILED
-                )
-                .withExtraContext(SENTRY_CONTEXT.LOGIN.USERNAME, username)
-                .send()
-        }
-
         const onAuthenticationError = ({ response, error }) => {
             // Error message for authentication
             const errorMessage = getLoginErrorMessage({
@@ -247,6 +217,11 @@ const authenticate = (
             TokenService.mountUser(res.userId)
             TokenService.populateAndPersistToken(res.token, res.refreshToken)
 
+            Logger.log(
+                '[AuthActions] [authenticate] start mounting user with payload: ',
+                payload,
+                1
+            )
             await mountUserWithToken(
                 {
                     payload,
@@ -398,7 +373,6 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     dispatch({
         type: LOGIN_USER_SUCCESS,
         payload: {
-            token,
             userId,
         },
     })
@@ -438,19 +412,20 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     // Step 2 hide splash screen
     dispatchHideSplashScreen(dispatch)
 
+    const authToken = await TokenService.getAuthToken()
     // Step 3 Setup all necessary service and configuration
     // set up chat listeners
     LiveChatService.mountUser({
         userId: userId,
-        authToken: token,
+        authToken,
     })
     MessageStorageService.mountUser({
         userId: userId,
-        authToken: token,
+        authToken,
     })
 
     // Fetch user profile
-    fetchAppUserProfile(token, userId)(dispatch, getState)
+    fetchAppUserProfile(undefined, userId)(dispatch, getState)
 
     // Step 4 Refresh feed and all goals
     refreshActivityFeed()(dispatch, getState)
@@ -609,6 +584,7 @@ export const authenticateUser = async ({ username, password }) => {
 }
 
 // We have the same action in Profile.js
+// token shouldn't be used anymore as API will find the token through TokenService automatically
 export const fetchAppUserProfile = (token, userId) => async (
     dispatch,
     getState

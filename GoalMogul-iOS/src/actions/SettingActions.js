@@ -6,7 +6,7 @@ import { Notifications, Linking } from 'expo'
 import * as WebBrowser from 'expo-web-browser'
 import * as Permissions from 'expo-permissions'
 import { Alert, Platform } from 'react-native'
-
+import TokenService from '../services/token/TokenService'
 import { api as API } from '../redux/middleware/api'
 import {
     componentKeyByTab,
@@ -213,7 +213,8 @@ export const onUpdateEmailSubmit = (values, callback) => {
 // update user phone number
 export const onUpdatePhoneNumberSubmit = (values, callback) => {
     return async (dispatch, getState) => {
-        const { token, userId } = getState().user
+        const { userId } = getState().user
+        const authToken = await TokenService.getAuthToken()
         const url =
             'https://goalmogul-api-dev.herokuapp.com/api/secure/user/account'
         const headers = {
@@ -223,7 +224,7 @@ export const onUpdatePhoneNumberSubmit = (values, callback) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                token,
+                token: authToken,
                 phone: values.phone,
             }),
         }
