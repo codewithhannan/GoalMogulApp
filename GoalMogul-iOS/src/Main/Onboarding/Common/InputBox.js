@@ -188,6 +188,7 @@ class InputBox extends React.Component {
                             isDatePickerVisible: false,
                         })
                     }
+                    isDarkModeEnabled={false}
                 />
                 {this.renderCaption(caption, status)}
             </View>

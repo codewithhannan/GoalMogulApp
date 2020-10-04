@@ -10,6 +10,8 @@ import _ from 'lodash'
 import getEnvVars from '../../../environment'
 import * as SecureStore from 'expo-secure-store'
 import { Logger } from '../../redux/middleware/utils/Logger'
+import { store } from '../../store'
+import { logout } from '../../actions'
 
 const config = getEnvVars()
 const EMPTY_TOKEN_OBJECT = {
@@ -39,6 +41,7 @@ class TokenService {
             this._refreshTokenObject = { ...EMPTY_TOKEN_OBJECT }
             this._pendingAuthTokenQueue = []
             this._pendingRefreshTokenRequest = undefined
+            this._isUnmounting = undefined
             TokenService.instance = this
         }
 
@@ -46,55 +49,6 @@ class TokenService {
     }
 
     /*************** Internal facing APIs ****************/
-
-    /**
-     * Check and get valid auth token
-     *
-     * @return {null} if no valid auth token object. Otherwise { token, userId, createdAt }
-     */
-    async _checkAndGetValidAuthToken() {
-        // First try to check from cache
-        const tokenObject = this._authTokenObject
-        if (
-            tokenObject &&
-            _.get(tokenObject, 'token') &&
-            _.get(tokenObject, 'createdAt')
-        ) {
-            if (
-                tokenObject.createdAt >
-                Date.now() - AUTH_TOKEN_EXPIRE_DAYS_IN_MS
-            ) {
-                // if token exists in cache, then should be userId
-                return {
-                    ...tokenObject,
-                    userId: this._userId,
-                }
-            }
-            // cache has the token but it expired
-            // it shouldn't load from SecureStore
-            // it should refresh right away
-            return null
-        }
-
-        // If cache has no such token, then try to load from SecureStore
-        const authTokenObject = await this._getTokenFromSecureStore(
-            TOKEN_TYPE.auth
-        )
-        if (
-            authTokenObject &&
-            _.get(authTokenObject, 'token') &&
-            _.get(authTokenObject, 'createdAt') &&
-            authTokenObject.createdAt >
-                Date.now() - AUTH_TOKEN_EXPIRE_DAYS_IN_MS
-        ) {
-            // populate cache if valid auth token
-            this._authTokenObject = authTokenObject
-            return this._authTokenObject
-        }
-
-        return null
-    }
-
     static getCredentialKey(type) {
         switch (type) {
             case TOKEN_TYPE.auth:
@@ -151,24 +105,38 @@ class TokenService {
      * Delete both auth token and refresh token from the SecureStore
      */
     async _removeTokenFromSecureStore() {
-        const refreshTokenKey = TokenService.getCredentialKey(
-            TOKEN_TYPE.refresh
+        await this._removeTokenFromSecureStoreByType(TOKEN_TYPE.auth)
+        await this._removeTokenFromSecureStoreByType(TOKEN_TYPE.refresh)
+    }
+
+    async _removeTokenFromSecureStoreByType(type) {
+        Logger.log(
+            '[TokenService] [_removeTokenFromSecureStoreByType] start removing type: ',
+            type,
+            1
         )
-        const authTokenKey = TokenService.getCredentialKey(TOKEN_TYPE.auth)
-
+        const key = TokenService.getCredentialKey(type)
         try {
-            await SecureStore.deleteItemAsync(refreshTokenKey)
+            await SecureStore.deleteItemAsync(key)
         } catch (err) {
             // Best effort. Worst case scenario user needs to re-login
             // TODO: sentry error logging
+            Logger.log(
+                '[TokenService] [_removeTokenFromSecureStoreByType] error removing type: ',
+                type,
+                1
+            )
         }
+        Logger.log(
+            '[TokenService] [_removeTokenFromSecureStoreByType] finish removing type: ',
+            type,
+            1
+        )
+    }
 
-        try {
-            await SecureStore.deleteItemAsync(authTokenKey)
-        } catch (err) {
-            // Best effort. Worst case scenario user needs to re-login
-            // TODO: sentry error logging
-        }
+    async _purgeRefreshTokenBeforeUse() {
+        this._refreshTokenObject = { ...EMPTY_TOKEN_OBJECT }
+        await this._removeTokenFromSecureStoreByType(TOKEN_TYPE.refresh)
     }
 
     /**
@@ -180,6 +148,8 @@ class TokenService {
         this._pendingAuthTokenQueue.forEach((prom) => {
             if (error) {
                 prom.reject(error)
+            } else if (this._isUnmounting) {
+                prom.reject(new Error('Unmounting the service'))
             } else {
                 prom.resolve(token)
             }
@@ -211,7 +181,10 @@ class TokenService {
             )
         }
 
-        const { token: refreshToken } = refreshTokenObject
+        const { token: refreshToken } = _.cloneDeep(refreshTokenObject)
+        // Before sending the request, we need to purge the refreshToken to incide it's used
+        await this._purgeRefreshTokenBeforeUse()
+
         // Prepare url and body
         const url = `${config.url}pub/user/refresh-tokens`
         const body = {
@@ -257,6 +230,10 @@ class TokenService {
                 new Error('Failed to obtain authToken'),
                 undefined
             )
+
+            // Logout user since they have no refresh valid token to use
+            // Assuming this endpoit shouldn't fail
+            await store.dispatch(logout())
         }
 
         // Set the refreshing to false after the token is updated in cache so that no double
@@ -271,7 +248,7 @@ class TokenService {
      */
     async getAuthToken() {
         // Check and get if has valid auth token
-        const authTokenObject = await this._checkAndGetValidAuthToken()
+        const authTokenObject = await this.checkAndGetValidAuthToken()
         if (authTokenObject) {
             // Trigger auth token refresh when it's x hrs from expiration
             if (
@@ -319,14 +296,29 @@ class TokenService {
             this._userId,
             1
         )
+        // clear processing queue
+        this._isUnmounting = new Promise((res, rej) => {
+            this._processPendingAuthTokenRequests(new Error('User unmounting'))
+            res()
+        })
+
+        // Wait to clear in flight requests
+        await this._isUnmounting
 
         // remove cache
-        this._userId = undefined
         this._authTokenObject = { ...EMPTY_TOKEN_OBJECT }
         this._refreshTokenObject = { ...EMPTY_TOKEN_OBJECT }
 
+        Logger.log(
+            '[TokenService] [unmountUser] refreshTokenObject in cache is now',
+            this._refreshTokenObject,
+            1
+        )
+
         // remove credential from local storage
         await this._removeTokenFromSecureStore()
+
+        this._userId = undefined
         Logger.log(
             '[TokenService] [unmountUser] Successfully unmount user',
             this._userId,
@@ -395,6 +387,54 @@ class TokenService {
                 1
             )
         }
+    }
+
+    /**
+     * Check and get valid auth token
+     *
+     * @return {null} if no valid auth token object. Otherwise { token, userId, createdAt }
+     */
+    async checkAndGetValidAuthToken() {
+        // First try to check from cache
+        const tokenObject = this._authTokenObject
+        if (
+            tokenObject &&
+            _.get(tokenObject, 'token') &&
+            _.get(tokenObject, 'createdAt')
+        ) {
+            if (
+                tokenObject.createdAt >
+                Date.now() - AUTH_TOKEN_EXPIRE_DAYS_IN_MS
+            ) {
+                // if token exists in cache, then should be userId
+                return {
+                    ...tokenObject,
+                    userId: this._userId,
+                }
+            }
+            // cache has the token but it expired
+            // it shouldn't load from SecureStore
+            // it should refresh right away
+            return null
+        }
+
+        // If cache has no such token, then try to load from SecureStore
+        const authTokenObject = await this._getTokenFromSecureStore(
+            TOKEN_TYPE.auth
+        )
+        if (
+            authTokenObject &&
+            _.get(authTokenObject, 'token') &&
+            _.get(authTokenObject, 'createdAt') &&
+            authTokenObject.createdAt >
+                Date.now() - AUTH_TOKEN_EXPIRE_DAYS_IN_MS
+        ) {
+            // populate cache if valid auth token
+            this._authTokenObject = authTokenObject
+            return this._authTokenObject
+        }
+
+        return null
     }
 
     /**

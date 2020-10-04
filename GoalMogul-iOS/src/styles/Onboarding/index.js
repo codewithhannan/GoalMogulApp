@@ -42,9 +42,9 @@ export default OnboardingStyles = {
     text: {
         // onboardingTitleTextStyle
         title: {
-            fontSize: 24 * UI_SCALE,
-            lineHeight: 28,
-            fontFamily: text.FONT_FAMILY.BOLD,
+            fontSize: text.TEXT_FONT_SIZE.FONT_3_5,
+            lineHeight: text.TEXT_FONT_SIZE.FONT_4,
+            fontFamily: text.FONT_FAMILY.REGULAR,
             textAlign: 'center',
             letterSpacing: text.LETTER_SPACING.WIDE,
         },
@@ -52,7 +52,7 @@ export default OnboardingStyles = {
             fontSize: 18 * UI_SCALE,
             lineHeight: 18,
             color: '#BDBDBD',
-            fontFamily: text.FONT_FAMILY.BOLD,
+            fontFamily: text.FONT_FAMILY.REGULAR,
         },
         subTitle_2: {
             fontFamily: text.FONT_FAMILY.REGULAR,

@@ -29,11 +29,12 @@ class Account extends Component {
                                 tab,
                                 'email'
                             )
-                            this.props.fetchProfile(this.props.userId, () =>
+                            this.props.fetchProfile(this.props.userId)
+                            setTimeout(() => {
                                 Actions.push(`${componentKeyToOpen}`, {
                                     userId: this.props.userId,
                                 })
-                            )
+                            }, 200)
                         }}
                     />
                     <SettingCard

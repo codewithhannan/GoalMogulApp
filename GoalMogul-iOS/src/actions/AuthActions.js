@@ -229,7 +229,7 @@ const authenticate = (
                     password,
                     onSuccess,
                 },
-                flags
+                {}
             )(dispatch, getState)
         } catch (err) {
             new SentryRequestBuilder(err, SENTRY_MESSAGE_TYPE.ERROR)
@@ -308,19 +308,12 @@ const mountUserWithToken = (
     Auth.saveKey(username, password, JSON.stringify(payload))
 
     if (onSuccess) onSuccess()
-    // If just refreshing token do not refresh profile and app state
-    if (tokenRefresh) return
 
     // Sentry track user
     setUser(payload.userId, username)
 
     // Segment track user
     identify(payload.userId, username)
-
-    // Refresh feed and all goals
-    refreshActivityFeed()(dispatch, getState)
-    refreshGoalFeed()(dispatch, getState)
-    subscribeNotification()(dispatch, getState)
 
     // Fetch user profile using returned token and userId
     const userObject = await fetchAppUserProfile(payload.token, payload.userId)(
@@ -339,6 +332,11 @@ const mountUserWithToken = (
         Actions.replace('drawer')
         tokenObjectToUpdate = _.set(tokenObjectToUpdate, 'isOnboarded', true)
     }
+
+    // Refresh feed and all goals
+    refreshActivityFeed()(dispatch, getState)
+    refreshGoalFeed()(dispatch, getState)
+    subscribeNotification()(dispatch, getState)
 
     // Load unread notification
     await loadUnreadNotification()(dispatch, getState)
@@ -360,20 +358,27 @@ const mountUserWithToken = (
  */
 export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     const refreshTokenObject = await TokenService.checkAndGetValidRefreshToken()
-    if (refreshTokenObject == null) {
+    if (refreshTokenObject === null) {
         // When refresh token is null, it means either user hasn't logged in before
         // or the refreshToken has expired. User needs to login
         dispatchHideSplashScreen(dispatch)
         return
     }
+    const authTokenObject = await TokenService.checkAndGetValidAuthToken()
+    if (authTokenObject === null) {
+        dispatchHideSplashScreen(dispatch)
+        return
+    }
 
-    const { token, userId, isOnboarded } = refreshTokenObject
+    const { userId, isOnboarded, token: refreshToken } = refreshTokenObject
+    const { token: authToken } = authTokenObject
 
     // Saturate User.js and AuthReducers.js with user token and userId for other actions to work
     dispatch({
         type: LOGIN_USER_SUCCESS,
         payload: {
             userId,
+            token: authToken,
         },
     })
 
@@ -382,7 +387,7 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         // isOnboarded is false, then we fetch user profile to validate
         // this is to handle when user has finished onboarding but it's first time
         // logging on this device
-        const userObject = await fetchAppUserProfile(token, userId)(
+        const userObject = await fetchAppUserProfile(authToken, userId)(
             dispatch,
             getState
         )
@@ -396,7 +401,7 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
             Actions.replace('registration_add_photo')
         } else {
             // This is to update the TokenService isOnboarded flag
-            TokenService.populateAndPersistToken(undefined, token, true)
+            TokenService.populateAndPersistToken(authToken, refreshToken, true)
 
             // Go to home page
             Actions.replace('drawer')
@@ -412,7 +417,6 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     // Step 2 hide splash screen
     dispatchHideSplashScreen(dispatch)
 
-    const authToken = await TokenService.getAuthToken()
     // Step 3 Setup all necessary service and configuration
     // set up chat listeners
     LiveChatService.mountUser({
@@ -655,7 +659,6 @@ export const logout = () => async (dispatch, getState) => {
     // Store the unread notification first as USER_LOG_OUT will clear its state
     await saveUnreadNotification()(dispatch, getState)
     await saveTutorialState()(dispatch, getState)
-    await saveRemoteMatches()(dispatch, getState)
 
     const callback = (res) => {
         if (res instanceof Error) {
@@ -675,7 +678,6 @@ export const logout = () => async (dispatch, getState) => {
     await unsubscribeNotifications()(dispatch, getState)
     await Auth.reset(callback)
     await TokenService.unmountUser()
-    Actions.reset('root')
     // clear chat service details
     LiveChatService.unMountUser()
     MessageStorageService.unMountUser()
@@ -685,6 +687,7 @@ export const logout = () => async (dispatch, getState) => {
     dispatch({
         type: USER_LOG_OUT,
     })
+    Actions.reset('root')
 }
 
 const TOAST_IMAGE_STYLE = {

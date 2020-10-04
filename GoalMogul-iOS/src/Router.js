@@ -384,7 +384,6 @@ class RouterComponent extends Component {
                                 <Scene
                                     key="registration_transition"
                                     component={OnboardingIntroTransition}
-                                    initial
                                 />
                                 <Scene
                                     key="registration_target_selection"
@@ -393,6 +392,7 @@ class RouterComponent extends Component {
                                 <Scene
                                     key="registration_add_photo"
                                     component={OnboardingAddPhotos}
+                                    initial
                                 />
                                 <Scene
                                     key="registration_tribe_selection"

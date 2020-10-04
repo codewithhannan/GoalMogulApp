@@ -344,6 +344,7 @@ export const updateFriendship = (userId, friendshipId, type, tab, callback) => (
                     type: 'PUT',
                     data: {
                         friendshipId,
+                        acceptFriendshipRequest: true,
                     },
                     url: baseUrl,
                 }

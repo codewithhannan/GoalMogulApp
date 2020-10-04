@@ -81,7 +81,7 @@ class OnboardingCommunity extends React.Component {
                     paddingTop: 0,
                     paddingBottom: 30,
                     alignItems: 'center',
-                    margin: 10,
+                    margin: 8,
                     borderWidth: 1,
                     borderColor: color.GM_CARD_BACKGROUND,
                     borderRadius: 10,
@@ -116,15 +116,15 @@ class OnboardingCommunity extends React.Component {
                 </View>
 
                 <View
-                    style={{ width: '80%', justifyContent: 'center', flex: 1 }}
+                    style={{ width: '90%', justifyContent: 'center', flex: 1 }}
                 >
                     <Text
                         style={[
                             default_style.titleText_1,
                             {
-                                fontSize: text.TEXT_FONT_SIZE.FONT_3_5,
-                                lineHeight: text.TEXT_LINE_HEIGHT.FONT_4,
-                                fontFamily: text.FONT_FAMILY.REGULAR,
+                                fontSize: text.TEXT_FONT_SIZE.FONT_4,
+                                lineHeight: text.TEXT_LINE_HEIGHT.FONT_4 + 4,
+                                fontFamily: text.FONT_FAMILY.SEMI_BOLD,
                                 marginTop: 14,
                                 marginBottom: 14,
                                 textAlign: 'center',
@@ -158,11 +158,11 @@ class OnboardingCommunity extends React.Component {
                     style={{
                         flex: 1,
                         paddingBottom: 20,
-                        paddingRight: 20,
-                        paddingLeft: 20,
+                        paddingRight: 6,
+                        paddingLeft: 6,
                     }}
                 >
-                    <View style={{ alignItems: 'center', marginTop: 35 }}>
+                    <View style={{ alignItems: 'center', marginTop: 20 }}>
                         <Text style={textStyle.title}>
                             You are here to share
                         </Text>
@@ -171,7 +171,7 @@ class OnboardingCommunity extends React.Component {
                         </Text>
                     </View>
                     <View
-                        style={{ flex: 1, alignItems: 'center', marginTop: 30 }}
+                        style={{ flex: 1, alignItems: 'center', marginTop: 15 }}
                     >
                         <Carousel
                             ref={(c) => {
@@ -180,7 +180,7 @@ class OnboardingCommunity extends React.Component {
                             data={this.props.communityGuidelines}
                             renderItem={this.renderCard}
                             sliderWidth={this.getCurrentScreenWidth()}
-                            itemWidth={this.getCurrentScreenWidth() - 32}
+                            itemWidth={this.getCurrentScreenWidth() - 24}
                             layout={'stack'}
                             layoutCardOffset={10}
                             onSnapToItem={this.onSwipedAll}
@@ -188,8 +188,8 @@ class OnboardingCommunity extends React.Component {
                     </View>
                 </View>
                 <OnboardingFooter
-                    totalStep={3}
-                    currentStep={3}
+                    totalStep={2}
+                    currentStep={2}
                     onNext={this.onNext}
                     onPrev={this.onBack}
                     nextDisabled={!this.state.swipeAll}

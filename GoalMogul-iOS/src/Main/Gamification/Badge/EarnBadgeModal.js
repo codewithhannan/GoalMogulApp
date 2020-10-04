@@ -274,6 +274,7 @@ class EarnBadgeModal extends React.PureComponent {
                                     <BadgeInfoCard
                                         badgeInfo={b}
                                         onLeadingIconPress={onLeadingIconPress}
+                                        userTier={tier}
                                     />
                                 )
                             })}
@@ -338,7 +339,7 @@ class EarnBadgeModal extends React.PureComponent {
 
 // Render badge info
 const BadgeInfoCard = (props) => {
-    const { badgeInfo, onLeadingIconPress } = props
+    const { badgeInfo, onLeadingIconPress, userTier } = props
     if (!badgeInfo) return null
 
     // NOTE: title can be a component/
@@ -350,17 +351,27 @@ const BadgeInfoCard = (props) => {
         leadingIcon,
         leadingIconStyle,
         leadingIconContainerStyle,
-        linearGradientColors,
-        linearGradientLocations,
+        gradient,
+        tier,
     } = badgeInfo
 
+    let linearGradientColors, linearGradientLocations, borderColor
+    if (userTier >= tier) {
+        linearGradientColors = gradient.achieved.linearGradientColors
+        linearGradientLocations = gradient.achieved.linearGradientLocations
+        borderColor = 'rgb(227, 238, 226)'
+    } else {
+        linearGradientColors = gradient.default.linearGradientColors
+        linearGradientLocations = gradient.default.linearGradientLocations
+        borderColor = '#e8e8e8'
+    }
     return (
         <View
             style={{
                 borderWidth: 0.5,
-                borderColor: 'rgb(227, 238, 226)',
+                borderColor,
                 borderRadius: 5,
-                minHeight: 70,
+                minHeight: 75,
                 marginVertical: 3,
                 width: '100%',
             }}
@@ -474,10 +485,16 @@ const DefaultLeadingIconContainerStyle = {
 }
 const BadgeInfo = [
     {
-        title: 'Newbie',
+        title: 'Green',
+        tier: 0,
         infoTextList: [
-            { text: 'Sign up for GoalMogul', hasBulletPoint: true },
-            { text: 'Complete app on-boarding', hasBulletPoint: true },
+            { text: 'Add a profile image', hasBulletPoint: true },
+            {
+                text: "Fill out your 'Headline', 'Occupation',",
+                hasBulletPoint: true,
+            },
+            { text: " and 'About'", hasBulletPoint: false },
+            { text: 'Set your 1st goal', hasBulletPoint: true },
         ],
         badgeIcon: Green,
         badgeIconStyle: {
@@ -488,22 +505,29 @@ const BadgeInfo = [
             ...DefaultLeadingIconStyle,
         },
         leadingIconContainerStyle: { ...DefaultLeadingIconContainerStyle },
-        linearGradientColors: [
-            'rgb(253, 255, 252)',
-            'rgb(250, 254, 247)',
-            'rgb(244, 250, 240)',
-        ],
-        linearGradientLocations: [0, 0.7, 1],
+        gradient: {
+            achieved: {
+                linearGradientColors: [
+                    'rgb(253, 255, 252)',
+                    'rgb(250, 254, 247)',
+                    'rgb(244, 250, 240)',
+                ],
+                linearGradientLocations: [0, 0.5, 1],
+            },
+            default: {
+                linearGradientColors: ['white', 'white', 'white'],
+                linearGradientLocations: [0, 0.5, 1],
+            },
+        },
     },
     {
         title: 'Bronze',
+        tier: 1,
         infoTextList: [
-            { text: 'Add a profile image', hasBulletPoint: true },
             {
-                text: "Fill out your 'Headline', 'Occupation',",
+                text: 'Invite 1 friend who signs up',
                 hasBulletPoint: true,
             },
-            { text: "and 'About'", hasBulletPoint: false },
         ],
         badgeIcon: Bronze3D,
         badgeIconStyle: {
@@ -514,18 +538,31 @@ const BadgeInfo = [
             ...DefaultLeadingIconStyle,
         },
         leadingIconContainerStyle: { ...DefaultLeadingIconContainerStyle },
-        linearGradientColors: [
-            'rgb(253, 255, 252)',
-            'rgb(250, 254, 247)',
-            'rgb(244, 250, 240)',
-        ],
-        linearGradientLocations: [0, 0.5, 1],
+        gradient: {
+            achieved: {
+                linearGradientColors: [
+                    'rgb(253, 255, 252)',
+                    'rgb(250, 254, 247)',
+                    'rgb(244, 250, 240)',
+                ],
+                linearGradientLocations: [0, 0.5, 1],
+            },
+            default: {
+                linearGradientColors: ['white', 'white', 'white'],
+                linearGradientLocations: [0, 0.5, 1],
+            },
+        },
     },
     {
         title: 'Silver',
+        tier: 2,
         infoTextList: [
-            { text: 'Add 7 Friends', hasBulletPoint: true },
-            { text: 'Add 7 Goals', hasBulletPoint: true },
+            { text: 'Set 7 Goals', hasBulletPoint: true },
+            {
+                text: "Invite 7 friends who've earned their",
+                hasBulletPoint: true,
+            },
+            { text: ' Green Badges', hasBulletPoint: false },
         ],
         badgeIcon: Silver3D,
         badgeIconStyle: {
@@ -536,22 +573,34 @@ const BadgeInfo = [
             ...DefaultLeadingIconStyle,
         },
         leadingIconContainerStyle: { ...DefaultLeadingIconContainerStyle },
-        linearGradientColors: [
-            'rgb(253, 255, 252)',
-            'rgb(250, 254, 247)',
-            'rgb(244, 250, 240)',
-        ],
-        linearGradientLocations: [0, 0.5, 1],
+        gradient: {
+            achieved: {
+                linearGradientColors: [
+                    'rgb(253, 255, 252)',
+                    'rgb(250, 254, 247)',
+                    'rgb(244, 250, 240)',
+                ],
+                linearGradientLocations: [0, 0.5, 1],
+            },
+            default: {
+                linearGradientColors: ['white', 'white', 'white'],
+                linearGradientLocations: [0, 0.5, 1],
+            },
+        },
     },
     {
         id: 'gold',
+        tier: 3,
         title: 'Gold + $700 Reward\u002A',
         infoTextList: [
             {
                 text: "Invite 10 friends to GoalMogul who've",
                 hasBulletPoint: true,
             },
-            { text: 'earned a Silver Badge or higher', hasBulletPoint: false },
+            {
+                text: 'earned their Silver Badge or higher',
+                hasBulletPoint: false,
+            },
         ],
         badgeIcon: Gold3D,
         badgeIconStyle: {
@@ -564,7 +613,19 @@ const BadgeInfo = [
             width: 9,
         },
         leadingIconContainerStyle: { ...DefaultLeadingIconContainerStyle },
-        linearGradientColors: ['white', 'white', 'white'],
-        linearGradientLocations: [0, 0.5, 1],
+        gradient: {
+            achieved: {
+                linearGradientColors: [
+                    'rgb(253, 255, 252)',
+                    'rgb(250, 254, 247)',
+                    'rgb(244, 250, 240)',
+                ],
+                linearGradientLocations: [0, 0.7, 1],
+            },
+            default: {
+                linearGradientColors: ['white', 'white', 'white'],
+                linearGradientLocations: [0, 0.5, 1],
+            },
+        },
     },
 ]

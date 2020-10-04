@@ -42,7 +42,7 @@ import { DEVICE_PLATFORM } from '../../Utils/Constants'
 import { getBottomSpace } from 'react-native-iphone-x-helper'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 
-const NEXT_STEP = 'registration_add_photo'
+const NEXT_STEP = 'registration'
 const FIELD_REQUIREMENTS = {
     done: 'done',
     email: {

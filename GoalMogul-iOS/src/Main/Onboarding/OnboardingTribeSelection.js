@@ -213,8 +213,8 @@ class OnboardingTribeSelection extends React.Component {
                     useTribesToRender
                 />
                 <OnboardingFooter
-                    totalStep={3}
-                    currentStep={2}
+                    totalStep={2}
+                    currentStep={1}
                     onNext={this.onNext}
                     onPrev={this.onBack}
                 />
