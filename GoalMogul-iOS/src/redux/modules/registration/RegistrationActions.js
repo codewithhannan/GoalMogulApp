@@ -293,10 +293,11 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
         )
         if (is2xxRespose(res.status)) {
             TokenService.mountUser(res.userId)
-            TokenService.populateAndPersistToken(
+            await TokenService.populateAndPersistToken(
                 res.token,
                 res.refreshToken,
-                false
+                false,
+                res.userId
             )
 
             // Save token for auto login

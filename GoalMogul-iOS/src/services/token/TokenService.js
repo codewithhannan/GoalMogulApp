@@ -90,7 +90,6 @@ class TokenService {
         const key = TokenService.getCredentialKey(type)
         const value = JSON.stringify({
             ...tokenObject,
-            userId: this._userId,
         })
 
         try {
@@ -345,21 +344,44 @@ class TokenService {
      * @param {String} refreshToken
      * @param {Boolean} isOnboarded
      */
-    populateAndPersistToken(authToken, refreshToken, isOnboarded) {
+    async populateAndPersistToken(
+        authToken,
+        refreshToken,
+        isOnboarded,
+        userId
+    ) {
+        let userIdToUse = userId || this._userId
+
+        // This is to prevent the case that this._userId is mounted but lost when
+        // app is closed or other edge case. We can always recover from the SecureStore
+        // If still not found, user needs to re-login
+        if (!userId) {
+            const loadedRefreshTokenObject = await this._getTokenFromSecureStore(
+                TOKEN_TYPE.refresh
+            )
+            if (!_.get(loadedRefreshTokenObject, 'userId')) {
+                return store.dispatch(logout())
+            }
+            userId = loadedRefreshTokenObject.userId
+        }
+
         // createdAt is set to 5 minutes ago arbitrarily
         const createdAt = Date.now() - TOKEN_EXPIRATION_COMPENSATION_IN_MS
-
         if (authToken) {
             const authTokenObject = {
                 token: authToken,
                 createdAt,
                 isOnboarded,
+                userId: userIdToUse,
             }
             // Replace the authToken in cache
             this._authTokenObject = authTokenObject
 
             // Persist in secure store
-            this._storeTokenToSecureStore(TOKEN_TYPE.auth, authTokenObject)
+            await this._storeTokenToSecureStore(
+                TOKEN_TYPE.auth,
+                authTokenObject
+            )
             Logger.log(
                 '[TokenService] [populateAndPersistToken] persisted authTokenObject: ',
                 authTokenObject,
@@ -372,12 +394,13 @@ class TokenService {
                 token: refreshToken,
                 createdAt,
                 isOnboarded,
+                userId: userIdToUse,
             }
             // Replace the refreshToken in cache
             this._refreshTokenObject = refreshTokenObject
 
             // Persist in secure store
-            this._storeTokenToSecureStore(
+            await this._storeTokenToSecureStore(
                 TOKEN_TYPE.refresh,
                 refreshTokenObject
             )
@@ -397,6 +420,11 @@ class TokenService {
     async checkAndGetValidAuthToken() {
         // First try to check from cache
         const tokenObject = this._authTokenObject
+        Logger.log(
+            '[TokenService] [checkAndGetValidAuthToken] authTokenObject loaded from cache is ',
+            tokenObject,
+            1
+        )
         if (
             tokenObject &&
             _.get(tokenObject, 'token') &&
@@ -407,10 +435,7 @@ class TokenService {
                 Date.now() - AUTH_TOKEN_EXPIRE_DAYS_IN_MS
             ) {
                 // if token exists in cache, then should be userId
-                return {
-                    ...tokenObject,
-                    userId: this._userId,
-                }
+                return tokenObject
             }
             // cache has the token but it expired
             // it shouldn't load from SecureStore
@@ -421,6 +446,11 @@ class TokenService {
         // If cache has no such token, then try to load from SecureStore
         const authTokenObject = await this._getTokenFromSecureStore(
             TOKEN_TYPE.auth
+        )
+        Logger.log(
+            '[TokenService] [checkAndGetValidAuthToken] authTokenObject loaded from SecureStore is ',
+            authTokenObject,
+            1
         )
         if (
             authTokenObject &&
@@ -454,17 +484,15 @@ class TokenService {
         if (
             tokenObject &&
             _.get(tokenObject, 'token') &&
-            _.get(tokenObject, 'createdAt')
+            _.get(tokenObject, 'createdAt') &&
+            _.get(tokenObject, 'userId')
         ) {
             if (
                 tokenObject.createdAt >
                 Date.now() - REFRESH_TOKEN_EXPIRE_DAYS_IN_MS
             ) {
                 // if token exists in cache, then should be userId
-                return {
-                    ...tokenObject,
-                    userId: this._userId,
-                }
+                return tokenObject
             }
             // cache has the token but it expired
             // it shouldn't load from SecureStore
@@ -485,6 +513,7 @@ class TokenService {
             refreshTokenObject &&
             _.get(refreshTokenObject, 'token') &&
             _.get(refreshTokenObject, 'createdAt') &&
+            _.get(refreshTokenObject, 'userId') &&
             refreshTokenObject.createdAt >
                 Date.now() - REFRESH_TOKEN_EXPIRE_DAYS_IN_MS
         ) {

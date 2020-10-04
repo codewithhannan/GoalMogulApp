@@ -53,7 +53,8 @@ class ProfileGoalCard extends React.Component {
             ({ value }) => value === privacy
         )
 
-        const PRIORTY_PILL_STYLE = PRIORTY_PILL_STYLES[(priority - 1) % 10]
+        const PRIORTY_PILL_STYLE =
+            PRIORTY_PILL_STYLES[((priority || 1) - 1) % 10]
 
         return (
             <View style={styles.headerContainerStyle}>

@@ -215,7 +215,12 @@ const authenticate = (
             }
 
             TokenService.mountUser(res.userId)
-            TokenService.populateAndPersistToken(res.token, res.refreshToken)
+            await TokenService.populateAndPersistToken(
+                res.token,
+                res.refreshToken,
+                undefined,
+                res.userId
+            )
 
             Logger.log(
                 '[AuthActions] [authenticate] start mounting user with payload: ',
@@ -358,6 +363,11 @@ const mountUserWithToken = (
  */
 export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     const refreshTokenObject = await TokenService.checkAndGetValidRefreshToken()
+    Logger.log(
+        '[tryAutoLoginV2] refreshTokenObject loaded from TokenService is: ',
+        refreshTokenObject,
+        1
+    )
     if (refreshTokenObject === null) {
         // When refresh token is null, it means either user hasn't logged in before
         // or the refreshToken has expired. User needs to login
@@ -365,6 +375,11 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         return
     }
     const authTokenObject = await TokenService.checkAndGetValidAuthToken()
+    Logger.log(
+        '[tryAutoLoginV2] authTokenObject loaded from TokenService is: ',
+        authTokenObject,
+        1
+    )
     if (authTokenObject === null) {
         dispatchHideSplashScreen(dispatch)
         return
@@ -401,7 +416,12 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
             Actions.replace('registration_add_photo')
         } else {
             // This is to update the TokenService isOnboarded flag
-            TokenService.populateAndPersistToken(authToken, refreshToken, true)
+            await TokenService.populateAndPersistToken(
+                authToken,
+                refreshToken,
+                true,
+                userId
+            )
 
             // Go to home page
             Actions.replace('drawer')
@@ -610,7 +630,7 @@ export const fetchAppUserProfile = (token, userId) => async (
         )
         // Profile fetch failed
         if (res.status > 299 || res.status < 200) {
-            new SentryRequestBuilder(message, SENTRY_MESSAGE_TYPE.MESSAGE)
+            new SentryRequestBuilder(res.message, SENTRY_MESSAGE_TYPE.MESSAGE)
                 .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
                 .withTag(
                     SENTRY_TAGS.ACTION.FETCH_USER_PROFILE,

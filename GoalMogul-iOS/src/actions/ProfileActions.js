@@ -323,6 +323,9 @@ export const openProfile = (userId, tab, initialFilter, props) => (
  */
 export const refreshProfileData = (userId) => (dispatch, getState) => {
     const pageId = constructPageId('user')
+    if (!userId) {
+        console.log('auth reducer now is: ', getState().auth)
+    }
     dispatch({
         type: PROFILE_OPEN_PROFILE,
         payload: {
