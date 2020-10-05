@@ -497,7 +497,7 @@ class ProfileDetailCard extends Component {
                             paddingBottom: 2,
                             paddingTop: 2,
                             alignItems: 'center',
-                            width: 120,
+                            width: 130,
                         }}
                     >
                         <Icon
