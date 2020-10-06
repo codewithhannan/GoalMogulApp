@@ -139,4 +139,10 @@ export const default_style = {
         width: 1,
         backgroundColor: color.GM_LIGHT_GRAY,
     },
+    shadow: {
+        shadowColor: '#000',
+        shadowOffset: { width: 1, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 5,
+    },
 }

@@ -61,6 +61,7 @@ class InputBox extends React.Component {
             meta,
             input,
             disabled,
+            selectedValue,
         } = this.props
         const { isDatePickerVisible } = this.state
 
@@ -71,6 +72,7 @@ class InputBox extends React.Component {
             !_.isEqual(meta, nextProps.meta) || // meta is from redux form
             !_.isEqual(input, nextProps.input) || // meta is from redux form
             !_.isEqual(disabled, nextProps.disabled) ||
+            !_.isEqual(selectedValue, nextProps.selectedValue) ||
             !_.isEqual(isDatePickerVisible, nextState.isDatePickerVisible)
         )
     }
@@ -361,6 +363,49 @@ class InputBox extends React.Component {
         )
     }
 
+    renderPrivacySelection() {
+        const {
+            inputTitle,
+            caption,
+            selectedValue,
+            onChangeText,
+            containerStyle,
+            status,
+            privacyOptions,
+        } = this.props
+        return (
+            <View style={[styles.containerStyle, containerStyle || {}]}>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                    }}
+                >
+                    <Text style={styles.labelStyle}>{inputTitle}</Text>
+                </View>
+                <ScrollView
+                    horizontal
+                    contentContainerStyle={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingVertical: 4,
+                        paddingTop: 8,
+                    }}
+                >
+                    {privacyOptions.map(({ value, text }) =>
+                        this.renderPill(
+                            value,
+                            selectedValue,
+                            onChangeText,
+                            text
+                        )
+                    )}
+                </ScrollView>
+                {caption || status ? this.renderCaption(caption, status) : null}
+            </View>
+        )
+    }
+
     renderCaption(caption, status) {
         return (
             <Text
@@ -374,7 +419,7 @@ class InputBox extends React.Component {
         )
     }
 
-    renderPill(pillKind, selectedValue, onChangeText) {
+    renderPill(pillKind, selectedValue, onChangeText, maybePillText) {
         return (
             <DelayedButton
                 touchableWithoutFeedback
@@ -397,7 +442,7 @@ class InputBox extends React.Component {
                             },
                         ]}
                     >
-                        {pillKind}
+                        {maybePillText ? maybePillText : pillKind}
                     </Text>
                 </View>
             </DelayedButton>
@@ -422,6 +467,10 @@ class InputBox extends React.Component {
         const isGenderSelection = inputTitle == 'Gender'
         if (isGenderSelection) {
             return this.renderGenderSelection()
+        }
+        const isPrivacySelection = inputTitle == 'Privacy'
+        if (isPrivacySelection) {
+            return this.renderPrivacySelection()
         }
         const isDateOfBirth = inputTitle == 'Date of birth'
         if (isDateOfBirth) {

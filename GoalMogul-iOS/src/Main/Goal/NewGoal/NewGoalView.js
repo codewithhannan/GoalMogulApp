@@ -33,6 +33,7 @@ import arrowRight from '../../../asset/utils/arrow_right.png'
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import dropDown from '../../../asset/utils/dropDown.png'
 import plus from '../../../asset/utils/plus.png'
+import LionWithLightbulb from '../../../asset/image/LionWithLightbulb.png'
 // Actions
 import {
     goalToFormAdaptor,
@@ -51,6 +52,7 @@ import {
 import { default_style, color } from '../../../styles/basic'
 import { PRIVACY_OPTIONS, PRIVACY_FRIENDS } from '../../../Utils/Constants'
 // Components
+import InputBox from '../../../Main/Onboarding/Common/InputBox'
 import ModalHeader from '../../Common/Header/ModalHeader'
 import ProfileImage from '../../Common/ProfileImage'
 import EmptyResult from '../../Common/Text/EmptyResult'
@@ -58,6 +60,7 @@ import InputField from '../../Common/TextInput/InputField'
 import Button from '../Button'
 import MentionsTextInput from '../Common/MentionsTextInput'
 import { Icon } from '@ui-kitten/components'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
 const { Popover } = renderers
 const { width } = Dimensions.get('window')
@@ -69,7 +72,7 @@ const TYPE_MAP = {
         buttonText: 'Add a Step',
     },
     need: {
-        title: 'Needs',
+        title: 'Things I Need',
         placeholder: "Something you're specifically looking for help with",
         buttonText: 'Add a Need',
     },
@@ -89,6 +92,8 @@ class NewGoalView extends Component {
         this.initializeForm()
         this.state = {
             scrollEnabled: true,
+            showGoalDescription: false,
+            showMoreGoalInputs: false,
             keyword: '',
             tagSearchData: { ...INITIAL_TAG_SEARCH },
         }
@@ -96,6 +101,8 @@ class NewGoalView extends Component {
         this.scrollTo = this.scrollTo.bind(this)
         this.handleLayoutChange = this.handleLayoutChange.bind(this)
         this.scrollToEnd = this.scrollToEnd.bind(this)
+        this.enableDescriptionInput = this.enableDescriptionInput.bind(this)
+        this.enableMoreGoalInputs = this.enableMoreGoalInputs.bind(this)
     }
 
     componentDidMount() {
@@ -334,6 +341,12 @@ class NewGoalView extends Component {
             initializeFromState || isImportedGoal
                 ? { ...goalToFormAdaptor(goal) }
                 : { ...defaulVals }
+        if (initializeFromState || isImportedGoal) {
+            this.setState({
+                showGoalDescription: true,
+                showMoreGoalInputs: true,
+            })
+        }
         // console.log('initial values are: ', initialVals);
         this.props.initialize({
             ...initialVals,
@@ -452,68 +465,18 @@ class NewGoalView extends Component {
      * @param {object} user
      * @param {boolean} isEdit: initializeFromState to determine if this is editing a goal
      */
-    renderPrivacyControl(isEdit) {
+    renderPrivacyControl() {
         return (
-            <View style={styles.sectionMargin}>
-                <Menu
-                    rendererProps={{
-                        placement: 'top',
-                        anchorStyle: styles.anchorStyle,
-                    }}
-                    renderer={renderers.Popover}
-                >
-                    <Text style={styles.subTitleTextStyle}>Privacy</Text>
-                    <MenuTrigger
-                        customStyles={{
-                            TriggerTouchableComponent: TouchableOpacity,
-                        }}
-                    >
-                        <View
-                            style={{
-                                width: '100%',
-                                borderWidth: 1,
-                                borderColor: '#E0E0E0',
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                marginTop: 5,
-                            }}
-                        >
-                            <Text style={styles.standardInputStyle}>
-                                {PRIVACY_OPTIONS.map(({ text, value }) => {
-                                    if (this.props.privacy === value)
-                                        return text
-                                })}
-                            </Text>
-                            <Image
-                                resizeMode="contain"
-                                style={styles.caretStyle}
-                                source={dropDown}
-                            />
-                        </View>
-                    </MenuTrigger>
-                    <MenuOptions customStyles={styles.menuOptionsStyles}>
-                        {PRIVACY_OPTIONS.map(({ value, text }) => {
-                            return (
-                                <MenuOption
-                                    onSelect={() => {
-                                        this.props.change('privacy', value)
-                                    }}
-                                >
-                                    <View
-                                        style={{
-                                            width: '100%',
-                                        }}
-                                    >
-                                        <Text style={styles.standardInputStyle}>
-                                            {text}
-                                        </Text>
-                                    </View>
-                                </MenuOption>
-                            )
-                        })}
-                    </MenuOptions>
-                </Menu>
+            <View>
+                <InputBox
+                    privacyOptions={PRIVACY_OPTIONS}
+                    inputTitle={'Privacy'}
+                    required={false}
+                    selectedValue={this.props.privacy}
+                    onChangeText={(value) =>
+                        this.props.change('privacy', value)
+                    }
+                />
             </View>
         )
     }
@@ -528,7 +491,7 @@ class NewGoalView extends Component {
             >
                 <WalkableView>
                     <FieldTitleText
-                        text="What are you trying to achieve?"
+                        text="What are you looking to achieve?"
                         required={false}
                         containerStyle={{ marginBottom: 16 }}
                     />
@@ -552,9 +515,15 @@ class NewGoalView extends Component {
                         label="title"
                         component={InputField}
                         editable={this.props.uploading}
-                        style={{ ...styles.standardInputStyle }}
-                        placeholder="What are you trying to achieve?"
+                        style={{
+                            ...styles.standardInputStyle,
+                        }}
+                        inputContainerStyle={{
+                            borderColor: color.GM_MID_GREY,
+                        }}
+                        placeholder="Anything is possible ;)"
                         autoCorrect
+                        autoFocus={true}
                         autoCapitalize={'sentences'}
                         multiline
                         blurOnSubmit
@@ -646,7 +615,7 @@ class NewGoalView extends Component {
             >
                 <WalkableView
                     style={{
-                        marginTop: 16,
+                        marginTop: 20,
                         justifyContent: 'flex-start',
                         flex: 1,
                     }}
@@ -693,18 +662,16 @@ class NewGoalView extends Component {
             >
                 <WalkableView
                     style={{
-                        ...styles.sectionMargin,
+                        marginTop: 20,
                         justifyContent: 'flex-start',
                         flex: 1,
                     }}
                 >
-                    <FieldTitleText
-                        text="How important is your goal?"
-                        required={true}
-                        containerStyle={{ marginBottom: 12 }}
-                    />
+                    <Text style={styles.subTitleTextStyle}>
+                        How important is your goal?
+                    </Text>
                     <Text style={styles.descriptionTextStyle}>
-                        Use is to set relative priority of your Goal.
+                        Use this to set relative priority of your Goal.
                     </Text>
                     {slider}
                     <View
@@ -923,7 +890,7 @@ class NewGoalView extends Component {
                 order={4}
                 name="create_goal_create_goal_modal_4"
             >
-                <WalkableView style={{ ...styles.sectionMargin }}>
+                <WalkableView>
                     <FieldTitleText
                         text="Timeline"
                         required={false}
@@ -1144,6 +1111,18 @@ class NewGoalView extends Component {
         return this.renderFieldArray('need', fields, error)
     }
 
+    enableDescriptionInput() {
+        this.setState({
+            showGoalDescription: true,
+        })
+    }
+
+    enableMoreGoalInputs() {
+        this.setState({
+            showMoreGoalInputs: true,
+        })
+    }
+
     render() {
         const { user, initializeFromState } = this.props
 
@@ -1157,56 +1136,142 @@ class NewGoalView extends Component {
                 <View
                     style={{
                         padding: 24,
+                        flexDirection: 'row',
+                        alignItems: 'center',
                     }}
                 >
-                    <Text style={default_style.subTitleText_1}>
-                        Need some help forming your Goal?
-                    </Text>
-                    <Button
-                        text="View Trending Goals"
-                        containerStyle={{
-                            backgroundColor: color.GM_BLUE,
-                            alignSelf: 'flex-start',
-                            paddingLeft: 16,
-                            paddingRight: 16,
-                            marginTop: 16,
+                    <View
+                        style={{
+                            flex: 1,
                         }}
-                        textStyle={{
-                            ...default_style.titleText_1,
-                            color: 'white',
-                        }}
-                        onPress={() => Actions.push('trendingGoalView')}
-                    />
+                    >
+                        <Text style={default_style.subTitleText_1}>
+                            Need some help forming your Goal?
+                        </Text>
+                        <Button
+                            text="View Trending Goals"
+                            containerStyle={{
+                                backgroundColor: color.GM_BLUE,
+                                alignSelf: 'flex-start',
+                                paddingLeft: 16,
+                                paddingRight: 16,
+                                marginTop: 16,
+                            }}
+                            textStyle={{
+                                ...default_style.titleText_1,
+                                color: 'white',
+                            }}
+                            onPress={() => Actions.push('trendingGoalView')}
+                        />
+                    </View>
+                    <View>
+                        <Image
+                            source={LionWithLightbulb}
+                            style={{
+                                height: 99,
+                                width: 90,
+                                resizeMode: 'contain',
+                            }}
+                        />
+                    </View>
                 </View>
+
+                {/* Spacer */}
                 <View
                     style={[
-                        default_style.shadow,
-                        { height: 8 * default_style.uiScale },
+                        {
+                            height: 8 * default_style.uiScale,
+                            width: '100%',
+                            backgroundColor: color.GM_LIGHT_GRAY,
+                        },
                     ]}
                 />
-                <View style={{ padding: 20, paddingBottom: 0 }}>
+
+                {/* Primary form */}
+                <View style={{ padding: 20 }}>
                     {this.renderGoal()}
-                    <FieldArray
-                        name="details"
-                        component={this.renderGoalDescription}
-                        loading={this.state.tagSearchData.loading}
-                        tagData={this.state.tagSearchData.data}
-                        keyword={this.state.keyword}
-                    />
-                    {this.renderCategory()}
+                    {this.state.showGoalDescription ? (
+                        <FieldArray
+                            name="details"
+                            component={this.renderGoalDescription}
+                            loading={this.state.tagSearchData.loading}
+                            tagData={this.state.tagSearchData.data}
+                            keyword={this.state.keyword}
+                        />
+                    ) : (
+                        <TouchableWithoutFeedback
+                            onPress={this.enableDescriptionInput}
+                        >
+                            <Text
+                                style={{
+                                    marginTop: 12,
+                                    marginBottom: 8,
+                                    ...default_style.buttonText_2,
+                                    color: color.GM_MID_GREY,
+                                }}
+                            >
+                                + Add a description
+                            </Text>
+                        </TouchableWithoutFeedback>
+                    )}
                     {this.renderPriority()}
-                    {this.renderTimeline()}
-                </View>
-                <View style={[default_style.shadow, styles.sectionMargin]} />
-                <View
-                    ref={(r) => {
-                        this.view = r
-                    }}
-                    style={{ padding: 20, paddingTop: 0, marginBottom: 30 }}
-                >
-                    <FieldArray name="steps" component={this.renderSteps} />
-                    <FieldArray name="needs" component={this.renderNeeds} />
                     {this.renderPrivacyControl(initializeFromState)}
+                    {this.renderCategory()}
+                </View>
+
+                {/* Spacer */}
+                {/* <View
+                    style={[
+                        {
+                            height: 8 * default_style.uiScale,
+                            width: '100%',
+                            backgroundColor: color.GM_LIGHT_GRAY,
+                        },
+                    ]}
+                /> */}
+
+                {/* Secondary form */}
+                <View
+                    style={{
+                        padding: 20,
+                        marginBottom: 30,
+                    }}
+                >
+                    {!this.state.showMoreGoalInputs ? (
+                        <TouchableWithoutFeedback
+                            onPress={this.enableMoreGoalInputs}
+                        >
+                            <Text
+                                style={{
+                                    marginTop: 8,
+                                    marginBottom: 8,
+                                    ...default_style.buttonText_1,
+                                    color: color.GM_MID_GREY,
+                                }}
+                            >
+                                + Add a Timeline, Steps or Needs
+                            </Text>
+                        </TouchableWithoutFeedback>
+                    ) : null}
+                    {this.state.showMoreGoalInputs
+                        ? this.renderTimeline()
+                        : null}
+                    {this.state.showMoreGoalInputs ? (
+                        <View
+                            ref={(r) => {
+                                this.view = r
+                            }}
+                        >
+                            <FieldArray
+                                name="steps"
+                                component={this.renderSteps}
+                            />
+                            <FieldArray
+                                name="needs"
+                                component={this.renderNeeds}
+                            />
+                        </View>
+                    ) : null}
                 </View>
             </ScrollView>
         )

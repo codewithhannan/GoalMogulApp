@@ -101,6 +101,7 @@ class InputField extends Component {
         const { input, scrollTo, type, index } = this.props
         const { onFocus } = input
         if (onFocus) onFocus()
+        if (!scrollTo) return
         const screenHeight = Dimensions.get('window').height
         this.view.measure((x, y, width, height, px, py) => {
             const visibleArea = screenHeight - this.state.keyboardHeight
