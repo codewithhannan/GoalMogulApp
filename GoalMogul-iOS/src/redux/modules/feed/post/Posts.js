@@ -149,7 +149,7 @@ const INITIAL_STATE = {
     // This will replace the newPost in PostReducers for simplicity
     // There should be only one newPost at a time, so we don't need
     // Seperate it by page
-    newPost: { ...NEW_POST_INITIAL_STATE },
+    newPost: NEW_POST_INITIAL_STATE,
 }
 
 const DEBUG_KEY = '[ Reducers Posts ]'
@@ -163,7 +163,7 @@ export default (state = INITIAL_STATE, action) => {
             let reference = [pageId]
             let postObjectToUpdate = _.has(newState, postId)
                 ? _.get(newState, `${postId}`)
-                : { ...INITIAL_POST_OBJECT }
+                : INITIAL_POST_OBJECT
 
             if (pageId === undefined) {
                 // Abort something is wrong

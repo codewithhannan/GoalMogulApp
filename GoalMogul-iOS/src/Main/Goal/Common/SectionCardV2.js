@@ -210,7 +210,7 @@ class SectionCardV2 extends Component {
                             paddingTop: 8,
                             backgroundColor: this.state.isInputFocused
                                 ? '#FAFAFA'
-                                : styles.backgroundColor,
+                                : 'transparent',
                         }}
                         value={this.state.textValue}
                         onFocus={() => {
@@ -248,7 +248,7 @@ class SectionCardV2 extends Component {
                         <DelayedButton
                             activeOpacity={0.6}
                             style={{
-                                backgroundColor: '#E0E0E0',
+                                backgroundColor: color.GM_DOT_GRAY,
                                 borderRadius: 3,
                                 padding: 2,
                                 paddingRight: 8,

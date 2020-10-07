@@ -91,9 +91,7 @@ class PostPreviewBody extends React.Component {
 
     renderUpdateAttachments(item) {
         const { belongsToGoalStoryline, mediaRef } = item
-        const showGoalRefCard =
-            _.has(belongsToGoalStoryline, 'goalRef._id') &&
-            _.has(belongsToGoalStoryline, 'goalRef.title')
+        const showGoalRefCard = _.has(belongsToGoalStoryline, 'goalRef')
         return (
             <View>
                 {this.renderPostImage(mediaRef)}
@@ -107,7 +105,10 @@ class PostPreviewBody extends React.Component {
                         Attached
                     </Text>,
                     <ShareCard
-                        goalRef={belongsToGoalStoryline.goalRef._id}
+                        goalRef={
+                            belongsToGoalStoryline.goalRef._id ||
+                            belongsToGoalStoryline.goalRef
+                        }
                         containerStyle={{ width: '100%' }}
                     />,
                 ]}

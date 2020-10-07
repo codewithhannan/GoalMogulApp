@@ -48,13 +48,13 @@ class ActivitySummary extends React.Component {
                     if (actionDetails && actionDetails === 'GoalShare') {
                         return `shared a ${val.actedWith}`
                     }
-                    return `${val.action.toLowerCase()}d a ${val.actedWith}`
+                    return `shared a ${val.actedWith}`
                 },
                 Post: (val) => {
                     if (!val.postRef && !val.postRef.postType) return ''
                     if (!isSharedPost(val.postRef.postType)) {
                         return (
-                            `${val.action.toLowerCase()}d an Update ` +
+                            `shared an Update ` +
                             `${
                                 val.belongsToEvent || val.belongsToTribe
                                     ? 'in'

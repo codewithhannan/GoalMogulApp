@@ -13,6 +13,7 @@ import {
     FlatList,
     TextInput,
     Keyboard,
+    Animated,
 } from 'react-native'
 import {
     Menu,
@@ -37,8 +38,10 @@ import CompactGoalCard from '../Goal/GoalCard/CompactGoalCard'
 import { connect } from 'react-redux'
 
 const { height } = Dimensions.get('window')
-const listMaxHeight = height - HEADER_STYLES.headerContainer.height - 105
-const listMinHeight = height / 3
+const MODAL_MAX_HEIGHT = height - HEADER_STYLES.headerContainer.height - 105
+const MODAL_MIN_HEIGHT = height / 3
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList)
 
 /**
  * @param onSelect(goalItem)
@@ -53,12 +56,39 @@ class AttachGoal extends Component {
         this.state = {
             searchInput: '',
         }
+        this.paddingBottom = new Animated.Value(0)
         this.renderItem = this.renderItem.bind(this)
+        this.keyBoardHeight = 0
     }
 
     componentDidMount() {
         if (typeof this.props.onRef === 'function') this.props.onRef(this)
         this.props.refreshMyUserGoals()
+        this.keyboardWillShowListener = Keyboard.addListener(
+            'keyboardWillShow',
+            this.keyboardWillShow
+        )
+        this.keyboardWillHideListener = Keyboard.addListener(
+            'keyboardWillHide',
+            this.keyboardWillHide
+        )
+    }
+
+    keyboardWillShow = (e) => {
+        this.keyBoardHeight = e.endCoordinates.height
+        Animated.timing(this.paddingBottom, {
+            useNativeDriver: false,
+            toValue: this.keyBoardHeight,
+            duration: e.duration,
+        }).start()
+    }
+
+    keyboardWillHide = (e) => {
+        Animated.timing(this.paddingBottom, {
+            useNativeDriver: false,
+            toValue: 0,
+            duration: e.duration,
+        }).start()
     }
 
     open() {
@@ -209,8 +239,8 @@ class AttachGoal extends Component {
                     }}
                 >
                     {this.renderHeader()}
-                    <FlatList
-                        keyboardShouldPersistTaps="always"
+                    <AnimatedFlatList
+                        keyboardShouldPersistTaps="handled"
                         data={data}
                         renderItem={this.renderItem}
                         keyExtractor={(item) => item._id}
@@ -221,9 +251,10 @@ class AttachGoal extends Component {
                         ItemSeparatorComponent={this.renderItemSeparator}
                         style={{
                             maxHeight:
-                                listMaxHeight - (this.props.topOffSet || 0),
-                            minHeight: listMinHeight,
+                                MODAL_MAX_HEIGHT - (this.props.topOffSet || 0),
+                            minHeight: MODAL_MIN_HEIGHT,
                             marginBottom: 8,
+                            paddingBottom: this.paddingBottom,
                         }}
                     />
                 </MenuOptions>

@@ -353,9 +353,7 @@ class PostDetailSection extends React.PureComponent {
 
     renderUpdateAttachments(item) {
         const { belongsToGoalStoryline, mediaRef } = item
-        const showGoalRefCard =
-            _.has(belongsToGoalStoryline, 'goalRef._id') &&
-            _.has(belongsToGoalStoryline, 'goalRef.title')
+        const showGoalRefCard = _.has(belongsToGoalStoryline, 'goalRef')
         return (
             <View style={{ marginBottom: 16 }}>
                 {this.renderPostImage(mediaRef)}
@@ -369,7 +367,10 @@ class PostDetailSection extends React.PureComponent {
                         Attached
                     </Text>,
                     <ShareCard
-                        goalRef={belongsToGoalStoryline.goalRef._id}
+                        goalRef={
+                            belongsToGoalStoryline.goalRef._id ||
+                            belongsToGoalStoryline.goalRef
+                        }
                         containerStyle={{ width: '100%' }}
                     />,
                 ]}
@@ -379,7 +380,7 @@ class PostDetailSection extends React.PureComponent {
 
     // TODO: Switch to decide amoung renderImage, RefPreview and etc.
     renderCardContent(item) {
-        const { postType, mediaRef, goalRef } = item
+        const { postType, goalRef } = item
         if (!isSharedPost(postType)) {
             const milestoneIdentifier = _.get(
                 item,

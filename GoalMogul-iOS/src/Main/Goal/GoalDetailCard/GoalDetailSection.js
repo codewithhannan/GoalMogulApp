@@ -103,6 +103,18 @@ class GoalDetailSection extends React.PureComponent {
         if (this.props.onRef !== null) {
             this.props.onRef(this)
         }
+
+        if (this.props.initialProps) {
+            const { initialShowPostModal } = this.props.initialProps
+
+            // Display CreatePostModal
+            if (initialShowPostModal) {
+                setTimeout(() => {
+                    this.props.editGoal(this.props.item)
+                }, 750)
+                return
+            }
+        }
     }
 
     onTextLayout(e) {

@@ -54,7 +54,7 @@ class TrendingGoalView extends React.PureComponent {
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <ModalHeader
-                    title="Treading Goals"
+                    title="Trending Goals"
                     back
                     onCancel={() => {
                         if (this.props.onClose) this.props.onClose()

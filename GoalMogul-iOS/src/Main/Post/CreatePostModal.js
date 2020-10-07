@@ -36,7 +36,6 @@ import {
     track,
     trackWithProperties,
 } from '../../monitoring/segment'
-// Utils
 import {
     arrayUnique,
     clearTags,
@@ -82,11 +81,6 @@ class CreatePostModal extends Component {
             textContentHeight: TEXT_INPUT_DEAFULT_HEIGHT,
             textInputHeight: TEXT_INPUT_DEAFULT_HEIGHT,
             draftHeaderHeight: 0,
-            attachedGoalTitle: _.get(
-                props,
-                'initialPost.belongsToGoalStoryline.goalRef.title',
-                ''
-            ),
         }
         this.onOpen = this.onOpen.bind(this)
         this.updateSearchRes = this.updateSearchRes.bind(this)
@@ -107,13 +101,6 @@ class CreatePostModal extends Component {
                 : E.CREATE_POST_MODAL_OPENED
         )
         this.initializeForm()
-        this.setState({
-            attachedGoalTitle: _.get(
-                this.props,
-                'initialPost.belongsToGoalStoryline.goalRef.title',
-                ''
-            ),
-        })
     }
 
     /**
@@ -179,8 +166,7 @@ class CreatePostModal extends Component {
 
         // Clear tag search data state
         this.setState({
-            ...this.state,
-            tagSearchData: { ...INITIAL_TAG_SEARCH },
+            tagSearchData: INITIAL_TAG_SEARCH,
         })
     }
 
@@ -275,6 +261,7 @@ class CreatePostModal extends Component {
 
     initializeForm() {
         const { belongsToTribe, belongsToGoalStoryline } = this.props
+
         const defaulVals = {
             viewableSetting: PRIVACY_FRIENDS,
             mediaRef: undefined,
@@ -312,9 +299,6 @@ class CreatePostModal extends Component {
             belongsToGoalStoryline: undefined,
         }
         this.props.initialize(defaulVals)
-        this.setState({
-            attachedGoalTitle: '',
-        })
 
         const { drafts } = this.state
         if (drafts && drafts.length > 0) {
@@ -338,10 +322,28 @@ class CreatePostModal extends Component {
         this.props.openCameraRoll(callback, { disableEditing: true })
     }
 
+    loadFromDraft = (selectedDraft, index) => {
+        this.setState({ draftIndex: index })
+        this.props.change(
+            'mediaRef',
+            selectedDraft.mediaRef ? selectedDraft.mediaRef : false
+        )
+        this.props.change('post', selectedDraft.post)
+        this.props.change(
+            'belongsToGoalStoryline',
+            selectedDraft.belongsToGoalStoryline
+        )
+        this.props.change('viewableSetting', selectedDraft.viewableSetting)
+        this.props.change('tags', selectedDraft.tags)
+    }
+
     handleSaveDraft = async () => {
         const draft = {
             post: this.props.post,
             mediaRef: this.props.mediaRef,
+            belongsToGoalStoryline: this.props.belongsToGoalStoryline,
+            viewableSetting: this.props.viewableSetting,
+            tags: this.props.tags,
         }
 
         let index = this.state.draftIndex
@@ -749,12 +751,26 @@ class CreatePostModal extends Component {
     }
 
     isDraftNotSaved() {
-        if (this.props.initializeFromState) return false
+        const {
+            initializeFromState,
+            post,
+            mediaRef,
+            belongsToGoalStoryline,
+        } = this.props
+        if (initializeFromState) return false
         const { drafts, draftIndex } = this.state
         if (
             drafts.length <= draftIndex ||
-            this.props.post !== drafts[draftIndex].post ||
-            this.props.mediaRef != drafts[draftIndex].mediaRef
+            post !== drafts[draftIndex].post ||
+            mediaRef != drafts[draftIndex].mediaRef ||
+            // post text or media needs to be there for belongsToGoalStoryline to be considered in this logic
+            (((post && post.trim().length > 0) || mediaRef) &&
+                _.get(belongsToGoalStoryline, 'goalRef', undefined) !==
+                    _.get(
+                        drafts[draftIndex].belongsToGoalStoryline,
+                        'goalRef',
+                        undefined
+                    ))
         )
             return true
         return false
@@ -772,13 +788,9 @@ class CreatePostModal extends Component {
         const {
             initializeFromState,
             initializeFromGoal,
+            belongsToGoalStoryline,
             uploading,
         } = this.props
-        const belongsToGoalStoryline = _.get(
-            this.props,
-            'formVals.values.belongsToGoalStoryline',
-            undefined
-        )
         const isGoalAttached =
             belongsToGoalStoryline && !!belongsToGoalStoryline.goalRef
         // Do not allow user to change the attached goal if editing this update
@@ -793,17 +805,12 @@ class CreatePostModal extends Component {
                 onPress={() => {
                     if (isGoalAttached) {
                         // Clear goalRef on Press of a goal is attached
-                        this.setState({ attachedGoalTitle: '' })
                         this.props.change('belongsToGoalStoryline', false)
                     } else {
                         Keyboard.dismiss()
                         // Wait for keyboard to dissmiss before opening
-                        setTimeout(
-                            () =>
-                                this.attachGoalModal &&
-                                this.attachGoalModal.open(),
-                            200
-                        )
+                        if (this.attachGoalModal)
+                            setTimeout(() => this.attachGoalModal.open(), 200)
                     }
                 }}
             >
@@ -829,7 +836,7 @@ class CreatePostModal extends Component {
                     numberOfLines={1}
                 >
                     {isGoalAttached
-                        ? this.state.attachedGoalTitle
+                        ? belongsToGoalStoryline.title
                         : 'Add to a Goal Storyline'}
                 </Text>
                 {!disabled && isGoalAttached && (
@@ -866,9 +873,9 @@ class CreatePostModal extends Component {
                 triggerComponent={attachGoalButton}
                 triggerWrapperStyle={attachGoalButtonStyle}
                 onSelect={(item) => {
-                    this.setState({ attachedGoalTitle: item.title })
                     this.props.change('belongsToGoalStoryline', {
                         goalRef: item._id,
+                        title: item.title,
                     })
                 }}
                 onClose={() => {
@@ -1001,14 +1008,7 @@ class CreatePostModal extends Component {
                     onSelect={(index) => {
                         this.handleDraftCancel(() => {
                             const selectedDraft = this.state.drafts[index]
-                            this.setState({ draftIndex: index })
-                            this.props.change(
-                                'mediaRef',
-                                selectedDraft.mediaRef
-                                    ? selectedDraft.mediaRef
-                                    : null
-                            )
-                            this.props.change('post', selectedDraft.post)
+                            this.loadFromDraft(selectedDraft, index)
                         })
                     }}
                 />
@@ -1062,7 +1062,9 @@ class CreatePostModal extends Component {
             !initializeFromState && this.state.drafts.length > 0
 
         const modalHeight =
-            230 + this.state.textContentHeight + this.state.draftHeaderHeight
+            230 +
+            this.state.textContentHeight +
+            (showDraftHeader ? this.state.draftHeaderHeight : 0)
         const draftModalHeight = (modalHeight * 3) / 4
 
         return (
@@ -1172,15 +1174,28 @@ const mapStateToProps = (state, props) => {
     const selector = formValueSelector('createPostModal')
     const { user } = state.user
     const { profile } = user
+    const belongsToGoalStoryline = selector(state, 'belongsToGoalStoryline')
     const goalRef =
-        _.get(props, 'initialPost.belongsToGoalStoryline.goalRef._id') ||
-        _.get(props, 'initialPost.belongsToGoalStoryline.goalRef', undefined)
+        _.get(belongsToGoalStoryline, 'goalRef', undefined) ||
+        _.get(
+            props,
+            'initialPost.belongsToGoalStoryline.goalRef._id',
+            undefined
+        )
+
+    const title =
+        _.get(belongsToGoalStoryline, 'title', undefined) ||
+        _.get(
+            props,
+            'initialPost.belongsToGoalStoryline.goalRef.title',
+            undefined
+        )
 
     return {
         user,
         profile,
         viewableSetting: selector(state, 'viewableSetting'),
-        belongsToGoalStoryline: goalRef !== undefined ? { goalRef } : undefined,
+        belongsToGoalStoryline: !!goalRef && { goalRef, title },
         post: selector(state, 'post'),
         tags: selector(state, 'tags'),
         mediaRef: selector(state, 'mediaRef'),

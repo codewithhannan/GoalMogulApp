@@ -84,7 +84,7 @@ class ActivityCard extends React.PureComponent {
         const { goalRef, postRef, actedUponEntityType } = item
         const propsToPass = props || {}
         if (actedUponEntityType === 'Post') {
-            return this.props.openPostDetail({ ...postRef })
+            return this.props.openPostDetail({ ...postRef }, propsToPass)
         }
 
         if (actedUponEntityType === 'Goal') {
