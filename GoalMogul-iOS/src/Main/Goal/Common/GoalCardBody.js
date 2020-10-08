@@ -23,7 +23,16 @@ import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import { Text } from 'react-native-animatable'
 
 const DEBUG_KEY = '[ UI GoalCardBody ]'
-const UPDATES_BAKCGROUND_OPACITIES = [0.3, 0.25, 0.2, 0.15, 0.1, 0.05]
+const UPDATES_BAKCGROUND_OPACITIES = [
+    0.225,
+    0.2,
+    0.175,
+    0.15,
+    0.125,
+    0.1,
+    0.075,
+    0.05,
+]
 const CONTAINER_WIDTH = 33
 const CONTAINER_MARGIN = 12
 const MAX_UPDATES_CONTAINERS = Math.floor(

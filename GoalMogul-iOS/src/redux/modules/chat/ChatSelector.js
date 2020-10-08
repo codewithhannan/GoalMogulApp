@@ -25,7 +25,7 @@ const getSharedEntity = (state, props) => {
     }
 
     if (goalRef) {
-        return _.cloneDeep(_.get(goals, `${goalRef}.goal`, undefined))
+        return _.cloneDeep(_.get(goals, `${goalRef}.goal`, { loading: false }))
     }
 
     if (tribeRef) {
