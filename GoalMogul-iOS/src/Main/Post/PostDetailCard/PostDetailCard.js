@@ -34,8 +34,6 @@ import PostDetailSection from './PostDetailSection'
 import CreatePostModal from '../CreatePostModal'
 
 const DEBUG_KEY = '[ UI PostDetailCard ]'
-const TABBAR_HEIGHT = 48.5
-const TOTAL_HEIGHT = TABBAR_HEIGHT
 
 class PostDetailCard extends React.PureComponent {
     constructor(props) {
