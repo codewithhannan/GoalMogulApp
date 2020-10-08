@@ -11,6 +11,7 @@ import TribeEmptyState from '../../asset/image/TribeEmptyState.png'
 // Components
 import ActivityCard from '../Activity/ActivityCard'
 import EmptyResult from '../Common/Text/EmptyResult'
+import InviteFriendModal from '../MeetTab//Modal/InviteFriendModal'
 
 import {
     openPostDetail,
@@ -41,6 +42,9 @@ class ActivityFeed extends Component {
             waitForInteraction: true,
             itemVisiblePercentThreshold: 100,
             minimumViewTime: 1500,
+        }
+        this.state = {
+            showInviteFriendModal: false,
         }
     }
 
@@ -78,6 +82,43 @@ class ActivityFeed extends Component {
     handleOnLoadMore = () => this.props.loadMoreFeed()
 
     _keyExtractor = (item) => item._id
+
+    openInviteFriendModal = () => {
+        this.setState({ showInviteFriendModal: true })
+    }
+
+    closeInviteFriendModal = () => {
+        this.setState({ showInviteFriendModal: false })
+    }
+
+    renderInviteFreindsButton() {
+        return [
+            <TouchableWithoutFeedback
+                onPress={this.openInviteFriendModal}
+                style={{
+                    backgroundColor: color.GM_BLUE,
+                    paddingVertical: 12,
+                    paddingHorizontal: 16,
+                    marginTop: 12,
+                    borderRadius: 3,
+                }}
+            >
+                <Text
+                    style={{
+                        ...default_style.buttonText_1,
+                        color: color.TEXT_COLOR.LIGHT,
+                        textAlign: 'center',
+                    }}
+                >
+                    Invite Friends
+                </Text>
+            </TouchableWithoutFeedback>,
+            <InviteFriendModal
+                isVisible={this.state.showInviteFriendModal}
+                closeModal={this.closeInviteFriendModal}
+            />,
+        ]
+    }
 
     renderInviteSomeFreindsCard() {
         return (
@@ -123,28 +164,7 @@ class ActivityFeed extends Component {
                         Enjoy sharing your goals with friends to make your
                         friendships more fulfilling!
                     </Text>
-
-                    {/* TODO: @jia how can we have this open the <InviteFriendModal /> component instead? */}
-                    <TouchableWithoutFeedback
-                        onPress={() => Actions.push('friendInvitationView')}
-                        style={{
-                            backgroundColor: color.GM_BLUE,
-                            paddingVertical: 12,
-                            paddingHorizontal: 16,
-                            marginTop: 12,
-                            borderRadius: 3,
-                        }}
-                    >
-                        <Text
-                            style={{
-                                ...default_style.buttonText_1,
-                                color: color.TEXT_COLOR.LIGHT,
-                                textAlign: 'center',
-                            }}
-                        >
-                            Invite Friends
-                        </Text>
-                    </TouchableWithoutFeedback>
+                    {this.renderInviteFreindsButton()}
                 </View>
             </View>
         )
@@ -197,28 +217,7 @@ class ActivityFeed extends Component {
                             ? 'Help each other crush your goals, bring new energy to old friendships.'
                             : 'Sharing goals will bring you closer to your friends.'}
                     </Text>
-
-                    {/* TODO: @jia how can we have this open the <InviteFriendModal /> component instead? */}
-                    <TouchableWithoutFeedback
-                        onPress={() => Actions.push('friendInvitationView')}
-                        style={{
-                            backgroundColor: color.GM_BLUE,
-                            paddingVertical: 12,
-                            paddingHorizontal: 16,
-                            marginTop: 12,
-                            borderRadius: 3,
-                        }}
-                    >
-                        <Text
-                            style={{
-                                ...default_style.buttonText_1,
-                                color: color.TEXT_COLOR.LIGHT,
-                                textAlign: 'center',
-                            }}
-                        >
-                            Invite Friends
-                        </Text>
-                    </TouchableWithoutFeedback>
+                    {this.renderInviteFreindsButton()}
                 </View>
             </View>
         )
