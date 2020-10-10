@@ -269,7 +269,8 @@ class TokenService {
                 // TODO: sentry logging
                 Logger.log(
                     '[TokenService] [_getAuthToken]: exception thrown in _refreshAuthToken',
-                    err
+                    err,
+                    1
                 )
                 // Best effort
             }

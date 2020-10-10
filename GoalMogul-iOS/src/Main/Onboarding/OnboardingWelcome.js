@@ -21,7 +21,6 @@ const { text: textStyle, button: buttonStyle } = OnboardingStyles
 class OnboardingWelcome extends React.Component {
     continue = () => {
         Actions.replace('drawer')
-        this.props.markUserAsOnboarded()
     }
 
     /**

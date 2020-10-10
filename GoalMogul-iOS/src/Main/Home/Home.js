@@ -1,13 +1,14 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, AppState, FlatList } from 'react-native'
+import { View, AppState, FlatList, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import _ from 'lodash'
 import { Notifications } from 'expo'
 import { copilot } from 'react-native-copilot-gm'
+// import { copilot } from 'react-native-copilot'
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup'
@@ -58,7 +59,7 @@ import { saveRemoteMatches } from '../../actions/MeetActions'
 import { color } from '../../styles/basic'
 
 // Utils
-import Tooltip from '../Tutorial/Tooltip'
+import Tooltip, { CreateGoalTooltip } from '../Tutorial/Tooltip'
 import { svgMaskPath } from '../Tutorial/Utils'
 
 const DEBUG_KEY = '[ UI Home ]'
@@ -78,29 +79,37 @@ class Home extends Component {
             showWelcomeScreen: false,
             showBadgeEarnModal: false,
         }
-        this.scrollToTop = this.scrollToTop.bind(this)
+        // this.scrollToTop = this.scrollToTop.bind(this)
         this._renderScene = this._renderScene.bind(this)
         this.setTimer = this.setTimer.bind(this)
         this.stopTimer = this.stopTimer.bind(this)
         this._handleNotification = this._handleNotification.bind(this)
         this._notificationSubscription = undefined
+        this.setMastermindRef = this.setMastermindRef.bind(this)
     }
 
     componentDidUpdate(prevProps) {
-        if (!prevProps.showTutorial && this.props.showTutorial === true) {
-            console.log(
-                `${DEBUG_KEY}: [ componentDidUpdate ]: tutorial start: `,
-                this.props.nextStepNumber
-            )
-            this.props.start()
-        }
+        // if (!prevProps.showTutorial && this.props.showTutorial === true) {
+        //     console.log(
+        //         `${DEBUG_KEY}: [ componentDidUpdate ]: tutorial start: `,
+        //         this.props.nextStepNumber
+        //     )
+        //     this.props.start()
+        // }
 
-        if (!_.isEqual(prevProps.user, this.props.user)) {
+        if (
+            !_.isEqual(prevProps.user, this.props.user) &&
+            !prevProps.user &&
+            !this.props.user.isOnBoarded
+        ) {
             console.log(
                 `${DEBUG_KEY}: [ componentDidUpdate ]: prev user: `,
                 prevProps.user
             )
-            // console.log(`${DEBUG_KEY}: [ componentDidUpdate ]: now user: `, this.props.user);
+            setTimeout(() => {
+                console.log('[Home UI] [componentDidUpdate] start tutorial')
+                this.props.start()
+            }, 200)
         }
 
         if (
@@ -142,10 +151,17 @@ class Home extends Component {
         this.setTimer()
         this.props.checkIfNewlyCreated()
 
+        const { user } = this.props
+        if (user && !user.isOnBoarded) {
+            setTimeout(() => {
+                console.log('[Home UI] [componentDidMount] start tutorial')
+                this.props.start()
+            }, 300)
+        }
+
         this.props.copilotEvents.on('stop', () => {
             console.log(
-                `${DEBUG_KEY}: [ componentDidMount ]: [ copilotEvents ] 
-        tutorial stop. show next page. Next step number is: `,
+                `${DEBUG_KEY}: [ componentDidMount ]: [ copilotEvents ] tutorial stop. show next page. Next step number is: `,
                 this.props.nextStepNumber
             )
 
@@ -154,19 +170,9 @@ class Home extends Component {
                 this.props.pauseTutorial('create_goal', 'home', 1)
                 setTimeout(() => {
                     this.props.showNextTutorialPage('create_goal', 'home')
-                }, 600)
+                    this.props.markUserAsOnboarded()
+                }, 400)
                 return
-            }
-
-            if (this.props.nextStepNumber === 2) {
-                this.props.updateNextStepNumber('create_goal', 'home', 2)
-                this.props.showNextTutorialPage('create_goal', 'home')
-
-                console.log(
-                    `${DEBUG_KEY}: [ componentDidMount ]: [ copilotEvents ]: markUserAsOnboarded`
-                )
-                this.props.markUserAsOnboarded()
-                this.props.resetTutorial('create_goal', 'home')
             }
         })
 
@@ -195,6 +201,10 @@ class Home extends Component {
         this.stopTimer()
     }
 
+    setMastermindRef(mastermindRef) {
+        this.mastermindRef = mastermindRef
+    }
+
     setTimer() {
         this.stopTimer() // Clear the previous timer if there is one
 
@@ -218,12 +228,12 @@ class Home extends Component {
         }
     }
 
-    scrollToTop() {
-        if (this.flatList)
-            this.flatList.scrollToIndex({
+    scrollToTop = () => {
+        if (this.mastermindRef)
+            this.mastermindRef.scrollToIndex({
                 animated: true,
                 index: 0,
-                viewOffset: this.topTabBarHeight,
+                // viewOffset: this.topTabBarHeight,
             })
     }
 
@@ -320,6 +330,7 @@ class Home extends Component {
                         nextStepNumber={this.props.nextStepNumber}
                         order={0}
                         name="create_goal_home_0"
+                        setMastermindRef={this.setMastermindRef}
                     />
                 )
             case 'activity':
@@ -330,11 +341,10 @@ class Home extends Component {
     }
 
     render() {
-        /*
-          TODO:
-          1. use flatlist instead of scrollview
-          2. assign key on for TabButton
-        */
+        const { user, refreshing } = this.props
+
+        // NOTE: this has to compare with true otherwise it might be undefine
+        const showRefreshing = refreshing === true && user.isOnBoarded === true
         const tutorialOn =
             this.props.nextStepNumber >= 2
                 ? {
@@ -359,7 +369,7 @@ class Home extends Component {
                         })}
                         data={[{}]}
                         renderItem={this._renderScene}
-                        refreshing={this.props.refreshing}
+                        refreshing={showRefreshing}
                         onRefresh={this.handleOnRefresh}
                     />
                     <EarnBadgeModal
@@ -426,8 +436,8 @@ const HomeExplained = copilot({
     overlay: 'svg', // or 'view'
     animated: true, // or false
     stepNumberComponent: () => <View />,
-    tooltipComponent: Tooltip,
-    svgMaskPath: svgMaskPath,
+    tooltipComponent: CreateGoalTooltip,
+    // svgMaskPath: svgMaskPath,
 })(AnalyticsWrapped)
 
 export default connect(
