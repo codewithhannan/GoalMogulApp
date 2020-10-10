@@ -210,31 +210,35 @@ class ProfileDetailCard extends Component {
         }
 
         if (type === 'deleteFriend') {
-            Alert.alert('Are you sure to withdraw friend request?', '', [
-                {
-                    text: 'Confirm',
-                    onPress: () => {
-                        console.log(
-                            `${DEBUG_KEY} User withdraw request _id: `,
-                            this.props.friendship._id
-                        )
-                        this.props.updateFriendship(
-                            this.props.userId,
-                            this.props.friendship._id,
-                            'deleteFriend',
-                            'requests.outgoing',
-                            undefined
-                        )
+            Alert.alert(
+                'Are you sure you want to withdraw friend request?',
+                '',
+                [
+                    {
+                        text: 'Confirm',
+                        onPress: () => {
+                            console.log(
+                                `${DEBUG_KEY} User withdraw request _id: `,
+                                this.props.friendship._id
+                            )
+                            this.props.updateFriendship(
+                                this.props.userId,
+                                this.props.friendship._id,
+                                'deleteFriend',
+                                'requests.outgoing',
+                                undefined
+                            )
+                        },
                     },
-                },
-                {
-                    text: 'Cancel',
-                },
-            ])
+                    {
+                        text: 'Cancel',
+                    },
+                ]
+            )
         }
 
         if (type === 'unfriend') {
-            Alert.alert('Are you sure to unfriend?', '', [
+            Alert.alert('Are you sure you want to unfriend?', '', [
                 {
                     text: 'Confirm',
                     onPress: () => {

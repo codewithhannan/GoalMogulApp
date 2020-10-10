@@ -67,7 +67,7 @@ class Headline extends React.PureComponent {
             ? () => {
                   Alert.alert(
                       'Confirmation',
-                      'Are you sure to mark this goal as incomplete?',
+                      'Are you sure you want to mark this goal as incomplete?',
                       [
                           {
                               text: 'Cancel',
