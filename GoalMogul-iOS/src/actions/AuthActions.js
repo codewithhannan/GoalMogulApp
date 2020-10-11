@@ -786,11 +786,12 @@ export const checkIfNewlyCreated = () => async (dispatch, getState) => {
 
         setTimeout(() => {
             console.log(`${DEBUG_KEY}: [ checkIfNewlyCreated ]: showing alert`)
-            DropDownHolder.alert(
-                'custom',
-                makeTitleWithName(name),
-                makeMessage()
-            )
+            // TODO: disable the toaster until modal is created
+            // DropDownHolder.alert(
+            //     'custom',
+            //     makeTitleWithName(name),
+            //     makeMessage()
+            // )
         }, 1000)
 
         // Save the response

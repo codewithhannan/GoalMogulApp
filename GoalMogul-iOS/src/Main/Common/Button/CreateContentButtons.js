@@ -5,6 +5,9 @@ import { View, Text, Image } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { color, default_style } from '../../../styles/basic'
 import DelayedButton from './DelayedButton'
+import { CopilotStep, walkthroughable } from 'react-native-copilot'
+
+const WalkableView = walkthroughable(View)
 
 /**
  * Renders 'Create Goal' and 'Create Update' button card for Home/Profile pages
@@ -41,25 +44,33 @@ const CreateContentButtons = (props) => {
             {/* Hairline button seperator */}
             <View style={default_style.cardVerticalSeparator} />
 
-            {/* Create Goal */}
-            <DelayedButton
-                touchableHighlight
-                style={styles.createContentButton}
-                underlayColor={'#F2F2F2'}
-                onPress={onCreateGoalPress}
+            <CopilotStep
+                text="Let's start by adding your first goal"
+                order={0}
+                name="create_goal"
             >
-                {/* Wrapping button contents in a View since TouchableHighlight does not accept multiple children */}
-                <View style={{ alignItems: 'center' }}>
-                    <Icon
-                        name="bullseye-arrow"
-                        pack="material-community"
-                        style={styles.createContentButtonIcon}
-                    />
-                    <Text style={styles.createContentButtonText}>
-                        Create Goal
-                    </Text>
-                </View>
-            </DelayedButton>
+                <WalkableView style={{ flexGrow: 1 }}>
+                    {/* Create Goal */}
+                    <DelayedButton
+                        touchableHighlight
+                        style={styles.createContentButton}
+                        underlayColor={'#F2F2F2'}
+                        onPress={onCreateGoalPress}
+                    >
+                        {/* Wrapping button contents in a View since TouchableHighlight does not accept multiple children */}
+                        <View style={{ alignItems: 'center' }}>
+                            <Icon
+                                name="bullseye-arrow"
+                                pack="material-community"
+                                style={styles.createContentButtonIcon}
+                            />
+                            <Text style={styles.createContentButtonText}>
+                                Create Goal
+                            </Text>
+                        </View>
+                    </DelayedButton>
+                </WalkableView>
+            </CopilotStep>
         </View>
     )
 }

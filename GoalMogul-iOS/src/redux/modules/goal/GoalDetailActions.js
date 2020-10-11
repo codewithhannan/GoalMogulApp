@@ -613,7 +613,7 @@ export const shareGoalToMastermind = (goalId, pageId) => (
     getState
 ) => {
     Alert.alert(
-        'Are you sure to publish this to the top of the Home Feed?',
+        'Are you sure you want to publish this to the top of the Home Feed?',
         '',
         [
             {

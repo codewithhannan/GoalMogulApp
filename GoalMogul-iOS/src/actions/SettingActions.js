@@ -483,7 +483,7 @@ export const blockUser = (blockeeId, callback, userDoc) => (
     const title =
         userDoc && userDoc.name
             ? `Block ${userDoc.name}?`
-            : 'Are you sure to block this user?'
+            : 'Are you sure you want to block this user?'
 
     Alert.alert(
         title,

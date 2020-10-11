@@ -211,17 +211,21 @@ class Menu extends React.PureComponent {
                     <DelayedButton
                         activeOpacity={0.6}
                         onPress={() => {
-                            Alert.alert('Log out', 'Are you sure to log out?', [
-                                {
-                                    text: 'Cancel',
-                                    onPress: () =>
-                                        console.log('user cancel logout'),
-                                },
-                                {
-                                    text: 'Confirm',
-                                    onPress: () => this.props.logout(),
-                                },
-                            ])
+                            Alert.alert(
+                                'Log out',
+                                'Are you sure you want to log out?',
+                                [
+                                    {
+                                        text: 'Cancel',
+                                        onPress: () =>
+                                            console.log('user cancel logout'),
+                                    },
+                                    {
+                                        text: 'Confirm',
+                                        onPress: () => this.props.logout(),
+                                    },
+                                ]
+                            )
                         }}
                         style={styles.logOutButtonStyle}
                     >

@@ -137,7 +137,7 @@ class Mastermind extends Component {
         // Following is the old implementation
         return (
             <FlatList
-                scrollEnabled={false}
+                ref={this.props.setMastermindRef}
                 data={this.props.data}
                 renderItem={this.renderItem}
                 numColumns={1}

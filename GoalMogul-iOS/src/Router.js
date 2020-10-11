@@ -427,7 +427,7 @@ class RouterComponent extends Component {
                                 drawerPosition="right"
                                 contentComponent={Menu}
                                 drawerWidth={240}
-                                type={ActionConst.RESET}
+                                type={ActionConst.REPLACE}
                             >
                                 <Scene
                                     key="main"

@@ -275,7 +275,7 @@ export const myTribeAdminRemoveUser = (userId, tribeId) => (
 ) => {
     Alert.alert(
         'Confirmation',
-        'Are you sure to remove this user?',
+        'Are you sure you want to remove this user?',
         [
             {
                 text: 'Cancel',
@@ -348,7 +348,7 @@ export const myTribeAdminPromoteUser = (userId, tribeId) => (
 ) => {
     Alert.alert(
         'Confirmation',
-        'Are you sure to promote this user?',
+        'Are you sure you want to promote this user?',
         [
             {
                 text: 'Cancel',
@@ -422,7 +422,7 @@ export const myTribeAdminDemoteUser = (userId, tribeId) => (
 ) => {
     Alert.alert(
         'Confirmation',
-        'Are you sure to demote this user?',
+        'Are you sure you want to demote this user?',
         [
             {
                 text: 'Cancel',
@@ -493,7 +493,7 @@ export const myTribeAdminAcceptUser = (userId, tribeId) => (
     doAdminAcceptUser(userId, tribeId)(dispatch, getState)
     // Alert.alert(
     //   'Confirmation',
-    //   'Are you sure to accept this user?',
+    //   'Are you sure you want to accept this user?',
     //   [
     //     { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
     //     {

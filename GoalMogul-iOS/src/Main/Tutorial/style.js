@@ -1,6 +1,7 @@
 /** @format */
 
 import { StyleSheet } from 'react-native'
+import { GM_BLUE } from '../../styles/basic/color'
 
 export const STEP_NUMBER_RADIUS = 14
 export const STEP_NUMBER_DIAMETER = STEP_NUMBER_RADIUS * 2
@@ -67,8 +68,8 @@ export default style = {
     button: {
         padding: 8,
         paddingHorizontal: 15,
-        borderRadius: 6,
-        backgroundColor: '#0796cb',
+        borderRadius: 3,
+        backgroundColor: GM_BLUE,
     },
     buttonText: {
         color: '#fff',
@@ -77,7 +78,7 @@ export default style = {
     bottomBar: {
         marginTop: 10,
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
     },
     overlayRectangle: {
         position: 'absolute',

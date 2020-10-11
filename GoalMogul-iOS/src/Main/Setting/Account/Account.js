@@ -116,17 +116,21 @@ class Account extends Component {
                         key="logout"
                         explanation="Log out of current account"
                         onPress={() => {
-                            Alert.alert('Log out', 'Are you sure to log out?', [
-                                {
-                                    text: 'Cancel',
-                                    onPress: () =>
-                                        console.log('user cancel logout'),
-                                },
-                                {
-                                    text: 'Confirm',
-                                    onPress: () => this.props.logout(),
-                                },
-                            ])
+                            Alert.alert(
+                                'Log out',
+                                'Are you sure you want to log out?',
+                                [
+                                    {
+                                        text: 'Cancel',
+                                        onPress: () =>
+                                            console.log('user cancel logout'),
+                                    },
+                                    {
+                                        text: 'Confirm',
+                                        onPress: () => this.props.logout(),
+                                    },
+                                ]
+                            )
                         }}
                     />
                 </ScrollView>

@@ -1,12 +1,49 @@
 /** @format */
 
 import React from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 
 import styles from './style.js'
+import { default_style } from '../../styles/basic/index.js'
 
 const DEBUG_KEY = '[ UI Tooltip ]'
+const { width } = Dimensions.get('window')
+/**
+ * This is created purely for the new create goal tutorial after user onboards
+ * @param {} param0
+ */
+export const CreateGoalTooltip = ({
+    isFirstStep,
+    isLastStep,
+    handleNext,
+    handlePrev,
+    handleStop,
+    currentStep,
+    currentTutorialFinished,
+}) => {
+    const component = (
+        <TouchableOpacity onPress={handleStop} style={{ flex: 1 }}>
+            <Button>Start</Button>
+        </TouchableOpacity>
+    )
+
+    return (
+        <View
+            style={{
+                alignItems: 'center',
+                paddingBottom: 8,
+                with: width * 0.7,
+            }}
+        >
+            <Text testID="stepDescription" style={default_style.titleText_2}>
+                {currentStep.text}
+            </Text>
+
+            <View style={[styles.bottomBar]}>{component}</View>
+        </View>
+    )
+}
 
 const Tooltip = ({
     isFirstStep,
@@ -87,8 +124,11 @@ const Tooltip = ({
 }
 
 const Button = ({ wrapperStyle, style, ...rest }) => (
-    <View style={[styles.button, wrapperStyle]}>
-        <Text style={[styles.buttonText, style]} {...rest} />
+    <View style={[styles.button, wrapperStyle, { alignItems: 'center' }]}>
+        <Text
+            style={[default_style.buttonText_1, { color: 'white' }]}
+            {...rest}
+        />
     </View>
 )
 
