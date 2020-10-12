@@ -68,12 +68,12 @@ const { width } = Dimensions.get('window')
 const TYPE_MAP = {
     step: {
         title: 'Steps',
-        placeholder: 'Add an important step for achieving your goal',
+        placeholder: 'Break your goal into steps that are easier to achieve',
         buttonText: 'Add a Step',
     },
     need: {
         title: 'Things I Need',
-        placeholder: "Something you're specifically looking for help with",
+        placeholder: 'Something your friends might be able to help with',
         buttonText: 'Add a Need',
     },
 }
@@ -482,7 +482,7 @@ class NewGoalView extends Component {
     }
 
     renderGoal() {
-        const { title } = this.props
+        const { title, isFirstTimeCreateGoal } = this.props
         return (
             <CopilotStep
                 text={this.props.tutorialText[1]}
@@ -491,7 +491,11 @@ class NewGoalView extends Component {
             >
                 <WalkableView>
                     <FieldTitleText
-                        text="What are you looking to achieve?"
+                        text={
+                            isFirstTimeCreateGoal
+                                ? 'What’s a goal that your friends may not know you have?'
+                                : 'What are you looking to achieve?'
+                        }
                         required={false}
                         containerStyle={{ marginBottom: 16 }}
                     />
@@ -521,7 +525,7 @@ class NewGoalView extends Component {
                         inputContainerStyle={{
                             borderColor: color.GM_MID_GREY,
                         }}
-                        placeholder="Anything is possible ;)"
+                        placeholder="Be as specific as possible"
                         autoCorrect
                         autoFocus={true}
                         autoCapitalize={'sentences'}
@@ -575,7 +579,7 @@ class NewGoalView extends Component {
                             minHeight: 80,
                         }}
                         numberOfLines={5}
-                        placeholder="Describe your goal"
+                        placeholder="A clearly defined goal increases your success rate. You’ll also get more Comments & Likes."
                         multiline
                         loading={this.state.tagSearchData.loading}
                         tagData={this.state.tagSearchData.data}
