@@ -469,6 +469,44 @@ class TokenService {
     }
 
     /**
+     * Get if user is onboarded. Boolean check on if user is onboarded stored
+     * in refreshTokenObject. Hence as long as user is logged in, we are able
+     * to obtain if user is onboarded
+     */
+    async getIfUserOnboarded() {
+        const refreshTokenObject = await this.checkAndGetValidRefreshToken()
+        if (!refreshTokenObject) {
+            return false
+        }
+
+        return refreshTokenObject.isOnboarded
+    }
+
+    /**
+     * Mark user as onboarded and persist such information in refreshTokenObject
+     */
+    async markUserAsOnboarded() {
+        let refreshTokenObject = await this.checkAndGetValidRefreshToken()
+        if (refreshTokenObject == null) {
+            // Best effort. Something must have gone wrong
+            return
+        }
+
+        if (refreshTokenObject.isOnboarded) {
+            // No action needed
+            return
+        }
+
+        refreshTokenObject = _.set(refreshTokenObject, 'isOnboarded', true)
+        this._refreshTokenObject = refreshTokenObject
+
+        await this._storeTokenToSecureStore(
+            TOKEN_TYPE.refresh,
+            refreshTokenObject
+        )
+    }
+
+    /**
      * Check and get valid refresh token. When user doesn't have a valid refresh token,
      * user needs to re-login
      *

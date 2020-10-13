@@ -27,12 +27,6 @@ class OnboardingIntroTransition extends React.Component {
     componentDidMount() {
         // We try to prefetch user profile at this step of onboarding
         this.props.fetchAppUserProfile()
-
-        // Refresh home goals
-        this.props.refreshGoalFeed()
-
-        // Refresh home feed
-        this.props.refreshActivityFeed()
     }
 
     onContinue = () => {

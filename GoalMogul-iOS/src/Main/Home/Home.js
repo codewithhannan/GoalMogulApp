@@ -166,7 +166,7 @@ class Home extends Component {
             )
 
             if (this.props.nextStepNumber === 1) {
-                Actions.createGoalModal()
+                Actions.createGoalModal({ isFirstTimeCreateGoal: true })
                 this.props.pauseTutorial('create_goal', 'home', 1)
                 setTimeout(() => {
                     this.props.showNextTutorialPage('create_goal', 'home')

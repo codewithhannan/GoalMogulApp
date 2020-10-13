@@ -67,6 +67,7 @@ import { Asset } from 'expo-asset'
 import * as Font from 'expo-font'
 import TokenService from '../services/token/TokenService'
 import getEnvVars from '../../environment'
+import { TUTORIAL_MARK_USER_ONBOARDED } from '../redux/modules/User/Tutorials'
 
 const DEBUG_KEY = '[ Action Auth ]'
 
@@ -218,7 +219,7 @@ const authenticate = (
             await TokenService.populateAndPersistToken(
                 res.token,
                 res.refreshToken,
-                undefined,
+                res.isOnBoarded,
                 res.userId
             )
 
@@ -423,10 +424,26 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
                 userId
             )
 
+            // Pass along the user onboarded state to state.user.user.isOnboarded
+            dispatch({
+                type: TUTORIAL_MARK_USER_ONBOARDED,
+                payload: {
+                    userId: userId,
+                },
+            })
+
             // Go to home page
             Actions.replace('drawer')
         }
     } else {
+        // Pass along the user onboarded state to state.user.user.isOnboarded
+        dispatch({
+            type: TUTORIAL_MARK_USER_ONBOARDED,
+            payload: {
+                userId: userId,
+            },
+        })
+
         // Go to home page
         Actions.replace('drawer')
     }
@@ -449,7 +466,7 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     })
 
     // Fetch user profile
-    fetchAppUserProfile(undefined, userId)(dispatch, getState)
+    await fetchAppUserProfile(undefined, userId)(dispatch, getState)
 
     // Step 4 Refresh feed and all goals
     refreshActivityFeed()(dispatch, getState)

@@ -33,6 +33,7 @@ import {
 import { Logger } from '../../middleware/utils/Logger'
 import { api as API } from '../../middleware/api'
 import { track, EVENT as E } from '../../../monitoring/segment'
+import TokenService from '../../../services/token/TokenService'
 
 const DEBUG_KEY = '[ Actions StepTutorials ]'
 /**
@@ -191,7 +192,7 @@ export const resetTutorial = (flow, page) => async (dispatch, getState) => {
  * This is to be cleaned up during tutorial revamp.
  * TODO: cleanup
  */
-export const markUserAsOnboarded = () => (dispatch, getState) => {
+export const markUserAsOnboarded = () => async (dispatch, getState) => {
     const { userId, token } = getState().user
     Logger.log(`${DEBUG_KEY}: [ markUserAsOnboarded ] for user: `, userId, 1)
     track(E.TUTORIAL_DONE)
@@ -217,6 +218,8 @@ export const markUserAsOnboarded = () => (dispatch, getState) => {
             err
         )
     }
+
+    await TokenService.markUserAsOnboarded()
 
     // Fire request to update server user state
     API.put('secure/user/account/mark-as-onboarded', {}, token, 1)
