@@ -54,7 +54,6 @@ class TribeDiscover extends React.Component {
 
     handleRefresh = () => {
         if (this.props.handleRefresh) {
-            console.log(',..,,,,,,,,,,,,,,,,,,')
             return this.props.handleRefresh()
         }
         return this.props.refreshTribe()

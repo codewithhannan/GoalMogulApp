@@ -118,7 +118,7 @@ class OnboardingTribeSelection extends React.Component {
                         },
                     ]}
                 >
-                    It'll be easier to connet to others with similar goals.
+                    It'll be easier to connect to others with similar goals.
                 </Text>
             </View>
         )
@@ -200,7 +200,7 @@ class OnboardingTribeSelection extends React.Component {
                     canSelect
                     renderHeader={this.renderHeader}
                     renderHeaderText={this.renderHeaderText}
-                    renderCategorySelector={this.renderCategorySelector}
+                    renderCategorySelector={null}
                     itemOnPress={(tribeDoc) =>
                         this.props.registrationTribeSelection(
                             tribeDoc._id,
