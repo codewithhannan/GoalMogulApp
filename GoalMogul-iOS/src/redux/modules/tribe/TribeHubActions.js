@@ -42,16 +42,19 @@ const ROUTES = {
     tribes: (type) => {
         switch (type) {
             case TRIBE_TYPE.admin:
-                return () => `${BASE_ROUTE}?filterForMembershipCategory=Admin`
+                return () =>
+                    `${BASE_ROUTE}?filterForMembershipCategory=Admin&sortBy=name`
             case TRIBE_TYPE.favorite:
                 return () => `${BASE_ROUTE}` // TODO: tribe: API was not made yet
             case TRIBE_TYPE.member:
-                return () => `${BASE_ROUTE}?filterForMembershipCategory=Member`
+                return () =>
+                    `${BASE_ROUTE}?filterForMembershipCategory=Member&sortBy=name`
             case TRIBE_TYPE.requested:
                 return () =>
-                    `${BASE_ROUTE}?filterForMembershipCategory=JoinRequester`
+                    `${BASE_ROUTE}?filterForMembershipCategory=JoinRequester&sortBy=name`
             case TRIBE_TYPE.invited:
-                return () => `${BASE_ROUTE}?filterForMembershipCategory=Invitee`
+                return () =>
+                    `${BASE_ROUTE}?filterForMembershipCategory=Invitee&sortBy=name`
         }
     },
     feed: (skip, limit) =>

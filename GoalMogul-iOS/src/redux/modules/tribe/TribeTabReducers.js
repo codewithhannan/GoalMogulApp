@@ -18,7 +18,7 @@ const INITIAL_STATE = {
     loading: false,
     refreshing: false,
     // ['Popular', 'RecentlyCreated', 'Random']
-    sortBy: 'Popular',
+    sortBy: 'Name',
 }
 
 const sortByList = ['Popular', 'RecentlyCreated', 'Random']

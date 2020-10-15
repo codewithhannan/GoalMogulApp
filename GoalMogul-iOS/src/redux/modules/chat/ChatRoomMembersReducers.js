@@ -14,7 +14,7 @@ const INITIAL_STATE = {
         routes: [
             { key: 'members', title: 'Members' },
             { key: 'admins', title: 'Admins' },
-            { key: 'joinRequesters', title: 'Join Requesters' },
+            { key: 'joinRequesters', title: 'Requesters' },
         ],
     },
     selectedTab: 'members',
