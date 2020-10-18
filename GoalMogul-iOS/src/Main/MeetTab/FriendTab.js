@@ -102,6 +102,7 @@ class FriendTab extends React.Component {
                                 .containerStyle,
                             { height: 40 },
                         ]}
+                        activeOpacity={1}
                     >
                         <Text
                             style={[
@@ -153,6 +154,7 @@ class FriendTab extends React.Component {
                     <DelayedButton
                         touchableHighlight
                         onPress={this.handleSeeAllRequests}
+                        activeOpacity={1}
                         style={{
                             backgroundColor: '#F2F2F2',
                             borderRadius: 3,
@@ -234,7 +236,7 @@ class FriendTab extends React.Component {
                     <DelayedButton
                         onPress={() => this.handleSeeAllFriends()}
                         style={{ flexDirection: 'row', alignItems: 'center' }}
-                        activeOpacity={0.6}
+                        activeOpacity={1}
                     >
                         <Text
                             style={[

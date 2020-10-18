@@ -182,7 +182,7 @@ class FriendCardView extends React.PureComponent {
         return (
             <DelayedButton
                 style={[styles.containerStyle, styles.shadow]}
-                activeOpacity={0.6}
+                activeOpacity={1}
                 // disabled={enableCardOnPress === undefined || enableCardOnPress === false} comment out this line as the usage is not clear
                 disabled={enableCardOnPress === false}
                 onPress={() => this.props.openProfile(item._id)}
