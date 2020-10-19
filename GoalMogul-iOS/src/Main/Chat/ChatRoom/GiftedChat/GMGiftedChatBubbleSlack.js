@@ -18,6 +18,7 @@ import {
     View,
     ViewPropTypes,
 } from 'react-native'
+import { Actions } from 'react-native-router-flux'
 import { MessageText, Time, utils } from 'react-native-gifted-chat'
 import { color } from '../../../../styles/basic'
 import { MemberDocumentFetcher } from '../../../../Utils/UserUtils'
