@@ -146,7 +146,7 @@ class NotificationTab extends Component {
                 >
                     <View style={{ marginBottom: 10 }}>
                         <Text style={default_style.titleText_1}>
-                            You don't have many friends yet!
+                            You don't have many friends yet
                         </Text>
                     </View>
                     <View style={{ marginBottom: 20 }}>
@@ -198,6 +198,7 @@ class NotificationTab extends Component {
                         onPress={() => {
                             Actions.push('notificationNeedList')
                         }}
+                        activeOpacity={0.6}
                     >
                         <Text style={default_style.buttonText_1}>See More</Text>
                     </DelayedButton>

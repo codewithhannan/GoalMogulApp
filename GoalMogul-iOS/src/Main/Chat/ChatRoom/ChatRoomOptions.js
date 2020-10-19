@@ -319,6 +319,7 @@ class ChatRoomOptions extends React.Component {
                         muteDurationPicker: false,
                     })
                 }}
+                isDarkModeEnabled={false}
             />
         )
     }

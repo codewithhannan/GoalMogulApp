@@ -493,6 +493,7 @@ class GoalDetailSection extends React.PureComponent {
                         goalReminderDatePicker: false,
                     })
                 }}
+                isDarkModeEnabled={false}
             />
         )
     }

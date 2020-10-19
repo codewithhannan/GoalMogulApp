@@ -96,8 +96,6 @@ class OnboardingCommunity extends React.Component {
                                 width,
                                 height: width,
                                 backgroundColor: color.GM_CARD_BACKGROUND,
-                                borderTopLeftRadius: 10,
-                                borderTopRightRadius: 10,
                             }}
                             source={picture}
                             resizeMode="contain"
@@ -107,7 +105,6 @@ class OnboardingCommunity extends React.Component {
                             style={{
                                 width,
                                 height: width,
-                                backgroundColor: 'gray',
                                 borderTopLeftRadius: 10,
                                 borderTopRightRadius: 10,
                             }}
@@ -180,7 +177,7 @@ class OnboardingCommunity extends React.Component {
                             data={this.props.communityGuidelines}
                             renderItem={this.renderCard}
                             sliderWidth={this.getCurrentScreenWidth()}
-                            itemWidth={this.getCurrentScreenWidth() - 24}
+                            itemWidth={this.getCurrentScreenWidth() - 36}
                             layout={'stack'}
                             layoutCardOffset={10}
                             onSnapToItem={this.onSwipedAll}
@@ -211,7 +208,7 @@ const styles = {
         },
         elevation: 3,
         shadowRadius: 6,
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.17,
         shadowColor: 'black',
     },
 }

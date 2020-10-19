@@ -190,7 +190,12 @@ export const handlePushNotification = (notification) => (
     }
 
     if (entityType === 'tribe') {
-        return myTribeDetailOpenWithId(entityId)(dispatch, getState)
+        let props = {}
+        if (path.length === 3 && path[2] == 'request') {
+            // handle path /tribe/{tribeId}/request
+            props = { initialRoute: 'request' }
+        }
+        return myTribeDetailOpenWithId(entityId, props)(dispatch, getState)
     }
 
     if (entityType === 'chatroom') {
@@ -373,7 +378,12 @@ export const openNotificationDetail = (item) => (dispatch, getState) => {
     }
 
     if (entityType === 'tribe') {
-        return myTribeDetailOpenWithId(entityId)(dispatch, getState)
+        let props = {}
+        if (p.length === 3 && p[2] == 'request') {
+            // handle path /tribe/{tribeId}/request
+            props = { initialRoute: 'request' }
+        }
+        return myTribeDetailOpenWithId(entityId, props)(dispatch, getState)
     }
 
     if (entityType === 'chatroom') {
