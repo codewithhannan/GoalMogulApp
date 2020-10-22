@@ -114,6 +114,7 @@ class ChatSearch extends Component {
                         onEndReachedThreshold={0.5}
                         onRefresh={this.handleRefresh}
                         refreshing={this.props.loading}
+                        keyboardShouldPersistTaps="always"
                     />
                 )}
             </View>
