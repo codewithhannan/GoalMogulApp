@@ -88,7 +88,7 @@ class NotificationCard extends React.Component {
         const { created, description, goalRef } = item
 
         // TODO: use the actual content
-        const goalTitle = _.get(goalRef, 'title', undefined)
+        const goalTitle = _.get(goalRef, 'title', null)
         const name = goalRef.owner.name
 
         return (
