@@ -363,7 +363,7 @@ export const getParentCommentId = (commentId, comments, props) => {
             break
         }
     }
-    console.log(ret)
+
     return ret
 }
 
