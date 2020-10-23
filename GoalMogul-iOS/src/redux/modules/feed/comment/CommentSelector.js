@@ -42,7 +42,7 @@ const getCommentByEntityId = (state, entityId) => {
     const comments = state.comments
     if (!_.has(comments, entityId)) {
         console.warn(`${DEBUG_KEY}: no comments for entityId: ${entityId}`)
-        return { ...INITIAL_COMMENT_OBJECT }
+        return INITIAL_COMMENT_OBJECT
     }
     return _.get(comments, entityId)
 }

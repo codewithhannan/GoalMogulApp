@@ -36,7 +36,7 @@ import { refreshActivityFeed } from '../redux/modules/home/feed/actions'
 
 import { refreshGoalFeed } from '../redux/modules/home/mastermind/actions'
 
-import { IMAGE_BASE_URL, MINUTE_IN_MS, DAY_IN_MS } from '../Utils/Constants'
+import { IMAGE_BASE_URL } from '../Utils/Constants'
 
 // Components
 import { DropDownHolder } from '../Main/Common/Modal/DropDownModal'

@@ -34,8 +34,6 @@ import PostDetailSection from './PostDetailSection'
 import CreatePostModal from '../CreatePostModal'
 
 const DEBUG_KEY = '[ UI PostDetailCard ]'
-const TABBAR_HEIGHT = 48.5
-const TOTAL_HEIGHT = TABBAR_HEIGHT
 
 class PostDetailCard extends React.PureComponent {
     constructor(props) {
@@ -179,14 +177,18 @@ class PostDetailCard extends React.PureComponent {
      * Scroll to comment item
      */
     handleScrollToCommentItem = (commentId) => {
-        const { originalComments, comments } = this.props
+        const { originalComments, comments, tab, pageId, postId } = this.props
 
         Logger.log(
             `${DEBUG_KEY}: [ handleScrollToCommentItem ]: originalComments`,
             originalComments,
             2
         )
-        const parentCommentId = getParentCommentId(commentId, originalComments)
+        const parentCommentId = getParentCommentId(
+            commentId,
+            originalComments,
+            { navigationTab: tab, pageId, entityId: postId }
+        )
 
         Logger.log(
             `${DEBUG_KEY}: [ handleScrollToCommentItem ]: commentId`,

@@ -72,6 +72,7 @@ class ReplyThread extends React.Component {
             likeListParentType: undefined,
             savedComment: props.newComment,
             commentBoxHeight: 80,
+            initScroll: true,
         }
         this.contentBottomPadding = new Animated.Value(0)
         this.openCommentLikeList = this.openCommentLikeList.bind(this)
@@ -92,8 +93,15 @@ class ReplyThread extends React.Component {
             this.keyboardWillHide
         )
         this.clearCommentBox()
+        if (this.props.initScrollToComment && this.state.initScroll) {
+            this.setState({ initScroll: false })
+            const parentCommentIndex = this.props.item.childComments.findIndex(
+                (c) => c._id === this.props.initScrollToComment
+            )
+            setTimeout(() => this.scrollToIndex(parentCommentIndex), 300)
+        }
         if (this.props.focusCommentBox)
-            setTimeout(() => this.commentBox.focus(), 700)
+            setTimeout(() => this.commentBox.focus(), 500)
     }
 
     componentWillUnmount() {
@@ -167,6 +175,16 @@ class ReplyThread extends React.Component {
             },
             pageId
         )
+    }
+
+    scrollToIndex = (index, viewOffset = 0, animated = true) => {
+        if (this.flatList)
+            this.flatList.scrollToIndex({
+                index,
+                animated,
+                viewPosition: 1,
+                viewOffset,
+            })
     }
 
     /**
@@ -429,6 +447,7 @@ class ReplyThread extends React.Component {
                     behavior={'height'}
                 >
                     <FlatList
+                        ref={(ref) => (this.flatList = ref)}
                         ListHeaderComponent={this.renderHeader()}
                         data={childComments}
                         renderItem={this.renderItem}

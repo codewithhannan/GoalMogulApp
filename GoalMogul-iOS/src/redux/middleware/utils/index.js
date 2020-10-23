@@ -15,6 +15,7 @@ import { IMAGE_BASE_URL, USER_INVITE_URL } from '../../../Utils/Constants'
 import DEFAULT_PROFILE_IMAGE from '../../../asset/utils/defaultUserProfile.png'
 import { Alert } from 'react-native'
 import { Logger } from './Logger'
+import { Actions } from 'react-native-router-flux'
 
 const { CheckIcon } = Icons
 /**
@@ -342,18 +343,27 @@ export const constructMenuName = (component, pageId) => `${component}-${pageId}`
  * @param {*} commentId
  * @param {*} comments
  */
-export const getParentCommentId = (commentId, comments) => {
+export const getParentCommentId = (commentId, comments, props) => {
     let ret = commentId // Set to self
     if (!comments) return ret
 
-    comments.forEach((c) => {
-        if (!c || _.isEmpty(c)) return
+    for (const c of comments) {
+        if (!c || _.isEmpty(c)) continue
 
         const { _id, replyToRef } = c
         if (_id === commentId && replyToRef) {
+            const { pageId, navigationTab, entityId } = props
+            Actions.push(componentKeyByTab(navigationTab, 'replyThread'), {
+                itemId: replyToRef,
+                pageId,
+                entityId,
+                initScrollToComment: commentId,
+            })
             ret = replyToRef // Set to parent comment
+            break
         }
-    })
+    }
+
     return ret
 }
 

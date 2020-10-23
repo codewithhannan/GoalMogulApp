@@ -148,7 +148,6 @@ class ShareDetailCard extends Component {
             `${DEBUG_KEY}: show comment like list: ${likeListParentType}, ${likeListParentId}`
         )
         this.setState({
-            ...this.state,
             showCommentLikeList: true,
             likeListParentType,
             likeListParentId,
@@ -161,7 +160,6 @@ class ShareDetailCard extends Component {
     closeCommentLikeList = () => {
         console.log(`${DEBUG_KEY}: close comment like list`)
         this.setState({
-            ...this.state,
             showCommentLikeList: false,
             likeListParentId: undefined,
             likeListParentType: undefined,
@@ -172,14 +170,18 @@ class ShareDetailCard extends Component {
      * Scroll to comment item
      */
     handleScrollToCommentItem = (commentId) => {
-        const { originalComments, comments } = this.props
+        const { originalComments, comments, tab, pageId, postId } = this.props
 
         Logger.log(
             `${DEBUG_KEY}: [ handleScrollToCommentItem ]: originalComments`,
             originalComments,
             2
         )
-        const parentCommentId = getParentCommentId(commentId, originalComments)
+        const parentCommentId = getParentCommentId(
+            commentId,
+            originalComments,
+            { navigationTab: tab, pageId, entityId: postId }
+        )
 
         Logger.log(
             `${DEBUG_KEY}: [ handleScrollToCommentItem ]: commentId`,
@@ -337,7 +339,6 @@ class ShareDetailCard extends Component {
                         }
                     />
                 </KeyboardAvoidingView>
-
                 <Animated.View
                     style={[
                         styles.composerContainer,

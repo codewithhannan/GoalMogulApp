@@ -138,13 +138,13 @@ export default (state = INITIAL_STATE, action) => {
             let newState = _.cloneDeep(state)
             const originalGoal = _.get(newState, `${path}.goal`)
             if (originalGoal._id === goalId) {
-                newState = _.set(newState, `${path}.goal`, { ...goal })
+                newState = _.set(newState, `${path}.goal`, goal)
             }
             return newState
         }
 
         case GOAL_DETAIL_FETCH_ERROR: {
-            const { tab, goalId, goal } = action.payload
+            const { tab, goalId } = action.payload
             const path =
                 !tab || tab === 'homeTab'
                     ? 'goal'

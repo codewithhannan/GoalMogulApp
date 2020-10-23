@@ -22,7 +22,7 @@ import { chat_style } from '../../../styles/Chat'
 import { openGoalDetailById } from '../../../redux/modules/home/mastermind/actions'
 import ProfileImage from '../ProfileImage'
 import { myTribeDetailOpenWithId } from '../../../redux/modules/tribe/MyTribeActions'
-import { default_style, text } from '../../../styles/basic'
+import { default_style } from '../../../styles/basic'
 import { getChatroomSharedEntity } from '../../../redux/modules/chat/ChatSelector'
 import { refreshGoalDetailById } from '../../../redux/modules/goal/GoalDetailActions'
 
@@ -149,13 +149,10 @@ class ShareCard extends React.Component {
                         {entity.title}
                     </Text>
                 )
-            } else {
+            } else if (!entity.loading) {
                 // render default content
                 content = (
-                    <Text
-                        style={chat_style.chatMessageTextStyle}
-                        numberOfLines={1}
-                    >
+                    <Text style={chat_style.chatMessageTextStyle}>
                         NOT FOUND
                     </Text>
                 )
