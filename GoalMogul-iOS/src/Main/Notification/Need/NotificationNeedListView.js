@@ -55,9 +55,7 @@ class NotificationNeedListView extends React.PureComponent {
 
     render() {
         return (
-            <View
-                style={{ flex: 1, backgroundColor: color.GM_CARD_BACKGROUND }}
-            >
+            <View style={{ flex: 1, backgroundColor: color.GM_BACKGROUND }}>
                 <SearchBarHeader backButton title="Need feed" />
                 <FlatList
                     data={this.props.data}

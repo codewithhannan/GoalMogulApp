@@ -50,6 +50,7 @@ import {
 } from '../../../redux/middleware/utils'
 import FloatingHearts from '../../Common/FloatingHearts/FloatingHearts'
 import ActionBar from '../../Common/ContentCards/ActionBar'
+import { createReport } from '../../../redux/modules/report/ReportActions'
 
 const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]'
 const SHARE_TO_MENU_OPTTIONS = ['Share to a Tribe', 'Cancel']
@@ -434,4 +435,5 @@ export default connect(mapStateToProps, {
     openProfile,
     subscribeEntityNotification,
     unsubscribeEntityNotification,
+    createReport,
 })(wrapAnalytics(PostPreviewCard, SCREENS.PROFILE_POST_TAB))

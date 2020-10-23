@@ -226,6 +226,7 @@ export const onUpdatePhoneNumberSubmit = (values, callback) => {
             body: JSON.stringify({
                 token: authToken,
                 phone: values.phone,
+                currentPassword: values.password,
             }),
         }
         const message = await fetch(url, headers)
