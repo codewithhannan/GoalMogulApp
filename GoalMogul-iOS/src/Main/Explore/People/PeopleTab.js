@@ -85,7 +85,7 @@ class PeopleTab extends React.Component {
                         borderColor: 'lightgray',
                         justifyContent: 'center',
                     }}
-                    activeOpacity={0.6}
+                    activeOpacity={1}
                 >
                     <Text
                         style={{

@@ -229,7 +229,7 @@ class FriendRequestCardView extends React.PureComponent {
                     onPress={() =>
                         this.handleAcceptFriendRequest(userId, friendshipId)
                     }
-                    activeOpacity={0.6}
+                    activeOpacity={1}
                     style={[
                         styles.buttonTextContainerStyle,
                         { backgroundColor: color.GM_BLUE },
@@ -248,7 +248,7 @@ class FriendRequestCardView extends React.PureComponent {
                     onPress={() =>
                         this.handleDeleteFriendRequest(userId, friendshipId)
                     }
-                    activeOpacity={0.6}
+                    activeOpacity={1}
                     style={[
                         styles.buttonTextContainerStyle,
                         { backgroundColor: '#F2F2F2' },

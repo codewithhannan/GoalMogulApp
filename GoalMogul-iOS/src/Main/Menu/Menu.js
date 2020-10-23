@@ -186,13 +186,6 @@ class Menu extends React.PureComponent {
                             }
                             style={styles.buttonStyle}
                         >
-                            <Text style={styles.bottomText}>Help</Text>
-                        </DelayedButton>
-                        <DelayedButton
-                            activeOpacity={0.6}
-                            onPress={() => this.handleBugReportOnPress()}
-                            style={styles.buttonStyle}
-                        >
                             <Text style={styles.bottomText}>
                                 Give us feedback
                             </Text>

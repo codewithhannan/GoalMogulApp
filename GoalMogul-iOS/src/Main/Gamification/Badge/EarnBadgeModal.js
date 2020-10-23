@@ -390,9 +390,12 @@ const BadgeInfoCard = (props) => {
             >
                 {/* Left icon and badge */}
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    {/* Info or Check icon */}
+                    {/* Info or Check icon, show check mark when user has the badge or it's a gold badge */}
                     <DelayedButton
-                        style={leadingIconContainerStyle}
+                        style={[
+                            leadingIconContainerStyle,
+                            { opacity: userTier >= tier || tier === 4 ? 1 : 0 },
+                        ]}
                         onPress={onLeadingIconPress}
                     >
                         <Image
@@ -486,7 +489,7 @@ const DefaultLeadingIconContainerStyle = {
 const BadgeInfo = [
     {
         title: 'Green',
-        tier: 0,
+        tier: 1,
         infoTextList: [
             { text: 'Add a profile image', hasBulletPoint: true },
             {
@@ -522,7 +525,7 @@ const BadgeInfo = [
     },
     {
         title: 'Bronze',
-        tier: 1,
+        tier: 2,
         infoTextList: [
             {
                 text: 'Invite 1 friend who signs up',
@@ -555,7 +558,7 @@ const BadgeInfo = [
     },
     {
         title: 'Silver',
-        tier: 2,
+        tier: 3,
         infoTextList: [
             { text: 'Set 7 Goals', hasBulletPoint: true },
             {
@@ -590,7 +593,7 @@ const BadgeInfo = [
     },
     {
         id: 'gold',
-        tier: 3,
+        tier: 4,
         title: 'Gold + $700 Reward\u002A',
         infoTextList: [
             {

@@ -43,6 +43,18 @@ class MyTribeMembers extends React.PureComponent {
         }
     }
 
+    componentDidMount() {
+        const { initialRoute, navigationState, tribeId, pageId } = this.props
+        if (initialRoute && initialRoute === 'request') {
+            this.props.myTribeSelectMembersFilter(
+                navigationState.routes,
+                1,
+                tribeId,
+                pageId
+            )
+        }
+    }
+
     /**
      * This function is passed to MemberListCard when setting icon is clicked
      * and remove user option is chosen

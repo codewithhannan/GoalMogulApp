@@ -118,6 +118,7 @@ class MyTribe extends React.PureComponent {
     }
 
     componentDidMount() {
+        const { pageId, tribeId, initialRoute, item } = this.props
         // Refresh my detail without showing indicator
         this.props.refreshMyTribeDetail(
             this.props.tribeId,
@@ -125,6 +126,18 @@ class MyTribe extends React.PureComponent {
             null,
             false
         )
+
+        if (initialRoute && initialRoute === 'request') {
+            // Entry point through notification for join request.
+            setTimeout(() => {
+                Actions.push('myTribeMembers', {
+                    itemId: item ? item._id : tribeId,
+                    pageId,
+                    tribeId,
+                    initialRoute, // initialRoute === 'request'
+                })
+            }, 200)
+        }
     }
 
     openUserInviteModal = (item) => {

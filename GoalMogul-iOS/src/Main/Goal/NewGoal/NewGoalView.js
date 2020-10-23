@@ -719,6 +719,7 @@ class NewGoalView extends Component {
                         picker: false,
                     })
                 }
+                isDarkModeEnabled={false}
             />
         ) : (
             <Modal
@@ -773,6 +774,7 @@ class NewGoalView extends Component {
                         picker: false,
                     })
                 }
+                isDarkModeEnabled={false}
             />
         ) : (
             <Modal

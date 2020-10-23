@@ -98,7 +98,10 @@ export const tribeDetailClose = (tribeId, pageId) => (dispatch, getState) => {
  * Current behavior is to go to home page and opens up tribe detail
  * and then open tribe detail with id
  */
-export const myTribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
+export const myTribeDetailOpenWithId = (tribeId, props) => (
+    dispatch,
+    getState
+) => {
     const { tab } = getState().navigation
     const pageId = constructPageId('tribe')
     const callback = (res) => {
@@ -121,7 +124,7 @@ export const myTribeDetailOpenWithId = (tribeId) => (dispatch, getState) => {
                 },
             })
             const componentToOpen = componentKeyByTab(tab, 'myTribeDetail')
-            Actions.push(componentToOpen, { pageId, tribeId })
+            Actions.push(componentToOpen, { pageId, tribeId, ...props })
             return
         }
         return

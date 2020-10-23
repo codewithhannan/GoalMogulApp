@@ -215,7 +215,7 @@ export default (state = INITIAL_STATE, action) => {
 
         case TRIBE_HUB_LOAD_DONE: {
             const { data, type } = action.payload
-
+            let newState = _.cloneDeep(state)
             if (!_.has(newState, `${type}`)) {
                 // For debugging purpose since type passed isn't one of defined ['favorite', 'managed', 'others']
                 console.error(
