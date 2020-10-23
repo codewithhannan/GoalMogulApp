@@ -72,7 +72,7 @@ class ReplyThread extends React.Component {
             likeListParentType: undefined,
             savedComment: props.newComment,
             commentBoxHeight: 80,
-            initScroll: false,
+            initScroll: true,
         }
         this.contentBottomPadding = new Animated.Value(0)
         this.openCommentLikeList = this.openCommentLikeList.bind(this)
