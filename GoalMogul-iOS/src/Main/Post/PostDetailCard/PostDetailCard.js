@@ -177,14 +177,18 @@ class PostDetailCard extends React.PureComponent {
      * Scroll to comment item
      */
     handleScrollToCommentItem = (commentId) => {
-        const { originalComments, comments } = this.props
+        const { originalComments, comments, tab, pageId, postId } = this.props
 
         Logger.log(
             `${DEBUG_KEY}: [ handleScrollToCommentItem ]: originalComments`,
             originalComments,
             2
         )
-        const parentCommentId = getParentCommentId(commentId, originalComments)
+        const parentCommentId = getParentCommentId(
+            commentId,
+            originalComments,
+            { navigationTab: tab, pageId, entityId: postId }
+        )
 
         Logger.log(
             `${DEBUG_KEY}: [ handleScrollToCommentItem ]: commentId`,

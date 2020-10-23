@@ -378,9 +378,13 @@ export class GoalDetailCardV3 extends React.Component {
      */
     handleScrollToCommentItem = (commentId) => {
         this._handleIndexChange(1, 'comment', undefined)
-        const { originalComments, data } = this.props
+        const { originalComments, data, tab, pageId, goalId } = this.props
 
-        const parentCommentId = getParentCommentId(commentId, originalComments)
+        const parentCommentId = getParentCommentId(
+            commentId,
+            originalComments,
+            { navigationTab: tab, pageId, entityId: goalId }
+        )
         if (!parentCommentId) return // Do nothing since it's no loaded. Defensive coding
 
         const parentCommentIndex = data.findIndex(
@@ -394,7 +398,7 @@ export class GoalDetailCardV3 extends React.Component {
                 // initialNumberToRender for focus tab
                 initialScrollToCommentReset: true,
             })
-        }, 500)
+        }, 300)
     }
 
     handleReplyTo = (type) => {
@@ -773,7 +777,7 @@ export class GoalDetailCardV3 extends React.Component {
             <DraggableFlatList
                 ref={(ref) => {
                     if (ref && ref.containerRef)
-                        this.flatlist = ref.flatlistRef.current
+                        this.flatList = ref.flatlistRef.current
                 }}
                 ListHeaderComponent={this._renderTabBar()}
                 data={data}
@@ -1085,7 +1089,7 @@ const switchCaseEmptyText = (type) =>
         comment: 'No Comments',
         step: 'No suggestions for this step',
         need: 'No suggestions for this need',
-    })('comment')(type)
+    })('No Steps or Needs')(type)
 
 // Analytics must be the inner most wrapper
 GoalDetailCardV3 = wrapAnalytics(GoalDetailCardV3, SCREENS.GOAL_DETAIL)
