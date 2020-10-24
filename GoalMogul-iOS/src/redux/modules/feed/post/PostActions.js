@@ -39,7 +39,6 @@ import ImageUtils from '../../../../Utils/ImageUtils'
 import { EMPTY_POST } from '../../../../Utils/Constants'
 import { Logger } from '../../../middleware/utils/Logger'
 import { trackWithProperties, EVENT as E } from '../../../../monitoring/segment'
-import { async } from 'validate.js'
 
 const DRAFTS = 'draft_posts'
 const DEBUG_KEY = '[ Action Post ]'
