@@ -17,6 +17,8 @@ import {
 } from './PostReducers'
 
 import { openShareDetail } from './ShareActions'
+import { refreshActivityFeed } from '../../home/feed/actions'
+import { refreshTribeHubFeed } from '../../tribe/TribeHubActions'
 
 import {
     openProfile,
@@ -180,7 +182,12 @@ export const closePostDetail = (postId, pageId) => (dispatch, getState) => {
 export const submitCreatingPost = (
     values,
     needUpload,
-    { needOpenProfile, needRefreshProfile },
+    {
+        needOpenProfile,
+        needRefreshProfile,
+        needRefreshTribeFeed,
+        needRefreshMainFeed,
+    },
     initializeFromState, // initializeFromState means it's an update
     initialPost,
     callback,
@@ -196,6 +203,7 @@ export const submitCreatingPost = (
 
     const onSuccess = (res) => {
         console.log('Creating post succeed with res: ', res)
+
         dispatch({
             type: POST_NEW_POST_SUBMIT_SUCCESS,
             payload: {
@@ -208,6 +216,14 @@ export const submitCreatingPost = (
         })
 
         if (callback) callback()
+
+        if (needRefreshMainFeed) {
+            refreshActivityFeed()(dispatch, getState)
+        }
+
+        if (needRefreshTribeFeed) {
+            refreshTribeHubFeed()(dispatch, getState)
+        }
 
         if (needOpenProfile) {
             // Open profile and then refresh

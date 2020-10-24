@@ -454,6 +454,8 @@ class CreatePostModal extends Component {
             {
                 needOpenProfile, // Open user profile page and refresh the profile
                 needRefreshProfile, // Only refresh the profile page with given tab and filter
+                needRefreshTribeFeed: !!belongsToTribe,
+                needRefreshMainFeed: !belongsToTribe,
             },
             initializeFromState,
             initialPost,
