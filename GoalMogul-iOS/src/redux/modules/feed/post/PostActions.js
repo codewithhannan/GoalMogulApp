@@ -39,6 +39,7 @@ import ImageUtils from '../../../../Utils/ImageUtils'
 import { EMPTY_POST } from '../../../../Utils/Constants'
 import { Logger } from '../../../middleware/utils/Logger'
 import { trackWithProperties, EVENT as E } from '../../../../monitoring/segment'
+import { async } from 'validate.js'
 
 const DRAFTS = 'draft_posts'
 const DEBUG_KEY = '[ Action Post ]'
@@ -570,9 +571,10 @@ const constructTags = (tags, content) => {
     })
 }
 
-export const fetchPostDrafts = async () => {
+export const fetchPostDrafts = async (userId) => {
+    await cleanDrafts()
     try {
-        const drafts = await AsyncStorage.getItem(DRAFTS)
+        let drafts = await AsyncStorage.getItem(`${DRAFTS}_${userId}`)
         if (drafts) return JSON.parse(drafts)
     } catch (error) {
         console.warn(`${DEBUG_KEY}: [ fetchPostDrafts ] failed with err: `, err)
@@ -580,9 +582,21 @@ export const fetchPostDrafts = async () => {
     return []
 }
 
-export const savePostDrafts = async (drafts = []) => {
+// TODO: delete this after clean up has happened on most devices
+const cleanDrafts = async () => {
     try {
-        await AsyncStorage.setItem(DRAFTS, JSON.stringify(drafts))
+        await AsyncStorage.removeItem(DRAFTS)
+    } catch (error) {
+        console.warn(`${DEBUG_KEY}: [ fetchPostDrafts ] failed with err: `, err)
+    }
+}
+
+export const savePostDrafts = async (drafts = [], userId) => {
+    try {
+        await AsyncStorage.setItem(
+            `${DRAFTS}_${userId}`,
+            JSON.stringify(drafts)
+        )
     } catch (error) {
         console.warn(`${DEBUG_KEY}: [ savePostDrafts ] failed with err: `, err)
         throw error
