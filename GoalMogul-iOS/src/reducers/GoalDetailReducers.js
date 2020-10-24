@@ -116,44 +116,35 @@ export const GOAL_DETAIL_UPDATE_DONE = 'goal_detail_update_done'
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case GOAL_DETAIL_FETCH: {
-            const { tab, goalId } = action.payload
+            const { tab } = action.payload
             const path =
                 !tab || tab === 'homeTab'
                     ? 'goal'
                     : `goal${capitalizeWord(tab)}`
             let newState = _.cloneDeep(state)
-            const originalGoal = _.get(newState, `${path}.goal`)
-            if (originalGoal._id === goalId) {
-                newState = _.set(newState, `${path}.goal.loading`, true)
-            }
+            newState = _.set(newState, `${path}.goal.loading`, true)
             return newState
         }
 
         case GOAL_DETAIL_FETCH_DONE: {
-            const { tab, goalId, goal } = action.payload
+            const { tab, goal } = action.payload
             const path =
                 !tab || tab === 'homeTab'
                     ? 'goal'
                     : `goal${capitalizeWord(tab)}`
             let newState = _.cloneDeep(state)
-            const originalGoal = _.get(newState, `${path}.goal`)
-            if (originalGoal._id === goalId) {
-                newState = _.set(newState, `${path}.goal`, goal)
-            }
+            newState = _.set(newState, `${path}.goal`, goal)
             return newState
         }
 
         case GOAL_DETAIL_FETCH_ERROR: {
-            const { tab, goalId } = action.payload
+            const { tab } = action.payload
             const path =
                 !tab || tab === 'homeTab'
                     ? 'goal'
                     : `goal${capitalizeWord(tab)}`
             let newState = _.cloneDeep(state)
-            const originalGoal = _.get(newState, `${path}.goal`)
-            if (originalGoal._id === goalId) {
-                newState = _.set(newState, `${path}.goal.loading`, false)
-            }
+            newState = _.set(newState, `${path}.goal.loading`, false)
             return newState
         }
 
