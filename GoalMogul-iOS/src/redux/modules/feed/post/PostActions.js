@@ -485,10 +485,7 @@ const newPostAdaptor = (values, userId) => {
             // links: [] no link is needed for now
         },
         mediaRef,
-        postType:
-            belongsToGoalStoryline !== undefined
-                ? 'GoalStorylineUpdate'
-                : 'General',
+        postType: belongsToGoalStoryline ? 'GoalStorylineUpdate' : 'General',
         belongsToTribe,
         belongsToEvent,
         belongsToGoalStoryline,
