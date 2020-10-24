@@ -16,7 +16,7 @@ export const makeGetChatRoom = () => {
     )
 }
 
-const getSharedEntity = (state, props) => {
+const getSharedEntity = (state, props, pageId) => {
     const { userRef, goalRef, tribeRef } = props
     const { goals, users, tribes } = state
 
@@ -25,7 +25,10 @@ const getSharedEntity = (state, props) => {
     }
 
     if (goalRef) {
-        return _.cloneDeep(_.get(goals, `${goalRef}.goal`, { loading: false }))
+        const loading = _.cloneDeep(
+            _.get(goals, `${goalRef}.${pageId}.loading`)
+        )
+        return { ..._.cloneDeep(_.get(goals, `${goalRef}.goal`)), loading }
     }
 
     if (tribeRef) {

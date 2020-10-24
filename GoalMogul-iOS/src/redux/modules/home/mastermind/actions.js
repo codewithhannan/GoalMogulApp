@@ -11,13 +11,7 @@ import {
     HOME_SET_GOAL_INDEX,
     HOME_UPDATE_FILTER,
 } from '../../../../reducers/Home'
-
 import { GOAL_DETAIL_OPEN } from '../../../../reducers/GoalDetailReducers'
-
-// Actions
-import { refreshComments } from '../../feed/comment/CommentActions'
-
-import { refreshGoalDetailById } from '../../goal/GoalDetailActions'
 import { EMPTY_GOAL } from '../../../../Utils/Constants'
 
 import { api as API } from '../../../middleware/api'

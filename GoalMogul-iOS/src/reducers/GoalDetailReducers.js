@@ -116,35 +116,44 @@ export const GOAL_DETAIL_UPDATE_DONE = 'goal_detail_update_done'
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case GOAL_DETAIL_FETCH: {
-            const { tab } = action.payload
+            const { tab, goalId } = action.payload
             const path =
                 !tab || tab === 'homeTab'
                     ? 'goal'
                     : `goal${capitalizeWord(tab)}`
             let newState = _.cloneDeep(state)
-            newState = _.set(newState, `${path}.goal.loading`, true)
+            const originalGoal = _.get(newState, `${path}.goal`)
+            if (originalGoal._id === goalId) {
+                newState = _.set(newState, `${path}.goal.loading`, true)
+            }
             return newState
         }
 
         case GOAL_DETAIL_FETCH_DONE: {
-            const { tab, goal } = action.payload
+            const { tab, goalId, goal } = action.payload
             const path =
                 !tab || tab === 'homeTab'
                     ? 'goal'
                     : `goal${capitalizeWord(tab)}`
             let newState = _.cloneDeep(state)
-            newState = _.set(newState, `${path}.goal`, goal)
+            const originalGoal = _.get(newState, `${path}.goal`)
+            if (originalGoal._id === goalId) {
+                newState = _.set(newState, `${path}.goal`, goal)
+            }
             return newState
         }
 
         case GOAL_DETAIL_FETCH_ERROR: {
-            const { tab } = action.payload
+            const { tab, goalId } = action.payload
             const path =
                 !tab || tab === 'homeTab'
                     ? 'goal'
                     : `goal${capitalizeWord(tab)}`
             let newState = _.cloneDeep(state)
-            newState = _.set(newState, `${path}.goal.loading`, false)
+            const originalGoal = _.get(newState, `${path}.goal`)
+            if (originalGoal._id === goalId) {
+                newState = _.set(newState, `${path}.goal.loading`, false)
+            }
             return newState
         }
 

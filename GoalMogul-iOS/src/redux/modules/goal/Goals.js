@@ -291,7 +291,7 @@ export default (state = INITIAL_STATE, action) => {
             let reference = pageId !== undefined ? [pageId] : []
             let goalObjectToUpdate = _.has(newState, goalId)
                 ? _.get(newState, `${goalId}`)
-                : { ...INITIAL_GOAL_OBJECT }
+                : INITIAL_GOAL_OBJECT
 
             // Page should already exist for fetching a goal detail otherwise abort
             if (pageId === undefined || !_.has(state, `${goalId}.${pageId}`)) {

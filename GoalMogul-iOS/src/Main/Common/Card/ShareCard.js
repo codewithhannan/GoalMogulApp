@@ -313,7 +313,7 @@ const CARD_INFO = {
 
 const mapStateToProps = (state, props) => {
     // props should contain one of userRef, goalRef, tribeRef
-    const entity = getChatroomSharedEntity(state, props)
+    const entity = getChatroomSharedEntity(state, props, SHARE_CARD_PAGE_ID)
 
     return {
         entity,
