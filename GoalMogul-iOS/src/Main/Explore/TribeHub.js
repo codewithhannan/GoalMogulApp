@@ -40,6 +40,15 @@ class TribeHub extends Component {
         this.props.refreshTribeHub()
     }
 
+    scrollToTop = () => {
+        if (this.flatList)
+            this.flatList.scrollToIndex({
+                animated: true,
+                index: 0,
+                viewOffset: this.topTabBarHeight || 50,
+            })
+    }
+
     renderItem = ({ item }) => {
         return (
             <PostPreviewCard
@@ -125,7 +134,12 @@ class TribeHub extends Component {
 
     renderHeader() {
         return (
-            <View style={{ backgroundColor: color.GM_BACKGROUND }}>
+            <View
+                onLayout={(e) =>
+                    (this.topTabBarHeight = e.nativeEvent.layout.height)
+                }
+                style={{ backgroundColor: color.GM_BACKGROUND }}
+            >
                 <View
                     style={{
                         backgroundColor: color.GM_CARD_BACKGROUND,
@@ -191,9 +205,10 @@ class TribeHub extends Component {
                 <View style={{ backgroundColor: color.GM_BACKGROUND, flex: 1 }}>
                     <SearchBarHeader rightIcon="menu" />
                     <FlatList
+                        ref={(ref) => (this.flatList = ref)}
                         data={data}
                         keyExtractor={(i) => i._id}
-                        ListHeaderComponent={this.renderHeader.bind(this)}
+                        ListHeaderComponent={this.renderHeader()}
                         renderItem={this.renderItem}
                         refreshing={refreshing}
                         onRefresh={this.props.refreshTribeHubFeed}
@@ -303,10 +318,15 @@ const styles = {
     },
 }
 
-export default connect(makeMapStateToProps, {
-    refreshTribeHubFeed,
-    loadMoreTribeHubFeed,
-    refreshTribeHub,
-    openPostDetail,
-    openNewTribeModal,
-})(wrapAnalytics(TribeHub, SCREENS.EXPLORE_PAGE))
+export default connect(
+    makeMapStateToProps,
+    {
+        refreshTribeHubFeed,
+        loadMoreTribeHubFeed,
+        refreshTribeHub,
+        openPostDetail,
+        openNewTribeModal,
+    },
+    null,
+    { withRef: true }
+)(wrapAnalytics(TribeHub, SCREENS.EXPLORE_PAGE))

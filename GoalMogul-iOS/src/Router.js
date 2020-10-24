@@ -244,6 +244,12 @@ class RouterComponent extends Component {
                     .innerComponent.scrollToTop()
             }
         }
+
+        if (state.key === 'exploreTab' && isFocused()) {
+            if (Actions.refs.tribeHub !== undefined) {
+                Actions.refs.tribeHub.getWrappedInstance().scrollToTop()
+            }
+        }
         return Actions[state.key].call()
     }
 
