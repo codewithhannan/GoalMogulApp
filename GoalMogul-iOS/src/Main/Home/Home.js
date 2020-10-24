@@ -389,8 +389,8 @@ class Home extends Component {
 
 const mapStateToProps = (state) => {
     const { userId } = state.user
-    const refreshing =
-        state.home.mastermind.refreshing || state.home.activityfeed.refreshing
+    const refreshing = state.home.activityfeed.refreshing
+    // || state.home.mastermind.refreshing
     const needRefreshMastermind = _.isEmpty(state.home.mastermind.data)
     const needRefreshActivity = _.isEmpty(state.home.activityfeed.data)
     const { user } = state.user
