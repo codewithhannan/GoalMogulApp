@@ -588,14 +588,18 @@ export class GoalDetailCardV3 extends React.Component {
                     }}
                     item={goalDetail}
                     onSuggestion={() => {
-                        // Goes to central tab by opening all comments
-                        this.props.goalDetailSwitchTabV2ByKey(
-                            'focusTab',
-                            undefined,
-                            'comment',
-                            goalId,
-                            pageId
-                        )
+                        const { navigationState, pageId, goalId } = this.props
+                        const { routes, index } = navigationState
+                        if (routes[index].key === 'centralTab') {
+                            // Goes to central tab by opening all comments
+                            this.props.goalDetailSwitchTabV2ByKey(
+                                'focusTab',
+                                undefined,
+                                'comment',
+                                goalId,
+                                pageId
+                            )
+                        }
                         setTimeout(() => this.handleReplyTo(), 200)
                     }}
                     onViewAllComments={this.onViewCommentPress}
