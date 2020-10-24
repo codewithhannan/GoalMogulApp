@@ -79,7 +79,7 @@ class Home extends Component {
             showWelcomeScreen: false,
             showBadgeEarnModal: false,
         }
-        // this.scrollToTop = this.scrollToTop.bind(this)
+        this.scrollToTop = this.scrollToTop.bind(this)
         this._renderScene = this._renderScene.bind(this)
         this.setTimer = this.setTimer.bind(this)
         this.stopTimer = this.stopTimer.bind(this)
@@ -229,11 +229,11 @@ class Home extends Component {
     }
 
     scrollToTop = () => {
-        if (this.mastermindRef)
-            this.mastermindRef.scrollToIndex({
+        if (this.flatList)
+            this.flatList.scrollToIndex({
                 animated: true,
                 index: 0,
-                // viewOffset: this.topTabBarHeight,
+                viewOffset: this.topTabBarHeight || 80,
             })
     }
 
