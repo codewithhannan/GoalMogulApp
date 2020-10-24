@@ -66,7 +66,7 @@ export const openGoalDetailById = (goalId, initialProps) => (
     // TODO: create new stack using Actions.create(React.Element) if needed
     const componentToOpen = componentKeyByTab(tab, 'goal')
     Actions.push(`${componentToOpen}`, {
-        initial: { ...initialProps },
+        initial: initialProps,
         goalId,
         pageId,
     })
@@ -101,7 +101,7 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
     // refreshComments('Goal', _id, tab, pageId)(dispatch, getState);
     const componentToOpen = componentKeyByTab(tab, 'goal')
     Actions.push(`${componentToOpen}`, {
-        initial: { ...initialProps },
+        initial: initialProps,
         goalId: _id,
         pageId,
     })

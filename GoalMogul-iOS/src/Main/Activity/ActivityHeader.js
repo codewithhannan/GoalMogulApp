@@ -188,7 +188,7 @@ class ActivityHeader extends Component {
 
         const caret = {
             self: {
-                options: [...selfOptions],
+                options: selfOptions,
                 onPress: selfOnPress,
                 shouldExtendOptionLength: actedUponEntityType === 'Goal',
             },

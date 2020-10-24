@@ -190,11 +190,11 @@ export class GoalDetailCardV3 extends React.Component {
                 onRefreshError.bind(this)
             )
         }
-
-        console.log(
-            `${DEBUG_KEY}: did mount with goalId: ${goalId}, pageId: ${pageId}`
-        )
-        if (initial && !_.isEmpty(initial) && !willStartTutorial) {
+        if (
+            initial &&
+            !_.isEmpty(initial)
+            // && !willStartTutorial
+        ) {
             const {
                 focusType,
                 focusRef,
