@@ -35,7 +35,6 @@ import { createReport } from '../../../redux/modules/report/ReportActions'
 import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
-    IS_ZOOMED,
     DEVICE_PLATFORM,
 } from '../../../Utils/Constants'
 import {
@@ -94,6 +93,7 @@ class GoalCard extends React.PureComponent {
             likeButtonLeftOffset: 0,
         }
         this.updateRoutes = this.updateRoutes.bind(this)
+        this.handleOnPress = this.handleOnPress.bind(this)
     }
 
     componentDidMount() {
@@ -398,7 +398,7 @@ class GoalCard extends React.PureComponent {
                 <View>
                     <DelayedButton
                         activeOpacity={1}
-                        onPress={this.handleOnPress.bind(this)}
+                        onPress={this.handleOnPress}
                     >
                         <View
                             style={{
