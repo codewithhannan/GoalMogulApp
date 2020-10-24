@@ -353,7 +353,7 @@ class PostDetailSection extends React.PureComponent {
 
     renderUpdateAttachments(item) {
         const { belongsToGoalStoryline, mediaRef } = item
-        const showGoalRefCard = _.has(belongsToGoalStoryline, 'goalRef')
+        const showGoalRefCard = _.get(belongsToGoalStoryline, 'goalRef', false)
         return (
             <View style={{ marginBottom: 16 }}>
                 {this.renderPostImage(mediaRef)}
