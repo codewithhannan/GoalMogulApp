@@ -19,7 +19,7 @@ import UserCardHeader from '../../MeetTab/Common/UserCardHeader'
 import { FONT_FAMILY } from '../../../styles/basic/text'
 import { openProfile, fetchUserProfile } from '../../../actions'
 import { chat_style } from '../../../styles/Chat'
-import { openGoalDetailById } from '../../../redux/modules/home/mastermind/actions'
+import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions'
 import ProfileImage from '../ProfileImage'
 import { myTribeDetailOpenWithId } from '../../../redux/modules/tribe/MyTribeActions'
 import { default_style } from '../../../styles/basic'
@@ -59,13 +59,13 @@ class ShareCard extends React.Component {
     }
 
     handleCardOnPress = () => {
-        const { userRef, goalRef, tribeRef } = this.props
+        const { userRef, goalRef, tribeRef, entity } = this.props
         if (userRef) {
             return this.props.openProfile(userRef)
         }
 
         if (goalRef) {
-            return this.props.openGoalDetailById(goalRef)
+            return this.props.openGoalDetail(entity)
         }
 
         if (tribeRef) {
@@ -322,7 +322,7 @@ const mapStateToProps = (state, props) => {
 
 export default connect(mapStateToProps, {
     openProfile,
-    openGoalDetailById,
+    openGoalDetail,
     myTribeDetailOpenWithId,
     refreshGoalDetailById,
     fetchUserProfile,
