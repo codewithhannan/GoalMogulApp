@@ -136,7 +136,8 @@ export const refreshGoalDetailById = (
     goalId,
     pageId,
     onErrorCallback,
-    shouldSkipRefreshComments
+    shouldSkipRefreshComments,
+    { disableNotFoundAlert } = { disableNotFoundAlert: false }
 ) => (dispatch, getState) => {
     const { tab } = getState().navigation
     const { token } = getState().user
@@ -157,12 +158,14 @@ export const refreshGoalDetailById = (
                 onErrorCallback()
             }
             Keyboard.dismiss()
-            Alert.alert('Content not found', 'This goal has been removed', [
-                {
-                    text: 'Cancel',
-                    onPress: () => Actions.pop(),
-                },
-            ])
+            if (!disableNotFoundAlert) {
+                Alert.alert('Content not found', 'This goal has been removed', [
+                    {
+                        text: 'Cancel',
+                        onPress: () => Actions.pop(),
+                    },
+                ])
+            }
         }
         dispatch({
             type: GOAL_DETAIL_FETCH_ERROR,

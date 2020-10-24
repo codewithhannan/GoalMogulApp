@@ -48,7 +48,8 @@ class ShareCard extends React.Component {
                 goalRef,
                 SHARE_CARD_PAGE_ID,
                 null,
-                true
+                true,
+                { disableNotFoundAlert: true }
             )
         }
 
