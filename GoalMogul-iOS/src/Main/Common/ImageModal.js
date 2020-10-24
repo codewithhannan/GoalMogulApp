@@ -5,13 +5,13 @@ import * as Permissions from 'expo-permissions'
 import React from 'react'
 import {
     Alert,
-    CameraRoll,
     Dimensions,
     Image,
     Platform,
     TouchableOpacity,
     View,
 } from 'react-native'
+import CameraRoll from '@react-native-community/cameraroll'
 import ImageViewer from 'react-native-image-zoom-viewer'
 import Modal from 'react-native-modal'
 // Assets

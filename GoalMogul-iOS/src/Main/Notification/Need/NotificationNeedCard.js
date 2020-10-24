@@ -21,8 +21,9 @@ import {
     openGoalDetail,
     openGoalDetailById,
 } from '../../../redux/modules/home/mastermind/actions'
-import { color } from '../../../styles/basic'
+import { color, default_style, text } from '../../../styles/basic'
 import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
+import { UI_SCALE } from '../../../styles'
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationNeedCard ]'
@@ -87,28 +88,63 @@ class NotificationCard extends React.Component {
         const { created, description, goalRef } = item
 
         // TODO: use the actual content
-        const text = description
+        const goalTitle = _.get(goalRef, 'title', null)
         const name = goalRef.owner.name
 
         return (
             <View style={{ flex: 1, marginLeft: 10 }}>
-                <Text
+                <View
                     style={{
-                        flexWrap: 'wrap',
-                        color: 'black',
-                        fontSize: 13,
-                        marginTop: 2,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginRight: 4,
                     }}
-                    numberOfLines={2}
+                >
+                    <Text
+                        style={[
+                            {
+                                flexWrap: 'wrap',
+                                color: color.TEXT_COLOR.OFF_DARK,
+                                fontSize: 14 * UI_SCALE,
+                                textAlign: 'center',
+                                fontFamily: text.FONT_FAMILY.REGULAR,
+                            },
+                        ]}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    >
+                        <Text
+                            style={[
+                                default_style.titleText_2,
+                                { color: color.TEXT_COLOR.OFF_DARK },
+                            ]}
+                        >
+                            {name}
+                            {': '}
+                        </Text>
+                        {description}
+                    </Text>
+                    <Icon
+                        pack="material-community"
+                        style={[default_style.buttonIcon_1, { height: 16 }]}
+                        name="menu-right"
+                    />
+                </View>
+                <Text
+                    style={[
+                        default_style.titleText_2,
+                        {
+                            color: color.TEXT_COLOR.OFF_DARK,
+                            flexWrap: 'wrap',
+                            marginVertical: 4,
+                        },
+                    ]}
+                    numberOfLines={1}
                     ellipsizeMode="tail"
                 >
-                    <Text style={{ fontWeight: '700' }}>
-                        {name}
-                        {': '}
-                    </Text>
-                    {text}
+                    {goalTitle}
                 </Text>
-                <View style={{ marginBottom: 3, marginTop: 1 }}>
+                <View style={{ marginBottom: 3 }}>
                     <Timestamp time={timeago().format(created)} />
                 </View>
             </View>

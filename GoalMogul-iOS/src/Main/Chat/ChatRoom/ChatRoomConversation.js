@@ -26,7 +26,6 @@ import R from 'ramda'
 import React from 'react'
 import {
     Alert,
-    CameraRoll,
     Clipboard,
     Dimensions,
     FlatList,
@@ -36,6 +35,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native'
+import CameraRoll from '@react-native-community/cameraroll'
 import { Avatar, SystemMessage } from 'react-native-gifted-chat'
 import { Actions } from 'react-native-router-flux'
 import { TypingAnimation } from 'react-native-typing-animation'
