@@ -607,7 +607,7 @@ class NewGoalView extends Component {
             ],
             this.handleCatergoryOnSelect,
             this.props.category,
-            { ...styles.triggerContainerStyle },
+            styles.triggerContainerStyle,
             () => console.log('animationCallback')
         )
 
@@ -1449,7 +1449,7 @@ const MenuFactory = (
         <Menu
             onSelect={(value) => callback(value)}
             rendererProps={{
-                placement: 'bottom',
+                placement: 'auto',
                 anchorStyle: styles.anchorStyle,
             }}
             renderer={Popover}
