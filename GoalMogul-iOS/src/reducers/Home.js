@@ -91,7 +91,7 @@ const INITIAL_STATE = {
         hasNextPage: undefined,
         loading: false,
         loadingMore: false,
-        refreshing: true,
+        refreshing: false,
         // for showing 'get your silver badge!' toast
         userFriendsCount: Number.MAX_SAFE_INTEGER,
         randomNumber: Math.random(),

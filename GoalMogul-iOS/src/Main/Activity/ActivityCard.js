@@ -83,12 +83,16 @@ class ActivityCard extends React.PureComponent {
     handleCardOnPress = (item, props) => {
         const { goalRef, postRef, actedUponEntityType } = item
         const propsToPass = props || {}
-        if (actedUponEntityType === 'Post') {
-            return this.props.openPostDetail({ ...postRef }, propsToPass)
+        if (actedUponEntityType === 'Post' && postRef) {
+            if (postRef.postType === 'ShareGoal' && postRef.goalRef) {
+                return this.props.openGoalDetail(postRef.goalRef)
+            } else {
+                return this.props.openPostDetail(postRef, propsToPass)
+            }
         }
 
         if (actedUponEntityType === 'Goal') {
-            return this.props.openGoalDetail({ ...goalRef }, propsToPass)
+            return this.props.openGoalDetail(goalRef, propsToPass)
         }
     }
 
@@ -344,10 +348,6 @@ class ActivityCard extends React.PureComponent {
                         numberOfLines={CONTENT_PREVIEW_MAX_NUMBER_OF_LINES}
                         ellipsizeMode="tail"
                         onUserTagPressed={(user) => {
-                            console.log(
-                                `${DEBUG_KEY}: user tag press for user: `,
-                                user
-                            )
                             this.props.openProfile(user)
                         }}
                     />

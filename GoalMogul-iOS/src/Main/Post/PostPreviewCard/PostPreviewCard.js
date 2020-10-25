@@ -219,7 +219,14 @@ class PostPreviewCard extends React.PureComponent {
     }
 
     renderHeader(item) {
-        const { owner, _id, created, maybeIsSubscribed, belongsToTribe } = item
+        const {
+            owner,
+            _id,
+            created,
+            maybeIsSubscribed,
+            belongsToTribe,
+            privacy,
+        } = item
         const timeStamp = created || new Date()
 
         const caret = {
@@ -333,7 +340,10 @@ class PostPreviewCard extends React.PureComponent {
                             }
                         />
                         <View style={{ marginTop: 2 }} />
-                        <Timestamp time={timeago().format(timeStamp)} />
+                        <Timestamp
+                            time={timeago().format(timeStamp)}
+                            privacy={privacy}
+                        />
                     </View>
                 </View>
                 <RichText

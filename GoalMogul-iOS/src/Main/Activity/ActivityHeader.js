@@ -99,12 +99,13 @@ class ActivityHeader extends Component {
         created,
         belongsToTribe,
     }) {
-        const item = actedUponEntityType === 'Post' ? postRef : goalRef
+        const isPost = actedUponEntityType === 'Post'
+        const item = isPost ? postRef : goalRef
 
         // If no ref is passed in, then render nothing
         if (!item) return null
 
-        const { viewCount, priority, isCompleted } = item
+        const { privacy, priority, isCompleted } = item
 
         // If it's a comment, we are rendering the goal/post owner's info rather than actor's info
         const userToRender =
@@ -117,25 +118,17 @@ class ActivityHeader extends Component {
             created === undefined || created.length === 0 ? new Date() : created
 
         // TODO: TAG: for the content
-        const content =
-            actedUponEntityType === 'Post'
-                ? item.content.text // Show content if entity type is post / share
-                : item.title // Show title if entity type is goal
+        const content = isPost
+            ? item.content.text // Show content if entity type is post / share
+            : item.title // Show title if entity type is goal
 
-        const tags =
-            actedUponEntityType === 'Post' && item.content
-                ? item.content.tags
-                : []
-        const links =
-            actedUponEntityType === 'Post' && item.content
-                ? item.content.links
-                : []
+        const tags = isPost && item.content ? item.content.tags : []
+        const links = isPost && item.content ? item.content.links : []
 
         const pageId = _.get(PAGE_TYPE_MAP, 'activity')
-        const onDelete =
-            actedUponEntityType === 'Post'
-                ? () => this.props.deletePost(postRef._id, pageId)
-                : () => this.props.deleteGoal(goalRef._id, pageId)
+        const onDelete = isPost
+            ? () => this.props.deletePost(postRef._id, pageId)
+            : () => this.props.deleteGoal(goalRef._id, pageId)
 
         // COnstruct caret options
         const selfOptions = makeCaretOptions(
@@ -188,7 +181,7 @@ class ActivityHeader extends Component {
 
         const caret = {
             self: {
-                options: [...selfOptions],
+                options: selfOptions,
                 onPress: selfOnPress,
                 shouldExtendOptionLength: actedUponEntityType === 'Goal',
             },
@@ -205,20 +198,20 @@ class ActivityHeader extends Component {
                     if (key === 'Report') {
                         return this.props.createReport(
                             _id,
-                            'post',
+                            isPost ? 'post' : 'goal',
                             `${actedUponEntityType}`
                         )
                     }
                     if (key === CARET_OPTION_NOTIFICATION_UNSUBSCRIBE) {
                         return this.props.unsubscribeEntityNotification(
                             _id,
-                            'Post'
+                            isPost ? 'Post' : 'Goal'
                         )
                     }
                     if (key === CARET_OPTION_NOTIFICATION_SUBSCRIBE) {
                         return this.props.subscribeEntityNotification(
                             _id,
-                            'Post'
+                            isPost ? 'Post' : 'Goal'
                         )
                     }
                 },
@@ -248,7 +241,7 @@ class ActivityHeader extends Component {
                         />
                         <Timestamp
                             time={timeago().format(timeStamp)}
-                            viewCount={viewCount}
+                            privacy={privacy}
                             priority={priority}
                             isCompleted={isCompleted}
                         />
@@ -259,7 +252,7 @@ class ActivityHeader extends Component {
                     contentTags={tags}
                     contentLinks={links || []}
                     textStyle={{
-                        ...(actedUponEntityType === 'Post'
+                        ...(isPost
                             ? default_style.normalText_1
                             : default_style.goalTitleText_1),
                         marginTop: 10,

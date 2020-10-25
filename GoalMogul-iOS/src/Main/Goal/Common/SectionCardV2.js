@@ -1,23 +1,17 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, Image, TextInput } from 'react-native'
+import { View, Text, Image, TextInput } from 'react-native'
 import R from 'ramda'
 import { connect } from 'react-redux'
 // import Decode from 'unescape'; TODO: removed once new decode is good to go
 
 // Asset
-import bulb from '../../../asset/utils/bulb.png'
 import CommentIcon from '../../../asset/utils/comment.png'
-import forward from '../../../asset/utils/forward.png'
 import Icons from '../../../asset/base64/Icons'
 import back from '../../../asset/utils/back.png'
 
 // Components
-import {
-    actionSheet,
-    switchByButtonIndex,
-} from '../../Common/ActionSheetFactory'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
 // Actions
@@ -176,11 +170,6 @@ class SectionCardV2 extends Component {
         const sectionText = isCommentFocused
             ? 'Back to Steps & Needs'
             : description
-        const hasTextChanged =
-            this.input &&
-            this.input.props &&
-            this.input.props.value !== description
-        const showSave = hasTextChanged && this.input.props.value !== ''
 
         const textToDisplay = decode(
             sectionText === undefined ? 'No content' : sectionText
@@ -217,11 +206,21 @@ class SectionCardV2 extends Component {
                             this.setState({ isInputFocused: true })
                             if (this.props.onEdit) this.props.onEdit()
                         }}
-                        onBlur={() => this.setState({ isInputFocused: false })}
+                        onBlur={() => {
+                            this.props.updateGoal(
+                                _id,
+                                type,
+                                {
+                                    description: this.state.textValue.trim(),
+                                },
+                                goalRef,
+                                pageId
+                            )
+                            this.setState({ isInputFocused: false })
+                        }}
                         onChangeText={(text) =>
                             this.setState({ textValue: text })
                         }
-                        multiline
                     />
                 ) : (
                     <Text style={textStyle} ellipsizeMode="tail">
@@ -236,66 +235,6 @@ class SectionCardV2 extends Component {
                             marginBottom: 10,
                         }}
                     />
-                )}
-                {hasTextChanged && (
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-end',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <DelayedButton
-                            activeOpacity={0.6}
-                            style={{
-                                backgroundColor: color.GM_DOT_GRAY,
-                                borderRadius: 3,
-                                padding: 2,
-                                paddingRight: 8,
-                                paddingLeft: 8,
-                            }}
-                            onPress={() =>
-                                this.setState({ textValue: description })
-                            }
-                        >
-                            <Text style={default_style.normalText_2}>
-                                Cancel
-                            </Text>
-                        </DelayedButton>
-                        {showSave && (
-                            <DelayedButton
-                                activeOpacity={0.6}
-                                style={{
-                                    backgroundColor: color.GM_BLUE,
-                                    borderRadius: 3,
-                                    padding: 2,
-                                    paddingRight: 8,
-                                    paddingLeft: 8,
-                                    marginLeft: 12,
-                                }}
-                                onPress={() =>
-                                    this.props.updateGoal(
-                                        _id,
-                                        type,
-                                        {
-                                            description: this.state.textValue.trim(),
-                                        },
-                                        goalRef,
-                                        pageId
-                                    )
-                                }
-                            >
-                                <Text
-                                    style={{
-                                        ...default_style.normalText_2,
-                                        color: 'white',
-                                    }}
-                                >
-                                    Save
-                                </Text>
-                            </DelayedButton>
-                        )}
-                    </View>
                 )}
             </View>
         )

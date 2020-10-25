@@ -6,6 +6,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import { api as API } from '../../middleware/api'
 import { sanitizeTags, queryBuilderBasicBuilder } from '../../middleware/utils'
+import { refreshActivityFeed } from '../home/feed/actions'
 
 import {
     GOAL_CREATE_SUBMIT,
@@ -141,6 +142,8 @@ export const submitGoal = (
         // );
 
         const initialFilter = { goals: { filter: { sortBy: 'created' } } }
+
+        refreshActivityFeed()(dispatch, getState)
 
         if (needOpenProfile === false) {
             if (needRefreshProfile) {

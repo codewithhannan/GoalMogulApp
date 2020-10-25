@@ -17,6 +17,8 @@ import {
 } from './PostReducers'
 
 import { openShareDetail } from './ShareActions'
+import { refreshActivityFeed } from '../../home/feed/actions'
+import { refreshTribeHubFeed } from '../../tribe/TribeHubActions'
 
 import {
     openProfile,
@@ -180,7 +182,12 @@ export const closePostDetail = (postId, pageId) => (dispatch, getState) => {
 export const submitCreatingPost = (
     values,
     needUpload,
-    { needOpenProfile, needRefreshProfile },
+    {
+        needOpenProfile,
+        needRefreshProfile,
+        needRefreshTribeFeed,
+        needRefreshMainFeed,
+    },
     initializeFromState, // initializeFromState means it's an update
     initialPost,
     callback,
@@ -196,6 +203,7 @@ export const submitCreatingPost = (
 
     const onSuccess = (res) => {
         console.log('Creating post succeed with res: ', res)
+
         dispatch({
             type: POST_NEW_POST_SUBMIT_SUCCESS,
             payload: {
@@ -208,6 +216,14 @@ export const submitCreatingPost = (
         })
 
         if (callback) callback()
+
+        if (needRefreshMainFeed) {
+            refreshActivityFeed()(dispatch, getState)
+        }
+
+        if (needRefreshTribeFeed) {
+            refreshTribeHubFeed()(dispatch, getState)
+        }
 
         if (needOpenProfile) {
             // Open profile and then refresh
@@ -469,10 +485,7 @@ const newPostAdaptor = (values, userId) => {
             // links: [] no link is needed for now
         },
         mediaRef,
-        postType:
-            belongsToGoalStoryline !== undefined
-                ? 'GoalStorylineUpdate'
-                : 'General',
+        postType: belongsToGoalStoryline ? 'GoalStorylineUpdate' : 'General',
         belongsToTribe,
         belongsToEvent,
         belongsToGoalStoryline,
@@ -557,9 +570,10 @@ const constructTags = (tags, content) => {
     })
 }
 
-export const fetchPostDrafts = async () => {
+export const fetchPostDrafts = async (userId) => {
+    await cleanDrafts()
     try {
-        const drafts = await AsyncStorage.getItem(DRAFTS)
+        let drafts = await AsyncStorage.getItem(`${DRAFTS}_${userId}`)
         if (drafts) return JSON.parse(drafts)
     } catch (error) {
         console.warn(`${DEBUG_KEY}: [ fetchPostDrafts ] failed with err: `, err)
@@ -567,9 +581,21 @@ export const fetchPostDrafts = async () => {
     return []
 }
 
-export const savePostDrafts = async (drafts = []) => {
+// TODO: delete this after clean up has happened on most devices
+const cleanDrafts = async () => {
     try {
-        await AsyncStorage.setItem(DRAFTS, JSON.stringify(drafts))
+        await AsyncStorage.removeItem(DRAFTS)
+    } catch (error) {
+        console.warn(`${DEBUG_KEY}: [ fetchPostDrafts ] failed with err: `, err)
+    }
+}
+
+export const savePostDrafts = async (drafts = [], userId) => {
+    try {
+        await AsyncStorage.setItem(
+            `${DRAFTS}_${userId}`,
+            JSON.stringify(drafts)
+        )
     } catch (error) {
         console.warn(`${DEBUG_KEY}: [ savePostDrafts ] failed with err: `, err)
         throw error

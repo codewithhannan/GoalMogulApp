@@ -164,7 +164,7 @@ class ShareDetailSection extends Component {
             owner,
             category,
             maybeIsSubscribed,
-            viewCount,
+            privacy,
             belongsToTribe,
         } = item
         const timeStamp =
@@ -234,7 +234,7 @@ class ShareDetailSection extends Component {
                         <View style={{ marginTop: 2 }} />
                         <Timestamp
                             time={timeago().format(timeStamp)}
-                            viewCount={viewCount}
+                            privacy={privacy}
                         />
                     </View>
                 </View>

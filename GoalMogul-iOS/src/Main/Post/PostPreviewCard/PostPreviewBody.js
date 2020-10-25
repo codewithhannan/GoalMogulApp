@@ -91,7 +91,7 @@ class PostPreviewBody extends React.Component {
 
     renderUpdateAttachments(item) {
         const { belongsToGoalStoryline, mediaRef } = item
-        const showGoalRefCard = _.has(belongsToGoalStoryline, 'goalRef')
+        const showGoalRefCard = _.get(belongsToGoalStoryline, 'goalRef', false)
         return (
             <View>
                 {this.renderPostImage(mediaRef)}

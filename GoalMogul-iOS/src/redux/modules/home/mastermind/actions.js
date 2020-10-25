@@ -11,13 +11,7 @@ import {
     HOME_SET_GOAL_INDEX,
     HOME_UPDATE_FILTER,
 } from '../../../../reducers/Home'
-
 import { GOAL_DETAIL_OPEN } from '../../../../reducers/GoalDetailReducers'
-
-// Actions
-import { refreshComments } from '../../feed/comment/CommentActions'
-
-import { refreshGoalDetailById } from '../../goal/GoalDetailActions'
 import { EMPTY_GOAL } from '../../../../Utils/Constants'
 
 import { api as API } from '../../../middleware/api'
@@ -66,7 +60,7 @@ export const openGoalDetailById = (goalId, initialProps) => (
     // TODO: create new stack using Actions.create(React.Element) if needed
     const componentToOpen = componentKeyByTab(tab, 'goal')
     Actions.push(`${componentToOpen}`, {
-        initial: { ...initialProps },
+        initial: initialProps,
         goalId,
         pageId,
     })
@@ -101,7 +95,7 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
     // refreshComments('Goal', _id, tab, pageId)(dispatch, getState);
     const componentToOpen = componentKeyByTab(tab, 'goal')
     Actions.push(`${componentToOpen}`, {
-        initial: { ...initialProps },
+        initial: initialProps,
         goalId: _id,
         pageId,
     })

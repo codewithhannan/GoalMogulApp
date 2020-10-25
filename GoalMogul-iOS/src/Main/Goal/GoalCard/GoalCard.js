@@ -35,7 +35,6 @@ import { createReport } from '../../../redux/modules/report/ReportActions'
 import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
-    IS_ZOOMED,
     DEVICE_PLATFORM,
 } from '../../../Utils/Constants'
 import {
@@ -53,19 +52,8 @@ import { default_style, color } from '../../../styles/basic'
 import ActionBar from '../../Common/ContentCards/ActionBar'
 import FloatingHearts from '../../Common/FloatingHearts/FloatingHearts'
 
-const { height, width } = Dimensions.get('window')
+const { width } = Dimensions.get('window')
 const WINDOW_WIDTH = width
-
-const TabIconMap = {
-    steps: {
-        iconSource: StepIcon,
-        iconStyle: { height: 20, width: 20 },
-    },
-    needs: {
-        iconSource: HelpIcon,
-        iconStyle: { height: 20, width: 20 },
-    },
-}
 
 const DEBUG_KEY = '[ UI GoalCard ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -94,6 +82,7 @@ class GoalCard extends React.PureComponent {
             likeButtonLeftOffset: 0,
         }
         this.updateRoutes = this.updateRoutes.bind(this)
+        this.handleOnPress = this.handleOnPress.bind(this)
     }
 
     componentDidMount() {
@@ -118,8 +107,7 @@ class GoalCard extends React.PureComponent {
             }
             newNavigationState = _.set(newNavigationState, 'routes', newRoutes)
             this.setState({
-                ...this.state,
-                navigationState: { ...newNavigationState },
+                navigationState: newNavigationState,
             })
         }
     }
@@ -398,7 +386,7 @@ class GoalCard extends React.PureComponent {
                 <View>
                     <DelayedButton
                         activeOpacity={1}
-                        onPress={this.handleOnPress.bind(this)}
+                        onPress={this.handleOnPress}
                     >
                         <View
                             style={{

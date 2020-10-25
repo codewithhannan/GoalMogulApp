@@ -169,7 +169,7 @@ class PostDetailSection extends React.PureComponent {
             owner,
             category,
             maybeIsSubscribed,
-            viewCount,
+            privacy,
             belongsToTribe,
         } = item
         const timeStamp =
@@ -247,7 +247,7 @@ class PostDetailSection extends React.PureComponent {
                         <View style={{ marginTop: 2 }} />
                         <Timestamp
                             time={timeago().format(timeStamp)}
-                            viewCount={viewCount}
+                            privacy={privacy}
                         />
                     </View>
                 </View>
@@ -353,7 +353,7 @@ class PostDetailSection extends React.PureComponent {
 
     renderUpdateAttachments(item) {
         const { belongsToGoalStoryline, mediaRef } = item
-        const showGoalRefCard = _.has(belongsToGoalStoryline, 'goalRef')
+        const showGoalRefCard = _.get(belongsToGoalStoryline, 'goalRef', false)
         return (
             <View style={{ marginBottom: 16 }}>
                 {this.renderPostImage(mediaRef)}

@@ -279,7 +279,7 @@ class CreatePostModal extends Component {
 
         this.props.initialize(initialVals)
 
-        fetchPostDrafts().then((drafts) => {
+        fetchPostDrafts(this.props.user._id).then((drafts) => {
             if (drafts && drafts.length > 0) {
                 this.setState({
                     draftIndex: drafts.length,
@@ -354,7 +354,7 @@ class CreatePostModal extends Component {
             index = drafts.length - 1
         } else drafts[index] = draft
 
-        await savePostDrafts(drafts)
+        await savePostDrafts(drafts, this.props.user._id)
             .then(() => {
                 this.setState({
                     drafts: drafts,
@@ -454,6 +454,8 @@ class CreatePostModal extends Component {
             {
                 needOpenProfile, // Open user profile page and refresh the profile
                 needRefreshProfile, // Only refresh the profile page with given tab and filter
+                needRefreshTribeFeed: !!belongsToTribe,
+                needRefreshMainFeed: !belongsToTribe,
             },
             initializeFromState,
             initialPost,
