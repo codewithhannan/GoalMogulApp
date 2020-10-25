@@ -263,7 +263,7 @@ class CreatePostModal extends Component {
         const { belongsToTribe, belongsToGoalStoryline } = this.props
 
         const defaulVals = {
-            viewableSetting: PRIVACY_FRIENDS,
+            privacy: PRIVACY_FRIENDS,
             mediaRef: undefined,
             post: '',
             tags: [],
@@ -272,10 +272,15 @@ class CreatePostModal extends Component {
         }
 
         // Initialize based on the props, if it's opened through edit button
-        const { initializeFromState, initialPost } = this.props
-        const initialVals = initializeFromState
-            ? postToFormAdapter(initialPost)
-            : defaulVals
+        const {
+            initializeFromState,
+            initializeFromGoal,
+            initialPost,
+        } = this.props
+        const initialVals =
+            initializeFromState || initializeFromGoal
+                ? postToFormAdapter(initialPost)
+                : defaulVals
 
         this.props.initialize(initialVals)
 
@@ -291,7 +296,7 @@ class CreatePostModal extends Component {
 
     resetForm() {
         const defaulVals = {
-            viewableSetting: PRIVACY_FRIENDS,
+            privacy: PRIVACY_FRIENDS,
             mediaRef: undefined,
             post: '',
             tags: [],
@@ -333,7 +338,7 @@ class CreatePostModal extends Component {
             'belongsToGoalStoryline',
             selectedDraft.belongsToGoalStoryline
         )
-        this.props.change('viewableSetting', selectedDraft.viewableSetting)
+        this.props.change('privacy', selectedDraft.privacy)
         this.props.change('tags', selectedDraft.tags)
     }
 
@@ -342,7 +347,7 @@ class CreatePostModal extends Component {
             post: this.props.post,
             mediaRef: this.props.mediaRef,
             belongsToGoalStoryline: this.props.belongsToGoalStoryline,
-            viewableSetting: this.props.viewableSetting,
+            privacy: this.props.privacy,
             tags: this.props.tags,
         }
 
@@ -889,7 +894,6 @@ class CreatePostModal extends Component {
 
     renderActionIcons(actionDisabled) {
         const saveDraftDisabled = actionDisabled || !this.isDraftNotSaved()
-
         return (
             <View
                 style={{
@@ -901,9 +905,9 @@ class CreatePostModal extends Component {
             >
                 <View style={{ flexDirection: 'row' }}>
                     <ViewableSettingMenu
-                        viewableSetting={this.props.viewableSetting}
+                        privacy={this.props.privacy}
                         callback={R.curry((value) =>
-                            this.props.change('viewableSetting', value)
+                            this.props.change('privacy', value)
                         )}
                     />
                     {this.renderAttachGoalButton()}
@@ -1051,6 +1055,7 @@ class CreatePostModal extends Component {
     render() {
         const {
             initializeFromState,
+            initializeFromGoal,
             post,
             mediaRef,
             uploading,
@@ -1061,7 +1066,9 @@ class CreatePostModal extends Component {
         const actionDisabled =
             uploading || ((!post || post.trim() === '') && !mediaRef)
         const showDraftHeader =
-            !initializeFromState && this.state.drafts.length > 0
+            !initializeFromState &&
+            !initializeFromGoal &&
+            this.state.drafts.length > 0
 
         const modalHeight =
             230 +
@@ -1176,28 +1183,12 @@ const mapStateToProps = (state, props) => {
     const selector = formValueSelector('createPostModal')
     const { user } = state.user
     const { profile } = user
-    const belongsToGoalStoryline = selector(state, 'belongsToGoalStoryline')
-    const goalRef =
-        _.get(belongsToGoalStoryline, 'goalRef', undefined) ||
-        _.get(
-            props,
-            'initialPost.belongsToGoalStoryline.goalRef._id',
-            undefined
-        )
-
-    const title =
-        _.get(belongsToGoalStoryline, 'title', undefined) ||
-        _.get(
-            props,
-            'initialPost.belongsToGoalStoryline.goalRef.title',
-            undefined
-        )
 
     return {
         user,
         profile,
-        viewableSetting: selector(state, 'viewableSetting'),
-        belongsToGoalStoryline: !!goalRef && { goalRef, title },
+        privacy: selector(state, 'privacy'),
+        belongsToGoalStoryline: selector(state, 'belongsToGoalStoryline'),
         post: selector(state, 'post'),
         tags: selector(state, 'tags'),
         mediaRef: selector(state, 'mediaRef'),

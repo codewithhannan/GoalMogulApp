@@ -393,7 +393,7 @@ class ShareModal extends React.Component {
                         {name}
                     </Text>
                     <ViewableSettingMenu
-                        viewableSetting={this.props.privacy}
+                        privacy={this.props.privacy}
                         callback={callback}
                         handleOnClick={() => {
                             Alert.alert(
