@@ -721,10 +721,10 @@ export const logout = () => async (dispatch, getState) => {
     // clear caches
     MemberDocumentFetcher.clearMemberCache()
 
+    Actions.reset('root')
     dispatch({
         type: USER_LOG_OUT,
     })
-    Actions.reset('root')
 }
 
 const TOAST_IMAGE_STYLE = {
