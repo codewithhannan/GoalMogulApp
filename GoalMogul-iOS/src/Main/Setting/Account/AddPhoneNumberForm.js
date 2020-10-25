@@ -79,7 +79,6 @@ class AddPhoneNumberForm extends Component {
                     error={error}
                     enablesReturnKeyAutomatically={false}
                     returnKeyType="done"
-                    keyboardType="phone-pad"
                     {...custom}
                     {...restInput}
                 />
@@ -128,9 +127,15 @@ class AddPhoneNumberForm extends Component {
                     <Field
                         name="phone"
                         label="Phone number"
+                        keyboardType="phone-pad"
                         component={this.renderInput}
                     />
-
+                    <Field
+                        name="password"
+                        label="Password"
+                        component={this.renderInput}
+                        secureTextEntry
+                    />
                     <TouchableOpacity
                         activeOpacity={0.6}
                         onPress={handleSubmit(this.handleOnAddPress)}
