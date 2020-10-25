@@ -679,23 +679,23 @@ function updateLike(array, id, likeId, type, undo, likeType) {
                     itemToUpdate = _.set(itemToUpdate, 'maybeLikeRef', likeId)
 
                     // Update like Count
-                    const oldLikeCount = _.get(itemToUpdate, 'likeCount')
-                    let newLikeCount = oldLikeCount
+                    const oldLikeCount = _.get(itemToUpdate, 'likeCount', 0)
+                    let newLikeCount = oldLikeCount || 0
 
                     if (likeType === LIKE_GOAL || likeType === LIKE_POST) {
                         if (undo) {
-                            newLikeCount = oldLikeCount - 1
+                            newLikeCount = newLikeCount - 1
                         } else if (likeId === 'testId') {
-                            newLikeCount = oldLikeCount + 1
+                            newLikeCount = newLikeCount + 1
                         }
                     } else if (
                         likeType === UNLIKE_GOAL ||
                         likeType === UNLIKE_POST
                     ) {
                         if (undo) {
-                            newLikeCount = oldLikeCount + 1
+                            newLikeCount = newLikeCount + 1
                         } else if (likeId === undefined) {
-                            newLikeCount = oldLikeCount - 1
+                            newLikeCount = newLikeCount - 1
                         }
                     }
                     itemToUpdate = _.set(
@@ -709,23 +709,23 @@ function updateLike(array, id, likeId, type, undo, likeType) {
                 if (item._id.toString() === id.toString()) {
                     newItem = _.set(newItem, 'maybeLikeRef', likeId)
 
-                    const oldLikeCount = _.get(newItem, 'likeCount')
-                    let newLikeCount = oldLikeCount
+                    const oldLikeCount = _.get(newItem, 'likeCount', 0)
+                    let newLikeCount = oldLikeCount || 0
 
                     if (likeType === LIKE_GOAL || likeType === LIKE_POST) {
                         if (undo) {
-                            newLikeCount = oldLikeCount - 1
+                            newLikeCount = newLikeCount - 1
                         } else if (likeId === 'testId') {
-                            newLikeCount = oldLikeCount + 1
+                            newLikeCount = newLikeCount + 1
                         }
                     } else if (
                         likeType === UNLIKE_GOAL ||
                         likeType === UNLIKE_POST
                     ) {
                         if (undo) {
-                            newLikeCount = oldLikeCount + 1
+                            newLikeCount = newLikeCount + 1
                         } else if (likeId === undefined) {
-                            newLikeCount = oldLikeCount - 1
+                            newLikeCount = newLikeCount - 1
                         }
                     }
                     newItem = _.set(newItem, 'likeCount', newLikeCount)
@@ -738,20 +738,20 @@ function updateLike(array, id, likeId, type, undo, likeType) {
         if (item._id.toString() === id.toString()) {
             newItem = _.set(newItem, 'maybeLikeRef', likeId)
 
-            const oldLikeCount = _.get(newItem, 'likeCount')
-            let newLikeCount = oldLikeCount
+            const oldLikeCount = _.get(newItem, 'likeCount', 0)
+            let newLikeCount = oldLikeCount || 0
 
             if (likeType === LIKE_GOAL || likeType === LIKE_POST) {
                 if (undo) {
-                    newLikeCount = oldLikeCount - 1
+                    newLikeCount = newLikeCount - 1
                 } else if (likeId === 'testId') {
-                    newLikeCount = oldLikeCount + 1
+                    newLikeCount = newLikeCount + 1
                 }
             } else if (likeType === UNLIKE_GOAL || likeType === UNLIKE_POST) {
                 if (undo) {
-                    newLikeCount = oldLikeCount + 1
+                    newLikeCount = newLikeCount + 1
                 } else if (likeId === undefined) {
-                    newLikeCount = oldLikeCount - 1
+                    newLikeCount = newLikeCount - 1
                 }
             }
             newItem = _.set(newItem, 'likeCount', newLikeCount)

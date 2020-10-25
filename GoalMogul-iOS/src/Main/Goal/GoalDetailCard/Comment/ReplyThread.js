@@ -301,6 +301,7 @@ class ReplyThread extends React.Component {
     renderStatus() {
         const { likeCount, childComments, _id } = this.props.item
         const commentCount = childComments.length
+        console.log(typeof likeCount)
 
         return (
             <View
@@ -331,7 +332,9 @@ class ReplyThread extends React.Component {
                         ]}
                         name={'heart'}
                     />
-                    <Text style={default_style.normalText_1}>{likeCount}</Text>
+                    <Text style={default_style.normalText_1}>
+                        {likeCount || 0}
+                    </Text>
                 </DelayedButton>
                 <View
                     style={{

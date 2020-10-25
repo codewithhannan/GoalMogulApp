@@ -101,19 +101,19 @@ export default (state = INITIAL_STATE, action) => {
                     : `post${capitalizeWord(tab)}`
             const post = _.get(newState, path)
             if (post._id && post._id === id) {
-                const oldLikeCount = _.get(newState, `${path}.likeCount`)
-                let newLikeCount = oldLikeCount
+                const oldLikeCount = _.get(newState, `${path}.likeCount`, 0)
+                let newLikeCount = oldLikeCount || 0
                 if (action.type === LIKE_POST) {
                     if (undo) {
-                        newLikeCount = oldLikeCount - 1
+                        newLikeCount = newLikeCount - 1
                     } else if (likeId === 'testId') {
-                        newLikeCount = oldLikeCount + 1
+                        newLikeCount = newLikeCount + 1
                     }
                 } else if (action.type === UNLIKE_POST) {
                     if (undo) {
-                        newLikeCount = oldLikeCount + 1
+                        newLikeCount = newLikeCount + 1
                     } else if (likeId === undefined) {
-                        newLikeCount = oldLikeCount - 1
+                        newLikeCount = newLikeCount - 1
                     }
                 }
 

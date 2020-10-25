@@ -336,9 +336,7 @@ class PostDetailCard extends React.PureComponent {
                         data={data}
                         renderItem={this.renderItem}
                         keyExtractor={this.keyExtractor}
-                        ListHeaderComponent={this.renderPostDetailSection.apply(
-                            this
-                        )}
+                        ListHeaderComponent={this.renderPostDetailSection()}
                         refreshing={this.props.commentLoading}
                         onRefresh={this.handleRefresh}
                     />

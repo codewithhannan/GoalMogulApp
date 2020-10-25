@@ -394,20 +394,20 @@ function updateLike(array, id, likeId, undo, likeType) {
     return array.map((item) => {
         let newItem = _.cloneDeep(item)
         if (item._id.toString() === id.toString()) {
-            const oldLikeCount = _.get(newItem, 'likeCount')
+            const oldLikeCount = _.get(newItem, 'likeCount', 0)
             // console.log(`${DEBUG_KEY}: oldLikeCount for comment is: `, oldLikeCount);
-            let newLikeCount = oldLikeCount
+            let newLikeCount = oldLikeCount || 0
             if (likeType === LIKE_COMMENT) {
                 if (undo) {
-                    newLikeCount = oldLikeCount - 1
+                    newLikeCount = newLikeCount - 1
                 } else if (likeId === 'testId') {
-                    newLikeCount = oldLikeCount + 1
+                    newLikeCount = newLikeCount + 1
                 }
             } else if (likeType === UNLIKE_COMMENT) {
                 if (undo) {
-                    newLikeCount = oldLikeCount + 1
+                    newLikeCount = newLikeCount + 1
                 } else if (likeId === undefined) {
-                    newLikeCount = oldLikeCount - 1
+                    newLikeCount = newLikeCount - 1
                 }
             }
 

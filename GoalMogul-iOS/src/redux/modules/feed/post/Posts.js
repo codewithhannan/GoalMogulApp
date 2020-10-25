@@ -586,19 +586,19 @@ export default (state = INITIAL_STATE, action) => {
             let postToUpdate = _.get(newState, `${postId}.post`)
             postToUpdate = _.set(postToUpdate, 'maybeLikeRef', likeId)
 
-            const oldLikeCount = _.get(postToUpdate, 'likeCount')
-            let newLikeCount = oldLikeCount
+            const oldLikeCount = _.get(postToUpdate, 'likeCount', 0)
+            let newLikeCount = oldLikeCount || 0
             if (action.type === LIKE_POST) {
                 if (undo) {
-                    newLikeCount = oldLikeCount - 1
+                    newLikeCount = newLikeCount - 1
                 } else if (likeId === 'testId') {
-                    newLikeCount = oldLikeCount + 1
+                    newLikeCount = newLikeCount + 1
                 }
             } else if (action.type === UNLIKE_POST) {
                 if (undo) {
-                    newLikeCount = oldLikeCount + 1
+                    newLikeCount = newLikeCount + 1
                 } else if (likeId === undefined) {
-                    newLikeCount = oldLikeCount - 1
+                    newLikeCount = newLikeCount - 1
                 }
             }
 
