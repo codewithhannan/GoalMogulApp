@@ -169,7 +169,7 @@ class PostDetailSection extends React.PureComponent {
             owner,
             category,
             maybeIsSubscribed,
-            viewCount,
+            privacy,
             belongsToTribe,
         } = item
         const timeStamp =
@@ -247,7 +247,7 @@ class PostDetailSection extends React.PureComponent {
                         <View style={{ marginTop: 2 }} />
                         <Timestamp
                             time={timeago().format(timeStamp)}
-                            viewCount={viewCount}
+                            privacy={privacy}
                         />
                     </View>
                 </View>

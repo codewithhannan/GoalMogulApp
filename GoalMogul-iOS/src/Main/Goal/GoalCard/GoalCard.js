@@ -52,19 +52,8 @@ import { default_style, color } from '../../../styles/basic'
 import ActionBar from '../../Common/ContentCards/ActionBar'
 import FloatingHearts from '../../Common/FloatingHearts/FloatingHearts'
 
-const { height, width } = Dimensions.get('window')
+const { width } = Dimensions.get('window')
 const WINDOW_WIDTH = width
-
-const TabIconMap = {
-    steps: {
-        iconSource: StepIcon,
-        iconStyle: { height: 20, width: 20 },
-    },
-    needs: {
-        iconSource: HelpIcon,
-        iconStyle: { height: 20, width: 20 },
-    },
-}
 
 const DEBUG_KEY = '[ UI GoalCard ]'
 const SHARE_TO_MENU_OPTTIONS = [
@@ -118,8 +107,7 @@ class GoalCard extends React.PureComponent {
             }
             newNavigationState = _.set(newNavigationState, 'routes', newRoutes)
             this.setState({
-                ...this.state,
-                navigationState: { ...newNavigationState },
+                navigationState: newNavigationState,
             })
         }
     }

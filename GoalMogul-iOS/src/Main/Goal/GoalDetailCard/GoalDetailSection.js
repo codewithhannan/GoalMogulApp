@@ -274,7 +274,7 @@ class GoalDetailSection extends React.PureComponent {
             details,
             isCompleted,
             maybeIsSubscribed,
-            viewCount,
+            privacy,
         } = item
         const timeStamp =
             created === undefined || created.length === 0 ? new Date() : created
@@ -425,7 +425,7 @@ class GoalDetailSection extends React.PureComponent {
                         />
                         <Timestamp
                             time={timeago().format(timeStamp)}
-                            viewCount={viewCount}
+                            privacy={privacy}
                         />
                     </View>
                 </View>

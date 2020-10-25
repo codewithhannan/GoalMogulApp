@@ -1,16 +1,26 @@
 /** @format */
 
+import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { Image, Text, View } from 'react-native'
 import Icons from '../../../asset/base64/Icons'
 import { default_style, color } from '../../../styles/basic'
+import { GOALS_STYLE } from '../../../styles/Goal'
+import { PRIVACY_OPTIONS } from '../../../Utils/Constants'
 import { DotIcon } from '../../../Utils/Icons'
 
 const { ViewCountIcon } = Icons
 
 const Timestamp = (props) => {
     // TODO: format time
-    const { time, viewCount, priority, isCompleted, textStyles } = props
+    const {
+        time,
+        viewCount,
+        priority,
+        isCompleted,
+        textStyles,
+        privacy,
+    } = props
     const viewCountComponent = viewCount ? (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <DotIcon
@@ -72,11 +82,35 @@ const Timestamp = (props) => {
         </View>
     ) : null
 
+    const privacyObj = PRIVACY_OPTIONS.find(({ value }) => value === privacy)
+    const privacyIcon = privacy ? (
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Icon
+                pack="material-community"
+                name={privacyObj.materialCommunityIconName}
+                style={[
+                    GOALS_STYLE.commonPillIcon,
+                    { tintColor: color.TEXT_COLOR.OFF_DARK },
+                ]}
+            />
+            <DotIcon
+                iconStyle={{
+                    tintColor: '#818181',
+                    width: 3,
+                    height: 3,
+                    marginLeft: 4,
+                    marginRight: 5,
+                }}
+            />
+        </View>
+    ) : null
+
     const textStylesProp = textStyles || {}
 
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ ...default_style.smallText_1, ...textStylesProp }}>
+            {privacyIcon}
+            <Text style={[default_style.smallText_1, textStylesProp]}>
                 {time}
             </Text>
             {priorityComponent}

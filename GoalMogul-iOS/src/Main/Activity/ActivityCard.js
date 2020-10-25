@@ -348,10 +348,6 @@ class ActivityCard extends React.PureComponent {
                         numberOfLines={CONTENT_PREVIEW_MAX_NUMBER_OF_LINES}
                         ellipsizeMode="tail"
                         onUserTagPressed={(user) => {
-                            console.log(
-                                `${DEBUG_KEY}: user tag press for user: `,
-                                user
-                            )
                             this.props.openProfile(user)
                         }}
                     />
