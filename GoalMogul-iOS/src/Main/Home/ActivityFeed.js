@@ -19,7 +19,7 @@ import {
 } from '../../redux/modules/feed/post/PostActions'
 import {
     loadMoreFeed,
-    loadUserFriendsCount,
+    loadUserInvitedFriendsCount,
 } from '../../redux/modules/home/feed/actions'
 import { markUserViewGoal } from '../../redux/modules/goal/GoalDetailActions'
 import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
@@ -50,12 +50,12 @@ class ActivityFeed extends Component {
 
     componentDidMount() {
         if (this.props.data && this.props.data.length) {
-            this.props.loadUserFriendsCount()
+            this.props.loadUserInvitedFriendsCount()
         }
     }
     componentDidUpdate() {
         if (this.props.data && this.props.data.length) {
-            this.props.loadUserFriendsCount()
+            this.props.loadUserInvitedFriendsCount()
         }
     }
     shouldComponentUpdate(nextProps, nextState) {
@@ -204,8 +204,8 @@ class ActivityFeed extends Component {
                             ...default_style.titleText_1,
                         }}
                     >
-                        Invite {7 - this.props.userFriendsCount} more friends to
-                        get your Silver badge!
+                        Invite {7 - this.props.userInvitedFriendsCount} more
+                        friends to get your Silver badge!
                     </Text>
                     <Text
                         style={{
@@ -358,7 +358,12 @@ class ActivityFeed extends Component {
     }
 
     render() {
-        const { data, userFriendsCount, refreshing, loading } = this.props
+        const {
+            data,
+            userInvitedFriendsCount,
+            refreshing,
+            loading,
+        } = this.props
         // const showGhostCards =
         //     this.props.refreshing &&
         //     (!this.props.data || this.props.data.length === 0)
@@ -382,7 +387,7 @@ class ActivityFeed extends Component {
                 cardType: 'JoinSomeTribes',
             })
         } else if (
-            userFriendsCount < 7 &&
+            userInvitedFriendsCount < 7 &&
             (!refreshing || processedData.length)
         ) {
             // second item on list
@@ -422,7 +427,7 @@ const mapStateToProps = (state) => {
         loading,
         loadingMore,
         data,
-        userFriendsCount,
+        userInvitedFriendsCount,
         randomNumber,
     } = state.home.activityfeed
 
@@ -431,7 +436,7 @@ const mapStateToProps = (state) => {
         refreshing,
         loading,
         loadingMore, // For footer indicator
-        userFriendsCount,
+        userInvitedFriendsCount,
         randomNumber,
     }
 }
@@ -460,7 +465,7 @@ export default connect(
     mapStateToProps,
     {
         loadMoreFeed,
-        loadUserFriendsCount,
+        loadUserInvitedFriendsCount,
         openPostDetail,
         openGoalDetail,
         markUserViewPost,

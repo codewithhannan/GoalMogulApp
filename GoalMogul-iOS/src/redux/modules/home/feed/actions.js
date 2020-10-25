@@ -5,11 +5,11 @@ import {
     HOME_REFRESH_GOAL_DONE,
     HOME_LOAD_GOAL,
     HOME_LOAD_GOAL_DONE,
-    HOME_USER_FRIENDS_COUNT,
+    HOME_USER_INVITED_FRIENDS_COUNT,
 } from '../../../../reducers/Home'
 
 import { api as API } from '../../../middleware/api'
-import { queryBuilder } from '../../../middleware/utils'
+import { is2xxRespose, queryBuilder } from '../../../middleware/utils'
 import { Logger } from '../../../middleware/utils/Logger'
 
 const DEBUG_KEY = '[ Action Home Activity ]'
@@ -150,12 +150,16 @@ const loadFeed = (
 }
 
 // for showing 'get your silver badge!' toast
-export const loadUserFriendsCount = () => (dispatch, getState) => {
+export const loadUserInvitedFriendsCount = () => (dispatch, getState) => {
     const { token } = getState().user
-    API.get(`secure/user/friendship/count`, token).then(({ count }) => {
-        dispatch({
-            type: HOME_USER_FRIENDS_COUNT,
-            payload: count,
-        })
-    })
+    API.get(`secure/user/profile/stats/invited-user-count`, token).then(
+        (res) => {
+            if (res && is2xxRespose(res.status)) {
+                dispatch({
+                    type: HOME_USER_INVITED_FRIENDS_COUNT,
+                    payload: res.data,
+                })
+            }
+        }
+    )
 }
