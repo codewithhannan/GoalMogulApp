@@ -499,6 +499,13 @@ const Options = (props) => {
             ? { ...styles.selectedSuggestionTextStyle }
             : { ...styles.suggestionTextStyle }
 
+        let isDisabled = false
+        let opacity = 1
+        if (text === 'Event') {
+            isDisabled = true
+            opacity = 0.5
+        }
+
         return (
             <TouchableOpacity
                 activeOpacity={0.6}
@@ -508,7 +515,9 @@ const Options = (props) => {
                     marginTop: 15,
                     marginLeft: 30,
                     alignItems: 'flex-start',
+                    opacity,
                 }}
+                disabled={isDisabled}
             >
                 <View
                     style={{
