@@ -69,7 +69,7 @@ class Email extends Component {
                 </Text>
             )
         }
-        return <Text style={Styles.detailTextStyle}>andyzeng96@gmail.com</Text>
+        return null
     }
 
     render() {
