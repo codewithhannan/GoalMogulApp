@@ -653,7 +653,7 @@ export const fetchAppUserProfile = (token, userId) => async (
                     SENTRY_TAGS.ACTION.FETCH_USER_PROFILE,
                     SENTRY_TAG_VALUE.ACTIONS.FAILED
                 )
-                .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userId)
+                .withExtraContext(SENTRY_CONTEXT.USER.USER_ID, userIdToUse)
                 .send()
             return undefined
         }
@@ -663,6 +663,7 @@ export const fetchAppUserProfile = (token, userId) => async (
             type: USER_LOAD_PROFILE_DONE,
             payload: {
                 user: res.data,
+                userId: userIdToUse,
                 pageId: 'LOGIN',
             },
         })
@@ -721,10 +722,10 @@ export const logout = () => async (dispatch, getState) => {
     // clear caches
     MemberDocumentFetcher.clearMemberCache()
 
+    Actions.reset('root')
     dispatch({
         type: USER_LOG_OUT,
     })
-    Actions.reset('root')
 }
 
 const TOAST_IMAGE_STYLE = {

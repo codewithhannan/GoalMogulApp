@@ -323,7 +323,10 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
             // This chain might need some refactoring
             dispatch({
                 type: REGISTRATION_ACCOUNT_SUCCESS,
-                payload,
+                payload: {
+                    ...payload,
+                    email,
+                },
             })
 
             // Invoke screen transition callback for registration success

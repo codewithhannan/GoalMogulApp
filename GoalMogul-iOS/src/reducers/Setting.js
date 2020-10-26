@@ -18,9 +18,10 @@ import {
     SETTING_BLOCK_UNBLOCK_REQUEST,
     SETTING_BLOCK_UNBLOCK_REQUEST_DONE,
     PROFILE_UPDATE_SUCCESS,
+    REGISTRATION_ACCOUNT_SUCCESS,
 } from '../actions/types'
 
-import { USER_LOG_OUT } from './User'
+import { USER_LOG_OUT, USER_LOAD_PROFILE_DONE } from './User'
 
 import {
     SETTING_UPDATE_NOTIFICATION_PREFERENCE,
@@ -76,6 +77,12 @@ export default (state = INITIAL_STATE, action) => {
             return _.set(newState, 'userId', userId)
         }
 
+        case REGISTRATION_ACCOUNT_SUCCESS: {
+            const { email } = action.payload
+            const newState = _.cloneDeep(state)
+            return _.set(newState, 'email', email)
+        }
+
         case SETTING_SWITCH_TAB: {
             let newState = _.cloneDeep(state)
             const { index } = action.payload
@@ -91,6 +98,7 @@ export default (state = INITIAL_STATE, action) => {
             return newState
         }
 
+        case USER_LOAD_PROFILE_DONE:
         case PROFILE_UPDATE_SUCCESS:
         case PROFILE_FETCHING_SUCCESS: {
             const { user, userId } = action.payload

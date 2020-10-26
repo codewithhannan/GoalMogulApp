@@ -92,7 +92,7 @@ class TribeHub extends Component {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             style={{ ...styles.emptyTribeButtonStyle }}
-                            onPress={() => Actions.push('explore')}
+                            onPress={() => Actions.push('tribeDiscover')}
                         >
                             <Text
                                 style={[
