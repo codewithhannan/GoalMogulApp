@@ -5,6 +5,7 @@ import { View, Text, Image, TouchableOpacity } from 'react-native'
 import R from 'ramda'
 import timeago from 'timeago.js'
 import { connect } from 'react-redux'
+import _ from 'lodash'
 
 // Component
 import {
@@ -22,7 +23,8 @@ import {
 } from '../../../redux/modules/notification/NotificationActions'
 import { Logger } from '../../../redux/middleware/utils/Logger'
 import { Icon } from '@ui-kitten/components'
-import { color } from '../../../styles/basic'
+import { color, text, default_style } from '../../../styles/basic'
+import { UI_SCALE } from '../../../styles'
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationCard ]'
@@ -120,29 +122,48 @@ class NotificationCard extends React.PureComponent {
 
     renderContent(item, isInvalidCommentNotif) {
         const { created, parsedNoti } = item
-        let text =
+        let textToDisplay =
             parsedNoti && parsedNoti.notificationMessage
                 ? parsedNoti.notificationMessage
                 : ''
 
-        if (text === '' && isInvalidCommentNotif) {
-            text = 'Comment was removed by the owner'
+        let actorName = _.get(item, 'parsedNoti.actorName', undefined)
+        let startWithName = textToDisplay.startsWith(actorName)
+        if (actorName && startWithName) {
+            textToDisplay = textToDisplay.replace(`${actorName}`, '')
         }
+
+        if (textToDisplay === '' && isInvalidCommentNotif) {
+            textToDisplay = 'Comment was removed by the owner'
+            actorName = undefined
+        }
+
         return (
             <View style={{ flex: 1, marginLeft: 10, marginRight: 18 }}>
                 <Text
                     style={{
                         flexWrap: 'wrap',
-                        color: 'black',
-                        fontSize: 13,
-                        marginTop: 2,
+                        color: color.TEXT_COLOR.OFF_DARK,
+                        fontSize: 14 * UI_SCALE,
+                        fontFamily: text.FONT_FAMILY.REGULAR,
+                        marginBottom: 4,
                     }}
                     numberOfLines={2}
                     ellipsizeMode="tail"
                 >
-                    {text}
+                    {actorName && startWithName ? (
+                        <Text
+                            style={[
+                                default_style.titleText_2,
+                                { color: color.TEXT_COLOR.OFF_DARK },
+                            ]}
+                        >
+                            {actorName}
+                        </Text>
+                    ) : null}
+                    {textToDisplay}
                 </Text>
-                <View style={{ marginBottom: 3 }}>
+                <View>
                     <Timestamp time={timeago().format(created)} />
                 </View>
             </View>
