@@ -607,7 +607,7 @@ class NewGoalView extends Component {
             ],
             this.handleCatergoryOnSelect,
             this.props.category,
-            { ...styles.triggerContainerStyle },
+            styles.triggerContainerStyle,
             () => console.log('animationCallback')
         )
 
@@ -814,26 +814,24 @@ class NewGoalView extends Component {
             <Text
                 style={{
                     ...default_style.subTitleText_1,
-                    marginLeft: 12,
-                    marginRight: 12,
+                    marginRight: 8,
                 }}
             >
                 {this.props.startTime.date
-                    ? moment(this.props.startTime.date).format('ll')
-                    : 'Start Date'}
+                    ? moment(this.props.startTime.date).format(' MMM D, YY')
+                    : ' Start Date'}
             </Text>
         )
         const endTime = (
             <Text
                 style={{
                     ...default_style.subTitleText_1,
-                    marginLeft: 12,
-                    marginRight: 12,
+                    marginRight: 8,
                 }}
             >
                 {this.props.endTime.date
-                    ? moment(this.props.endTime.date).format('ll')
-                    : 'End Date'}
+                    ? moment(this.props.endTime.date).format(' MMM D, YY')
+                    : ' End Date'}
             </Text>
         )
 
@@ -841,10 +839,7 @@ class NewGoalView extends Component {
             <View
                 style={{
                     height: 40 * default_style.uiScale,
-                    width: 34 * default_style.uiScale,
-                    borderWidth: 1,
-                    borderColor: '#DFE0E1',
-                    backgroundColor: '#F5F7FA',
+                    width: default_style.buttonIcon_1.width + 5,
                     alignItems: 'center',
                     justifyContent: 'center',
                 }}
@@ -1454,7 +1449,7 @@ const MenuFactory = (
         <Menu
             onSelect={(value) => callback(value)}
             rendererProps={{
-                placement: 'bottom',
+                placement: 'auto',
                 anchorStyle: styles.anchorStyle,
             }}
             renderer={Popover}

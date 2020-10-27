@@ -125,8 +125,10 @@ class GoalCardBody extends React.Component {
                 initializeFromGoal
                 initialPost={{
                     belongsToGoalStoryline: {
-                        goalRef,
+                        goalRef: goalRef._id,
+                        title: goalRef.title,
                     },
+                    privacy: goalRef.privacy,
                 }}
             />,
         ]

@@ -897,23 +897,23 @@ export default (state = INITIAL_STATE, action) => {
             let goalToUpdate = _.get(newState, `${goalId}.goal`)
             goalToUpdate = _.set(goalToUpdate, 'maybeLikeRef', likeId)
 
-            const oldLikeCount = _.get(goalToUpdate, 'likeCount')
-            let newLikeCount = oldLikeCount
+            const oldLikeCount = _.get(goalToUpdate, 'likeCount', 0)
+            let newLikeCount = oldLikeCount || 0
 
             if (action.type === LIKE_POST || action.type === LIKE_GOAL) {
                 if (undo) {
-                    newLikeCount = oldLikeCount - 1
+                    newLikeCount = newLikeCount - 1
                 } else if (likeId === 'testId') {
-                    newLikeCount = oldLikeCount + 1
+                    newLikeCount = newLikeCount + 1
                 }
             } else if (
                 action.type === UNLIKE_POST ||
                 action.type === UNLIKE_GOAL
             ) {
                 if (undo) {
-                    newLikeCount = oldLikeCount + 1
+                    newLikeCount = newLikeCount + 1
                 } else if (likeId === undefined) {
-                    newLikeCount = oldLikeCount - 1
+                    newLikeCount = newLikeCount - 1
                 }
             }
             goalToUpdate = _.set(goalToUpdate, 'likeCount', newLikeCount)

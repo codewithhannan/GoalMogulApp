@@ -82,7 +82,7 @@ class ViewableSettingMenu extends Component {
 
         // PRIVACY_OPTIONS array only contains unique values, hence filter will return max 1 result
         const filteredOptions = PRIVACY_OPTIONS.filter(
-            ({ value }) => this.props.viewableSetting === value
+            ({ value }) => this.props.privacy === value
         )
         const { text, materialCommunityIconName } =
             filteredOptions.length === 0

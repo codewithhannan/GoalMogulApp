@@ -36,7 +36,12 @@ import {
 } from '../../../middleware/utils'
 
 import ImageUtils from '../../../../Utils/ImageUtils'
-import { EMPTY_POST } from '../../../../Utils/Constants'
+import {
+    EMPTY_POST,
+    PRIVACY_FRIENDS,
+    PRIVACY_OPTIONS,
+    PRIVACY_PUBLIC,
+} from '../../../../Utils/Constants'
 import { Logger } from '../../../middleware/utils/Logger'
 import { trackWithProperties, EVENT as E } from '../../../../monitoring/segment'
 
@@ -450,7 +455,7 @@ const postToUpdateAdaptor = (post) => {
  */
 const newPostAdaptor = (values, userId) => {
     const {
-        viewableSetting,
+        privacy,
         mediaRef,
         post,
         belongsToTribe,
@@ -466,12 +471,9 @@ const newPostAdaptor = (values, userId) => {
         belongsToTribe !== undefined || belongsToEvent !== undefined
     let privacySetting
     if (shouldBePublic) {
-        privacySetting = 'public'
+        privacySetting = PRIVACY_PUBLIC
     } else {
-        privacySetting =
-            viewableSetting === 'Private'
-                ? 'self'
-                : viewableSetting.toLowerCase()
+        privacySetting = privacy
     }
     return {
         owner: userId,
@@ -505,13 +507,12 @@ export const postToFormAdapter = (values) => {
     } = values
 
     return {
-        post: content.text,
-        viewableSetting:
-            privacy === 'self' ? 'Private' : capitalizeWord(privacy),
+        post: _.get(content, 'text'),
+        privacy,
         mediaRef,
-        tags: _.isEmpty(content.tags)
+        tags: _.isEmpty(_.get(content, 'tags'))
             ? []
-            : constructTags(content.tags, content.text),
+            : constructTags(_.get(content, 'tags'), _.get(content, 'text')),
         belongsToTribe,
         belongsToGoalStoryline,
     }
