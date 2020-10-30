@@ -10,6 +10,7 @@ import {
     Text,
     TouchableOpacity,
     View,
+    Platform,
 } from 'react-native'
 import { Input, Icon, Button, withStyles, Layout } from '@ui-kitten/components'
 import { connect } from 'react-redux'
@@ -355,7 +356,11 @@ class CreateChatroomModal extends React.Component {
                 />
                 {modalPageNumber == 1 ? (
                     <KeyboardAvoidingView
-                        behavior="padding"
+                        behavior={Platform.select({
+                            android: 'height',
+                            ios: 'padding',
+                            default: 'padding',
+                        })}
                         style={{
                             ...styles.homeContainerStyle,
                             flex: 1,
