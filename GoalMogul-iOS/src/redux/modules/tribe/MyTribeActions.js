@@ -1177,7 +1177,7 @@ export const reportTribe = (referenceId, type) => (dispatch, getState) => {
             referenceId,
         },
     })
-    Actions.push('createReport')
+    Actions.push('createReportStack')
 }
 
 /**

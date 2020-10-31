@@ -22,12 +22,14 @@ import tribe_default_icon from '../../../asset/utils/tribeIcon.png'
 import { switchCase, decode } from '../../../redux/middleware/utils'
 // modal
 import MyTribeDescription from './MyTribeDescription'
+import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
 // Actions
 import { openPostDetail } from '../../../redux/modules/feed/post/PostActions'
 import {
     openMultiUserInviteModal,
     searchFriend,
 } from '../../../redux/modules/search/SearchActions'
+import { getButtonBottomSheetHeight } from '../../../styles'
 import { loadFriends } from '../../../actions'
 import {
     refreshMyTribeDetail,
@@ -140,6 +142,9 @@ class MyTribe extends React.PureComponent {
         }
     }
 
+    openOptionModal = () => this.bottomSheetRef.open()
+    closeOptionModal = () => this.bottomSheetRef.close()
+
     openUserInviteModal = (item) => {
         const { name, _id } = item
         this.props.openMultiUserInviteModal({
@@ -208,82 +213,89 @@ class MyTribe extends React.PureComponent {
         return this.props.memberData
     }
 
-    /**
-     * Handle modal setting on click. Show IOS menu with options
-     */
-    handlePageSetting = (item) => {
+    makeTribeOptions = (item) => {
         const { _id } = item
         const { userTribeStatus } = this.props
         const isAdmin = userTribeStatus === 'Admin'
         const isMember = userTribeStatus === 'Member'
 
-        let options
-        let requestOptions
-        let cancelIndex = 2
-        if (isAdmin) {
-            requestOptions = ['Edit', 'Delete', 'Cancel']
-            options = switchByButtonIndex([
-                [
-                    R.equals(0),
-                    () => {
-                        console.log(
-                            `${DEBUG_KEY} User chooses to edit current tribe`
-                        )
-                        this.props.editTribe(item)
-                    },
-                ],
-                [
-                    R.equals(1),
-                    () => {
-                        console.log(
-                            `${DEBUG_KEY} User chooses to delete current tribe`
-                        )
-                        this.props.deleteTribe(_id)
-                    },
-                ],
-            ])
-        } else if (isMember) {
-            requestOptions = ['Leave Tribe', 'Report', 'Cancel']
-            options = switchByButtonIndex([
-                [
-                    R.equals(0),
-                    () => {
-                        console.log(
-                            `${DEBUG_KEY} User chooses to remove request`
-                        )
-                        this.props.leaveTribe(_id, 'mytribe')
-                    },
-                    R.equals(1),
-                    () => {
-                        console.log(
-                            `${DEBUG_KEY} User chooses to remove request`
-                        )
-                        this.props.reportTribe(_id)
-                    },
-                ],
-            ])
-        } else {
-            cancelIndex = 1
-            requestOptions = ['Report', 'Cancel']
-            options = switchByButtonIndex([
-                [
-                    R.equals(0),
-                    () => {
-                        console.log(
-                            `${DEBUG_KEY} User chooses to remove request`
-                        )
-                        this.props.reportTribe(_id)
-                    },
-                ],
-            ])
+        const reportOption = {
+            text: 'Report',
+            textStyle: { color: 'black' },
+            icon: { name: 'account-alert', pack: 'material-community' },
+            onPress: () => {
+                this.closeOptionModal()
+                // Wait for bottom sheet to close
+                // before showing unfriend alert confirmation
+                setTimeout(() => {
+                    this.props.reportTribe(_id)
+                }, 500)
+            },
         }
 
-        const tribeActionSheet = actionSheet(
-            requestOptions,
-            cancelIndex,
-            options
+        const editOption = {
+            text: 'Edit',
+            textStyle: { color: 'black' },
+            icon: { name: 'account-edit', pack: 'material-community' },
+            onPress: () => {
+                this.closeOptionModal()
+                // Wait for bottom sheet to close
+                // before showing unfriend alert confirmation
+                setTimeout(() => {
+                    this.props.editTribe(item)
+                }, 500)
+            },
+        }
+
+        const deleteOption = {
+            text: 'Delete',
+            textStyle: { color: 'black' },
+            icon: { name: 'account-remove', pack: 'material-community' },
+            onPress: () => {
+                this.closeOptionModal()
+                // Wait for bottom sheet to close
+                // before showing unfriend alert confirmation
+                setTimeout(() => {
+                    this.props.deleteTribe(_id)
+                }, 500)
+            },
+        }
+
+        const leaveOption = {
+            text: 'Leave Tribe',
+            textStyle: { color: 'black' },
+            icon: { name: 'account-off', pack: 'material-community' },
+            onPress: () => {
+                this.closeOptionModal()
+                // Wait for bottom sheet to close
+                // before showing unfriend alert confirmation
+                setTimeout(() => {
+                    this.props.leaveTribe(_id, 'mytribe')
+                }, 500)
+            },
+        }
+
+        if (isAdmin) {
+            return [editOption, deleteOption]
+        }
+        if (isMember) {
+            return [leaveOption, reportOption]
+        }
+
+        return [reportOption]
+    }
+
+    renderBottomSheet = (item) => {
+        const options = this.makeTribeOptions(item)
+        // Options height + bottom space + bottom sheet handler height
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.bottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
         )
-        tribeActionSheet()
     }
 
     renderTribeImage(picture) {
@@ -566,8 +578,9 @@ class MyTribe extends React.PureComponent {
                     title={this.state.showNameInTitle ? decode(item.name) : ''}
                     onBackPress={() => Actions.pop()} // componentWillUnmount takes care of the state cleaning
                     pageSetting
-                    handlePageSetting={() => this.handlePageSetting(item)}
+                    handlePageSetting={() => this.openOptionModal()}
                 />
+                {this.renderBottomSheet(item)}
                 <FlatList
                     ref="flatList"
                     data={data}
