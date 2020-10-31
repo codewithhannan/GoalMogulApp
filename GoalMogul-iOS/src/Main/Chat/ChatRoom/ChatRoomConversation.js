@@ -76,10 +76,6 @@ import {
     IMAGE_BASE_URL,
 } from '../../../Utils/Constants'
 import { toHashCode } from '../../../Utils/ImageUtils'
-import {
-    actionSheet,
-    switchByButtonIndex,
-} from '../../Common/ActionSheetFactory'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import ModalHeader from '../../Common/Header/ModalHeader'
 import ProfileImage from '../../Common/ProfileImage'
@@ -436,31 +432,55 @@ class ChatRoomConversation extends React.Component {
         )
     }
 
-    onSendImageButtonPress = () => {
-        const mediaRefCases = switchByButtonIndex([
-            [
-                R.equals(0),
-                () => {
-                    this.handleOpenCameraRoll()
-                    this._textInput.blur()
-                },
-            ],
-            [
-                R.equals(1),
-                () => {
-                    this.handleOpenCamera()
-                    this._textInput.blur()
-                },
-            ],
-        ])
+    openAddMediaBottomSheet = () => this.mediaRefBottomSheetRef.open()
 
-        const addMediaRefActionSheet = actionSheet(
-            ['Open Camera Roll', 'Take Photo', 'Cancel'],
-            2,
-            mediaRefCases
-        )
-        return addMediaRefActionSheet()
+    closeAddMediaBottomSheet = () => this.mediaRefBottomSheetRef.close()
+
+    makeMediaRefOptions = () => {
+        return [
+            {
+                text: 'Take Photo',
+                icon: { name: 'camera', pack: 'material-community' },
+                iconStyle: { height: 24, color: 'black' },
+                onPress: () => {
+                    this.closeAddMediaBottomSheet()
+                    this._textInput.blur()
+                    setTimeout(() => {
+                        this.handleOpenCamera()
+                    }, 500)
+                },
+            },
+            {
+                text: 'Open Camera Roll',
+                textStyle: { color: 'black' },
+                icon: { name: 'image-outline', pack: 'material-community' },
+                iconStyle: { height: 24, color: 'black' },
+                imageStyle: { tintColor: 'black' },
+                onPress: () => {
+                    this.closeAddMediaBottomSheet()
+                    this._textInput.blur()
+                    setTimeout(() => {
+                        this.handleOpenCameraRoll()
+                    }, 500)
+                },
+            },
+        ]
     }
+
+    renderAddMediaRefBottomSheet = () => {
+        const options = this.makeMediaRefOptions()
+
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.mediaRefBottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
+    }
+
     handleOpenCamera = () => {
         this.props.openCamera((result) => {
             this.props.changeMessageMediaRef(result.uri)
@@ -687,7 +707,7 @@ class ChatRoomConversation extends React.Component {
                     paddingRight: 12,
                     ...styles.iconContainerStyle,
                 }}
-                onPress={this.onSendImageButtonPress}
+                onPress={this.openAddMediaBottomSheet}
             >
                 <Icon
                     name="image-outline"
@@ -1046,6 +1066,7 @@ class ChatRoomConversation extends React.Component {
                     />
                     {this.renderBottomButtonSheet()}
                     {this.renderAttachGoal()}
+                    {this.renderAddMediaRefBottomSheet()}
                 </Layout>
             </MenuProvider>
         )

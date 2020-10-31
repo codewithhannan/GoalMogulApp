@@ -14,7 +14,9 @@ const Button = (props) => {
         textStyle.fontWeight = '600'
 
         return (
-            <View style={containerStyle}>
+            <View
+                style={[containerStyle, { opacity: props.disabled ? 0.6 : 1 }]}
+            >
                 <Text style={textStyle}>{props.text}</Text>
                 <RightArrowIcon
                     iconStyle={{
@@ -36,7 +38,12 @@ const Button = (props) => {
         )
     }
     return (
-        <View style={styles.containerStyle}>
+        <View
+            style={[
+                styles.containerStyle,
+                { opacity: props.disabled ? 0.6 : 1 },
+            ]}
+        >
             <Text style={styles.textStyle}>{props.text}</Text>
         </View>
     )

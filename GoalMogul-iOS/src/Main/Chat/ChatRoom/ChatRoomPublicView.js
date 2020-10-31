@@ -333,7 +333,8 @@ const makeMapStateToProps = () => {
                     chatRoom.members &&
                     chatRoom.members.find(
                         (memberDoc) =>
-                            memberDoc.memberRef._id == userId &&
+                            (memberDoc.memberRef._id == userId ||
+                                memberDoc.memberRef == userId) &&
                             memberDoc.status == 'JoinRequester'
                     )
             }

@@ -23,6 +23,8 @@ import {
 import { Icon, withStyles } from '@ui-kitten/components'
 
 import { color } from '../../../styles/basic'
+import { getButtonBottomSheetHeight } from '../../../styles'
+import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
 
 // Resources
 const TAKE_PIC_ICON = require('../../../asset/image/takePictureIcon.png')
@@ -48,27 +50,51 @@ const CANCEL_INDEX = 2
  * Please see documentation for details.
  */
 class ImagePicker extends Component {
-    /**Prompt user for an image selection */
-    onAddImagePressed = () => {
-        const { handleTakingPicture, handleCameraRoll } = this.props
+    openAddMediaModal = () => this.mediaBottomSheetRef.open()
 
-        ActionSheetIOS.showActionSheetWithOptions(
+    closeAddMediaModal = () => this.mediaBottomSheetRef.close()
+
+    makeAddMediaOptions = () => {
+        const { handleTakingPicture, handleCameraRoll } = this.props
+        return [
             {
-                options: BUTTONS,
-                cancelButtonIndex: CANCEL_INDEX,
-            },
-            (buttonIndex) => {
-                switch (buttonIndex) {
-                    case TAKING_PICTURE_INDEX:
+                text: 'Take Photo',
+                icon: { name: 'camera', pack: 'material-community' },
+                iconStyle: { height: 24, color: 'black' },
+                onPress: () => {
+                    this.closeAddMediaModal()
+                    setTimeout(() => {
                         handleTakingPicture()
-                        break
-                    case CAMERA_ROLL_INDEX:
+                    }, 500)
+                },
+            },
+            {
+                text: 'Open Camera Roll',
+                textStyle: { color: 'black' },
+                icon: { name: 'image-outline', pack: 'material-community' },
+                iconStyle: { height: 24, color: 'black' },
+                imageStyle: { tintColor: 'black' },
+                onPress: () => {
+                    this.closeAddMediaModal()
+                    setTimeout(() => {
                         handleCameraRoll()
-                        break
-                    default:
-                        return
-                }
-            }
+                    }, 500)
+                },
+            },
+        ]
+    }
+
+    renderAddMediaBottomSheet = () => {
+        const options = this.makeAddMediaOptions()
+
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.mediaBottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
         )
     }
 
@@ -110,7 +136,7 @@ class ImagePicker extends Component {
             <View {...this.props}>
                 <TouchableOpacity
                     style={buttonStyle}
-                    onPress={this.onAddImagePressed}
+                    onPress={this.openAddMediaModal}
                 >
                     {this.renderImage()}
                 </TouchableOpacity>
