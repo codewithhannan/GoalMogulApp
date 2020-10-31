@@ -3,6 +3,7 @@
 import { Alert } from 'react-native'
 import { api as API } from '../../middleware/api'
 import { fetchUserProfile } from '../../../actions'
+import _ from 'lodash'
 import { refreshChatRoom } from './ChatRoomActions'
 import { Logger } from '../../middleware/utils/Logger'
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal'
@@ -241,7 +242,16 @@ export const addMemberToChatRoom = (chatRoomId, addeeIds) => async (
     })
     let failedItems = []
 
-    for (let addeeId of addeeIds) {
+    let addeeIdsFiltered = []
+    addeeIds.forEach((maybeAddeeDoc) => {
+        if (_.get(maybeAddeeDoc, '_id') !== undefined) {
+            addeeIdsFiltered.push(maybeAddeeDoc._id)
+        } else {
+            addeeIdsFiltered.push(maybeAddeeDoc)
+        }
+    })
+
+    for (let addeeId of addeeIdsFiltered) {
         // send the message
         const body = {
             chatRoomId,
@@ -250,7 +260,7 @@ export const addMemberToChatRoom = (chatRoomId, addeeIds) => async (
         try {
             const resp = await API.post('secure/chat/room/members', body, token)
 
-            if (resp.status != 200) {
+            if (resp.status !== 200) {
                 failedItems.push(addeeId)
                 new SentryRequestBuilder(e, SENTRY_MESSAGE_TYPE.ERROR)
                     .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
@@ -284,6 +294,9 @@ export const addMemberToChatRoom = (chatRoomId, addeeIds) => async (
     // Refresh chat room regardless of error
     refreshChatRoom(chatRoomId)(dispatch, getState)
 
-    let alertMessage = 'Could not add selected member. Please try again later'
-    Alert.alert('Error', alertMessage)
+    if (failedItems && failedItems.length > 0) {
+        let alertMessage =
+            'Could not add selected member. Please try again later'
+        Alert.alert('Error', alertMessage)
+    }
 }
