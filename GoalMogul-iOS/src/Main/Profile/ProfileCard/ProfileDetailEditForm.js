@@ -190,7 +190,7 @@ class ProfileDetailEditForm extends Component {
         const isValidValues = validValues({ headline, about, elevatorPitch })
 
         return (
-            <View>
+            <View style={{ flex: 1 }}>
                 <FormHeader
                     title="Profile"
                     onSubmit={handleSubmit(this.submit)}
@@ -198,7 +198,7 @@ class ProfileDetailEditForm extends Component {
                 />
                 <SafeAreaView
                     forceInset={{ bottom: 'always' }}
-                    style={{ backgroundColor: 'white' }}
+                    style={{ backgroundColor: 'white', flex: 1 }}
                     onPress={() => {
                         Keyboard.dismiss()
                     }}
