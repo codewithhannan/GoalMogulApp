@@ -340,6 +340,7 @@ class ProfileV2 extends Component {
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <CreatePostModal
+                    attachGoalRequired
                     onRef={(r) => (this.createPostModal = r)}
                     openProfile={false}
                     pageId={pageId}

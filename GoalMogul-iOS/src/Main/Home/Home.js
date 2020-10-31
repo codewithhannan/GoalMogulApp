@@ -358,7 +358,10 @@ class Home extends Component {
                 : undefined
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                <CreatePostModal onRef={(r) => (this.createPostModal = r)} />
+                <CreatePostModal
+                    attachGoalRequired
+                    onRef={(r) => (this.createPostModal = r)}
+                />
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />
                     <FlatList
