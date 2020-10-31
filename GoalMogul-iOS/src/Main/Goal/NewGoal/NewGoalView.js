@@ -10,11 +10,11 @@ import {
     FlatList,
     Image,
     Modal,
-    ScrollView,
     Text,
     TouchableOpacity,
     View,
 } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { CopilotStep, walkthroughable } from 'react-native-copilot-gm'
 import DraggableFlatlist from 'react-native-draggable-flatlist'
 import DateTimePicker from 'react-native-modal-datetime-picker'
@@ -98,7 +98,6 @@ class NewGoalView extends Component {
             tagSearchData: { ...INITIAL_TAG_SEARCH },
         }
         this.updateSearchRes = this.updateSearchRes.bind(this)
-        this.scrollTo = this.scrollTo.bind(this)
         this.handleLayoutChange = this.handleLayoutChange.bind(this)
         this.scrollToEnd = this.scrollToEnd.bind(this)
         this.enableDescriptionInput = this.enableDescriptionInput.bind(this)
@@ -124,38 +123,8 @@ class NewGoalView extends Component {
      */
     scrollToEnd() {
         if (this.scrollView !== undefined) {
-            this.scrollView.scrollToEnd()
+            this.scrollView.props.scrollToEnd()
         }
-    }
-
-    /**
-     * y: calculated height to move based on the screen
-     * type: ['step', 'need']
-     * index: index in the type array starting from 0
-     */
-    scrollTo = (scrollPos, type, index) => {
-        // console.log(`${DEBUG_KEY}: scrollTo is called to scroll to y: ${y}`);
-        // console.log(`${DEBUG_KEY}: need length: `, this.props.steps.length);
-        // console.log(`${DEBUG_KEY}: index is: `, index);
-        const extraScroll = index * 40 * default_style.uiScale
-        this.view.measure((x, vy, width, height, pX, pY) => {
-            if (type === 'step') {
-                this.stepsView.measure((x, y, width, height, pX, pY) => {
-                    this.scrollView.scrollTo({
-                        y: vy + y + scrollPos + extraScroll,
-                        animated: true,
-                    })
-                })
-            }
-            if (type === 'need') {
-                this.needsView.measure((x, y, width, height, pX, pY) => {
-                    this.scrollView.scrollTo({
-                        y: vy + y + scrollPos + extraScroll,
-                        animated: true,
-                    })
-                })
-            }
-        })
     }
 
     handleLayoutChange = ({ nativeEvent }) => {
@@ -979,7 +948,7 @@ class NewGoalView extends Component {
                 component={InputField}
                 editable={this.props.uploading}
                 numberOfLines={4}
-                style={{ ...styles.standardInputStyle }}
+                style={styles.standardInputStyle}
                 placeholder={placeholder}
                 iconSource={cancel}
                 iconStyle={default_style.normalIcon_1}
@@ -990,7 +959,6 @@ class NewGoalView extends Component {
                 canDrag={canDrag}
                 autoCorrect
                 autoCapitalize={'sentences'}
-                scrollTo={this.scrollTo}
                 index={index}
                 type={type}
                 multiline
@@ -1022,13 +990,7 @@ class NewGoalView extends Component {
         })
 
         return (
-            <View
-                ref={(r) => {
-                    if (type === 'step') this.stepsView = r
-                    if (type === 'need') this.needsView = r
-                }}
-                style={styles.sectionMargin}
-            >
+            <View style={styles.sectionMargin}>
                 <FieldTitleText
                     text={TYPE_MAP[type].title}
                     required={false}
@@ -1052,14 +1014,12 @@ class NewGoalView extends Component {
                             // console.log('moving end for e: ', e);
                             fields.move(e.from, e.to)
                             this.setState({
-                                ...this.state,
                                 scrollEnabled: true,
                             })
                         }}
                         onDragBegin={(index) => {
                             // console.log('index is being moved: ', index);
                             this.setState({
-                                ...this.state,
                                 scrollEnabled: false,
                             })
                         }}
@@ -1125,12 +1085,15 @@ class NewGoalView extends Component {
     }
 
     render() {
-        const { user, initializeFromState } = this.props
+        const { initializeFromState } = this.props
 
         return (
-            <ScrollView
+            <KeyboardAwareScrollView
                 scrollEnabled={this.state.scrollEnabled}
-                ref={(r) => {
+                enableOnAndroid={true}
+                extraHeight={100}
+                enableResetScrollToCoords={false}
+                innerRef={(r) => {
                     this.scrollView = r
                 }}
             >
@@ -1274,7 +1237,7 @@ class NewGoalView extends Component {
                         </View>
                     ) : null}
                 </View>
-            </ScrollView>
+            </KeyboardAwareScrollView>
         )
     }
 }
