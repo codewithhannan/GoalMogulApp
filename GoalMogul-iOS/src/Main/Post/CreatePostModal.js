@@ -1074,11 +1074,18 @@ class CreatePostModal extends Component {
             mediaRef,
             uploading,
             user,
+            attachGoalRequired,
+            belongsToGoalStoryline,
         } = this.props
         const { profile } = user
 
+        const isGoalAttached =
+            belongsToGoalStoryline && !!belongsToGoalStoryline.goalRef
         const actionDisabled =
-            uploading || ((!post || post.trim() === '') && !mediaRef)
+            uploading ||
+            ((!post || post.trim() === '') && !mediaRef) ||
+            (attachGoalRequired && !isGoalAttached)
+
         const showDraftHeader =
             !initializeFromState &&
             !initializeFromGoal &&
