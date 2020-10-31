@@ -64,7 +64,7 @@ class ShareCard extends React.Component {
             return this.props.openProfile(userRef)
         }
 
-        if (goalRef) {
+        if (goalRef && entity._id) {
             return this.props.openGoalDetail(entity)
         }
 
