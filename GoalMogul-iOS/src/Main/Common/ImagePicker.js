@@ -13,23 +13,12 @@
  */
 
 import React, { Component } from 'react'
-import {
-    View,
-    Image,
-    TouchableOpacity,
-    StyleSheet,
-    ActionSheetIOS,
-} from 'react-native'
+import { View, Image, TouchableOpacity, StyleSheet } from 'react-native'
 
 import { color } from '../../styles/basic'
 import { Icon, withStyles } from '@ui-kitten/components'
-
-// Action sheet specific
-//TODO: abstract out as util function
-const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel']
-const TAKING_PICTURE_INDEX = 0
-const CAMERA_ROLL_INDEX = 1
-const CANCEL_INDEX = 2
+import { getButtonBottomSheetHeight } from '../../styles'
+import BottomButtonsSheet from './Modal/BottomButtonsSheet'
 
 /**
  * REQUIRED PROPS:
@@ -45,27 +34,51 @@ const CANCEL_INDEX = 2
  * Please see documentation for details.
  */
 class ImagePicker extends Component {
-    /** Prompt user for an image selection */
-    onAddImagePressed = () => {
-        const { handleTakingPicture, handleCameraRoll } = this.props
+    openAddMediaModal = () => this.mediaBottomSheetRef.open()
 
-        ActionSheetIOS.showActionSheetWithOptions(
+    closeAddMediaModal = () => this.mediaBottomSheetRef.close()
+
+    makeAddMediaOptions = () => {
+        const { handleTakingPicture, handleCameraRoll } = this.props
+        return [
             {
-                options: BUTTONS,
-                cancelButtonIndex: CANCEL_INDEX,
-            },
-            (buttonIndex) => {
-                switch (buttonIndex) {
-                    case TAKING_PICTURE_INDEX:
+                text: 'Take Photo',
+                icon: { name: 'camera', pack: 'material-community' },
+                iconStyle: { height: 24, color: 'black' },
+                onPress: () => {
+                    this.closeAddMediaModal()
+                    setTimeout(() => {
                         handleTakingPicture()
-                        break
-                    case CAMERA_ROLL_INDEX:
+                    }, 500)
+                },
+            },
+            {
+                text: 'Open Camera Roll',
+                textStyle: { color: 'black' },
+                icon: { name: 'image-outline', pack: 'material-community' },
+                iconStyle: { height: 24, color: 'black' },
+                imageStyle: { tintColor: 'black' },
+                onPress: () => {
+                    this.closeAddMediaModal()
+                    setTimeout(() => {
                         handleCameraRoll()
-                        break
-                    default:
-                        return
-                }
-            }
+                    }, 500)
+                },
+            },
+        ]
+    }
+
+    renderAddMediaBottomSheet = () => {
+        const options = this.makeAddMediaOptions()
+
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.mediaBottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
         )
     }
 
@@ -107,7 +120,7 @@ class ImagePicker extends Component {
             <View {...this.props}>
                 <TouchableOpacity
                     style={buttonStyle}
-                    onPress={this.onAddImagePressed}
+                    onPress={this.openAddMediaModal}
                 >
                     {this.renderImage()}
                 </TouchableOpacity>
@@ -121,6 +134,7 @@ class ImagePicker extends Component {
                         />
                     </View>
                 ) : null}
+                {this.renderAddMediaBottomSheet()}
             </View>
         )
     }
