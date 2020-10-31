@@ -751,10 +751,12 @@ export const loadTribeFeed = (
  * @param type: if type is undefined or tribe, then it's requested from tribe page
  * Otherwise, it's from mytribe
  */
-export const requestJoinTribe = (tribeId, join, pageId) => (
-    dispatch,
-    getState
-) => {
+export const requestJoinTribe = (
+    tribeId,
+    join,
+    pageId,
+    isAutoAcceptEnabled
+) => (dispatch, getState) => {
     const { token, userId, user } = getState().user
     let startActionType, endActionErrorType
     if (join) {
@@ -786,6 +788,10 @@ export const requestJoinTribe = (tribeId, join, pageId) => (
 
     const onSuccess = () => {
         if (join) {
+            let category = 'JoinRequester'
+            if (isAutoAcceptEnabled) {
+                category = 'Member'
+            }
             return dispatch({
                 type: MYTRIBE_REQUEST_JOIN_SUCCESS,
                 payload: {
@@ -796,7 +802,7 @@ export const requestJoinTribe = (tribeId, join, pageId) => (
                         memberRef: {
                             ...user,
                         },
-                        category: 'JoinRequester',
+                        category: category,
                     },
                 },
             })

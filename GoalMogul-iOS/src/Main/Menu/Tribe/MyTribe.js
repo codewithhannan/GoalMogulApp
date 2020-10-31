@@ -340,7 +340,8 @@ class MyTribe extends React.PureComponent {
                     this.props.requestJoinTribe(
                         item._id,
                         false,
-                        this.props.pageId
+                        this.props.pageId,
+                        null
                     ),
             },
             Invitee: {
@@ -350,12 +351,11 @@ class MyTribe extends React.PureComponent {
         })({
             text: 'Join Tribe',
             onPress: () => {
-                this.props.requestJoinTribe(item._id, true, this.props.pageId)
-                this.props.refreshMyTribeDetail(
-                    this.props.tribeId,
+                this.props.requestJoinTribe(
+                    item._id,
+                    true,
                     this.props.pageId,
-                    null,
-                    false
+                    this.props.item.isAutoAcceptEnabled
                 )
             },
         })(status)
@@ -400,47 +400,41 @@ class MyTribe extends React.PureComponent {
         const isMemberOrAdmin =
             userTribeStatus === 'Admin' || userTribeStatus === 'Member'
 
-        const bodyCard =
+        const bodyCard = isMemberOrAdmin ? (
             data.length === 0 ? (
-                isMemberOrAdmin ? (
-                    !feedLoading &&
-                    !feedRefreshing && (
-                        <EmptyResult
-                            text={'No Posts'}
-                            textStyle={{ paddingTop: 80, paddingBottom: 80 }}
-                        />
-                    )
-                ) : (
-                    <View
-                        style={{
-                            padding: 16,
-                            paddingBottom: 32,
-                            backgroundColor: 'white',
-                            marginTop: 8,
-                        }}
-                    >
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                paddingBottom: 16,
-                            }}
-                        >
-                            <Image
-                                source={flagIcon}
-                                style={[
-                                    default_style.smallIcon_1,
-                                    { marginRight: 10 },
-                                ]}
-                            />
-                            <Text style={default_style.titleText_1}>About</Text>
-                        </View>
-                        <Text style={default_style.normalText_1}>
-                            {description}
-                        </Text>
-                    </View>
+                !feedLoading &&
+                !feedRefreshing && (
+                    <EmptyResult
+                        text={'No Posts'}
+                        textStyle={{ paddingTop: 80, paddingBottom: 80 }}
+                    />
                 )
             ) : null
+        ) : (
+            <View
+                style={{
+                    padding: 16,
+                    paddingBottom: 32,
+                    backgroundColor: 'white',
+                    marginTop: 8,
+                }}
+            >
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        paddingBottom: 16,
+                    }}
+                >
+                    <Image
+                        source={flagIcon}
+                        style={[default_style.smallIcon_1, { marginRight: 10 }]}
+                    />
+                    <Text style={default_style.titleText_1}>About</Text>
+                </View>
+                <Text style={default_style.normalText_1}>{description}</Text>
+            </View>
+        )
 
         return (
             <View>
@@ -504,6 +498,10 @@ class MyTribe extends React.PureComponent {
         let tribeDetailPostData = {
             userTribeStatus: this.props.userTribeStatus,
         }
+        if (this.props.userTribeStatus == undefined) {
+            return
+        }
+
         return (
             <PostPreviewCard
                 item={props.item}

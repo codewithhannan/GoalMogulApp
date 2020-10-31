@@ -145,7 +145,8 @@ class MyTribeCard extends React.Component {
                             this.props.requestJoinTribe(
                                 tribeId,
                                 false,
-                                this.props.pageId
+                                this.props.pageId,
+                                this.props.item.isAutoAcceptEnabled
                             )
                         }
                     >
