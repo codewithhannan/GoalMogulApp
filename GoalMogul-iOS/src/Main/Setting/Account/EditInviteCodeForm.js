@@ -15,6 +15,7 @@ import {
     ScrollView,
     SafeAreaView,
     TextInput,
+    Platform,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
@@ -37,6 +38,12 @@ import InputBox from '../../Onboarding/Common/InputBox'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
 class EditInviteCodeForm extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            inviteCodeValidationError: undefined,
+        }
+    }
     componentDidMount() {
         const { initialVal } = this.props
         console.log(
@@ -66,6 +73,9 @@ class EditInviteCodeForm extends Component {
         input: { onChange, value, ...restInput },
         label,
         meta: { error },
+        caption,
+        status,
+        onSubmitEditing,
         ...custom
     }) => {
         return (
@@ -74,10 +84,20 @@ class EditInviteCodeForm extends Component {
                     key="inviteCode"
                     inputTitle="Invite code"
                     placeholder="Your customized invite code"
-                    onChangeText={onChange}
+                    onChangeText={(text) => {
+                        if (text && text.length) {
+                            this.setState({
+                                inviteCodeValidationError: undefined,
+                            })
+                        }
+                        onChange(text)
+                    }}
                     value={value}
                     disabled={this.props.updatingInviteCode}
                     returnKeyType="done"
+                    caption={caption}
+                    status={status}
+                    onSubmitEditing={onSubmitEditing}
                 />
             </View>
         )
@@ -86,8 +106,21 @@ class EditInviteCodeForm extends Component {
     render() {
         const { handleSubmit, error } = this.props
 
+        const isButtonDisabled =
+            this.props.updatingInviteCode ||
+            this.state.inviteCodeValidationError ||
+            this.props.initialVal === this.props.inviteCode ||
+            !this.props.inviteCode ||
+            !this.props.inviteCode.length
         return (
-            <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+            <KeyboardAvoidingView
+                behavior={Platform.select({
+                    ios: 'padding',
+                    android: 'height',
+                    default: 'padding',
+                })}
+                style={{ flex: 1 }}
+            >
                 <SearchBarHeader
                     backButton
                     rightIcon="empty"
@@ -111,13 +144,30 @@ class EditInviteCodeForm extends Component {
                         name="inviteCode"
                         label="Invite code"
                         component={this.renderInput}
+                        caption={this.state.inviteCodeValidationError}
+                        status={
+                            this.state.inviteCodeValidationError
+                                ? 'danger'
+                                : 'basic'
+                        }
+                        onSubmitEditing={({ nativeEvent }) => {
+                            if (
+                                nativeEvent &&
+                                (!nativeEvent.text || !nativeEvent.text.length)
+                            ) {
+                                this.setState({
+                                    inviteCodeValidationError:
+                                        'Invite code cannot be empty.',
+                                })
+                            }
+                        }}
                     />
                     <DelayedButton
                         activeOpacity={0.6}
                         onPress={handleSubmit(this.handleOnSubmitPress)}
-                        disabled={this.props.updatingInviteCode}
+                        disabled={isButtonDisabled}
                     >
-                        <Button text="Update" />
+                        <Button text="Update" disabled={isButtonDisabled} />
                     </DelayedButton>
                 </ScrollView>
             </KeyboardAvoidingView>
