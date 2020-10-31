@@ -30,6 +30,7 @@ import {
     getProfileImageOrDefaultFromUser,
     sharingPrivacyAlert,
     SHAREING_PRIVACY_ALERT_TYPE,
+    countWords,
 } from '../../../redux/middleware/utils'
 import { createCommentFromSuggestion } from '../../../redux/modules/feed/comment/CommentActions'
 import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions'
@@ -97,6 +98,7 @@ class GoalDetailSection extends React.PureComponent {
             likeButtonLeftOffset: 0,
         }
         this.handleGoalReminder = this.handleGoalReminder.bind(this)
+        this.onTextLayout = this.onTextLayout.bind(this)
     }
 
     componentDidMount() {
@@ -118,12 +120,11 @@ class GoalDetailSection extends React.PureComponent {
     }
 
     onTextLayout(e) {
-        const firstLine = e.nativeEvent.lines[0]
-        const lastLine = e.nativeEvent.lines[e.nativeEvent.lines.length - 1]
+        const { text } = this.props.item.details || { text: '' }
         const numberOfRenderedLines = e.nativeEvent.lines.length
         this.setState({
             hasLongText:
-                lastLine.text.length > firstLine.text.length ||
+                countWords(e.nativeEvent.lines) < countWords(text) ||
                 numberOfRenderedLines > CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
         })
     }
@@ -174,7 +175,6 @@ class GoalDetailSection extends React.PureComponent {
                 () => {
                     // Show customized time picker
                     this.setState({
-                        ...this.state,
                         goalReminderDatePicker: true,
                     })
                 },
@@ -460,7 +460,7 @@ class GoalDetailSection extends React.PureComponent {
                         )
                         this.props.openProfile(user)
                     }}
-                    onTextLayout={this.onTextLayout.bind(this)}
+                    onTextLayout={this.onTextLayout}
                     numberOfLines={this.state.numberOfLines}
                 />
                 {this.renderSeeMore(text)}

@@ -36,6 +36,7 @@ import {
     makeCaretOptions,
     PAGE_TYPE_MAP,
     getProfileImageOrDefaultFromUser,
+    countWords,
 } from '../../redux/middleware/utils'
 
 // Constants
@@ -50,15 +51,21 @@ import { default_style, color } from '../../styles/basic'
 const DEBUG_KEY = '[ UI ActivityHeader ]'
 
 class ActivityHeader extends Component {
-    state = {
-        hasLongText: false,
+    constructor(props) {
+        super(props)
+        this.state = {
+            hasLongText: false,
+        }
+        this.onTextLayout = this.onTextLayout.bind(this)
     }
 
     onTextLayout(e) {
-        const firstLine = e.nativeEvent.lines[0]
-        const lastLine = e.nativeEvent.lines[e.nativeEvent.lines.length - 1]
+        const { actedUponEntityType, postRef, goalRef } = this.props.item
+        const isPost = actedUponEntityType === 'Post'
+        const item = isPost ? postRef : goalRef
+        const content = isPost ? item.content.text : item.title
         this.setState({
-            hasLongText: lastLine.text.length > firstLine.text.length,
+            hasLongText: countWords(e.nativeEvent.lines) < countWords(content),
         })
     }
 
@@ -263,7 +270,7 @@ class ActivityHeader extends Component {
                     textContainerStyle={{ flexDirection: 'row', marginTop: 5 }}
                     numberOfLines={CONTENT_PREVIEW_MAX_NUMBER_OF_LINES}
                     ellipsizeMode="tail"
-                    onTextLayout={this.onTextLayout.bind(this)}
+                    onTextLayout={this.onTextLayout}
                     onUserTagPressed={(user) => {
                         console.log(
                             `${DEBUG_KEY}: user tag press for user: `,

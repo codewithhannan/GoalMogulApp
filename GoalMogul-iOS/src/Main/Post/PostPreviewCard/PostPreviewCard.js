@@ -47,6 +47,7 @@ import {
     isSharedPost,
     sharingPrivacyAlert,
     SHAREING_PRIVACY_ALERT_TYPE,
+    countWords,
 } from '../../../redux/middleware/utils'
 import FloatingHearts from '../../Common/FloatingHearts/FloatingHearts'
 import ActionBar from '../../Common/ContentCards/ActionBar'
@@ -57,17 +58,20 @@ const SHARE_TO_MENU_OPTTIONS = ['Share to a Tribe', 'Cancel']
 const CANCEL_INDEX = 1
 
 class PostPreviewCard extends React.PureComponent {
-    state = {
-        floatingHeartCount: 0,
-        likeButtonLeftOffset: 0,
-        hasLongText: false,
+    constructor(props) {
+        super(props)
+        this.state = {
+            floatingHeartCount: 0,
+            likeButtonLeftOffset: 0,
+            hasLongText: false,
+        }
+        this.onTextLayout = this.onTextLayout.bind(this)
     }
 
     onTextLayout(e) {
-        const firstLine = e.nativeEvent.lines[0]
-        const lastLine = e.nativeEvent.lines[e.nativeEvent.lines.length - 1]
+        const { text } = this.props.item.content
         this.setState({
-            hasLongText: lastLine.text.length > firstLine.text.length,
+            hasLongText: countWords(e.nativeEvent.lines) < countWords(text),
         })
     }
 
@@ -354,7 +358,7 @@ class PostPreviewCard extends React.PureComponent {
                     textContainerStyle={{ flexDirection: 'row', marginTop: 16 }}
                     numberOfLines={CONTENT_PREVIEW_MAX_NUMBER_OF_LINES}
                     ellipsizeMode="tail"
-                    onTextLayout={this.onTextLayout.bind(this)}
+                    onTextLayout={this.onTextLayout}
                     onUserTagPressed={(user) => {
                         console.log(
                             `${DEBUG_KEY}: user tag press for user: `,
