@@ -318,7 +318,7 @@ class CreateChatroomModal extends React.Component {
     }
 
     render() {
-        const { user, self } = this.props
+        const { user, self, uploading } = this.props
         if (!user) return null
         const { name, headline, profile } = user
         const { modalPageNumber } = this.props
@@ -353,6 +353,7 @@ class CreateChatroomModal extends React.Component {
                         this.props.cancelCreateOrUpdateChatroom()
                     }}
                     onAction={this.handleNext}
+                    actionDisabled={uploading}
                 />
                 {modalPageNumber == 1 ? (
                     <KeyboardAvoidingView
