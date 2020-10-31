@@ -400,16 +400,16 @@ export const friendsBlockedOnClose = () => (dispatch, getState) => {
 
 // Setting account get blocked users with skip and limit
 export const getBlockedUsers = (refresh) => (dispatch, getState) => {
-    dispatch({
-        type: SETTING_BLOCK_FETCH_ALL,
-        payload: {
-            refresh,
-        },
-    })
     const { token } = getState().user
     const { skip, limit, hasNextPage } = getState().setting.block
     const newSkip = refresh ? 0 : skip
     if (hasNextPage === undefined || hasNextPage) {
+        dispatch({
+            type: SETTING_BLOCK_FETCH_ALL,
+            payload: {
+                refresh,
+            },
+        })
         API.get(
             `secure/user/settings/block?skip=${newSkip}&limit=${limit}`,
             token
