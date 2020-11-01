@@ -3,20 +3,17 @@
 import React, { Component } from 'react'
 import { View, Text, Image, TouchableOpacity, Alert } from 'react-native'
 import { connect } from 'react-redux'
-import R from 'ramda'
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
-
-// Component
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
 
 // Asset
 import dropDown from '../../asset/utils/dropDown.png'
-import profilePeople from '../../asset/utils/profile_people.png'
 
 // Actions
 import { default_style } from '../../styles/basic'
 import { PRIVACY_OPTIONS } from '../../Utils/Constants'
 import { Icon } from '@ui-kitten/components'
+import { getButtonBottomSheetHeight } from '../../styles'
+import BottomButtonsSheet from '../Common/Modal/BottomButtonsSheet'
 
 const DEBUG_KEY = '[ ViewableSettingMenu Component ]'
 const WalkableView = walkthroughable(View)
@@ -30,30 +27,34 @@ class ViewableSettingMenu extends Component {
     }
 
     handleOnClick = () => {
-        if (this.props.handleOnClick) {
-            return this.props.handleOnClick()
-        }
-        const viewableSettingSwitchCases = switchByButtonIndex(
-            PRIVACY_OPTIONS.map(({ value }, index) => {
-                return [
-                    R.equals(index),
-                    () => {
-                        console.log(
-                            `${DEBUG_KEY} User choose setting: ${value} `
-                        )
-                        this.props.callback(value)
-                        // TODO: update reducer state
-                    },
-                ]
-            })
-        )
+        this.bottomSheetRef && this.bottomSheetRef.open()
+    }
 
-        const viewableSettingActionSheet = actionSheet(
-            [...PRIVACY_OPTIONS.map(({ text }) => text), 'Cancel'],
-            PRIVACY_OPTIONS.length,
-            viewableSettingSwitchCases
+    renderBottomSheet() {
+        const options = PRIVACY_OPTIONS.map(
+            ({ text, value, materialCommunityIconName }) => {
+                return {
+                    text: text,
+                    icon: {
+                        name: materialCommunityIconName,
+                        pack: 'material-community',
+                    },
+                    onPress: () => {
+                        this.bottomSheetRef.close()
+                        this.props.callback(value)
+                    },
+                }
+            }
         )
-        return viewableSettingActionSheet()
+        // Options height + bottom space + bottom sheet handler height
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.bottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
     }
 
     render() {
@@ -90,30 +91,37 @@ class ViewableSettingMenu extends Component {
                 : filteredOptions.pop()
 
         return (
-            <TouchableOpacity
-                activeOpacity={1}
-                style={styles.containerStyle}
-                onPress={this.handleOnClick}
-            >
-                <Icon
-                    style={[
-                        default_style.normalIcon_1,
-                        { tintColor: '#BDBDBD' },
-                    ]}
-                    pack="material-community"
-                    name={materialCommunityIconName}
-                />
-                <Text
-                    style={[
-                        default_style.normalText_2,
-                        { width: 45, color: '#9A9A9A', marginHorizontal: 3 },
-                    ]}
+            <View>
+                <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.containerStyle}
+                    onPress={this.handleOnClick}
                 >
-                    {text}
-                </Text>
-                <Image style={styles.caretStyle} source={dropDown} />
-                {tutorialComponent}
-            </TouchableOpacity>
+                    <Icon
+                        style={[
+                            default_style.normalIcon_1,
+                            { tintColor: '#BDBDBD' },
+                        ]}
+                        pack="material-community"
+                        name={materialCommunityIconName}
+                    />
+                    <Text
+                        style={[
+                            default_style.normalText_2,
+                            {
+                                width: 45,
+                                color: '#9A9A9A',
+                                marginHorizontal: 3,
+                            },
+                        ]}
+                    >
+                        {text}
+                    </Text>
+                    <Image style={styles.caretStyle} source={dropDown} />
+                    {tutorialComponent}
+                </TouchableOpacity>
+                {this.renderBottomSheet()}
+            </View>
         )
     }
 }
