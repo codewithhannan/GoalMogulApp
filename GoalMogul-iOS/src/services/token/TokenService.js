@@ -160,7 +160,7 @@ class TokenService {
      * Refresh auth token
      * Nice to have: next step is to add retry for refreshing auth token
      */
-    async _refreshAuthToken() {
+    async _refreshAuthToken(shouldAutoLogout) {
         // Check and set isRefreshingAuthToken to true
         if (!this._isRefreshingAuthToken) {
             this._isRefreshingAuthToken = true
@@ -230,9 +230,11 @@ class TokenService {
                 undefined
             )
 
-            // Logout user since they have no refresh valid token to use
-            // Assuming this endpoit shouldn't fail
-            await store.dispatch(logout())
+            if (shouldAutoLogout) {
+                // Logout user since they have no refresh valid token to use
+                // Assuming this endpoit shouldn't fail
+                await store.dispatch(logout())
+            }
         }
 
         // Set the refreshing to false after the token is updated in cache so that no double
@@ -245,7 +247,7 @@ class TokenService {
     /**
      * Obtain the auth token for a request
      */
-    async getAuthToken() {
+    async getAuthToken(shouldAutoLogout = true) {
         // Check and get if has valid auth token
         const authTokenObject = await this.checkAndGetValidAuthToken()
         if (authTokenObject) {
@@ -254,7 +256,7 @@ class TokenService {
                 authTokenObject.createdAt + AUTH_TOKEN_EXPIRE_DAYS_IN_MS <=
                 Date.now() + AUTH_TOKEN_SHOULD_REFRESH_TIME_TO_EXPIRE_IN_MS
             ) {
-                this._refreshAuthToken()
+                this._refreshAuthToken(shouldAutoLogout)
             }
             return authTokenObject.token
         }
@@ -264,7 +266,7 @@ class TokenService {
             // Invoke authToken refresh
             this._isRefreshingAuthToken = true
             try {
-                this._refreshAuthToken()
+                this._refreshAuthToken(shouldAutoLogout)
             } catch (err) {
                 // TODO: sentry logging
                 Logger.log(
