@@ -101,6 +101,8 @@ class CreatePostModal extends Component {
                 : E.CREATE_POST_MODAL_OPENED
         )
         this.initializeForm()
+        if (this.props.attachGoalRequired)
+            setTimeout(() => this.attachGoalModal.open(), 500)
     }
 
     /**
@@ -589,12 +591,13 @@ class CreatePostModal extends Component {
             loading,
             tagData,
             change,
+            autoFocus,
         } = props
         const { tags } = this.props
         return (
             <View style={{ zIndex: 3, flex: 1 }}>
                 <MentionsTextInput
-                    autoFocus={true}
+                    autoFocus={autoFocus}
                     onRef={(r) => (this.textInput = r)}
                     textInputContainerStyle={styles.inputContainerStyle}
                     textInputStyle={{
@@ -753,6 +756,7 @@ class CreatePostModal extends Component {
                 tagData={this.state.tagSearchData.data}
                 keyword={this.state.keyword}
                 change={(type, val) => this.props.change(type, val)}
+                autoFocus={!this.props.attachGoalRequired}
             />
         )
     }
@@ -797,6 +801,7 @@ class CreatePostModal extends Component {
             initializeFromGoal,
             belongsToGoalStoryline,
             uploading,
+            attachGoalRequired,
         } = this.props
         const isGoalAttached =
             belongsToGoalStoryline && !!belongsToGoalStoryline.goalRef
@@ -810,7 +815,7 @@ class CreatePostModal extends Component {
                 style={{ flexDirection: 'row' }}
                 disabled={disabled}
                 onPress={() => {
-                    if (isGoalAttached) {
+                    if (isGoalAttached && !attachGoalRequired) {
                         // Clear goalRef on Press of a goal is attached
                         this.props.change('belongsToGoalStoryline', false)
                     } else {
@@ -879,14 +884,23 @@ class CreatePostModal extends Component {
                 triggerDisabled={disabled}
                 triggerComponent={attachGoalButton}
                 triggerWrapperStyle={attachGoalButtonStyle}
+                title="Select a goal to update"
+                closeDisabled={attachGoalRequired && !isGoalAttached}
                 onSelect={(item) => {
                     this.props.change('belongsToGoalStoryline', {
                         goalRef: item._id,
                         title: item.title,
                     })
+                    this.props.change('privacy', item.privacy)
                 }}
                 onClose={() => {
-                    this.textInput && this.textInput.focus()
+                    if (
+                        !isGoalAttached &&
+                        attachGoalRequired &&
+                        this.bottomSheetRef
+                    )
+                        this.bottomSheetRef.close()
+                    else this.textInput && this.textInput.focus()
                 }}
             />
         )
@@ -1060,11 +1074,18 @@ class CreatePostModal extends Component {
             mediaRef,
             uploading,
             user,
+            attachGoalRequired,
+            belongsToGoalStoryline,
         } = this.props
         const { profile } = user
 
+        const isGoalAttached =
+            belongsToGoalStoryline && !!belongsToGoalStoryline.goalRef
         const actionDisabled =
-            uploading || ((!post || post.trim() === '') && !mediaRef)
+            uploading ||
+            ((!post || post.trim() === '') && !mediaRef) ||
+            (attachGoalRequired && !isGoalAttached)
+
         const showDraftHeader =
             !initializeFromState &&
             !initializeFromGoal &&

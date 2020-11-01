@@ -139,7 +139,6 @@ const styles = {
     imageContainerStyle: {
         alignItems: 'center',
         borderRadius: 100,
-        alignSelf: 'flex-start',
         backgroundColor: 'white',
     },
 }

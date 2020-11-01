@@ -207,15 +207,19 @@ class SectionCardV2 extends Component {
                             if (this.props.onEdit) this.props.onEdit()
                         }}
                         onBlur={() => {
-                            this.props.updateGoal(
-                                _id,
-                                type,
-                                {
-                                    description: this.state.textValue.trim(),
-                                },
-                                goalRef,
-                                pageId
+                            if (
+                                this.state.textValue &&
+                                this.state.textValue.trim() !== ''
                             )
+                                this.props.updateGoal(
+                                    _id,
+                                    type,
+                                    {
+                                        description: this.state.textValue.trim(),
+                                    },
+                                    goalRef,
+                                    pageId
+                                )
                             this.setState({ isInputFocused: false })
                         }}
                         onChangeText={(text) =>

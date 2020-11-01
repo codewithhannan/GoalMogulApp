@@ -624,3 +624,16 @@ export const sharingPrivacyAlert = (type) => {
             ' to change its privacy settings'
     )
 }
+
+export const countWords = (lines) => {
+    let wordCount = 0
+    if (Array.isArray(lines)) {
+        lines.forEach((val) => {
+            wordCount += countWords(_.get(val, 'text', 0) || val)
+        })
+    } else if (typeof lines === 'string') {
+        if (lines.includes('\n')) wordCount = countWords(lines.split('\n'))
+        else wordCount = lines.split(' ').filter((val) => val !== '').length // filter out empty strings from count
+    }
+    return wordCount
+}

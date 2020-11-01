@@ -64,11 +64,11 @@ class TribeHub extends Component {
                 style={{ backgroundColor: color.GM_CARD_BACKGROUND, flex: 1 }}
             >
                 <SearchBarHeader rightIcon="menu" />
-                <View style={{ ...styles.emptyTribeImageContainerStyle }}>
+                <View style={styles.emptyTribeImageContainerStyle}>
                     <Image
                         source={EmptyTribe}
                         resizeMode="contain"
-                        style={{ ...styles.emptyTribeImageStyle }}
+                        style={styles.emptyTribeImageStyle}
                     />
                 </View>
                 <View style={{ flex: 1 }}>
@@ -79,11 +79,11 @@ class TribeHub extends Component {
                             alignItems: 'center',
                         }}
                     >
-                        <Text style={[default_style.titleText_1]}>
+                        <Text style={default_style.titleText_1}>
                             Join our encouraging community of achievers. Pay it
                             forward and brighten someone's day!
                         </Text>
-                        <Text style={[default_style.titleText_1]}>
+                        <Text style={default_style.titleText_1}>
                             Join a Tribe and help someone.
                         </Text>
                     </View>
@@ -91,7 +91,7 @@ class TribeHub extends Component {
                     <View style={{ paddingHorizontal: 10, paddingTop: 12 }}>
                         <TouchableOpacity
                             activeOpacity={0.8}
-                            style={{ ...styles.emptyTribeButtonStyle }}
+                            style={styles.emptyTribeButtonStyle}
                             onPress={() => Actions.push('tribeDiscover')}
                         >
                             <Text

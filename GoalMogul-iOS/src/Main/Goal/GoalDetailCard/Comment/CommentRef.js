@@ -284,7 +284,7 @@ class CommentRef extends React.PureComponent {
         return (
             <DelayedButton
                 activeOpacity={0.6}
-                style={{ ...styles.containerStyle, ...(containerStyles || {}) }}
+                style={[styles.containerStyle, containerStyles || {}]}
                 onPress={() => this.handleOnRefPress(item, userId, tab)}
             >
                 {this.renderSuggestionModal(item)}

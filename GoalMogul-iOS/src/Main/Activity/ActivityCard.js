@@ -352,7 +352,7 @@ class ActivityCard extends React.PureComponent {
                         }}
                     />
                     {this.renderMedia(mediaRef)}
-                    {this.renderCommentRef(suggestion)}
+                    {this.renderCommentRef(suggestion, actor)}
                 </DelayedButton>
             </View>
         )
@@ -362,8 +362,8 @@ class ActivityCard extends React.PureComponent {
      * Render commentRef
      * @param {object} item
      */
-    renderCommentRef(item) {
-        return <CommentRef item={item} />
+    renderCommentRef(item, actor) {
+        return <CommentRef item={item} owner={actor} />
     }
 
     renderMedia(url) {

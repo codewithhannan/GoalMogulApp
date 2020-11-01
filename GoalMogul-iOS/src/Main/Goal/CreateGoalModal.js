@@ -360,53 +360,48 @@ class CreateGoalModal extends React.Component {
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                <KeyboardAvoidingView
-                    behavior="padding"
-                    style={{ flex: 1, backgroundColor: 'white' }}
-                >
-                    <View style={{ flex: 1, backgroundColor: 'white' }}>
-                        {this.renderGoalReminderDatePicker()}
-                        <ModalHeader
-                            title={titleText}
-                            actionText={actionText}
-                            back
-                            onCancel={() => {
-                                const durationSec =
-                                    (new Date().getTime() -
-                                        this.startTime.getTime()) /
-                                    1000
-                                trackWithProperties(
-                                    this.props.initializeFromState
-                                        ? E.EDIT_GOAL_MODAL_CANCELLED
-                                        : E.CREATE_GOAL_MODAL_CANCELLED,
-                                    { DurationSec: durationSec }
-                                )
-                                if (this.props.onClose) this.props.onClose()
-                                Actions.pop()
-                            }}
-                            onAction={this.handleGoalReminder}
-                            actionDisabled={
-                                !this.props.uploading || !hasValidFormVals
-                            }
-                            // tutorialOn={{
-                            //     actionText: {
-                            //         tutorialText: this.props.tutorialText[8],
-                            //         order: 8,
-                            //         name: 'create_goal_create_goal_modal_8'
-                            //     }
-                            // }}
-                        />
-                        <NewGoalView
-                            initializeFromState={this.props.initializeFromState}
-                            isImportedGoal={this.props.isImportedGoal}
-                            goal={this.props.goal}
-                            tutorialText={this.props.tutorialText}
-                            onRef={(r) => {
-                                this.newGoalView = r
-                            }}
-                        />
-                    </View>
-                </KeyboardAvoidingView>
+                <View style={{ flex: 1, backgroundColor: 'white' }}>
+                    {this.renderGoalReminderDatePicker()}
+                    <ModalHeader
+                        title={titleText}
+                        actionText={actionText}
+                        back
+                        onCancel={() => {
+                            const durationSec =
+                                (new Date().getTime() -
+                                    this.startTime.getTime()) /
+                                1000
+                            trackWithProperties(
+                                this.props.initializeFromState
+                                    ? E.EDIT_GOAL_MODAL_CANCELLED
+                                    : E.CREATE_GOAL_MODAL_CANCELLED,
+                                { DurationSec: durationSec }
+                            )
+                            if (this.props.onClose) this.props.onClose()
+                            Actions.pop()
+                        }}
+                        onAction={this.handleGoalReminder}
+                        actionDisabled={
+                            !this.props.uploading || !hasValidFormVals
+                        }
+                        // tutorialOn={{
+                        //     actionText: {
+                        //         tutorialText: this.props.tutorialText[8],
+                        //         order: 8,
+                        //         name: 'create_goal_create_goal_modal_8'
+                        //     }
+                        // }}
+                    />
+                    <NewGoalView
+                        initializeFromState={this.props.initializeFromState}
+                        isImportedGoal={this.props.isImportedGoal}
+                        goal={this.props.goal}
+                        tutorialText={this.props.tutorialText}
+                        onRef={(r) => {
+                            this.newGoalView = r
+                        }}
+                    />
+                </View>
             </MenuProvider>
         )
     }

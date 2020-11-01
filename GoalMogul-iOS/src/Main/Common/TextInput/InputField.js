@@ -26,7 +26,6 @@ class InputField extends Component {
         this.onChangeText = this.onChangeText.bind(this)
         this.onIconPress = this.onIconPress.bind(this)
         this.handleOnLayout = this.handleOnLayout.bind(this)
-        this.onFocus = this.onFocus.bind(this)
         this.keyboardDidShow = this.keyboardDidShow.bind(this)
         this.keyboardDidHide = this.keyboardDidHide.bind(this)
         ;(this.state = { keyboardHeight: 0 }), (this.scrollToTimer = undefined)
@@ -97,24 +96,6 @@ class InputField extends Component {
         }
     }
 
-    onFocus() {
-        const { input, scrollTo, type, index } = this.props
-        const { onFocus } = input
-        if (onFocus) onFocus()
-        if (!scrollTo) return
-        const screenHeight = Dimensions.get('window').height
-        this.view.measure((x, y, width, height, px, py) => {
-            const visibleArea = screenHeight - this.state.keyboardHeight
-            if (py + height > visibleArea) {
-                if (this.scrollToTimer) clearTimeout(this.scrollToTimer)
-                this.scrollToTimer = setTimeout(
-                    () => scrollTo(y, type, index),
-                    50
-                )
-            }
-        })
-    }
-
     updateRef(name, ref) {
         this[name] = ref
     }
@@ -177,7 +158,6 @@ class InputField extends Component {
                     onChange={this.onChange}
                     returnKeyType="done"
                     multiline={multiline || false}
-                    onFocus={this.onFocus}
                     editable={editable}
                     placeholder={placeholder}
                     style={{ ...style }}

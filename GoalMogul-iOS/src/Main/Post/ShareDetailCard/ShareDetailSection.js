@@ -24,6 +24,7 @@ import {
     isSharedPost,
     sharingPrivacyAlert,
     SHAREING_PRIVACY_ALERT_TYPE,
+    countWords,
 } from '../../../redux/middleware/utils'
 import { createCommentFromSuggestion } from '../../../redux/modules/feed/comment/CommentActions'
 import { openPostDetail } from '../../../redux/modules/feed/post/PostActions'
@@ -71,23 +72,29 @@ const CANCEL_INDEX = 2
 const { width } = Dimensions.get('window')
 
 class ShareDetailSection extends Component {
-    state = {
-        mediaModal: false,
-        numberOfLines: undefined,
-        seeMore: true,
-        hasLongText: false,
-        showlikeListModal: false,
-        floatingHeartCount: 0,
-        likeButtonLeftOffset: 0,
+    constructor(props) {
+        super(props)
+        this.state = {
+            mediaModal: false,
+            numberOfLines: undefined,
+            seeMore: true,
+            hasLongText: false,
+            showlikeListModal: false,
+            floatingHeartCount: 0,
+            likeButtonLeftOffset: 0,
+        }
+        this.onTextLayout = this.onTextLayout.bind(this)
     }
 
     onTextLayout(e) {
         const firstLine = e.nativeEvent.lines[0]
         const lastLine = e.nativeEvent.lines[e.nativeEvent.lines.length - 1]
+        const { text } = this.props.item.content || { text: '' }
         const numberOfRenderedLines = e.nativeEvent.lines.length
         this.setState({
             hasLongText:
                 lastLine.text.length > firstLine.text.length ||
+                countWords(e.nativeEvent.lines) < countWords(text) ||
                 numberOfRenderedLines > CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
         })
     }
@@ -251,7 +258,7 @@ class ShareDetailSection extends Component {
                     textContainerStyle={{ flexDirection: 'row', marginTop: 10 }}
                     numberOfLines={this.state.numberOfLines}
                     ellipsizeMode="tail"
-                    onTextLayout={this.onTextLayout.bind(this)}
+                    onTextLayout={this.onTextLayout}
                     onUserTagPressed={(user) => {
                         console.log(
                             `${DEBUG_KEY}: user tag press for user: `,

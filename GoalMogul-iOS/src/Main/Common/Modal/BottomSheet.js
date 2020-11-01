@@ -350,7 +350,6 @@ class BottomSheet extends React.PureComponent {
                 const {
                     fullScreenGesturesEnabled,
                     swipeToCloseGestureEnabled,
-                    height,
                 } = this.props
                 const { isFullScreen } = this.state
                 // Close/fullscreen/minimize when gesture distance hits the thereashold

@@ -128,7 +128,9 @@ class AttachGoal extends Component {
                         alignItems: 'center',
                     }}
                 >
-                    <Text style={default_style.titleText_1}>Select Goal</Text>
+                    <Text style={default_style.titleText_1}>
+                        {this.props.title || 'Select Goal'}
+                    </Text>
                     <DelayedButton
                         activeOpacity={0.6}
                         onPress={() => {

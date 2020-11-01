@@ -1,19 +1,17 @@
 /** @format */
 
 import React from 'react'
-import { View, StyleSheet, ViewPropTypes, Text, Linking } from 'react-native'
+import { View, ViewPropTypes, Text, Linking } from 'react-native'
 import { connect } from 'react-redux'
 import ParsedText from 'react-native-parsed-text'
 import PropTypes from 'prop-types'
 // import Decode from 'unescape'; TODO: removed once new decode is good to go
 import _ from 'lodash'
-import Hyperlink from 'react-native-hyperlink'
 
 // Styles
 import { color } from '../../../styles/basic'
 
 // Utils
-import { URL_REGEX } from '../../../Utils/Constants'
 import { decode, escapeRegExp } from '../../../redux/middleware/utils'
 
 const DEBUG_KEY = '[ UI RichText ]'
@@ -132,11 +130,11 @@ class RichText extends React.Component {
         //   onPress: this.handleUrlPress
         // },
         return (
-            <View style={[this.props.textContainerStyle]}>
+            <View style={this.props.textContainerStyle}>
                 {/* <Hyperlink linkStyle={styles.url} onPress={(url, text) => this.handleUrlPress(url)}> */}
                 <ParsedText
                     {...this.props}
-                    style={[this.props.textStyle]}
+                    style={this.props.textStyle}
                     parse={[
                         // { type: 'url', style: styles.url, onPress: this.handleUrlPress },
                         // { type: 'phone', style: styles.phone, onPress: this.handlePhonePress },

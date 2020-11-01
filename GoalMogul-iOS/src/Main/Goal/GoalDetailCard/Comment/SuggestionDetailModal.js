@@ -5,10 +5,7 @@ import React from 'react'
 import { Dimensions, Image, Text, View } from 'react-native'
 import Modal from 'react-native-modal'
 import cancel from '../../../../asset/utils/cancel_no_background.png'
-import {
-    getProfileImageOrDefault,
-    getProfileImageOrDefaultFromUser,
-} from '../../../../redux/middleware/utils'
+import { getProfileImageOrDefaultFromUser } from '../../../../redux/middleware/utils'
 import DelayedButton from '../../../Common/Button/DelayedButton'
 import ProfileImage from '../../../Common/ProfileImage'
 
