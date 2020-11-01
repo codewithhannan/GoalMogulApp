@@ -227,6 +227,7 @@ class OnboardingSyncContact extends React.Component {
                     onSyncContact={this.onSyncContact} // Retry upload contacts
                     onNotNow={this.onModalNotNow}
                     onInvite={this.onModalInvite}
+                    onCancel={this.closeModal}
                 />
             </View>
         )

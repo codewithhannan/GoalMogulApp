@@ -161,11 +161,15 @@ class TokenService {
      * Nice to have: next step is to add retry for refreshing auth token
      */
     async _refreshAuthToken(shouldAutoLogout) {
+        console.log('[_refreshAuthToken] start refreshing auth token')
         // Check and set isRefreshingAuthToken to true
         if (!this._isRefreshingAuthToken) {
             this._isRefreshingAuthToken = true
         } else {
             // _refreshAuthToken is already running
+            console.log(
+                '[_refreshAuthToken] _refreshAuthToken is already running'
+            )
             return
         }
 
@@ -181,8 +185,10 @@ class TokenService {
         }
 
         const { token: refreshToken } = _.cloneDeep(refreshTokenObject)
+        console.log('[_refreshAuthToken] Start purging refresh token')
         // Before sending the request, we need to purge the refreshToken to incide it's used
         await this._purgeRefreshTokenBeforeUse()
+        console.log('[_refreshAuthToken] Finish purging refresh token')
 
         // Prepare url and body
         const url = `${config.url}pub/user/refresh-tokens`
@@ -263,8 +269,6 @@ class TokenService {
 
         // Check if refreshing auth token
         if (!this._isRefreshingAuthToken) {
-            // Invoke authToken refresh
-            this._isRefreshingAuthToken = true
             try {
                 this._refreshAuthToken(shouldAutoLogout)
             } catch (err) {
