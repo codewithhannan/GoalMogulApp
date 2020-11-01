@@ -1,15 +1,27 @@
 /** @format */
 import { default_style, color, text } from '../basic'
 import { IS_SMALL_PHONE } from '..'
+import { Platform } from 'react-native'
 
 export const CONTENT_COLOR = 'white'
+export const SMALL_PHONE_HEIGHT = Platform.select({
+    ios: 70,
+    android: 76,
+    default: 70,
+})
+export const SMALL_PHONE_PADDING_TOP = Platform.select({
+    ios: 20,
+    android: 23,
+    default: 20,
+})
 
 export const HEADER_STYLES = {
     headerContainer: {
         flexDirection: 'row',
         backgroundColor: color.GM_BLUE,
-        height: (IS_SMALL_PHONE ? 70 : 90) * default_style.uiScale,
-        paddingTop: IS_SMALL_PHONE ? 20 : 40,
+        height:
+            (IS_SMALL_PHONE ? SMALL_PHONE_HEIGHT : 90) * default_style.uiScale,
+        paddingTop: IS_SMALL_PHONE ? SMALL_PHONE_PADDING_TOP : 40,
         paddingHorizontal: 16,
         alignItems: 'center',
     },
