@@ -681,6 +681,10 @@ class NewGoalView extends Component {
                         return
                     }
                     alert('Start time cannot be later than end time')
+                    this.props.change('startTime', {
+                        date: this.props.endTime.date,
+                        picker: false,
+                    })
                 }}
                 onCancel={() =>
                     this.props.change('startTime', {
@@ -736,6 +740,10 @@ class NewGoalView extends Component {
                         return
                     }
                     alert('End time cannot be early than start time')
+                    this.props.change('endTime', {
+                        date: this.props.startTime.date,
+                        picker: false,
+                    })
                 }}
                 onCancel={() =>
                     this.props.change('endTime', {
@@ -1090,7 +1098,6 @@ class NewGoalView extends Component {
         return (
             <KeyboardAwareScrollView
                 scrollEnabled={this.state.scrollEnabled}
-                enableOnAndroid={true}
                 extraHeight={100}
                 enableResetScrollToCoords={false}
                 innerRef={(r) => {
