@@ -87,10 +87,13 @@ class ShareDetailSection extends Component {
     }
 
     onTextLayout(e) {
+        const firstLine = e.nativeEvent.lines[0]
+        const lastLine = e.nativeEvent.lines[e.nativeEvent.lines.length - 1]
         const { text } = this.props.item.content || { text: '' }
         const numberOfRenderedLines = e.nativeEvent.lines.length
         this.setState({
             hasLongText:
+                lastLine.text.length > firstLine.text.length ||
                 countWords(e.nativeEvent.lines) < countWords(text) ||
                 numberOfRenderedLines > CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
         })

@@ -60,12 +60,16 @@ class ActivityHeader extends Component {
     }
 
     onTextLayout(e) {
+        const firstLine = e.nativeEvent.lines[0]
+        const lastLine = e.nativeEvent.lines[e.nativeEvent.lines.length - 1]
         const { actedUponEntityType, postRef, goalRef } = this.props.item
         const isPost = actedUponEntityType === 'Post'
         const item = isPost ? postRef : goalRef
         const content = isPost ? item.content.text : item.title
         this.setState({
-            hasLongText: countWords(e.nativeEvent.lines) < countWords(content),
+            hasLongText:
+                lastLine.text.length > firstLine.text.length ||
+                countWords(e.nativeEvent.lines) < countWords(content),
         })
     }
 

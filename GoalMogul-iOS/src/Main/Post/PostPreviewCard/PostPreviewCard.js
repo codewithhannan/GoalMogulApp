@@ -69,9 +69,13 @@ class PostPreviewCard extends React.PureComponent {
     }
 
     onTextLayout(e) {
+        const firstLine = e.nativeEvent.lines[0]
+        const lastLine = e.nativeEvent.lines[e.nativeEvent.lines.length - 1]
         const { text } = this.props.item.content
         this.setState({
-            hasLongText: countWords(e.nativeEvent.lines) < countWords(text),
+            hasLongText:
+                lastLine.text.length > firstLine.text.length ||
+                countWords(e.nativeEvent.lines) < countWords(text),
         })
     }
 
