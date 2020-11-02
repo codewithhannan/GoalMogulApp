@@ -114,7 +114,7 @@ export class GoalDetailCardV3 extends React.Component {
         this._renderItem = this._renderItem.bind(this)
         this._renderTabBar = this._renderTabBar.bind(this)
 
-        this.commentBoxHeight = 90
+        this.commentBoxHeight = 100
         this.initialHandleReplayToTimeout = undefined // Initial timeout for handleReplayTo in componentDidMount
         this.initialCreateSuggestionTimeout = undefined // Initial timeout for showing suggestion modal
     }
@@ -737,7 +737,7 @@ export class GoalDetailCardV3 extends React.Component {
             >
                 <View
                     onLayout={({ nativeEvent }) =>
-                        (this.commentBoxHeight = nativeEvent.layout.height)
+                        (this.commentBoxHeight = nativeEvent.layout.height + 10)
                     }
                 >
                     <CommentBox

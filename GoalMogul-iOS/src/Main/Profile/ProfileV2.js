@@ -333,10 +333,8 @@ class ProfileV2 extends Component {
             selectedTab,
             navigationState,
             data,
-            isMainTab,
             isSelf,
         } = this.props
-        const shouldShowPageSettings = !isMainTab
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <CreatePostModal
@@ -349,7 +347,6 @@ class ProfileV2 extends Component {
                     isVisible={this.state.showBadgeEarnModal}
                     closeModal={() => {
                         this.setState({
-                            ...this.state,
                             showBadgeEarnModal: false,
                         })
                     }}
@@ -367,7 +364,7 @@ class ProfileV2 extends Component {
                     keyExtractor={(i) => i._id}
                     onRefresh={this.handleRefresh}
                     onEndReached={this.handleOnLoadMore}
-                    onEndReachedThreshold={0}
+                    onEndReachedThreshold={2}
                     refreshing={false}
                     ListEmptyComponent={this.renderListEmptyState()}
                     ListHeaderComponent={this.renderHeader({

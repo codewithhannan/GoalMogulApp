@@ -444,7 +444,10 @@ class BottomSheet extends React.PureComponent {
                     if (closeOnPressBack) this.close()
                 }}
             >
-                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <MenuProvider
+                    skipInstanceCheck={true}
+                    customStyles={{ backdrop: styles.backdrop }}
+                >
                     <Animated.View
                         style={[
                             styles.wrapper,
