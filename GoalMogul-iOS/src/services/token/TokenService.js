@@ -160,12 +160,16 @@ class TokenService {
      * Refresh auth token
      * Nice to have: next step is to add retry for refreshing auth token
      */
-    async _refreshAuthToken() {
+    async _refreshAuthToken(shouldAutoLogout) {
+        console.log('[_refreshAuthToken] start refreshing auth token')
         // Check and set isRefreshingAuthToken to true
         if (!this._isRefreshingAuthToken) {
             this._isRefreshingAuthToken = true
         } else {
             // _refreshAuthToken is already running
+            console.log(
+                '[_refreshAuthToken] _refreshAuthToken is already running'
+            )
             return
         }
 
@@ -181,8 +185,10 @@ class TokenService {
         }
 
         const { token: refreshToken } = _.cloneDeep(refreshTokenObject)
+        console.log('[_refreshAuthToken] Start purging refresh token')
         // Before sending the request, we need to purge the refreshToken to incide it's used
         await this._purgeRefreshTokenBeforeUse()
+        console.log('[_refreshAuthToken] Finish purging refresh token')
 
         // Prepare url and body
         const url = `${config.url}pub/user/refresh-tokens`
@@ -230,9 +236,11 @@ class TokenService {
                 undefined
             )
 
-            // Logout user since they have no refresh valid token to use
-            // Assuming this endpoit shouldn't fail
-            await store.dispatch(logout())
+            if (shouldAutoLogout) {
+                // Logout user since they have no refresh valid token to use
+                // Assuming this endpoit shouldn't fail
+                await store.dispatch(logout())
+            }
         }
 
         // Set the refreshing to false after the token is updated in cache so that no double
@@ -245,7 +253,7 @@ class TokenService {
     /**
      * Obtain the auth token for a request
      */
-    async getAuthToken() {
+    async getAuthToken(shouldAutoLogout = true) {
         // Check and get if has valid auth token
         const authTokenObject = await this.checkAndGetValidAuthToken()
         if (authTokenObject) {
@@ -254,17 +262,15 @@ class TokenService {
                 authTokenObject.createdAt + AUTH_TOKEN_EXPIRE_DAYS_IN_MS <=
                 Date.now() + AUTH_TOKEN_SHOULD_REFRESH_TIME_TO_EXPIRE_IN_MS
             ) {
-                this._refreshAuthToken()
+                this._refreshAuthToken(shouldAutoLogout)
             }
             return authTokenObject.token
         }
 
         // Check if refreshing auth token
         if (!this._isRefreshingAuthToken) {
-            // Invoke authToken refresh
-            this._isRefreshingAuthToken = true
             try {
-                this._refreshAuthToken()
+                this._refreshAuthToken(shouldAutoLogout)
             } catch (err) {
                 // TODO: sentry logging
                 Logger.log(

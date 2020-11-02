@@ -9,7 +9,7 @@ const pageSize = 3
 const DEBUG_KEY = '[ Utils ContactUtils ]'
 
 const ContactUtils = {
-    async handleUploadContacts(token, loadContactCallback) {
+    async handleUploadContacts(token, loadContactCallback, onError) {
         let pageOffset = 0
         let uploadPromise = []
         console.log(`${DEBUG_KEY}: [ handleUploadContacts ]`)
@@ -44,7 +44,7 @@ const ContactUtils = {
             loadContactCallback(contacts.data)
         }
 
-        return Promise.all(uploadPromise)
+        return Promise.all(uploadPromise.map((p) => p.catch((e) => e)))
     },
 
     async getContactSize() {
@@ -67,7 +67,19 @@ const ContactUtils = {
 
             const contactListJSONString = JSON.stringify(contacts)
             const uri = `${FileSystem.documentDirectory}contactsList.txt`
-            const authToken = await TokenService.getAuthToken()
+            let authToken
+            try {
+                authToken = await TokenService.getAuthToken()
+            } catch (err) {
+                reject(err)
+                return
+            }
+
+            if (!authToken) {
+                reject(new Error('[uploadContacts] Failed to obtain authToken'))
+                return
+            }
+
             FileSystem.writeAsStringAsync(uri, contactListJSONString)
                 .then(() => {
                     var formData = new FormData()

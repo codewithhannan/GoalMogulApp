@@ -569,6 +569,14 @@ export const uploadContacts = ({
             loadContactCallback
         )
 
+        const validResults = uploadContactRes.filter(
+            (result) => !(result instanceof Error)
+        )
+        // As long as there are valid result, we deem it as successful
+        if (!validResults || !validResults.length) {
+            return onError('upload')
+        }
+
         // uploadContactRes should either be success or throw exception
         console.log(`${DEBUG_KEY}: contact upload res is: `, uploadContactRes)
 

@@ -1,10 +1,11 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View } from 'react-native'
+import { View, Platform } from 'react-native'
 import { WebView } from 'react-native-webview'
 import Constants from 'expo-constants'
 import Modal from 'react-native-modal'
+import ConfirmGoogleCaptcha from 'react-native-google-recaptcha-v2'
 import { SentryRequestBuilder } from '../../monitoring/sentry'
 import {
     SENTRY_TAGS,
@@ -31,9 +32,23 @@ class Recaptcha extends Component {
         this.props.closeModal && this.props.closeModal()
     }
 
+    componentDidUpdate(prevProps) {
+        if (
+            this.props.showRecaptcha &&
+            Platform.OS === 'android' &&
+            this.captchaForm !== undefined
+        ) {
+            this.captchaForm.show()
+            return
+        }
+    }
+
     onMessage = (event) => {
         if (event && event.nativeEvent.data) {
             if (event.nativeEvent.data == 'close') {
+                if (Platform.OS === 'android') {
+                    this.captchaForm.hide()
+                }
                 this.closeModal()
                 return
             }
@@ -46,8 +61,15 @@ class Recaptcha extends Component {
                     .withTag(SENTRY_TAGS.GOOGLE_SERVIVE, 'Recaptcha')
                     .withLevel(SENTRY_MESSAGE_LEVEL.INFO)
                     .send()
+                if (Platform.OS === 'android') {
+                    this.captchaForm.hide()
+                }
                 return
             } else {
+                if (Platform.OS === 'android') {
+                    this.captchaForm.hide()
+                }
+
                 if (this.props.onSuccess) {
                     this.props.onSuccess()
                 }
@@ -101,6 +123,17 @@ class Recaptcha extends Component {
     }
 
     render() {
+        if (Platform.OS === 'android') {
+            return (
+                <ConfirmGoogleCaptcha
+                    ref={(_ref) => (this.captchaForm = _ref)}
+                    siteKey={GOOGLE_RECAPTCHA_KEY}
+                    baseUrl="https://goalmogul.com"
+                    languageCode="en"
+                    onMessage={this.onMessage}
+                />
+            )
+        }
         return (
             <Modal
                 style={{
