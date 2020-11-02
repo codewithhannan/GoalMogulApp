@@ -1001,7 +1001,7 @@ class CreatePostModal extends Component {
         )
     }
 
-    renderDraftsHeader(draftModalHeight) {
+    renderDraftsHeader() {
         return (
             <View
                 onLayout={(e) =>

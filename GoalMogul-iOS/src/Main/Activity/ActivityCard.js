@@ -96,7 +96,17 @@ class ActivityCard extends React.PureComponent {
         }
     }
 
-    handleShareOnClick = (actedUponEntityType) => {
+    incrementFloatingHeartCount = () => {
+        // only iOS has a clean haptic system at the moment
+        if (DEVICE_PLATFORM == 'ios') {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        }
+        this.setState({
+            floatingHeartCount: this.state.floatingHeartCount + 1,
+        })
+    }
+
+    getOnShareOptions(actedUponEntityType) {
         const { item } = this.props
         const { goalRef, postRef } = item
         const shareType = `Share${actedUponEntityType}`
@@ -110,27 +120,13 @@ class ActivityCard extends React.PureComponent {
         const callback = () => {
             this.props.refreshActivityFeed()
         }
-
-        const shareToFeedCallback = () => {
-            this.props.onShareCallback()
-            this.props.refreshActivityFeed()
-        }
         // Share ref is the id of the item to share
         const { _id, privacy } = itemToShare
-        let options
-        let cancelIndex
-        let cases
         if (actedUponEntityType === 'Post') {
-            options = SHARE_TO_MENU_OPTTIONS
-            cancelIndex = CANCEL_INDEX
-            cases = switchByButtonIndex([
-                [
-                    R.equals(0),
-                    () => {
-                        // User choose to share to a tribe
-                        console.log(
-                            `${DEBUG_KEY} User choose destination: Tribe `
-                        )
+            return [
+                {
+                    text: 'Share to a Tribe',
+                    onPress: () => {
                         if (privacy !== 'public') {
                             return sharingPrivacyAlert(
                                 SHAREING_PRIVACY_ALERT_TYPE.update
@@ -145,23 +141,19 @@ class ActivityCard extends React.PureComponent {
                             callback
                         )
                     },
-                ],
-            ])
+                },
+            ]
         } else {
-            options = SHARE_TO_MENU_OPTTIONS_GOAL
-            cancelIndex = CANCEL_INDEX_GOAL
-            cases = switchByButtonIndex([
-                [
-                    R.equals(0),
-                    () => {
-                        // User choose to Publish to Home Feed
+            return [
+                {
+                    text: 'Publish to Home Feed',
+                    onPress: () => {
                         this.props.shareGoalToMastermind(_id)
                     },
-                ],
-                [
-                    R.equals(1),
-                    () => {
-                        // User choose to share to a tribe
+                },
+                {
+                    text: 'Share to a Tribe',
+                    onPress: () => {
                         if (privacy !== 'public') {
                             return sharingPrivacyAlert(
                                 SHAREING_PRIVACY_ALERT_TYPE.goal
@@ -176,22 +168,9 @@ class ActivityCard extends React.PureComponent {
                             callback
                         )
                     },
-                ],
-            ])
+                },
+            ]
         }
-
-        const shareToActionSheet = actionSheet(options, cancelIndex, cases)
-        return shareToActionSheet()
-    }
-
-    incrementFloatingHeartCount = () => {
-        // only iOS has a clean haptic system at the moment
-        if (DEVICE_PLATFORM == 'ios') {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-        }
-        this.setState({
-            floatingHeartCount: this.state.floatingHeartCount + 1,
-        })
     }
 
     renderActionButtons(
@@ -253,9 +232,9 @@ class ActivityCard extends React.PureComponent {
                 onShareSummaryPress={() => {
                     // TODO open sharers list
                 }}
-                onShareButtonPress={() =>
-                    this.handleShareOnClick(actedUponEntityType, selfOwned)
-                }
+                onShareButtonOptions={this.getOnShareOptions(
+                    actedUponEntityType
+                )}
                 onCommentSummaryPress={() =>
                     this.props.onPress(
                         item,

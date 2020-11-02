@@ -10,8 +10,6 @@ import timeago from 'timeago.js'
 import { deleteGoal } from '../../../actions'
 // Asset
 import { ConfettiFadedBackgroundTopHalf } from '../../../asset/background'
-import HelpIcon from '../../../asset/utils/help.png'
-import StepIcon from '../../../asset/utils/steps.png'
 import {
     makeCaretOptions,
     PAGE_TYPE_MAP,
@@ -126,40 +124,6 @@ class GoalCard extends React.PureComponent {
         this.props.onPress
             ? this.props.onPress(this.props.item)
             : this.props.openGoalDetail(this.props.item)
-    }
-
-    handleShareOnClick = () => {
-        const { item } = this.props
-        const { _id, privacy } = item
-
-        const shareToSwitchCases = switchByButtonIndex([
-            [
-                R.equals(0),
-                () => {
-                    // User choose to share to home feed
-                    this.props.shareGoalToMastermind(_id)
-                },
-            ],
-            [
-                R.equals(1),
-                () => {
-                    // User choose to share to a tribe
-                    if (privacy !== 'public') {
-                        return sharingPrivacyAlert(
-                            SHAREING_PRIVACY_ALERT_TYPE.goal
-                        )
-                    }
-                    this.props.chooseShareDest('ShareGoal', _id, 'tribe', item)
-                },
-            ],
-        ])
-
-        const shareToActionSheet = actionSheet(
-            SHARE_TO_MENU_OPTTIONS,
-            CANCEL_INDEX,
-            shareToSwitchCases
-        )
-        return shareToActionSheet()
     }
 
     // Card central content. Progressbar for goal card
@@ -307,12 +271,32 @@ class GoalCard extends React.PureComponent {
     }
 
     renderActionButtons(item) {
-        const { maybeLikeRef, _id } = item
+        const { maybeLikeRef, _id, privacy } = item
         const likeCount = item.likeCount ? item.likeCount : 0
         const commentCount = item.commentCount ? item.commentCount : 0
         const shareCount = item.shareCount ? item.shareCount : 0
 
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
+
+        const onSharePressOptions = [
+            {
+                text: 'Publish to Home Feed',
+                onPress: () => {
+                    this.props.shareGoalToMastermind(_id)
+                },
+            },
+            {
+                text: 'Share to a Tribe',
+                onPress: () => {
+                    if (privacy !== 'public') {
+                        return sharingPrivacyAlert(
+                            SHAREING_PRIVACY_ALERT_TYPE.goal
+                        )
+                    }
+                    this.props.chooseShareDest('ShareGoal', _id, 'tribe', item)
+                },
+            },
+        ]
 
         return (
             <ActionBar
@@ -340,7 +324,7 @@ class GoalCard extends React.PureComponent {
                 onShareSummaryPress={() =>
                     this.setState({ showShareListModal: true })
                 }
-                onShareButtonPress={() => this.handleShareOnClick(item)}
+                onShareButtonOptions={onSharePressOptions}
                 onCommentSummaryPress={() => {
                     // TODO scroll down to comments section
                 }}

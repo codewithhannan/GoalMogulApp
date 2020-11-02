@@ -101,33 +101,24 @@ class PostDetailSection extends React.PureComponent {
         })
     }
 
-    handleShareOnClick = () => {
+    getOnSharePressOptions = () => {
         const { item } = this.props
         const { _id, privacy } = item
         const shareType = 'SharePost'
 
-        const shareToSwitchCases = switchByButtonIndex([
-            [
-                R.equals(0),
-                () => {
+        return [
+            {
+                text: 'Share to a Tribe',
+                onPress: () => {
                     if (privacy !== 'public') {
                         return sharingPrivacyAlert(
                             SHAREING_PRIVACY_ALERT_TYPE.update
                         )
                     }
-                    // User choose to share to a tribe
-                    console.log(`${DEBUG_KEY} User choose destination: Tribe `)
                     this.props.chooseShareDest(shareType, _id, 'tribe', item)
                 },
-            ],
-        ])
-
-        const shareToActionSheet = actionSheet(
-            SHARE_TO_MENU_OPTTIONS,
-            CANCEL_INDEX,
-            shareToSwitchCases
-        )
-        return shareToActionSheet()
+            },
+        ]
     }
 
     handleSeeMore = () => {
@@ -475,7 +466,7 @@ class PostDetailSection extends React.PureComponent {
                 onShareSummaryPress={() =>
                     this.setState({ showShareListModal: true })
                 }
-                onShareButtonPress={() => this.handleShareOnClick(item)}
+                onShareButtonOptions={this.getOnSharePressOptions()}
                 onCommentSummaryPress={() => {
                     // TODO scroll down to comments section
                 }}
