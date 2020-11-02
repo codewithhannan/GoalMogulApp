@@ -651,6 +651,7 @@ class GoalDetailSection extends React.PureComponent {
                         height={getButtonBottomSheetHeight(
                             goalReminderOptions.length
                         )}
+                        closeSheetOnOptionPress
                     />
                     <View style={styles.containerStyle}>
                         {item.isCompleted ? (
