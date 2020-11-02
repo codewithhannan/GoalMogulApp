@@ -32,7 +32,8 @@
                     "twitter",
                     "whatsapp",
                     "instagram"
-                ]
+                ],
+                "RCTAsyncStorageExcludeFromBackup": false
             },
             "associatedDomains": [
                 "applinks:web.goalmogul.com",
