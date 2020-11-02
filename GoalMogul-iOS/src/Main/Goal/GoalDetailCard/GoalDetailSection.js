@@ -70,17 +70,15 @@ import IndividualActionButton from '../Common/IndividualActionButton'
 import GoalCardBody from '../Common/GoalCardBody'
 import Timestamp from '../Common/Timestamp'
 import ActionBar from '../../Common/ContentCards/ActionBar'
+import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
+import { getButtonBottomSheetHeight } from '../../../styles'
 
 const { width } = Dimensions.get('window')
 const WINDOW_WIDTH = width
 
 const { CheckIcon, BellIcon } = Icons
 const DEBUG_KEY = '[ UI GoalDetailCardV3.GoalDetailSection ]'
-const SHARE_TO_MENU_OPTTIONS = [
-    'Publish to Home Feed',
-    'Share to a Tribe',
-    'Cancel',
-]
+
 const CANCEL_INDEX = 2
 
 class GoalDetailSection extends React.PureComponent {
@@ -139,98 +137,57 @@ class GoalDetailSection extends React.PureComponent {
         }
     }
 
-    // Handle user clicks on option "Remind me about this"
     handleGoalReminder = () => {
+        this.bottomSheetRef && this.bottomSheetRef.open()
+    }
+
+    // Handle user clicks on option "Remind me about this"
+    getOnGoalReminderOptions = () => {
         const goal = this.props.item
-        const goalReminderSwitch = switchByButtonIndex([
-            [
-                R.equals(0),
-                () => {
-                    // Add 24 hours to current time
+        return [
+            {
+                text: 'Tomorrow',
+                onPress: () => {
                     const reminderTime = moment(new Date())
                         .add(24, 'hours')
                         .toDate()
                     this.props.scheduleNotification(reminderTime, goal)
                 },
-            ],
-            [
-                R.equals(1),
-                () => {
-                    // Add 7 days to current time
+            },
+            {
+                text: 'Next Week',
+                onPress: () => {
                     const reminderTime = moment(new Date())
                         .add(7, 'days')
                         .toDate()
                     this.props.scheduleNotification(reminderTime, goal)
                 },
-            ],
-            [
-                R.equals(2),
-                () => {
+            },
+            {
+                text: 'Next Month',
+                onPress: () => {
                     // Add 1 months
                     const reminderTime = moment(new Date())
                         .add(1, 'month')
                         .toDate()
                     this.props.scheduleNotification(reminderTime, goal)
                 },
-            ],
-            [
-                R.equals(3),
-                () => {
+            },
+            {
+                text: 'Custom',
+                onPress: () => {
                     // Show customized time picker
                     this.setState({
                         goalReminderDatePicker: true,
                     })
                 },
-            ],
-        ])
-
-        const shareToActionSheet = actionSheet(
-            ['Tomorrow', 'Next Week', 'Next Month', 'Custom', 'Cancel'],
-            4,
-            goalReminderSwitch
-        )
-        return shareToActionSheet()
+            },
+        ]
     }
 
     handleOnLayout = (event) => {
         if (this.props.onContentSizeChange)
             this.props.onContentSizeChange('goalDetailSectionCard', event)
-    }
-
-    handleShareOnClick = () => {
-        const { item, pageId } = this.props
-        const { _id, privacy } = item
-        const shareType = 'ShareGoal'
-
-        const shareToSwitchCases = switchByButtonIndex([
-            [
-                R.equals(0),
-                () => {
-                    // User choose to Publish to Home Feed
-                    this.props.shareGoalToMastermind(_id, pageId)
-                },
-            ],
-            [
-                R.equals(1),
-                () => {
-                    // User choose to share to a tribe
-                    if (privacy !== 'public') {
-                        return sharingPrivacyAlert(
-                            SHAREING_PRIVACY_ALERT_TYPE.goal
-                        )
-                    }
-                    console.log(`${DEBUG_KEY} User choose destination: Tribe `)
-                    this.props.chooseShareDest(shareType, _id, 'tribe', item)
-                },
-            ],
-        ])
-
-        const shareToActionSheet = actionSheet(
-            SHARE_TO_MENU_OPTTIONS,
-            CANCEL_INDEX,
-            shareToSwitchCases
-        )
-        return shareToActionSheet()
     }
 
     handleSeeMore = () => {
@@ -482,7 +439,6 @@ class GoalDetailSection extends React.PureComponent {
                 onConfirm={(date) => {
                     this.setState(
                         {
-                            ...this.state,
                             goalReminderDatePicker: false,
                         },
                         () => {
@@ -492,7 +448,6 @@ class GoalDetailSection extends React.PureComponent {
                 }}
                 onCancel={() => {
                     this.setState({
-                        ...this.state,
                         goalReminderDatePicker: false,
                     })
                 }}
@@ -591,12 +546,33 @@ class GoalDetailSection extends React.PureComponent {
     }
 
     renderActionButtons(item, isOwnGoal) {
-        const { maybeLikeRef, _id } = item
+        const { maybeLikeRef, _id, privacy } = item
         const likeCount = item.likeCount ? item.likeCount : 0
         const commentCount = item.commentCount ? item.commentCount : 0
         const shareCount = item.shareCount ? item.shareCount : 0
 
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
+
+        const shareType = 'ShareGoal'
+        const options = [
+            {
+                text: 'Publish to Home Feed',
+                onPress: () => {
+                    this.props.shareGoalToMastermind(_id, this.props.pageId)
+                },
+            },
+            {
+                text: 'Share to a Tribe',
+                onPress: () => {
+                    if (privacy !== 'public') {
+                        return sharingPrivacyAlert(
+                            SHAREING_PRIVACY_ALERT_TYPE.goal
+                        )
+                    }
+                    this.props.chooseShareDest(shareType, _id, 'tribe', item)
+                },
+            },
+        ]
 
         return (
             <ActionBar
@@ -627,7 +603,7 @@ class GoalDetailSection extends React.PureComponent {
                 onShareSummaryPress={() =>
                     this.setState({ showShareListModal: true })
                 }
-                onShareButtonPress={() => this.handleShareOnClick(item)}
+                onShareButtonOptions={options}
                 onCommentSummaryPress={() => {
                     // TODO scroll down to comments section
                 }}
@@ -642,6 +618,8 @@ class GoalDetailSection extends React.PureComponent {
         const { item, isOwnGoal } = this.props
         if (!item || _.isEmpty(item)) return null
 
+        const goalReminderOptions = this.getOnGoalReminderOptions()
+
         return (
             <View onLayout={this.handleOnLayout}>
                 <View style={{ paddingHorizontal: 16 }}>
@@ -650,7 +628,6 @@ class GoalDetailSection extends React.PureComponent {
                         isVisible={this.state.showlikeListModal}
                         closeModal={() => {
                             this.setState({
-                                ...this.state,
                                 showlikeListModal: false,
                             })
                         }}
@@ -662,12 +639,19 @@ class GoalDetailSection extends React.PureComponent {
                         isVisible={this.state.showShareListModal}
                         closeModal={() => {
                             this.setState({
-                                ...this.state,
                                 showShareListModal: false,
                             })
                         }}
                         entityId={item._id}
                         entityType="Goal"
+                    />
+                    <BottomButtonsSheet
+                        ref={(r) => (this.bottomSheetRef = r)}
+                        buttons={goalReminderOptions}
+                        height={getButtonBottomSheetHeight(
+                            goalReminderOptions.length
+                        )}
+                        closeSheetOnOptionPress
                     />
                     <View style={styles.containerStyle}>
                         {item.isCompleted ? (

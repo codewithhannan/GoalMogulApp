@@ -18,6 +18,8 @@ import ShareIcon from '../../../asset/utils/forward.png'
 import ShareSolidIcon from '../../../asset/utils/forward_solid.png'
 import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
 import LoveIcon from '../../../asset/utils/love.png'
+import BottomButtonsSheet from '../Modal/BottomButtonsSheet'
+import { getButtonBottomSheetHeight } from '../../../styles'
 
 /**
  * Renders the action bar for a content card
@@ -46,98 +48,155 @@ import LoveIcon from '../../../asset/utils/love.png'
  * @prop onCommentButtonPress
  * @prop onCommentSummaryPress
  */
-const ActionBar = (props) => {
-    // Extract style overrides from props and fallback to empty objects
-    let {
-        containerStyle,
-        actionSummaryContainerStyle,
-        actionItemSummaryWrapperStyle,
-        summaryIconStyle,
-        summaryTextStyle,
-    } = props
+class ActionBar extends React.Component {
+    render() {
+        // Extract style overrides from props and fallback to empty objects
+        let {
+            containerStyle,
+            actionSummaryContainerStyle,
+            actionItemSummaryWrapperStyle,
+            summaryIconStyle,
+            summaryTextStyle,
+        } = this.props
 
-    containerStyle = containerStyle || {}
-    actionSummaryContainerStyle = actionSummaryContainerStyle || {}
-    actionItemSummaryWrapperStyle = actionItemSummaryWrapperStyle || {}
-    summaryIconStyle = summaryIconStyle || {}
-    summaryTextStyle = summaryTextStyle || {}
+        containerStyle = containerStyle || {}
+        actionSummaryContainerStyle = actionSummaryContainerStyle || {}
+        actionItemSummaryWrapperStyle = actionItemSummaryWrapperStyle || {}
+        summaryIconStyle = summaryIconStyle || {}
+        summaryTextStyle = summaryTextStyle || {}
 
-    // Extract immutable values and handlers
-    const {
-        // Overall
-        onContainerLayout,
-        isShareContent,
-        actionSummaries,
-        // Like button
-        isContentLiked,
-        onLikeButtonPress,
-        onLikeSummaryPress,
-        onLikeButtonLayout,
-        // Share button
-        onShareButtonPress,
-        onShareSummaryPress,
-        // Comment button
-        onCommentButtonPress,
-        onCommentSummaryPress,
-    } = props
+        // Extract immutable values and handlers
+        const {
+            // Overall
+            onContainerLayout,
+            isShareContent,
+            actionSummaries,
+            // Like button
+            isContentLiked,
+            onLikeButtonPress,
+            onLikeSummaryPress,
+            onLikeButtonLayout,
+            // Share button
+            onShareButtonPress,
+            onShareButtonOptions,
+            onShareSummaryPress,
+            // Comment button
+            onCommentButtonPress,
+            onCommentSummaryPress,
+        } = this.props
 
-    const { likeCount, shareCount, commentCount } = actionSummaries || {}
+        const { likeCount, shareCount, commentCount } = actionSummaries || {}
 
+        return (
+            <View>
+                {!onShareButtonPress && Array.isArray(onShareButtonOptions) && (
+                    <BottomButtonsSheet
+                        ref={(r) => (this.shareGoalBottomSheet = r)}
+                        buttons={onShareButtonOptions}
+                        height={getButtonBottomSheetHeight(
+                            onShareButtonOptions.length
+                        )}
+                        closeSheetOnOptionPress
+                    />
+                )}
+                <View
+                    style={[styles.containerStyle, containerStyle]}
+                    onLayout={onContainerLayout}
+                >
+                    {renderActionSummaryBar(
+                        // Values
+                        { likeCount, shareCount, commentCount },
+                        // Handlers
+                        onLikeSummaryPress,
+                        onShareSummaryPress,
+                        onCommentSummaryPress,
+                        // Styles
+                        actionSummaryContainerStyle,
+                        actionItemSummaryWrapperStyle,
+                        summaryIconStyle,
+                        summaryTextStyle
+                    )}
+                    <ActionButtonGroup>
+                        <ActionButton
+                            iconSource={
+                                isContentLiked ? LoveIcon : LoveOutlineIcon
+                            }
+                            count={0}
+                            unitText="Like"
+                            textStyle={{
+                                color: isContentLiked
+                                    ? color.GM_RED
+                                    : color.GM_MID_GREY,
+                            }}
+                            iconStyle={{
+                                tintColor: isContentLiked
+                                    ? color.GM_RED
+                                    : color.GM_MID_GREY,
+                            }}
+                            onPress={onLikeButtonPress}
+                            onLayout={onLikeButtonLayout}
+                        />
+                        <ActionButton
+                            iconSource={ShareIcon}
+                            count={0}
+                            unitText="Share"
+                            textStyle={{ color: color.GM_MID_GREY }}
+                            iconStyle={{ tintColor: color.GM_MID_GREY }}
+                            onPress={
+                                onShareButtonPress ||
+                                (() =>
+                                    this.shareGoalBottomSheet &&
+                                    this.shareGoalBottomSheet.open())
+                            }
+                            hidden={isShareContent}
+                        />
+                        <ActionButton
+                            iconSource={CommentIcon}
+                            count={0}
+                            unitText="Reply"
+                            textStyle={{ color: color.GM_MID_GREY }}
+                            iconStyle={{ tintColor: color.GM_MID_GREY }}
+                            onPress={onCommentButtonPress}
+                        />
+                    </ActionButtonGroup>
+                </View>
+            </View>
+        )
+    }
+}
+
+renderOnShareBottomSheet = () => {
+    const { item, pageId } = this.props
+    const { _id, privacy } = item
+    const shareType = 'ShareGoal'
+
+    const options = [
+        {
+            text: 'Publish to Home Feed',
+            onPress: () => {
+                this.bottomSheetRef.close()
+                this.props.shareGoalToMastermind(_id, pageId)
+            },
+        },
+        {
+            text: 'Share to a Tribe',
+            onPress: () => {
+                this.bottomSheetRef.close()
+                if (privacy !== 'public') {
+                    return sharingPrivacyAlert(SHAREING_PRIVACY_ALERT_TYPE.goal)
+                }
+                this.props.chooseShareDest(shareType, _id, 'tribe', item)
+            },
+        },
+    ]
+    // Options height + bottom space + bottom sheet handler height
+    const sheetHeight = getButtonBottomSheetHeight(options.length)
     return (
-        <View
-            style={[styles.containerStyle, containerStyle]}
-            onLayout={onContainerLayout}
-        >
-            {renderActionSummaryBar(
-                // Values
-                { likeCount, shareCount, commentCount },
-                // Handlers
-                onLikeSummaryPress,
-                onShareSummaryPress,
-                onCommentSummaryPress,
-                // Styles
-                actionSummaryContainerStyle,
-                actionItemSummaryWrapperStyle,
-                summaryIconStyle,
-                summaryTextStyle
-            )}
-            <ActionButtonGroup>
-                <ActionButton
-                    iconSource={isContentLiked ? LoveIcon : LoveOutlineIcon}
-                    count={0}
-                    unitText="Like"
-                    textStyle={{
-                        color: isContentLiked
-                            ? color.GM_RED
-                            : color.GM_MID_GREY,
-                    }}
-                    iconStyle={{
-                        tintColor: isContentLiked
-                            ? color.GM_RED
-                            : color.GM_MID_GREY,
-                    }}
-                    onPress={onLikeButtonPress}
-                    onLayout={onLikeButtonLayout}
-                />
-                <ActionButton
-                    iconSource={ShareIcon}
-                    count={0}
-                    unitText="Share"
-                    textStyle={{ color: color.GM_MID_GREY }}
-                    iconStyle={{ tintColor: color.GM_MID_GREY }}
-                    onPress={onShareButtonPress}
-                    hidden={isShareContent}
-                />
-                <ActionButton
-                    iconSource={CommentIcon}
-                    count={0}
-                    unitText="Reply"
-                    textStyle={{ color: color.GM_MID_GREY }}
-                    iconStyle={{ tintColor: color.GM_MID_GREY }}
-                    onPress={onCommentButtonPress}
-                />
-            </ActionButtonGroup>
-        </View>
+        <BottomButtonsSheet
+            ref={(r) => (this.shareGoalBottomSheet = r)}
+            buttons={options}
+            height={sheetHeight}
+        />
     )
 }
 

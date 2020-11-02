@@ -10,6 +10,7 @@ import {
     PanResponder,
     Keyboard,
     ScrollView,
+    Platform,
 } from 'react-native'
 import { color } from '../../../styles/basic'
 import { MenuProvider } from 'react-native-popup-menu'
@@ -409,6 +410,10 @@ class BottomSheet extends React.PureComponent {
             customStyles,
         } = this.props
         const { modalVisible, isFullScreen } = this.state
+        // add pan handlers on full sheet ONLY when Scroll View is Enabled or when platform is android
+        const addPanResponderToWholeScreen =
+            !isFullScreen && Platform.OS !== 'android'
+
         const scrollViewContent = !Array.isArray(children)
             ? children
             : children.map((item, i) => {
@@ -439,7 +444,10 @@ class BottomSheet extends React.PureComponent {
                     if (closeOnPressBack) this.close()
                 }}
             >
-                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <MenuProvider
+                    skipInstanceCheck={true}
+                    customStyles={{ backdrop: styles.backdrop }}
+                >
                     <Animated.View
                         style={[
                             styles.wrapper,
@@ -458,8 +466,8 @@ class BottomSheet extends React.PureComponent {
                             disabled={!closeOnPressBack || isFullScreen}
                             onPress={this.close}
                         />
-                        <Animated.View // Do not set pan handlers on fullScreen because Scroll View is Enabled
-                            {...(!isFullScreen &&
+                        <Animated.View
+                            {...(addPanResponderToWholeScreen &&
                                 this.panResponder.panHandlers)}
                             onLayout={({ nativeEvent }) =>
                                 (this.modalHeight = nativeEvent.layout.height)
@@ -474,8 +482,7 @@ class BottomSheet extends React.PureComponent {
                             ]}
                         >
                             <View
-                                // set pan handlers ouside scroll View on fullScreen because Scroll View is Enabled
-                                {...(isFullScreen &&
+                                {...(!addPanResponderToWholeScreen &&
                                     this.panResponder.panHandlers)}
                             >
                                 {showDragIcon && (

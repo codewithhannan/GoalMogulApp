@@ -1001,7 +1001,7 @@ class CreatePostModal extends Component {
         )
     }
 
-    renderDraftsHeader(draftModalHeight) {
+    renderDraftsHeader() {
         return (
             <View
                 onLayout={(e) =>
@@ -1024,7 +1024,6 @@ class CreatePostModal extends Component {
                     drafts={this.state.drafts}
                     disabled={this.props.uploading}
                     onDelete={this.handleDeleteDraft}
-                    maxModalHeight={draftModalHeight}
                     onSelect={(index) => {
                         this.handleDraftCancel(() => {
                             const selectedDraft = this.state.drafts[index]
@@ -1095,7 +1094,6 @@ class CreatePostModal extends Component {
             230 +
             this.state.textContentHeight +
             (showDraftHeader ? this.state.draftHeaderHeight : 0)
-        const draftModalHeight = (modalHeight * 3) / 4
 
         return (
             <BottomSheet
@@ -1120,7 +1118,7 @@ class CreatePostModal extends Component {
                 }}
                 sheetFooter={this.renderCreateButton(actionDisabled)}
             >
-                {showDraftHeader && this.renderDraftsHeader(draftModalHeight)}
+                {showDraftHeader && this.renderDraftsHeader()}
                 <View style={{ flexDirection: 'row', marginTop: 16 }}>
                     <ProfileImage
                         imageUrl={profile ? profile.image : undefined}

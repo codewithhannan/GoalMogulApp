@@ -50,43 +50,6 @@ class Menu extends React.PureComponent {
         }
     }
 
-    handleTutorialOnPress = () => {
-        const tutorialSwitchCases = switchByButtonIndex([
-            [
-                R.equals(0),
-                () => {
-                    console.log(
-                        `${DEBUG_KEY}: [handleTutorialOnPress]: Create goal walkthrough`
-                    )
-                    Actions.pop()
-                    Actions.jump('homeTab')
-                    setTimeout(() => {
-                        this.props.startTutorial('create_goal', 'home')
-                    }, 500)
-                },
-            ],
-            // [R.equals(1), () => {
-            //     console.log(`${DEBUG_KEY}: [handleTutorialOnPress]: Friends Tab Walkthrough`);
-            //     Actions.pop();
-            //     Actions.jump('meetTab');
-            //     setTimeout(() => {
-            //         this.props.startTutorial('meet_tab_friend', 'meet_tab');
-            //     }, 500);
-            // }]
-        ])
-
-        const shareToActionSheet = actionSheet(
-            [
-                'How to Add Goals - Tutorial',
-                'Grow Your Network - Tutorial',
-                'Cancel',
-            ],
-            2,
-            tutorialSwitchCases
-        )
-        return shareToActionSheet()
-    }
-
     handleBugReportOnPress = async () => {
         const url = BUG_REPORT_URL
         let result = await WebBrowser.openBrowserAsync(url)

@@ -8,6 +8,7 @@ import {
     Dimensions,
     FlatList,
     Image,
+    Keyboard,
 } from 'react-native'
 import {
     Menu,
@@ -22,8 +23,11 @@ import DelayedButton from '../Common/Button/DelayedButton'
 
 import cancelImage from '../../asset/utils/cancel_no_background.png'
 import { color } from '../../styles/basic'
+import { HEADER_STYLES } from '../../styles/Header'
 
-const { width } = Dimensions.get('window')
+const { height, width } = Dimensions.get('window')
+const MODAL_MAX_HEIGHT = height - HEADER_STYLES.headerContainer.height - 105
+const MODAL_MIN_HEIGHT = height / 3
 
 /**
  * @param onSelect(index)
@@ -84,6 +88,7 @@ class DraftsView extends Component {
                         </DelayedButton>
                     </View>
                 </View>
+                {this.renderItemSeparator()}
             </MenuOption>
         )
     }
@@ -96,10 +101,13 @@ class DraftsView extends Component {
         return (
             <Menu
                 rendererProps={{ placement: 'bottom' }}
-                renderer={renderers.Popover}
+                renderer={renderers.SlideInMenu}
+                onOpen={this.props.onOpen}
+                onClose={this.props.onClose}
                 name="DRAFT_MENU"
             >
                 <MenuTrigger
+                    onPress={Keyboard.dismiss}
                     disabled={this.props.disabled}
                     customStyles={{
                         TriggerTouchableComponent: TouchableOpacity,
@@ -114,29 +122,16 @@ class DraftsView extends Component {
                         View Drafts
                     </Text>
                 </MenuTrigger>
-                <MenuOptions
-                    customStyles={{
-                        optionsWrapper: {
-                            position: 'absolute',
-                            top: 0,
-                            right: -52,
-                            width: width - 20,
-                            backgroundColor: color.GM_CARD_BACKGROUND,
-                            borderRadius: 10,
-                        },
-                        optionsContainer: {
-                            backgroundColor: color.GM_CARD_BACKGROUND,
-                            borderRadius: 10,
-                        },
-                    }}
-                >
+                <MenuOptions>
                     <FlatList
                         keyboardShouldPersistTaps="always"
                         data={this.props.drafts}
                         keyExtractor={(item) => item._id}
-                        ItemSeparatorComponent={this.renderItemSeparator}
                         style={{
-                            maxHeight: this.props.maxModalHeight,
+                            maxHeight:
+                                MODAL_MAX_HEIGHT - (this.props.topOffSet || 0),
+                            minHeight: MODAL_MIN_HEIGHT,
+                            marginBottom: 8,
                             paddingVertical: 5,
                         }}
                         renderItem={(props) => this.renderItem(props)}
