@@ -40,8 +40,6 @@ import {
 } from '../../../redux/middleware/utils'
 import { default_style, color } from '../../../styles/basic'
 
-// Assets
-import LightBulb from '../../../asset/utils/makeSuggestion.png'
 // Components
 import MentionsTextInput from './MentionsTextInput'
 import {
@@ -54,6 +52,8 @@ import SuggestionPreview, {
 } from '../GoalDetailCard/SuggestionPreview'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import ProfileImage from '../../Common/ProfileImage'
+import { getButtonBottomSheetHeight } from '../../../styles'
+import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
 
 // Consts
 const maxHeight = 120
@@ -273,17 +273,7 @@ class CommentBoxV2 extends Component {
      * When image icon on the comment box is clicked
      */
     handleImageIconOnClick = () => {
-        const mediaRefCases = switchByButtonIndex([
-            [R.equals(0), this.handleOpenCameraRoll],
-            [R.equals(1), this.handleOpenCamera],
-        ])
-
-        const addMediaRefActionSheet = actionSheet(
-            ['Open Camera Roll', 'Take Photo', 'Cancel'],
-            2,
-            mediaRefCases
-        )
-        return addMediaRefActionSheet()
+        this.bottomSheetRef && this.bottomSheetRef.open()
     }
 
     handleOnBlur = () => {
@@ -387,28 +377,45 @@ class CommentBoxV2 extends Component {
         const { commentType } = newComment
         // Disable image icon if there is a valid suggestion
         const disableButton = commentType === 'Suggestion'
+        const options = [
+            {
+                text: 'Open Camera Roll',
+                onPress: this.handleOpenCameraRoll,
+            },
+            {
+                text: 'Take Photo',
+                onPress: this.handleOpenCamera,
+            },
+        ]
         return (
-            <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={this.handleImageIconOnClick}
-                disabled={disableButton}
-                style={{
-                    paddingTop: 12,
-                    paddingBottom: 4,
-                    paddingRight: 8,
-                }}
-            >
-                <Icon
-                    name="image-outline"
-                    pack="material-community"
-                    style={[
-                        styles.iconStyle,
-                        {
-                            tintColor: '#4F4F4F',
-                        },
-                    ]}
+            <View>
+                <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={this.handleImageIconOnClick}
+                    disabled={disableButton}
+                    style={{
+                        paddingTop: 12,
+                        paddingBottom: 4,
+                        paddingRight: 8,
+                    }}
+                >
+                    <Icon
+                        name="image-outline"
+                        pack="material-community"
+                        style={[
+                            styles.iconStyle,
+                            {
+                                tintColor: '#4F4F4F',
+                            },
+                        ]}
+                    />
+                </TouchableOpacity>
+                <BottomButtonsSheet
+                    ref={(r) => (this.bottomSheetRef = r)}
+                    buttons={options}
+                    height={getButtonBottomSheetHeight(options.length)}
                 />
-            </TouchableOpacity>
+            </View>
         )
     }
 
