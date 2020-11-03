@@ -102,6 +102,8 @@ class ChatRoomMembers extends React.Component {
                             marginTop: 6,
                             color: '#666',
                         }}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
                     >
                         {userDoc.name}
                     </Text>
@@ -406,8 +408,6 @@ const styles = {
     memberCardActionsStyle: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'right',
         flexGrow: 0,
-        width: 108,
     },
 }

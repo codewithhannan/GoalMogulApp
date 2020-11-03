@@ -375,19 +375,36 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         dispatchHideSplashScreen(dispatch)
         return
     }
-    const authTokenObject = await TokenService.checkAndGetValidAuthToken()
+
+    // Obtain the authToken. Disable auto logout since it's taken care of next step
+    let authToken
+    try {
+        // Try to gete the authToken and refresh authToken if it expires
+        // instead of logging user out
+        authToken = await TokenService.getAuthToken(false)
+    } catch (err) {
+        // When refresh auth token failed, it will reject the promise returned. Hence we
+        // should catch the error here
+        Logger.log(
+            '[tryAutoLoginV2] fail to get auth token with error: ',
+            err,
+            1
+        )
+        dispatchHideSplashScreen(dispatch)
+        return
+    }
+
     Logger.log(
-        '[tryAutoLoginV2] authTokenObject loaded from TokenService is: ',
-        authTokenObject,
+        '[tryAutoLoginV2] authToken loaded from TokenService is: ',
+        authToken,
         1
     )
-    if (authTokenObject === null) {
+    if (!authToken) {
         dispatchHideSplashScreen(dispatch)
         return
     }
 
     const { userId, isOnboarded, token: refreshToken } = refreshTokenObject
-    const { token: authToken } = authTokenObject
 
     // Saturate User.js and AuthReducers.js with user token and userId for other actions to work
     dispatch({

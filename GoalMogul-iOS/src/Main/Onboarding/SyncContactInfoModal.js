@@ -32,19 +32,7 @@ class SyncContactInfoModal extends React.Component {
 
     renderUploading = () => {
         return (
-            <View
-                style={{
-                    zIndex: 1,
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    opacity: this.props.loading ? 1 : 0,
-                    alignItems: 'center',
-                    padding: 35,
-                }}
-            >
+            <View style={{ alignItems: 'center' }}>
                 <Text
                     style={{
                         fontSize: text.TEXT_FONT_SIZE.FONT_3_5,
@@ -53,7 +41,30 @@ class SyncContactInfoModal extends React.Component {
                 >
                     Uploading Contacts
                 </Text>
+                <Text
+                    style={{
+                        fontSize: text.TEXT_FONT_SIZE.FONT_2,
+                        fontFamily: text.FONT_FAMILY.REGULAR,
+                        marginTop: 8,
+                        marginBottom: 36,
+                    }}
+                >
+                    This might take a few minutes
+                </Text>
                 <DotIndicator size={10} color={color.GM_BLUE} />
+                <DelayedButton
+                    onPress={() => this.props.onCancel()}
+                    style={[
+                        buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle,
+                        { marginTop: 36 },
+                    ]}
+                >
+                    <Text
+                        style={buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle}
+                    >
+                        Cancel
+                    </Text>
+                </DelayedButton>
             </View>
         )
     }
@@ -61,7 +72,7 @@ class SyncContactInfoModal extends React.Component {
     renderFailureResult = () => {
         const { errMessage } = this.props
         return (
-            <View style={{ zIndex: 2, opacity: this.props.loading ? 0 : 1 }}>
+            <View>
                 <Text
                     style={{
                         fontSize: text.TEXT_FONT_SIZE.FONT_3_5,
@@ -119,8 +130,9 @@ class SyncContactInfoModal extends React.Component {
                         backgroundColor: color.GM_CARD_BACKGROUND,
                     }}
                 >
-                    {this.renderFailureResult()}
-                    {this.renderUploading()}
+                    {this.props.loading
+                        ? this.renderUploading()
+                        : this.renderFailureResult()}
                 </View>
             </Modal>
         )

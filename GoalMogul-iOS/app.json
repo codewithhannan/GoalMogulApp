@@ -3,7 +3,7 @@
         "name": "GoalMogul",
         "icon": "./assets/logo.png",
         "sdkVersion": "38.0.0",
-        "version": "0.9.6",
+        "version": "0.9.7",
         "slug": "goalmogul",
         "orientation": "portrait",
         "ios": {
@@ -32,7 +32,8 @@
                     "twitter",
                     "whatsapp",
                     "instagram"
-                ]
+                ],
+                "RCTAsyncStorageExcludeFromBackup": false
             },
             "associatedDomains": [
                 "applinks:web.goalmogul.com",
@@ -62,7 +63,7 @@
         "android": {
             "package": "com.goalmogul.goalmogulbeta",
             "googleServicesFile": "./config/google-services.json",
-            "versionCode": 906
+            "versionCode": 907
         }
     }
 }

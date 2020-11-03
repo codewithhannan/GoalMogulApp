@@ -184,7 +184,9 @@ class SearchOverlay extends Component {
                                 }}
                             />
                         )}
-                        onEndEditing={this.handleOnEndSubmitting}
+                        // Disable until cancel button is persisted on keyboard dismiss
+                        // Issue for react-native-elements
+                        // onEndEditing={this.handleOnEndSubmitting}
                         value={this.state.searchContent}
                     />
                 </View>
