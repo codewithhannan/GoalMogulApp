@@ -365,6 +365,7 @@ class ProfileV2 extends Component {
                     userId={userId}
                 />
                 <SectionList
+                    keyboardShouldPersistTaps="handled"
                     sections={[{ data }]}
                     renderItem={this.renderItem}
                     keyExtractor={(i) => i._id}

@@ -365,6 +365,7 @@ class Home extends Component {
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />
                     <FlatList
+                        keyboardShouldPersistTaps="handled"
                         ref={(ref) => (this.flatList = ref)}
                         ListHeaderComponent={this._renderHeader({
                             jumpToIndex: this._handleIndexChange,

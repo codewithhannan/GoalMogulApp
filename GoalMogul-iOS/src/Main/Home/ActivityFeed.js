@@ -397,6 +397,7 @@ class ActivityFeed extends Component {
         }
         return (
             <FlatList
+                keyboardShouldPersistTaps="handled"
                 scrollEnabled={false}
                 data={processedData}
                 renderItem={this.renderItem}
