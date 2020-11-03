@@ -42,10 +42,6 @@ import { default_style, color } from '../../../styles/basic'
 
 // Components
 import MentionsTextInput from './MentionsTextInput'
-import {
-    actionSheet,
-    switchByButtonIndex,
-} from '../../Common/ActionSheetFactory'
 import EmptyResult from '../../Common/Text/EmptyResult'
 import SuggestionPreview, {
     RemoveComponent,

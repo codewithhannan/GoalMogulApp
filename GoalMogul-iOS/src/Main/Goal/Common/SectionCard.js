@@ -11,12 +11,6 @@ import bulb from '../../../asset/utils/bulb.png'
 import forward from '../../../asset/utils/forward.png'
 import Icons from '../../../asset/base64/Icons'
 
-// Components
-import {
-    actionSheet,
-    switchByButtonIndex,
-} from '../../Common/ActionSheetFactory'
-
 // Actions
 import { chooseShareDest } from '../../../redux/modules/feed/post/ShareActions'
 
