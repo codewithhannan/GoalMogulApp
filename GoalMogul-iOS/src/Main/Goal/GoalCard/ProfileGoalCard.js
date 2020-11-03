@@ -150,6 +150,7 @@ class ProfileGoalCard extends React.Component {
                 steps={steps}
                 needs={needs}
                 goalRef={item}
+                pageId={this.props.pageId}
             />
         )
     }

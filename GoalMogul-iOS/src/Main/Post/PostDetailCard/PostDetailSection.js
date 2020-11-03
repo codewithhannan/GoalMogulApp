@@ -48,10 +48,6 @@ import {
     DEVICE_PLATFORM,
     CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
 } from '../../../Utils/Constants'
-import {
-    actionSheet,
-    switchByButtonIndex,
-} from '../../Common/ActionSheetFactory'
 import FloatingHearts from '../../Common/FloatingHearts/FloatingHearts'
 import ImageModal from '../../Common/ImageModal'
 import LikeListModal from '../../Common/Modal/LikeListModal'
@@ -86,6 +82,15 @@ class PostDetailSection extends React.PureComponent {
             likeButtonLeftOffset: 0,
         }
         this.onTextLayout = this.onTextLayout.bind(this)
+    }
+
+    componentDidMount() {
+        const { initialProps } = this.props
+        if (initialProps) {
+            if (initialProps.initialShowPostModal) {
+                this.createPostModal && this.createPostModal.open()
+            }
+        }
     }
 
     onTextLayout(e) {
@@ -478,7 +483,7 @@ class PostDetailSection extends React.PureComponent {
     }
 
     render() {
-        const { item } = this.props
+        const { item, pageId } = this.props
         // Note: currently item won't be empty since there will be pageId and pageIdCount.
         // TODO: refactor how we store PostDetail to have a separate object. For example:
         // { postExploreTab: { pageId, pageIdCount, post-pageId: { //Here is the real object }}}
@@ -491,7 +496,20 @@ class PostDetailSection extends React.PureComponent {
                 <CreatePostModal
                     onRef={(r) => (this.createPostModal = r)}
                     initializeFromState
-                    initialPost={item}
+                    initialPost={{
+                        ...item,
+                        belongsToGoalStoryline: {
+                            goalRef: _.get(
+                                item,
+                                'belongsToGoalStoryline.goalRef._id'
+                            ),
+                            title: _.get(
+                                item,
+                                'belongsToGoalStoryline.goalRef.title'
+                            ),
+                        },
+                    }}
+                    pageId={pageId}
                 />
                 <LikeListModal
                     isVisible={this.state.showlikeListModal}

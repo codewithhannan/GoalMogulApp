@@ -102,12 +102,12 @@ class GoalCardBody extends React.Component {
     }
 
     renderAddUpdateButton() {
-        const { goalRef } = this.props
+        const { goalRef, pageId } = this.props
         return [
             <DelayedButton
                 style={styles.buttonContainer}
-                onPress={
-                    this.createPostModal ? this.createPostModal.open : () => {}
+                onPress={() =>
+                    this.createPostModal && this.createPostModal.open()
                 }
             >
                 <Icon
@@ -130,6 +130,7 @@ class GoalCardBody extends React.Component {
                     },
                     privacy: goalRef.privacy,
                 }}
+                pageId={pageId}
             />,
         ]
     }
