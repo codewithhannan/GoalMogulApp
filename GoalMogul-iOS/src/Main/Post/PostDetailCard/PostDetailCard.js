@@ -299,7 +299,7 @@ class PostDetailCard extends React.PureComponent {
     }
 
     render() {
-        const { comments, pageId, postId, postDetail } = this.props
+        const { comments, pageId, postId } = this.props
         const data = comments
 
         return (
