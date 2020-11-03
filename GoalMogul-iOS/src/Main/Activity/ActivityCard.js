@@ -36,7 +36,6 @@ import {
     DEVICE_PLATFORM,
     CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
 } from '../../Utils/Constants'
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
 import DelayedButton from '../Common/Button/DelayedButton'
 import FloatingHearts from '../Common/FloatingHearts/FloatingHearts'
 import ImageModal from '../Common/ImageModal'
