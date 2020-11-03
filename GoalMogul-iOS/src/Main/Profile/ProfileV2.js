@@ -2,7 +2,14 @@
 
 import _ from 'lodash'
 import React, { Component } from 'react'
-import { ActivityIndicator, Animated, FlatList, Text, View } from 'react-native'
+import {
+    ActivityIndicator,
+    Animated,
+    FlatList,
+    SectionList,
+    Text,
+    View,
+} from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
@@ -229,7 +236,6 @@ class ProfileV2 extends Component {
                     onLayout={this.handleProfileDetailCardLayout}
                     openEarnBageModal={() =>
                         this.setState({
-                            ...this.state,
                             showBadgeEarnModal: true,
                         })
                     }
@@ -358,8 +364,8 @@ class ProfileV2 extends Component {
                     onBackPress={this.handleOnBackPress}
                     userId={userId}
                 />
-                <FlatList
-                    data={data}
+                <SectionList
+                    sections={[{ data }]}
                     renderItem={this.renderItem}
                     keyExtractor={(i) => i._id}
                     onRefresh={this.handleRefresh}
