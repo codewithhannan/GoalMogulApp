@@ -35,10 +35,6 @@ import {
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
     DEVICE_PLATFORM,
 } from '../../../Utils/Constants'
-import {
-    actionSheet,
-    switchByButtonIndex,
-} from '../../Common/ActionSheetFactory'
 // Components
 import DelayedButton from '../../Common/Button/DelayedButton'
 import ProfileImage from '../../Common/ProfileImage'

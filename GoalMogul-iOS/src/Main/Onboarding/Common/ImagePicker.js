@@ -140,6 +140,7 @@ class ImagePicker extends Component {
                 >
                     {this.renderImage()}
                 </TouchableOpacity>
+                {this.renderAddMediaBottomSheet()}
             </View>
         )
     }

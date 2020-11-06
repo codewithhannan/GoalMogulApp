@@ -21,10 +21,6 @@ import {
 } from '../../../redux/modules/notification/NotificationActions'
 
 // Components
-import {
-    actionSheet,
-    switchByButtonIndex,
-} from '../../Common/ActionSheetFactory'
 import PostPreviewBody from './PostPreviewBody'
 import ProfileImage from '../../Common/ProfileImage'
 import RichText from '../../Common/Text/RichText'

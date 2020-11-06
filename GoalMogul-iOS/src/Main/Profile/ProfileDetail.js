@@ -7,7 +7,6 @@ import { connect } from 'react-redux'
 /* Component */
 import ProfileDetailCard from './ProfileCard/ProfileDetailCard'
 import ProfileInfoCard from './ProfileCard/ProfileInfoCard'
-import ProfileAboutMeCard from './ProfileCard/ProfileAboutMeCard'
 import SearchBarHeader from '../Common/Header/SearchBarHeader'
 
 // Actions

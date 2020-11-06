@@ -280,13 +280,14 @@ class PostDetailCard extends React.PureComponent {
     }
 
     renderPostDetailSection() {
-        const { postDetail } = this.props
+        const { postDetail, initialProps } = this.props
         return (
             <PostDetailSection
                 item={postDetail}
                 onSuggestion={() => this.dialogOnFocus()}
                 pageId={this.props.pageId}
                 postId={this.props.postId}
+                initialProps={initialProps}
             />
         )
     }
@@ -298,7 +299,7 @@ class PostDetailCard extends React.PureComponent {
     }
 
     render() {
-        const { comments, pageId, postId, postDetail } = this.props
+        const { comments, pageId, postId } = this.props
         const data = comments
 
         return (
@@ -309,11 +310,6 @@ class PostDetailCard extends React.PureComponent {
                     parentId={this.state.likeListParentId}
                     parentType={this.state.likeListParentType}
                     clearDataOnHide
-                />
-                <CreatePostModal
-                    onRef={(r) => (this.createPostModal = r)}
-                    initializeFromState
-                    initialPost={postDetail}
                 />
                 <SearchBarHeader
                     backButton
@@ -332,6 +328,7 @@ class PostDetailCard extends React.PureComponent {
                     behavior={'height'}
                 >
                     <FlatList
+                        keyboardShouldPersistTaps="handled"
                         ref="flatList"
                         data={data}
                         renderItem={this.renderItem}

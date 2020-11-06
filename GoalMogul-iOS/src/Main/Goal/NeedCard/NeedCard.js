@@ -28,10 +28,6 @@ import {
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
 } from '../../../Utils/Constants'
 import { RightArrowIcon } from '../../../Utils/Icons'
-import {
-    actionSheet,
-    switchByButtonIndex,
-} from '../../Common/ActionSheetFactory'
 import ProfileImage from '../../Common/ProfileImage'
 import ActionButton from '../Common/ActionButton'
 import ActionButtonGroup from '../Common/ActionButtonGroup'

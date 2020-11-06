@@ -9,7 +9,6 @@ import R from 'ramda'
 
 // Components
 import DelayedButton from '../Common/Button/DelayedButton'
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
 
 // Actions
 import { openMyEventTab } from '../../redux/modules/event/MyEventTabActions'

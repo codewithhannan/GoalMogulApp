@@ -11,6 +11,7 @@ import {
     ImageBackground,
     ActivityIndicator,
     Keyboard,
+    Alert,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
@@ -48,7 +49,6 @@ import { IS_SMALL_PHONE } from '../../styles'
 
 /* Components */
 import BottomSheet from '../Common/Modal/BottomSheet'
-import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
 import DelayedButton from '../Common/Button/DelayedButton'
 import ImageModal from '../Common/ImageModal'
 import ProfileImage from '../Common/ProfileImage'
@@ -101,7 +101,7 @@ class CreatePostModal extends Component {
                 : E.CREATE_POST_MODAL_OPENED
         )
         this.initializeForm()
-        if (this.props.attachGoalRequired)
+        if (!this.isAttachGoalRequirementSatisfied())
             setTimeout(() => this.attachGoalModal.open(), 500)
     }
 
@@ -279,6 +279,7 @@ class CreatePostModal extends Component {
             initializeFromGoal,
             initialPost,
         } = this.props
+        console.log(initialPost)
         const initialVals =
             initializeFromState || initializeFromGoal
                 ? postToFormAdapter(initialPost)
@@ -496,32 +497,30 @@ class CreatePostModal extends Component {
 
         if (draftSaved) return callback ? callback() : null
 
-        const onCancelSwitchCases = switchByButtonIndex([
+        Alert.alert(
+            undefined,
+            'Would you like to save this for later?',
             [
-                R.equals(0),
-                () => {
-                    this.handleSaveDraft().then(callback)
+                {
+                    text: 'Cancel',
+                    onPress: () => {
+                        this.bottomSheetRef.open()
+                    },
+                    style: 'cancel',
+                },
+                {
+                    text: 'Discard',
+                    onPress: () => {
+                        if (callback) callback()
+                    },
+                },
+                {
+                    text: 'Save Draft',
+                    onPress: () => this.handleSaveDraft().then(callback),
                 },
             ],
-            [
-                R.equals(1),
-                () => {
-                    if (callback) callback()
-                },
-            ],
-            [
-                R.equals(2),
-                () => {
-                    this.bottomSheetRef.open()
-                },
-            ],
-        ])
-        const onCancelActionSheet = actionSheet(
-            ON_CANCEL_OPTIONS,
-            ON_CANCEL_CANCEL_INDEX,
-            onCancelSwitchCases
+            { cancelable: false }
         )
-        return onCancelActionSheet()
     }
 
     handleTextInputSizeChange({ nativeEvent }) {
@@ -756,7 +755,7 @@ class CreatePostModal extends Component {
                 tagData={this.state.tagSearchData.data}
                 keyword={this.state.keyword}
                 change={(type, val) => this.props.change(type, val)}
-                autoFocus={!this.props.attachGoalRequired}
+                autoFocus={this.isAttachGoalRequirementSatisfied()}
             />
         )
     }
@@ -793,6 +792,13 @@ class CreatePostModal extends Component {
             this.props.mediaRef &&
             !this.isMediaNotUploaded()
         )
+    }
+
+    isAttachGoalRequirementSatisfied = () => {
+        const { attachGoalRequired, belongsToGoalStoryline } = this.props
+        const isGoalAttached =
+            belongsToGoalStoryline && !!belongsToGoalStoryline.goalRef
+        return isGoalAttached || !attachGoalRequired
     }
 
     renderAttachGoalButton() {
@@ -885,7 +891,7 @@ class CreatePostModal extends Component {
                 triggerComponent={attachGoalButton}
                 triggerWrapperStyle={attachGoalButtonStyle}
                 title="Select a goal to update"
-                closeDisabled={attachGoalRequired && !isGoalAttached}
+                closeDisabled={!this.isAttachGoalRequirementSatisfied()}
                 onSelect={(item) => {
                     this.props.change('belongsToGoalStoryline', {
                         goalRef: item._id,
@@ -895,8 +901,7 @@ class CreatePostModal extends Component {
                 }}
                 onClose={() => {
                     if (
-                        !isGoalAttached &&
-                        attachGoalRequired &&
+                        !this.isAttachGoalRequirementSatisfied() &&
                         this.bottomSheetRef
                     )
                         this.bottomSheetRef.close()
@@ -1028,6 +1033,7 @@ class CreatePostModal extends Component {
                         this.handleDraftCancel(() => {
                             const selectedDraft = this.state.drafts[index]
                             this.loadFromDraft(selectedDraft, index)
+                            this.textInput && this.textInput.focus()
                         })
                     }}
                 />
@@ -1073,17 +1079,13 @@ class CreatePostModal extends Component {
             mediaRef,
             uploading,
             user,
-            attachGoalRequired,
-            belongsToGoalStoryline,
         } = this.props
         const { profile } = user
 
-        const isGoalAttached =
-            belongsToGoalStoryline && !!belongsToGoalStoryline.goalRef
         const actionDisabled =
             uploading ||
             ((!post || post.trim() === '') && !mediaRef) ||
-            (attachGoalRequired && !isGoalAttached)
+            !this.isAttachGoalRequirementSatisfied()
 
         const showDraftHeader =
             !initializeFromState &&

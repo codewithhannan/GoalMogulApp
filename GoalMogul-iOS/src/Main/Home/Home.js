@@ -59,8 +59,7 @@ import { saveRemoteMatches } from '../../actions/MeetActions'
 import { color } from '../../styles/basic'
 
 // Utils
-import Tooltip, { CreateGoalTooltip } from '../Tutorial/Tooltip'
-import { svgMaskPath } from '../Tutorial/Utils'
+import { CreateGoalTooltip } from '../Tutorial/Tooltip'
 
 const DEBUG_KEY = '[ UI Home ]'
 
@@ -124,14 +123,17 @@ class Home extends Component {
         }
 
         if (
-            !_.isEqual(prevProps.user, this.props.user) &&
-            (!prevProps.user.profile || !prevProps.user.profile.badges) &&
-            _.has(
+            !this.state.showBadgeEarnModal &&
+            !_.get(
                 this.props.user,
-                'profile.badges.milestoneBadge.isAwardAlertShown'
-            ) &&
-            this.props.user.profile.badges.milestoneBadge.isAwardAlertShown ===
-                false
+                'profile.badges.milestoneBadge.currentMilestone',
+                0
+            ) > 0 &&
+            !_.get(
+                this.props.user,
+                'profile.badges.milestoneBadge.isAwardAlertShown',
+                true
+            )
         ) {
             // Showing modal to congrats user earning a new badge
             this.setState({
@@ -366,6 +368,7 @@ class Home extends Component {
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />
                     <FlatList
+                        keyboardShouldPersistTaps="handled"
                         ref={(ref) => (this.flatList = ref)}
                         ListHeaderComponent={this._renderHeader({
                             jumpToIndex: this._handleIndexChange,

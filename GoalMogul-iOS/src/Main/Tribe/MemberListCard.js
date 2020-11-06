@@ -16,7 +16,7 @@ import {
 
 // Actions
 import { openProfile } from '../../actions'
-import { default_style, color } from '../../styles/basic'
+import { default_style } from '../../styles/basic'
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
 // Components
 import Name from '../Common/Name'

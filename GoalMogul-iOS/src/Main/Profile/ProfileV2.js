@@ -2,7 +2,14 @@
 
 import _ from 'lodash'
 import React, { Component } from 'react'
-import { ActivityIndicator, Animated, FlatList, Text, View } from 'react-native'
+import {
+    ActivityIndicator,
+    Animated,
+    FlatList,
+    SectionList,
+    Text,
+    View,
+} from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
@@ -79,14 +86,17 @@ class ProfileV2 extends Component {
         // profile too fast before profile is being loaded
         if (
             this.props.isSelf &&
-            !_.isEqual(prevProps.user, this.props.user) &&
-            (!prevProps.user.profile || !prevProps.user.profile.badges) &&
-            _.has(
+            !this.state.showBadgeEarnModal &&
+            _.get(
                 this.props.user,
-                'profile.badges.milestoneBadge.isAwardAlertShown'
-            ) &&
-            this.props.user.profile.badges.milestoneBadge.isAwardAlertShown ===
-                false
+                'profile.badges.milestoneBadge.currentMilestone',
+                0
+            ) > 0 &&
+            !_.get(
+                this.props.user,
+                'profile.badges.milestoneBadge.isAwardAlertShown',
+                true
+            )
         ) {
             // Showing modal to congrats user earning a new badge
             this.setState({
@@ -229,7 +239,6 @@ class ProfileV2 extends Component {
                     onLayout={this.handleProfileDetailCardLayout}
                     openEarnBageModal={() =>
                         this.setState({
-                            ...this.state,
                             showBadgeEarnModal: true,
                         })
                     }
@@ -358,8 +367,9 @@ class ProfileV2 extends Component {
                     onBackPress={this.handleOnBackPress}
                     userId={userId}
                 />
-                <FlatList
-                    data={data}
+                <SectionList
+                    keyboardShouldPersistTaps="handled"
+                    sections={[{ data }]}
                     renderItem={this.renderItem}
                     keyExtractor={(i) => i._id}
                     onRefresh={this.handleRefresh}

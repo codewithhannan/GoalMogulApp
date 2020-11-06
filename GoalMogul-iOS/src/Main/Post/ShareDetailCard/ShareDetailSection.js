@@ -48,10 +48,6 @@ import {
     DEVICE_PLATFORM,
     CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
 } from '../../../Utils/Constants'
-import {
-    actionSheet,
-    switchByButtonIndex,
-} from '../../Common/ActionSheetFactory'
 import FloatingHearts from '../../Common/FloatingHearts/FloatingHearts'
 import ImageModal from '../../Common/ImageModal'
 import LikeListModal from '../../Common/Modal/LikeListModal'
