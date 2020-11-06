@@ -17,7 +17,6 @@ import {
 } from '../../../actions/ProfileActions'
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import Icons from '../../../asset/base64/Icons'
-import { Logger } from '../../../redux/middleware/utils/Logger'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import {
     modalCancelIconContainerStyle,
@@ -25,12 +24,7 @@ import {
     modalContainerStyle,
     modalHeaderBadgeShadow,
 } from '../../../styles'
-import Badges, {
-    Bronze3D,
-    Silver3D,
-    Gold3D,
-    Green,
-} from '../../../asset/banner'
+import { Bronze3D, Silver3D, Gold3D, Green } from '../../../asset/banner'
 import { ConfettiFadedBackground } from '../../../asset/background'
 import {
     getBagdeIconByTier,
@@ -38,8 +32,9 @@ import {
 } from '../../../redux/modules/gamification/BadgeActions'
 import GoldBadgeInfoModal from './GoldBadgeInfoModal'
 import GoldBadgeRewardModal from './GoldBadgeRewardModal'
+import { color } from '../../../styles/basic'
 
-const { CheckIcon, InfoIcon, QuestionIcon } = Icons
+const { CheckIcon, QuestionIcon } = Icons
 const DEBUG_KEY = '[ UI EarnBadgeModal ]'
 
 class EarnBadgeModal extends React.PureComponent {
@@ -68,7 +63,6 @@ class EarnBadgeModal extends React.PureComponent {
                 )
                 this.setState(
                     {
-                        ...this.state,
                         numberLoaded: true,
                         numberOfUsersOnSameBadge: count,
                     },
@@ -85,11 +79,6 @@ class EarnBadgeModal extends React.PureComponent {
                 )
             }
 
-            const tier =
-                _.get(
-                    this.props.user,
-                    'profile.badges.milestoneBadge.currentMilestone'
-                ) || 0
             this.props.fetchBadgeUserCount(callback)
         }
     }
@@ -100,7 +89,14 @@ class EarnBadgeModal extends React.PureComponent {
 
     onModalShow = () => {
         // Mark modal as shown by calling endpoint and update user profile
-        this.props.markEarnBadgeModalAsShown()
+        if (
+            !_.get(
+                this.props.user,
+                'profile.badges.milestoneBadge.isAwardAlertShown',
+                false
+            )
+        )
+            this.props.markEarnBadgeModalAsShown()
     }
 
     renderBadgeEarned(tier) {
@@ -153,18 +149,11 @@ class EarnBadgeModal extends React.PureComponent {
     }
 
     render() {
-        let tier = 0
-        if (
-            _.has(
-                this.props.user,
-                'profile.badges.milestoneBadge.currentMilestone'
-            )
-        ) {
-            tier = _.get(
-                this.props.user,
-                'profile.badges.milestoneBadge.currentMilestone'
-            )
-        }
+        let tier = _.get(
+            this.props.user,
+            'profile.badges.milestoneBadge.currentMilestone',
+            0
+        )
 
         const hasModalOverlay =
             this.state.showGoldBadgeRewardModal ||
@@ -202,13 +191,19 @@ class EarnBadgeModal extends React.PureComponent {
                         })
                     }}
                 />
-                <View style={{ backgroundColor: 'white', borderRadius: 15 }}>
+                <View
+                    style={{
+                        backgroundColor: color.GM_BACKGROUND,
+                        borderRadius: 15,
+                    }}
+                >
                     <ImageBackground
                         source={ConfettiFadedBackground}
                         style={{
                             width: '100%',
-                            minHeight: 608,
                             borderRadius: 15,
+                            justifyContent: 'center',
+                            alignContent: 'center',
                         }}
                         imageStyle={{ borderRadius: 15 }}
                     >
@@ -216,40 +211,41 @@ class EarnBadgeModal extends React.PureComponent {
                             style={{
                                 ...modalContainerStyle,
                                 backgroundColor: 'transparent',
-                                flex: 1,
                             }}
                         >
                             {this.renderCancelButton()}
-                            <Text
-                                style={{
-                                    color: 'rgb(0, 150, 203)',
-                                    fontWeight: '500',
-                                    fontSize: 22,
-                                    marginTop: 18,
-                                }}
-                            >
-                                Congratulations!
-                            </Text>
-                            {this.renderBadgeEarned(tier)}
-                            <Text
-                                style={{
-                                    color: 'rgb(153, 153, 153)',
-                                    fontSize: 14,
-                                    paddingTop: 15,
-                                    paddingBottom: 7,
-                                }}
-                            >
-                                You've earned a {getBadgeTextByTier(tier)}{' '}
-                                Badge.
-                            </Text>
-                            <View
-                                style={{
-                                    width: '76%',
-                                    height: 0.5,
-                                    backgroundColor: 'rgb(238, 238, 238)',
-                                    marginVertical: 3,
-                                }}
-                            />
+                            {tier > 0 && [
+                                <Text
+                                    style={{
+                                        color: 'rgb(0, 150, 203)',
+                                        fontWeight: '500',
+                                        fontSize: 22,
+                                        marginTop: 18,
+                                    }}
+                                >
+                                    Congratulations!
+                                </Text>,
+                                this.renderBadgeEarned(tier),
+                                <Text
+                                    style={{
+                                        color: 'rgb(153, 153, 153)',
+                                        fontSize: 14,
+                                        paddingTop: 15,
+                                        paddingBottom: 7,
+                                    }}
+                                >
+                                    You've earned a {getBadgeTextByTier(tier)}{' '}
+                                    Badge.
+                                </Text>,
+                                <View
+                                    style={{
+                                        width: '76%',
+                                        height: 0.5,
+                                        backgroundColor: 'rgb(238, 238, 238)',
+                                        marginVertical: 3,
+                                    }}
+                                />,
+                            ]}
                             <Text
                                 style={{
                                     color: 'rgb(51, 51, 51)',
@@ -265,7 +261,6 @@ class EarnBadgeModal extends React.PureComponent {
                                 if (id && id === 'gold') {
                                     onLeadingIconPress = () => {
                                         this.setState({
-                                            ...this.state,
                                             showGoldBagdeInfoModal: true,
                                         })
                                     }
@@ -398,10 +393,7 @@ const BadgeInfoCard = (props) => {
                         ]}
                         onPress={onLeadingIconPress}
                     >
-                        <Image
-                            source={leadingIcon}
-                            style={{ ...leadingIconStyle }}
-                        />
+                        <Image source={leadingIcon} style={leadingIconStyle} />
                     </DelayedButton>
                     <Image
                         source={badgeIcon}
@@ -500,14 +492,10 @@ const BadgeInfo = [
             { text: 'Set your 1st goal', hasBulletPoint: true },
         ],
         badgeIcon: Green,
-        badgeIconStyle: {
-            ...DefaultBadgeIconStyle,
-        },
+        badgeIconStyle: DefaultBadgeIconStyle,
         leadingIcon: CheckIcon,
-        leadingIconStyle: {
-            ...DefaultLeadingIconStyle,
-        },
-        leadingIconContainerStyle: { ...DefaultLeadingIconContainerStyle },
+        leadingIconStyle: DefaultLeadingIconStyle,
+        leadingIconContainerStyle: DefaultLeadingIconContainerStyle,
         gradient: {
             achieved: {
                 linearGradientColors: [
@@ -533,14 +521,10 @@ const BadgeInfo = [
             },
         ],
         badgeIcon: Bronze3D,
-        badgeIconStyle: {
-            ...DefaultBadgeIconStyle,
-        },
+        badgeIconStyle: DefaultBadgeIconStyle,
         leadingIcon: CheckIcon,
-        leadingIconStyle: {
-            ...DefaultLeadingIconStyle,
-        },
-        leadingIconContainerStyle: { ...DefaultLeadingIconContainerStyle },
+        leadingIconStyle: DefaultLeadingIconStyle,
+        leadingIconContainerStyle: DefaultLeadingIconContainerStyle,
         gradient: {
             achieved: {
                 linearGradientColors: [
@@ -568,14 +552,10 @@ const BadgeInfo = [
             { text: ' Green Badges', hasBulletPoint: false },
         ],
         badgeIcon: Silver3D,
-        badgeIconStyle: {
-            ...DefaultBadgeIconStyle,
-        },
+        badgeIconStyle: DefaultBadgeIconStyle,
         leadingIcon: CheckIcon,
-        leadingIconStyle: {
-            ...DefaultLeadingIconStyle,
-        },
-        leadingIconContainerStyle: { ...DefaultLeadingIconContainerStyle },
+        leadingIconStyle: DefaultLeadingIconStyle,
+        leadingIconContainerStyle: DefaultLeadingIconContainerStyle,
         gradient: {
             achieved: {
                 linearGradientColors: [
@@ -606,16 +586,14 @@ const BadgeInfo = [
             },
         ],
         badgeIcon: Gold3D,
-        badgeIconStyle: {
-            ...DefaultBadgeIconStyle,
-        },
+        badgeIconStyle: DefaultBadgeIconStyle,
         leadingIcon: QuestionIcon,
         leadingIconStyle: {
             ...DefaultLeadingIconStyle,
             height: 14,
             width: 9,
         },
-        leadingIconContainerStyle: { ...DefaultLeadingIconContainerStyle },
+        leadingIconContainerStyle: DefaultLeadingIconContainerStyle,
         gradient: {
             achieved: {
                 linearGradientColors: [
