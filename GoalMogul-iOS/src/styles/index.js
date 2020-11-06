@@ -153,7 +153,7 @@ export const tutorial = {
 }
 
 export const modalContainerStyle = {
-    backgroundColor: 'white',
+    backgroundColor: color.GM_BACKGROUND,
     borderRadius: 15,
     padding: 20,
     alignItems: 'center',
