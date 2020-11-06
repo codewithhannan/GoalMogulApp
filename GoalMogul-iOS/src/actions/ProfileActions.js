@@ -19,9 +19,8 @@ import {
     getUserDataByPageId,
 } from '../redux/modules/User/Selector'
 
-import { Bronze3D, Silver3D, Gold3D } from '../asset/banner'
+import { Bronze3D, Silver3D, Gold3D, Green } from '../asset/banner'
 import { trackWithProperties, EVENT as E, track } from '../monitoring/segment'
-import GreenBanner from '../asset/banner/green.png'
 
 import {
     PROFILE_OPEN_PROFILE,
@@ -1085,10 +1084,15 @@ export const UserBanner = (props) => {
     }
 
     // Before gamification, we only show green badge
-    const level = _.get(user, 'profile.badges.milestoneBadge.currentMilestone')
+    const level = _.get(
+        user,
+        'profile.badges.milestoneBadge.currentMilestone',
+        0
+    )
     const source = switchCaseBannerSource(level)
 
     if (!user || !user.profile) return null
+    if (!source) return <View style={{ width: 8 }} />
     const defaultIconStyle = {
         alignSelf: 'center',
         marginLeft: 4,
@@ -1097,9 +1101,7 @@ export const UserBanner = (props) => {
         width: 10 * default_style.uiScale,
     }
 
-    return (
-        <Image source={source} style={{ ...defaultIconStyle, ...iconStyle }} />
-    )
+    return <Image source={source} style={[defaultIconStyle, iconStyle]} />
 }
 
 export const openCreateOverlay = (userId, pageId) => (dispatch) => {
@@ -1206,21 +1208,17 @@ export const fetchBadgeUserCount = (
 }
 
 export const switchCaseBannerSource = (level) => {
-    let source
-    if (level === 0 || level === undefined) {
-        source = GreenBanner
+    if (!level) {
+        return undefined
     } else if (level === 1) {
-        // source = BronzeBanner;
-        source = Bronze3D
+        return Green
     } else if (level === 2) {
-        // source = SilverBanner;
-        source = Silver3D
+        return Bronze3D
     } else if (level === 3) {
-        // source = GoldBanner;
-        source = Gold3D
+        return Silver3D
+    } else if (level === 4) {
+        return Gold3D
     }
-
-    return source
 }
 
 const deleteItem = (item, dispatch, getState, onSuccess, onError) => {
