@@ -112,7 +112,7 @@ class ProfileInfoCard extends Component {
         )
     }
 
-    renderFriendInfo(occupation) {
+    renderFriendInfo() {
         const title = this.props.canEdit ? 'Friends' : 'Mutual Friends'
         const data = this.props.canEdit
             ? this.props.friendsCount
@@ -121,7 +121,6 @@ class ProfileInfoCard extends Component {
             <View
                 style={{
                     flexDirection: 'row',
-                    paddingBottom: occupation ? 20 : 0,
                 }}
             >
                 <Image source={icon_meet} style={styles.iconStyle} />
@@ -167,16 +166,10 @@ class ProfileInfoCard extends Component {
         )
     }
 
-    renderOccupation(occupation, isTopElementExisting) {
+    renderOccupation(occupation) {
         if (occupation && occupation.trim().length > 0) {
             return (
-                <View
-                    style={
-                        isTopElementExisting
-                            ? { alignSelf: 'flex-start', marginTop: 16 }
-                            : { alignSelf: 'flex-start', marginTop: 0 }
-                    }
-                >
+                <View style={{ alignSelf: 'flex-start', marginTop: 16 }}>
                     <View style={profileStyles.subHeaderStyle}>
                         <Text style={PROFILE_STYLES.aboutInfoTitle}>
                             Occupation
@@ -263,7 +256,7 @@ class ProfileInfoCard extends Component {
                 {about || elevatorPitch ? detailsCard : null}
                 <View style={styles.containerStyle}>
                     {this.renderFriendInfo()}
-                    {this.renderOccupation(occupation, about || elevatorPitch)}
+                    {this.renderOccupation(occupation)}
                 </View>
             </View>
         )
