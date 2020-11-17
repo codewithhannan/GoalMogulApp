@@ -2,14 +2,7 @@
 
 import _ from 'lodash'
 import React, { Component } from 'react'
-import {
-    ActivityIndicator,
-    Animated,
-    FlatList,
-    SectionList,
-    Text,
-    View,
-} from 'react-native'
+import { ActivityIndicator, Animated, SectionList, View } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'

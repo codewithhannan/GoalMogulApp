@@ -410,9 +410,10 @@ class BottomSheet extends React.PureComponent {
             customStyles,
         } = this.props
         const { modalVisible, isFullScreen } = this.state
-        // add pan handlers on full sheet ONLY when Scroll View is Enabled or when platform is android
-        const addPanResponderToWholeScreen =
-            !isFullScreen && Platform.OS !== 'android'
+        // old: add pan handlers on full sheet ONLY when Scroll View is Enabled or when platform is android
+        // new: never add pan handlers on full sheet to avoid weired race conditions
+        const addPanResponderToWholeScreen = false
+        // !isFullScreen && Platform.OS !== 'android'
 
         const scrollViewContent = !Array.isArray(children)
             ? children

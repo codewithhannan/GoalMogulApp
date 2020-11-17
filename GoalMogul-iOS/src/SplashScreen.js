@@ -2,7 +2,7 @@
 
 import { AppLoading } from 'expo'
 import React, { Component } from 'react'
-import { Dimensions, Image, Platform, Text, View } from 'react-native'
+import { Dimensions, Image, Text, View } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 // Actions
@@ -13,7 +13,7 @@ import LogoIcon from './asset/header/header-logo-white.png'
 import HandshakeArt from './asset/header/handshake.png'
 import { trackViewScreen } from './monitoring/segment'
 import { Screen } from './monitoring/segment/Constants'
-import { DEVICE_MODEL, IPHONE_MODELS, IS_BIG_IPHONE } from './Utils/Constants'
+import { IS_BIG_IPHONE } from './Utils/Constants'
 // Components
 import { color, default_style } from './styles/basic'
 import { FONT_FAMILY, LETTER_SPACING } from './styles/basic/text'
