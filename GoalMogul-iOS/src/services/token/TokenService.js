@@ -184,7 +184,7 @@ class TokenService {
             )
         }
 
-        const { token: refreshToken } = _.cloneDeep(refreshTokenObject)
+        const { token: refreshToken, userId } = _.cloneDeep(refreshTokenObject)
         console.log('[_refreshAuthToken] Start purging refresh token')
         // Before sending the request, we need to purge the refreshToken to incide it's used
         await this._purgeRefreshTokenBeforeUse()
@@ -226,9 +226,15 @@ class TokenService {
 
         // Process response. As long as both token exist, this request is successful
         if (resp.token && resp.refreshToken) {
-            // On Success, process waiting requests for auth token and persist new token pair
+            // On Success, persist new token pair in both cache and storage
+            await this.populateAndPersistToken(
+                resp.token,
+                resp.refreshToken,
+                undefined,
+                userId
+            )
+            // Then process the request
             this._processPendingAuthTokenRequests(undefined, resp.token)
-            this.populateAndPersistToken(resp.token, resp.refreshToken)
         } else {
             // On Error, notify the requests waiting for the auth token
             this._processPendingAuthTokenRequests(
@@ -362,14 +368,14 @@ class TokenService {
         // This is to prevent the case that this._userId is mounted but lost when
         // app is closed or other edge case. We can always recover from the SecureStore
         // If still not found, user needs to re-login
-        if (!userId) {
+        if (!userIdToUse) {
             const loadedRefreshTokenObject = await this._getTokenFromSecureStore(
                 TOKEN_TYPE.refresh
             )
             if (!_.get(loadedRefreshTokenObject, 'userId')) {
                 return store.dispatch(logout())
             }
-            userId = loadedRefreshTokenObject.userId
+            userIdToUse = loadedRefreshTokenObject.userId
         }
 
         // createdAt is set to 5 minutes ago arbitrarily
