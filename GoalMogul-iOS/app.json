@@ -3,7 +3,7 @@
         "name": "GoalMogul",
         "icon": "./assets/logo.png",
         "sdkVersion": "38.0.0",
-        "version": "0.9.9",
+        "version": "1.0.0",
         "slug": "goalmogul",
         "orientation": "portrait",
         "ios": {
@@ -63,7 +63,7 @@
         "android": {
             "package": "com.goalmogul.goalmogulbeta",
             "googleServicesFile": "./config/google-services.json",
-            "versionCode": 909
+            "versionCode": 100
         }
     }
 }
