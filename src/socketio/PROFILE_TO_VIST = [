@@ -1,0 +1,15 @@
+PROFILE_TO_VIST = [
+    {
+        profileId: "",
+        profile_name: "Usama"
+        acceptedAt: "",
+        
+    }
+]
+
+LAST_RECOMMENDED_PROFILE =  "ID"
+
+.findIndex(pro => {
+    return pro.profileId === availableProfileId
+})
+
