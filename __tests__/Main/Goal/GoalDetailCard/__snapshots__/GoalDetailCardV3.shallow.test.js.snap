@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`goal detail v3 should shallow render basic goal detail v3 page 1`] = `
+"<MenuProvider customStyles={{...}} backHandler={false}>
+  <View style={{...}}>
+    <Spinner visible={false} customIndicator={{...}} cancelable={false} textContent=\\"\\" animation=\\"none\\" color=\\"white\\" size=\\"large\\" overlayColor=\\"rgba(0, 0, 0, 0.25)\\" />
+    <Connect(SearchBarHeader) backButton={true} title=\\"Goal\\" onBackPress={[Function: onBackPress]} />
+    <TabView style={{...}} navigationState={{...}} renderScene={[Function: bound ]} renderTabBar={[Function: bound ]} initialLayout={{...}} onIndexChange={[Function: onIndexChange]} swipeEnabled={false} tabBarPosition=\\"top\\" renderLazyPlaceholder={[Function: renderLazyPlaceholder]} keyboardDismissMode=\\"auto\\" lazy={false} lazyPreloadDistance={0} removeClippedSubviews={false} springConfig={{...}} timingConfig={{...}} gestureHandlerProps={{...}} renderPager={[Function: renderPager]} />
+    <Connect(SuggestionModal) visible={false} onCancel={[Function: onCancel]} onAttach={[Function: onAttach]} pageId={[undefined]} goalId={[undefined]} item={{...}} />
+  </View>
+</MenuProvider>"
+`;
