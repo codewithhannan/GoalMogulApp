@@ -19,6 +19,7 @@ import {
     ViewPropTypes,
     TouchableHighlight,
 } from 'react-native'
+import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import { get } from '../../../../store/storage'
 import { MessageText, Time, utils } from 'react-native-gifted-chat'
@@ -27,6 +28,8 @@ import { MemberDocumentFetcher } from '../../../../Utils/UserUtils'
 import CommentRef from '../../../Goal/GoalDetailCard/Comment/CommentRef'
 import ChatMessageImage from '../../Modals/ChatMessageImage'
 import ShareCard from '../../../Common/Card/ShareCard'
+import EarnBadgeModal from '../../../Gamification/Badge/EarnBadgeModal'
+import InviteFriendModal from '../../../MeetTab/Modal/InviteFriendModal'
 
 const { isSameDay } = utils
 
@@ -38,7 +41,7 @@ function isSameUser(currentMessage = {}, diffMessage = {}) {
     )
 }
 
-export default class Bubble extends React.Component {
+class Bubble extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -48,6 +51,8 @@ export default class Bubble extends React.Component {
             timeHeightAnim: new Animated.Value(0),
             userRef: null,
             optionsAction: {},
+            showBadgeModal: false,
+            showInviteFriendModal: false,
         }
     }
 
@@ -70,9 +75,23 @@ export default class Bubble extends React.Component {
         }
     }
 
+    onOptionSelect(selectedOption) {
+        if (selectedOption == 'Create Goal')
+            return this.openCreateGoal.bind(this)
+        if (selectedOption == 'View BadgeDetail')
+            return this.openBadgeDetails.bind(this)
+        if (selectedOption == 'View Goals')
+            return this.openProfileGoals.bind(this)
+        if (selectedOption == 'Invite Friends')
+            return this.openInviteFriends.bind(this)
+        if (selectedOption == 'Open TrendingGoals')
+            return this.openTrendingGoals.bind(this)
+        if (selectedOption == 'Open GoMo') return this.openGoMoChat.bind(this)
+    }
+
     // For Gomo Bot messages
     openCreateGoal() {
-        const { goalRecommendation } = this.props.currentMessage
+        /* const { goalRecommendation } = this.props.currentMessage
         const { recommendedTitle } = goalRecommendation
 
         const goal = {
@@ -83,12 +102,40 @@ export default class Bubble extends React.Component {
         }
 
         // This callback will be called after goal is successfully created. See CreateGoalModal.js line 127.
-        const callback = () => {}
+        const callback = () => { }
 
         Actions.push('createGoalModal', {
             isImportedGoal: true,
             goal,
             callback,
+        }) */
+        Actions.push('createGoalModal')
+    }
+    openBadgeDetails() {
+        this.setState({ ...this.state, showBadgeModal: true })
+    }
+    openProfileGoals() {
+        Actions.push('mainProfile')
+    }
+    openInviteFriends() {
+        this.setState({ ...this.state, showInviteFriendModal: true })
+    }
+    openTrendingGoals() {
+        Actions.push('trendingGoalView')
+    }
+    openGoMoChat() {
+        let gomoExist = false
+        let chatroomId = this.props.chatRoomsMap.filter((chatroom) => {
+            for (let member of chatroom.members) {
+                if (member.memberRef.name == 'GoMoBo') {
+                    gomoExist = true
+                    break
+                }
+            }
+            if (gomoExist) return chatroom
+        })
+        Actions.push('chatRoomConversation', {
+            chatRoomId: chatroomId[0]._id,
         })
     }
 
@@ -150,7 +197,12 @@ export default class Bubble extends React.Component {
                                     backgroundColor: '#F8F8F8',
                                     padding: 80,
                                 }}
-                                onPress={() => console.log('this is')}
+                                onPress={() => {
+                                    let trigger = this.onOptionSelect(
+                                        option.optionAction[0].action
+                                    ).bind(this)
+                                    return trigger()
+                                }}
                             >
                                 <Text
                                     style={{
@@ -470,6 +522,24 @@ export default class Bubble extends React.Component {
                         {this.renderGoalOptions()}
                     </View>
                 </View>
+                <EarnBadgeModal
+                    isVisible={this.state.showBadgeModal}
+                    closeModal={() => {
+                        this.setState({
+                            ...this.state,
+                            showBadgeModal: false,
+                        })
+                    }}
+                />
+                <InviteFriendModal
+                    isVisible={this.state.showInviteFriendModal}
+                    closeModal={() => {
+                        this.setState({
+                            ...this.state,
+                            showInviteFriendModal: false,
+                        })
+                    }}
+                />
             </View>
         )
     }
@@ -589,3 +659,13 @@ Bubble.propTypes = {
         right: ViewPropTypes.style,
     }),
 }
+
+//states from redux store is used here
+const mapStateToProps = (state) => {
+    const { data: chatRoomsMap } = state.chat.allChats
+    return {
+        chatRoomsMap,
+    }
+}
+
+export default connect(mapStateToProps)(Bubble)
