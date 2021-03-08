@@ -14,6 +14,8 @@ import {
     SEGMENT_CONFIG,
     SENTRY_CONFIG,
     SOCKET_IO_URL,
+    SOCKET_IO_URL_LOCAL,
+    API_URL_LOCAL,
 } from './config'
 
 const ENV = {
