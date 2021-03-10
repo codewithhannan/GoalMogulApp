@@ -272,7 +272,8 @@ export const openNotificationDetail = (item) => (dispatch, getState) => {
         return
     }
     const { parsedNoti, _id } = item
-
+    console.log('item', item)
+    console.log('parsedNoti', parsedNoti)
     const { path } = parsedNoti
     if (!isString(path)) {
         console.warn(`${DEBUG_KEY}: path in parsedNoti is not string: `, path)

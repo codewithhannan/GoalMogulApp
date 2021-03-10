@@ -10,8 +10,6 @@ import {
     setMessageDoc,
     MessageDocError,
 } from '../../reducers/MessageDoc'
-
-import { store } from '../../store/storage'
 import {
     default as LiveChatService,
     INCOMING_EVENT_NAMES,
@@ -443,7 +441,6 @@ class MessageStorageService {
                                 let insertedDocs = []
                                 let processedCount = 0
                                 transformedDocs.forEach((messageDoc) => {
-                                    console.log('messaaaaageDoc5', messageDoc)
                                     localDb.insert(messageDoc, (err) => {
                                         ++processedCount
                                         // ignore all documents that we already have stored locally
@@ -802,7 +799,6 @@ class MessageStorageService {
     //         })
     //         .catch((err) => setBadgeNumberAsyncByPlatform(0))
     // }
-
     _pollMessageQueue = (authToken) => {
         this._pullMessageQueueRequest(authToken)
             .then(async (resp) => {

@@ -2,7 +2,7 @@
 
 import _ from 'lodash'
 import React from 'react'
-import { Image, View } from 'react-native'
+import { Image, View, ActionSheetIOS } from 'react-native'
 import defaultUserProfile from '../../asset/utils/defaultUserProfile.png'
 import { connect } from 'react-redux'
 // actions
@@ -33,6 +33,53 @@ class ProfileImage extends React.Component {
         } else if (userId) {
             this.props.openProfile(userId)
         }
+    }
+
+    chooseImage = async () => {
+        ActionSheetIOS.showActionSheetWithOptions(
+            {
+                options: BUTTONS,
+                cancelButtonIndex: CANCEL_INDEX,
+            },
+            (buttonIndex) => {
+                console.log('button clicked', BUTTONS[buttonIndex])
+                switch (buttonIndex) {
+                    case TAKING_PICTURE_INDEX:
+                        this.props.openCamera((result) => {
+                            this.props.change('profile.image', result.uri)
+                        })
+                        break
+                    case CAMERA_ROLL_INDEX:
+                        this.props.openCameraRoll((result) => {
+                            this.props.change('profile.image', result.uri)
+                        })
+                        break
+                    default:
+                        return
+                }
+            }
+        )
+    }
+    renderImage = ({ input: { value } }) => {
+        return (
+            <TouchableOpacity activeOpacity={0.6} onPress={this.chooseImage}>
+                <View style={styles.imageContainerStyle}>
+                    <View style={styles.imageWrapperStyle}>
+                        <ProfileImage
+                            imageStyle={styles.imageStyle}
+                            imageUrl={getProfileImageOrDefault(value)}
+                        />
+                    </View>
+                </View>
+                <View style={styles.iconContainerStyle}>
+                    <Icon
+                        name="edit"
+                        pack="material"
+                        style={styles.editIconStyle}
+                    />
+                </View>
+            </TouchableOpacity>
+        )
     }
 
     render() {

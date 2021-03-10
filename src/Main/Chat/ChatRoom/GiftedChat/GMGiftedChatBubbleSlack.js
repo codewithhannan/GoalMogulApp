@@ -21,7 +21,6 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
-import { get } from '../../../../store/storage'
 import { MessageText, Time, utils } from 'react-native-gifted-chat'
 import { color } from '../../../../styles/basic'
 import { MemberDocumentFetcher } from '../../../../Utils/UserUtils'
@@ -165,13 +164,15 @@ class Bubble extends React.Component {
     renderGoalOptions() {
         const { options } = this.props.currentMessage
 
+        // console.log('this is props of chat', this.props)
+
         if (_.isEmpty(options)) return null
         let optionsArray = []
         for (let option in options) {
             let transformedOption = { ...options[option], optionTitle: option }
             optionsArray.push(transformedOption)
         }
-        console.log('optionsArrayyyyy', optionsArray)
+        // console.log('optionsArrayyyyy', optionsArray)
         return (
             <View>
                 {optionsArray.map((option) => {
@@ -209,6 +210,7 @@ class Bubble extends React.Component {
                                         color: '#fff',
                                         fontSize: 14,
                                         color: color.GM_BLUE,
+                                        width: '100%',
                                     }}
                                 >
                                     {option.optionTitle}

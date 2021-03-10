@@ -9,13 +9,12 @@ import Swiper from 'react-native-swiper'
 
 import LionMascot from '../../asset/image/LionMascot_shadow.png'
 import TribeEmptyState from '../../asset/image/TribeEmptyState.png'
+import moment from 'moment'
 
 // Components
 import ActivityCard from '../Activity/ActivityCard'
 import EmptyResult from '../Common/Text/EmptyResult'
 import InviteFriendModal from '../MeetTab//Modal/InviteFriendModal'
-
-import { get } from '../../store/storage'
 
 import { handleRefreshFriend } from '../../redux/modules/meet/MeetActions'
 
@@ -491,7 +490,6 @@ class ActivityFeed extends Component {
         const { heading, text, friendsCount, noGoals, someGoals } = this.state
 
         const { currentMilestone } = profile.badges.milestoneBadge
-        console.log('cureeeeentttt', currentMilestone)
 
         // const showGhostCards =
         //     this.props.refreshing &&
@@ -532,19 +530,72 @@ class ActivityFeed extends Component {
 
         // console.log('friendsMileStone', count)
 
-        const visitedFriends = profile.viewedFriendsProfile
-        console.log('friendsData', friendsData)
+        const closeFriendsRef = friendsData.map(
+            (friend) => friend.maybeFriendshipRef
+        )
+        const closeFriends = closeFriendsRef.map(
+            (closefriend) => closefriend.participants
+        )
+
+        let finalArray = []
+
+        closeFriends.map((friends) =>
+            friends.map((e) => {
+                if (e.closenessWithFriend == 'CloseFriends') {
+                    if (e.users_id != userId) finalArray.push(e)
+                }
+            })
+        )
+
+        // console.log('friendsData1', finalArray)
+
+        let friendsArray = []
+
+        // const visitedFriendsTime = visitedFriends.map((e) => e.lastSeen)
+
+        friendsData.map((e) => {
+            if (e.gender) {
+                friendsArray.push(e)
+            }
+        })
+
+        let newFriendProfileVisit
+
+        let visitedFriends = profile.viewedFriendsProfile
+
+        // console.log('friendsData', typeof visitedFriends)
+        // console.log('friendsData1', visitedFriends)
+
+        // if (friendsData.length < 7) {
+        //     if (visitedFriends.length > 0) {
+        //         const visitedFriendsId = visitedFriends.map((e) => e.userId)
+        //     }
+        // }
+
+        // const friendsLatestId = friendsArray.map((e) => e._id)
+
+        // const filteredArray = visitedFriendsId.filter((value) => {
+        //     friendsLatestId.includes(value)
+        // })
+
+        // console.log('friendsData', friendsLatestId)
+        // console.log('friendsData2', visitedFriendsId)
+        // console.log('friendsData3', filteredArray)
+
         // console.log('all friends==>', friendsId)
         // console.log('all visitedFriends==>', visitedFriends)
 
         // console.log('goalsssss', goals)
 
+        // const currentData = Date.now()
+        // const dateCalculated = currentData.diff(visitedFriendsTime, 'days')
+
         var greenBadge
-        console.log('occupation => ', occupation)
-        console.log('about => ', about)
-        console.log('currentMilestone => ', currentMilestone)
-        console.log('imageeee=>', image)
-        console.log('headlineeee=>', headline)
+        // console.log('occupation => ', occupation)
+        // console.log('about => ', about)
+        // console.log('currentMilestone => ', currentMilestone)
+        // console.log('imageeee=>', image)
+        // console.log('headlineeee=>', headline)
 
         if (currentMilestone == 0) {
             if (
@@ -569,7 +620,7 @@ class ActivityFeed extends Component {
             greenBadge = false
         }
 
-        console.log('greenbadge', greenBadge)
+        // console.log('greenbadge', greenBadge)
 
         var getGreenBadge
 
@@ -591,14 +642,14 @@ class ActivityFeed extends Component {
         if (
             goals.length >= 1 &&
             currentMilestone == 1 &&
-            friendsData.length > 3
+            friendsData.length == 3
         ) {
             getBronzeBadge = true
         } else {
             getBronzeBadge = false
         }
 
-        console.log('getbronzebadge', getBronzeBadge)
+        // console.log('getbronzebadge', getBronzeBadge)
 
         const silverBadge = currentMilestone == 2
         const goldBadge = currentMilestone == 3

@@ -84,13 +84,14 @@ export default class GMGiftedMessage extends React.Component {
     }
 
     renderBubble() {
-        // const { messageDoc } = this.props
+        const { messageDoc } = this.props
+        console.log('han g hogya ye', messageDoc)
 
         const bubbleProps = this.getInnerComponentProps()
         if (this.props.renderBubble) {
             return this.props.renderBubble(bubbleProps)
         }
-        return <Bubble {...bubbleProps} />
+        return <Bubble {...bubbleProps} messageDoc={messageDoc} />
     }
 
     renderAvatar() {

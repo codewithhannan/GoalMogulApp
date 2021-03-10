@@ -36,7 +36,10 @@ import {
 import { color, default_style } from '../../../styles/basic'
 import { Icon } from '@ui-kitten/components'
 import ProfileImage from '../../Common/ProfileImage'
-import { getProfileImageOrDefault } from '../../../redux/middleware/utils'
+import {
+    getProfileImageOrDefault,
+    getProfileImageOrDefaultFromUser,
+} from '../../../redux/middleware/utils'
 
 const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel']
 const TAKING_PICTURE_INDEX = 0
@@ -52,6 +55,9 @@ class ProfileDetailEditForm extends Component {
     }
 
     submit = (values) => {
+        console.log('userrrrrrrrr', this.props.initialValues)
+        console.log('userrrrrrrrr1', values.profile)
+
         const hasImageModified =
             JSON.stringify(this.props.initialValues.profile.image) !==
             JSON.stringify(values.profile.image)

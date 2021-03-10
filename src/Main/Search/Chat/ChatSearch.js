@@ -10,6 +10,8 @@ import { Actions } from 'react-native-router-flux'
 import EmptyResult from '../../Common/Text/EmptyResult'
 import ChatRoomCard from '../../Chat/ChatRoomList/ChatRoomCard'
 
+import * as _ from 'underscore'
+
 // actions
 import {
     refreshSearchResult,
@@ -99,6 +101,8 @@ class ChatSearch extends Component {
     }
 
     render() {
+        let SortedObjs = _.sortBy(this.props.data, 'name')
+
         return (
             <View style={{ flex: 1 }}>
                 {this.props.data.length === 0 &&
@@ -107,7 +111,7 @@ class ChatSearch extends Component {
                     <EmptyResult text={'No Results'} />
                 ) : (
                     <FlatList
-                        data={this.props.data}
+                        data={SortedObjs}
                         renderItem={this.renderItem}
                         keyExtractor={this._keyExtractor}
                         onEndReached={this.handleOnLoadMore}
