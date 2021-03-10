@@ -25,6 +25,7 @@ import {
 import { closeProfile } from '../../actions/ProfileActions'
 import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
 import { createReport } from '../../redux/modules/report/ReportActions'
+
 // Selector
 import {
     getUserData,
@@ -71,6 +72,7 @@ class ProfileV2 extends Component {
             showBadgeEarnModal: false, // When user first open profile, show this info
             showInviteFriendModal: false,
             showGoalVisibleModal: false,
+            profileVisited: false,
         }
         this.handleProfileDetailCardLayout = this.handleProfileDetailCardLayout.bind(
             this
@@ -121,12 +123,17 @@ class ProfileV2 extends Component {
 
         try {
             const apiResponse = await postRequest(
-                'http://192.168.1.7:8081/api/secure/user/Profile/view/friend',
+                'http://192.168.1.4:8081/api/secure/user/Profile/view/friend',
                 {
                     id: visited,
                     token: this.props.token,
                 }
             )
+            if (apiResponse.status == 200) {
+                if (apiResponse.data.profile) {
+                    this.setState({ profileVisited: true })
+                }
+            }
             console.log('this is response', apiResponse)
         } catch (error) {
             console.log('error', error.message)
@@ -217,6 +224,65 @@ class ProfileV2 extends Component {
         return (
             <View style={{ ...styles.tabContainer, paddingBottom }}>
                 <TabButtonGroup buttons={props} />
+            </View>
+        )
+    }
+
+    chooseImage = async () => {
+        ActionSheetIOS.showActionSheetWithOptions(
+            {
+                options: BUTTONS,
+                cancelButtonIndex: CANCEL_INDEX,
+            },
+            (buttonIndex) => {
+                console.log('button clicked', BUTTONS[buttonIndex])
+                switch (buttonIndex) {
+                    case TAKING_PICTURE_INDEX:
+                        this.props.openCamera((result) => {
+                            this.props.change('profile.image', result.uri)
+                        })
+                        break
+                    case CAMERA_ROLL_INDEX:
+                        this.props.openCameraRoll((result) => {
+                            this.props.change('profile.image', result.uri)
+                        })
+                        break
+                    default:
+                        return
+                }
+            }
+        )
+    }
+
+    renderImage = ({ input: { value } }) => {
+        return (
+            <View style={{ width: '100%' }}>
+                <View
+                    style={{
+                        height: 90 * default_style.uiScale,
+                        backgroundColor: color.GM_BLUE_LIGHT_LIGHT,
+                    }}
+                />
+                <TouchableOpacity
+                    activeOpacity={0.6}
+                    onPress={this.chooseImage}
+                >
+                    <View style={styles.imageContainerStyle}>
+                        <View style={styles.imageWrapperStyle}>
+                            <ProfileImage
+                                imageStyle={styles.imageStyle}
+                                imageUrl={getProfileImageOrDefault(value)}
+                            />
+                        </View>
+                    </View>
+                    <View style={styles.iconContainerStyle}>
+                        <Icon
+                            name="edit"
+                            pack="material"
+                            style={styles.editIconStyle}
+                        />
+                    </View>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -320,6 +386,15 @@ class ProfileV2 extends Component {
      * @param {object} props { navigationState, selectedTab, userId, pageId }
      */
     renderHeader(props) {
+        const { profileVisited } = this.state
+        const { user } = this.props
+
+        const path = user.name.split(/(\s+)/).filter(function (e) {
+            return e.trim().length > 0
+        })
+
+        const firstName = path[0]
+
         const newPrivateGoals = this.props.goals.map((goal) => goal.privacy)
         const allEqual = (arr) =>
             newPrivateGoals.every((item) => item === 'self')
@@ -336,6 +411,8 @@ class ProfileV2 extends Component {
             (props.selectedTab === 'goals' || props.selectedTab == 'posts') &&
             props.isSelf &&
             false // disable for now to show more on the profile page
+        const friendsGoalVisited = profileVisited && !props.isSelf
+
         return (
             <View>
                 <View
@@ -353,6 +430,9 @@ class ProfileV2 extends Component {
 
                     {renderFilter ? this.renderFilterBar(props) : null}
                     {allPrivateGoals && <PrivateGoalsToast />}
+                    {friendsGoalVisited && (
+                        <friendsGoalVisited name={firstName} />
+                    )}
                 </View>
                 {renderContentCreationButtons
                     ? this.renderContentCreationButtons()
@@ -497,6 +577,8 @@ const makeMapStateToProps = () => {
 
         // console.log('this is state', state)
 
+        const { profile } = state.user.user
+
         const { token } = state.auth.user
 
         const selfUser = state.user.userId
@@ -577,6 +659,7 @@ const makeMapStateToProps = () => {
             refreshing,
             token,
             visitedUserName,
+            profile,
 
             filter,
             data,

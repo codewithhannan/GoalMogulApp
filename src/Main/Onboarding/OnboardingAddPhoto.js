@@ -92,6 +92,7 @@ class OnboardingAddPhotos extends Component {
 
     render() {
         const { openCamera, openCameraRoll, profilePic } = this.props
+        console.log('profileeeeee', this.props)
 
         return (
             <View

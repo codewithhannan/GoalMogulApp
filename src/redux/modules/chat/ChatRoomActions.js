@@ -628,6 +628,7 @@ export async function _transformMessagesForGiftedChat(
                 goalRecommendation,
                 createdAt: new Date(created),
                 image: media && `${IMAGE_BASE_URL}${media}`,
+                options: content && content.options,
                 text: content && decode(content.message),
                 options: content && content.options,
                 system: !!isSystemMessage,

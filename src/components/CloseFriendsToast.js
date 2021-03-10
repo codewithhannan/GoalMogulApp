@@ -3,73 +3,55 @@
 import React, { Component } from 'react'
 import { View, Image, Text, TouchableWithoutFeedback } from 'react-native'
 import { color, default_style } from '../styles/basic'
-import SilverBadge from '../asset/image/Silver_Badge.png'
-import InviteFriendModal from '../Main/MeetTab/Modal/InviteFriendModal'
-
-// import * as text from '../styles/basic/text'
+import FriendsView from '../asset/image/Friend_View.png'
+import { openProfileDetailEditForm, refreshProfileData } from '../actions'
 import { connect } from 'react-redux'
-// import * as newColor from '../styles/basic/color'
 
-// import { UI_SCALE } from '..'
-
-class BronzeBadge extends Component {
+class GreenBadgeToast extends Component {
     constructor(props) {
         super(props)
-
-        this.state = {
-            showInviteFriendModal: false,
-        }
 
         // this.handleEditOnPressed = this.handleEditOnPressed.bind(this)
     }
 
-    openInviteFriendModal = () => {
-        this.setState({ showInviteFriendModal: true })
-    }
+    // handleEditOnPressed(pageId) {
+    //     const { userId } = this.props
+    //     this.props.openProfileDetailEditForm(userId, pageId)
+    // }
 
-    closeInviteFriendModal = () => {
-        this.setState({ showInviteFriendModal: false })
-    }
-
-    renderInviteFriendsButton() {
+    renderOpenProfileButton() {
         return (
             <>
-                <TouchableWithoutFeedback onPress={this.openInviteFriendModal}>
+                <TouchableWithoutFeedback>
                     <View
                         style={{
                             backgroundColor: '#42C0F5',
-                            width: '50%',
+                            width: '70%',
                             justifyContent: 'center',
                             alignItems: 'center',
                             height: 35,
                             borderColor: '#42C0F5',
                             borderWidth: 2,
                             borderRadius: 3,
-                            // marginTop: 6,
+                            marginTop: 6,
                         }}
                     >
                         <Text
                             style={{
                                 color: 'white',
                                 fontWeight: 'bold',
-                                fontSize: 12,
+                                fontSize: 16,
                             }}
                         >
-                            Invite Friends
+                            View his Profile
                         </Text>
                     </View>
                 </TouchableWithoutFeedback>
-                <InviteFriendModal
-                    isVisible={this.state.showInviteFriendModal}
-                    closeModal={this.closeInviteFriendModal}
-                />
             </>
         )
     }
 
     render() {
-        const { heading, text } = this.props
-
         return (
             <>
                 <View
@@ -85,9 +67,8 @@ class BronzeBadge extends Component {
                         // marginBottom: 10,
                         paddingRight: 10,
                         borderRadius: 5,
-                        // marginTop: ,
+                        marginTop: 5,
                         width: '95%',
-                        flex: 1,
                     }}
                 >
                     <View
@@ -96,13 +77,12 @@ class BronzeBadge extends Component {
                             width: '35%',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            alignContent: 'center',
                         }}
                     >
                         <Image
-                            source={SilverBadge}
+                            source={FriendsView}
                             style={{
-                                height: 120,
+                                height: 130,
                                 width: '100%',
                                 resizeMode: 'contain',
                             }}
@@ -110,29 +90,27 @@ class BronzeBadge extends Component {
                     </View>
                     <View
                         style={{
-                            width: '70%',
+                            width: '60%',
                         }}
                     >
                         <Text
                             style={{
                                 ...default_style.titleText_1,
-                                fontSize: 13,
                             }}
                         >
-                            {heading}
+                            You haven’t seen {this.props.friendsName}’s profile
+                            yet.
                         </Text>
-
                         <Text
                             style={{
                                 ...default_style.normalText_1,
-                                marginBottom: 4,
-                                fontSize: 11,
+                                marginTop: 4,
                             }}
                         >
-                            {text}
+                            How about leaving him a memorable comment?
                         </Text>
 
-                        {this.renderInviteFriendsButton()}
+                        {this.renderOpenProfileButton()}
                     </View>
                 </View>
             </>
@@ -141,15 +119,11 @@ class BronzeBadge extends Component {
 }
 
 const mapStateToProps = (state) => {
-    const { user } = state.user
-    const { inviteCode } = user
-    const { tab } = state.navigation
+    const { userId } = state.user
 
     return {
-        user,
-        inviteCode,
-        tab,
+        userId,
     }
 }
 
-export default connect(mapStateToProps, null)(BronzeBadge)
+export default connect(mapStateToProps, {})(GreenBadgeToast)

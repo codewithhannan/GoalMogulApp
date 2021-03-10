@@ -354,6 +354,8 @@ class ChatRoomConversation extends React.Component {
 
         this.setState({ ...this.state, messageDoc })
 
+        console.log('messageeeeedoccc', messageDoc)
+
         if (messageDoc.chatRoomRef == chatRoom._id) {
             this.props.updateMessageList(chatRoom, messages)
             return
@@ -908,7 +910,9 @@ class ChatRoomConversation extends React.Component {
     }
 
     renderMessage = (props) => {
-        return <GMGiftedMessage {...props} />
+        const { messageDoc } = this.state
+
+        return <GMGiftedMessage {...props} messageDoc={messageDoc} />
     }
 
     renderSystemMessage = (props) => {
@@ -985,7 +989,7 @@ class ChatRoomConversation extends React.Component {
     render() {
         const { useDefaultChatRoomImage } = this.props
         const { _id, name, profile } = this.props.user
-
+        // console.log('this is the props', this.props)
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <Layout style={styles.homeContainerStyle}>
