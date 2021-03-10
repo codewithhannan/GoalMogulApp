@@ -429,12 +429,13 @@ export const sendMessage = (
                     // send the message after the slide in animation for the placeholder message is completed
                     // saves the UI thread some resources - will eventually want to shift to native driver though : )
                     setTimeout(() => {
-                        const { text, sharedEntity } = messageToSend
+                        const { text, sharedEntity, optionId } = messageToSend
                         let body = {
                             created: insertedDoc.created,
                             chatRoomRef: chatRoom._id,
                             content: {
                                 message: text,
+                                optionId: optionId ? optionId : undefined,
                             },
                             customIdentifier: insertedDoc._id,
                         }

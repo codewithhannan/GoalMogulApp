@@ -3,6 +3,9 @@
 # eslintrc
 .eslintrc
 
+# Vscode
+.vscode
+
 # expo
 .expo/
 

@@ -30,6 +30,8 @@ import ChatMessageImage from '../../Modals/ChatMessageImage'
 import ShareCard from '../../../Common/Card/ShareCard'
 import EarnBadgeModal from '../../../Gamification/Badge/EarnBadgeModal'
 import InviteFriendModal from '../../../MeetTab/Modal/InviteFriendModal'
+import { sendMessage } from '../../../../redux/modules/chat/ChatRoomActions'
+import UUID from 'uuid/v4'
 
 const { isSameDay } = utils
 
@@ -125,7 +127,7 @@ class Bubble extends React.Component {
     }
     openGoMoChat() {
         let gomoExist = false
-        let chatroomId = this.props.chatRoomsMap.filter((chatroom) => {
+        let chatroomId = this.props.chatRooms.filter((chatroom) => {
             for (let member of chatroom.members) {
                 if (member.memberRef.name == 'GoMoBo') {
                     gomoExist = true
@@ -164,6 +166,7 @@ class Bubble extends React.Component {
 
     renderGoalOptions() {
         const { options } = this.props.currentMessage
+        const { user, chatRoom, messages } = this.props
 
         if (_.isEmpty(options)) return null
         let optionsArray = []
@@ -201,6 +204,20 @@ class Bubble extends React.Component {
                                     let trigger = this.onOptionSelect(
                                         option.optionAction[0].action
                                     ).bind(this)
+                                    this.props.sendMessage(
+                                        [
+                                            {
+                                                optionId: option.optionId,
+                                                text: '',
+                                                user,
+                                                createdAt: new Date(),
+                                                _id: UUID(),
+                                            },
+                                        ],
+                                        null,
+                                        chatRoom,
+                                        messages
+                                    )
                                     return trigger()
                                 }}
                             >
@@ -662,10 +679,16 @@ Bubble.propTypes = {
 
 //states from redux store is used here
 const mapStateToProps = (state) => {
-    const { data: chatRoomsMap } = state.chat.allChats
+    const { data: chatRooms } = state.chat.allChats
+    const { user } = state.user
+    const { messages, activeChatRoomId, chatRoomsMap } = state.chatRoom
+    const chatRoom = activeChatRoomId && chatRoomsMap[activeChatRoomId]
     return {
-        chatRoomsMap,
+        chatRooms,
+        chatRoom,
+        messages,
+        user,
     }
 }
 
-export default connect(mapStateToProps)(Bubble)
+export default connect(mapStateToProps, { sendMessage })(Bubble)
