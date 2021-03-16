@@ -617,8 +617,8 @@ class ProfileDetailCard extends Component {
                     case CAMERA_ROLL_INDEX:
                         this.props.openCameraRoll((result) => {
                             console.log(
-                                'resultttt',
-                                this.props.change('profile.image', result.uri)
+                                '\nResult on selecting image from camera roll',
+                                result
                             )
                             this.props.change('profile.image', result.uri)
                         })

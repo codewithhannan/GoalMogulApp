@@ -4,25 +4,24 @@ import React, { Component } from 'react'
 import { View, Image, Text, TouchableWithoutFeedback } from 'react-native'
 import { color, default_style } from '../styles/basic'
 import FriendsView from '../asset/image/Friend_View.png'
-import { openProfileDetailEditForm, refreshProfileData } from '../actions'
+import { openProfile } from '../actions'
 import { connect } from 'react-redux'
 
 class GreenBadgeToast extends Component {
     constructor(props) {
         super(props)
-
-        // this.handleEditOnPressed = this.handleEditOnPressed.bind(this)
+        this.state = {
+            firstName: '',
+        }
     }
 
-    // handleEditOnPressed(pageId) {
-    //     const { userId } = this.props
-    //     this.props.openProfileDetailEditForm(userId, pageId)
-    // }
-
-    renderEditProfileButton() {
+    renderOpenProfileButton() {
+        const { _id } = this.props.name
         return (
             <>
-                <TouchableWithoutFeedback>
+                <TouchableWithoutFeedback
+                    onPress={() => this.props.openProfile(_id)}
+                >
                     <View
                         style={{
                             backgroundColor: '#42C0F5',
@@ -52,6 +51,16 @@ class GreenBadgeToast extends Component {
     }
 
     render() {
+        const { firstName } = this.state
+        const { name } = this.props.name
+        if (name) {
+            const path = name.split(/(\s+)/).filter(function (e) {
+                return e.trim().length > 0
+            })
+            const firstName = path[0]
+            this.setState({ firstName })
+        }
+
         return (
             <>
                 <View
@@ -98,8 +107,7 @@ class GreenBadgeToast extends Component {
                                 ...default_style.titleText_1,
                             }}
                         >
-                            You haven’t seen {this.props.friendsName}’s profile
-                            yet.
+                            You haven’t seen {firstName}’s profile yet.
                         </Text>
                         <Text
                             style={{
@@ -110,7 +118,7 @@ class GreenBadgeToast extends Component {
                             How about leaving him a memorable comment?
                         </Text>
 
-                        {this.renderEditProfileButton()}
+                        {this.renderOpenProfileButton()}
                     </View>
                 </View>
             </>
@@ -126,4 +134,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {})(GreenBadgeToast)
+export default connect(mapStateToProps, {
+    openProfile,
+})(GreenBadgeToast)

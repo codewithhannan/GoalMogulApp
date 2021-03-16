@@ -209,7 +209,7 @@ class Bubble extends React.Component {
                                         [
                                             {
                                                 optionId: option.optionId,
-                                                text: '',
+                                                text: option.optionTitle,
                                                 user,
                                                 createdAt: new Date(),
                                                 _id: UUID(),
@@ -219,7 +219,10 @@ class Bubble extends React.Component {
                                         chatRoom,
                                         messages
                                     )
-                                    return trigger()
+                                    setTimeout(() => {
+                                        return trigger()
+                                    }, 700)
+                                    // return trigger()
                                 }}
                             >
                                 <Text
