@@ -201,6 +201,7 @@ export const updateMessageList = (
     const oldestMessage = currentMessageList.sort(
         (doc1, doc2) => doc1.createdAt - doc2.createdAt
     )[0]
+    console.log('messages1', oldestMessage)
     if (oldestMessage) {
         MessageStorageService.getAllMessagesAfterMessage(
             chatRoom._id,
@@ -428,12 +429,13 @@ export const sendMessage = (
                     // send the message after the slide in animation for the placeholder message is completed
                     // saves the UI thread some resources - will eventually want to shift to native driver though : )
                     setTimeout(() => {
-                        const { text, sharedEntity } = messageToSend
+                        const { text, sharedEntity, optionId } = messageToSend
                         let body = {
                             created: insertedDoc.created,
                             chatRoomRef: chatRoom._id,
                             content: {
                                 message: text,
+                                optionId: optionId ? optionId : undefined,
                             },
                             customIdentifier: insertedDoc._id,
                         }
@@ -628,6 +630,7 @@ export async function _transformMessagesForGiftedChat(
                 image: media && `${IMAGE_BASE_URL}${media}`,
                 options: content && content.options,
                 text: content && decode(content.message),
+                options: content && content.options,
                 system: !!isSystemMessage,
             }
         })

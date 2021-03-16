@@ -983,6 +983,9 @@ const profileFilterAdapter = (filter, tab) => {
  */
 const loadOneTab = (tab, skip, limit, filter, token, onSuccess, onError) => {
     if (tab !== 'posts') {
+        console.log(
+            `tab is :${tab} skip is : ${skip} limit is : ${limit} filter is ${filter} onSuccess is ${onSuccess}`
+        )
         return loadUserGoals(skip, limit, filter, token, onSuccess, onError)
     }
 

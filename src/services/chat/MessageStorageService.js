@@ -16,6 +16,7 @@ import {
     OUTGOING_EVENT_NAMES,
 } from '../../socketio/services/LiveChatService'
 import { setBadgeNumberAsyncByPlatform } from '../../redux/modules/notification/NotificationTabActions'
+import { async } from 'validate.js'
 
 const LISTENER_BASE_IDENTIFIER = 'chatmessageservice'
 const CHAT_MESSAGES_COLLECTION_NAME = 'chatmessages'
@@ -45,6 +46,8 @@ const localDb = new MongoDatastore({
     filename: CHAT_MESSAGES_COLLECTION_NAME,
     autoload: true,
 })
+
+console.log('localDv', localDb)
 // index the fields we will most commonly query by
 localDb.ensureIndex({ fieldName: 'chatRoomRef' })
 localDb.ensureIndex({ fieldName: 'recipient' })
@@ -798,7 +801,7 @@ class MessageStorageService {
     // }
     _pollMessageQueue = (authToken) => {
         this._pullMessageQueueRequest(authToken)
-            .then((resp) => {
+            .then(async (resp) => {
                 if (resp.status == 200) {
                     const messages = resp.data
 

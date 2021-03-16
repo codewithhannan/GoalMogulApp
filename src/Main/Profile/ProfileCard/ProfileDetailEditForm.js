@@ -55,8 +55,14 @@ class ProfileDetailEditForm extends Component {
     }
 
     submit = (values) => {
-        console.log('userrrrrrrrr', this.props.initialValues)
-        console.log('userrrrrrrrr1', values.profile)
+        console.log(
+            '\ninitialValues from submit in ProfileDetailEditForm',
+            this.props.initialValues
+        )
+        console.log(
+            '\nprofile from submit in ProfileDetailEditForm',
+            values.profile
+        )
 
         const hasImageModified =
             JSON.stringify(this.props.initialValues.profile.image) !==

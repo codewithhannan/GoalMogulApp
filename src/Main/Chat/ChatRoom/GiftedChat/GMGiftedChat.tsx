@@ -681,6 +681,9 @@ class GMGiftedChat<TMessage extends IMessage = IMessage> extends React.Component
   }
 
   renderMessageListWithWrapper(messagesContainerProps, messages, renderMessage) {
+
+
+
     const props = {
       messages, messagesContainerProps,
       renderMessage,

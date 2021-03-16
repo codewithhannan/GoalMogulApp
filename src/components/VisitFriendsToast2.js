@@ -10,10 +10,13 @@ import { connect } from 'react-redux'
 class GreenBadgeToast extends Component {
     constructor(props) {
         super(props)
+        this.state = {
+            firstName: '',
+        }
     }
 
     renderOpenProfileButton() {
-        const { _id } = this.props.friend
+        const { _id } = this.props.name
         return (
             <>
                 <TouchableWithoutFeedback
@@ -48,13 +51,14 @@ class GreenBadgeToast extends Component {
     }
 
     render() {
-        let { name } = this.props.friend
+        const { firstName } = this.state
+        const { name } = this.props.name
         if (name) {
-            //regular expression to extract firstname form full name of a user
-            let path = name.split(/(\s+)/).filter(function (e) {
+            const path = name.split(/(\s+)/).filter(function (e) {
                 return e.trim().length > 0
             })
-            name = path[0]
+            const firstName = path[0]
+            this.setState({ firstName })
         }
 
         return (
@@ -103,7 +107,7 @@ class GreenBadgeToast extends Component {
                                 ...default_style.titleText_1,
                             }}
                         >
-                            You haven’t checked out {name}’s goals in a while.
+                            You haven’t seen {firstName}’s profile yet.
                         </Text>
                         <Text
                             style={{
@@ -111,9 +115,9 @@ class GreenBadgeToast extends Component {
                                 marginTop: 4,
                             }}
                         >
-                            Leave a thoughtful comment to supercharge your
-                            friendship!
+                            How about leaving him a memorable comment?
                         </Text>
+
                         {this.renderOpenProfileButton()}
                     </View>
                 </View>
@@ -124,6 +128,7 @@ class GreenBadgeToast extends Component {
 
 const mapStateToProps = (state) => {
     const { userId } = state.user
+
     return {
         userId,
     }

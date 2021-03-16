@@ -11,3 +11,5 @@ import App from './App'
  */
 registerRootComponent(App)
 // AppRegistry.registerComponent('GoalMoguliOS', () => App);
+
+console.log('Only writing to commit check')

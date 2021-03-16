@@ -55,6 +55,9 @@ import Profile from '../../reducers/Profile'
 import SilverBadge from '../../components/SilverBadge'
 import GoldBadge from '../../components/GoldBadge'
 import GetBronzeBadge from '../../components/GetBronzeBadge'
+import VisitFriendsToast from '../../components/VisitFriendsToast'
+import VisitFriendsToast2 from '../../components/VisitFriendsToast2'
+import CloseFriendsToast from '../../components/CloseFriendsToast'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
@@ -129,7 +132,9 @@ class ActivityFeed extends Component {
             goldBadge: false,
             noGoals: false,
             someGoals: false,
-
+            friendToVisit: '',
+            visitFriendMore: '',
+            closeFriendToVisit: '',
             badges: {
                 milestoneBadge: {
                     currentMilestone: 0,
@@ -178,6 +183,12 @@ class ActivityFeed extends Component {
             !_.isEqual(this.state, nextState)
         )
     }
+
+    /**
+     * @param Array
+     * returns a random value from an array
+     */
+    getRandomValue = (array) => array[Math.floor(Math.random() * array.length)]
 
     handleOnViewableItemsChanged = ({ viewableItems, changed }) => {
         if (!this.props.loading) {
@@ -487,7 +498,16 @@ class ActivityFeed extends Component {
             about,
         } = this.props
 
-        const { heading, text, friendsCount, noGoals, someGoals } = this.state
+        const {
+            heading,
+            text,
+            friendsCount,
+            noGoals,
+            someGoals,
+            friendToVisit,
+            visitFriendMore,
+            closeFriendToVisit,
+        } = this.state
 
         const { currentMilestone } = profile.badges.milestoneBadge
 
@@ -524,44 +544,82 @@ class ActivityFeed extends Component {
             })
         }
 
-        const friendsId = friendsData.map((id) => id._id)
+        let allFriendsId = friendsData.map((friend) => friend._id)
+        console.log('\nAll friends IDs:', allFriendsId)
 
         // const friendsMileStone = friendsBadges.map((e) => e.milestoneBadge)
 
         // console.log('friendsMileStone', count)
 
-        const closeFriendsRef = friendsData.map(
-            (friend) => friend.maybeFriendshipRef
-        )
-        const closeFriends = closeFriendsRef.map(
-            (closefriend) => closefriend.participants
-        )
-
-        let finalArray = []
-
-        closeFriends.map((friends) =>
-            friends.map((e) => {
-                if (e.closenessWithFriend == 'CloseFriends') {
-                    if (e.users_id != userId) finalArray.push(e)
-                }
+        let closeFriends = friendsData.filter((friend) => {
+            let check
+            friend.maybeFriendshipRef.participants.map((participant) => {
+                check =
+                    participant.users_id !== userId &&
+                    participant.closenessWithFriend === 'CloseFriends' &&
+                    true
             })
-        )
+            if (check) return friend
+        })
+        this.setState({ closeFriendToVisit: this.getRandomValue(closeFriends) })
 
-        // console.log('friendsData1', finalArray)
+        console.log('\nThese are the close friends of user:', closeFriends)
 
         let friendsArray = []
-
-        // const visitedFriendsTime = visitedFriends.map((e) => e.lastSeen)
-
-        friendsData.map((e) => {
-            if (e.gender) {
-                friendsArray.push(e)
+        friendsData.map((friend) => {
+            if (friend.gender) {
+                friendsArray.push(friend)
             }
         })
+        console.log('\nThese are friends excluding chatbots', friendsArray)
 
-        let newFriendProfileVisit
+        let visitedFriendsId
+        if (profile.viewedFriendsProfile) {
+            visitedFriendsId = profile.viewedFriendsProfile.map(
+                (friend) => friend.userId
+            )
+        }
+        console.log(
+            '\nThese are the friends user has already visited',
+            visitedFriendsId
+        )
 
-        let visitedFriends = profile.viewedFriendsProfile
+        let friendsToVisit
+        if (friendsArray.length <= 7) {
+            if (visitedFriendsId) {
+                friendsToVisit = friendsArray.filter((friend) => {
+                    if (!visitedFriendsId.includes(friend._id)) return friend
+                })
+            } else {
+                friendsToVisit = friendsArray.map((friend) => friend)
+            }
+        }
+        this.setState({
+            friendToVisit: this.getRandomValue(friendsToVisit),
+        })
+
+        console.log(
+            '\nThese are the friends user has not visited',
+            friendsToVisit
+        )
+
+        let friendsToVisitMore = []
+        if (friendsArray.length > 7) {
+            if (visitedFriendsId) {
+                friendsToVisitMore = friendsArray.filter((friend) => {
+                    if (!visitedFriendsId.includes(friend._id)) return friend
+                })
+            } else {
+                friendsToVisitMore = friendsArray.map((friend) => friend)
+            }
+        }
+
+        this.setState({ visitFriendMore: friendsToVisitMore })
+
+        console.log(
+            '\nThese are the more friends user has not visited',
+            friendsToVisitMore
+        )
 
         // console.log('friendsData', typeof visitedFriends)
         // console.log('friendsData1', visitedFriends)
@@ -596,6 +654,14 @@ class ActivityFeed extends Component {
         // console.log('currentMilestone => ', currentMilestone)
         // console.log('imageeee=>', image)
         // console.log('headlineeee=>', headline)
+
+        // console.log("friendsToVisitMore",friendsToVisitMore);
+
+        const visitFriends = friendsToVisit.length > 0
+        const visitFriendsMore = friendsToVisit.length > 0
+        const renderVisitCloseFriend = closeFriends.length > 0
+
+        console.log('renderVisitCloseFriend', renderVisitCloseFriend)
 
         if (currentMilestone == 0) {
             if (
@@ -661,6 +727,8 @@ class ActivityFeed extends Component {
                 silverBadge ||
                 goldBadge ||
                 getGreenBadge ||
+                visitFriends ||
+                visitFriendsMore ||
                 getBronzeBadge ? (
                     <Swiper
                         style={{ height: 150 }}
@@ -680,6 +748,19 @@ class ActivityFeed extends Component {
                         )}
                         {getGreenBadge && <GetGreenBadge />}
                         {getBronzeBadge && <GetBronzeBadge />}
+                        {this.state.friendToVisit && (
+                            <VisitFriendsToast
+                                name={this.state.friendToVisit}
+                            />
+                        )}
+                        {visitFriendsMore && (
+                            <VisitFriendsToast2 name={visitFriendMore} />
+                        )}
+                        {this.state.closeFriendToVisit && (
+                            <CloseFriendsToast
+                                friend={this.state.closeFriendToVisit}
+                            />
+                        )}
                     </Swiper>
                 ) : null}
 

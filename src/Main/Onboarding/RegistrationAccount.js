@@ -392,6 +392,22 @@ class RegistrationAccount extends React.Component {
                     caption={`We won't share this information with anyone`}
                     disabled={this.props.loading}
                 />
+                {/* <InputBox
+                    key="inviteCode"
+                    inputTitle="Invite Code"
+                    ref="inviteCode"
+                    onChangeText={(val) => {
+                        this.props.registrationTextInputChange(
+                            'inviteCode',
+                            val
+                        )
+                    }}
+                    placeholder={`Enter you referral code here`}
+                    value={inviteCode}
+                    returnKeyType="done"
+                    caption={``}
+                    disabled={this.props.loading}
+                /> */}
                 <UserAgreementCheckBox
                     onPress={(val) =>
                         this.setState({
@@ -500,6 +516,8 @@ const mapStateToProps = (state) => {
         loading,
         registerErrMsg,
     } = state.registration
+
+    console.log('These are the props', state)
 
     return {
         name,

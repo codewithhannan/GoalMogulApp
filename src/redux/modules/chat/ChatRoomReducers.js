@@ -25,6 +25,7 @@ const INITIAL_STATE = {
     searchResults: [],
     searchResultPreviewMessages: [],
     searching: false,
+    messageDoc: {},
 }
 
 export const CHAT_ROOM_LOAD_INITIAL_BEGIN = 'chat_room_load_initial_begin'
@@ -55,6 +56,7 @@ export default (state = INITIAL_STATE, action) => {
             newState = _.set(newState, 'activeChatRoomId', null)
             newState = _.set(newState, 'currentlyTypingUserIds', [])
             newState = _.set(newState, 'messages', [])
+
             newState = _.set(newState, 'ghostMessages', null)
             newState = _.set(newState, 'loading', false)
             newState = _.set(newState, 'searchResults', [])
@@ -64,6 +66,7 @@ export default (state = INITIAL_STATE, action) => {
         }
         case CHAT_ROOM_LOAD_INITIAL: {
             const { messages, chatRoom } = action.payload
+
             let newState = _.cloneDeep(state)
             newState = _.set(newState, 'initializing', false)
             if (messages) {
