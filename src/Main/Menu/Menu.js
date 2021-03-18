@@ -15,7 +15,7 @@ import { openMyEventTab } from '../../redux/modules/event/MyEventTabActions'
 
 import { openMyTribeTab } from '../../redux/modules/tribe/MyTribeTabActions'
 
-import { openMeet, openSetting, logout } from '../../actions'
+import { openMeet, openSetting, logout, openChallenges } from '../../actions'
 import InviteFriendModal from '../MeetTab/Modal/InviteFriendModal'
 
 import {
@@ -26,6 +26,7 @@ import {
 
 // Assets
 import Setting from '../../asset/header/setting.png'
+import Challenges from '../../asset/icons/Challenges.png'
 import Icons from '../../asset/base64/Icons'
 import {
     IPHONE_MODELS,
@@ -35,6 +36,9 @@ import {
 } from '../../Utils/Constants'
 import { default_style } from '../../styles/basic'
 import { IS_SMALL_PHONE } from '../../styles'
+
+const GOLD_CHALLENGE_URL = 'https://new5reactpages.web.app/page5'
+const SILVER_CHALLENGE_URL = 'https://new5reactpages.web.app/page4'
 
 const DEBUG_KEY = '[ UI Menu ]'
 const { AccountMultiple, MessageIcon } = Icons
@@ -88,7 +92,6 @@ class Menu extends React.PureComponent {
                 <View style={{ ...styles.headerStyle, paddingTop }}>
                     <View style={{ height: 15 }} />
                 </View>
-
                 <DelayedButton
                     activeOpacity={0.6}
                     onPress={() => this.openInviteFriendModal()}
@@ -100,7 +103,6 @@ class Menu extends React.PureComponent {
                     />
                     <Text style={styles.titleTextStyle}>Invite a friend</Text>
                 </DelayedButton>
-
                 <DelayedButton
                     activeOpacity={0.6}
                     onPress={() => this.props.openMeet()}
@@ -112,7 +114,6 @@ class Menu extends React.PureComponent {
                     />
                     <Text style={styles.titleTextStyle}>My friends</Text>
                 </DelayedButton>
-
                 {/* Trending goals - this is unavailable for now, so commented out. */}
                 {/* <DelayedButton
                     activeOpacity={0.6}
@@ -125,7 +126,6 @@ class Menu extends React.PureComponent {
                     />
                     <Text style={styles.titleTextStyle}>Trending goals</Text>
                 </DelayedButton> */}
-
                 <DelayedButton
                     activeOpacity={0.6}
                     onPress={() => this.props.openSetting()}
@@ -137,7 +137,24 @@ class Menu extends React.PureComponent {
                     />
                     <Text style={styles.titleTextStyle}>Account settings</Text>
                 </DelayedButton>
-
+                {/**
+                 * This is the button to handle challenges
+                 * */}
+                <DelayedButton
+                    activeOpacity={0.6}
+                    onPress={() =>
+                        this.props.openChallenges(
+                            'https://new5reactpages.web.app/page4'
+                        )
+                    }
+                    style={styles.buttonStyle}
+                >
+                    <Image
+                        source={Challenges}
+                        style={[styles.iconStyle, { tintColor: 'grey' }]}
+                    />
+                    <Text style={styles.titleTextStyle}>Challenges</Text>
+                </DelayedButton>
                 {/* Bottom Section */}
                 <View style={styles.bottomContainer}>
                     <View style={[{ padding: 20 }]}>
@@ -252,6 +269,7 @@ export default connect(mapStateToProps, {
     openMyTribeTab,
     openMeet,
     openSetting,
+    openChallenges,
     logout,
     // Tutorial related,
     showNextTutorialPage,

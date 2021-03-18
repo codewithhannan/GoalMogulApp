@@ -58,6 +58,7 @@ import GetBronzeBadge from '../../components/GetBronzeBadge'
 import VisitFriendsToast from '../../components/VisitFriendsToast'
 import VisitFriendsToast2 from '../../components/VisitFriendsToast2'
 import CloseFriendsToast from '../../components/CloseFriendsToast'
+import { getRandomValue } from '../../Utils/HelperMethods'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
@@ -183,12 +184,6 @@ class ActivityFeed extends Component {
             !_.isEqual(this.state, nextState)
         )
     }
-
-    /**
-     * @param Array
-     * returns a random value from an array
-     */
-    getRandomValue = (array) => array[Math.floor(Math.random() * array.length)]
 
     handleOnViewableItemsChanged = ({ viewableItems, changed }) => {
         if (!this.props.loading) {
@@ -561,7 +556,7 @@ class ActivityFeed extends Component {
             })
             if (check) return friend
         })
-        this.setState({ closeFriendToVisit: this.getRandomValue(closeFriends) })
+        this.setState({ closeFriendToVisit: getRandomValue(closeFriends) })
 
         console.log('\nThese are the close friends of user:', closeFriends)
 
@@ -595,7 +590,7 @@ class ActivityFeed extends Component {
             }
         }
         this.setState({
-            friendToVisit: this.getRandomValue(friendsToVisit),
+            friendToVisit: getRandomValue(friendsToVisit),
         })
 
         console.log(

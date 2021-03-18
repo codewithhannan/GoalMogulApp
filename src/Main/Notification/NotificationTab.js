@@ -92,6 +92,11 @@ class NotificationTab extends Component {
         return (
             <View style={{ flex: 1, backgroundColor: color.GM_BACKGROUND }}>
                 {this.renderSectionTitle({
+                    text: `You've been nudged`,
+                    type: 'header',
+                    length: 1,
+                })}
+                {this.renderSectionTitle({
                     text: 'Things your friends need',
                     type: 'header',
                     length: 1,

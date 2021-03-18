@@ -7,6 +7,7 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import { reducer as formReducer } from 'redux-form'
 
 /* reducers */
+import Challenges from './Challenges'
 import AuthReducers from './AuthReducers'
 import RegReducers from './RegReducers'
 import MessageDocReducers from './MessageDoc'
@@ -111,6 +112,7 @@ export const reducers = combineReducers({
     tutorials: Tutorials,
     contactSync: ContactSyncReducers,
     messageDoc: MessageDocReducers,
+    challenges: Challenges,
 })
 
 export default persistReducer(rootPersistConfig, reducers)

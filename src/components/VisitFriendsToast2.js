@@ -6,6 +6,7 @@ import { color, default_style } from '../styles/basic'
 import FriendsView from '../asset/image/Friend_View.png'
 import { openProfile } from '../actions'
 import { connect } from 'react-redux'
+import { getFirstName } from '../Utils/HelperMethods'
 
 class GreenBadgeToast extends Component {
     constructor(props) {
@@ -54,10 +55,7 @@ class GreenBadgeToast extends Component {
         const { firstName } = this.state
         const { name } = this.props.name
         if (name) {
-            const path = name.split(/(\s+)/).filter(function (e) {
-                return e.trim().length > 0
-            })
-            const firstName = path[0]
+            const firstName = getFirstName(name)
             this.setState({ firstName })
         }
 
@@ -128,7 +126,6 @@ class GreenBadgeToast extends Component {
 
 const mapStateToProps = (state) => {
     const { userId } = state.user
-
     return {
         userId,
     }

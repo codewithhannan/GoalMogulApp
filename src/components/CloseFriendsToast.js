@@ -6,6 +6,7 @@ import { color, default_style } from '../styles/basic'
 import FriendsView from '../asset/image/Friend_View.png'
 import { openProfile } from '../actions'
 import { connect } from 'react-redux'
+import { getFirstName } from '../Utils/HelperMethods'
 
 class GreenBadgeToast extends Component {
     constructor(props) {
@@ -48,13 +49,10 @@ class GreenBadgeToast extends Component {
     }
 
     render() {
-        let { name } = this.props.friend
+        const { name } = this.props.friend
+        let firstName
         if (name) {
-            //regular expression to extract firstname form full name of a user
-            let path = name.split(/(\s+)/).filter(function (e) {
-                return e.trim().length > 0
-            })
-            name = path[0]
+            firstName = getFirstName(name)
         }
 
         return (
@@ -103,7 +101,8 @@ class GreenBadgeToast extends Component {
                                 ...default_style.titleText_1,
                             }}
                         >
-                            You haven’t checked out {name}’s goals in a while.
+                            You haven’t checked out {firstName}’s goals in a
+                            while.
                         </Text>
                         <Text
                             style={{

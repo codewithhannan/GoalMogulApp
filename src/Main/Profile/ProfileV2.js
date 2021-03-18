@@ -54,6 +54,7 @@ import CreateContentButtons from '../Common/Button/CreateContentButtons'
 import PrivateGoalsToast from '../../components/PrivateGoalsToast'
 import NudgeModal from '../../components/NudgeModal'
 import { postRequest } from '../../store/services'
+import { getObjectIdTime, getTimeDifference } from '../../Utils/HelperMethods'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
@@ -129,12 +130,19 @@ class ProfileV2 extends Component {
                     token: this.props.token,
                 }
             )
-            if (apiResponse.status == 200) {
-                if (apiResponse.data.profile) {
+            if (apiResponse.result.status == 200) {
+                const viewedFriendsProfile =
+                    apiResponse.result.data.result.profile.viewedFriendsProfile
+                const output = viewedFriendsProfile.map((item) => {
+                    if (item.userId == visited) {
+                        return (visitedProfileObject = item)
+                    }
+                })
+
+                if (visitedProfileObject.firstVisit == true) {
                     this.setState({ profileVisited: true })
                 }
             }
-            console.log('this is response', apiResponse)
         } catch (error) {
             console.log('error', error.message)
         }
@@ -492,19 +500,20 @@ class ProfileV2 extends Component {
             data,
             isSelf,
             goals,
+            user,
         } = this.props
 
         const visitedName = this.props.visitedUserName.user.name
         const visitedFriendShip = this.props.visitedUserFriendShip == 'Accepted'
-
         // console.log('visitedFriendShip', visitedFriendShip)
-
         const noGoals = goals.length == 0 && !isSelf && visitedFriendShip
+        // console.log('These are th goals', goals)
+        const days = getTimeDifference(getObjectIdTime(user._id), 'days')
+        console.log('These are the days since signup', user._id)
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                {/* {noGoals && <NudgeModal name={visitedName} />} */}
-
+                {days > 8 && noGoals && <NudgeModal name={visitedName} />}
                 <CreatePostModal
                     attachGoalRequired
                     onRef={(r) => (this.createPostModal = r)}
@@ -589,6 +598,7 @@ const makeMapStateToProps = () => {
         // console.log('visitedFrp', state.profile.friendship.status)
 
         const user = getUserData(state, userId, 'user')
+        console.log('ye state hai bawa g', user)
 
         let userPage = getUserDataByPageId(state, userId, pageId, '')
 
