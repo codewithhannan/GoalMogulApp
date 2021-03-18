@@ -7,6 +7,7 @@ import moment from 'moment'
 import { api as API } from '../../middleware/api'
 import { sanitizeTags, queryBuilderBasicBuilder } from '../../middleware/utils'
 import { refreshActivityFeed } from '../home/feed/actions'
+import { putRequest } from '../../../store/services'
 
 import {
     GOAL_CREATE_SUBMIT,
@@ -27,6 +28,12 @@ import {
     handleTabRefresh,
     selectProfileTabByName,
 } from '../../../actions'
+
+import {
+    loadingGoalPrivacy,
+    setGoalPrivacy,
+    goalPrivacyError,
+} from '../../../reducers/GoalPrivacy'
 import { Actions } from 'react-native-router-flux'
 import { PRIVACY_PRIVATE } from '../../../Utils/Constants'
 
@@ -293,6 +300,33 @@ const validateDates = (startTime, endTime) => {
         return false
     }
     return true
+}
+
+export const submitGoalPrivacy = (Id, value, token) => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch(loadingGoalPrivacy(true))
+            const apiResponse = await putRequest(
+                'http://192.168.1.4:8081/api/secure/goal/change-privacy',
+                {
+                    goalId: Id,
+                    privacy: value,
+                },
+                {
+                    'x-access-token': token,
+                }
+            )
+            dispatch(setGoalPrivacy(apiResponse.result.data.result))
+            dispatch(loadingGoalPrivacy(false))
+
+            console.log(
+                `${DEBUG_KEY}: This is response of the Privacy Changed ${apiResponse.result}`
+            )
+        } catch (err) {
+            dispatch(goalPrivacyError(true))
+            console.log(`${DEBUG_KEY}: Error in editing new privacy ${err}`)
+        }
+    }
 }
 
 // Transform values from Goal form to server accepted format

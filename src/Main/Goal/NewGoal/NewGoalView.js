@@ -437,7 +437,6 @@ class NewGoalView extends Component {
     renderPrivacyControl() {
         return (
             <View>
-                {console.log('this is props', this.props.privacy)}
                 <InputBox
                     privacyOptions={PRIVACY_OPTIONS}
                     inputTitle={'Privacy'}
@@ -445,7 +444,6 @@ class NewGoalView extends Component {
                     selectedValue={this.props.privacy}
                     onChangeText={(value) => {
                         this.props.change('privacy', value)
-                        console.log('this is props value ', value)
                     }}
                 />
             </View>

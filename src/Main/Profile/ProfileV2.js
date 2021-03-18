@@ -575,8 +575,6 @@ const makeMapStateToProps = () => {
         // Set userId to main user if no userId present in props
         const { pageId, userId } = props
 
-        // console.log('this is state', state)
-
         const { profile } = state.user.user
 
         const { token } = state.auth.user

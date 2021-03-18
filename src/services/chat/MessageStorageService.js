@@ -5,11 +5,7 @@ import Fuse from 'fuse.js'
 import MongoDatastore from 'react-native-local-mongodb'
 import { arrayUnique } from '../../reducers/MeetReducers'
 import { api as API } from '../../redux/middleware/api'
-import {
-    loadingMessageDoc,
-    setMessageDoc,
-    MessageDocError,
-} from '../../reducers/MessageDoc'
+
 import {
     default as LiveChatService,
     INCOMING_EVENT_NAMES,

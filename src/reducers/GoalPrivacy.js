@@ -4,21 +4,20 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     loading: false,
-    content: {},
-    error: '',
+    privacy: '',
 }
 
 const slice = createSlice({
-    name: 'messageDoc',
+    name: 'goalPrivacy',
     initialState,
     reducers: {
-        loadingMessageDoc: (state, action) => {
+        loadingGoalPrivacy: (state, action) => {
             state.loading = action.payload
         },
-        setMessageDoc: (state, action) => {
-            state.list = action.payload
+        setGoalPrivacy: (state, action) => {
+            state.privacy = action.payload
         },
-        MessageDocError: (state, action) => {
+        goalPrivacyError: (state, action) => {
             state.loading = true
             state.error = action.payload
         },
@@ -27,7 +26,7 @@ const slice = createSlice({
 
 export default slice.reducer
 export const {
-    loadingMessageDoc,
-    setMessageDoc,
-    MessageDocError,
+    loadingGoalPrivacy,
+    setGoalPrivacy,
+    goalPrivacyError,
 } = slice.actions

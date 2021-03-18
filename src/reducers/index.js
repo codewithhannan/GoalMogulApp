@@ -9,7 +9,7 @@ import { reducer as formReducer } from 'redux-form'
 /* reducers */
 import AuthReducers from './AuthReducers'
 import RegReducers from './RegReducers'
-import MessageDocReducers from './MessageDoc'
+import GoalPrivacyReducers from './GoalPrivacy'
 import CameraRollReducers from './CameraRollReducers'
 import User from './User'
 import Users from '../redux/modules/User/Users'
@@ -110,7 +110,7 @@ export const reducers = combineReducers({
     navigationTabBadging: TabIconReducers,
     tutorials: Tutorials,
     contactSync: ContactSyncReducers,
-    messageDoc: MessageDocReducers,
+    goalPrivacy: GoalPrivacyReducers,
 })
 
 export default persistReducer(rootPersistConfig, reducers)

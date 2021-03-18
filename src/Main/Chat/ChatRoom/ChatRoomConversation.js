@@ -21,7 +21,7 @@ import { Icon, Layout } from '@ui-kitten/components'
 import * as FileSystem from 'expo-file-system'
 import * as Permissions from 'expo-permissions'
 import { MenuProvider } from 'react-native-popup-menu'
-import { get } from '../../../store/storage'
+
 import _ from 'lodash'
 import R from 'ramda'
 import React from 'react'

@@ -35,7 +35,9 @@ class ModalTester extends Component {
     renderNoButton() {
         return (
             <>
-                <TouchableWithoutFeedback>
+                <TouchableWithoutFeedback
+                    onPress={() => this.props.closeModal()}
+                >
                     <View
                         style={{
                             width: '30%',
@@ -50,7 +52,7 @@ class ModalTester extends Component {
                         <Text
                             style={{
                                 color: '#42C0F5',
-                                fontWeight: 600,
+
                                 fontSize: 15,
                             }}
                         >
@@ -65,7 +67,9 @@ class ModalTester extends Component {
     renderPublicButton() {
         return (
             <>
-                <TouchableWithoutFeedback>
+                <TouchableWithoutFeedback
+                    onPress={() => this.props.handleYes()}
+                >
                     <View
                         style={{
                             backgroundColor: '#42C0F5',
@@ -81,7 +85,7 @@ class ModalTester extends Component {
                         <Text
                             style={{
                                 color: 'white',
-                                fontWeight: 600,
+
                                 fontSize: 15,
                             }}
                         >
@@ -97,8 +101,8 @@ class ModalTester extends Component {
         return (
             <>
                 <Modal
-                    backdropOpacity={0}
-                    isVisible={this.props.goal}
+                    backdropOpacity={0.5}
+                    isVisible={this.props.isVisible}
                     style={{
                         borderRadius: 20,
                     }}
@@ -131,7 +135,7 @@ class ModalTester extends Component {
                                     Goal Visibility
                                 </Text>
                                 <TouchableOpacity
-                                    onPress={this.newToggleModal}
+                                    onPress={() => this.props.handleClose()}
                                     style={{ marginTop: -2 }}
                                 >
                                     <Entypo
@@ -155,52 +159,67 @@ class ModalTester extends Component {
                                     }}
                                 />
                             </View>
-
                             <View
                                 style={{
-                                    marginTop: 8,
-
-                                    alignItems: 'center',
-                                    marginRight: 10,
+                                    // justifyContent: 'center',
+                                    // alignItems: 'center',
+                                    marginHorizontal: 15,
+                                    width: '90%',
                                 }}
                             >
-                                <Text
+                                <View
                                     style={{
-                                        fontWeight: 40,
-                                        fontSize: 15,
+                                        marginTop: 8,
+                                        // marginHorizontal: 5,
+                                        width: '100%',
                                     }}
                                 >
-                                    We strongly suggest making your 1st goal
-                                    visible to Friends.
-                                </Text>
-                            </View>
+                                    <Text
+                                        style={{
+                                            ...default_style.subTitleText_1,
+                                            texAlign: 'center',
+                                        }}
+                                    >
+                                        We strongly suggest making your 1st goal
+                                        visible to Friends.
+                                    </Text>
+                                </View>
 
-                            <View
-                                style={{
-                                    marginTop: 8,
-                                    width: '90%',
-                                    alignItems: 'center',
-                                    marginHorizontal: 10,
-                                }}
-                            >
-                                <Text style={{ fontWeight: 40, fontSize: 15 }}>
-                                    Otherwise, your Friends will see an empty
-                                    page when viewing your goals.
-                                </Text>
-                            </View>
+                                <View
+                                    style={{
+                                        marginTop: 8,
 
-                            <View
-                                style={{
-                                    marginTop: 8,
-                                    width: '90%',
-                                    alignItems: 'center',
-                                    marginHorizontal: 3,
-                                }}
-                            >
-                                <Text style={{ fontWeight: 40, fontSize: 15 }}>
-                                    Do you want to make this goal visible to
-                                    Friend.
-                                </Text>
+                                        width: '100%',
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            ...default_style.subTitleText_1,
+                                            texAlign: 'center',
+                                        }}
+                                    >
+                                        Otherwise, your Friends will see an
+                                        empty page when viewing your goals.
+                                    </Text>
+                                </View>
+
+                                <View
+                                    style={{
+                                        marginTop: 8,
+
+                                        width: '100%',
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            ...default_style.subTitleText_1,
+                                            texAlign: 'center',
+                                        }}
+                                    >
+                                        Do you want to make this goal visible to
+                                        Friends?
+                                    </Text>
+                                </View>
                             </View>
 
                             <View

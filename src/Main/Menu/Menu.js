@@ -26,6 +26,7 @@ import {
 
 // Assets
 import Setting from '../../asset/header/setting.png'
+import Challenges from '../../asset/icons/Challenges.png'
 import Icons from '../../asset/base64/Icons'
 import {
     IPHONE_MODELS,
@@ -84,7 +85,7 @@ class Menu extends React.PureComponent {
                 : 40
 
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, width: '100%' }}>
                 <View style={{ ...styles.headerStyle, paddingTop }}>
                     <View style={{ height: 15 }} />
                 </View>
@@ -94,11 +95,11 @@ class Menu extends React.PureComponent {
                     onPress={() => this.openInviteFriendModal()}
                     style={styles.buttonStyle}
                 >
+                    <Text style={styles.titleTextStyle}>Invite a friend</Text>
                     <Image
                         source={MessageIcon}
-                        style={[styles.iconStyle, { tintColor: 'grey' }]}
+                        style={[styles.iconStyle, { tintColor: '#828282' }]}
                     />
-                    <Text style={styles.titleTextStyle}>Invite a friend</Text>
                 </DelayedButton>
 
                 <DelayedButton
@@ -106,14 +107,13 @@ class Menu extends React.PureComponent {
                     onPress={() => this.props.openMeet()}
                     style={styles.buttonStyle}
                 >
+                    <Text style={styles.titleTextStyle}>My friends</Text>
                     <Image
                         source={AccountMultiple}
-                        style={[styles.iconStyle, { tintColor: 'grey' }]}
+                        style={[styles.iconStyle, { tintColor: '#828282' }]}
                     />
-                    <Text style={styles.titleTextStyle}>My friends</Text>
                 </DelayedButton>
 
-                {/* Trending goals - this is unavailable for now, so commented out. */}
                 {/* <DelayedButton
                     activeOpacity={0.6}
                     onPress={() => this.props.openMeet()}
@@ -121,7 +121,7 @@ class Menu extends React.PureComponent {
                 >
                     <Image
                         source={AccountMultiple}
-                        style={[styles.iconStyle, { tintColor: 'black' }]}
+                        style={[styles.iconStyle, { tintColor: '#828282' }]}
                     />
                     <Text style={styles.titleTextStyle}>Trending goals</Text>
                 </DelayedButton> */}
@@ -131,14 +131,24 @@ class Menu extends React.PureComponent {
                     onPress={() => this.props.openSetting()}
                     style={styles.buttonStyle}
                 >
+                    <Text style={styles.titleTextStyle}>Account settings</Text>
                     <Image
                         source={Setting}
-                        style={[styles.iconStyle, { tintColor: 'grey' }]}
+                        style={[styles.iconStyle, { tintColor: '#828282' }]}
                     />
-                    <Text style={styles.titleTextStyle}>Account settings</Text>
+                </DelayedButton>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    onPress={() => this.props.openSetting()}
+                    style={styles.buttonStyle}
+                >
+                    <Text style={styles.titleTextStyle}>Challenges</Text>
+                    <Image
+                        source={Challenges}
+                        style={[styles.iconStyle, { tintColor: '#828282' }]}
+                    />
                 </DelayedButton>
 
-                {/* Bottom Section */}
                 <View style={styles.bottomContainer}>
                     <View style={[{ padding: 20 }]}>
                         <DelayedButton
@@ -206,7 +216,7 @@ class Menu extends React.PureComponent {
 const styles = {
     headerStyle: {
         flexDirection: 'row',
-        paddingTop: 40,
+        // paddingTop: 40,
         paddingLeft: 15,
         paddingRight: 15,
         paddingBottom: 10,
@@ -215,8 +225,9 @@ const styles = {
     buttonStyle: {
         paddingTop: 10,
         paddingBottom: 10,
+        // justifyContent: 'space-around',
         flexDirection: 'row',
-        alignItems: 'center',
+        // alignItems: 'center',
         justifyContent: 'flex-start',
     },
     iconStyle: {
@@ -225,7 +236,11 @@ const styles = {
         height: 20,
         width: 20,
     },
-    titleTextStyle: default_style.buttonText_1,
+    titleTextStyle: {
+        color: 'black',
+        fontWeight: '600',
+        fontSize: 20,
+    },
     bottomContainer: {
         bottom: 0,
         position: 'absolute',

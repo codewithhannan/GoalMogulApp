@@ -50,3 +50,26 @@ export const postRequest = async (url, body = {}, headers = {}) => {
         })
     return returnValue
 }
+export const putRequest = async (url, body = {}, headers = {}) => {
+    // let xform = qs.stringify(body)
+
+    // if(baseURL=='https://api.volatia.com/api/WorkOrders/Create')
+
+    let config = {
+        headers: {
+            ...headers,
+        },
+    }
+
+    let returnValue
+
+    await axios
+        .put(url, body, config)
+        .then((result) => {
+            returnValue = { result: result, error: null }
+        })
+        .catch((err) => {
+            returnValue = { result: null, error: err }
+        })
+    return returnValue
+}

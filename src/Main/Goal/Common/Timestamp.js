@@ -83,6 +83,7 @@ const Timestamp = (props) => {
     ) : null
 
     const privacyObj = PRIVACY_OPTIONS.find(({ value }) => value === privacy)
+
     const privacyIcon = privacy ? (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Icon
