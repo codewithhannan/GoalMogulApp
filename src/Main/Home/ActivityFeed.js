@@ -743,11 +743,11 @@ class ActivityFeed extends Component {
                         )}
                         {getGreenBadge && <GetGreenBadge />}
                         {getBronzeBadge && <GetBronzeBadge />}
-                        {this.state.friendToVisit && (
+                        {/* {this.state.friendToVisit && (
                             <VisitFriendsToast
                                 name={this.state.friendToVisit}
                             />
-                        )}
+                        )} */}
                         {visitFriendsMore && (
                             <VisitFriendsToast2 name={visitFriendMore} />
                         )}

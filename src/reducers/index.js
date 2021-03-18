@@ -10,7 +10,7 @@ import { reducer as formReducer } from 'redux-form'
 import Challenges from './Challenges'
 import AuthReducers from './AuthReducers'
 import RegReducers from './RegReducers'
-import MessageDocReducers from './MessageDoc'
+import GoalPrivacyReducers from './GoalPrivacy'
 import CameraRollReducers from './CameraRollReducers'
 import User from './User'
 import Users from '../redux/modules/User/Users'
@@ -113,6 +113,7 @@ export const reducers = combineReducers({
     contactSync: ContactSyncReducers,
     messageDoc: MessageDocReducers,
     challenges: Challenges,
+    goalPrivacy: GoalPrivacyReducers,
 })
 
 export default persistReducer(rootPersistConfig, reducers)

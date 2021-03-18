@@ -20,6 +20,8 @@ import * as Permissions from 'expo-permissions'
 import ModalHeader from '../Common/Header/ModalHeader'
 import NewGoalView from './NewGoal/NewGoalView'
 
+import { refreshProfileData } from '../../actions'
+
 // Actions
 import {
     createGoalSwitchTab,
@@ -27,6 +29,9 @@ import {
     validate,
     refreshTrendingGoals,
 } from '../../redux/modules/goal/CreateGoalActions'
+
+// Selector
+import { makeGetUserGoals } from '../../redux/modules/User/Selector'
 
 import {
     showNextTutorialPage,
@@ -40,6 +45,9 @@ import { scheduleNotification } from '../../redux/modules/goal/GoalDetailActions
 import Tooltip from '../Tutorial/Tooltip'
 import { svgMaskPath } from '../Tutorial/Utils'
 
+//Modal
+import GoalVisibleModal from '../../components/GoalVisibleModal'
+
 import {
     track,
     trackWithProperties,
@@ -47,6 +55,7 @@ import {
 } from '../../monitoring/segment'
 
 const DEBUG_KEY = '[ UI CreateGoalModal ]'
+let pageAb = ''
 
 class CreateGoalModal extends React.Component {
     constructor(props) {
@@ -56,6 +65,7 @@ class CreateGoalModal extends React.Component {
         this.handleIndexChange = this.handleIndexChange.bind(this)
         this.state = {
             goalReminderDatePicker: false,
+            goalModalVisible: false,
         }
     }
 
@@ -67,6 +77,12 @@ class CreateGoalModal extends React.Component {
     }
 
     componentDidMount() {
+        // console.log('userIDdddddd', userId)
+
+        const { userId } = this.props
+        const pageId = this.props.refreshProfileData(userId)
+        pageAb = pageId
+
         this.startTime = new Date()
         track(
             this.props.initializeFromState
@@ -238,7 +254,197 @@ class CreateGoalModal extends React.Component {
     }
 
     handleCreate = (scheduleNotificationCallback) => {
-        // Close keyboard no matter what
+        //Close keyboard no matter what
+        Keyboard.dismiss()
+        const errors = validate(this.props.formVals.values)
+        console.log(
+            `${DEBUG_KEY}: raw goal values are: `,
+            this.props.formVals.values
+        )
+        if (
+            !(Object.keys(errors).length === 0 && errors.constructor === Object)
+        ) {
+            // throw new SubmissionError(errors);
+            return Alert.alert('Error', 'You have incomplete fields.')
+        }
+
+        const { goal, initializeFromState, uploading, goals } = this.props
+        if (!uploading) return // when uploading is false, it's actually uploading.
+        const goalId = goal ? goal._id : undefined
+
+        const getGoalPrivacy =
+            this.props.formVals.values.privacy === 'self' && goals.length == 0
+        if (getGoalPrivacy) {
+            this.setState({ goalModalVisible: true })
+        } else {
+            const durationSec =
+                (new Date().getTime() - this.startTime.getTime()) / 1000
+            trackWithProperties(
+                this.props.initializeFromState
+                    ? E.GOAL_UPDATED
+                    : E.GOAL_CREATED,
+                { ...this.props.formVals.values, DurationSec: durationSec }
+            )
+
+            return this.props.submitGoal(
+                this.props.formVals.values,
+                this.props.user._id,
+                initializeFromState,
+                (createdGoal) => {
+                    console.log(`${DEBUG_KEY}: [handleCreate] poping the modal`)
+                    if (this.props.callback) {
+                        console.log(
+                            `${DEBUG_KEY}: [handleCreate] calling callback`
+                        )
+                        this.props.callback()
+                    }
+                    if (this.props.onClose) {
+                        console.log(
+                            `${DEBUG_KEY}: [handleCreate] calling onClose`
+                        )
+                        this.props.onClose()
+                    }
+
+                    if (scheduleNotificationCallback) {
+                        // This is to schedule notification on user create goal
+                        // Edit goal won't have this callback
+                        console.log(
+                            `${DEBUG_KEY}: [handleCreate]: [CreateGoalActions]: callback: scheduleNotificationCallback with created goal: `,
+                            createdGoal
+                        )
+                        scheduleNotificationCallback(createdGoal)
+                    }
+                    Actions.pop()
+                },
+                goalId,
+                {
+                    needOpenProfile:
+                        this.props.openProfile === undefined ||
+                        this.props.openProfile === true,
+                    needRefreshProfile: this.props.openProfile === false,
+                },
+                this.props.pageId
+            )
+        }
+    }
+
+    renderGoalReminderDatePicker() {
+        return (
+            <DateTimePicker
+                isVisible={this.state.goalReminderDatePicker}
+                mode="datetime"
+                titleIOS="Pick a time"
+                minimumDate={new Date()}
+                onConfirm={(date) => {
+                    this.setState(
+                        {
+                            ...this.state,
+                            goalReminderDatePicker: false,
+                        },
+                        () => {
+                            const scheduleNotificationCallback = (goal) => {
+                                this.props.scheduleNotification(
+                                    date,
+                                    goal,
+                                    true
+                                )
+                            }
+
+                            // Timeout is set to allow animation finished
+                            setTimeout(() => {
+                                this.handleCreate(scheduleNotificationCallback)
+                            }, 100)
+                        }
+                    )
+                }}
+                onCancel={() => {
+                    this.setState(
+                        {
+                            ...this.state,
+                            goalReminderDatePicker: false,
+                        },
+                        () => {
+                            // Timeout is set to allow animation finished
+                            setTimeout(() => {
+                                this.handleCreate()
+                            }, 100)
+                        }
+                    )
+                }}
+            />
+        )
+    }
+
+    handleModalYes = (scheduleNotificationCallback) => {
+        this.setState({ goalModalVisible: false })
+        Keyboard.dismiss()
+        const errors = validate(this.props.formVals.values)
+        console.log(
+            `${DEBUG_KEY}: raw goal values are: `,
+            this.props.formVals.values
+        )
+        if (
+            !(Object.keys(errors).length === 0 && errors.constructor === Object)
+        ) {
+            // throw new SubmissionError(errors);
+            return Alert.alert('Error', 'You have incomplete fields.')
+        }
+
+        const { goal, initializeFromState, uploading } = this.props
+        if (!uploading) return // when uploading is false, it's actually uploading.
+        const goalId = goal ? goal._id : undefined
+
+        const durationSec =
+            (new Date().getTime() - this.startTime.getTime()) / 1000
+        trackWithProperties(
+            this.props.initializeFromState ? E.GOAL_UPDATED : E.GOAL_CREATED,
+            { ...this.props.formVals.values, DurationSec: durationSec }
+        )
+
+        let changedPrivacy = {
+            ...this.props.formVals.values,
+            privacy: 'public',
+        }
+
+        return this.props.submitGoal(
+            changedPrivacy,
+            this.props.user._id,
+            initializeFromState,
+            (createdGoal) => {
+                console.log(`${DEBUG_KEY}: [handleCreate] poping the modal`)
+                if (this.props.callback) {
+                    console.log(`${DEBUG_KEY}: [handleCreate] calling callback`)
+                    this.props.callback()
+                }
+                if (this.props.onClose) {
+                    console.log(`${DEBUG_KEY}: [handleCreate] calling onClose`)
+                    this.props.onClose()
+                }
+
+                if (scheduleNotificationCallback) {
+                    // This is to schedule notification on user create goal
+                    // Edit goal won't have this callback
+                    console.log(
+                        `${DEBUG_KEY}: [handleCreate]: [CreateGoalActions]: callback: scheduleNotificationCallback with created goal: `,
+                        createdGoal
+                    )
+                    scheduleNotificationCallback(createdGoal)
+                }
+                Actions.pop()
+            },
+            goalId,
+            {
+                needOpenProfile:
+                    this.props.openProfile === undefined ||
+                    this.props.openProfile === true,
+                needRefreshProfile: this.props.openProfile === false,
+            },
+            this.props.pageId
+        )
+    }
+
+    closePrivateGoalModal = (scheduleNotificationCallback) => {
+        this.setState({ goalModalVisible: false })
         Keyboard.dismiss()
         const errors = validate(this.props.formVals.values)
         console.log(
@@ -300,51 +506,8 @@ class CreateGoalModal extends React.Component {
         )
     }
 
-    renderGoalReminderDatePicker() {
-        return (
-            <DateTimePicker
-                isVisible={this.state.goalReminderDatePicker}
-                mode="datetime"
-                titleIOS="Pick a time"
-                minimumDate={new Date()}
-                onConfirm={(date) => {
-                    this.setState(
-                        {
-                            ...this.state,
-                            goalReminderDatePicker: false,
-                        },
-                        () => {
-                            const scheduleNotificationCallback = (goal) => {
-                                this.props.scheduleNotification(
-                                    date,
-                                    goal,
-                                    true
-                                )
-                            }
-
-                            // Timeout is set to allow animation finished
-                            setTimeout(() => {
-                                this.handleCreate(scheduleNotificationCallback)
-                            }, 100)
-                        }
-                    )
-                }}
-                onCancel={() => {
-                    this.setState(
-                        {
-                            ...this.state,
-                            goalReminderDatePicker: false,
-                        },
-                        () => {
-                            // Timeout is set to allow animation finished
-                            setTimeout(() => {
-                                this.handleCreate()
-                            }, 100)
-                        }
-                    )
-                }}
-            />
-        )
+    handleModalClose = () => {
+        this.setState({ goalModalVisible: false })
     }
 
     render() {
@@ -360,6 +523,13 @@ class CreateGoalModal extends React.Component {
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <GoalVisibleModal
+                    isVisible={this.state.goalModalVisible}
+                    closeModal={this.closePrivateGoalModal}
+                    handleYes={this.handleModalYes}
+                    handleClose={this.handleModalClose}
+                />
+
                 <View style={{ flex: 1, backgroundColor: 'white' }}>
                     {this.renderGoalReminderDatePicker()}
                     <ModalHeader
@@ -413,7 +583,12 @@ const styles = {
     },
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
+    const getUserGoals = makeGetUserGoals()
+    const { userId } = state.user
+
+    const goals = getUserGoals(state, userId, pageAb)
+
     const { navigationState, uploading } = state.createGoal
     const { user } = state.user
 
@@ -425,11 +600,14 @@ const mapStateToProps = (state) => {
     return {
         navigationState,
         uploading,
+        userId,
+        goals,
         formVals: state.form.createGoalModal,
         user,
         // Tutorial related
         hasShown,
         // showTutorial,
+
         tutorialText,
     }
 }
@@ -452,4 +630,5 @@ export default connect(mapStateToProps, {
     showNextTutorialPage,
     startTutorial,
     updateNextStepNumber,
+    refreshProfileData,
 })(CreateGoalModalExplained)

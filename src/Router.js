@@ -434,7 +434,7 @@ class RouterComponent extends Component {
                                 key="drawer"
                                 drawerPosition="right"
                                 contentComponent={Menu}
-                                drawerWidth={240}
+                                drawerWidth={290}
                                 type={ActionConst.REPLACE}
                             >
                                 <Scene
