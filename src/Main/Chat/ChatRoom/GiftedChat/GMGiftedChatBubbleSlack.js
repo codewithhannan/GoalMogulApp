@@ -31,6 +31,7 @@ import EarnBadgeModal from '../../../Gamification/Badge/EarnBadgeModal'
 import InviteFriendModal from '../../../MeetTab/Modal/InviteFriendModal'
 import { sendMessage } from '../../../../redux/modules/chat/ChatRoomActions'
 import UUID from 'uuid/v4'
+import RNUrlPreview from 'react-native-url-preview'
 
 const { isSameDay } = utils
 
@@ -364,7 +365,41 @@ class Bubble extends React.Component {
     }
 
     renderMessageText() {
-        if (this.props.currentMessage.text) {
+        const {
+            containerStyle,
+            wrapperStyle,
+            messageTextStyle,
+            ...messageTextProps
+        } = this.props
+        if (this.props.renderMessageText) {
+            return this.props.renderMessageText(messageTextProps)
+        }
+
+        if (this.props.messageDoc.content && this.props.currentMessage.text) {
+            return (
+                <>
+                    <MessageText
+                        {...messageTextProps}
+                        textStyle={{
+                            left: [
+                                styles.standardFont,
+                                styles.slackMessageText,
+                                messageTextProps.textStyle,
+                                messageTextStyle,
+                            ],
+                        }}
+                    />
+                    <RNUrlPreview
+                        text={`${this.props.currentMessage.text}`}
+                        containerStyle={{ width: '100%', marginTop: 10 }}
+                        title={false}
+                        descriptionStyle={{ width: '100%' }}
+
+                        // titleStyle={{ fontSize: 12 }}s
+                    />
+                </>
+            )
+        } else if (this.props.currentMessage.text) {
             const {
                 containerStyle,
                 wrapperStyle,
@@ -530,39 +565,41 @@ class Bubble extends React.Component {
                 {this.renderTicks()}
             </View>
         )
-
+        console.log('this is props of chat', this.props)
         return (
-            <View style={[styles.container, this.props.containerStyle]}>
-                <View style={[styles.wrapper, this.props.wrapperStyle]}>
-                    <View>
-                        {this.renderCustomView()}
-                        {messageHeader}
-                        {this.renderMessageImage()}
-                        {this.renderSharedContent()}
-                        {this.renderMessageText()}
-                        {this.renderGoalRecommendation()}
-                        {this.renderGoalOptions()}
+            <>
+                <View style={[styles.container, this.props.containerStyle]}>
+                    <View style={[styles.wrapper, this.props.wrapperStyle]}>
+                        <View>
+                            {this.renderCustomView()}
+                            {messageHeader}
+                            {this.renderMessageImage()}
+                            {this.renderSharedContent()}
+                            {this.renderMessageText()}
+                            {this.renderGoalRecommendation()}
+                            {this.renderGoalOptions()}
+                        </View>
                     </View>
+                    <EarnBadgeModal
+                        isVisible={this.state.showBadgeModal}
+                        closeModal={() => {
+                            this.setState({
+                                ...this.state,
+                                showBadgeModal: false,
+                            })
+                        }}
+                    />
+                    <InviteFriendModal
+                        isVisible={this.state.showInviteFriendModal}
+                        closeModal={() => {
+                            this.setState({
+                                ...this.state,
+                                showInviteFriendModal: false,
+                            })
+                        }}
+                    />
                 </View>
-                <EarnBadgeModal
-                    isVisible={this.state.showBadgeModal}
-                    closeModal={() => {
-                        this.setState({
-                            ...this.state,
-                            showBadgeModal: false,
-                        })
-                    }}
-                />
-                <InviteFriendModal
-                    isVisible={this.state.showInviteFriendModal}
-                    closeModal={() => {
-                        this.setState({
-                            ...this.state,
-                            showInviteFriendModal: false,
-                        })
-                    }}
-                />
-            </View>
+            </>
         )
     }
 }

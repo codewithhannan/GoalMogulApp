@@ -111,7 +111,7 @@ export const reducers = combineReducers({
     navigationTabBadging: TabIconReducers,
     tutorials: Tutorials,
     contactSync: ContactSyncReducers,
-    messageDoc: MessageDocReducers,
+
     challenges: Challenges,
     goalPrivacy: GoalPrivacyReducers,
 })

@@ -125,7 +125,7 @@ class OnboardingSyncContact extends React.Component {
             UserId: this.props.userId,
         })
         const screenTransitionCallback = () => {
-            Actions.push('registration_tribe_selection')
+            Actions.push('registration_transition')
         }
         screenTransitionCallback()
     }
@@ -142,7 +142,7 @@ class OnboardingSyncContact extends React.Component {
                     <Text
                         style={buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle}
                     >
-                        Continue
+                        Sync Contacts
                     </Text>
                 </DelayedButton>
                 <DelayedButton
@@ -195,9 +195,18 @@ class OnboardingSyncContact extends React.Component {
                         }}
                     >
                         {this.renderImage()}
-                        <View>
-                            <Text style={textStyle.title}>
-                                Connect Contacts and Quickly Find Your Friends
+                        <View style={{ width: '100%' }}>
+                            <Text
+                                style={
+                                    ([textStyle.title],
+                                    {
+                                        fontSize: 22,
+                                        fontWeight: '700',
+                                        textAlign: 'center',
+                                    })
+                                }
+                            >
+                                Find friends who already use GoalMogul!
                             </Text>
                             {/* <Text style={textStyle.title}>use GoalMogul!</Text> */}
                         </View>

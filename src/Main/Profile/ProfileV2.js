@@ -322,6 +322,7 @@ class ProfileV2 extends Component {
                 return <About pageId={pageId} userId={userId} />
             }
             case 'goals': {
+                console.log('pawa g')
                 return <ProfileGoalCard item={item} pageId={pageId} />
             }
             case 'posts': {
@@ -450,6 +451,7 @@ class ProfileV2 extends Component {
     }
 
     renderListEmptyState() {
+        console.log('ye pawa hai')
         const { navigationState, refreshing } = this.props
         const { routes, index } = navigationState
         const currentTabName = routes[index].key
@@ -508,12 +510,12 @@ class ProfileV2 extends Component {
         // console.log('visitedFriendShip', visitedFriendShip)
         const noGoals = goals.length == 0 && !isSelf && visitedFriendShip
         // console.log('These are th goals', goals)
-        const days = getTimeDifference(getObjectIdTime(user._id), 'days')
-        console.log('These are the days since signup', user._id)
+        // const days = getTimeDifference(getObjectIdTime(user._id), 'days')
+        console.log('dataaaaaaaa', data)
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                {days > 8 && noGoals && <NudgeModal name={visitedName} />}
+                {/* {days > 8 && noGoals && <NudgeModal name={visitedName} />} */}
                 <CreatePostModal
                     attachGoalRequired
                     onRef={(r) => (this.createPostModal = r)}
@@ -591,12 +593,13 @@ const makeMapStateToProps = () => {
         const selfUser = state.user.userId
         const visitedUserName = state.profile
         const visitedUser = state.profile.userId.userId
+
+        console.log('visitedUser', visitedUserName)
         const visitedUserFriendShip = state.profile.friendship.status
 
         // console.log('visitedFrp', state.profile.friendship.status)
 
         const user = getUserData(state, userId, 'user')
-        console.log('ye state hai bawa g', user)
 
         let userPage = getUserDataByPageId(state, userId, pageId, '')
 

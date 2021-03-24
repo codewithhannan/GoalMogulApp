@@ -4,6 +4,7 @@
  * @format
  */
 import Icons from '../../../asset/base64/Onboarding'
+import Tribes from '../../../asset/image/Tribes.png'
 
 export const REGISTRATION_TEXT_CHANGE = 'registration_text_change'
 export const REGISTRATION_TARGET_SELECTION = 'registration_target_selection'
@@ -93,9 +94,9 @@ export const REGISTRATION_COMMUNITY_GUIDELINE = [
         picture: Icons.SafeCommunity,
     },
     {
-        title: 'Post goals often & stay committed',
+        title: 'Give & get suggestions achieve more together!',
         subTitle: '',
-        picture: Icons.StayCommited,
+        picture: Tribes,
     },
     {
         title: 'Inspire others with supportive comments',
@@ -110,5 +111,4 @@ export const REGISTRATION_COMMUNITY_GUIDELINE = [
 ]
 
 export const REGISTRATION_SYNC_CONTACT_NOTES =
-    'Syncing will help you easily locate friends who are already on GoalMogul, ' +
-    'and provide you with a better experience. '
+    'Contacts from your address book will be uploaded to GoalMogul to help connect you with your friends and personalize content, such as making suggestions for you and others. Learn more. '

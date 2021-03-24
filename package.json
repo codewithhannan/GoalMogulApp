@@ -69,7 +69,6 @@
     },
     "dependencies": {
         "@eva-design/eva": "^2.0.0",
-        "@react-native-async-storage/async-storage": "^1.14.1",
         "@react-native-community/cameraroll": "^4.0.1",
         "@react-native-community/datetimepicker": "2.4.0",
         "@reduxjs/toolkit": "^1.5.0",
@@ -145,6 +144,7 @@
         "react-native-swiper": "^1.6.0",
         "react-native-tab-view": "2.11.0",
         "react-native-typing-animation": "^0.1.7",
+        "react-native-url-preview": "^1.1.8",
         "react-native-vector-icons": "6.6.0",
         "react-native-walkthrough-tooltip": "^1.2.0",
         "react-native-webview": "9.4.0",

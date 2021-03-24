@@ -104,7 +104,12 @@ class OnboardingTribeSelection extends React.Component {
                     padding: 16,
                 }}
             >
-                <Text style={[textStyle.title, { marginBottom: 12 }]}>
+                <Text
+                    style={
+                        ([textStyle.title],
+                        { marginBottom: 12, fontWeight: '700', fontSize: 22 })
+                    }
+                >
                     Join some Tribes!
                 </Text>
                 <Text

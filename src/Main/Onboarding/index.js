@@ -11,6 +11,7 @@ import OnboardingAddPhotos from './OnboardingAddPhoto'
 import OnboardingSelectionTarget from './OnboardingSelectionTarget'
 import OnboardingTribeSelection from './OnboardingTribeSelection'
 import OnboardingCommunity from './OnboardingCommunity'
+
 import OnboardingSyncContact from './OnboardingSyncContact'
 import OnboardingWelcome from './OnboardingWelcome'
 import SyncContactInvite from './SyncContactInvite'

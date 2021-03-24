@@ -354,8 +354,6 @@ class ChatRoomConversation extends React.Component {
 
         this.setState({ ...this.state, messageDoc })
 
-        console.log('messageeeeedoccc', messageDoc)
-
         if (messageDoc.chatRoomRef == chatRoom._id) {
             this.props.updateMessageList(chatRoom, messages)
             return

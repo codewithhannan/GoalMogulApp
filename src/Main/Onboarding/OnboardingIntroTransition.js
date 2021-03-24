@@ -84,7 +84,7 @@ class OnboardingIntroTransition extends React.Component {
                                 },
                             ]}
                         >
-                            Hey{name ? `, ${name}` : ''}!
+                            Hi{name ? `, ${name}` : ''}!
                         </Text>
                         <Text
                             style={[
@@ -92,14 +92,14 @@ class OnboardingIntroTransition extends React.Component {
                                 { marginVertical: 24, textAlign: 'center' },
                             ]}
                         >
-                            Almost done! Please answer these{' '}
+                            We are going to ask you {''}
                             <Text
                                 style={{
                                     fontFamily: text.FONT_FAMILY.SEMI_BOLD,
                                 }}
                             >
-                                two (2)
-                            </Text>{' '}
+                                three {''}
+                            </Text>
                             questions to personalize your experience!
                         </Text>
                     </View>

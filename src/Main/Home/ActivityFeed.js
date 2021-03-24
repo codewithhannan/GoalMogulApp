@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import { View, FlatList, ActivityIndicator, Image, Text } from 'react-native'
 import { connect } from 'react-redux'
 import _ from 'lodash'
+import RNUrlPreview from 'react-native-url-preview'
 
 import Swiper from 'react-native-swiper'
 

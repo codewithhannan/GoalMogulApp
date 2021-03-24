@@ -62,7 +62,16 @@ class OnboardingWelcome extends React.Component {
                     >
                         {this.renderImage()}
                         <View style={{ marginTop: 36 }}>
-                            <Text style={textStyle.title}>
+                            <Text
+                                style={
+                                    ([textStyle.title],
+                                    {
+                                        fontWeight: '700',
+                                        fontSize: 23,
+                                        textAlign: 'center',
+                                    })
+                                }
+                            >
                                 Welcome to GoalMogul!
                             </Text>
                             <Text
