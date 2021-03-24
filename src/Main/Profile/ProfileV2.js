@@ -54,7 +54,10 @@ import CreateContentButtons from '../Common/Button/CreateContentButtons'
 import PrivateGoalsToast from '../../components/PrivateGoalsToast'
 import NudgeModal from '../../components/NudgeModal'
 import { postRequest } from '../../store/services'
-import { getObjectIdTime, getTimeDifference } from '../../Utils/HelperMethods'
+import { openPopup } from '../../actions'
+import Popup from '../Journey/Popup'
+import PrivateGoalsNudge from '../../components/PrivateGoalsNudge'
+import { getFirstName } from '../../Utils/HelperMethods'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
@@ -74,6 +77,8 @@ class ProfileV2 extends Component {
             showInviteFriendModal: false,
             showGoalVisibleModal: false,
             profileVisited: false,
+            showPopupModal: false,
+            popupName: '',
         }
         this.handleProfileDetailCardLayout = this.handleProfileDetailCardLayout.bind(
             this
@@ -114,6 +119,11 @@ class ProfileV2 extends Component {
             })
             return
         }
+        // if (this.props.isSelf) {
+        //     // Showing popup to user about their achievements
+        //     this.handlePopup()
+        //     return
+        // }
     }
 
     async componentDidMount() {
@@ -124,7 +134,7 @@ class ProfileV2 extends Component {
 
         try {
             const apiResponse = await postRequest(
-                'http://192.168.1.4:8081/api/secure/user/Profile/view/friend',
+                'http://192.168.1.3:8081/api/secure/user/Profile/view/friend',
                 {
                     id: visited,
                     token: this.props.token,
@@ -169,6 +179,24 @@ class ProfileV2 extends Component {
                 false
         ) {
             return
+        }
+    }
+
+    handlePopup = () => {
+        const { popup, goals, openPopup, user } = this.props
+        // console.log('\nThis is the updated popup object', popup)
+
+        //codition to show first goal added popup
+        if (!popup.FIRST_GOAL.status && goals.length === 1) {
+            this.setState({ showPopupModal: true, popupName: 'FIRST_GOAL' })
+        }
+        //codition to show green badge earned popup
+        if (
+            _.get(user, 'profile.badges.milestoneBadge.currentMilestone', 0) >
+                0 &&
+            !popup.GREEN_BADGE.status
+        ) {
+            this.setState({ showPopupModal: true, popupName: 'GREEN_BADGE' })
         }
     }
 
@@ -450,14 +478,21 @@ class ProfileV2 extends Component {
     }
 
     renderListEmptyState() {
-        const { navigationState, refreshing } = this.props
+        const { navigationState, refreshing, isSelf } = this.props
         const { routes, index } = navigationState
         const currentTabName = routes[index].key
 
         if (currentTabName === 'about' || refreshing) {
             return null
         }
-
+        // console.log('\ncurrentTabName: ', currentTabName)
+        if (currentTabName === 'goals' && !isSelf) {
+            //Nudge friends to make their goals public
+            console.log('\n visitedUser: ', this.props)
+            return (
+                <PrivateGoalsNudge name={getFirstName(this.props.user.name)} />
+            )
+        }
         const emptyStateText = `No ${currentTabName}`
         return (
             <EmptyResult
@@ -508,19 +543,35 @@ class ProfileV2 extends Component {
         // console.log('visitedFriendShip', visitedFriendShip)
         const noGoals = goals.length == 0 && !isSelf && visitedFriendShip
         // console.log('These are th goals', goals)
-        const days = getTimeDifference(getObjectIdTime(user._id), 'days')
-        console.log('These are the days since signup', user._id)
+
+        // console.log('\n This is the data for sections', [{ data }])
+
+        let sectionsData
+        if (data.length > 0) {
+            sectionsData = [{ data }]
+        } else {
+            sectionsData = []
+        }
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                {days > 8 && noGoals && <NudgeModal name={visitedName} />}
+                <Popup
+                    popupName={this.state.popupName}
+                    isVisible={this.state.showPopupModal}
+                    closeModal={() => {
+                        this.setState({
+                            showPopupModal: false,
+                        })
+                    }}
+                />
+                {/* {noGoals && <NudgeModal name={visitedName} />} */}
                 <CreatePostModal
                     attachGoalRequired
                     onRef={(r) => (this.createPostModal = r)}
                     openProfile={false}
                     pageId={pageId}
                 />
-                <EarnBadgeModal
+                {/* <EarnBadgeModal
                     isVisible={this.state.showBadgeEarnModal}
                     closeModal={() => {
                         this.setState({
@@ -528,7 +579,7 @@ class ProfileV2 extends Component {
                         })
                     }}
                     user={this.props.user}
-                />
+                /> */}
                 <SearchBarHeader
                     backButton={!this.props.isMainTab}
                     rightIcon={this.props.isMainTab ? 'menu' : null}
@@ -538,7 +589,7 @@ class ProfileV2 extends Component {
 
                 <SectionList
                     keyboardShouldPersistTaps="handled"
-                    sections={[{ data }]}
+                    sections={sectionsData}
                     renderItem={this.renderItem}
                     keyExtractor={(i) => i._id}
                     onRefresh={this.handleRefresh}
@@ -583,6 +634,7 @@ const makeMapStateToProps = () => {
     const mapStateToProps = (state, props) => {
         // Set userId to main user if no userId present in props
         const { pageId, userId } = props
+        const { popup } = state
 
         const { profile } = state.user.user
 
@@ -596,7 +648,6 @@ const makeMapStateToProps = () => {
         // console.log('visitedFrp', state.profile.friendship.status)
 
         const user = getUserData(state, userId, 'user')
-        console.log('ye state hai bawa g', user)
 
         let userPage = getUserDataByPageId(state, userId, pageId, '')
 
@@ -635,6 +686,7 @@ const makeMapStateToProps = () => {
         if (selectedTab === 'about') {
             data = about
         } else if (selectedTab === 'goals') {
+            console.log('\n Goals:', goals)
             data = goals
         } else if (selectedTab === 'posts') {
             data = posts
@@ -672,6 +724,7 @@ const makeMapStateToProps = () => {
             filter,
             data,
             user, // user for the current profile page
+            popup,
         }
     }
 
@@ -689,4 +742,5 @@ export default connect(makeMapStateToProps, {
     handleTabRefresh,
     handleProfileTabOnLoadMore,
     changeFilter,
+    openPopup,
 })(wrapAnalytics(ProfileV2, SCREENS.PROFILE))

@@ -791,7 +791,6 @@ export const handleTabRefresh = (tab, userId, pageId, initialFilter) => (
 
     // Get page info for this user by userId and pageId
     const page = getUserDataByPageId(getState(), userId, pageId, `${tab}`)
-
     const { filter, limit, refreshing } = page
 
     if (!user || !user._id || refreshing) return
@@ -983,9 +982,6 @@ const profileFilterAdapter = (filter, tab) => {
  */
 const loadOneTab = (tab, skip, limit, filter, token, onSuccess, onError) => {
     if (tab !== 'posts') {
-        console.log(
-            `tab is :${tab} skip is : ${skip} limit is : ${limit} filter is ${filter} onSuccess is ${onSuccess}`
-        )
         return loadUserGoals(skip, limit, filter, token, onSuccess, onError)
     }
 

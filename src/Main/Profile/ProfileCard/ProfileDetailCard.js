@@ -1,32 +1,16 @@
 /** @format */
 
 import React, { Component } from 'react'
-import {
-    Alert,
-    View,
-    Image,
-    Text,
-    Dimensions,
-    TouchableHighlight,
-    TouchableOpacity,
-    ActionSheetIOS,
-} from 'react-native'
+import { Alert, View, Image, Text, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
-import { Entypo } from '@expo/vector-icons'
-
 import { Icon } from '@ui-kitten/components'
-import { Actions } from 'react-native-router-flux'
 import R from 'ramda'
-
-import { Field, reduxForm } from 'redux-form'
-
 import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
 
 import Icons from '../../../asset/base64/Icons'
 import { default_style, color } from '../../../styles/basic'
 import { PROFILE_STYLES } from '../../../styles/Profile'
 import { createReport } from '../../../redux/modules/report/ReportActions'
-import ImagePicker from '../../Common/ImagePicker'
 
 /* Actions */
 import {
@@ -35,9 +19,6 @@ import {
     UserBanner,
     blockUser,
     createOrGetDirectMessage,
-    openCamera,
-    openCameraRoll,
-    submitUpdatingProfile,
 } from '../../../actions/'
 
 // Selector
@@ -49,26 +30,12 @@ import DelayedButton from '../../Common/Button/DelayedButton'
 
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 
+import { Actions } from 'react-native-router-flux'
 import RichText from '../../Common/Text/RichText'
 import _ from 'lodash'
-import { getButtonBottomSheetHeight } from '../../../styles/'
-import OnboardingStyles from '../../../styles/Onboarding'
+import { getButtonBottomSheetHeight } from '../../../styles'
 import ProfileImage from '../../Common/ProfileImage'
-import {
-    getProfileImageOrDefault,
-    getProfileImageOrDefaultFromUser,
-} from '../../../redux/middleware/utils'
-import {
-    trackWithProperties,
-    EVENT as E,
-    wrapAnalytics,
-    SCREENS,
-} from '../../../monitoring/segment'
-
-const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel']
-const TAKING_PICTURE_INDEX = 0
-const CAMERA_ROLL_INDEX = 1
-const CANCEL_INDEX = 2
+import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 
 const { InfoIcon } = Icons
 const { width } = Dimensions.get('window')
@@ -80,29 +47,12 @@ class ProfileDetailCard extends Component {
         super(props)
         this.state = {
             imageUrl: '',
-            profilepicture: true,
-            imagepicker: false,
         }
         this.handleEditOnPressed = this.handleEditOnPressed.bind(this)
     }
 
-    openCamera = () => {
-        const trackOpenCamera = () =>
-            trackWithProperties(E.REG_CAMERA, {
-                UserId: this.props.userId,
-            })
-
-        const trackImageAttached = () =>
-            trackWithProperties(E.REG_ADD_PHOTO_ATTACHED, {
-                UserId: this.props.userId,
-            })
-
-        this.props.openCamera(null, trackOpenCamera, trackImageAttached)
-    }
-
     componentDidMount() {
         const { image } = this.props.user.profile
-
         // console.log(`${DEBUG_KEY}: prefetch image: ${image}`);
         if (image) {
             this.prefetchImage(image)
@@ -473,56 +423,10 @@ class ProfileDetailCard extends Component {
         )
     }
 
-    openCameraRoll = () => {
-        const trackOpenCameraRoll = () =>
-            trackWithProperties(E.REG_CAMROLL, {
-                UserId: this.props.userId,
-            })
-
-        const trackImageAttached = () =>
-            trackWithProperties(E.REG_ADD_PHOTO_ATTACHED, {
-                UserId: this.props.userId,
-            })
-
-        this.props.openCameraRoll(
-            null,
-            null,
-            trackOpenCameraRoll,
-            trackImageAttached
-        )
-    }
-
-    onSkip = () => {
-        trackWithProperties(E.REG_ADD_PHOTO_SKIPPED, {
-            UserId: this.props.userId,
-        })
-
-        Actions.push('registration_contact_sync')
-    }
-
-    onContinue = () => {
-        // Screen transition first
-        Actions.push('registration_contact_sync')
-
-        // Upload image
-        this.props.registrationAddProfilePhoto()
-    }
-
-    profilepictureChange = () => {
-        this.setState({ profilepicture: false, imagepicker: true })
-    }
-
-    renderImage = ({ input: { value } }) => {
+    renderProfileImage() {
         const { user } = this.props
-
-        console.log('userr', value)
-
         return (
-            <TouchableOpacity
-                activeOpacity={0.6}
-                onPress={this.chooseImage}
-                style={styles.imageContainerStyle}
-            >
+            <View style={styles.imageContainerStyle}>
                 <ProfileImage
                     imageStyle={{
                         width: default_style.uiScale * 120,
@@ -530,28 +434,7 @@ class ProfileDetailCard extends Component {
                     }}
                     imageUrl={getProfileImageOrDefaultFromUser(user)}
                 />
-
-                <View style={styles.iconContainerStyle}>
-                    <Entypo name="camera" size={13} color="#FFFFFF" />
-                </View>
-            </TouchableOpacity>
-        )
-    }
-
-    renderProfileImage() {
-        const { user } = this.props
-        return (
-            <TouchableOpacity style={styles.imageContainerStyle}>
-                <View>
-                    <ProfileImage
-                        imageStyle={{
-                            width: default_style.uiScale * 120,
-                            height: default_style.uiScale * 120,
-                        }}
-                        imageUrl={getProfileImageOrDefaultFromUser(user)}
-                    />
-                </View>
-            </TouchableOpacity>
+            </View>
         )
     }
 
@@ -596,84 +479,6 @@ class ProfileDetailCard extends Component {
                     'Add a location',
                     this.handleEditOnPressed
                 )}
-            </View>
-        )
-    }
-
-    chooseImage = async () => {
-        ActionSheetIOS.showActionSheetWithOptions(
-            {
-                options: BUTTONS,
-                cancelButtonIndex: CANCEL_INDEX,
-            },
-            (buttonIndex) => {
-                console.log('button clicked', BUTTONS[buttonIndex])
-                switch (buttonIndex) {
-                    case TAKING_PICTURE_INDEX:
-                        this.props.openCamera((result) => {
-                            this.props.change('profile.image', result.uri)
-                        })
-                        break
-                    case CAMERA_ROLL_INDEX:
-                        this.props.openCameraRoll((result) => {
-                            console.log(
-                                '\nResult on selecting image from camera roll',
-                                result
-                            )
-                            this.props.change('profile.image', result.uri)
-                        })
-                        break
-                    default:
-                        return
-                }
-            }
-        )
-    }
-
-    renderInput = ({
-        input: { onChange, onFocus, ...restInput },
-        label,
-        secure,
-        limitation,
-        multiline,
-        disabled,
-        clearButtonMode,
-        enablesReturnKeyAutomatically,
-        forFocus,
-        onNextPress,
-        autoCorrect,
-        meta: { error },
-        returnKeyType,
-        ...custom
-    }) => {
-        return (
-            <View style={styles.inputContainerStyle}>
-                <TextField
-                    label={label}
-                    title={custom.title}
-                    autoCapitalize={'none'}
-                    autoCorrect={autoCorrect || true}
-                    onChangeText={onChange}
-                    error={error}
-                    enablesReturnKeyAutomatically={
-                        enablesReturnKeyAutomatically
-                    }
-                    returnKeyType={returnKeyType || 'done'}
-                    secureTextEntry={secure}
-                    characterRestriction={limitation}
-                    multiline={multiline}
-                    clearButtonMode={clearButtonMode}
-                    onFocus={forFocus}
-                    disabled={disabled}
-                    autoCorrect
-                    onKeyPress={(key) => {
-                        if (key === 'next' && onNextPress) {
-                            onNextPress()
-                        }
-                    }}
-                    {...custom}
-                    {...restInput}
-                />
             </View>
         )
     }
@@ -831,10 +636,8 @@ class ProfileDetailCard extends Component {
 
     renderBottomSheet = () => {
         const options = this.makeProfileCardOptions()
-
         // Options height + bottom space + bottom sheet handler height
         const sheetHeight = getButtonBottomSheetHeight(options.length)
-
         return (
             <BottomButtonsSheet
                 ref={(r) => (this.bottomSheetRef = r)}
@@ -846,11 +649,8 @@ class ProfileDetailCard extends Component {
 
     render() {
         const { user, self } = this.props
-
         if (!user) return null
-
         const { name, headline, profile } = user
-
         const { location } = profile
 
         return (
@@ -861,7 +661,6 @@ class ProfileDetailCard extends Component {
                         backgroundColor: color.GM_BLUE_LIGHT_LIGHT,
                     }}
                 />
-
                 <View style={styles.topWrapperStyle}>
                     <View
                         style={{
@@ -869,15 +668,7 @@ class ProfileDetailCard extends Component {
                             flexDirection: 'row',
                         }}
                     >
-                        {self ? (
-                            <Field
-                                name="profile.image"
-                                label="Profile Picture"
-                                component={this.renderImage.bind(this)}
-                            />
-                        ) : (
-                            this.renderProfileImage(profile, self)
-                        )}
+                        {this.renderProfileImage(profile, self)}
                     </View>
                     <View style={{ flexDirection: 'row' }}>
                         {/* <View style={{ flex: 1 }} /> */}
@@ -934,22 +725,7 @@ class ProfileDetailCard extends Component {
     }
 }
 
-ProfileDetailCard = reduxForm({
-    form: 'profileDetailCard',
-    enableReinitialize: true,
-})(ProfileDetailCard)
-
 const styles = {
-    editIconStyle: {
-        width: 20,
-        height: 20,
-        borderRadius: 10,
-        tintColor: '#BBB',
-    },
-
-    imagePickerStyles: {
-        marginVertical: 60,
-    },
     containerStyle: {
         backgroundColor: '#fff',
         display: 'flex',
@@ -959,15 +735,6 @@ const styles = {
         paddingLeft: 16,
         paddingRight: 16,
     },
-    imageWrapperStyle: {
-        // alignItems: 'center',
-        borderRadius: 60 * default_style.uiScale,
-        position: 'absolute',
-        bottom: 10,
-        alignSelf: 'center',
-        backgroundColor: 'white',
-    },
-
     topWrapperStyle: {
         backgroundColor: color.BACKGROUND_COLOR,
         paddingHorizontal: 16,
@@ -1012,20 +779,6 @@ const styles = {
     marginStyle: {
         marginBottom: 5,
     },
-    iconContainerStyle: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#42C0F5',
-        borderRadius: 50,
-        borderWidth: 2,
-        height: 24,
-        width: 24,
-        borderColor: '#FFFFFF',
-        position: 'absolute',
-        bottom: 10 * default_style.uiScale,
-        left: width * 0.23,
-    },
     infoIconContainerStyle: {
         borderRadius: 100,
         borderWidth: 1,
@@ -1039,8 +792,6 @@ const styles = {
 
 const mapStateToProps = (state, props) => {
     const { userId } = props
-
-    const { profilePic } = state.registration
 
     const self = userId === state.user.userId
 
@@ -1062,7 +813,6 @@ const mapStateToProps = (state, props) => {
         friendsCount,
         mutualFriends,
         needRespond,
-        profilePic,
     }
 }
 
@@ -1072,7 +822,4 @@ export default connect(mapStateToProps, {
     createOrGetDirectMessage,
     createReport,
     blockUser,
-    openCamera,
-    openCameraRoll,
-    submitUpdatingProfile,
 })(ProfileDetailCard)

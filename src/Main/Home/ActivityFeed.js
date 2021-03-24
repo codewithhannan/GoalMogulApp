@@ -21,7 +21,11 @@ import { handleRefreshFriend } from '../../redux/modules/meet/MeetActions'
 import { fetchUserProfile } from '../../actions/ProfileActions'
 import { fetchProfile } from '../../actions/HomeActions'
 
-import { openProfileDetailEditForm, refreshProfileData } from '../../actions'
+import {
+    openProfileDetailEditForm,
+    refreshProfileData,
+    openPopup,
+} from '../../actions'
 
 import {
     openPostDetail,
@@ -147,6 +151,8 @@ class ActivityFeed extends Component {
     componentDidMount() {
         // Refresh user friends
         this.props.handleRefreshFriend()
+        //To save the user's journey in redux store
+        this.props.openPopup()
 
         const { friendsData, profile, userId } = this.props
 
@@ -877,6 +883,7 @@ export default connect(
         refreshProfileData,
         fetchUserProfile,
         fetchProfile,
+        openPopup,
     },
     null,
     { withRef: true }

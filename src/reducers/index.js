@@ -8,6 +8,7 @@ import { reducer as formReducer } from 'redux-form'
 
 /* reducers */
 import Challenges from './Challenges'
+import Popup from './Popup'
 import AuthReducers from './AuthReducers'
 import RegReducers from './RegReducers'
 import GoalPrivacyReducers from './GoalPrivacy'
@@ -111,9 +112,9 @@ export const reducers = combineReducers({
     navigationTabBadging: TabIconReducers,
     tutorials: Tutorials,
     contactSync: ContactSyncReducers,
-    messageDoc: MessageDocReducers,
     challenges: Challenges,
     goalPrivacy: GoalPrivacyReducers,
+    popup: Popup,
 })
 
 export default persistReducer(rootPersistConfig, reducers)

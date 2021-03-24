@@ -37,6 +37,9 @@ import {
 import { default_style } from '../../styles/basic'
 import { IS_SMALL_PHONE } from '../../styles'
 
+import Popup from '../Journey/Popup'
+import { openPopup } from '../../actions/PopupActions'
+
 const GOLD_CHALLENGE_URL = 'https://new5reactpages.web.app/page5'
 const SILVER_CHALLENGE_URL = 'https://new5reactpages.web.app/page4'
 
@@ -137,34 +140,19 @@ class Menu extends React.PureComponent {
                         style={[styles.iconStyle, { tintColor: '#828282' }]}
                     />
                 </DelayedButton>
-                <DelayedButton
-                    activeOpacity={0.6}
-                    onPress={() => this.props.openSetting()}
-                    style={styles.buttonStyle}
-                >
-                    <Text style={styles.titleTextStyle}>Challenges</Text>
-                    <Image
-                        source={Challenges}
-                        style={[styles.iconStyle, { tintColor: '#828282' }]}
-                    />
-                </DelayedButton>
                 {/**
                  * This is the button to handle challenges
                  * */}
                 <DelayedButton
                     activeOpacity={0.6}
-                    onPress={() =>
-                        this.props.openChallenges(
-                            'https://new5reactpages.web.app/page4'
-                        )
-                    }
+                    onPress={() => this.props.openPopup('SILVER_BADGE')}
                     style={styles.buttonStyle}
                 >
+                    <Text style={styles.titleTextStyle}>Challenges</Text>
                     <Image
                         source={Challenges}
                         style={[styles.iconStyle, { tintColor: 'grey' }]}
                     />
-                    <Text style={styles.titleTextStyle}>Challenges</Text>
                 </DelayedButton>
                 {/* Bottom Section */}
                 <View style={styles.bottomContainer}>
@@ -291,4 +279,5 @@ export default connect(mapStateToProps, {
     showNextTutorialPage,
     startTutorial,
     updateNextStepNumber,
+    openPopup,
 })(Menu)
