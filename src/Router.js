@@ -390,17 +390,22 @@ class RouterComponent extends Component {
                                 panHandlers={null}
                             >
                                 <Scene
+                                    key="registration_add_photo"
+                                    component={OnboardingAddPhotos}
+                                    initial
+                                />
+                                <Scene
+                                    key="registration_contact_sync"
+                                    component={OnboardingSyncContact}
+                                />
+
+                                <Scene
                                     key="registration_transition"
                                     component={OnboardingIntroTransition}
                                 />
                                 <Scene
                                     key="registration_target_selection"
                                     component={OnboardingSelectionTarget}
-                                />
-                                <Scene
-                                    key="registration_add_photo"
-                                    component={OnboardingAddPhotos}
-                                    initial
                                 />
                                 <Scene
                                     key="registration_tribe_selection"
@@ -410,10 +415,7 @@ class RouterComponent extends Component {
                                     key="registration_community_guideline"
                                     component={OnboardingCommunity}
                                 />
-                                <Scene
-                                    key="registration_contact_sync"
-                                    component={OnboardingSyncContact}
-                                />
+
                                 <Scene
                                     key="registration_contact_invite"
                                     component={SyncContactInvite}

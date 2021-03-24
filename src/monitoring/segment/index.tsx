@@ -218,6 +218,7 @@ const SCREENS = {
     // Onboarding section
     REG_REISTER_ACCOUNT: 'RegistrationAccountView',
     REG_ADD_PHOTO: 'RegistrationAddPhotoView',
+    REG_ADD_VIEW_PHOTO: 'RegistrationViewPhoto',
     REG_CONTACTY_SYNC: 'RegistrationContactSyncView',
     REG_SURVEY: 'RegistrationSurveyView',
     REG_TRIBES: 'RegistrationTribeView',

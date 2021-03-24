@@ -244,10 +244,20 @@ class OnboardingSelectionTarget extends React.Component {
                     }}
                 >
                     <View style={{ alignItems: 'center', marginTop: 8 }}>
-                        <Text style={OnboardingStyles.text.title}>
+                        <Text
+                            style={
+                                ([OnboardingStyles.text.title],
+                                { fontWeight: '700', fontSize: 23 })
+                            }
+                        >
                             Which of the following are
                         </Text>
-                        <Text style={OnboardingStyles.text.title}>
+                        <Text
+                            style={
+                                ([OnboardingStyles.text.title],
+                                { fontWeight: '700', fontSize: 23 })
+                            }
+                        >
                             most important to you?
                         </Text>
                         <Text

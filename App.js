@@ -27,6 +27,7 @@ import { initSentry } from './src/monitoring/sentry'
 import ThemeProvider from './theme/ThemeProvider'
 import { OnboardingAddPhotos } from './src/Main/Onboarding'
 import { YellowBox } from 'react-native'
+import PrivateGoalsNudge from './src/components/PrivateGoalsNudge'
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
@@ -70,7 +71,6 @@ export default class App extends React.Component {
                     </PersistGate>
                 </ReduxProvider>
             </ThemeProvider>
-            // <MissingProfile />
         )
     }
 }

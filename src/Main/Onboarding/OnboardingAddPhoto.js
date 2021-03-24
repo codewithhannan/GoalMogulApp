@@ -120,12 +120,12 @@ class OnboardingAddPhotos extends Component {
                             rounded
                         />
                         <Text
-                            style={[
-                                textStyle.title,
-                                { marginBottom: 16, textAlign: 'center' },
-                            ]}
+                            style={
+                                ([textStyle.title],
+                                { fontSize: 22, fontWeight: '700', bottom: 10 })
+                            }
                         >
-                            Add a photo
+                            Now, add a photo
                         </Text>
                         <Text
                             style={[

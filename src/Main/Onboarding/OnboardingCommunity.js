@@ -160,10 +160,20 @@ class OnboardingCommunity extends React.Component {
                     }}
                 >
                     <View style={{ alignItems: 'center', marginTop: 20 }}>
-                        <Text style={textStyle.title}>
+                        <Text
+                            style={
+                                ([textStyle.title],
+                                { fontWeight: '700', fontSize: 23 })
+                            }
+                        >
                             You are here to share
                         </Text>
-                        <Text style={textStyle.title}>
+                        <Text
+                            style={
+                                ([textStyle.title],
+                                { fontWeight: '700', fontSize: 23 })
+                            }
+                        >
                             your goals with others
                         </Text>
                     </View>

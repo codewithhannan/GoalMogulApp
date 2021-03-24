@@ -350,6 +350,7 @@ class ProfileV2 extends Component {
                 return <About pageId={pageId} userId={userId} />
             }
             case 'goals': {
+                console.log('pawa g')
                 return <ProfileGoalCard item={item} pageId={pageId} />
             }
             case 'posts': {
@@ -643,6 +644,8 @@ const makeMapStateToProps = () => {
         const selfUser = state.user.userId
         const visitedUserName = state.profile
         const visitedUser = state.profile.userId.userId
+
+        console.log('visitedUser', visitedUserName)
         const visitedUserFriendShip = state.profile.friendship.status
 
         // console.log('visitedFrp', state.profile.friendship.status)
