@@ -27,6 +27,8 @@ import { getNotificationNeeds } from '../../redux/modules/notification/Notificat
 
 // Styles
 import { color, default_style, text } from '../../styles/basic'
+import PrivateGoalsToast from '../../components/PrivateGoalsToast'
+import NudgeCard from './Nudge/NudgeCard'
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationTab ]'
@@ -88,7 +90,7 @@ class NotificationTab extends Component {
         )
     }
 
-    renderHeader = () => {
+    renderHeader = ({ item }) => {
         return (
             <View style={{ flex: 1, backgroundColor: color.GM_BACKGROUND }}>
                 {this.renderSectionTitle({
@@ -96,6 +98,8 @@ class NotificationTab extends Component {
                     type: 'header',
                     length: 1,
                 })}
+                {this.renderNudge()}
+
                 {this.renderSectionTitle({
                     text: 'Things your friends need',
                     type: 'header',
@@ -108,6 +112,65 @@ class NotificationTab extends Component {
                     length: 1,
                 })}
             </View>
+        )
+    }
+
+    renderSeeMoreButton() {
+        return (
+            <View
+                style={{
+                    borderColor: 'lightgrey',
+                    borderWidth: 0.3,
+                    justifyContent: 'center',
+                }}
+            >
+                <DelayedButton
+                    style={{
+                        width: '90%',
+                        backgroundColor: '#F2F2F2',
+                        alignItems: 'center',
+
+                        paddingVertical: 12,
+                        marginBottom: 8,
+                        marginTop: 8,
+
+                        borderRadius: 3,
+                        marginHorizontal: 20,
+                        justifyContent: 'center',
+                    }}
+                    onPress={this.openInviteFriendModal}
+                >
+                    <Text
+                        style={
+                            (default_style.buttonText_1,
+                            {
+                                color: color.TEXT_COLOR.DARK,
+                                fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                            })
+                        }
+                    >
+                        See More
+                    </Text>
+                </DelayedButton>
+            </View>
+        )
+    }
+
+    renderNudge() {
+        return (
+            <>
+                <View
+                    style={{
+                        flex: 1,
+                        backgroundColor: 'white',
+                        marginBottom: 10,
+                    }}
+                >
+                    <NudgeCard />
+
+                    {this.renderSeeMoreButton()}
+                </View>
+            </>
         )
     }
 

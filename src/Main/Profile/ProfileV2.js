@@ -444,11 +444,18 @@ class ProfileV2 extends Component {
     renderNoGoalModel() {
         const { goals, isSelf } = this.props
 
-        setTimeout(() => {
-            if (goals.length == 0 && !isSelf) {
-                return <NudgeModal />
-            }
-        }, 5000)
+        if (goals.length == 0 && !isSelf) {
+            console.log('\n visitedUser: ', this.props)
+            const visitedId = this.props.visitedUser
+
+            return (
+                <NudgeModal
+                    visitedId={visitedId}
+                    token={this.props.token}
+                    name={getFirstName(this.props.user.name)}
+                />
+            )
+        }
     }
 
     renderContentCreationButtons() {
@@ -545,7 +552,11 @@ class ProfileV2 extends Component {
         ) {
             //Nudge friends to make their goals public
             return (
-                <PrivateGoalsNudge name={getFirstName(this.props.user.name)} />
+                <PrivateGoalsNudge
+                    name={getFirstName(this.props.user.name)}
+                    v
+                    token={this.props.token}
+                />
             )
         }
         const emptyStateText = `No ${currentTabName}`
@@ -595,6 +606,8 @@ class ProfileV2 extends Component {
         } else {
             sectionsData = []
         }
+
+        const visitedId = this.props.visitedUser
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>

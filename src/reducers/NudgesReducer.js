@@ -2,20 +2,27 @@
 
 import { createSlice } from '@reduxjs/toolkit'
 
-const INITIAL_STATE = {}
+const initialState = {
+    loading: false,
+    nudgesData: [],
+    error: '',
+}
 
 const slice = createSlice({
     name: 'nudges',
-    INITIAL_STATE,
+    initialState,
     reducers: {
-        getNudgesData: (state, action) => {
-            state.nudges = action.payload
+        loadNudgesData: (state, action) => {
+            state.loading = action.payload
         },
-        updateNudgesData: (state, action) => {
-            state.nudges = action.payload
+        getNudgesData: (state, action) => {
+            state.nudgesData = action.payload
+        },
+        errorNudgesData: (state, action) => {
+            state.loading = action.payload
         },
     },
 })
 
 export default slice.reducer
-export const { getNudgesData, updateNudgesData } = slice.actions
+export const { loadNudgesData, getNudgesData, errorNudgesData } = slice.actions

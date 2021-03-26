@@ -7,6 +7,11 @@ import timeago from 'timeago.js'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 
+//Images
+
+import ProfileIconBackground from '../../../asset/icons/Ellipse.png'
+import ProfileIcon from '../../../asset/icons/Vector.png'
+
 // Component
 import {
     actionSheet,
@@ -30,32 +35,9 @@ import { UI_SCALE } from '../../../styles'
 const DEBUG_KEY = '[ UI NudgeCard ]'
 
 class NudgeCard extends React.PureComponent {
-    handleNudgeCardOnPress = (item) => {
-        const { parsedNoti, _id } = item
-        if (!parsedNoti || !parsedNoti.path) {
-            console.warn(
-                `${DEBUG_KEY}: no parsedNoti or path is in notification:`,
-                item
-            )
-            return
-        }
-
-        if (!_id) {
-            console.warn(
-                `${DEBUG_KEY}: missing notification id for item:`,
-                item
-            )
-            return
-        }
-
-        // TODO: open detail based on the path;
-        Logger.log(`${DEBUG_KEY}: open notification detail for item: `, item, 2)
-        this.props.openNotificationDetail(item)
-    }
+    handleNudgeCardOnPress = (item) => {}
 
     handleOptionsOnPress() {
-        const { item } = this.props
-        const { _id } = item
         const options = switchByButtonIndex([
             [
                 R.equals(0),
@@ -68,7 +50,7 @@ class NudgeCard extends React.PureComponent {
             ],
         ])
 
-        const requestOptions = ['Remove this notification', 'Cancel']
+        const requestOptions = ['Remove this nudge', 'Cancel']
 
         const cancelIndex = 1
 
@@ -81,14 +63,37 @@ class NudgeCard extends React.PureComponent {
     }
 
     renderProfileImage(item) {
-        const { parsedNoti } = item
-        const imageUrl =
-            parsedNoti && parsedNoti.icon ? parsedNoti.icon : undefined
         return (
-            <ProfileImage
-                imageStyle={{ height: 50, width: 50 }}
-                imageUrl={imageUrl}
-            />
+            <View style={{ marginBottom: 50 }}>
+                {/* <View
+                    style={{
+                        position: 'absolute',
+                        zIndex: 1,
+                        height: 2,
+                        width: 2,
+                        left: 36,
+                        top: 34,
+                    }}
+                >
+                    <Image
+                        source={ProfileIconBackground}
+                        resizeMode="contain"
+                    />
+                </View> */}
+                {/* <View
+                    style={{
+                        position: 'absolute',
+                        zIndex: 2,
+                        height: 50,
+                        width: 50,
+                        left: 32,
+                        top: 34,
+                    }}
+                >
+                    <Image source={ProfileIcon} resizeMode="cover" />
+                </View> */}
+                <ProfileImage imageStyle={{ height: 50, width: 50 }} />
+            </View>
         )
     }
 
@@ -120,30 +125,8 @@ class NudgeCard extends React.PureComponent {
         )
     }
 
-    renderContent(item, isInvalidCommentNotif) {
-        const { created, parsedNoti } = item
-        console.log('this is item notification', item)
-        console.log(
-            'this is invalidcomment notification',
-            isInvalidCommentNotif
-        )
-        let textToDisplay =
-            parsedNoti && parsedNoti.notificationMessage
-                ? parsedNoti.notificationMessage
-                : ''
-
-        let actorName = _.get(item, 'parsedNoti.actorName', undefined)
-        console.log('actorname', actorName)
-        let startWithName = textToDisplay.startsWith(actorName)
-        if (actorName && startWithName) {
-            textToDisplay = textToDisplay.replace(`${actorName}`, '')
-        }
-
-        if (textToDisplay === '' && isInvalidCommentNotif) {
-            textToDisplay = 'Comment was removed by the owner'
-            actorName = undefined
-        }
-
+    renderContent() {
+        console.log('This is nudge data', this.props.nudgesData)
         return (
             <View style={{ flex: 1, marginLeft: 10, marginRight: 18 }}>
                 <Text
@@ -157,55 +140,58 @@ class NudgeCard extends React.PureComponent {
                     numberOfLines={2}
                     ellipsizeMode="tail"
                 >
-                    {actorName && startWithName ? (
-                        <Text
-                            style={[
-                                default_style.titleText_2,
-                                { color: color.TEXT_COLOR.OFF_DARK },
-                            ]}
-                        >
-                            {actorName}
-                        </Text>
-                    ) : null}
-                    {textToDisplay}
+                    <Text
+                        style={[
+                            default_style.titleText_2,
+                            { color: color.TEXT_COLOR.OFF_DARK },
+                        ]}
+                    >
+                        {this.props.nudgesData.map((item) => {
+                            if (!item.hasResponded && !item.isDeleted) {
+                                return item.sender.name
+                            } else return ''
+                        })}{' '}
+                        {''}
+                    </Text>
+                    has nudged you to see your goals.
                 </Text>
-                <View>
-                    <Timestamp time={timeago().format(created)} />
+
+                <View style={{ marginTop: 10 }}>
+                    <Text
+                        style={
+                            ([default_style.titleText_2],
+                            { color: '#42C0F5', fontWeight: '700' })
+                        }
+                    >
+                        Tap here to make one of your goals visible to Friends.
+                    </Text>
+                </View>
+                <View style={{ marginTop: 5 }}>
+                    <Timestamp time={timeago().format()} />
                 </View>
             </View>
         )
     }
 
     render() {
-        const { item } = this.props
-        if (!item) return null
-        if (!item.parsedNoti) return null
-
-        // Right now we do a hack to go around invalid commentRef
-        const isInvalidCommentNotif = item.commentRef === null
-        if (item.parsedNoti.error && !isInvalidCommentNotif) {
-            console.warn(
-                `${DEBUG_KEY}: invalid notification with error: `,
-                item.parsedNoti.error
-            )
-            return null
-        }
         // If read, backgroundColor is: '#eef8fb'
         const read = this.props.read
         const cardContainerStyle = read
             ? { ...styles.cardContainerStyle }
             : { ...styles.cardContainerStyle, backgroundColor: '#eef8fb' }
         return (
-            <DelayedButton
-                delay={600}
-                activeOpacity={0.6}
-                style={cardContainerStyle}
-                onPress={() => this.handleNudgeCardOnPress(item)}
-            >
-                {this.renderProfileImage(item)}
-                {this.renderContent(item, isInvalidCommentNotif)}
-                {this.renderOptions(item)}
-            </DelayedButton>
+            <>
+                <DelayedButton
+                    delay={600}
+                    activeOpacity={0.6}
+                    style={cardContainerStyle}
+                    onPress={() => this.handleNudgeCardOnPress()}
+                >
+                    {this.renderProfileImage()}
+                    {this.renderContent()}
+                    {this.renderOptions()}
+                </DelayedButton>
+            </>
         )
     }
 }
@@ -223,6 +209,8 @@ const styles = {
 }
 
 const mapStateToProps = (state, props) => {
+    const { nudgesData, loading } = state.nudges
+
     const { data } = state.notification.unread
     const { item } = props
     let read = true
@@ -232,6 +220,8 @@ const mapStateToProps = (state, props) => {
 
     return {
         read,
+        nudgesData,
+        loading,
     }
 }
 
