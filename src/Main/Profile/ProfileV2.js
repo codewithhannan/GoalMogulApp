@@ -58,6 +58,9 @@ import { openPopup } from '../../actions'
 import Popup from '../Journey/Popup'
 import PrivateGoalsNudge from '../../components/PrivateGoalsNudge'
 import { getFirstName } from '../../Utils/HelperMethods'
+import { api as API } from '../../redux/middleware/api'
+import VisitFriendsToast from '../../components/VisitFriendsToast'
+import FriendsGoalsVisit from '../../components/FriendsGoalsVisit'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
@@ -79,6 +82,8 @@ class ProfileV2 extends Component {
             profileVisited: false,
             showPopupModal: false,
             popupName: '',
+            showNudgePrivateGoals: false,
+            showNudgeAddGoals: false,
         }
         this.handleProfileDetailCardLayout = this.handleProfileDetailCardLayout.bind(
             this
@@ -119,43 +124,19 @@ class ProfileV2 extends Component {
             })
             return
         }
-        // if (this.props.isSelf) {
-        //     // Showing popup to user about their achievements
-        //     this.handlePopup()
-        //     return
-        // }
+        if (this.props.isSelf) {
+            // Showing popup to user about their achievements
+            this.handlePopup()
+            return
+        }
+        if (!this.props.isSelf && prevProps.user._id !== this.props.user._id) {
+            this.getNudgeData()
+            return
+        }
     }
 
     async componentDidMount() {
         // const self = this.props.selfUser
-        const visited = this.props.visitedUser
-
-        console.log('visited', visited)
-
-        try {
-            const apiResponse = await postRequest(
-                'http://192.168.1.3:8081/api/secure/user/Profile/view/friend',
-                {
-                    id: visited,
-                    token: this.props.token,
-                }
-            )
-            if (apiResponse.result.status == 200) {
-                const viewedFriendsProfile =
-                    apiResponse.result.data.result.profile.viewedFriendsProfile
-                const output = viewedFriendsProfile.map((item) => {
-                    if (item.userId == visited) {
-                        return (visitedProfileObject = item)
-                    }
-                })
-
-                if (visitedProfileObject.firstVisit == true) {
-                    this.setState({ profileVisited: true })
-                }
-            }
-        } catch (error) {
-            console.log('error', error.message)
-        }
 
         const { userId, pageId } = this.props
         // console.log(`${DEBUG_KEY}: mounting Profile with pageId: ${pageId}`);
@@ -180,6 +161,9 @@ class ProfileV2 extends Component {
         ) {
             return
         }
+        if (!this.props.isSelf && !this.state.profileVisited) {
+            this.handleFirstVisit()
+        }
     }
 
     handlePopup = () => {
@@ -197,6 +181,73 @@ class ProfileV2 extends Component {
             !popup.GREEN_BADGE.status
         ) {
             this.setState({ showPopupModal: true, popupName: 'GREEN_BADGE' })
+        }
+    }
+
+    toggleNudgePrivateGoals = () => {
+        this.setState({
+            showNudgePrivateGoals: !this.state.showNudgePrivateGoals,
+        })
+    }
+    toggleNudgeAddGoals = () => {
+        this.setState({ showNudgeAddGoals: !this.state.showNudgeAddGoals })
+    }
+
+    getNudgeData = async () => {
+        const { token, user } = this.props
+        let res
+        if (user._id) {
+            try {
+                res = await API.get(
+                    `secure/nudge/evaluate-nudge?id=${user._id}`,
+                    token
+                )
+                console.log(
+                    '\n Response from nudge API to check conditions',
+                    res
+                )
+                let { makeGoalsPublic, createFirstGoal } = res.result
+                this.setState({
+                    showNudgePrivateGoals: makeGoalsPublic,
+                    showNudgeAddGoals: createFirstGoal,
+                })
+            } catch (err) {
+                console.log(
+                    '\n This is the error while getting nudges data: ',
+                    err
+                )
+            }
+        } else return
+    }
+
+    handleFirstVisit = async () => {
+        const visited = this.props.visitedUser
+        try {
+            const apiResponse = await API.post(
+                'secure/user/Profile/view/friend',
+                {
+                    id: visited,
+                },
+                this.props.token
+            )
+            if (apiResponse.status == 200) {
+                const viewedFriendsProfile =
+                    apiResponse.result.profile.viewedFriendsProfile
+                let visitedProfileObject
+                viewedFriendsProfile.map((item) => {
+                    if (item.userId == visited) {
+                        return (visitedProfileObject = item)
+                    }
+                })
+
+                if (visitedProfileObject.firstVisit == true) {
+                    this.setState({ profileVisited: true })
+                } else {
+                    this.setState({ profileVisited: false })
+                }
+            }
+        } catch (error) {
+            console.log('error', error.message)
         }
     }
 
@@ -468,7 +519,7 @@ class ProfileV2 extends Component {
                     {renderFilter ? this.renderFilterBar(props) : null}
                     {allPrivateGoals && <PrivateGoalsToast />}
                     {friendsGoalVisited && (
-                        <friendsGoalVisited name={firstName} />
+                        <FriendsGoalsVisit name={firstName} />
                     )}
                 </View>
                 {renderContentCreationButtons
@@ -487,9 +538,12 @@ class ProfileV2 extends Component {
             return null
         }
         // console.log('\ncurrentTabName: ', currentTabName)
-        if (currentTabName === 'goals' && !isSelf) {
+        if (
+            currentTabName === 'goals' &&
+            !isSelf &&
+            this.state.showNudgePrivateGoals
+        ) {
             //Nudge friends to make their goals public
-            console.log('\n visitedUser: ', this.props)
             return (
                 <PrivateGoalsNudge name={getFirstName(this.props.user.name)} />
             )
@@ -521,12 +575,6 @@ class ProfileV2 extends Component {
         }
     }
 
-    _renderPrivateGoalsUi() {
-        if (this.props.isSelf && this.props.goals.length > 0) {
-            return <Text>ABdul hannan</Text>
-        }
-    }
-
     render() {
         const {
             userId,
@@ -538,12 +586,6 @@ class ProfileV2 extends Component {
             goals,
             user,
         } = this.props
-
-        const visitedName = this.props.visitedUserName.user.name
-        const visitedFriendShip = this.props.visitedUserFriendShip == 'Accepted'
-        // console.log('visitedFriendShip', visitedFriendShip)
-        const noGoals = goals.length == 0 && !isSelf && visitedFriendShip
-        // console.log('These are th goals', goals)
 
         // console.log('\n This is the data for sections', [{ data }])
 
@@ -565,7 +607,15 @@ class ProfileV2 extends Component {
                         })
                     }}
                 />
-                {/* {noGoals && <NudgeModal name={visitedName} />} */}
+                <NudgeModal
+                    name={this.props.user.name}
+                    isVisible={this.state.showNudgeAddGoals}
+                    onClose={() =>
+                        this.setState({
+                            showNudgeAddGoals: !this.state.showNudgeAddGoals,
+                        })
+                    }
+                />
                 <CreatePostModal
                     attachGoalRequired
                     onRef={(r) => (this.createPostModal = r)}
@@ -644,8 +694,6 @@ const makeMapStateToProps = () => {
         const selfUser = state.user.userId
         const visitedUserName = state.profile
         const visitedUser = state.profile.userId.userId
-
-        console.log('visitedUser', visitedUserName)
         const visitedUserFriendShip = state.profile.friendship.status
 
         // console.log('visitedFrp', state.profile.friendship.status)
@@ -689,7 +737,6 @@ const makeMapStateToProps = () => {
         if (selectedTab === 'about') {
             data = about
         } else if (selectedTab === 'goals') {
-            console.log('\n Goals:', goals)
             data = goals
         } else if (selectedTab === 'posts') {
             data = posts

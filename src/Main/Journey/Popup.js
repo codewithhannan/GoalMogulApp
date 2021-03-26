@@ -83,9 +83,6 @@ class Popup extends Component {
     constructor(props) {
         super(props)
     }
-    toggleModal = () => {
-        this.setState({ isModalVisible: !this.state.isModalVisible })
-    }
 
     render() {
         const { popupName } = this.props

@@ -147,7 +147,6 @@ class FriendTabView extends React.Component {
     render() {
         const { user } = this.props
         const modalTitle = `${user.name}'s Friends`
-        console.log('this is data', this.props.data)
         const friendCount = this.props.data ? this.props.data.length : 0
         return (
             <View style={styles.containerStyle}>

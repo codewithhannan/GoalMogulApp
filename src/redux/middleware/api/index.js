@@ -109,9 +109,6 @@ export const api = {
     get(path, token, logLevel = 3) {
         return singleFetch(path, null, 'get', token, logLevel)
     },
-    getWithParams(path, payload, token, logLevel = 3) {
-        return singleFetch(path, payload, 'get', token, logLevel)
-    },
     getPromise(path, token, logLevel = 3) {
         return fetchData(path, null, 'get', token, logLevel)
     },

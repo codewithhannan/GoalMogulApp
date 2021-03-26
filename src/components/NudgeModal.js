@@ -22,11 +22,6 @@ const { text: textStyle, button: buttonStyle } = OnboardingStyles
 class ModalTester extends Component {
     constructor(props) {
         super(props)
-        this.state = { showInviteFriendModal: true }
-    }
-
-    closeInviteFriendModal = () => {
-        this.setState({ showInviteFriendModal: false })
     }
 
     renderYesButton() {
@@ -63,7 +58,7 @@ class ModalTester extends Component {
     renderNoButton() {
         return (
             <>
-                <TouchableWithoutFeedback onPress={this.closeInviteFriendModal}>
+                <TouchableWithoutFeedback onPress={this.props.onClose}>
                     <View
                         style={{
                             backgroundColor: '#42C0F5',
@@ -99,7 +94,7 @@ class ModalTester extends Component {
             <>
                 <Modal
                     backdropOpacity={0}
-                    isVisible={this.state.showInviteFriendModal}
+                    isVisible={this.props.isVisible}
                     style={{
                         borderRadius: 20,
                     }}
@@ -133,7 +128,7 @@ class ModalTester extends Component {
                                     Help {name}
                                 </Text>
                                 <TouchableOpacity
-                                    onPress={this.closeInviteFriendModal}
+                                    onPress={this.props.onClose}
                                     style={{ marginTop: -2 }}
                                 >
                                     <Entypo
