@@ -1,22 +1,37 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, Image, Text, TouchableWithoutFeedback } from 'react-native'
+import {
+    View,
+    Image,
+    Text,
+    TouchableWithoutFeedback,
+    Dimensions,
+} from 'react-native'
 import { color, default_style } from '../styles/basic'
 import MissingProfile from '../asset/image/Goals_Nudge.png'
-import { openProfileDetailEditForm, refreshProfileData } from '../actions'
+import { makeGoalsPublicNudge } from '../actions/NudgeActions'
 import { connect } from 'react-redux'
 import * as text from '../styles/basic/text'
+
+const windowHeight = Dimensions.get('window').height
 
 class PrivateGoalsNudge extends Component {
     constructor(props) {
         super(props)
+        this.state = {}
     }
 
     renderNudgeButton() {
+        const { visitedUser, token } = this.props
+        console.log('this is visitor', visitedUser)
         return (
             <>
-                <TouchableWithoutFeedback style={{}}>
+                <TouchableWithoutFeedback
+                    onPress={() => {
+                        this.props.makeGoalsPublicNudge(visitedUser, token)
+                    }}
+                >
                     <View
                         style={{
                             backgroundColor: '#42C0F5',
@@ -46,6 +61,7 @@ class PrivateGoalsNudge extends Component {
     }
 
     render() {
+        const { hideNudge } = this.state
         return (
             <>
                 <View
@@ -56,7 +72,7 @@ class PrivateGoalsNudge extends Component {
                         alignItems: 'center',
                         borderRadius: 5,
                         width: '100%',
-                        height: 330,
+                        height: windowHeight * 0.45,
                     }}
                 >
                     <View
@@ -100,4 +116,14 @@ class PrivateGoalsNudge extends Component {
     }
 }
 
-export default PrivateGoalsNudge
+const mapStateToProps = (state, props) => {
+    const visitedUser = state.profile.userId.userId
+
+    return {
+        visitedUser,
+    }
+}
+
+export default connect(mapStateToProps, {
+    makeGoalsPublicNudge,
+})(PrivateGoalsNudge)

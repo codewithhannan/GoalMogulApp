@@ -135,6 +135,7 @@ class NotificationCard extends React.PureComponent {
         let actorName = _.get(item, 'parsedNoti.actorName', undefined)
         console.log('actorname', actorName)
         let startWithName = textToDisplay.startsWith(actorName)
+        console.log('starttttwithhh', startWithName)
         if (actorName && startWithName) {
             textToDisplay = textToDisplay.replace(`${actorName}`, '')
         }

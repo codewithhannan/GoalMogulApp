@@ -98,7 +98,7 @@ class Popup extends Component {
                             onPress={this.props.closeModal}
                             style={styles.closeBtn}
                         >
-                            <Entypo name="cross" size={25} color="#4F4F4F" />
+                            <Entypo name="cross" size={25} color="black" />
                         </TouchableOpacity>
                         <Text style={styles.title}>
                             {POPUP_DETAILS[popupName].title}

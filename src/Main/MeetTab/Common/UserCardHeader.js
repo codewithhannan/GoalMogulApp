@@ -119,6 +119,7 @@ class UserCardHeader extends React.PureComponent {
 
     render() {
         const { user, optionsOnPress } = this.props
+        console.log('this is options on press', optionsOnPress)
         if (!user) {
             return null
         }

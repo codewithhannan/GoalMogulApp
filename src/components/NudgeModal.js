@@ -8,12 +8,15 @@ import {
     Image,
     TouchableWithoutFeedback,
     TouchableOpacity,
+    TouchableHighlight,
 } from 'react-native'
 import Modal from 'react-native-modal'
 import { Entypo } from '@expo/vector-icons'
 import Constants from 'expo-constants'
 import { color, default_style } from '../styles/basic'
 import OnboardingStyles from '../styles/Onboarding'
+import { createFirstGoalNudge } from '../actions/NudgeActions'
+import { connect } from 'react-redux'
 
 import GoalVisible from '../asset/image/Goalmogul_illustration.png'
 
@@ -30,9 +33,14 @@ class ModalTester extends Component {
     }
 
     renderYesButton() {
+        const { visitedId, token } = this.props
         return (
             <>
-                <TouchableWithoutFeedback>
+                <TouchableWithoutFeedback
+                    onPress={() => {
+                        this.props.createFirstGoalNudge(visitedId, token)
+                    }}
+                >
                     <View
                         style={{
                             width: '30%',
@@ -48,7 +56,7 @@ class ModalTester extends Component {
                         <Text
                             style={{
                                 color: '#42C0F5',
-                                fontWeight: 600,
+                                fontWeight: '600',
                                 fontSize: 15,
                             }}
                         >
@@ -80,7 +88,7 @@ class ModalTester extends Component {
                         <Text
                             style={{
                                 color: 'white',
-                                fontWeight: 600,
+                                fontWeight: '600',
                                 fontSize: 15,
                             }}
                         >
@@ -168,7 +176,7 @@ class ModalTester extends Component {
                             >
                                 <Text
                                     style={{
-                                        fontWeight: 40,
+                                        fontWeight: '40',
                                         fontSize: 15,
                                     }}
                                 >
@@ -185,7 +193,9 @@ class ModalTester extends Component {
                                     marginHorizontal: 10,
                                 }}
                             >
-                                <Text style={{ fontWeight: 40, fontSize: 15 }}>
+                                <Text
+                                    style={{ fontWeight: '40', fontSize: 15 }}
+                                >
                                     Do you want to nudge him?
                                 </Text>
                             </View>
@@ -222,4 +232,6 @@ class ModalTester extends Component {
     }
 }
 
-export default ModalTester
+export default connect(null, {
+    createFirstGoalNudge,
+})(ModalTester)

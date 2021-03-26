@@ -73,3 +73,26 @@ export const putRequest = async (url, body = {}, headers = {}) => {
         })
     return returnValue
 }
+
+export const getRequest = async (url, body = {}, headers = {}) => {
+    let config = {
+        headers: {
+            ...headers,
+        },
+        params: {
+            ...params,
+        },
+    }
+
+    let returnValue
+
+    await axios
+        .get(url, body, config)
+        .then((result) => {
+            returnValue = { result: result, error: null }
+        })
+        .catch((err) => {
+            returnValue = { result: null, error: err }
+        })
+    return returnValue
+}

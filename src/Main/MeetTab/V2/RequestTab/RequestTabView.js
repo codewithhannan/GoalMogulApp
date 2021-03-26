@@ -5,9 +5,10 @@
  */
 
 import React, { Component } from 'react'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import { SceneMap, TabView } from 'react-native-tab-view'
 import { connect } from 'react-redux'
+import { SearchBar } from 'react-native-elements'
 // actions
 import { handleRefresh } from '../../../../actions'
 import {
@@ -43,34 +44,53 @@ class RequestTabView extends Component {
                 }}
             >
                 <TabButtonGroup buttons={props} />
-                {/* <SearchBar 
-            ref={searchBar => this.searchBar = searchBar}
-            platform="default"
-            clearIcon={<MaterialIcons
-                name="clear"
-                color="#777"
-                size={21}
-            />}
-            containerStyle={{
-                backgroundColor: 'transparent',
-                padding: 0,
-                margin: 0,
-                marginTop: 16,
-                borderTopWidth: 0,
-                borderBottomWidth: 0
-            }}
-            inputContainerStyle={{ backgroundColor: "white", borderRadius: 3, borderColor: '#E0E0E0', borderWidth: 1, minHeight: 36, borderBottomWidth: 1 }}
-            inputStyle={{ fontSize: 16, fontFamily: text.FONT_FAMILY.BOLD, minHeight: 36 }}
-            placeholder="Search"
-            onChangeText={this.handleSearchUpdate.bind(this)}
-            onClear={this.handleSearchUpdate.bind(this)}
-            searchIcon={<SearchIcon 
-                iconContainerStyle={{ marginBottom: 3, marginTop: 1, marginLeft: 6 }} 
-                iconStyle={{ tintColor: '#777', height: 15, width: 15 }}
-                />}
-            value={this.props.searchQuery}
-            lightTheme={true}
-        /> */}
+                {/* <SearchBar
+                    ref={(searchBar) => (this.searchBar = searchBar)}
+                    platform="default"
+                    clearIcon={
+                        <MaterialIcons name="clear" color="#777" size={21} />
+                    }
+                    containerStyle={{
+                        backgroundColor: 'transparent',
+                        padding: 0,
+                        margin: 0,
+                        marginTop: 16,
+                        borderTopWidth: 0,
+                        borderBottomWidth: 0,
+                    }}
+                    inputContainerStyle={{
+                        backgroundColor: 'white',
+                        borderRadius: 3,
+                        borderColor: '#E0E0E0',
+                        borderWidth: 1,
+                        minHeight: 36,
+                        borderBottomWidth: 1,
+                    }}
+                    inputStyle={{
+                        fontSize: 16,
+                        fontFamily: text.FONT_FAMILY.BOLD,
+                        minHeight: 36,
+                    }}
+                    placeholder="Search"
+                    onChangeText={this.handleSearchUpdate.bind(this)}
+                    onClear={this.handleSearchUpdate.bind(this)}
+                    searchIcon={
+                        <SearchIcon
+                            iconContainerStyle={{
+                                marginBottom: 3,
+                                marginTop: 1,
+                                marginLeft: 6,
+                            }}
+                            iconStyle={{
+                                tintColor: '#777',
+                                height: 15,
+                                width: 15,
+                            }}
+                        />
+                    }
+                    value={this.props.searchQuery}
+                    lightTheme={true}
+                /> */}
             </View>
         )
     }

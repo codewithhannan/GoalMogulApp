@@ -393,11 +393,18 @@ class ProfileV2 extends Component {
     renderNoGoalModel() {
         const { goals, isSelf } = this.props
 
-        setTimeout(() => {
-            if (goals.length == 0 && !isSelf) {
-                return <NudgeModal />
-            }
-        }, 5000)
+        if (goals.length == 0 && !isSelf) {
+            console.log('\n visitedUser: ', this.props)
+            const visitedId = this.props.visitedUser
+
+            return (
+                <NudgeModal
+                    visitedId={visitedId}
+                    token={this.props.token}
+                    name={getFirstName(this.props.user.name)}
+                />
+            )
+        }
     }
 
     renderContentCreationButtons() {
@@ -467,9 +474,9 @@ class ProfileV2 extends Component {
 
                     {renderFilter ? this.renderFilterBar(props) : null}
                     {allPrivateGoals && <PrivateGoalsToast />}
-                    {friendsGoalVisited && (
+                    {/* {friendsGoalVisited && (
                         <friendsGoalVisited name={firstName} />
-                    )}
+                    )} */}
                 </View>
                 {renderContentCreationButtons
                     ? this.renderContentCreationButtons()
@@ -489,9 +496,13 @@ class ProfileV2 extends Component {
         // console.log('\ncurrentTabName: ', currentTabName)
         if (currentTabName === 'goals' && !isSelf) {
             //Nudge friends to make their goals public
-            console.log('\n visitedUser: ', this.props)
+
             return (
-                <PrivateGoalsNudge name={getFirstName(this.props.user.name)} />
+                <PrivateGoalsNudge
+                    name={getFirstName(this.props.user.name)}
+                    v
+                    token={this.props.token}
+                />
             )
         }
         const emptyStateText = `No ${currentTabName}`
@@ -521,12 +532,6 @@ class ProfileV2 extends Component {
         }
     }
 
-    _renderPrivateGoalsUi() {
-        if (this.props.isSelf && this.props.goals.length > 0) {
-            return <Text>ABdul hannan</Text>
-        }
-    }
-
     render() {
         const {
             userId,
@@ -542,7 +547,7 @@ class ProfileV2 extends Component {
         const visitedName = this.props.visitedUserName.user.name
         const visitedFriendShip = this.props.visitedUserFriendShip == 'Accepted'
         // console.log('visitedFriendShip', visitedFriendShip)
-        const noGoals = goals.length == 0 && !isSelf && visitedFriendShip
+        const noGoals = goals.length == 0 && !isSelf
         // console.log('These are th goals', goals)
 
         // console.log('\n This is the data for sections', [{ data }])
@@ -553,6 +558,8 @@ class ProfileV2 extends Component {
         } else {
             sectionsData = []
         }
+
+        const visitedId = this.props.visitedUser
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -565,7 +572,13 @@ class ProfileV2 extends Component {
                         })
                     }}
                 />
-                {/* {noGoals && <NudgeModal name={visitedName} />} */}
+                {noGoals && (
+                    <NudgeModal
+                        visitedId={visitedId}
+                        token={this.props.token}
+                        name={getFirstName(this.props.user.name)}
+                    />
+                )}
                 <CreatePostModal
                     attachGoalRequired
                     onRef={(r) => (this.createPostModal = r)}
@@ -645,7 +658,6 @@ const makeMapStateToProps = () => {
         const visitedUserName = state.profile
         const visitedUser = state.profile.userId.userId
 
-        console.log('visitedUser', visitedUserName)
         const visitedUserFriendShip = state.profile.friendship.status
 
         // console.log('visitedFrp', state.profile.friendship.status)

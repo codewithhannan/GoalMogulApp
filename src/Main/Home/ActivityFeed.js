@@ -27,6 +27,7 @@ import {
     refreshProfileData,
     openPopup,
 } from '../../actions'
+import { getAllNudges } from '../../actions/NudgeActions'
 
 import {
     openPostDetail,
@@ -184,6 +185,10 @@ class ActivityFeed extends Component {
         if (this.props.data && this.props.data.length) {
             this.props.loadUserInvitedFriendsCount()
         }
+
+        const { token } = this.props
+
+        this.props.getAllNudges(token)
     }
     shouldComponentUpdate(nextProps, nextState) {
         return (
@@ -797,7 +802,9 @@ const mapStateToProps = (state, props) => {
     const getUserGoals = makeGetUserGoals()
     const { friends } = state.meet
     const { image, occupation, about } = state.user.user.profile
-    const { messageDoc } = state
+    const { nudges } = state
+
+    console.log('nudgesss', nudges)
 
     // console.log('greeen', state.user.user)
 
@@ -806,6 +813,7 @@ const mapStateToProps = (state, props) => {
     const { userId } = state.user
 
     const goals = getUserGoals(state, userId, pageAb)
+    const { token } = state.auth.user
 
     // console.log('currentuser', currentUser)
 
@@ -844,7 +852,8 @@ const mapStateToProps = (state, props) => {
         profile,
         occupation,
         about,
-        messageDoc,
+
+        token,
 
         // currentMilestone: 0,
     }
@@ -885,6 +894,7 @@ export default connect(
         fetchUserProfile,
         fetchProfile,
         openPopup,
+        getAllNudges,
     },
     null,
     { withRef: true }
