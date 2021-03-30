@@ -441,23 +441,6 @@ class ProfileV2 extends Component {
         )
     }
 
-    renderNoGoalModel() {
-        const { goals, isSelf } = this.props
-
-        if (goals.length == 0 && !isSelf) {
-            console.log('\n visitedUser: ', this.props)
-            const visitedId = this.props.visitedUser
-
-            return (
-                <NudgeModal
-                    visitedId={visitedId}
-                    token={this.props.token}
-                    name={getFirstName(this.props.user.name)}
-                />
-            )
-        }
-    }
-
     renderContentCreationButtons() {
         return (
             <CreateContentButtons
@@ -554,7 +537,6 @@ class ProfileV2 extends Component {
             return (
                 <PrivateGoalsNudge
                     name={getFirstName(this.props.user.name)}
-                    v
                     token={this.props.token}
                 />
             )

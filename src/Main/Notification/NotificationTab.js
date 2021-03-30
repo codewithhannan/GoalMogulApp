@@ -29,6 +29,7 @@ import { getNotificationNeeds } from '../../redux/modules/notification/Notificat
 import { color, default_style, text } from '../../styles/basic'
 import PrivateGoalsToast from '../../components/PrivateGoalsToast'
 import NudgeCard from './Nudge/NudgeCard'
+import NudgeListView from './Nudge/NudgeListView'
 
 // Constants
 const DEBUG_KEY = '[ UI NotificationTab ]'
@@ -166,7 +167,7 @@ class NotificationTab extends Component {
                         marginBottom: 10,
                     }}
                 >
-                    <NudgeCard />
+                    <NudgeListView />
 
                     {this.renderSeeMoreButton()}
                 </View>

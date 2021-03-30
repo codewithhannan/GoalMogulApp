@@ -1,7 +1,15 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { Alert, View, Image, Text, Dimensions } from 'react-native'
+import {
+    Alert,
+    View,
+    Image,
+    Text,
+    Dimensions,
+    TouchableOpacity,
+    ActivityIndicator,
+} from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from '@ui-kitten/components'
 import R from 'ramda'
@@ -11,6 +19,9 @@ import Icons from '../../../asset/base64/Icons'
 import { default_style, color } from '../../../styles/basic'
 import { PROFILE_STYLES } from '../../../styles/Profile'
 import { createReport } from '../../../redux/modules/report/ReportActions'
+import * as ImagePicker from 'expo-image-picker'
+
+import { Entypo } from '@expo/vector-icons'
 
 /* Actions */
 import {
@@ -19,6 +30,9 @@ import {
     UserBanner,
     blockUser,
     createOrGetDirectMessage,
+    openCameraRoll,
+    submitUpdatingProfile,
+    updateProfilePic,
 } from '../../../actions/'
 
 // Selector
@@ -42,20 +56,33 @@ const { width } = Dimensions.get('window')
 const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]'
 
 // TODO: use redux instead of passed in props
+
 class ProfileDetailCard extends Component {
     constructor(props) {
         super(props)
         this.state = {
             imageUrl: '',
+            imageSource: '',
         }
         this.handleEditOnPressed = this.handleEditOnPressed.bind(this)
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const { image } = this.props.user.profile
         // console.log(`${DEBUG_KEY}: prefetch image: ${image}`);
         if (image) {
             this.prefetchImage(image)
+        }
+
+        if (Platform.OS !== 'web') {
+            const {
+                status,
+            } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+            if (status !== 'granted') {
+                alert(
+                    'Sorry, we need camera roll permissions to make this work!'
+                )
+            }
         }
     }
 
@@ -106,6 +133,8 @@ class ProfileDetailCard extends Component {
                 // console.log(`prefetching image, imageUrl: ${imageUrl}, prevImageUrl: ${prevImageUrl}`);
             }
         }
+
+        console.log('this si image url', this.state.imageUrl)
     }
 
     openOptionModal = () => this.bottomSheetRef.open()
@@ -438,6 +467,73 @@ class ProfileDetailCard extends Component {
         )
     }
 
+    pickImage = async () => {
+        let res
+        try {
+            res = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 1,
+            })
+
+            this.props.updateProfilePic(res.uri, this.props.pageId)
+        } catch (err) {
+            console.log(
+                '\nError while selecting image from device: ',
+                err.message
+            )
+        }
+        if (!res.cancelled) {
+            this.setState({ imageUrl: res.uri })
+        }
+    }
+
+    renderImage = () => {
+        console.log(
+            '\nThis is the image URL for profile picture: ',
+            this.state.imageUrl
+        )
+
+        return (
+            <View activeOpacity={0.6} style={styles.imageContainerStyle}>
+                {this.props.uploading ? (
+                    <View
+                        style={{
+                            width: 110,
+                            height: 110,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 150 / 2,
+                            overflow: 'hidden',
+                        }}
+                    >
+                        <ActivityIndicator size="small" />
+                    </View>
+                ) : (
+                    <Image
+                        source={{
+                            uri: this.state.imageUrl,
+                        }}
+                        style={{
+                            width: 110,
+                            height: 110,
+
+                            borderRadius: 150 / 2,
+                            overflow: 'hidden',
+                        }}
+                    />
+                )}
+
+                <TouchableOpacity onPress={this.pickImage}>
+                    <View style={styles.iconContainerStyle}>
+                        <Entypo name="camera" size={11} color="#FFFF" />
+                    </View>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
     renderHeadline(headline) {
         if (headline && headline.trim() !== '') {
             return (
@@ -668,8 +764,11 @@ class ProfileDetailCard extends Component {
                             flexDirection: 'row',
                         }}
                     >
-                        {this.renderProfileImage(profile, self)}
+                        {self
+                            ? this.renderImage()
+                            : this.renderProfileImage(profile, self)}
                     </View>
+
                     <View style={{ flexDirection: 'row' }}>
                         {/* <View style={{ flex: 1 }} /> */}
                         {this.renderFriendshipStatusButton()}
@@ -750,8 +849,23 @@ const styles = {
         position: 'absolute',
         bottom: 0,
         alignSelf: 'center',
-        backgroundColor: color.GM_CARD_BACKGROUND,
+        backgroundColor: 'white',
     },
+    iconContainerStyle: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#42C0F5',
+        borderRadius: 50,
+        borderWidth: 2,
+        height: 24,
+        width: 24,
+        borderColor: '#FFFFFF',
+        position: 'absolute',
+        bottom: 10 * default_style.uiScale,
+        left: width * 0.07,
+    },
+
     imageStyle: {
         width: default_style.uiScale * 120,
         height: default_style.uiScale * 120,
@@ -791,12 +905,15 @@ const styles = {
 }
 
 const mapStateToProps = (state, props) => {
-    const { userId } = props
+    const { userId, pageId } = props
 
     const self = userId === state.user.userId
 
     const userObject = getUserData(state, userId, '')
+
     const { user, mutualFriends, friendship } = userObject
+    const { profile } = user
+    const { uploading } = state.profile
 
     const friendsCount = state.meet.friends.count
     const needRespond =
@@ -809,10 +926,14 @@ const mapStateToProps = (state, props) => {
         self,
         user,
         friendship,
+        userObject,
         userId,
         friendsCount,
         mutualFriends,
         needRespond,
+        profile,
+        pageId,
+        uploading,
     }
 }
 
@@ -822,4 +943,7 @@ export default connect(mapStateToProps, {
     createOrGetDirectMessage,
     createReport,
     blockUser,
+    openCameraRoll,
+    submitUpdatingProfile,
+    updateProfilePic,
 })(ProfileDetailCard)

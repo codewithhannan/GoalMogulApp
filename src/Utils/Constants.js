@@ -150,6 +150,7 @@ export const CATEGORY_OPTIONS = [
 export const PRIVACY_FRIENDS = 'friends'
 export const PRIVACY_PUBLIC = 'public'
 export const PRIVACY_PRIVATE = 'self'
+export const PRIVACY_CLOSEFRIENDS = 'close-friends'
 
 export const PRIVACY_OPTIONS = [
     {
@@ -162,6 +163,12 @@ export const PRIVACY_OPTIONS = [
         value: PRIVACY_PUBLIC,
         materialCommunityIconName: 'earth',
     },
+    {
+        text: 'CloseFriends',
+        value: PRIVACY_CLOSEFRIENDS,
+        materialCommunityIconName: 'heart',
+    },
+
     {
         text: 'Only Me',
         value: PRIVACY_PRIVATE,

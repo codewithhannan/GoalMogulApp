@@ -307,7 +307,7 @@ export const submitGoalPrivacy = (Id, value, token) => {
         try {
             dispatch(loadingGoalPrivacy(true))
             const apiResponse = await putRequest(
-                'http://192.168.1.4:8081/api/secure/goal/change-privacy',
+                'http://192.168.1.3:8081/api/secure/goal/change-privacy',
                 {
                     goalId: Id,
                     privacy: value,

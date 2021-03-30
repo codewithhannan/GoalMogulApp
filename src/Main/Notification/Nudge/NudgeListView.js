@@ -6,9 +6,10 @@
  */
 
 import React from 'react'
-import { View, FlatList, ActivityIndicator } from 'react-native'
+import { View, FlatList, ActivityIndicator, Text } from 'react-native'
 import { connect } from 'react-redux'
 
+import moment from 'moment'
 // Components
 import NudgeCard from './NudgeCard'
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
@@ -34,7 +35,19 @@ class NudgeListView extends React.PureComponent {
         this.props.loadMoreNotifications()
     }
 
-    keyExtractor = (item) => item._id
+    keyExtractor = (item) => item._id.toString()
+
+    _keyExtractor = (item, index) => {
+        return (
+            this.props.index +
+            '_' +
+            index +
+            '_' +
+            item.id +
+            '_' +
+            moment().valueOf().toString()
+        )
+    }
 
     renderItem = ({ item }) => {
         return <NudgeCard item={item} />
@@ -61,24 +74,38 @@ class NudgeListView extends React.PureComponent {
             <View
                 style={{ flex: 1, backgroundColor: color.GM_CARD_BACKGROUND }}
             >
-                <SearchBarHeader backButton title="Notifications" />
                 <FlatList
-                    data={this.props.data}
+                    data={this.props.nudgesData}
                     renderItem={this.renderItem}
-                    keyExtractor={this.keyExtractor}
+                    // keyExtractor={this._keyExtractor}
+                    listKey={(item, index) => 'D' + index.toString()}
                     onRefresh={this.handleRefresh}
                     refreshing={this.props.refreshing}
                     onEndReached={this.handleOnLoadMore}
                     onEndReachedThreshold={0}
                     ListEmptyComponent={
                         this.props.refreshing ? null : (
-                            <EmptyResult
-                                text={'You have no notifications'}
-                                textStyle={{ paddingTop: 200 }}
-                            />
+                            <View
+                                style={{
+                                    height: 50,
+                                    flex: 1,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Text>You have no nudges</Text>
+                            </View>
                         )
                     }
                     ListFooterComponent={this.renderListFooter()}
+                    ItemSeparatorComponent={() => (
+                        <View
+                            style={{
+                                borderWidth: 0.5,
+                                borderColor: '#F1EEEE',
+                            }}
+                        ></View>
+                    )}
                 />
             </View>
         )
@@ -88,12 +115,14 @@ class NudgeListView extends React.PureComponent {
 const mapStateToProps = (state) => {
     const { notifications } = state.notification
     const { data, refreshing, loading } = notifications
+    const { nudgesData } = state.nudges
 
     return {
         // data: data.filter(d => !d.parsedNoti.error),
         data,
         refreshing,
         loading,
+        nudgesData,
     }
 }
 
