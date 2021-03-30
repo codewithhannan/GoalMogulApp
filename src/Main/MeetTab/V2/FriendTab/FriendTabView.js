@@ -210,16 +210,14 @@ class FriendTabView extends React.Component {
         const { userId } = this.props
         let closeFriends = this.props.data.filter((friend) => {
             let check
-            friend.maybeFriendshipRef.participants.map((participant) => {
-                check =
-                    participant.users_id !== userId &&
-                    participant.closenessWithFriend === 'CloseFriends' &&
-                    true
-            })
+            for (let participant of friend.maybeFriendshipRef.participants) {
+                if (participant.closenessWithFriend === 'CloseFriends') {
+                    check = true
+                    break
+                }
+            }
             if (check) return friend
         })
-
-        console.log('\nThese are the close friends of user:', closeFriends)
 
         switch (route.key) {
             case 'one':

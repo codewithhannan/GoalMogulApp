@@ -348,6 +348,16 @@ export const updateFriendship = (userId, friendshipId, type, tab, callback) => (
                     },
                     url: baseUrl,
                 }
+            case 'addCloseFriend':
+                return {
+                    type: 'PUT',
+                    data: {
+                        friendshipId,
+                        closenessWithFriend: 'CloseFriends',
+                        acceptFriendshipRequest: true,
+                    },
+                    url: baseUrl,
+                }
             case 'deleteFriend':
                 return {
                     type: 'DELETE',

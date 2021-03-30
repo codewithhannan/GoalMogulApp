@@ -560,12 +560,12 @@ class ActivityFeed extends Component {
 
         let closeFriends = friendsData.filter((friend) => {
             let check
-            friend.maybeFriendshipRef.participants.map((participant) => {
-                check =
-                    participant.users_id !== userId &&
-                    participant.closenessWithFriend === 'CloseFriends' &&
-                    true
-            })
+            for (let participant of friend.maybeFriendshipRef.participants) {
+                if (participant.closenessWithFriend === 'CloseFriends') {
+                    check = true
+                    break
+                }
+            }
             if (check) return friend
         })
         this.setState({ closeFriendToVisit: getRandomValue(closeFriends) })

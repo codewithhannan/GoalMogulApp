@@ -209,6 +209,19 @@ class ProfileDetailCard extends Component {
             return
         }
 
+        if (type === 'addCloseFriend') {
+            console.log('\n action is dispatched for addCloseFriend')
+            Alert.alert('Added as close friend', '')
+            // this.props.upateFriendship(
+            //     this.props.userId,
+            //     this.props.friendship._id,
+            //     'addCloseFriend',
+            //     'requests.outgoing',
+            //     undefined
+            // )
+            return
+        }
+
         if (type === 'deleteFriend') {
             Alert.alert(
                 'Are you sure you want to withdraw friend request?',
@@ -277,6 +290,7 @@ class ProfileDetailCard extends Component {
         }
 
         const ADD_FRIEND = 'Add Friend'
+        const ADD_CLOSE_FRIEND = 'Add Close Friend'
         const REQUEST_PENDING = 'Cancel Request'
         const MESSAGE = 'Message'
         const RESPOND = 'Respond'
@@ -544,6 +558,18 @@ class ProfileDetailCard extends Component {
             },
         }
 
+        const closeFriendOption = {
+            text: 'Add as Close Friend',
+            textStyle: { color: 'black' },
+            icon: { name: 'account-heart', pack: 'material-community' },
+            onPress: () => {
+                this.closeOptionModal()
+                setTimeout(() => {
+                    this.handleButtonOnPress('addCloseFriend')
+                }, 500)
+            },
+        }
+
         const shareToDirectMessageOption = {
             text: 'Share Profile as Direct Message',
             textStyle: { color: 'black' },
@@ -619,6 +645,7 @@ class ProfileDetailCard extends Component {
         if (this.props.friendship.status == 'Accepted') {
             return [
                 unfriendOption,
+                closeFriendOption,
                 shareToDirectMessageOption,
                 shareToGroupChatOption,
                 blockOption,
