@@ -29,6 +29,7 @@ import { OnboardingAddPhotos } from './src/Main/Onboarding'
 import { YellowBox } from 'react-native'
 import PrivateGoalsNudge from './src/components/PrivateGoalsNudge'
 import Popup from './src/Main/Journey/Popup'
+import ImageTest from './ImageTest'
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
@@ -45,6 +46,7 @@ export default class App extends React.Component {
         super(props)
         this.state = {
             appReady: false,
+            image: null,
         }
 
         // must be initialized in this order as each depends on the previous
@@ -72,6 +74,8 @@ export default class App extends React.Component {
                     </PersistGate>
                 </ReduxProvider>
             </ThemeProvider>
+            // <ImageTest />
+
             // <Popup />
         )
     }

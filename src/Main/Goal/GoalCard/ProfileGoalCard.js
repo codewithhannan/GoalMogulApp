@@ -47,7 +47,7 @@ const privacyOptions = [
         text: 'CloseFriends',
         title: 'CloseFriends',
         iconName: 'heart',
-        value: 'closefriends',
+        value: 'close-friends',
     },
     {
         text: 'Public',

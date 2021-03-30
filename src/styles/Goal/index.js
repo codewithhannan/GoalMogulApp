@@ -86,8 +86,8 @@ export const GOALS_STYLE = {
         backgroundColor: color.GM_LIGHT_GRAY,
         borderRadius: 100,
     },
-    privacyPillWidth: 63 * UI_SCALE,
-    priorityPillWidth: 37 * UI_SCALE,
+    privacyPillWidth: 75 * UI_SCALE,
+    priorityPillWidth: 50 * UI_SCALE,
 }
 
 export const TABBAR_HEIGHT = 50 * UI_SCALE

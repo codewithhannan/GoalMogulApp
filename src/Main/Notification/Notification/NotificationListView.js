@@ -57,7 +57,6 @@ class NotificationListView extends React.PureComponent {
     }
 
     render() {
-        console.log('this is notification', this.props.data)
         return (
             <View
                 style={{ flex: 1, backgroundColor: color.GM_CARD_BACKGROUND }}

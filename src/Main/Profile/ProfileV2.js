@@ -536,7 +536,6 @@ class ProfileV2 extends Component {
             return (
                 <PrivateGoalsNudge
                     name={getFirstName(this.props.user.name)}
-                    v
                     token={this.props.token}
                 />
             )

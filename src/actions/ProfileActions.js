@@ -667,6 +667,59 @@ export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
     }
 }
 
+export const updateProfilePic = (imageUri, pageId) => (dispatch, getState) => {
+    const { token, userId } = getState().user
+    // Start updaing process
+    dispatch({
+        type: PROFILE_SUBMIT_UPDATE,
+        payload: {
+            userId,
+            pageId,
+        },
+    })
+
+    if (imageUri) {
+        const updateProfilePromise = ImageUtils.upload(
+            true, //This is function ius called when the image is changed
+            imageUri,
+            token,
+            PROFILE_IMAGE_UPLOAD_SUCCESS,
+            dispatch,
+            userId
+        ).then(() => {
+            const image = getUserData(getState(), userId, 'tmpImage')
+            return updateProfile({ image, token })
+        })
+        updateProfilePromise
+            .then((res) => {
+                console.log('\nResponse from profile updating function: ', res)
+                const user = {
+                    profile: { image: res.image },
+                }
+                dispatch({
+                    type: PROFILE_UPDATE_SUCCESS,
+                    payload: {
+                        user,
+                        userId,
+                        pageId,
+                    },
+                })
+                Logger.log(
+                    `${DEBUG_KEY}: submitUpdatingProfile done with new user:`,
+                    user,
+                    2
+                )
+            })
+            .catch((err) => {
+                dispatch({
+                    type: PROFILE_UPDATE_FAIL,
+                    payload: err,
+                })
+                console.log('\nError updating profile picture: ', err)
+            })
+    }
+}
+
 /**
  * select a tab by tab name
  */

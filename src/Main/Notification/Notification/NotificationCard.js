@@ -122,7 +122,7 @@ class NotificationCard extends React.PureComponent {
 
     renderContent(item, isInvalidCommentNotif) {
         const { created, parsedNoti } = item
-        console.log('this is item notification', item)
+
         console.log(
             'this is invalidcomment notification',
             isInvalidCommentNotif

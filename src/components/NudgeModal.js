@@ -28,12 +28,13 @@ class ModalTester extends Component {
     }
 
     renderYesButton() {
-        const { visitedId, token } = this.props
+        const { visitedUser, token } = this.props
         return (
             <>
                 <TouchableWithoutFeedback
                     onPress={() => {
-                        this.props.createFirstGoalNudge(visitedId, token)
+                        this.props.createFirstGoalNudge(visitedUser, token)
+                        this.props.onClose()
                     }}
                 >
                     <View
@@ -227,6 +228,16 @@ class ModalTester extends Component {
     }
 }
 
-export default connect(null, {
+const mapStateToProps = (state, props) => {
+    const visitedUser = state.profile.userId.userId
+    const { token } = state.auth.user
+
+    return {
+        visitedUser,
+        token,
+    }
+}
+
+export default connect(mapStateToProps, {
     createFirstGoalNudge,
 })(ModalTester)

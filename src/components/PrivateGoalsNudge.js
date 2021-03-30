@@ -30,6 +30,7 @@ class PrivateGoalsNudge extends Component {
                 <TouchableWithoutFeedback
                     onPress={() => {
                         this.props.makeGoalsPublicNudge(visitedUser, token)
+                        this.props.onClose()
                     }}
                 >
                     <View
@@ -118,9 +119,11 @@ class PrivateGoalsNudge extends Component {
 
 const mapStateToProps = (state, props) => {
     const visitedUser = state.profile.userId.userId
+    const { token } = state.auth.user
 
     return {
         visitedUser,
+        token,
     }
 }
 
