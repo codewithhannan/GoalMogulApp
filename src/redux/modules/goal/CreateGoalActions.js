@@ -306,17 +306,23 @@ export const submitGoalPrivacy = (Id, value, token) => {
     return async (dispatch, getState) => {
         try {
             dispatch(loadingGoalPrivacy(true))
-            const apiResponse = await putRequest(
-                'http://192.168.1.3:8081/api/secure/goal/change-privacy',
+            const apiResponse = await API.put(
+                'secure/goal/change-privacy',
                 {
                     goalId: Id,
                     privacy: value,
                 },
-                {
-                    'x-access-token': token,
-                }
+                token
             )
-            dispatch(setGoalPrivacy(apiResponse.result.data.result))
+            const response = apiResponse.result
+            console.log('Responseee', apiResponse)
+
+            dispatch(setGoalPrivacy(response))
+            if (apiResponse.status === 200) {
+                Actions.refresh()
+                alert('Your goal privacy has been successfully updated')
+            }
+
             dispatch(loadingGoalPrivacy(false))
 
             console.log(
@@ -324,6 +330,9 @@ export const submitGoalPrivacy = (Id, value, token) => {
             )
         } catch (err) {
             dispatch(goalPrivacyError(true))
+
+            alert('Error while Updating goal privacy')
+
             console.log(`${DEBUG_KEY}: Error in editing new privacy ${err}`)
         }
     }

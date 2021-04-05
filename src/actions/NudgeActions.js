@@ -15,8 +15,8 @@ const DEBUG_KEY = '[ NudgeActions ]'
 export const makeGoalsPublicNudge = (visitedId, token) => {
     return async (dispatch, getState) => {
         try {
-            const res = await postRequest(
-                'http://192.168.1.3:8081/api/secure/nudge/send-nudge',
+            const res = await API.post(
+                'secure/nudge/send-nudge',
 
                 {
                     id: visitedId,
@@ -25,9 +25,7 @@ export const makeGoalsPublicNudge = (visitedId, token) => {
                         createFirstGoal: false,
                     },
                 },
-                {
-                    'x-access-token': token,
-                }
+                token
             )
             const response = res.result
             console.log(
@@ -46,8 +44,8 @@ export const makeGoalsPublicNudge = (visitedId, token) => {
 export const createFirstGoalNudge = (visitedId, token) => {
     return async (dispatch, getState) => {
         try {
-            const res = await postRequest(
-                'http://192.168.1.3:8081/api/secure/nudge/send-nudge',
+            const res = await API.post(
+                'secure/nudge/send-nudge',
 
                 {
                     id: visitedId,
@@ -56,9 +54,7 @@ export const createFirstGoalNudge = (visitedId, token) => {
                         createFirstGoal: true,
                     },
                 },
-                {
-                    'x-access-token': token,
-                }
+                token
             )
 
             const response = res.result
@@ -71,34 +67,6 @@ export const createFirstGoalNudge = (visitedId, token) => {
                 `${DEBUG_KEY} This is the error of create goals nudge`,
                 err
             )
-        }
-    }
-}
-
-export const removeNudge = (userId, token) => {
-    return async (dispatch, getState) => {
-        try {
-            const res = await postRequest(
-                'http://192.168.1.3:8081/api/secure/user/profile/send-nudge',
-
-                {
-                    id: userId,
-                    hasResponded: false,
-                    isDeleted: true,
-                },
-                {
-                    'x-access-token': token,
-                }
-            )
-
-            const response = res.result
-
-            console.log(
-                `${DEBUG_KEY} This is the response of remove nudge`,
-                response
-            )
-        } catch (err) {
-            ;`${DEBUG_KEY} This is the error of removing nudge`, err
         }
     }
 }
@@ -136,7 +104,9 @@ export const deleteNudge = (nudgeId) => {
                     isDeleted: true,
                     hasResponded: false,
                 },
+                token,
             })
+            dispatch(deleteSelectedNudge(nudgeId))
 
             console.log(
                 `${DEBUG_KEY} This is the response of deleting nudge`,
@@ -164,15 +134,14 @@ export const handleNudgeResponsed = (nudgeId) => {
                     hasResponded: true,
                 },
             })
-            dispatch(deleteSelectedNudge(nudgeId))
 
             console.log(
-                `${DEBUG_KEY} This is the response of deleting nudge`,
+                `${DEBUG_KEY} This is the response of responding nudge`,
                 res
             )
         } catch (err) {
             console.log(
-                `${DEBUG_KEY} This is the error of deleting nudge`,
+                `${DEBUG_KEY} This is the error of responding nudge`,
                 err.message
             )
         }

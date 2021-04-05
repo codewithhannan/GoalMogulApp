@@ -7,6 +7,8 @@ import {
     Keyboard,
     KeyboardAvoidingView,
     Linking,
+    SafeAreaView,
+    StatusBar,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuProvider } from 'react-native-popup-menu'
@@ -15,6 +17,8 @@ import { copilot } from 'react-native-copilot-gm'
 import DateTimePicker from 'react-native-modal-datetime-picker'
 import moment from 'moment'
 import * as Permissions from 'expo-permissions'
+import Modal from 'react-native-modal'
+import Button from './Button'
 
 // Components
 import ModalHeader from '../Common/Header/ModalHeader'
@@ -512,6 +516,8 @@ class CreateGoalModal extends React.Component {
 
     render() {
         const actionText = this.props.initializeFromState ? 'Update' : 'Create'
+
+        console.log('actionTextt', this.props.isFirstTimeCreateGoal)
         const titleText = this.props.initializeFromState
             ? 'Edit Goal'
             : 'New Goal'
@@ -519,20 +525,72 @@ class CreateGoalModal extends React.Component {
             this.props.formVals &&
             this.props.formVals.values &&
             this.props.formVals.values.title &&
+            this.props.formVals.values.category &&
+            this.props.formVals.values.priority &&
             this.props.formVals.values.title.trim() !== ''
 
-        return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                <GoalVisibleModal
-                    isVisible={this.state.goalModalVisible}
-                    closeModal={this.closePrivateGoalModal}
-                    handleYes={this.handleModalYes}
-                    handleClose={this.handleModalClose}
-                />
+        console.log('this is form values', this.props.formVals)
 
-                <View style={{ flex: 1, backgroundColor: 'white' }}>
-                    {this.renderGoalReminderDatePicker()}
-                    <ModalHeader
+        return (
+            <>
+                <SafeAreaView style={{ flex: 0, backgroundColor: '#42C0F5' }} />
+
+                <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+                    <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                        <StatusBar
+                            animated={true}
+                            backgroundColor="blue"
+                            // barStyle={statusBarStyle}
+                            // showHideTransition={statusBarTransition}
+                        />
+                        <GoalVisibleModal
+                            isVisible={this.state.goalModalVisible}
+                            closeModal={this.closePrivateGoalModal}
+                            handleYes={this.handleModalYes}
+                            handleClose={this.handleModalClose}
+                        />
+
+                        <View style={{ flex: 1, backgroundColor: 'white' }}>
+                            {this.renderGoalReminderDatePicker()}
+
+                            <View
+                                style={{
+                                    backgroundColor: 'white',
+                                    height: 20,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        borderWidth: 2.5,
+                                        width: 45,
+                                        borderRadius: 20,
+                                        borderColor: '#828282',
+                                    }}
+                                />
+
+                                {/* <Button
+                                title="go back"
+                                color="black"
+                                onPress={() => {
+                                    const durationSec =
+                                        (new Date().getTime() -
+                                            this.startTime.getTime()) /
+                                        1000
+                                    trackWithProperties(
+                                        this.props.initializeFromState
+                                            ? E.EDIT_GOAL_MODAL_CANCELLED
+                                            : E.CREATE_GOAL_MODAL_CANCELLED,
+                                        { DurationSec: durationSec }
+                                    )
+                                    if (this.props.onClose) this.props.onClose()
+                                    Actions.pop()
+                                }}
+                            /> */}
+                            </View>
+
+                            {/* <ModalHeader
                         title={titleText}
                         actionText={actionText}
                         back
@@ -561,18 +619,28 @@ class CreateGoalModal extends React.Component {
                         //         name: 'create_goal_create_goal_modal_8'
                         //     }
                         // }}
-                    />
-                    <NewGoalView
-                        initializeFromState={this.props.initializeFromState}
-                        isImportedGoal={this.props.isImportedGoal}
-                        goal={this.props.goal}
-                        tutorialText={this.props.tutorialText}
-                        onRef={(r) => {
-                            this.newGoalView = r
-                        }}
-                    />
-                </View>
-            </MenuProvider>
+                    /> */}
+
+                            <NewGoalView
+                                initializeFromState={
+                                    this.props.initializeFromState
+                                }
+                                isImportedGoal={this.props.isImportedGoal}
+                                goal={this.props.goal}
+                                tutorialText={this.props.tutorialText}
+                                onRef={(r) => {
+                                    this.newGoalView = r
+                                }}
+                                createButtonTitle={actionText}
+                                handleCreateButton={this.handleGoalReminder}
+                                actionDisabled={
+                                    !this.props.uploading || !hasValidFormVals
+                                }
+                            />
+                        </View>
+                    </MenuProvider>
+                </SafeAreaView>
+            </>
         )
     }
 }

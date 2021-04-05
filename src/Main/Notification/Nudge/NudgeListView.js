@@ -21,6 +21,8 @@ import {
     refreshNotifications,
 } from '../../../redux/modules/notification/NotificationTabActions'
 
+import { getAllNudges } from '../../../actions/NudgeActions'
+
 // Styles
 import { color } from '../../../styles/basic'
 
@@ -32,7 +34,8 @@ class NudgeListView extends React.PureComponent {
     }
 
     handleOnLoadMore = () => {
-        this.props.loadMoreNotifications()
+        const { token } = this.props
+        this.props.getAllNudges(token)
     }
 
     keyExtractor = (item) => item._id.toString()
@@ -54,9 +57,9 @@ class NudgeListView extends React.PureComponent {
     }
 
     renderListFooter() {
-        const { loading, data } = this.props
+        const { nudgeLoading, nudgesData } = this.props
         // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
-        if (loading && data.length >= 7) {
+        if (nudgeLoading && nudgesData.length >= 7) {
             return (
                 <View
                     style={{
@@ -115,7 +118,8 @@ class NudgeListView extends React.PureComponent {
 const mapStateToProps = (state) => {
     const { notifications } = state.notification
     const { data, refreshing, loading } = notifications
-    const { nudgesData } = state.nudges
+    const { nudgesData, loading: nudgeLoading } = state.nudges
+    const { token } = state.auth.user
 
     return {
         // data: data.filter(d => !d.parsedNoti.error),
@@ -123,10 +127,13 @@ const mapStateToProps = (state) => {
         refreshing,
         loading,
         nudgesData,
+        nudgeLoading,
+        token,
     }
 }
 
 export default connect(mapStateToProps, {
     loadMoreNotifications,
     refreshNotifications,
+    getAllNudges,
 })(NudgeListView)

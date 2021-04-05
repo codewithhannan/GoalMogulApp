@@ -130,7 +130,7 @@ class ProfileV2 extends Component {
             return
         }
         if (!this.props.isSelf && prevProps.user._id !== this.props.user._id) {
-            this.getNudgeData()
+            this.shouldSendNudge()
             return
         }
     }
@@ -193,7 +193,7 @@ class ProfileV2 extends Component {
         this.setState({ showNudgeAddGoals: !this.state.showNudgeAddGoals })
     }
 
-    getNudgeData = async () => {
+    shouldSendNudge = async () => {
         const { token, user } = this.props
         let res
         if (user._id) {

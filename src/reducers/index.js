@@ -59,6 +59,10 @@ import ShareToChatReducers from '../redux/modules/chat/ShareToChatReducers'
 
 import NudgeReducers from './NudgesReducer'
 
+//Contact Reducers
+
+import ContactsReducer from '../reducers/ContactsReducer'
+
 // Step by Step tutorial reducers
 import Tutorials from '../redux/modules/User/Tutorials'
 // Contact Sync
@@ -121,6 +125,7 @@ export const reducers = combineReducers({
     goalPrivacy: GoalPrivacyReducers,
     popup: Popup,
     nudges: NudgeReducers,
+    contacts: ContactsReducer,
 })
 
 export default persistReducer(rootPersistConfig, reducers)

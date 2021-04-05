@@ -123,19 +123,15 @@ class NotificationCard extends React.PureComponent {
     renderContent(item, isInvalidCommentNotif) {
         const { created, parsedNoti } = item
 
-        console.log(
-            'this is invalidcomment notification',
-            isInvalidCommentNotif
-        )
         let textToDisplay =
             parsedNoti && parsedNoti.notificationMessage
                 ? parsedNoti.notificationMessage
                 : ''
 
         let actorName = _.get(item, 'parsedNoti.actorName', undefined)
-        console.log('actorname', actorName)
+
         let startWithName = textToDisplay.startsWith(actorName)
-        console.log('starttttwithhh', startWithName)
+
         if (actorName && startWithName) {
             textToDisplay = textToDisplay.replace(`${actorName}`, '')
         }

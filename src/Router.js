@@ -93,6 +93,7 @@ import AddProfilePic from './Registration/AddProfilePic'
 import Contacts from './Registration/Contacts'
 import ContactSync from './Registration/ContactSync'
 import IntroForm from './Registration/IntroForm'
+import SendContactMessage from './Main/MeetTab/Modal/SendContactMessage'
 /* Registration */
 // import RegistrationAccount from './Registration/Account';
 // import RegistrationAccount from './Registration/RegistrationAccount';
@@ -129,6 +130,10 @@ function getCommonScenes(tab) {
         prefix = ''
     }
     return [
+        <Scene
+            key={`${prefix}ContactMessage`}
+            component={SendContactMessage}
+        />,
         <Scene key={`${prefix}goal`} component={GoalDetailCard} />,
         <Scene key={`${prefix}post`} component={PostDetailCard} />,
         <Scene key={`${prefix}share`} component={ShareDetailCard} />,
@@ -489,6 +494,7 @@ class RouterComponent extends Component {
                                                 initial
                                                 component={Home}
                                             />
+
                                             {getCommonScenes('home')}
                                         </Stack>
 
@@ -735,6 +741,7 @@ class RouterComponent extends Component {
                         component={CreateGoalModal}
                         hideNavBar
                     />
+
                     <Scene
                         key="trendingGoalView"
                         component={TrendingGoalView}

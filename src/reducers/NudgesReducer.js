@@ -22,8 +22,13 @@ const slice = createSlice({
         errorNudgesData: (state, action) => {
             state.loading = action.payload
         },
-        deleteSelectedNudge: (state, action) =>
-            state.filter((pro) => pro.id !== action.payload.id),
+        deleteSelectedNudge: (state, action) => {
+            filtered = state.nudgesData.filter(
+                (nudge) => nudge._id !== action.payload
+            )
+
+            state.nudgesData = filtered
+        },
     },
 })
 

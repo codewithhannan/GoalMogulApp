@@ -52,6 +52,9 @@ const FIELD_REQUIREMENTS = {
     name: {
         require_name: 'Name is required',
     },
+    inviteCode: {
+        require_code: 'Invite Code is required',
+    },
 }
 
 class RegistrationAccount extends React.Component {
@@ -63,6 +66,7 @@ class RegistrationAccount extends React.Component {
             nameStatus: undefined,
             phoneStatus: undefined,
             passwordStatus: undefined,
+            inviteCodeStatus: undefined,
             userAgreementChecked: true,
         }
     }
@@ -117,6 +121,7 @@ class RegistrationAccount extends React.Component {
         if (
             this.state.nameStatus == undefined &&
             this.state.emailStatus == undefined &&
+            this.state.inviteCodeStatus == undefined &&
             this.state.passwordStatus == undefined
         ) {
             this.setState({
@@ -124,6 +129,7 @@ class RegistrationAccount extends React.Component {
                 nameStatus: FIELD_REQUIREMENTS.name.require_name,
                 emailStatus: FIELD_REQUIREMENTS.email.require_email,
                 passwordStatus: FIELD_REQUIREMENTS.password.missing_password,
+                inviteCodeStatus: FIELD_REQUIREMENTS.inviteCode.require_code,
             })
             return
         }
@@ -196,6 +202,15 @@ class RegistrationAccount extends React.Component {
         }
     }
 
+    validateInviteCode = (code) => {
+        if (!code || !code.trim().length) {
+            this.setState({
+                ...this.state,
+                inviteCodeStatus: FIELD_REQUIREMENTS.inviteCode.require_code,
+            })
+        }
+    }
+
     validateEmail = (email) => {
         if (!email || !email.trim().length) {
             this.setState({
@@ -262,6 +277,7 @@ class RegistrationAccount extends React.Component {
             name,
             countryCode,
             registerErrMsg,
+            inviteCode,
         } = this.props
         return (
             <View
@@ -397,10 +413,45 @@ class RegistrationAccount extends React.Component {
                     inputTitle="Invite Code"
                     ref="inviteCode"
                     placeholder={`Enter you referral code here`}
-                    // value={inviteCode}
+                    value={inviteCode}
+                    returnKeyType="inviteCode"
+                    onSubmitEditing={() => {
+                        this.validateInviteCode(inviteCode)
+                        this.refs['dateOfBirth'].focus()
+                    }}
                     returnKeyType="done"
                     caption={``}
                     disabled={this.props.loading}
+                    onBlur={() => this.validateInviteCode(inviteCode)}
+                    onChangeText={(val) => {
+                        if (
+                            this.state.inviteCodeStatus !=
+                                FIELD_REQUIREMENTS.done &&
+                            val &&
+                            val.trim().length
+                        ) {
+                            this.setState({
+                                ...this.state,
+                                inviteCodeStatus: FIELD_REQUIREMENTS.done,
+                            })
+                        }
+                        this.props.registrationTextInputChange(
+                            'inviteCode',
+                            val
+                        )
+                    }}
+                    caption={
+                        !this.state.inviteCodeStatus ||
+                        this.state.inviteCodeStatus == FIELD_REQUIREMENTS.done
+                            ? ''
+                            : this.state.inviteCodeStatus
+                    }
+                    status={
+                        this.state.inviteCodeStatus &&
+                        this.state.inviteCodeStatus !== FIELD_REQUIREMENTS.done
+                            ? 'danger'
+                            : 'basic'
+                    }
                 />
                 <UserAgreementCheckBox
                     onPress={(val) =>
@@ -438,6 +489,8 @@ class RegistrationAccount extends React.Component {
                             onButtonPress={this.onNext}
                             disabled={
                                 this.props.loading ||
+                                this.state.inviteCodeStatus !==
+                                    FIELD_REQUIREMENTS.done ||
                                 this.state.nameStatus !==
                                     FIELD_REQUIREMENTS.done ||
                                 this.state.emailStatus !==
@@ -509,9 +562,11 @@ const mapStateToProps = (state) => {
         error,
         loading,
         registerErrMsg,
+        inviteCode,
     } = state.registration
 
     console.log('These are the props', state.registration)
+    console.log('These are erro', registerErrMsg)
 
     return {
         name,
@@ -521,6 +576,7 @@ const mapStateToProps = (state) => {
         error,
         loading,
         registerErrMsg,
+        inviteCode,
     }
 }
 
