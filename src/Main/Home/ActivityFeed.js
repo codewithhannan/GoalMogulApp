@@ -25,7 +25,7 @@ import { fetchProfile } from '../../actions/HomeActions'
 import {
     openProfileDetailEditForm,
     refreshProfileData,
-    openPopup,
+    getPopupData,
 } from '../../actions'
 import { getAllNudges } from '../../actions/NudgeActions'
 
@@ -154,8 +154,6 @@ class ActivityFeed extends Component {
         // Refresh user friends
         this.props.handleRefreshFriend()
         //To save the user's journey in redux store
-        this.props.openPopup()
-
         const { friendsData, profile, userId } = this.props
 
         const friendsBadges = friendsData.map(
@@ -189,6 +187,7 @@ class ActivityFeed extends Component {
         const { token } = this.props
 
         this.props.getAllNudges(token)
+        this.props.getPopupData()
     }
     shouldComponentUpdate(nextProps, nextState) {
         return (
@@ -893,8 +892,8 @@ export default connect(
         refreshProfileData,
         fetchUserProfile,
         fetchProfile,
-        openPopup,
         getAllNudges,
+        getPopupData,
     },
     null,
     { withRef: true }

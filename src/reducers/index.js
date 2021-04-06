@@ -8,7 +8,7 @@ import { reducer as formReducer } from 'redux-form'
 
 /* reducers */
 import Challenges from './Challenges'
-import Popup from './Popup'
+import Popup from './PopupReducers'
 import AuthReducers from './AuthReducers'
 import RegReducers from './RegReducers'
 import GoalPrivacyReducers from './GoalPrivacy'

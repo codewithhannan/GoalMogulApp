@@ -121,6 +121,3 @@ export const MEET_BLOCK_USER_DONE = 'meet_block_user_done'
 
 /*Challenges Actions */
 export const CHALLENGES_OPEN_CHALLENGES = 'challenges_open_challenges'
-
-/*Popup Actions */
-export const POPUP_OPEN_POPUP = 'popup_open_popup'
