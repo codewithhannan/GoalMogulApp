@@ -263,6 +263,7 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
         password,
         email,
         countryCode,
+        inviteCode,
         phone,
         gender,
         dateOfBirth,
@@ -276,6 +277,7 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
         phone: phoneNumber,
         gender: gender === 'Prefer not to say' ? undefined : gender,
         dateOfBirth,
+        inviteCode,
     }
 
     dispatch({

@@ -29,6 +29,8 @@ import { OnboardingAddPhotos } from './src/Main/Onboarding'
 import { YellowBox } from 'react-native'
 import PrivateGoalsNudge from './src/components/PrivateGoalsNudge'
 import Popup from './src/Main/Journey/Popup'
+import OnboardingInviteCode from './src/Main/Onboarding/OnboardingInviteCode'
+import MessageToContactsModal from './src/Main/MeetTab/Modal/SendContactMessage'
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
@@ -73,9 +75,7 @@ export default class App extends React.Component {
                     </PersistGate>
                 </ReduxProvider>
             </ThemeProvider>
-            // <ImageTest />
-
-            // <Popup />
+            // <MessageToContactsModal />
         )
     }
 }

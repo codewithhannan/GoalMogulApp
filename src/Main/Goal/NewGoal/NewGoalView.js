@@ -18,6 +18,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { CopilotStep, walkthroughable } from 'react-native-copilot-gm'
 import DraggableFlatlist from 'react-native-draggable-flatlist'
 import DateTimePicker from 'react-native-modal-datetime-picker'
+import Swiper from 'react-native-swiper'
 import {
     Menu,
     MenuOption,
@@ -34,6 +35,7 @@ import cancel from '../../../asset/utils/cancel_no_background.png'
 import dropDown from '../../../asset/utils/dropDown.png'
 import plus from '../../../asset/utils/plus.png'
 import LionWithLightbulb from '../../../asset/image/LionWithLightbulb.png'
+
 // Actions
 import {
     goalToFormAdaptor,
@@ -57,10 +59,15 @@ import ModalHeader from '../../Common/Header/ModalHeader'
 import ProfileImage from '../../Common/ProfileImage'
 import EmptyResult from '../../Common/Text/EmptyResult'
 import InputField from '../../Common/TextInput/InputField'
+import CreateGaolMdalToast from '../../../components/CreateGoalModalToast'
+
 import Button from '../Button'
 import MentionsTextInput from '../Common/MentionsTextInput'
 import { Icon } from '@ui-kitten/components'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import {
+    ScrollView,
+    TouchableWithoutFeedback,
+} from 'react-native-gesture-handler'
 
 const { Popover } = renderers
 const { width } = Dimensions.get('window')
@@ -68,13 +75,15 @@ const { width } = Dimensions.get('window')
 const TYPE_MAP = {
     step: {
         title: 'Steps',
-        placeholder: 'Break your goal into steps that are easier to achieve',
+        placeholder: 'Whats the first thing you should do?',
         buttonText: 'Add a Step',
+        text: 'Break your goals into steps that are easier to achieve',
     },
     need: {
         title: 'Things I Need',
         placeholder: 'Something your friends might be able to help with',
         buttonText: 'Add a Need',
+        text: 'Something you are specifically looking for help with',
     },
 }
 const INITIAL_TAG_SEARCH = {
@@ -83,6 +92,7 @@ const INITIAL_TAG_SEARCH = {
     limit: 10,
     loading: false,
 }
+
 const DEBUG_KEY = '[ UI NewGoalView ]'
 const WalkableView = walkthroughable(View)
 
@@ -91,6 +101,72 @@ class NewGoalView extends Component {
         super(props)
         this.initializeForm()
         this.state = {
+            sliderNumbers: [
+                { id: 10, letter: '10', value: 10, active: false },
+                { id: 9, letter: '9', value: 9, active: false },
+                { id: 8, letter: '8', value: 8, active: false },
+                { id: 7, letter: '7', value: 7, active: false },
+                { id: 6, letter: '6', value: 6, active: false },
+                { id: 5, letter: '5', value: 5, active: true },
+                { id: 4, letter: '4', value: 4, active: false },
+                { id: 3, letter: '3', value: 3, active: false },
+                { id: 2, letter: '2', value: 2, active: false },
+                { id: 1, letter: '1', value: 1, active: false },
+            ],
+            currIndex: 0,
+
+            RANDOM_TEXT: [
+                'Set your new goal below or slide left here for new goal ideas!',
+
+                'What’s a goal that your friends may be surprised to know you have?',
+
+                'What exciting achievement would you throw a party to celebrate?',
+
+                'What life experience can make you feel truly alive?',
+
+                "Describe an awesome trip you'd be excited to take with friends once you are able to.",
+
+                'With more time and energy, what fun activity would you want to do with friends?',
+
+                'What career goal would you like to be respected or admired for?',
+
+                'What good deed would you like people to remember you for?',
+
+                'What have you always wanted to do but have been afraid to attempt?',
+
+                'If money and time were not an issue, how would you want to spend your time contributing to society?',
+
+                'If you were GUARANTEED to succeed, what’s the one great thing you would dare to accomplis',
+
+                'What goal can you achieve together with your friends?',
+
+                "What's an interesting class or course you could enjoy taking with friends?",
+
+                'What relaxing activity could you start to plan so that you can see your friends more often',
+
+                'What future travel experience would you be excited to have with your friends?',
+
+                "What is something you've always wanted to do, but your family or friends don't believe you could or should?",
+
+                'If you had a few extra hours every week, how would you want to spend the additional time with your family or friends?',
+
+                'What massive milestone would you like to reach in the next 12 months?',
+
+                'What past experience brought you happiness that you would like to have again?',
+
+                "What habit would you want to start when you're able to?",
+
+                'What do you regret not doing last year that you still want to do?',
+
+                'What future accomplishment would you be proud to tell your children or grandchildren?',
+
+                'What do you need to pursue to feel like you are living your HIGHEST PURPOSE?',
+
+                'What activity could you start today that can bring more joy to your everyday life?',
+            ],
+
+            toastText: [],
+
             scrollEnabled: true,
             showGoalDescription: false,
             showMoreGoalInputs: false,
@@ -109,7 +185,36 @@ class NewGoalView extends Component {
         if (this.props.onRef !== null) {
             this.props.onRef(this)
         }
+
+        // const randome = this.state.randomText
+        //     .map((person) => `${Math.random().toFixed(10)}${person}`)
+        //     .sort()
+
+        // const sliced = randome.map((data) => data.slice(12))
+        // this.setState({ toastText: sliced })
+
+        function shuffle(arr, first, last) {
+            const newArr = arr.reduce((r, e, i) => {
+                const pos = parseInt(Math.random() * (i + 1))
+                r.splice(pos, 0, e)
+                return r
+            }, [])
+
+            if (first)
+                newArr.unshift(newArr.splice(newArr.indexOf(first), 1)[0])
+            if (last) newArr.push(newArr.splice(newArr.indexOf(last), 1)[0])
+            return newArr
+        }
+
+        const savedNumber = shuffle(
+            this.state.RANDOM_TEXT,
+            'Set your new goal below or slide left here for new goal ideas!'
+        )
+
+        this.setState({ RANDOM_TEXT: savedNumber })
     }
+
+    componentDidUpdate() {}
 
     componentWillUnmount() {
         console.log(`${DEBUG_KEY}: unmounting NewGoalView`)
@@ -296,7 +401,7 @@ class NewGoalView extends Component {
             shareToMastermind: true,
             category: 'General',
             privacy: PRIVACY_FRIENDS,
-            priority: 1,
+            priority: 5,
             hasTimeline: false,
             startTime: { date: undefined, picker: false },
             endTime: { date: undefined, picker: false },
@@ -459,7 +564,7 @@ class NewGoalView extends Component {
                 name="create_goal_create_goal_modal_1"
             >
                 <WalkableView>
-                    <FieldTitleText
+                    {/* <FieldTitleText
                         text={
                             isFirstTimeCreateGoal
                                 ? 'What’s a goal that your friends may not know you have?'
@@ -467,21 +572,34 @@ class NewGoalView extends Component {
                         }
                         required={false}
                         containerStyle={{ marginBottom: 16 }}
-                    />
+                    /> */}
                     <View
                         style={{
                             flexDirection: 'row',
                             justifyContent: 'space-between',
                         }}
                     >
-                        <FieldTitleText
-                            text="Your Goal"
-                            textStyle={styles.subTitleTextStyle}
-                            required={true}
-                        />
-                        <Text style={default_style.smallText_2}>
-                            {title ? title.length : 0}/90
-                        </Text>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={{ top: 4, color: '#828282' }}>*</Text>
+                            <FieldTitleText
+                                text="My goal is to:"
+                                textStyle={[styles.subTitleTextStyle]}
+                                // required={true}
+                            />
+                        </View>
+
+                        <TouchableOpacity
+                            onPress={() => Actions.push('trendingGoalView')}
+                        >
+                            <Text
+                                style={{
+                                    textDecorationLine: 'underline',
+                                    fontSize: 10,
+                                }}
+                            >
+                                View Trending Goals
+                            </Text>
+                        </TouchableOpacity>
                     </View>
                     <Field
                         name="title"
@@ -494,7 +612,7 @@ class NewGoalView extends Component {
                         inputContainerStyle={{
                             borderColor: color.GM_MID_GREY,
                         }}
-                        placeholder="Be as specific as possible"
+                        placeholder="Make your goal as specific as possible"
                         autoCorrect
                         autoFocus={true}
                         autoCapitalize={'sentences'}
@@ -502,6 +620,24 @@ class NewGoalView extends Component {
                         blurOnSubmit
                         maxLength={90}
                     />
+                    {/* <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                        <View style={{ marginTop: 5 }}>
+                            <Icon
+                                pack="material-community"
+                                name="lightbulb-on-outline"
+                                style={{
+                                    height: 15,
+                                    width: 15,
+                                    tintColor: '#828282',
+                                }}
+                            />
+                        </View>
+
+                        <Text style={styles.descriptionTextStyle}>
+                            For what exciting achievement would you celebrate by
+                            throwing a big party?{' '}
+                        </Text>
+                    </View> */}
                 </WalkableView>
             </CopilotStep>
         )
@@ -522,17 +658,17 @@ class NewGoalView extends Component {
                         }}
                     >
                         <Text style={styles.subTitleTextStyle}>
-                            Description{' '}
-                            <Text style={default_style.smallText_1}>
+                            More Details{' '}
+                            {/* <Text style={default_style.smallText_1}>
                                 (Optional)
-                            </Text>
+                            </Text> */}
                         </Text>
-                        <Text style={default_style.smallText_2}>
+                        {/* <Text style={default_style.smallText_2}>
                             {details && details[0] && details[0].length > 0
                                 ? this.props.details[0].length
                                 : 0}
                             /250
-                        </Text>
+                        </Text> */}
                     </View>
                     <Field
                         key={`goal-description-${index}`}
@@ -548,7 +684,7 @@ class NewGoalView extends Component {
                             minHeight: 80,
                         }}
                         numberOfLines={5}
-                        placeholder="A clearly defined goal increases your success rate. You’ll also get more Comments & Likes."
+                        placeholder="Share some more info about your goals..."
                         multiline
                         loading={this.state.tagSearchData.loading}
                         tagData={this.state.tagSearchData.data}
@@ -591,19 +727,50 @@ class NewGoalView extends Component {
                         marginTop: 20,
                         justifyContent: 'flex-start',
                         flex: 1,
+                        color: '#828282',
                     }}
                 >
-                    <Text style={styles.subTitleTextStyle}>Category</Text>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text style={{ top: 4, color: '#828282' }}>*</Text>
+                        <Text style={styles.subTitleTextStyle}>Category</Text>
+                    </View>
+
                     {menu}
                 </WalkableView>
             </CopilotStep>
         )
     }
 
+    toggleState = (id) => {
+        let updatedList = this.state.sliderNumbers.map((x) => {
+            if (x.id === id) {
+                x.active = true
+            } else {
+                x.active = false
+            }
+
+            return x
+        })
+        this.setState({
+            sliderNumbers: updatedList,
+        })
+    }
+
     renderPriority = () => {
         const THUMB_COLORS = ['#219653', '#F07E1A', '#D71919']
         const TRACK_COLORS = ['#27AE60', '#F2994A', '#EB5757']
-        const SLIDER_NUMS = [0, 5, 10]
+        // const SLIDER_NUMS = [
+        //     { id: 10, letter: '10', value: 10, active: false },
+        //     { id: 9, letter: '9', value: 9, active: false },
+        //     { id: 8, letter: '8', value: 8, active: false },
+        //     { id: 7, letter: '7', value: 7, active: false },
+        //     { id: 6, letter: '6', value: 6, active: false },
+        //     { id: 5, letter: '5', value: 5, active: false },
+        //     { id: 4, letter: '4', value: 4, active: false },
+        //     { id: 3, letter: '3', value: 3, active: false },
+        //     { id: 2, letter: '2', value: 2, active: false },
+        //     { id: 1, letter: '1', value: 1, active: false },
+        // ]
         let colorIndex = 0
         if (this.props.priority <= 3) colorIndex = 0
         else if (this.props.priority <= 6) colorIndex = 1
@@ -640,26 +807,71 @@ class NewGoalView extends Component {
                         flex: 1,
                     }}
                 >
-                    <Text style={styles.subTitleTextStyle}>
-                        How important is your goal?
-                    </Text>
-                    <Text style={styles.descriptionTextStyle}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text style={{ top: 4, color: '#828282' }}>*</Text>
+                        <Text style={styles.subTitleTextStyle}>
+                            How important is your goal?
+                        </Text>
+                    </View>
+
+                    {/* <Text style={styles.descriptionTextStyle}>
                         Use this to set relative priority of your Goal.
                     </Text>
-                    {slider}
+                    {slider} */}
                     <View
                         style={{
                             flexDirection: 'row',
                             justifyContent: 'space-between',
+                            marginTop: 15,
                         }}
                     >
-                        {SLIDER_NUMS.map((val) => {
-                            return (
-                                <Text style={default_style.normalText_1}>
-                                    {val}
-                                </Text>
-                            )
-                        })}
+                        <ScrollView
+                            horizontal
+                            style={{ width: 100 }}
+                            showsHorizontalScrollIndicator={false}
+                        >
+                            {this.state.sliderNumbers.map((val, index) => {
+                                return (
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.toggleState(val.id)
+                                            this.handlePriorityOnSelect(
+                                                val.value
+                                            )
+                                        }}
+                                    >
+                                        <View
+                                            style={{
+                                                borderColor: val.active
+                                                    ? '#42C0F5'
+                                                    : '#828282',
+                                                borderWidth: 0.5,
+                                                borderRadius: 50,
+                                                width: 35,
+                                                height: 35,
+                                                marginHorizontal: 5,
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                backgroundColor: val.active
+                                                    ? '#42C0F5'
+                                                    : 'transparent',
+                                            }}
+                                            key={index}
+                                        >
+                                            <Text
+                                                style={{
+                                                    color: val.active
+                                                        ? 'white'
+                                                        : '#828282',
+                                                }}
+                                            >
+                                                {val.letter}
+                                            </Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                )
+                            })}
+                        </ScrollView>
                     </View>
                 </WalkableView>
             </CopilotStep>
@@ -869,20 +1081,40 @@ class NewGoalView extends Component {
                 name="create_goal_create_goal_modal_4"
             >
                 <WalkableView>
-                    <FieldTitleText
+                    {/* <FieldTitleText
                         text="Timeline"
                         required={false}
                         containerStyle={{ marginBottom: 12 }}
-                    />
-                    <Text style={styles.descriptionTextStyle}>
+                    /> */}
+                    {/* <Text style={styles.descriptionTextStyle}>
                         Give your best estimate.
-                    </Text>
+                    </Text> */}
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            padding: 8,
+                        }}
+                    >
+                        <View style={{ position: 'absolute', left: 0 }}>
+                            <Text style={{ color: '#333333' }}>Start</Text>
+                        </View>
+                        <View style={{ right: 140, position: 'absolute' }}>
+                            <Text
+                                style={{
+                                    color: '#333333',
+                                }}
+                            >
+                                End
+                            </Text>
+                        </View>
+                    </View>
                     <View
                         style={{
                             marginTop: 8,
                             flexDirection: 'row',
-                            alignItems: 'center',
+
                             flexWrap: 'wrap',
+                            justifyContent: 'space-between',
                         }}
                     >
                         <TouchableOpacity
@@ -892,6 +1124,7 @@ class NewGoalView extends Component {
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 ...styles.borderStyle,
+                                width: 170,
                             }}
                             onPress={() =>
                                 this.props.change('startTime', {
@@ -916,6 +1149,7 @@ class NewGoalView extends Component {
                                 alignItems: 'center',
                                 justifyContent: 'flex-start',
                                 ...styles.borderStyle,
+                                width: 170,
                             }}
                             onPress={() =>
                                 this.props.change('endTime', {
@@ -927,7 +1161,7 @@ class NewGoalView extends Component {
                             {icon}
                             {endTime}
                         </TouchableOpacity>
-                        {cancelButton}
+                        {/* {cancelButton} */}
                     </View>
                     {startDatePicker}
                     {endDatePicker}
@@ -1004,6 +1238,8 @@ class NewGoalView extends Component {
                     required={false}
                     containerStyle={{ marginBottom: 12 }}
                 />
+                <Text style={{ color: '#828282' }}>{TYPE_MAP[type].text}</Text>
+
                 {fields.length > 0 ? (
                     <DraggableFlatlist
                         renderItem={(props) =>
@@ -1104,7 +1340,7 @@ class NewGoalView extends Component {
                     this.scrollView = r
                 }}
             >
-                <View
+                {/* <View
                     style={{
                         padding: 24,
                         flexDirection: 'row',
@@ -1145,10 +1381,10 @@ class NewGoalView extends Component {
                             }}
                         />
                     </View>
-                </View>
+                </View> */}
 
                 {/* Spacer */}
-                <View
+                {/* <View
                     style={[
                         {
                             height: 8 * default_style.uiScale,
@@ -1156,21 +1392,42 @@ class NewGoalView extends Component {
                             backgroundColor: color.GM_LIGHT_GRAY,
                         },
                     ]}
-                />
+                /> */}
+                <View style={{ marginTop: 10 }}>
+                    <Swiper
+                        style={{ height: 80 }}
+                        showsPagination={false}
+                        ref="swiper"
+                        index={0}
+                        onIndexChanged={(index) => {
+                            this.setState({ currIndex: index })
+                        }}
+                        loop={false}
+                    >
+                        {this.state.RANDOM_TEXT.map((data, index) => {
+                            return (
+                                <>
+                                    <CreateGaolMdalToast randomText={data} />
+                                </>
+                            )
+                        })}
+                    </Swiper>
+                </View>
 
                 {/* Primary form */}
-                <View style={{ padding: 20 }}>
+                <View style={{ padding: 20, flex: 1 }}>
                     {this.renderGoal()}
-                    {this.state.showGoalDescription ? (
-                        <FieldArray
-                            name="details"
-                            component={this.renderGoalDescription}
-                            loading={this.state.tagSearchData.loading}
-                            tagData={this.state.tagSearchData.data}
-                            keyword={this.state.keyword}
-                        />
-                    ) : (
-                        <TouchableWithoutFeedback
+                    {/* {this.state.showGoalDescription ? ( */}
+                    <FieldArray
+                        name="details"
+                        component={this.renderGoalDescription}
+                        loading={this.state.tagSearchData.loading}
+                        tagData={this.state.tagSearchData.data}
+                        keyword={this.state.keyword}
+                    />
+
+                    {/* ) : ( */}
+                    {/* <TouchableWithoutFeedback
                             onPress={this.enableDescriptionInput}
                         >
                             <Text
@@ -1183,11 +1440,11 @@ class NewGoalView extends Component {
                             >
                                 + Add a description
                             </Text>
-                        </TouchableWithoutFeedback>
-                    )}
+                        </TouchableWithoutFeedback> */}
+                    {/* )} */}
+                    {this.renderCategory()}
                     {this.renderPriority()}
                     {this.renderPrivacyControl(initializeFromState)}
-                    {this.renderCategory()}
                 </View>
 
                 {/* Spacer */}
@@ -1205,10 +1462,11 @@ class NewGoalView extends Component {
                 <View
                     style={{
                         padding: 20,
-                        marginBottom: 30,
+                        flex: 1,
+                        // marginBottom: 30,
                     }}
                 >
-                    {!this.state.showMoreGoalInputs ? (
+                    {/* {!this.state.showMoreGoalInputs ? (
                         <TouchableWithoutFeedback
                             onPress={this.enableMoreGoalInputs}
                         >
@@ -1223,26 +1481,51 @@ class NewGoalView extends Component {
                                 + Add a Timeline, Steps or Needs
                             </Text>
                         </TouchableWithoutFeedback>
-                    ) : null}
-                    {this.state.showMoreGoalInputs
-                        ? this.renderTimeline()
-                        : null}
-                    {this.state.showMoreGoalInputs ? (
-                        <View
-                            ref={(r) => {
-                                this.view = r
-                            }}
-                        >
-                            <FieldArray
-                                name="steps"
-                                component={this.renderSteps}
-                            />
-                            <FieldArray
-                                name="needs"
-                                component={this.renderNeeds}
-                            />
-                        </View>
-                    ) : null}
+                    ) : null} */}
+                    {/* {this.state.showMoreGoalInputs ?  */}
+                    {this.renderTimeline()}
+                    {/* : null} */}
+                    {/* {this.state.showMoreGoalInputs ? ( */}
+                    {/* <View
+                        ref={(r) => {
+                            this.view = r
+                        }}
+                        // style={{ bottom: 60 }}
+                    >
+                        <FieldArray name="steps" component={this.renderSteps} />
+
+                        <FieldArray name="needs" component={this.renderNeeds} />
+                    </View> */}
+                    {/* ) : null} */}
+                </View>
+                <View style={{ marginBottom: 40 }}>
+                    <Button
+                        text={this.props.createButtonTitle}
+                        // source={plus}
+
+                        buttonDisabled={this.props.actionDisabled}
+                        onPress={() => this.props.handleCreateButton()}
+                        containerStyle={{
+                            width: '90%',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: this.props.actionDisabled
+                                ? '#F4F0F0'
+                                : color.GM_BLUE,
+                            borderWidth: 1,
+                            borderRadius: 3,
+                            borderColor: this.props.actionDisabled
+                                ? 'transparent'
+                                : color.GM_BLUE,
+                            padding: 10,
+                            marginRight: 20,
+                        }}
+                        textStyle={{
+                            ...default_style.titleText_1,
+                            color: 'white',
+                            marginLeft: 15,
+                        }}
+                    />
                 </View>
             </KeyboardAwareScrollView>
         )
@@ -1314,10 +1597,12 @@ const styles = {
     subTitleTextStyle: {
         ...default_style.titleText_2,
         padding: 2,
+        color: '#828282',
     },
     descriptionTextStyle: {
         ...default_style.normalText_1,
         padding: 2,
+        color: '#828282',
     },
     standardInputStyle: {
         flex: 1,

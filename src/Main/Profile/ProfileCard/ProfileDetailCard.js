@@ -584,12 +584,13 @@ class ProfileDetailCard extends Component {
             )
         }
         return (
-            <View>
-                {this.renderAddAction(
-                    'Add a location',
-                    this.handleEditOnPressed
-                )}
-            </View>
+            <></>
+            // <View>
+            //     {this.renderAddAction(
+            //         'Add a location',
+            //         this.handleEditOnPressed
+            //     )}
+            // </View>
         )
     }
 

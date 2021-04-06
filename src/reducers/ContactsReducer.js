@@ -4,31 +4,30 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     loading: false,
-    privacy: '',
+    contacts: [],
+    error: '',
 }
 
 const slice = createSlice({
-    name: 'goalPrivacy',
+    name: 'contacts',
     initialState,
     reducers: {
-        loadingGoalPrivacy: (state, action) => {
+        loadingPhoneContacts: (state, action) => {
             state.loading = action.payload
         },
-        setGoalPrivacy: (state, action) => {
-            state.privacy = action.payload
+        setPhoneContacts: (state, action) => {
+            state.contacts = action.payload
         },
-        goalPrivacyError: (state, action) => {
+        phoneContactsError: (state, action) => {
             state.loading = true
             state.error = action.payload
         },
-        goalPrivacyUpdate: (state, action) => {},
     },
 })
 
 export default slice.reducer
 export const {
-    loadingGoalPrivacy,
-    setGoalPrivacy,
-    goalPrivacyError,
-    goalPrivacyUpdate,
+    loadingPhoneContacts,
+    setPhoneContacts,
+    phoneContactsError,
 } = slice.actions

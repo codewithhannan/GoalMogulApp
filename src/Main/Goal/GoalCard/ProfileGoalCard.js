@@ -205,7 +205,6 @@ class ProfileGoalCard extends React.Component {
                                                                 this.setState({
                                                                     toolTipVisible: false,
                                                                 })
-                                                                Actions.refresh()
                                                             }}
                                                         >
                                                             <View

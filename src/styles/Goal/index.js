@@ -68,8 +68,8 @@ export const PRIORTY_PILL_STYLES = [
 
 export const GOALS_STYLE = {
     commonPillIcon: {
-        height: 10 * UI_SCALE,
-        width: 10 * UI_SCALE,
+        height: 12 * UI_SCALE,
+        width: 12 * UI_SCALE,
         tintColor: color.TEXT_COLOR.DARK,
     },
     commonPillText: {
@@ -86,8 +86,8 @@ export const GOALS_STYLE = {
         backgroundColor: color.GM_LIGHT_GRAY,
         borderRadius: 100,
     },
-    privacyPillWidth: 75 * UI_SCALE,
-    priorityPillWidth: 50 * UI_SCALE,
+    privacyPillWidth: 82 * UI_SCALE,
+    priorityPillWidth: 40 * UI_SCALE,
 }
 
 export const TABBAR_HEIGHT = 50 * UI_SCALE

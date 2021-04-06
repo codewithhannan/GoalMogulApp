@@ -5,7 +5,11 @@ import { View, Image, TouchableOpacity, Text } from 'react-native'
 
 const Button = (props) => {
     return (
-        <TouchableOpacity activeOpacity={0.6} onPress={props.onPress}>
+        <TouchableOpacity
+            activeOpacity={0.6}
+            onPress={props.onPress}
+            disabled={props.buttonDisabled}
+        >
             <View
                 style={{
                     flexDirection: 'row',

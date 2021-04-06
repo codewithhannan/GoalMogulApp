@@ -391,14 +391,17 @@ class InputBox extends React.Component {
                         paddingVertical: 4,
                         paddingTop: 8,
                     }}
+                    showsHorizontalScrollIndicator={false}
                 >
-                    {privacyOptions.map(({ value, text }) =>
-                        this.renderPill(
-                            value,
-                            selectedValue,
-                            onChangeText,
-                            text
-                        )
+                    {privacyOptions.map(
+                        ({ value, text, materialCommunityIconName }) =>
+                            this.renderPill(
+                                value,
+                                selectedValue,
+                                onChangeText,
+                                text,
+                                materialCommunityIconName
+                            )
                     )}
                 </ScrollView>
                 {caption || status ? this.renderCaption(caption, status) : null}
@@ -419,7 +422,7 @@ class InputBox extends React.Component {
         )
     }
 
-    renderPill(pillKind, selectedValue, onChangeText, maybePillText) {
+    renderPill(pillKind, selectedValue, onChangeText, maybePillText, icon) {
         return (
             <DelayedButton
                 touchableWithoutFeedback
@@ -433,6 +436,18 @@ class InputBox extends React.Component {
                             : {},
                     ]}
                 >
+                    {icon && (
+                        <Icon
+                            pack="material-community"
+                            name={icon}
+                            style={{
+                                height: 15,
+                                width: 15,
+                                tintColor: '#828282',
+                                marginHorizontal: 5,
+                            }}
+                        />
+                    )}
                     <Text
                         style={[
                             default_style.buttonText_1,
@@ -544,6 +559,9 @@ const styles = {
         borderColor: color.GM_DOT_GRAY,
         borderWidth: 0.5,
         borderRadius: 50,
+
+        flexWrap: 'wrap',
+        flexDirection: 'row',
     },
     pillSelectedStyle: {
         backgroundColor: color.GM_LIGHT_GRAY,
@@ -552,6 +570,8 @@ const styles = {
     labelStyle: {
         fontSize: 15,
         fontFamily: FONT_FAMILY.SEMI_BOLD,
+        color: '#828282',
+        marginHorizontal: 5,
     },
     captionStyle: {
         fontSize: 12,

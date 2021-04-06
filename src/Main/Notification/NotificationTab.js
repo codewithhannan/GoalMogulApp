@@ -22,6 +22,8 @@ import {
     markAllNotificationAsRead,
 } from '../../redux/modules/notification/NotificationTabActions'
 
+import { getAllNudges } from '../../actions/NudgeActions'
+
 // Selectors
 import { getNotificationNeeds } from '../../redux/modules/notification/NotificationSelector'
 
@@ -54,6 +56,7 @@ class NotificationTab extends Component {
         // When notification finishes refreshing and
         // user is at the notification tab.
         // Then send mark all as read
+
         const justFinishRefreshing =
             prevProps.refreshing === true && this.props.refreshing === false
         const userOnNotificationPage =
@@ -62,6 +65,8 @@ class NotificationTab extends Component {
         if (justFinishRefreshing && userOnNotificationPage) {
             this.props.markAllNotificationAsRead()
         }
+        const { token } = this.props
+        this.props.getAllNudges(token)
     }
 
     keyExtractor = (item) => item._id
@@ -90,6 +95,11 @@ class NotificationTab extends Component {
             </View>
         )
     }
+
+    // handleRefreshSeeMoreButton = () => {
+    //     const { token, nudgesLoading } = this.props
+    //     this.props.getAllNudges(token)
+    // }
 
     renderHeader = ({ item }) => {
         return (
@@ -169,7 +179,7 @@ class NotificationTab extends Component {
                 >
                     <NudgeListView />
 
-                    {this.renderSeeMoreButton()}
+                    {/* {this.renderSeeMoreButton()} */}
                 </View>
             </>
         )
@@ -315,6 +325,8 @@ const mapStateToProps = (state) => {
     const notificationNeedData = getNotificationNeeds(state)
     const { needs, notifications, unread } = state.notification
     const { shouldUpdateUnreadCount } = unread
+    const { token } = state.auth.user
+    const { loading: nudgesLoading } = state.nudges
 
     return {
         refreshing: needs.refreshing || notifications.refreshing,
@@ -322,6 +334,8 @@ const mapStateToProps = (state) => {
         needData: notificationNeedData,
         loading: notifications.loading,
         shouldUpdateUnreadCount,
+        token,
+        nudgesLoading,
     }
 }
 
@@ -347,6 +361,7 @@ export default connect(
         loadMoreNotifications,
         refreshNeeds,
         markAllNotificationAsRead,
+        getAllNudges,
     },
     null,
     { withRef: true }
