@@ -58,7 +58,7 @@ const INITIAL_STATE = {
     email: '',
     password: '',
     headline: '',
-    inviteCode: '',
+    inviterCode: '',
     countryCode: {
         cca2: 'US',
         country: {

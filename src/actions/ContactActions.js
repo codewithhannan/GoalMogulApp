@@ -26,7 +26,6 @@ export const getAllContacts = () => {
                 if (data.length > 0) {
                     const contactsData = data.map((data, index) => {
                         return {
-                            isSelected: false,
                             name: data.firstName,
                             number: data.phoneNumbers[0].number,
                             id: index,
@@ -34,7 +33,7 @@ export const getAllContacts = () => {
                     })
 
                     dispatch(setPhoneContacts(contactsData))
-                    Actions.push('ContactMessage')
+                    // Actions.push('ContactMessage')
 
                     console.log(
                         `${DEBUG_KEY} This is the response of getting all contacts`,

@@ -36,6 +36,8 @@ import {
     componentKeyByTab,
 } from '../../../redux/middleware/utils'
 
+import { storeData } from '../../../store/storage'
+
 import SendContactMessage from './SendContactMessage'
 
 import { getAllContacts } from '../../../actions/ContactActions'
@@ -61,12 +63,14 @@ class InviteFriendModal extends React.PureComponent {
         this.state = { ...DEFAULT_STATE }
     }
 
-    updateDescription = (text) => {
+    updateDescription = async (text) => {
         this.setState({
             ...this.state,
             description: text,
         })
     }
+
+    async componentDidUpdate() {}
 
     closeModal = () => {
         if (this.props.closeModal) {
@@ -164,7 +168,11 @@ class InviteFriendModal extends React.PureComponent {
         const inviteLink = this.getInviteLink()
 
         if (type == 'contacts') {
-            return this.props.getAllContacts(), this.props.closeModal()
+            return (
+                Actions.push('ContactMessage'),
+                this.closeModal(),
+                await storeData('INVITEMESSAGE', this.state.description)
+            )
         }
         if (type == 'sms') {
             return this.inviteSms(this.state.description, inviteLink)

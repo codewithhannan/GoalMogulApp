@@ -363,7 +363,8 @@ class TokenService {
         authToken,
         refreshToken,
         isOnboarded,
-        userId
+        userId,
+        accountOnHold
     ) {
         let userIdToUse = userId || this._userId
 
@@ -388,6 +389,7 @@ class TokenService {
                 createdAt,
                 isOnboarded,
                 userId: userIdToUse,
+                accountOnHold: accountOnHold,
             }
             // Replace the authToken in cache
             this._authTokenObject = authTokenObject
@@ -410,6 +412,7 @@ class TokenService {
                 createdAt,
                 isOnboarded,
                 userId: userIdToUse,
+                accountOnHold: accountOnHold,
             }
             // Replace the refreshToken in cache
             this._refreshTokenObject = refreshTokenObject

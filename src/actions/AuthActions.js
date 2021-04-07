@@ -1,7 +1,7 @@
 /** @format */
 
 import { Actions } from 'react-native-router-flux'
-import { AppState, Image } from 'react-native'
+import { Alert, AppState, Image } from 'react-native'
 import { api as API } from '../redux/middleware/api'
 import { SplashScreen } from 'expo'
 import { SPLASHSCREEN_HIDE } from '../reducers/AuthReducers'
@@ -187,6 +187,7 @@ const authenticate = (
                 { ...data },
                 undefined
             )
+            console.log('response of login', res)
             if (!res.token || !is2xxRespose(res.status)) {
                 if (!is4xxResponse(res.status)) {
                     // Record failure in Sentry excluding user behavior
@@ -213,6 +214,7 @@ const authenticate = (
                 token: res.token,
                 userId: res.userId,
                 created: Date.now(),
+                accountOnHold: res.accountOnHold,
             }
 
             TokenService.mountUser(res.userId)
@@ -220,7 +222,8 @@ const authenticate = (
                 res.token,
                 res.refreshToken,
                 res.isOnBoarded,
-                res.userId
+                res.userId,
+                res.accountOnHold
             )
 
             Logger.log(
@@ -327,14 +330,26 @@ const mountUserWithToken = (
         getState
     )
 
+    console.log('this is on mount user object', userObject)
     // Let the screen transition happen first
     // before waiting on potential long duration operations
-    if (userObject && !userObject.isOnBoarded) {
-        // Load profile success and user is marked as not onboarded
-        // Go to onboarding flow
-        Actions.replace('registration_add_photo')
+
+    if (!userObject) {
+        // Something went wrong fetching profile
+        dispatchHideSplashScreen(dispatch)
+        return
+    }
+
+    if (userObject.accountOnHold) {
+        Actions.replace('waitlist')
+        // } else if (!userObject.accountOnHold && !userObject.isOnBoarded) {
+        //     console.log('B')
+        //     // Load profile success and user is marked as not onboarded
+        //     // Go to onboarding flow
+        //     Actions.replace('registration_add_photo')
     } else {
         // Go to home page
+
         Actions.replace('drawer')
         tokenObjectToUpdate = _.set(tokenObjectToUpdate, 'isOnboarded', true)
     }
@@ -362,6 +377,168 @@ const mountUserWithToken = (
  * Auto login when user starts the app.
  * TODO: there might be refactoring can be done by merging with {@code loginUser} function
  */
+export const authenticateInvitorCode = (value) => async (
+    dispatch,
+    getState
+) => {
+    const refreshTokenObject = await TokenService.checkAndGetValidRefreshToken()
+    Logger.log(
+        '[tryAutoLoginV2] refreshTokenObject loaded from TokenService is: ',
+        refreshTokenObject,
+        1
+    )
+    if (refreshTokenObject === null) {
+        // When refresh token is null, it means either user hasn't logged in before
+        // or the refreshToken has expired. User needs to login
+        dispatchHideSplashScreen(dispatch)
+        return
+    }
+
+    // Obtain the authToken. Disable auto logout since it's taken care of next step
+    let authToken
+    const {
+        userId,
+        isOnboarded,
+        token: refreshToken,
+        accountOnHold,
+    } = refreshTokenObject
+    console.log('on')
+    try {
+        // Try to gete the authToken and refresh authToken if it expires
+        // instead of logging user out
+
+        const postInviteCode = await API.post(
+            'pub/user/authenticate-inviterCode',
+            {
+                userId: userId,
+                ...value,
+            }
+        )
+        console.log('response of postINvite COde', postInviteCode)
+        authToken = await TokenService.getAuthToken(false)
+    } catch (err) {
+        // When refresh auth token failed, it will reject the promise returned. Hence we
+        // should catch the error here
+        Logger.log(
+            '[tryAutoLoginV2] fail to get auth token with error: ',
+            err,
+            1
+        )
+        dispatchHideSplashScreen(dispatch)
+        return
+    }
+
+    Logger.log(
+        '[tryAutoLoginV2] authToken loaded from TokenService is: ',
+        authToken,
+        1
+    )
+    if (!authToken) {
+        dispatchHideSplashScreen(dispatch)
+        return
+    }
+
+    // Saturate User.js and AuthReducers.js with user token and userId for other actions to work
+    // dispatch({
+    //     type: LOGIN_USER_SUCCESS,
+    //     payload: {
+    //         userId,
+    //         token: authToken,
+    //     },
+    // })
+
+    // Step 1 Page transition
+
+    // isOnboarded is false, then we fetch user profile to validate
+    // this is to handle when user has finished onboarding but it's first time
+    // logging on this device
+    const userObject = await fetchAppUserProfile(authToken, userId)(
+        dispatch,
+        getState
+    )
+
+    console.log('userrrrobjecctt', userObject)
+
+    if (!userObject) {
+        console.log('1')
+
+        // Something went wrong fetching profile
+        dispatchHideSplashScreen(dispatch)
+        return
+    }
+    if (userObject.accountOnHold) {
+        console.log('2')
+
+        // Go to Waitlist screen
+        Alert.alert('Please Enter a Valid Invite Code')
+
+        Actions.replace('waitlist')
+    } else if (userObject.accountOnHold == false) {
+        // This is to update the TokenService isOnboarded flag
+        console.log('3')
+        await TokenService.populateAndPersistToken(
+            authToken,
+            refreshToken,
+            true,
+            userId,
+            userObject.accountOnHold
+        )
+
+        // tokenObjectToUpdate = _.set(tokenObjectToUpdate, 'isOnboarded', true)
+
+        // Pass along the user onboarded state to state.user.user.isOnboarded
+        dispatch({
+            type: TUTORIAL_MARK_USER_ONBOARDED,
+            payload: {
+                userId: userId,
+            },
+        })
+
+        // Go to home page
+        Actions.replace('drawer')
+    }
+
+    // Add a 50ms delay here to let screen transition finishes
+    await new Promise((resolve, rej) => setTimeout(() => resolve(), 50))
+
+    // Step 2 hide splash screen
+    dispatchHideSplashScreen(dispatch)
+
+    // Step 3 Setup all necessary service and configuration
+    // set up chat listeners
+    LiveChatService.mountUser({
+        userId: userId,
+        authToken,
+    })
+    MessageStorageService.mountUser({
+        userId: userId,
+        authToken,
+    })
+
+    // Fetch user profile
+    await fetchAppUserProfile(undefined, userId)(dispatch, getState)
+
+    // Step 4 Refresh feed and all goals
+    refreshActivityFeed()(dispatch, getState)
+    refreshGoalFeed()(dispatch, getState)
+
+    // Step 5 Subscribe notification
+    subscribeNotification()(dispatch, getState)
+
+    /** Below actions are none blocking since we have transitioned the UI **/
+    // Load general assets like icons and images
+    loadGeneralAssets()
+
+    // Load unread notification
+    loadUnreadNotification()(dispatch, getState)
+
+    // Load remote matches
+    loadRemoteMatches(payload.userId)(dispatch, getState)
+
+    // Load tutorial state
+    loadTutorialState(payload.userId)(dispatch, getState)
+}
+
 export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     const refreshTokenObject = await TokenService.checkAndGetValidRefreshToken()
     Logger.log(
@@ -404,7 +581,13 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         return
     }
 
-    const { userId, isOnboarded, token: refreshToken } = refreshTokenObject
+    const {
+        userId,
+        isOnboarded,
+        token: refreshToken,
+        accountOnHold,
+    } = refreshTokenObject
+    console.log('on')
 
     // Saturate User.js and AuthReducers.js with user token and userId for other actions to work
     dispatch({
@@ -424,12 +607,17 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
             dispatch,
             getState
         )
+
         if (!userObject) {
             // Something went wrong fetching profile
             dispatchHideSplashScreen(dispatch)
             return
         }
-        if (!userObject.isOnBoarded) {
+        if (accountOnHold) {
+            // Go to Waitlist screen
+
+            Actions.replace('waitlist')
+        } else if (!accountOnHold && !userObject.isOnBoarded) {
             // Go to onboarding flow
             Actions.replace('registration_add_photo')
         } else {

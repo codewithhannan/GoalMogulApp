@@ -38,6 +38,7 @@ import {
     EVENT as E,
     trackWithProperties,
 } from '../../../monitoring/segment'
+
 import ImageUtils from '../../../Utils/ImageUtils'
 import {
     handleUploadContacts,
@@ -61,6 +62,7 @@ import LiveChatService from '../../../socketio/services/LiveChatService'
 import MessageStorageService from '../../../services/chat/MessageStorageService'
 import { auth as Auth } from '../auth/Auth'
 import { is2xxRespose } from '../../middleware/utils'
+import { Actions } from 'react-native-router-flux'
 
 const DEBUG_KEY = '[ Action RegistrationActions ]'
 /**
@@ -263,7 +265,7 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
         password,
         email,
         countryCode,
-        inviteCode,
+        inviterCode,
         phone,
         gender,
         dateOfBirth,
@@ -277,7 +279,7 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
         phone: phoneNumber,
         gender: gender === 'Prefer not to say' ? undefined : gender,
         dateOfBirth,
-        inviteCode,
+        inviterCode,
     }
 
     dispatch({
@@ -299,7 +301,8 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
                 res.token,
                 res.refreshToken,
                 false,
-                res.userId
+                res.userId,
+                res.accountOnHold
             )
 
             // Save token for auto login
@@ -310,6 +313,7 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
                     token: res.token,
                     userId: res.userId,
                     created: Date.now(),
+                    accountOnHold: res.accountOnHold,
                 })
             )
 
@@ -332,7 +336,10 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
             })
 
             // Invoke screen transition callback for registration success
-            if (onSuccess) {
+
+            if (onSuccess && res.accountOnHold) {
+                Actions.replace('waitlist')
+            } else if (onSuccess && !res.accountOnHold) {
                 onSuccess()
             }
 
