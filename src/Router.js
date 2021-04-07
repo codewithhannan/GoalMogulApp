@@ -122,6 +122,7 @@ import ReplyThread from './Main/Goal/GoalDetailCard/Comment/ReplyThread'
 import TribeDiscover from './Main/Tribe/TribeDiscover'
 import EditInviteCodeForm from './Main/Setting/Account/EditInviteCodeForm'
 import Challenges from './Main/Challenges/Challenges'
+import OnboardingInviteCode from './Main/Onboarding/OnboardingInviteCode'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -134,6 +135,7 @@ function getCommonScenes(tab) {
             key={`${prefix}ContactMessage`}
             component={SendContactMessage}
         />,
+        ,
         <Scene key={`${prefix}goal`} component={GoalDetailCard} />,
         <Scene key={`${prefix}post`} component={PostDetailCard} />,
         <Scene key={`${prefix}share`} component={ShareDetailCard} />,
@@ -397,7 +399,6 @@ class RouterComponent extends Component {
                                 <Scene
                                     key="registration_add_photo"
                                     component={OnboardingAddPhotos}
-                                    initial
                                 />
                                 <Scene
                                     key="registration_contact_sync"
@@ -428,6 +429,20 @@ class RouterComponent extends Component {
                                 <Scene
                                     key="registration_welcome"
                                     component={OnboardingWelcome}
+                                />
+                            </Stack>
+
+                            <Stack
+                                key="waitlist"
+                                hideNavBar
+                                type={ActionConst.RESET}
+                                drawerLockMode="locked-closed"
+                                gesturesEnabled={false}
+                                panHandlers={null}
+                            >
+                                <Scene
+                                    key="OnBoardingWaitlist"
+                                    component={OnboardingInviteCode}
                                 />
                             </Stack>
                             <Scene

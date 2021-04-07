@@ -344,6 +344,8 @@ class LoginPage extends Component {
 
     render() {
         const { handleSubmit } = this.props
+
+        console.log('this is handle SUmbit', handleSubmit)
         return (
             <View style={[OnboardingStyles.container.page]}>
                 <KeyboardAwareScrollView

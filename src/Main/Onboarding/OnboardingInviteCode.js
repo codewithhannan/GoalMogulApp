@@ -7,12 +7,16 @@ import {
     Text,
     TouchableWithoutFeedback,
     TextInput,
+    KeyboardAvoidingView,
     StyleSheet,
 } from 'react-native'
 import { color, default_style } from '../../styles/basic'
 import { Formik, Field, ErrorMessage } from 'formik'
 
 import { connect } from 'react-redux'
+import { api as API } from '../../redux/middleware/api'
+import { Actions } from 'react-native-router-flux'
+import { authenticateInvitorCode } from '../../actions'
 
 class OnboardingInviteCode extends Component {
     constructor(props) {
@@ -29,153 +33,164 @@ class OnboardingInviteCode extends Component {
     render() {
         return (
             <>
-                <View
-                    style={{
-                        backgroundColor: color.PG_BACKGROUND,
-
-                        flex: 1,
-                        justifyContent: 'center',
-                    }}
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : ''}
+                    style={{ flex: 1 }}
                 >
-                    <View>
-                        <View
-                            style={{
-                                width: '80%',
-                                marginHorizontal: 50,
-                                bottom: 20,
-                            }}
-                        >
-                            <Text
+                    <View
+                        style={{
+                            backgroundColor: color.PG_BACKGROUND,
+
+                            flex: 1,
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <View>
+                            <View
                                 style={{
-                                    fontSize: 30,
-                                    lineHeight: 40,
-                                    color: '#42C0F5',
-                                    fontWeight: '700',
-                                    fontFamily: 'SFProDisplay-Bold',
+                                    width: '80%',
+                                    marginHorizontal: 50,
+                                    bottom: 20,
                                 }}
                             >
-                                GoalMogul {''}
                                 <Text
                                     style={{
-                                        color: 'black',
+                                        fontSize: 30,
+                                        lineHeight: 40,
+                                        color: '#42C0F5',
+                                        fontWeight: '700',
+                                        fontFamily: 'SFProDisplay-Bold',
+                                    }}
+                                >
+                                    GoalMogul {''}
+                                    <Text
+                                        style={{
+                                            color: 'black',
+                                            fontWeight: '500',
+                                            fontSize: 25,
+                                            fontStyle: 'SFProDisplay-Regular',
+                                        }}
+                                    >
+                                        is in private beta testing. You are now
+                                        on the WaitList. We will email you as
+                                        soon as your account is ready.
+                                    </Text>
+                                </Text>
+                            </View>
+
+                            <View>
+                                <Text
+                                    style={{
+                                        fontSize: 13,
+                                        // marginTop: 15,
+
+                                        width: '80%',
+                                        marginHorizontal: 52,
+                                        lineHeight: 20,
                                         fontWeight: '500',
-                                        fontSize: 25,
                                         fontStyle: 'SFProDisplay-Regular',
                                     }}
                                 >
-                                    is in private beta testing. You are now on
-                                    the WaitList. We will email you as soon as
-                                    your account is ready.
+                                    Got an Invite Code? Enter it below to get
+                                    instant access:
                                 </Text>
-                            </Text>
+                            </View>
                         </View>
 
-                        <View>
-                            <Text
-                                style={{
-                                    fontSize: 13,
-                                    // marginTop: 15,
+                        <Formik
+                            initialValues={{
+                                inviterCode: '',
+                            }}
+                            onSubmit={async (value) => {
+                                console.log('this isi value', value)
 
-                                    width: '80%',
-                                    marginHorizontal: 52,
-                                    lineHeight: 20,
-                                    fontWeight: '500',
-                                    fontStyle: 'SFProDisplay-Regular',
-                                }}
-                            >
-                                Got an Invite Code? Enter it below to get
-                                instant access:
-                            </Text>
-                        </View>
-                    </View>
-
-                    <Formik
-                        initialValues={{
-                            InviteCode: '',
-                        }}
-                        onSubmit={async (value, { resetForm }) => {
-                            console.log('this isi value', value)
-                        }}
-                        validateOnBlur={true}
-                    >
-                        {({
-                            handleChange,
-                            handleBlur,
-                            handleSubmit,
-                            values,
-                            setFieldValue,
-                            isSubmitting,
-                            dirty,
-                            isValid,
-                            errors,
-                            touched,
-                        }) => (
-                            <>
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        justifyContent: 'center',
-                                    }}
-                                >
+                                this.props.authenticateInvitorCode(value)
+                            }}
+                            validateOnBlur={true}
+                        >
+                            {({
+                                handleChange,
+                                handleBlur,
+                                handleSubmit,
+                                values,
+                                setFieldValue,
+                                isSubmitting,
+                                dirty,
+                                isValid,
+                                errors,
+                                touched,
+                            }) => (
+                                <>
                                     <View
                                         style={{
-                                            width: '20%',
-                                            height: 35,
-                                            borderRadius: 4,
-                                            borderBottomColor: '#42C0F5',
-                                            borderTopColor: 'transparent',
-                                            borderLeftColor: 'transparent',
-                                            borderRightColor: 'transparent',
-                                            borderWidth: 2,
-                                            marginTop: 20,
-                                            marginHorizontal: 20,
+                                            flexDirection: 'row',
+                                            justifyContent: 'center',
                                         }}
                                     >
-                                        <TextInput
-                                            onChangeText={handleChange(
-                                                'InviteCode'
-                                            )}
-                                            onBlur={handleBlur('InviteCode')}
-                                            value={values.InviteCode}
-                                            multiline={true}
-                                            style={styles.textinput}
-                                            textAlign="left"
-                                            keyboardType="numeric"
-                                        />
-                                    </View>
-
-                                    <TouchableWithoutFeedback>
                                         <View
                                             style={{
-                                                backgroundColor: '#42C0F5',
-                                                width: '25%',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                height: 40,
-                                                borderColor: '#42C0F5',
+                                                width: '20%',
+                                                height: 35,
+                                                borderRadius: 4,
+                                                borderBottomColor: '#42C0F5',
+                                                borderTopColor: 'transparent',
+                                                borderLeftColor: 'transparent',
+                                                borderRightColor: 'transparent',
                                                 borderWidth: 2,
-                                                borderRadius: 7,
                                                 marginTop: 20,
+                                                marginHorizontal: 20,
                                             }}
                                         >
-                                            <Text
+                                            <TextInput
+                                                onChangeText={handleChange(
+                                                    'inviterCode'
+                                                )}
+                                                onBlur={handleBlur(
+                                                    'inviterCode'
+                                                )}
+                                                value={values.inviterCode}
+                                                multiline={true}
+                                                style={styles.textinput}
+                                                textAlign="left"
+                                                keyboardType="numeric"
+                                            />
+                                        </View>
+
+                                        <TouchableWithoutFeedback
+                                            onPress={handleSubmit}
+                                        >
+                                            <View
                                                 style={{
-                                                    color: 'white',
-                                                    fontWeight: '500',
-                                                    fontSize: 12,
-                                                    fontStyle:
-                                                        'SFProDisplay-Regular',
+                                                    backgroundColor: '#42C0F5',
+                                                    width: '25%',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#42C0F5',
+                                                    borderWidth: 2,
+                                                    borderRadius: 7,
+                                                    marginTop: 20,
                                                 }}
                                             >
-                                                Submit Code
-                                            </Text>
-                                        </View>
-                                    </TouchableWithoutFeedback>
-                                </View>
-                            </>
-                        )}
-                    </Formik>
-                </View>
+                                                <Text
+                                                    style={{
+                                                        color: 'white',
+                                                        fontWeight: '500',
+                                                        fontSize: 12,
+                                                        fontStyle:
+                                                            'SFProDisplay-Regular',
+                                                    }}
+                                                >
+                                                    Submit Code
+                                                </Text>
+                                            </View>
+                                        </TouchableWithoutFeedback>
+                                    </View>
+                                </>
+                            )}
+                        </Formik>
+                    </View>
+                </KeyboardAvoidingView>
             </>
         )
     }
@@ -191,11 +206,14 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     const { userId } = state.user
+    console.log('this is userId', state)
 
     return {
         userId,
     }
 }
 
-// export default connect(mapStateToProps, {})(OnboardingInviteCode)
-export default OnboardingInviteCode
+export default connect(mapStateToProps, {
+    authenticateInvitorCode,
+})(OnboardingInviteCode)
+// export default OnboardingInviteCode

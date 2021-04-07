@@ -277,7 +277,7 @@ class RegistrationAccount extends React.Component {
             name,
             countryCode,
             registerErrMsg,
-            inviteCode,
+            inviterCode,
         } = this.props
         return (
             <View
@@ -409,20 +409,20 @@ class RegistrationAccount extends React.Component {
                     disabled={this.props.loading}
                 />
                 <InputBox
-                    key="inviteCode"
+                    key="inviterCode"
                     inputTitle="Invite Code"
-                    ref="inviteCode"
+                    ref="inviterCode"
                     placeholder={`Enter you referral code here`}
-                    value={inviteCode}
-                    returnKeyType="inviteCode"
+                    value={inviterCode}
+                    returnKeyType="inviterCode"
                     onSubmitEditing={() => {
-                        this.validateInviteCode(inviteCode)
+                        this.validateInviteCode(inviterCode)
                         this.refs['dateOfBirth'].focus()
                     }}
                     returnKeyType="done"
                     caption={``}
                     disabled={this.props.loading}
-                    onBlur={() => this.validateInviteCode(inviteCode)}
+                    onBlur={() => this.validateInviteCode(inviterCode)}
                     onChangeText={(val) => {
                         if (
                             this.state.inviteCodeStatus !=
@@ -436,7 +436,7 @@ class RegistrationAccount extends React.Component {
                             })
                         }
                         this.props.registrationTextInputChange(
-                            'inviteCode',
+                            'inviterCode',
                             val
                         )
                     }}
@@ -562,7 +562,7 @@ const mapStateToProps = (state) => {
         error,
         loading,
         registerErrMsg,
-        inviteCode,
+        inviterCode,
     } = state.registration
 
     console.log('These are the props', state.registration)
@@ -576,7 +576,7 @@ const mapStateToProps = (state) => {
         error,
         loading,
         registerErrMsg,
-        inviteCode,
+        inviterCode,
     }
 }
 

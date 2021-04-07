@@ -142,6 +142,7 @@ class ActivityFeed extends Component {
             friendToVisit: '',
             visitFriendMore: '',
             closeFriendToVisit: '',
+
             badges: {
                 milestoneBadge: {
                     currentMilestone: 0,
@@ -715,7 +716,7 @@ class ActivityFeed extends Component {
         if (
             goals.length >= 1 &&
             currentMilestone == 1 &&
-            friendsData.length == 3
+            friendsData.length >= 3
         ) {
             getBronzeBadge = true
         } else {
@@ -741,14 +742,17 @@ class ActivityFeed extends Component {
                         style={{ height: 150 }}
                         showsPagination={false}
                         ref="swiper"
-                        index={1}
+                        index={0}
                         onIndexChanged={(index) => {
                             this.setState({ currIndex: index })
                         }}
                         loop={false}
                     >
+                        {!image ? (
+                            <MissingProfileToast pageId={pageAb} />
+                        ) : null}
                         {greenBadge && <GreenBadgeToast pageId={pageAb} />}
-                        {!image && <MissingProfileToast pageId={pageAb} />}
+
                         {goldBadge && <GoldBadge count={friendsCount} />}
                         {silverBadge && (
                             <SilverBadge heading={heading} text={text} />

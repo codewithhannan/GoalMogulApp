@@ -77,7 +77,7 @@ class SplashScreen extends Component {
                         <Image source={LogoText} style={styles.logoTextStyle} />
                     </View>
                     {/* Artwork */}
-                    <Image source={HandshakeArt} style={styles.artworkStyle} />
+                    {/* <Image source={HandshakeArt} style={styles.artworkStyle} /> */}
                     {/* Slogan */}
                     <Text style={styles.sloganTextStyle}>
                         Achieve more, together.
@@ -151,13 +151,13 @@ const styles = {
         marginBottom: IS_BIG_IPHONE ? 60 : 48,
     },
     logoIconStyle: {
-        height: 56,
-        width: 56,
+        height: 100,
+        width: 100,
         marginBottom: 16,
-        resizeMode: 'contain',
+        // resizeMode: 'contain',
     },
     logoTextStyle: {
-        height: 36,
+        height: 40,
         width: 208,
         resizeMode: 'contain',
     },
