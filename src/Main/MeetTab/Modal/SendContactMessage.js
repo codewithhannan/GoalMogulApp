@@ -3,70 +3,34 @@
 import React, { Component } from 'react'
 import {
     View,
-    Image,
     Text,
     Dimensions,
     FlatList,
     TouchableOpacity,
+    Alert,
 } from 'react-native'
-import Checkbox from 'expo-checkbox'
-import { color, default_style } from '../../../styles/basic'
+
+import { color } from '../../../styles/basic'
 import { Icon } from '@ui-kitten/components'
 import { connect } from 'react-redux'
-import Modal from 'react-native-modal'
-import { ScrollView } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-navigation'
-import { generateInvitationLink } from '../../../redux/middleware/utils'
 import * as Contacts from 'expo-contacts'
-import { getData } from '../../../store/storage'
+import * as Permissions from 'expo-permissions'
 import { ActivityIndicator } from 'react-native-paper'
-import { api as API } from '../../../redux/middleware/api'
 
-const screenWidth = Dimensions.get('screen').width
+//MiddleWare to get the Invite Link
+import { generateInvitationLink } from '../../../redux/middleware/utils'
+
+//To get Stored Data in asyncStorage
+import { getData } from '../../../store/storage'
+
+import { api as API } from '../../../redux/middleware/api'
+import * as _ from 'underscore'
+import { Actions } from 'react-native-router-flux'
+
 const screenHeight = Dimensions.get('screen').height
 
-const Data = [
-    {
-        id: 1,
-        first_name: 'Sile',
-    },
-    {
-        id: 2,
-        first_name: 'Clementia',
-    },
-    {
-        id: 3,
-        first_name: 'Brita',
-    },
-    {
-        id: 4,
-        first_name: 'Duke',
-    },
-    {
-        id: 5,
-        first_name: 'Hedvig',
-    },
-    {
-        id: 6,
-        first_name: 'Paulie',
-    },
-    {
-        id: 7,
-        first_name: 'Munmro',
-    },
-    {
-        id: 8,
-        first_name: 'Dyanna',
-    },
-    {
-        id: 9,
-        first_name: 'Shanta',
-    },
-    {
-        id: 10,
-        first_name: 'Bambi',
-    },
-]
+const DEBUGKEY = ['Contacts Screen']
 
 class MessageToContactsModal extends Component {
     constructor(props) {
@@ -74,8 +38,10 @@ class MessageToContactsModal extends Component {
         this.state = {
             renderData: [],
             isLoading: true,
-            selectedItems: [],
+            currentPage: 1,
             inviteMessage: '',
+            itemPerPage: 4000,
+            flatListData: [],
         }
     }
 
@@ -87,108 +53,142 @@ class MessageToContactsModal extends Component {
         const getInviteMessage = await getData('INVITEMESSAGE')
 
         this.setState({ inviteMessage: getInviteMessage })
-        console.log('this is get invite', getInviteMessage)
-
-        const { status } = await Contacts.requestPermissionsAsync()
-        console.log('status', status)
-
-        try {
-            if (status === 'granted') {
-                const { data } = await Contacts.getContactsAsync({
-                    fields: [Contacts.Fields.PhoneNumbers],
-                })
-
-                console.log('data of contacts', data)
-
-                if (data.length > 0) {
-                    const contactsData = data.map((data, index) => {
-                        return {
-                            name: data.firstName,
-                            number: data.phoneNumbers[0].number,
-                            id: index,
-                        }
+        console.log(
+            `${DEBUGKEY} this is the Invite message of User to Send`,
+            getInviteMessage
+        )
+        setTimeout(async () => {
+            const { status } = await Permissions.askAsync(Permissions.CONTACTS)
+            console.log(
+                `${DEBUGKEY} this is the Status of Contacts Permission`,
+                status
+            )
+            try {
+                if (status === 'granted') {
+                    const { data } = await Contacts.getContactsAsync({
+                        fields: [Contacts.Fields.PhoneNumbers],
                     })
 
-                    this.setState({ renderData: contactsData, loading: false })
-
-                    // Actions.push('ContactMessage')
-
                     console.log(
-                        `This is the response of getting all contacts`,
-                        contactsData
+                        `${DEBUGKEY} this is all Contacts we get from the device`,
+                        data
                     )
+
+                    if (data.length > 0) {
+                        let contacts = []
+
+                        data.map((item) => {
+                            if (item.firstName && item.phoneNumbers) {
+                                contacts.push({
+                                    name: item.firstName,
+                                    number: item.phoneNumbers[0],
+                                })
+                            }
+                            return contacts
+                        })
+                        console.log(
+                            `${DEBUGKEY} this is all Contacts only including firstname and number`,
+                            contacts
+                        )
+
+                        const allData = contacts.map((item, index) => {
+                            return {
+                                name: item.name,
+                                number: item.number.number,
+                                id: index,
+                            }
+                        })
+
+                        let renderData = _.sortBy(allData, 'name')
+                        console.log(
+                            `${DEBUGKEY} this is sorted Contacts all Contacts `,
+                            renderData
+                        )
+
+                        const filteredDate = renderData.slice(
+                            0,
+                            this.state.currentPage * this.state.itemPerPage
+                        )
+
+                        this.setState({
+                            renderData,
+                            flatListData: filteredDate,
+                            isLoading: false,
+                        })
+
+                        // this.setState(
+                        //     { isLoading: false, renderData: contactsData },
+                        //     console.log(
+                        //         'this is data of contacts',
+                        //         this.state.renderData
+                        //     )
+                        // )
+                    }
                 }
+            } catch (error) {
+                console.log(
+                    `${DEBUGKEY} this is the error while getting Contacts`,
+                    error.message
+                )
             }
-        } catch (error) {
-            console.log(
-                ` This is the error of getting conatacts `,
-                error.message
-            )
-        }
+        }, 2000)
     }
 
-    // let newData = [...this.state.renderData]
-
-    // const data = newData.map((newItem) => {
-    //     if (newItem.id == id) {
-    //         return {
-    //             ...newItem,
-    //             isSelected: true,
-    //         }
-    //     }
-    //     return {
-    //         ...newItem,
-    //         isSelected: false,
-    //     }
-    // })
-    // this.setState({ renderData: data })
+    handleLoadMore = async () => {
+        this.setState({
+            flatListData: [
+                ...this.state.flatListData,
+                renderData.slice(
+                    this.state.currentPage * this.state.itemPerPage,
+                    (this.state.currentPage + 1) * this.state.itemPerPage
+                ),
+            ], // concat the old and new data together
+            currentPage: this.state.currentPage + 1,
+            isLoading: true,
+        })
+    }
 
     selectItem = (id) => {
-        let renderData = [...this.state.renderData]
-        for (let item of renderData) {
+        let flatListData = [...this.state.flatListData]
+        for (let item of flatListData) {
             if (item.id == id) {
                 item.isSelected =
                     item.isSelected == null ? true : !item.isSelected
                 break
             }
         }
-        this.setState({ renderData })
+        this.setState({ flatListData })
     }
-
-    // const index = newData.findIndex((item) => item.id == id)
-    // console.log('indeexxx', index)
-    // newData[index].isSelected = true
-    // this.setState({ renderData: newData }, () => {
-    //     console.log('state update horai ha', newData)
-    //     console.log('state update horai ha1', this.state.renderData)
-    // })
 
     render() {
         const getSelectedData = this.state.renderData.filter((item) => {
             return item.isSelected
         })
 
-        console.log('getSelectedData', getSelectedData)
+        console.log(
+            `${DEBUGKEY} this is all selected Contacts we want to send invite Message `,
+            getSelectedData
+        )
 
         const inviteLink = this.getInviteLink()
 
-        console.log('this is inviteCode', inviteLink)
-
         const renderUser = (item) => (
-            <TouchableOpacity onPress={() => this.selectItem(item.id)}>
+            <TouchableOpacity
+                onPress={() => this.selectItem(item.id)}
+                style={{ justifyContent: 'center', alignItems: 'center' }}
+            >
                 <View
                     style={{
                         backgroundColor: color.GM_CARD_BACKGROUND,
 
-                        // width: '100%',
+                        width: '80%',
                         marginTop: 5,
 
                         borderRadius: 5,
-                        flex: 1,
+                        // flex: 1,
                         height: 80,
-                        justifyContent: 'flex-start',
 
-                        justifyContent: 'space-around',
+                        justifyContent: 'flex-start',
                     }}
                 >
                     <View
@@ -265,7 +265,6 @@ class MessageToContactsModal extends Component {
             </TouchableOpacity>
         )
 
-        // console.log('this is cpontats', this.props.contacts)
         return (
             <>
                 <SafeAreaView
@@ -274,35 +273,41 @@ class MessageToContactsModal extends Component {
                         backgroundColor: color.PG_BACKGROUND,
                     }}
                 >
-                    {this.state.loading ? (
-                        <ActivityIndicator />
+                    {this.state.isLoading ? (
+                        <ActivityIndicator
+                            size="medium"
+                            color="#42C0F5"
+                            style={{
+                                flex: 1,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        />
                     ) : (
                         <>
-                            <View
-                                style={{
-                                    marginTop: 50,
-                                    // alignItems: 'center',
-                                }}
-                            >
-                                <FlatList
-                                    style={{ padding: 6 }}
-                                    data={this.state.renderData}
-                                    // style={{ height: screenHeight * 0.7 }}
-                                    keyExtractor={(item) => item.id}
-                                    renderItem={({ item }) => renderUser(item)}
-                                    ItemSeparatorComponent={() => (
-                                        <View
-                                            style={{
-                                                borderWidth: 0.5,
-                                                borderColor: '#F1EEEE',
-                                            }}
-                                        ></View>
-                                    )}
-                                />
-                            </View>
+                            <FlatList
+                                style={{ padding: 6 }}
+                                data={this.state.flatListData}
+                                style={{ flex: 1, height: screenHeight }}
+                                keyExtractor={(item) => item.id}
+                                renderItem={({ item }) => renderUser(item)}
+                                ItemSeparatorComponent={() => (
+                                    <View
+                                        style={{
+                                            borderWidth: 0.5,
+                                            borderColor: '#F1EEEE',
+                                        }}
+                                    ></View>
+                                )}
+                                onEndReached={this.handleLoadMore}
+                            />
 
                             <TouchableOpacity
-                                style={{ marginHorizontal: 100, left: 20 }}
+                                style={{
+                                    marginHorizontal: 100,
+                                    left: 20,
+                                    justifyContent: 'flex-end',
+                                }}
                                 onPress={async () => {
                                     try {
                                         const postData = await API.post(
@@ -314,10 +319,15 @@ class MessageToContactsModal extends Component {
                                                 link: inviteLink,
                                             }
                                         )
-                                        console.log(
-                                            'POST DATA RESPONSE',
-                                            postData
-                                        )
+                                        if (postData.status === 200) {
+                                            Alert.alert(postData.message, '', [
+                                                {
+                                                    text: 'Ok',
+                                                    onPress: () =>
+                                                        Actions.pop(),
+                                                },
+                                            ])
+                                        }
                                     } catch (error) {
                                         console.log('error', error.message)
                                     }
@@ -329,11 +339,12 @@ class MessageToContactsModal extends Component {
                                         width: '80%',
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                        height: 40,
+                                        height: 30,
                                         borderColor: '#42C0F5',
                                         borderWidth: 2,
-                                        borderRadius: 7,
-                                        marginTop: 20,
+                                        borderRadius: 5,
+                                        marginBottom: 10,
+                                        top: 5,
                                     }}
                                 >
                                     <Text
@@ -361,13 +372,9 @@ const mapStateToProps = (state, props) => {
     const { user } = state.user
     const { inviteCode } = user
 
-    // const { contacts } = state.contacts
-    // console.log('contactss', contacts)
-
     return {
         token,
         inviteCode,
-        // contacts,
     }
 }
 

@@ -23,7 +23,7 @@ const UserAgreementCheckBox = ({ checked, onPress, isAutoAccepted }) => {
                 borderRadius: 4,
                 borderWidth: isAutoAccepted ? 0 : 0.5,
                 flexDirection: 'row',
-                marginTop: 24,
+                // marginTop: 24,
                 justifyContent: 'center',
                 alignItems: 'center',
             }}

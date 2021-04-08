@@ -810,6 +810,9 @@ const mapStateToProps = (state, props) => {
 
     console.log('nudgesss', nudges)
 
+    // const created = moment().format()
+    // console.log('data of state', created)
+
     // console.log('greeen', state.user.user)
 
     const { headline, profile } = state.user.user

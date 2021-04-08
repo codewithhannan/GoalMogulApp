@@ -379,7 +379,7 @@ class Home extends Component {
                         refreshing={showRefreshing}
                         onRefresh={this.handleOnRefresh}
                     />
-                    <EarnBadgeModal
+                    {/* <EarnBadgeModal
                         isVisible={this.state.showBadgeEarnModal}
                         closeModal={() => {
                             this.setState({
@@ -387,7 +387,7 @@ class Home extends Component {
                             })
                         }}
                         user={this.props.user}
-                    />
+                    /> */}
                 </View>
             </MenuProvider>
         )

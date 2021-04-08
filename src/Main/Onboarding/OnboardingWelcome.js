@@ -84,9 +84,8 @@ class OnboardingWelcome extends React.Component {
                                     },
                                 ]}
                             >
-                                Here you'll forget deeper & more meaningful
-                                connections, based on goals & dreams that are
-                                truly important to you in life!
+                                Set goals. Invite friends. Keep up with what
+                                they want in life and enjoy helping them!
                             </Text>
                         </View>
                     </View>

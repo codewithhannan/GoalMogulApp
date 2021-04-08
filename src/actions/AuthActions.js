@@ -32,6 +32,8 @@ import {
     loadTutorialState,
 } from '../redux/modules/User/TutorialActions'
 
+import moment from 'moment'
+
 import { refreshActivityFeed } from '../redux/modules/home/feed/actions'
 
 import { refreshGoalFeed } from '../redux/modules/home/mastermind/actions'
@@ -402,7 +404,7 @@ export const authenticateInvitorCode = (value) => async (
         token: refreshToken,
         accountOnHold,
     } = refreshTokenObject
-    console.log('on')
+
     try {
         // Try to gete the authToken and refresh authToken if it expires
         // instead of logging user out
@@ -457,7 +459,7 @@ export const authenticateInvitorCode = (value) => async (
         getState
     )
 
-    console.log('userrrrobjecctt', userObject)
+    // console.log('userrrrobjecctt', userObject)
 
     if (!userObject) {
         console.log('1')
@@ -467,19 +469,29 @@ export const authenticateInvitorCode = (value) => async (
         return
     }
     if (userObject.accountOnHold) {
-        console.log('2')
+        // console.log('2')
 
         // Go to Waitlist screen
         Alert.alert('Please Enter a Valid Invite Code')
 
         Actions.replace('waitlist')
-    } else if (userObject.accountOnHold == false) {
-        // This is to update the TokenService isOnboarded flag
-        console.log('3')
+    } else if (isOnboarded == false && userObject.accountOnHold == false) {
+        // console.log('ye hogya hai1')
+        Actions.replace('registration_add_photo')
         await TokenService.populateAndPersistToken(
             authToken,
             refreshToken,
-            true,
+            isOnboarded,
+            userId,
+            userObject.accountOnHold
+        )
+    } else {
+        // This is to update the TokenService isOnboarded flag
+        // console.log('ye hogya hai2')
+        await TokenService.populateAndPersistToken(
+            authToken,
+            refreshToken,
+            isOnboarded,
             userId,
             userObject.accountOnHold
         )
@@ -546,6 +558,7 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         refreshTokenObject,
         1
     )
+
     if (refreshTokenObject === null) {
         // When refresh token is null, it means either user hasn't logged in before
         // or the refreshToken has expired. User needs to login
@@ -587,7 +600,20 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         token: refreshToken,
         accountOnHold,
     } = refreshTokenObject
-    console.log('on')
+
+    let { showQuestions } = refreshTokenObject
+
+    let userCreated = getState().user.user.created
+    let currentDate = moment(Date.now())
+    let comparedUser = moment.duration(currentDate.diff(userCreated)).asDays()
+    let daysCreated = Math.floor(comparedUser)
+
+    if (daysCreated == 0) {
+        console.log('ye horaha ha3')
+        showQuestions = true
+    }
+
+    console.log('show Questionsss', showQuestions)
 
     // Saturate User.js and AuthReducers.js with user token and userId for other actions to work
     dispatch({
@@ -620,13 +646,25 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         } else if (!accountOnHold && !userObject.isOnBoarded) {
             // Go to onboarding flow
             Actions.replace('registration_add_photo')
+            // } else if (!accountOnHold && userObject.isOnBoarded && showQuestions) {
+            //     // Go to onboarding flow
+            //     Actions.replace('questions')
+            //     await TokenService.populateAndPersistToken(
+            //         authToken,
+            //         refreshToken,
+            //         true,
+            //         userId,
+            //         false
+            //     )
         } else {
             // This is to update the TokenService isOnboarded flag
+            console.log('ye horaha ha1')
             await TokenService.populateAndPersistToken(
                 authToken,
                 refreshToken,
                 true,
-                userId
+                userId,
+                accountOnHold
             )
 
             // Pass along the user onboarded state to state.user.user.isOnboarded
@@ -642,6 +680,7 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         }
     } else {
         // Pass along the user onboarded state to state.user.user.isOnboarded
+        console.log('ye horaha ha2')
         dispatch({
             type: TUTORIAL_MARK_USER_ONBOARDED,
             payload: {

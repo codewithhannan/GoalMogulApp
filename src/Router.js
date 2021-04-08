@@ -405,14 +405,14 @@ class RouterComponent extends Component {
                                     component={OnboardingSyncContact}
                                 />
 
-                                <Scene
+                                {/* <Scene
                                     key="registration_transition"
                                     component={OnboardingIntroTransition}
                                 />
                                 <Scene
                                     key="registration_target_selection"
                                     component={OnboardingSelectionTarget}
-                                />
+                                /> */}
                                 <Scene
                                     key="registration_tribe_selection"
                                     component={OnboardingTribeSelection}
@@ -443,6 +443,23 @@ class RouterComponent extends Component {
                                 <Scene
                                     key="OnBoardingWaitlist"
                                     component={OnboardingInviteCode}
+                                />
+                            </Stack>
+                            <Stack
+                                key="questions"
+                                hideNavBar
+                                type={ActionConst.RESET}
+                                drawerLockMode="locked-closed"
+                                gesturesEnabled={false}
+                                panHandlers={null}
+                            >
+                                <Scene
+                                    key="registration_transition"
+                                    component={OnboardingIntroTransition}
+                                />
+                                <Scene
+                                    key="registration_target_selection"
+                                    component={OnboardingSelectionTarget}
                                 />
                             </Stack>
                             <Scene
