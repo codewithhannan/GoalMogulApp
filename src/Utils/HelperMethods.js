@@ -18,6 +18,7 @@ const helperMethods = {
      * @returns any random value from the array
      */
     getRandomValue(array) {
+        console.log('ye lo g bhai', Math.floor(Math.random() * array.length))
         return array[Math.floor(Math.random() * array.length)]
     },
     /**
@@ -84,7 +85,7 @@ const variableMethods = {
 
 module.exports = {
     getTimeDifference: helperMethods.getTimeDifference,
-    getRandomValue: helperMethods.getTimeDifference,
+    getRandomValue: helperMethods.getRandomValue,
     getObjectIdTime: helperMethods.getObjectIdTime,
     parseExpressionAndEval: helperMethods.parseExpressionAndEval,
     firstNameCaps: variableMethods.firstNameCaps,

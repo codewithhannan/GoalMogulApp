@@ -21,6 +21,7 @@ import {
     // Page related functions
     handleTabRefresh,
     selectProfileTab,
+    uploadPopupData,
 } from '../../actions'
 import { closeProfile } from '../../actions/ProfileActions'
 import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
@@ -54,7 +55,6 @@ import CreateContentButtons from '../Common/Button/CreateContentButtons'
 import PrivateGoalsToast from '../../components/PrivateGoalsToast'
 import NudgeModal from '../../components/NudgeModal'
 import { postRequest } from '../../store/services'
-import { openPopup } from '../../actions'
 import Popup from '../Journey/Popup'
 import PrivateGoalsNudge from '../../components/PrivateGoalsNudge'
 import { getFirstName } from '../../Utils/HelperMethods'
@@ -124,13 +124,12 @@ class ProfileV2 extends Component {
             })
             return
         }
-        if (this.props.isSelf) {
-            // Showing popup to user about their achievements
-            this.handlePopup()
-            return
-        }
         if (!this.props.isSelf && prevProps.user._id !== this.props.user._id) {
             this.shouldSendNudge()
+            return
+        }
+        if (this.props.isSelf) {
+            this.handlePopup()
             return
         }
     }
@@ -166,24 +165,6 @@ class ProfileV2 extends Component {
         }
     }
 
-    handlePopup = () => {
-        const { popup, goals, openPopup, user } = this.props
-        // console.log('\nThis is the updated popup object', popup)
-
-        //codition to show first goal added popup
-        if (!popup.FIRST_GOAL.status && goals.length === 1) {
-            this.setState({ showPopupModal: true, popupName: 'FIRST_GOAL' })
-        }
-        //codition to show green badge earned popup
-        if (
-            _.get(user, 'profile.badges.milestoneBadge.currentMilestone', 0) >
-                0 &&
-            !popup.GREEN_BADGE.status
-        ) {
-            this.setState({ showPopupModal: true, popupName: 'GREEN_BADGE' })
-        }
-    }
-
     toggleNudgePrivateGoals = () => {
         this.setState({
             showNudgePrivateGoals: !this.state.showNudgePrivateGoals,
@@ -191,6 +172,43 @@ class ProfileV2 extends Component {
     }
     toggleNudgeAddGoals = () => {
         this.setState({ showNudgeAddGoals: !this.state.showNudgeAddGoals })
+    }
+
+    handlePopup = () => {
+        // console.log('\nhandlePopup is called')
+        const { popup, profile, goals } = this.props
+        console.log('\nThis is popup', profile)
+        if (!popup['FIRST_GOAL'].status && goals.length === 1) {
+            this.props.uploadPopupData('FIRST_GOAL')
+            this.setState({ showPopupModal: true, popupName: 'FIRST_GOAL' })
+        } else if (
+            !popup['GREEN_BADGE'].status &&
+            profile.badges.milestoneBadge.currentMilestone === 1
+        ) {
+            this.props.uploadPopupData('GREEN_BADGE')
+            this.setState({ showPopupModal: true, popupName: 'GREEN_BADGE' })
+        } else if (
+            !popup['BRONZE_BADGE'].status &&
+            profile.badges.milestoneBadge.currentMilestone === 2
+        ) {
+            this.props.uploadPopupData('BRONZE_BADGE')
+            this.setState({ showPopupModal: true, popupName: 'BRONZE_BADGE' })
+        } else if (!popup['SEVEN_GOALS'].status && goals.length === 7) {
+            this.props.uploadPopupData('SEVEN_GOALS')
+            this.setState({ showPopupModal: true, popupName: 'SEVEN_GOALS' })
+        } else if (
+            !popup['SILVER_BADGE'].status &&
+            profile.badges.milestoneBadge.currentMilestone === 3
+        ) {
+            this.props.uploadPopupData('SILVER_BADGE')
+            this.setState({ showPopupModal: true, popupName: 'SILVER_BADGE' })
+        } else if (
+            !popup['GOLD_BADGE'].status &&
+            profile.badges.milestoneBadge.currentMilestone === 4
+        ) {
+            this.props.uploadPopupData('GOLD_BADGE')
+            this.setState({ showPopupModal: true, popupName: 'GOLD_BADGE' })
+        }
     }
 
     shouldSendNudge = async () => {
@@ -588,7 +606,7 @@ class ProfileV2 extends Component {
             sectionsData = []
         }
 
-        const visitedId = this.props.visitedUser
+        // const visitedId = this.props.visitedUser
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -786,5 +804,5 @@ export default connect(makeMapStateToProps, {
     handleTabRefresh,
     handleProfileTabOnLoadMore,
     changeFilter,
-    openPopup,
+    uploadPopupData,
 })(wrapAnalytics(ProfileV2, SCREENS.PROFILE))

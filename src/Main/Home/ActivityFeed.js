@@ -25,7 +25,7 @@ import { fetchProfile } from '../../actions/HomeActions'
 import {
     openProfileDetailEditForm,
     refreshProfileData,
-    openPopup,
+    getPopupData,
 } from '../../actions'
 import { getAllNudges } from '../../actions/NudgeActions'
 
@@ -155,8 +155,6 @@ class ActivityFeed extends Component {
         // Refresh user friends
         this.props.handleRefreshFriend()
         //To save the user's journey in redux store
-        this.props.openPopup()
-
         const { friendsData, profile, userId } = this.props
 
         const friendsBadges = friendsData.map(
@@ -190,6 +188,7 @@ class ActivityFeed extends Component {
         const { token } = this.props
 
         this.props.getAllNudges(token)
+        this.props.getPopupData()
     }
     shouldComponentUpdate(nextProps, nextState) {
         return (
@@ -759,14 +758,17 @@ class ActivityFeed extends Component {
                         )}
                         {getGreenBadge && <GetGreenBadge />}
                         {getBronzeBadge && <GetBronzeBadge />}
-                        {/* {this.state.friendToVisit && (
+                        {this.state.friendToVisit && (
                             <VisitFriendsToast
                                 name={this.state.friendToVisit}
                             />
-                        )} */}
-                        {visitFriendsMore && (
-                            <VisitFriendsToast2 name={visitFriendMore} />
                         )}
+                        {friendsToVisitMore.length > 0 &&
+                            this.state.visitFriendMore && (
+                                <VisitFriendsToast2
+                                    name={this.state.visitFriendMore}
+                                />
+                            )}
                         {this.state.closeFriendToVisit && (
                             <CloseFriendsToast
                                 friend={this.state.closeFriendToVisit}
@@ -900,8 +902,8 @@ export default connect(
         refreshProfileData,
         fetchUserProfile,
         fetchProfile,
-        openPopup,
         getAllNudges,
+        getPopupData,
     },
     null,
     { withRef: true }
