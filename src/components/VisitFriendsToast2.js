@@ -11,9 +11,6 @@ import { getFirstName } from '../Utils/HelperMethods'
 class GreenBadgeToast extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            firstName: '',
-        }
     }
 
     renderOpenProfileButton() {
@@ -52,12 +49,11 @@ class GreenBadgeToast extends Component {
     }
 
     render() {
-        const { firstName } = this.state
         const { name } = this.props.name
-        if (name) {
-            const firstName = getFirstName(name)
-            this.setState({ firstName })
-        }
+        // if (name) {
+        //     const firstName = getFirstName(name)
+        //     this.setState({ firstName })
+        // }
 
         return (
             <>
@@ -105,7 +101,7 @@ class GreenBadgeToast extends Component {
                                 ...default_style.titleText_1,
                             }}
                         >
-                            You haven’t seen {firstName}’s profile yet.
+                            You haven’t seen {getFirstName(name)}’s profile yet.
                         </Text>
                         <Text
                             style={{
