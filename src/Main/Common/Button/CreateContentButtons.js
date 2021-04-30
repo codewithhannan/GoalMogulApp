@@ -16,7 +16,7 @@ const WalkableView = walkthroughable(View)
  * @prop onCreateGoalPress
  */
 const CreateContentButtons = (props) => {
-    const { onCreateUpdatePress, onCreateGoalPress } = props
+    const { onCreateUpdatePress, onCreateGoalPress, copilotStep } = props
     const containerStyle = props.containerStyle || {}
 
     return (
@@ -44,11 +44,35 @@ const CreateContentButtons = (props) => {
             {/* Hairline button seperator */}
             <View style={default_style.cardVerticalSeparator} />
 
-            <CopilotStep
-                text="Let's start by adding your first goal"
-                order={0}
-                name="create_goal"
-            >
+            {!copilotStep ? (
+                <CopilotStep
+                    text="Let's start by adding your first goal"
+                    order={0}
+                    name="create_goal"
+                >
+                    <WalkableView style={{ flexGrow: 1 }}>
+                        {/* Create Goal */}
+                        <DelayedButton
+                            touchableHighlight
+                            style={styles.createContentButton}
+                            underlayColor={'#F2F2F2'}
+                            onPress={onCreateGoalPress}
+                        >
+                            {/* Wrapping button contents in a View since TouchableHighlight does not accept multiple children */}
+                            <View style={{ alignItems: 'center' }}>
+                                <Icon
+                                    name="bullseye-arrow"
+                                    pack="material-community"
+                                    style={styles.createContentButtonIcon}
+                                />
+                                <Text style={styles.createContentButtonText}>
+                                    Create Goal
+                                </Text>
+                            </View>
+                        </DelayedButton>
+                    </WalkableView>
+                </CopilotStep>
+            ) : (
                 <WalkableView style={{ flexGrow: 1 }}>
                     {/* Create Goal */}
                     <DelayedButton
@@ -70,7 +94,7 @@ const CreateContentButtons = (props) => {
                         </View>
                     </DelayedButton>
                 </WalkableView>
-            </CopilotStep>
+            )}
         </View>
     )
 }

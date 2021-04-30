@@ -2,6 +2,7 @@
 
 import { Actions } from 'react-native-router-flux'
 import { Alert, AppState, Image } from 'react-native'
+import { Platform, Settings } from 'react-native'
 import { api as API } from '../redux/middleware/api'
 import { SplashScreen } from 'expo'
 import { SPLASHSCREEN_HIDE } from '../reducers/AuthReducers'
@@ -189,7 +190,7 @@ const authenticate = (
                 { ...data },
                 undefined
             )
-            console.log('response of login', res)
+
             if (!res.token || !is2xxRespose(res.status)) {
                 if (!is4xxResponse(res.status)) {
                     // Record failure in Sentry excluding user behavior
@@ -332,7 +333,6 @@ const mountUserWithToken = (
         getState
     )
 
-    console.log('this is on mount user object', userObject)
     // Let the screen transition happen first
     // before waiting on potential long duration operations
 
@@ -462,8 +462,6 @@ export const authenticateInvitorCode = (value) => async (
     // console.log('userrrrobjecctt', userObject)
 
     if (!userObject) {
-        console.log('1')
-
         // Something went wrong fetching profile
         dispatchHideSplashScreen(dispatch)
         return
@@ -609,11 +607,8 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     let daysCreated = Math.floor(comparedUser)
 
     if (daysCreated == 0) {
-        console.log('ye horaha ha3')
         showQuestions = true
     }
-
-    console.log('show Questionsss', showQuestions)
 
     // Saturate User.js and AuthReducers.js with user token and userId for other actions to work
     dispatch({
@@ -658,7 +653,7 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
             //     )
         } else {
             // This is to update the TokenService isOnboarded flag
-            console.log('ye horaha ha1')
+
             await TokenService.populateAndPersistToken(
                 authToken,
                 refreshToken,

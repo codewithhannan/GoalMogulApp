@@ -244,7 +244,6 @@ class InviteFriendModal extends React.PureComponent {
                 ]}
                 onPress={() => {
                     this.handleDeepLink(item)
-                    console.log('the item is pressed', item.type)
                 }}
             >
                 <View
@@ -501,11 +500,10 @@ class InviteFriendModal extends React.PureComponent {
                                         },
                                     ]}
                                     onPress={() =>
-                                        // this.inviteNative(
-                                        //     this.state.description,
-                                        //     inviteLink
-                                        // )
-                                        this.getContacts()
+                                        this.inviteNative(
+                                            this.state.description,
+                                            inviteLink
+                                        )
                                     }
                                 >
                                     <View

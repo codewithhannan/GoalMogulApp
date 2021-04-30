@@ -524,27 +524,29 @@ export class GoalDetailCardV3 extends React.Component {
                     )
                 }
                 return (
-                    <StepAndNeedCardV3
-                        key={`mastermind-${index}`}
-                        item={item}
-                        goalRef={goalDetail}
-                        onCardPress={() => {
-                            // Use passed in function to handle tab switch with animation
-                            this._handleIndexChange(1, item.type, item._id)
-                            this.props.createCommentForSuggestion(
-                                newCommentParams,
-                                pageId
-                            )
-                        }}
-                        isSelf={this.props.isSelf}
-                        count={item.count}
-                        pageId={pageId}
-                        drag={isSelf ? props.drag : null}
-                        isActive={props.isActive}
-                        onEdit={() => {
-                            this.scrollToIndex(index)
-                        }}
-                    />
+                    <>
+                        <StepAndNeedCardV3
+                            key={`mastermind-${index}`}
+                            item={item}
+                            goalRef={goalDetail}
+                            onCardPress={() => {
+                                // Use passed in function to handle tab switch with animation
+                                this._handleIndexChange(1, item.type, item._id)
+                                this.props.createCommentForSuggestion(
+                                    newCommentParams,
+                                    pageId
+                                )
+                            }}
+                            isSelf={this.props.isSelf}
+                            count={item.count}
+                            pageId={pageId}
+                            drag={isSelf ? props.drag : null}
+                            isActive={props.isActive}
+                            onEdit={() => {
+                                this.scrollToIndex(index)
+                            }}
+                        />
+                    </>
                 )
             }
             case 'focusTab':
@@ -612,6 +614,7 @@ export class GoalDetailCardV3 extends React.Component {
                     )}
                 />
                 {this.renderFocusedItem()}
+
                 {this.renderCommentCTR()}
             </Animated.View>
         )
@@ -880,6 +883,7 @@ export class GoalDetailCardV3 extends React.Component {
                             this.props.closeGoalDetail(goalId, pageId)
                         }
                     />
+
                     <KeyboardAvoidingView
                         style={[
                             styles.containerStyle,
@@ -893,7 +897,9 @@ export class GoalDetailCardV3 extends React.Component {
                     >
                         {this.renderFlatList()}
                     </KeyboardAvoidingView>
+
                     {this.renderCommentBox(focusType, pageId)}
+
                     <SuggestionModal
                         visible={this.props.showSuggestionModal}
                         onCancel={() => {

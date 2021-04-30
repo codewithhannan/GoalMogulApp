@@ -1,7 +1,15 @@
 /** @format */
 
 import React from 'react'
-import { StyleSheet, View, Text, StatusBar } from 'react-native'
+
+import {
+    StyleSheet,
+    View,
+    Text,
+    StatusBar,
+    Settings,
+    Platform,
+} from 'react-native'
 import DropdownAlert from 'react-native-dropdownalert-jia'
 
 // State management
@@ -27,10 +35,8 @@ import { initSentry } from './src/monitoring/sentry'
 import ThemeProvider from './theme/ThemeProvider'
 import { OnboardingAddPhotos } from './src/Main/Onboarding'
 import { YellowBox } from 'react-native'
-import PrivateGoalsNudge from './src/components/PrivateGoalsNudge'
-import Popup from './src/Main/Journey/Popup'
-import OnboardingInviteCode from './src/Main/Onboarding/OnboardingInviteCode'
-import MessageToContactsModal from './src/Main/MeetTab/Modal/SendContactMessage'
+import TestModal from './src/Main/MeetTab/Modal/TestModal'
+import OnBoardingPeopleKnow from './src/Main/Onboarding/OnboardingPeopleKnow'
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
@@ -75,7 +81,6 @@ export default class App extends React.Component {
                     </PersistGate>
                 </ReduxProvider>
             </ThemeProvider>
-            // <MessageToContactsModal />
         )
     }
 }

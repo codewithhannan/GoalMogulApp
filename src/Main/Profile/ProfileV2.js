@@ -59,8 +59,10 @@ import Popup from '../Journey/Popup'
 import PrivateGoalsNudge from '../../components/PrivateGoalsNudge'
 import { getFirstName } from '../../Utils/HelperMethods'
 import { api as API } from '../../redux/middleware/api'
-import VisitFriendsToast from '../../components/VisitFriendsToast'
+
 import FriendsGoalsVisit from '../../components/FriendsGoalsVisit'
+import ProfilePictureModal from '../../components/ProfilePictureModal'
+import NoGoalToast from '../../components/NoGoalToast'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
@@ -84,6 +86,7 @@ class ProfileV2 extends Component {
             popupName: '',
             showNudgePrivateGoals: false,
             showNudgeAddGoals: false,
+            profilePictureVisible: false,
         }
         this.handleProfileDetailCardLayout = this.handleProfileDetailCardLayout.bind(
             this
@@ -419,7 +422,13 @@ class ProfileV2 extends Component {
                 return <About pageId={pageId} userId={userId} />
             }
             case 'goals': {
-                return <ProfileGoalCard item={item} pageId={pageId} />
+                return (
+                    <ProfileGoalCard
+                        item={item}
+                        pageId={pageId}
+                        userId={userId}
+                    />
+                )
             }
             case 'posts': {
                 return <PostPreviewCard item={item} hasActionButton />
@@ -453,6 +462,10 @@ class ProfileV2 extends Component {
                             showBadgeEarnModal: true,
                         })
                     }
+                    profilePictureVisible={() =>
+                        this.setState({ profilePictureVisible: true })
+                    }
+                    profilePictureClose={this.state.profilePictureVisible}
                 />
             </Animated.View>
         )
@@ -461,6 +474,7 @@ class ProfileV2 extends Component {
     renderContentCreationButtons() {
         return (
             <CreateContentButtons
+                copilotStep
                 containerStyle={{
                     marginBottom: 8,
                 }}
@@ -504,8 +518,7 @@ class ProfileV2 extends Component {
             props.selectedTab === 'goals' || props.selectedTab === 'needs'
         const renderContentCreationButtons =
             (props.selectedTab === 'goals' || props.selectedTab == 'posts') &&
-            props.isSelf &&
-            false // disable for now to show more on the profile page
+            props.isSelf // disable for now to show more on the profile page
         const friendsGoalVisited = profileVisited && !props.isSelf
 
         return (
@@ -540,6 +553,7 @@ class ProfileV2 extends Component {
         const { navigationState, refreshing, isSelf } = this.props
         const { routes, index } = navigationState
         const currentTabName = routes[index].key
+        const noGoals = this.props.goals.length == 0
 
         if (currentTabName === 'about' || refreshing) {
             return null
@@ -557,7 +571,10 @@ class ProfileV2 extends Component {
                     token={this.props.token}
                 />
             )
+        } else if (currentTabName === 'goals' && isSelf && noGoals) {
+            return <NoGoalToast pageId={this.props.pageId} />
         }
+
         const emptyStateText = `No ${currentTabName}`
         return (
             <EmptyResult
@@ -585,6 +602,10 @@ class ProfileV2 extends Component {
         }
     }
 
+    closeProfileModal = () => {
+        this.setState({ profilePictureVisible: false })
+    }
+
     render() {
         const {
             userId,
@@ -610,6 +631,12 @@ class ProfileV2 extends Component {
 
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <ProfilePictureModal
+                    isVisible={this.state.profilePictureVisible}
+                    onClose={this.closeProfileModal}
+                    userId={userId}
+                />
+
                 <Popup
                     popupName={this.state.popupName}
                     isVisible={this.state.showPopupModal}
@@ -634,7 +661,7 @@ class ProfileV2 extends Component {
                     openProfile={false}
                     pageId={pageId}
                 />
-                {/* <EarnBadgeModal
+                <EarnBadgeModal
                     isVisible={this.state.showBadgeEarnModal}
                     closeModal={() => {
                         this.setState({
@@ -642,7 +669,7 @@ class ProfileV2 extends Component {
                         })
                     }}
                     user={this.props.user}
-                /> */}
+                />
                 <SearchBarHeader
                     backButton={!this.props.isMainTab}
                     rightIcon={this.props.isMainTab ? 'menu' : null}
@@ -697,6 +724,7 @@ const makeMapStateToProps = () => {
     const mapStateToProps = (state, props) => {
         // Set userId to main user if no userId present in props
         const { pageId, userId } = props
+
         const { popup } = state
 
         const { profile } = state.user.user

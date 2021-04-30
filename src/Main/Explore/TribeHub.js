@@ -14,6 +14,9 @@ import {
     refreshTribeHub,
     TRIBE_TYPE,
 } from '../../redux/modules/tribe/TribeHubActions'
+
+import { refreshProfileData } from '../../actions'
+import { makeGetUserGoals } from '../../redux/modules/User/Selector'
 import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
 
 import {
@@ -32,12 +35,33 @@ import EmptyResult from '../Common/Text/EmptyResult'
 import PostPreviewCard from '../Post/PostPreviewCard/PostPreviewCard'
 import { MenuProvider } from 'react-native-popup-menu'
 import EmptyTribe from '../../asset/image/empty_tribe.png'
+import LionMascot from '../../asset/image/LionMascot_shadow.png'
+import FeedToast from '../../components/FeedToast'
+
+let pageAb = ''
 
 class TribeHub extends Component {
+    state = {
+        heading: 'Now that you know what your goals are, ask yourself:',
+        text1: 'Who do I need to become to get what I want?',
+        text2: 'What am I willing to let go of to become that person?',
+        text3:
+            "Introduce yourself in the Tribes and let us know what you're committed to changing in your life!",
+    }
+
     componentDidMount() {
         // this.props.refreshTribeHub()
         this.props.refreshTribeHubFeed()
         this.props.refreshTribeHub()
+
+        const pageId = this.props.refreshProfileData(this.props.userId)
+
+        pageAb = pageId
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        console.log('this is myGoals', this.props.myGoals)
+        console.log('this is myGoals1', prevProps)
     }
 
     scrollToTop = () => {
@@ -164,6 +188,17 @@ class TribeHub extends Component {
                         text="Discover"
                     />
                 </View>
+
+                {this.props.goals.length == 1 ? (
+                    <FeedToast
+                        image={LionMascot}
+                        heading={this.state.heading}
+                        text1={this.state.text1}
+                        text2={this.state.text2}
+                        text3={this.state.text3}
+                        height={140}
+                    />
+                ) : null}
                 <View
                     style={{
                         padding: 12,
@@ -267,6 +302,14 @@ const makeMapStateToProps = () => {
     const mapStateToProps = (state) => {
         const { loading, refreshing } = state.myTribeTab.feed
         const data = getTribeFeed(state)
+        const { myGoals } = state.goals
+        const getUserGoals = makeGetUserGoals()
+
+        const { userId } = state.user
+
+        const goals = getUserGoals(state, userId, pageAb)
+
+        console.log('goalssss', state)
 
         let adminTribes = managedTribeSelector(state, TRIBE_TYPE.admin)
         let memberTribes = managedTribeSelector(state, TRIBE_TYPE.member)
@@ -283,7 +326,10 @@ const makeMapStateToProps = () => {
         return {
             data,
             loading,
+            userId,
+            goals,
             refreshing,
+            myGoals,
             isSilverBadgePlus,
             adminTribes,
             memberTribes,
@@ -326,6 +372,7 @@ export default connect(
         refreshTribeHub,
         openPostDetail,
         openNewTribeModal,
+        refreshProfileData,
     },
     null,
     { withRef: true }

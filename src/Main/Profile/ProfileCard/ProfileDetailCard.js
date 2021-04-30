@@ -41,10 +41,15 @@ import { getUserData } from '../../../redux/modules/User/Selector'
 /* Components */
 import ProfileActionButton from '../../Common/Button/ProfileActionButton'
 import DelayedButton from '../../Common/Button/DelayedButton'
+import {
+    actionSheet,
+    switchByButtonIndex,
+} from '../../Common/ActionSheetFactory'
 
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 
 import { Actions } from 'react-native-router-flux'
+import { storeData } from '../../../store/storage'
 import RichText from '../../Common/Text/RichText'
 import _ from 'lodash'
 import { getButtonBottomSheetHeight } from '../../../styles'
@@ -63,7 +68,9 @@ class ProfileDetailCard extends Component {
         this.state = {
             imageUrl: '',
             imageSource: '',
+            name: '',
         }
+
         this.handleEditOnPressed = this.handleEditOnPressed.bind(this)
     }
 
@@ -111,7 +118,7 @@ class ProfileDetailCard extends Component {
         )
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    async componentDidUpdate(prevProps, prevState, snapshot) {
         let prevImageUrl = ''
         if (
             prevProps.user &&
@@ -133,8 +140,6 @@ class ProfileDetailCard extends Component {
                 // console.log(`prefetching image, imageUrl: ${imageUrl}, prevImageUrl: ${prevImageUrl}`);
             }
         }
-
-        console.log('this si image url', this.state.imageUrl)
     }
 
     openOptionModal = () => this.bottomSheetRef.open()
@@ -469,15 +474,20 @@ class ProfileDetailCard extends Component {
     renderProfileImage() {
         const { user } = this.props
         return (
-            <View style={styles.imageContainerStyle}>
-                <ProfileImage
-                    imageStyle={{
-                        width: default_style.uiScale * 120,
-                        height: default_style.uiScale * 120,
-                    }}
-                    imageUrl={getProfileImageOrDefaultFromUser(user)}
-                />
-            </View>
+            <TouchableOpacity
+                onPress={() => this.props.profilePictureVisible()}
+                style={styles.imageContainerStyle}
+            >
+                <View>
+                    <ProfileImage
+                        imageStyle={{
+                            width: default_style.uiScale * 120,
+                            height: default_style.uiScale * 120,
+                        }}
+                        imageUrl={getProfileImageOrDefaultFromUser(user)}
+                    />
+                </View>
+            </TouchableOpacity>
         )
     }
 
@@ -503,6 +513,32 @@ class ProfileDetailCard extends Component {
         }
     }
 
+    handleOptionsOnPress() {
+        const options = switchByButtonIndex([
+            [
+                R.equals(0),
+                () => {
+                    console.log(
+                        `${DEBUG_KEY} User chooses to change profile pitrue`,
+                        '',
+                        this.pickImage()
+                    )
+                },
+            ],
+        ])
+
+        const requestOptions = ['Update Profile Picture', 'Cancel']
+
+        const cancelIndex = 1
+
+        const adminActionSheet = actionSheet(
+            requestOptions,
+            cancelIndex,
+            options
+        )
+        adminActionSheet()
+    }
+
     renderImage = () => {
         console.log(
             '\nThis is the image URL for profile picture: ',
@@ -525,21 +561,25 @@ class ProfileDetailCard extends Component {
                         <ActivityIndicator size="small" />
                     </View>
                 ) : (
-                    <Image
-                        source={{
-                            uri: this.state.imageUrl,
-                        }}
-                        style={{
-                            width: 110,
-                            height: 110,
+                    <TouchableOpacity
+                        onPress={() => this.props.profilePictureVisible()}
+                    >
+                        <Image
+                            source={{
+                                uri: this.state.imageUrl,
+                            }}
+                            style={{
+                                width: 110,
+                                height: 110,
 
-                            borderRadius: 150 / 2,
-                            overflow: 'hidden',
-                        }}
-                    />
+                                borderRadius: 150 / 2,
+                                overflow: 'hidden',
+                            }}
+                        />
+                    </TouchableOpacity>
                 )}
 
-                <TouchableOpacity onPress={this.pickImage}>
+                <TouchableOpacity onPress={() => this.handleOptionsOnPress()}>
                     <View style={styles.iconContainerStyle}>
                         <Entypo name="camera" size={11} color="#FFFF" />
                     </View>
@@ -778,76 +818,81 @@ class ProfileDetailCard extends Component {
         const { location } = profile
 
         return (
-            <View onLayout={this.onLayout}>
-                <View
-                    style={{
-                        height: 90 * default_style.uiScale,
-                        backgroundColor: color.GM_BLUE_LIGHT_LIGHT,
-                    }}
-                />
-                <View style={styles.topWrapperStyle}>
+            <>
+                <View onLayout={this.onLayout}>
                     <View
                         style={{
-                            flexGrow: 1,
-                            flexDirection: 'row',
+                            height: 90 * default_style.uiScale,
+                            backgroundColor: color.GM_BLUE_LIGHT_LIGHT,
                         }}
-                    >
-                        {self
-                            ? this.renderImage()
-                            : this.renderProfileImage(profile, self)}
-                    </View>
-
-                    <View style={{ flexDirection: 'row' }}>
-                        {/* <View style={{ flex: 1 }} /> */}
-                        {this.renderFriendshipStatusButton()}
-                        {this.renderMoreProfileActionButton()}
-                        {this.renderBottomSheet()}
-                        {this.renderFriendshipStatusBottomSheet()}
-                    </View>
-                </View>
-                <View style={styles.containerStyle}>
-                    <View
-                        style={{ flexDirection: 'row', alignItems: 'center' }}
-                    >
-                        <Text
+                    />
+                    <View style={styles.topWrapperStyle}>
+                        <View
                             style={{
-                                ...PROFILE_STYLES.nameTitle,
-                                marginBottom: 8,
+                                flexGrow: 1,
+                                flexDirection: 'row',
                             }}
                         >
-                            {name}
-                        </Text>
-                        <UserBanner
-                            user={this.props.user}
-                            iconStyle={{
-                                ...styles.marginStyle,
-                                height: 20 * default_style.uiScale,
-                                width: 17 * default_style.uiScale,
-                            }}
-                        />
-                        {this.props.self && (
-                            <DelayedButton
-                                onPress={this.handleBannerInfoIconOnPress}
-                                activeOpacity={0.6}
-                            >
-                                <Icon
-                                    name="information"
-                                    pack="material-community"
-                                    style={{
-                                        ...styles.marginStyle,
-                                        height: 20 * default_style.uiScale,
-                                        width: 20 * default_style.uiScale,
-                                        tintColor: color.GM_BLUE,
-                                    }}
-                                    zIndex={1}
-                                />
-                            </DelayedButton>
-                        )}
+                            {self
+                                ? this.renderImage()
+                                : this.renderProfileImage(profile, self)}
+                        </View>
+
+                        <View style={{ flexDirection: 'row' }}>
+                            {/* <View style={{ flex: 1 }} /> */}
+                            {this.renderFriendshipStatusButton()}
+                            {this.renderMoreProfileActionButton()}
+                            {this.renderBottomSheet()}
+                            {this.renderFriendshipStatusBottomSheet()}
+                        </View>
                     </View>
-                    {this.renderHeadline(headline)}
-                    {this.renderLocation(location)}
+                    <View style={styles.containerStyle}>
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    ...PROFILE_STYLES.nameTitle,
+                                    marginBottom: 8,
+                                }}
+                            >
+                                {name}
+                            </Text>
+                            <UserBanner
+                                user={this.props.user}
+                                iconStyle={{
+                                    ...styles.marginStyle,
+                                    height: 20 * default_style.uiScale,
+                                    width: 17 * default_style.uiScale,
+                                }}
+                            />
+                            {this.props.self && (
+                                <DelayedButton
+                                    onPress={this.handleBannerInfoIconOnPress}
+                                    activeOpacity={0.6}
+                                >
+                                    <Icon
+                                        name="information"
+                                        pack="material-community"
+                                        style={{
+                                            ...styles.marginStyle,
+                                            height: 20 * default_style.uiScale,
+                                            width: 20 * default_style.uiScale,
+                                            tintColor: color.GM_BLUE,
+                                        }}
+                                        zIndex={1}
+                                    />
+                                </DelayedButton>
+                            )}
+                        </View>
+                        {this.renderHeadline(headline)}
+                        {this.renderLocation(location)}
+                    </View>
                 </View>
-            </View>
+            </>
         )
     }
 }

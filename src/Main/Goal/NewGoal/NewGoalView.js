@@ -26,6 +26,8 @@ import {
     MenuTrigger,
     renderers,
 } from 'react-native-popup-menu'
+
+import { scrollInterpolator, animatedStyles } from './goalAnimation'
 import { Actions } from 'react-native-router-flux'
 import Slider from 'react-native-slider'
 import { connect } from 'react-redux'
@@ -34,7 +36,6 @@ import arrowRight from '../../../asset/utils/arrow_right.png'
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import dropDown from '../../../asset/utils/dropDown.png'
 import plus from '../../../asset/utils/plus.png'
-import LionWithLightbulb from '../../../asset/image/LionWithLightbulb.png'
 
 // Actions
 import {
@@ -59,7 +60,7 @@ import ModalHeader from '../../Common/Header/ModalHeader'
 import ProfileImage from '../../Common/ProfileImage'
 import EmptyResult from '../../Common/Text/EmptyResult'
 import InputField from '../../Common/TextInput/InputField'
-import CreateGaolMdalToast from '../../../components/CreateGoalModalToast'
+import CreateGoalToast from './TestGoal'
 
 import Button from '../Button'
 import MentionsTextInput from '../Common/MentionsTextInput'
@@ -93,8 +94,18 @@ const INITIAL_TAG_SEARCH = {
     loading: false,
 }
 
+const SLIDER_WIDTH = Dimensions.get('window').width
+const height = Dimensions.get('window').height
+const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7)
+const ITEM_HEIGHT = Math.round((ITEM_WIDTH * 3) / 9)
+
 const DEBUG_KEY = '[ UI NewGoalView ]'
 const WalkableView = walkthroughable(View)
+
+const DATA = []
+for (let i = 0; i < 10; i++) {
+    DATA.push(i)
+}
 
 class NewGoalView extends Component {
     constructor(props) {
@@ -113,56 +124,239 @@ class NewGoalView extends Component {
                 { id: 2, letter: '2', value: 2, active: false },
                 { id: 1, letter: '1', value: 1, active: false },
             ],
+
+            index: 0,
+
+            detailsFieldShow: false,
+
+            activeIndex: 0,
+
             currIndex: 0,
 
             RANDOM_TEXT: [
-                'Set your new goal below or slide left here for new goal ideas!',
+                'What’s a goal that your friends would find interesting to discover about you?',
 
-                'What’s a goal that your friends may be surprised to know you have?',
+                'What future achievement would you throw a party to celebrate?',
 
-                'What exciting achievement would you throw a party to celebrate?',
+                'What life experience would make you feel truly alive?',
 
-                'What life experience can make you feel truly alive?',
-
-                "Describe an awesome trip you'd be excited to take with friends once you are able to.",
-
+                "What's a goal that would be easier to achieve with your friends' support or encouragement",
                 'With more time and energy, what fun activity would you want to do with friends?',
-
-                'What career goal would you like to be respected or admired for?',
+                'What future career accomplishment would you want to be respected for?',
 
                 'What good deed would you like people to remember you for?',
-
+                'What would you do differently if you won a $1,000,000 tax-free?',
                 'What have you always wanted to do but have been afraid to attempt?',
-
                 'If money and time were not an issue, how would you want to spend your time contributing to society?',
-
-                'If you were GUARANTEED to succeed, what’s the one great thing you would dare to accomplis',
-
+                'If you were GUARANTEED to succeed, what’s the one great thing you would dare to accomplish?',
                 'What goal can you achieve together with your friends?',
-
                 "What's an interesting class or course you could enjoy taking with friends?",
-
-                'What relaxing activity could you start to plan so that you can see your friends more often',
-
+                'What relaxing activity could you start to plan so that you can see your friends more often?',
                 'What future travel experience would you be excited to have with your friends?',
-
                 "What is something you've always wanted to do, but your family or friends don't believe you could or should?",
-
                 'If you had a few extra hours every week, how would you want to spend the additional time with your family or friends?',
-
-                'What massive milestone would you like to reach in the next 12 months?',
-
+                'What do you want to do with your life?',
                 'What past experience brought you happiness that you would like to have again?',
-
-                "What habit would you want to start when you're able to?",
-
+                'What skillset could you develop to be irreplaceable at work?',
                 'What do you regret not doing last year that you still want to do?',
-
                 'What future accomplishment would you be proud to tell your children or grandchildren?',
-
                 'What do you need to pursue to feel like you are living your HIGHEST PURPOSE?',
 
                 'What activity could you start today that can bring more joy to your everyday life?',
+                'What interesting goal can greatly expand your horizons?',
+            ],
+
+            RANDOM_TEXT_SILVER_BADGE: [
+                'What’s a goal that your friends would find interesting to discover about you?',
+
+                'What future achievement would you throw a party to celebrate?',
+
+                'What life experience would make you feel truly alive?',
+
+                "What's a goal that would be easier to achieve with your friends' support or encouragement",
+                'With more time and energy, what fun activity would you want to do with friends?',
+                'What future career accomplishment would you want to be respected for?',
+
+                'What good deed would you like people to remember you for?',
+                'What would you do differently if you won a $1,000,000 tax-free?',
+                'What have you always wanted to do but have been afraid to attempt?',
+                'If money and time were not an issue, how would you want to spend your time contributing to society?',
+                'If you were GUARANTEED to succeed, what’s the one great thing you would dare to accomplish?',
+                'What goal can you achieve together with your friends?',
+                "What's an interesting class or course you could enjoy taking with friends?",
+                'What relaxing activity could you start to plan so that you can see your friends more often?',
+                'What future travel experience would you be excited to have with your friends?',
+                "What is something you've always wanted to do, but your family or friends don't believe you could or should?",
+                'If you had a few extra hours every week, how would you want to spend the additional time with your family or friends?',
+                'What do you want to do with your life?',
+                'What past experience brought you happiness that you would like to have again?',
+                'What skillset could you develop to be irreplaceable at work?',
+                'What do you regret not doing last year that you still want to do?',
+                'What future accomplishment would you be proud to tell your children or grandchildren?',
+                'What do you need to pursue to feel like you are living your HIGHEST PURPOSE?',
+
+                'What activity could you start today that can bring more joy to your everyday life?',
+                'What interesting goal can greatly expand your horizons?',
+                'What product or service would you be excited to buy or treat yourself to after accomplishing one of your biggest goals?',
+                "What habit would you want to start when you're able to?",
+                'What health habit would you like to develop this week?	',
+                'If there were no obstacles, what habit or activity could you start with to make the world a better place?',
+                'What goal would you pursue if you had 100% self-confidence?',
+                'What is that crucial thing you can do that would better your family life?',
+                "What hobby can make you genuinely express yourself that you haven't begun?",
+                'What is your vision for yourself at the peak of your career or business?',
+                'If you only had one year to live, who would you want to spend the time with?',
+                'What could you do to increase your chances of meeting the right person (or people) in your life [or career]?',
+                'What changes could you make to boost your energy levels?',
+                'What business have you always dreamed of starting but keep putting off?',
+                'What voluntary action can bring life into your relationship today?',
+                'You can only make one of your dreams come true, which one would you pick?',
+                'When chanced, what new opportunities do you want try?',
+                'What achievement would you excitedly share with a best friend?',
+                'What opportunity would you value more if you had the chance to do it again?',
+                'What is the goal you need to achieve to feel successful in your career?',
+                'What newly learned skill or habit do you want to incorporate more into your workplace?',
+                'If pursued, what goal can you accomplish for sure?',
+                'What routine can you start to improve your health?',
+                'What sanity have you lost and want to regain?',
+                'What activity do you find relaxation in?',
+                'What key action have you procastinated on that could otherwise achieve your goal?',
+                'What city do you yearn to visit again?',
+                "What is an activity you've left that you want to take up again?",
+                'What change in your attitude can improve your friendships?',
+                'What do you want to continue enjoying with your family?',
+                'What habit could improve your health and physical appearance?',
+                'What do you want to get better at?',
+                'If given the opportunity, how would you like to treat yourself?',
+                'What is a short-term goal that, if achieved, can make you happier?',
+                'What goal could you achieve to increase your rewards at work?',
+                'What can you do to overcome self-doubt?',
+                'What is your biggest career goal?',
+                'What accomplishment would make you most proud of yourself?',
+                'What acivity brings you the most peace of mind?',
+                "What's something you can begin to learn that would greatly improve the quality of your life?",
+                'Which bad habit of yours is the biggest obstacle to achieving your goals?',
+                'What do you need to reach the next level in your career?',
+                'What behavior could improve your relationship with your family?',
+                'To increase you business success, what can you do to better your professional networking?',
+                'What key decision can you make for your professional life?',
+                'What knowledge can you share to help others become better people?',
+                'What habit or routine can make you focus on your goals more?',
+                'If you had more time, what language(s) would you want  to learn or improve?',
+                'What can you do to bring more peace in your family life?',
+                'What could you create with your own hands?',
+                'Magically, if you could become an expert at one thing, what would that be?',
+                'What can you do to accomplish more in your career?',
+                'What is the next class or course you want to take?',
+                'What is a philanthropic cause you want to contribute to?',
+                'What financial decision would improve your future?',
+                'What positive influence do you want to have on another person?',
+                'What could you do to stay more organized and focused on your goals?',
+                'If achieved, what goal would make the greatest difference in your life?',
+                'What goal can motivate you to get up an hour earlier every day?',
+                'If you had more money and time, to what cause or organization would you contribute, and how?',
+                'What is a goal you wanted to pursue, but your friends or family talked you out of it?',
+                'What habit could make you a high achiever?',
+                'What skill could make you more valuable in the job market?',
+                'What accomplishment can change your financial situation for good?',
+                "What's a work-related thing you want to accomplish next year?",
+                'Where would you go; what would you do; what would you buy?',
+                'What unique goal MUST you achieve THIS QUARTER to have a feeling of great contribution at work?',
+                'What product or service would you buy to treat yourself as you deserve?',
+                'Which new activity, if started, could help you feel more fulfilled?',
+                'What activity would you like to do more often?',
+                'How much money do you want to earn, to afford the activities you want?',
+                'With no worry about money, what full-time activity would you engage in?',
+                'What important goal do you want to accomplish in 3-5 years?',
+                'You had as much money and time off from work as you wanted, where would you go, and who would you go with?',
+                'What important goal do you want to accomplish in one year?',
+                'What exciting experience would you like to have in life?',
+                'What skill do you need to develop to land your dream job?',
+                'If you had more time and resources, what musical instrument would you learn to play?',
+                'What future travel experience would you excitedly tell your friends?',
+                "What's an exotic place you want to visit?",
+                'What future trekking activity could you plan with your friends?',
+                'On what activity could you spend more time to improve the quality of your spiritual life?',
+                'What is your mission in life?',
+                'What is a goal you keep putting off?',
+                "What's an outdoor activity you haven't been able to do?",
+                'What personal goal is missing in your life?',
+                "What is an area of knowledge you've always wanted to know more about?",
+                'What is the most important thing you can do to improve your health?',
+                "Which of your friends' goals do you admire and would like to achieve?",
+                'What troubling project do you need motivation to get done?',
+                'If it will certainly come true, what future achievement can bring you excitement and joy?',
+                'If you were 100% confident, what would become possible for you?',
+
+                'What can your friends help you with to increase the possibility of achieving your goal?',
+
+                'What activity can you learn from a family member or friend this year?',
+                'What do you need to get better at to improve the quality of your relationship with others?',
+                'What can help you grow if you learn more about it?',
+                'What desired result would you want to be remembered for?',
+                'How do you intend to get enough rest this week?',
+                'With time and money, what music concert could you enjoy with your friends?',
+                'What could you get better at to improve the quality of your creativity and productivity?',
+                'What obstacle do you need to remove to achieve your most important goal?',
+                'What amusement park would you go with your friends?',
+                'What kind of people would you like to work with?',
+                'What new activity could help you make new friends in the next 4 weeks?',
+                'What restaurant do you want to visit with your partner?',
+                'What alternative career have you considered in the past that you may want to try again?',
+                'If you could solve any, what problem of the world would you solve?',
+                'What challenging task do you currently have at hand that you must accomplish?',
+                'What habit would improve your productivity to achieve your goals?',
+                'What are you willing to sacrifice to obtain the goal you want?',
+                'What do you have to do less often to improve your efficiency in life?',
+                'What can you start today to expand your professional network?',
+                'What products or services would you buy to treat yourself as you deserve?',
+                'What products or services could you sell or offer online to earn more income?',
+                'What do you have to do more often to improve the quality of your life?',
+                'How would you like to contribute to your family this week?',
+                'What are the things that can keep you mindful of your goals?',
+                'What short-term actions can help you achieve your long-term goal?',
+                'What can you get better at to improve the quality of your professional life?',
+                'What goal can help you achieve the kind of life you desire?',
+                'With more resources and time, what part of your home would you improve or make more beautiful?	',
+                'If mastered, what habit could majorly improve the quality of your life?',
+                'What travel plan have you been pending the longest that you want to attain?',
+                'Which accomplishment would drastically change your life for the better?',
+                'If you had to enroll in an evening class this year, what would you choose to learn?',
+                "What important conversations do wish to have with people you care about but haven't seen?	",
+                'If you could change something about your personality, what would it be?',
+                'What would you want to spend your free time doing? ',
+                'What consistent income rate would you want to attain this year?',
+                "What don't you have today that you desire to have?",
+                'What financial milestone do you intend to reach within the next 3 years?',
+                'What travel destination attracts you the most that you have not yet visited?',
+                'What do you want to become excellent at to attain your overall goal for the year?',
+                'What solution to a problem bothering have you not put to test?',
+                'What would you like to write about to get your book published?',
+                'What have you been thinking or talking about that you need to start acting on?	',
+                'What activities can you do more often to make yourself happy?',
+                'What can you improve in yourself to get better results in your career or business?',
+                'What can you intend to accomplish in one year?	',
+                'With adequate focus, what routine can contribute to your spiritual growth?',
+                'What knowledge, skills, or experience do you want to develop this year?',
+                'If you could have something that you don’t have today, what would that be?',
+                'What ideas or knowledge would you like to express or share with people?',
+                'What important item is missing in your household?',
+                'If money is not an issue, what can you set out to achieve in the next 3 months?',
+                'In what aspect of your life do you desire to make difference in the next 6 months?',
+                'What actions could increase your chances of meeting your new partner?',
+                'With more time, what food would you enjoy to learn to prepare?',
+                'What is stopping you from getting the goals you want that you need to beat?',
+                'What extreme sport have you dreamed of trying with your friends?',
+                "What tangible thing do you wish you can have that you don't have now?",
+                'What would you like to improve about your home?',
+                'With more time, what dance would you like to learn or get better at?',
+                'What new pet would can you consider to get?',
+                'What car have you liked to buy or rent to drive around your country or another?',
+                'If you had more time, what sport would you like to play more often?',
+                'What city would you like to visit and spend all your day shopping?	',
+                'If you had one chance, which living and famous person would you like to meet?',
+                'What massive milestone would you like to reach at the moment?',
+                'What milestone do you need to reach for you to feel you are living abundantly?',
             ],
 
             toastText: [],
@@ -208,13 +402,19 @@ class NewGoalView extends Component {
 
         const savedNumber = shuffle(
             this.state.RANDOM_TEXT,
-            'Set your new goal below or slide left here for new goal ideas!'
+            'What’s a goal that your friends would find interesting to discover about you?'
         )
 
-        this.setState({ RANDOM_TEXT: savedNumber })
-    }
+        const savedSilverNumber = shuffle(
+            this.state.RANDOM_TEXT_SILVER_BADGE,
+            'What’s a goal that your friends would find interesting to discover about you?'
+        )
 
-    componentDidUpdate() {}
+        this.setState({
+            RANDOM_TEXT: savedNumber,
+            RANDOM_TEXT_SILVER_BADGE: savedSilverNumber,
+        })
+    }
 
     componentWillUnmount() {
         console.log(`${DEBUG_KEY}: unmounting NewGoalView`)
@@ -614,7 +814,7 @@ class NewGoalView extends Component {
                         }}
                         placeholder="Make your goal as specific as possible"
                         autoCorrect
-                        autoFocus={true}
+                        // autoFocus={true}
                         autoCapitalize={'sentences'}
                         multiline
                         blurOnSubmit
@@ -650,47 +850,73 @@ class NewGoalView extends Component {
         return fields.map((description, index) => {
             return (
                 <WalkableView>
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            marginTop: 16,
-                        }}
-                    >
-                        <Text style={styles.subTitleTextStyle}>
-                            More Details{' '}
-                            {/* <Text style={default_style.smallText_1}>
-                                (Optional)
-                            </Text> */}
-                        </Text>
-                        {/* <Text style={default_style.smallText_2}>
-                            {details && details[0] && details[0].length > 0
-                                ? this.props.details[0].length
-                                : 0}
-                            /250
-                        </Text> */}
-                    </View>
-                    <Field
-                        key={`goal-description-${index}`}
-                        name={description}
-                        component={this.renderInput}
-                        editable={this.props.uploading}
-                        style={{
-                            ...styles.standardInputStyle,
-                            paddingLeft: 15,
-                            paddingRight: 15,
-                            // Should approximately match numberOfLines * fontSize height + padding
-                            maxHeight: 200,
-                            minHeight: 80,
-                        }}
-                        numberOfLines={5}
-                        placeholder="Share some more info about your goals..."
-                        multiline
-                        loading={this.state.tagSearchData.loading}
-                        tagData={this.state.tagSearchData.data}
-                        keyword={this.state.keyword}
-                        change={(type, val) => this.props.change(type, val)}
-                    />
+                    {this.state.detailsFieldShow ? (
+                        <>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    marginTop: 16,
+                                }}
+                            >
+                                <Text style={styles.subTitleTextStyle}>
+                                    More Details{' '}
+                                </Text>
+                            </View>
+                            <Field
+                                key={`goal-description-${index}`}
+                                name={description}
+                                component={this.renderInput}
+                                editable={this.props.uploading}
+                                style={{
+                                    ...styles.standardInputStyle,
+                                    paddingLeft: 15,
+                                    paddingRight: 15,
+                                    // Should approximately match numberOfLines * fontSize height + padding
+                                    maxHeight: 200,
+                                    minHeight: 80,
+                                }}
+                                numberOfLines={5}
+                                placeholder="Share some more info about your goals..."
+                                multiline
+                                loading={this.state.tagSearchData.loading}
+                                tagData={this.state.tagSearchData.data}
+                                keyword={this.state.keyword}
+                                change={(type, val) =>
+                                    this.props.change(type, val)
+                                }
+                            />
+                        </>
+                    ) : null}
+
+                    {!this.state.detailsFieldShow ? (
+                        <Button
+                            text={'Tap to add more details'}
+                            source={plus}
+                            onPress={() =>
+                                this.setState({ detailsFieldShow: true })
+                            }
+                            containerStyle={{
+                                width: '100%',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: color.GM_CARD_BACKGROUND,
+                                borderWidth: 1.5,
+                                borderRadius: 3,
+                                borderColor: '#F3F3F3',
+                                padding: 10,
+                            }}
+                            iconStyle={{
+                                ...default_style.smallIcon_1,
+                                backgroundColor: 'transparent',
+                                tintColor: '#999999',
+                            }}
+                            textStyle={{
+                                ...default_style.titleText_1,
+                                color: '#999999',
+                            }}
+                        />
+                    ) : null}
                 </WalkableView>
             )
         })
@@ -700,15 +926,15 @@ class NewGoalView extends Component {
         const menu = MenuFactory(
             [
                 'General',
-                'Learning/Education',
                 'Career/Business',
-                'Financial',
-                'Spiritual',
-                'Family/Personal',
-                'Physical',
                 'Charity/Philanthropy',
+                'Financial/Wealth',
+                'Health/Wellness',
+                'Learning/Mindset',
+                'Personal/Relationships',
+                'Spiritual',
                 'Travel',
-                'Things',
+                'Things to Buy',
             ],
             this.handleCatergoryOnSelect,
             this.props.category,
@@ -1328,6 +1554,21 @@ class NewGoalView extends Component {
         })
     }
 
+    // renderCarousalItem({ item }) {
+    //     return <CreateGaolMdalToast randomText={item} />
+    // }
+
+    _renderItem = ({ item, index }) => {
+        return (
+            // <View style={styles.itemContainer}>
+            //     <CreateGaolMdalToast randomText={item} />
+            // </View>
+
+            <View style={styles.itemContainer}>
+                <Text style={styles.itemLabel}>{`Item ${item}`}</Text>
+            </View>
+        )
+    }
     render() {
         const { initializeFromState } = this.props
 
@@ -1393,26 +1634,11 @@ class NewGoalView extends Component {
                         },
                     ]}
                 /> */}
-                <View style={{ marginTop: 10 }}>
-                    <Swiper
-                        style={{ height: 80 }}
-                        showsPagination={false}
-                        ref="swiper"
-                        index={0}
-                        onIndexChanged={(index) => {
-                            this.setState({ currIndex: index })
-                        }}
-                        loop={false}
-                    >
-                        {this.state.RANDOM_TEXT.map((data, index) => {
-                            return (
-                                <>
-                                    <CreateGaolMdalToast randomText={data} />
-                                </>
-                            )
-                        })}
-                    </Swiper>
-                </View>
+
+                <CreateGoalToast
+                    randomText={this.state.RANDOM_TEXT}
+                    randomSilverText={this.state.RANDOM_TEXT_SILVER_BADGE}
+                />
 
                 {/* Primary form */}
                 <View style={{ padding: 20, flex: 1 }}>
@@ -1623,6 +1849,7 @@ const styles = {
         borderColor: '#E0E0E0',
     },
     // Menu related style
+
     triggerContainerStyle: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -1636,12 +1863,15 @@ const styles = {
     },
     menuOptionsStyles: {
         optionsContainer: {
-            width: width - 40,
             padding: 5,
+            height: height * 0.45,
+            bottom: 50,
+            left: 50,
         },
         optionWrapper: {
             flex: 1,
         },
+        optionsContainerStyle: {},
         optionTouchable: {
             underlayColor: 'lightgray',
             activeOpacity: 10,
@@ -1652,6 +1882,9 @@ const styles = {
             paddingBottom: 5,
             paddingLeft: 10,
             paddingRight: 10,
+        },
+        carouselContainer: {
+            marginTop: 50,
         },
     },
 }

@@ -517,7 +517,6 @@ class CreateGoalModal extends React.Component {
     render() {
         const actionText = this.props.initializeFromState ? 'Update' : 'Create'
 
-        console.log('actionTextt', this.props.isFirstTimeCreateGoal)
         const titleText = this.props.initializeFromState
             ? 'Edit Goal'
             : 'New Goal'
@@ -528,8 +527,6 @@ class CreateGoalModal extends React.Component {
             this.props.formVals.values.category &&
             this.props.formVals.values.priority &&
             this.props.formVals.values.title.trim() !== ''
-
-        console.log('this is form values', this.props.formVals)
 
         return (
             <>

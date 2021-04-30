@@ -17,6 +17,7 @@ import OnboardingWelcome from './OnboardingWelcome'
 import SyncContactInvite from './SyncContactInvite'
 import OnboardingFbPlugin from './OnboardingFbPlugin'
 import UserAgreement from './UserAgreement'
+import OnboardingPeopleKnow from './OnboardingPeopleKnow'
 
 export {
     RegistrationAccount,
@@ -25,6 +26,7 @@ export {
     OnboardingSelectionTarget,
     OnboardingTribeSelection,
     OnboardingCommunity,
+    OnboardingPeopleKnow,
     OnboardingSyncContact,
     OnboardingWelcome,
     SyncContactInvite,

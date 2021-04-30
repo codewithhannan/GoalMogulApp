@@ -108,25 +108,35 @@ export const registrationTargetSelection = (title, value, extra) => (
  */
 export const uploadSurvey = () => async (dispatch, getState) => {
     const { token, userId } = getState().user
+
     const targets = getState().registration.userTargets
     const contents = getSurveyFromTargets(targets)
 
-    trackWithProperties(E.REG_SURVEY_SELECTED, {
-        NumOptionSelected: targets.filter((i) => i.selected).length,
-        OtherSelected: targets.filter((i) => i.title === 'Other')[0].selected,
-        UserId: userId,
-    })
+    try {
+        trackWithProperties(E.REG_SURVEY_SELECTED, {
+            NumOptionSelected: targets.filter((i) => i.selected).length,
+            OtherSelected: targets.filter((i) => i.title === 'Other')[0]
+                .selected,
+            UserId: userId,
+        })
 
-    const res = await API.post('secure/user/survey/create', { contents }, token)
-    if (res.status >= 300 || res.status < 200) {
-        // Failed to create survey for this user
-        new SentryRequestBuilder(res.message, SENTRY_MESSAGE_TYPE.message)
-            .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
-            .withTag(SENTRY_TAGS.REGISTRATION.ACTION, 'uploadSurvey')
-            .withExtraContext(SENTRY_CONTEXT.REGISTRATION.USER_ID, userId)
-            .send()
-    } else {
-        // TODO: analytics
+        const res = await API.post(
+            'secure/user/survey/create',
+            { contents },
+            token
+        )
+        if (res.status >= 300 || res.status < 200) {
+            // Failed to create survey for this user
+            new SentryRequestBuilder(res.message, SENTRY_MESSAGE_TYPE.message)
+                .withLevel(SENTRY_MESSAGE_LEVEL.ERROR)
+                .withTag(SENTRY_TAGS.REGISTRATION.ACTION, 'uploadSurvey')
+                .withExtraContext(SENTRY_CONTEXT.REGISTRATION.USER_ID, userId)
+                .send()
+        } else {
+            // TODO: analytics
+        }
+    } catch (error) {
+        console.log('this is error of upload survey', error.message)
     }
 }
 

@@ -65,6 +65,7 @@ import VisitFriendsToast from '../../components/VisitFriendsToast'
 import VisitFriendsToast2 from '../../components/VisitFriendsToast2'
 import CloseFriendsToast from '../../components/CloseFriendsToast'
 import { getRandomValue } from '../../Utils/HelperMethods'
+import { getData } from '../../store/storage'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
@@ -141,7 +142,10 @@ class ActivityFeed extends Component {
             someGoals: false,
             friendToVisit: '',
             visitFriendMore: '',
+            getBronzeBadge: false,
             closeFriendToVisit: '',
+            getBronzeBadgeGoals: false,
+            currIndex: 0,
 
             badges: {
                 milestoneBadge: {
@@ -151,13 +155,29 @@ class ActivityFeed extends Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        const data = await getData('persist:root')
+
+        console.log('this is async data', data)
+
         // Refresh user friends
         this.props.handleRefreshFriend()
+
+        const { token } = this.props
+
+        this.props.getAllNudges(token)
+
         //To save the user's journey in redux store
         const { friendsData, profile, userId } = this.props
 
-        const friendsBadges = friendsData.map(
+        let friendsArray = []
+        friendsData.map((friend) => {
+            if (friend.gender) {
+                friendsArray.push(friend)
+            }
+        })
+
+        const friendsBadges = friendsArray.map(
             (e) => e.profile.badges.milestoneBadge.currentMilestone
         )
 
@@ -185,9 +205,12 @@ class ActivityFeed extends Component {
             this.props.loadUserInvitedFriendsCount()
         }
 
-        const { token } = this.props
+        if (this.props.goals.length >= 1) {
+            this.setState({ getBronzeBadgeGoals: true })
+        } else {
+            this.setState({ getBronzeBadgeGoals: false })
+        }
 
-        this.props.getAllNudges(token)
         this.props.getPopupData()
     }
     shouldComponentUpdate(nextProps, nextState) {
@@ -505,6 +528,8 @@ class ActivityFeed extends Component {
             about,
         } = this.props
 
+        console.log('this is goals', goals)
+
         const {
             heading,
             text,
@@ -655,7 +680,6 @@ class ActivityFeed extends Component {
         // const currentData = Date.now()
         // const dateCalculated = currentData.diff(visitedFriendsTime, 'days')
 
-        var greenBadge
         // console.log('occupation => ', occupation)
         // console.log('about => ', about)
         // console.log('currentMilestone => ', currentMilestone)
@@ -668,7 +692,7 @@ class ActivityFeed extends Component {
         const visitFriendsMore = friendsToVisit.length > 0
         const renderVisitCloseFriend = closeFriends.length > 0
 
-        console.log('renderVisitCloseFriend', renderVisitCloseFriend)
+        var greenBadge
 
         if (currentMilestone == 0) {
             if (
@@ -712,17 +736,20 @@ class ActivityFeed extends Component {
 
         var getBronzeBadge
 
-        if (
-            goals.length >= 1 &&
-            currentMilestone == 1 &&
-            friendsData.length >= 3
-        ) {
-            getBronzeBadge = true
-        } else {
-            getBronzeBadge = false
-        }
+        // console.log('greenBadgeee', headline)
+        // console.log('greenBadgeee1', about)
+        // console.log('greenBadgeee2', occupation)
+        // console.log('greenBadgeee3', image)
 
-        // console.log('getbronzebadge', getBronzeBadge)
+        if (
+            this.state.getBronzeBadgeGoals &&
+            currentMilestone == 1 &&
+            this.props.friendsData.length > 4
+        ) {
+            this.setState({ getBronzeBadge: true })
+        } else {
+            this.setState({ getBronzeBadge: false })
+        }
 
         const silverBadge = currentMilestone == 2
         const goldBadge = currentMilestone == 3
@@ -731,12 +758,12 @@ class ActivityFeed extends Component {
             <>
                 {!image ||
                 greenBadge ||
+                getGreenBadge ||
+                this.state.getBronzeBadge ||
                 silverBadge ||
                 goldBadge ||
-                getGreenBadge ||
                 visitFriends ||
-                visitFriendsMore ||
-                getBronzeBadge ? (
+                visitFriendsMore ? (
                     <Swiper
                         style={{ height: 150 }}
                         showsPagination={false}
@@ -751,13 +778,14 @@ class ActivityFeed extends Component {
                             <MissingProfileToast pageId={pageAb} />
                         ) : null}
                         {greenBadge && <GreenBadgeToast pageId={pageAb} />}
+                        {getGreenBadge && <GetGreenBadge />}
+                        {this.state.getBronzeBadge && <GetBronzeBadge />}
 
-                        {goldBadge && <GoldBadge count={friendsCount} />}
                         {silverBadge && (
                             <SilverBadge heading={heading} text={text} />
                         )}
-                        {getGreenBadge && <GetGreenBadge />}
-                        {getBronzeBadge && <GetBronzeBadge />}
+                        {goldBadge && <GoldBadge count={friendsCount} />}
+
                         {this.state.friendToVisit && (
                             <VisitFriendsToast
                                 name={this.state.friendToVisit}
@@ -810,8 +838,6 @@ const mapStateToProps = (state, props) => {
     const { image, occupation, about } = state.user.user.profile
     const { nudges } = state
 
-    console.log('nudgesss', nudges)
-
     // const created = moment().format()
     // console.log('data of state', created)
 
@@ -822,6 +848,7 @@ const mapStateToProps = (state, props) => {
     const { userId } = state.user
 
     const goals = getUserGoals(state, userId, pageAb)
+
     const { token } = state.auth.user
 
     // console.log('currentuser', currentUser)
@@ -831,6 +858,14 @@ const mapStateToProps = (state, props) => {
     // console.log('currenMilestrone', currentMilestone)
 
     // const { data: friendsData, refreshing: friendsRefreshing } = friends
+
+    const { myGoals } = state.goals
+    // const {
+    //     data: goals,
+    //     refreshing: goalRefreshing,
+    //     loading: goalLoading,
+    //     filter,
+    // } = myGoals
 
     const {
         user,
