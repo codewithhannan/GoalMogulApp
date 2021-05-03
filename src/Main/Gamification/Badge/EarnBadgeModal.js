@@ -134,7 +134,7 @@ class EarnBadgeModal extends React.PureComponent {
     renderCancelButton() {
         return (
             <View
-                style={{ position: 'absolute', top: 0, left: 0, padding: 15 }}
+                style={{ position: 'absolute', top: 0, right: 0, padding: 15 }}
             >
                 <DelayedButton
                     activeOpacity={0.6}
@@ -275,55 +275,20 @@ class EarnBadgeModal extends React.PureComponent {
                             })}
 
                             <View style={{ flexDirection: 'row' }}>
-                                <Text
+                                <Animated.Text
                                     style={{
-                                        color: 'rgb(95, 95, 95)',
+                                        color: 'rgb(209, 163, 16)',
                                         fontSize: 11,
                                         lineHeight: 6,
-                                        marginTop: 25,
-                                        padding: 6,
-                                        paddingRight: 0,
+                                        padding: 8,
+                                        fontStyle: 'italic',
+                                        opacity: this.animations
+                                            .numberOfUsersOnSameBadgeOpacity,
                                     }}
                                 >
-                                    {`\u002A Limited to the first 15 gold users. `}
-                                </Text>
-                                <DelayedButton
-                                    activeOpacity={0.6}
-                                    onPress={() => {
-                                        this.setState({
-                                            ...this.state,
-                                            showGoldBadgeRewardModal: true,
-                                        })
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            fontSize: 11,
-                                            color: 'rgb(0, 150, 203)',
-                                            fontWeight: '600',
-                                            marginTop: 25,
-                                            lineHeight: 6,
-                                            padding: 6,
-                                            paddingLeft: 2,
-                                        }}
-                                    >
-                                        View details
-                                    </Text>
-                                </DelayedButton>
+                                    {`There are currently ${this.state.numberOfUsersOnSameBadge} gold users.`}
+                                </Animated.Text>
                             </View>
-                            <Animated.Text
-                                style={{
-                                    color: 'rgb(209, 163, 16)',
-                                    fontSize: 11,
-                                    lineHeight: 6,
-                                    padding: 8,
-                                    fontStyle: 'italic',
-                                    opacity: this.animations
-                                        .numberOfUsersOnSameBadgeOpacity,
-                                }}
-                            >
-                                {`There are currently ${this.state.numberOfUsersOnSameBadge} gold users.`}
-                            </Animated.Text>
                         </View>
                     </ImageBackground>
                 </View>
@@ -340,6 +305,7 @@ const BadgeInfoCard = (props) => {
     // NOTE: title can be a component/
     const {
         title,
+        titleColor,
         infoTextList,
         badgeIcon,
         badgeIconStyle,
@@ -348,6 +314,7 @@ const BadgeInfoCard = (props) => {
         leadingIconContainerStyle,
         gradient,
         tier,
+        bulletIcon,
     } = badgeInfo
 
     let linearGradientColors, linearGradientLocations, borderColor
@@ -363,11 +330,13 @@ const BadgeInfoCard = (props) => {
     return (
         <View
             style={{
-                borderWidth: 0.5,
+                borderWidth: 1,
+                shadowColor: '#45C9F6',
+                shadowOpacity: 0.1,
                 borderColor,
-                borderRadius: 5,
-                minHeight: 75,
-                marginVertical: 3,
+                borderRadius: 8,
+                minHeight: 95,
+
                 width: '100%',
             }}
         >
@@ -376,7 +345,7 @@ const BadgeInfoCard = (props) => {
                 style={{
                     flex: 1,
                     flexDirection: 'row',
-                    borderRadius: 5,
+                    borderRadius: 8,
                     alignItems: 'center',
                 }}
                 locations={linearGradientLocations}
@@ -415,7 +384,7 @@ const BadgeInfoCard = (props) => {
                 <View style={{ justifyContent: 'center' }}>
                     <Text
                         style={{
-                            color: 'rgb(51, 51, 51)',
+                            color: titleColor,
                             fontSize: 14,
                             fontWeight: '500',
                         }}
@@ -426,24 +395,43 @@ const BadgeInfoCard = (props) => {
                         const { text, hasBulletPoint } = t
                         if (hasBulletPoint) {
                             return (
-                                <Text
-                                    style={{
-                                        color: 'rgb(85, 85, 85)',
-                                        fontSize: 10,
-                                    }}
-                                >
-                                    {`\u2022 ${text}`}
-                                </Text>
+                                <>
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            marginTop: 3,
+                                        }}
+                                    >
+                                        <Image
+                                            source={bulletIcon}
+                                            style={{
+                                                height: 10,
+                                                width: 10,
+                                                tintColor: '#4D4D4D',
+                                                top: 3,
+                                            }}
+                                        />
+                                        <Text
+                                            style={{
+                                                color: 'rgb(85, 85, 85)',
+                                                fontSize: 12,
+                                                left: 7,
+                                            }}
+                                        >
+                                            {`${text}`}
+                                        </Text>
+                                    </View>
+                                </>
                             )
                         }
                         return (
                             <Text
                                 style={{
                                     color: 'rgb(85, 85, 85)',
-                                    fontSize: 10,
+                                    fontSize: 12,
                                 }}
                             >
-                                {`  ${text}`}
+                                {`    ${text}`}
                             </Text>
                         )
                     })}
@@ -464,16 +452,32 @@ const DefaultBadgeIconStyle = {
     width: 32,
 }
 const DefaultLeadingIconStyle = {
-    height: 15,
-    width: 17,
-    tintColor: 'rgb(88, 117, 89)',
+    height: 11,
+    width: 12,
+    tintColor: '#42C0F5',
+}
+const GoldIconStyle = {
+    height: 11,
+    width: 11,
+    tintColor: '#AFAFAF',
 }
 const DefaultLeadingIconContainerStyle = {
-    height: 26,
-    width: 26,
+    height: 21,
+    width: 21,
     borderRadius: 13,
     borderWidth: 0.8,
-    borderColor: 'rgb(235, 249, 227)',
+    borderColor: '#42C0F5',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 10,
+}
+
+const DefaultGoldLeadingIconContainerStyle = {
+    height: 21,
+    width: 21,
+    borderRadius: 13,
+    borderWidth: 0.8,
+    borderColor: '#AFAFAF',
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 10,
@@ -481,6 +485,7 @@ const DefaultLeadingIconContainerStyle = {
 const BadgeInfo = [
     {
         title: 'Green',
+        titleColor: '#7BAF59',
         tier: 1,
         infoTextList: [
             { text: 'Add a profile image', hasBulletPoint: true },
@@ -494,6 +499,7 @@ const BadgeInfo = [
         badgeIcon: Green,
         badgeIconStyle: DefaultBadgeIconStyle,
         leadingIcon: CheckIcon,
+        bulletIcon: CheckIcon,
         leadingIconStyle: DefaultLeadingIconStyle,
         leadingIconContainerStyle: DefaultLeadingIconContainerStyle,
         gradient: {
@@ -513,6 +519,7 @@ const BadgeInfo = [
     },
     {
         title: 'Bronze',
+        titleColor: '#A26644',
         tier: 2,
         infoTextList: [
             {
@@ -523,6 +530,7 @@ const BadgeInfo = [
         badgeIcon: Bronze3D,
         badgeIconStyle: DefaultBadgeIconStyle,
         leadingIcon: CheckIcon,
+        bulletIcon: CheckIcon,
         leadingIconStyle: DefaultLeadingIconStyle,
         leadingIconContainerStyle: DefaultLeadingIconContainerStyle,
         gradient: {
@@ -542,6 +550,8 @@ const BadgeInfo = [
     },
     {
         title: 'Silver',
+        titleColor: '#838384',
+
         tier: 3,
         infoTextList: [
             { text: 'Set 7 Goals', hasBulletPoint: true },
@@ -554,6 +564,7 @@ const BadgeInfo = [
         badgeIcon: Silver3D,
         badgeIconStyle: DefaultBadgeIconStyle,
         leadingIcon: CheckIcon,
+        bulletIcon: CheckIcon,
         leadingIconStyle: DefaultLeadingIconStyle,
         leadingIconContainerStyle: DefaultLeadingIconContainerStyle,
         gradient: {
@@ -573,27 +584,29 @@ const BadgeInfo = [
     },
     {
         id: 'gold',
+        titleColor: '#FEC83E',
         tier: 4,
-        title: 'Gold + $700 Reward\u002A',
+        title: 'Gold',
         infoTextList: [
             {
-                text: "Invite 10 friends to GoalMogul who've",
+                text: "Invite 10 friends who've earned their",
                 hasBulletPoint: true,
             },
             {
-                text: 'earned their Silver Badge or higher',
+                text: ' Silver Badge or higher',
                 hasBulletPoint: false,
             },
         ],
         badgeIcon: Gold3D,
         badgeIconStyle: DefaultBadgeIconStyle,
         leadingIcon: QuestionIcon,
+        bulletIcon: CheckIcon,
         leadingIconStyle: {
-            ...DefaultLeadingIconStyle,
+            ...GoldIconStyle,
             height: 14,
             width: 9,
         },
-        leadingIconContainerStyle: DefaultLeadingIconContainerStyle,
+        leadingIconContainerStyle: DefaultGoldLeadingIconContainerStyle,
         gradient: {
             achieved: {
                 linearGradientColors: [

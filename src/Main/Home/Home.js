@@ -60,6 +60,7 @@ import { color } from '../../styles/basic'
 
 // Utils
 import { CreateGoalTooltip } from '../Tutorial/Tooltip'
+import { Text } from 'react-native-animatable'
 
 const DEBUG_KEY = '[ UI Home ]'
 
@@ -325,6 +326,7 @@ class Home extends Component {
 
     _renderScene() {
         const { routes, index } = this.state.navigationState
+
         switch (routes[index].key) {
             case 'goals':
                 return (
@@ -367,6 +369,7 @@ class Home extends Component {
                 />
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />
+
                     <FlatList
                         keyboardShouldPersistTaps="handled"
                         ref={(ref) => (this.flatList = ref)}
@@ -379,7 +382,7 @@ class Home extends Component {
                         refreshing={showRefreshing}
                         onRefresh={this.handleOnRefresh}
                     />
-                    <EarnBadgeModal
+                    {/* <EarnBadgeModal
                         isVisible={this.state.showBadgeEarnModal}
                         closeModal={() => {
                             this.setState({
@@ -387,7 +390,7 @@ class Home extends Component {
                             })
                         }}
                         user={this.props.user}
-                    />
+                    /> */}
                 </View>
             </MenuProvider>
         )

@@ -3,70 +3,46 @@
 import React, { Component } from 'react'
 import {
     View,
-    Image,
     Text,
     Dimensions,
     FlatList,
     TouchableOpacity,
+    Alert,
+    StyleSheet,
+    ScrollView,
 } from 'react-native'
-import Checkbox from 'expo-checkbox'
-import { color, default_style } from '../../../styles/basic'
+
+import { color } from '../../../styles/basic'
 import { Icon } from '@ui-kitten/components'
 import { connect } from 'react-redux'
-import Modal from 'react-native-modal'
-import { ScrollView } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-navigation'
-import { generateInvitationLink } from '../../../redux/middleware/utils'
+import { TextInput } from 'react-native-paper'
 import * as Contacts from 'expo-contacts'
-import { getData } from '../../../store/storage'
+import * as Permissions from 'expo-permissions'
 import { ActivityIndicator } from 'react-native-paper'
-import { api as API } from '../../../redux/middleware/api'
+import { MaterialIcons } from '@expo/vector-icons'
 
-const screenWidth = Dimensions.get('screen').width
+import SearchBarHeader from '../../Common/Header/SearchBarHeader'
+import { AlphabetList } from 'react-native-section-alphabet-list'
+
+//MiddleWare to get the Invite Link
+import { generateInvitationLink } from '../../../redux/middleware/utils'
+
+//To get Stored Data in asyncStorage
+import { getData } from '../../../store/storage'
+
+import { api as API } from '../../../redux/middleware/api'
+import * as _ from 'underscore'
+import { Actions } from 'react-native-router-flux'
+import { PG_BACKGROUND } from '../../../styles/basic/color'
+
+import { Image } from 'react-native-animatable'
+
 const screenHeight = Dimensions.get('screen').height
 
-const Data = [
-    {
-        id: 1,
-        first_name: 'Sile',
-    },
-    {
-        id: 2,
-        first_name: 'Clementia',
-    },
-    {
-        id: 3,
-        first_name: 'Brita',
-    },
-    {
-        id: 4,
-        first_name: 'Duke',
-    },
-    {
-        id: 5,
-        first_name: 'Hedvig',
-    },
-    {
-        id: 6,
-        first_name: 'Paulie',
-    },
-    {
-        id: 7,
-        first_name: 'Munmro',
-    },
-    {
-        id: 8,
-        first_name: 'Dyanna',
-    },
-    {
-        id: 9,
-        first_name: 'Shanta',
-    },
-    {
-        id: 10,
-        first_name: 'Bambi',
-    },
-]
+const DEBUGKEY = ['Contacts Screen']
+
+const HEADER_HEIGHT = 50
 
 class MessageToContactsModal extends Component {
     constructor(props) {
@@ -74,8 +50,17 @@ class MessageToContactsModal extends Component {
         this.state = {
             renderData: [],
             isLoading: true,
-            selectedItems: [],
+            currentPage: 1,
             inviteMessage: '',
+            itemPerPage: 4000,
+            flatListData: [],
+            friendsSearchText: '',
+            pageSize: 40,
+            pageOffset: 0,
+
+            currentPagination: [],
+
+            friendsFilteredData: [],
         }
     }
 
@@ -87,222 +72,349 @@ class MessageToContactsModal extends Component {
         const getInviteMessage = await getData('INVITEMESSAGE')
 
         this.setState({ inviteMessage: getInviteMessage })
-        console.log('this is get invite', getInviteMessage)
-
-        const { status } = await Contacts.requestPermissionsAsync()
-        console.log('status', status)
-
-        try {
-            if (status === 'granted') {
-                const { data } = await Contacts.getContactsAsync({
-                    fields: [Contacts.Fields.PhoneNumbers],
-                })
-
-                console.log('data of contacts', data)
-
-                if (data.length > 0) {
-                    const contactsData = data.map((data, index) => {
-                        return {
-                            name: data.firstName,
-                            number: data.phoneNumbers[0].number,
-                            id: index,
-                        }
+        console.log(
+            `${DEBUGKEY} this is the Invite message of User to Send`,
+            getInviteMessage
+        )
+        setTimeout(async () => {
+            const { status } = await Permissions.askAsync(Permissions.CONTACTS)
+            console.log(
+                `${DEBUGKEY} this is the Status of Contacts Permission`,
+                status
+            )
+            try {
+                if (status === 'granted') {
+                    const { data } = await Contacts.getContactsAsync({
+                        fields: [
+                            Contacts.Fields.Name,
+                            Contacts.Fields.PhoneNumbers,
+                            Contacts.Fields.Image,
+                        ],
+                        sort: Contacts.SortTypes.FirstName,
                     })
 
-                    this.setState({ renderData: contactsData, loading: false })
-
-                    // Actions.push('ContactMessage')
-
                     console.log(
-                        `This is the response of getting all contacts`,
-                        contactsData
+                        `${DEBUGKEY} this is all Contacts we get from the device`,
+                        data
                     )
+
+                    if (data.length > 0) {
+                        let contacts = []
+                        data.map((item) => {
+                            if (item.name && item.phoneNumbers) {
+                                contacts.push({
+                                    name: `${item.name}`,
+                                    number: item.phoneNumbers[0],
+                                    image: item.imageAvailable
+                                        ? item.image.uri
+                                        : null,
+                                })
+                            }
+                            return contacts
+                        })
+                        console.log(
+                            `${DEBUGKEY} this is all Contacts only including firstname and number`,
+                            contacts
+                        )
+                        const allData = contacts.map((item, index) => {
+                            return {
+                                value: item.name,
+                                number: item.number.number,
+                                image: item.image,
+                                id: index,
+                                // key: index.toString(),
+                            }
+                        })
+                        let renderData = _.sortBy(allData, 'value')
+                        console.log(
+                            `${DEBUGKEY} this is sorted Contacts all Contacts `,
+                            renderData
+                        )
+
+                        this.setState({
+                            isLoading: false,
+                            flatListData: renderData,
+                        })
+                    }
                 }
+            } catch (error) {
+                console.log(
+                    `${DEBUGKEY} this is the error while getting Contacts`,
+                    error.message
+                )
             }
-        } catch (error) {
-            console.log(
-                ` This is the error of getting conatacts `,
-                error.message
-            )
-        }
+        }, 2000)
     }
 
-    // let newData = [...this.state.renderData]
-
-    // const data = newData.map((newItem) => {
-    //     if (newItem.id == id) {
-    //         return {
-    //             ...newItem,
-    //             isSelected: true,
-    //         }
-    //     }
-    //     return {
-    //         ...newItem,
-    //         isSelected: false,
-    //     }
-    // })
-    // this.setState({ renderData: data })
-
     selectItem = (id) => {
-        let renderData = [...this.state.renderData]
-        for (let item of renderData) {
+        let flatListData = [...this.state.flatListData]
+        for (let item of flatListData) {
             if (item.id == id) {
                 item.isSelected =
                     item.isSelected == null ? true : !item.isSelected
                 break
             }
         }
-        this.setState({ renderData })
+        this.setState({ flatListData })
     }
 
-    // const index = newData.findIndex((item) => item.id == id)
-    // console.log('indeexxx', index)
-    // newData[index].isSelected = true
-    // this.setState({ renderData: newData }, () => {
-    //     console.log('state update horai ha', newData)
-    //     console.log('state update horai ha1', this.state.renderData)
-    // })
+    searchFriends = (input) => {
+        const { friendsSearchText } = this.state
+
+        this.setState({ friendsSearchText: input })
+        // this.setState({ input })
+
+        let friendsFilteredData = this.state.flatListData.filter(function (
+            item
+        ) {
+            return item.value.includes(input)
+        })
+
+        this.setState({ friendsFilteredData: friendsFilteredData })
+    }
+
+    renderProfileImage(item) {
+        if (item == null) {
+            return require('../../../asset/utils/defaultUserProfile.png')
+        } else {
+            return { uri: item }
+        }
+    }
 
     render() {
         const getSelectedData = this.state.renderData.filter((item) => {
             return item.isSelected
         })
 
-        console.log('getSelectedData', getSelectedData)
+        console.log(
+            `${DEBUGKEY} this is all selected Contacts we want to send invite Message `,
+            getSelectedData
+        )
 
         const inviteLink = this.getInviteLink()
 
-        console.log('this is inviteCode', inviteLink)
-
-        const renderUser = (item) => (
-            <TouchableOpacity onPress={() => this.selectItem(item.id)}>
-                <View
-                    style={{
-                        backgroundColor: color.GM_CARD_BACKGROUND,
-
-                        // width: '100%',
-                        marginTop: 5,
-
-                        borderRadius: 5,
-                        flex: 1,
-                        height: 80,
-                        justifyContent: 'flex-start',
-
-                        justifyContent: 'space-around',
-                    }}
-                >
-                    <View
+        const renderUser = ({ item }) => {
+            return (
+                <>
+                    <TouchableOpacity
+                        onPress={() => this.selectItem(item.id)}
                         style={{
-                            marginTop: 5,
-                            padding: 10,
-                            marginHorizontal: 6,
-                            flexDirection: 'column',
+                            width: '60%',
                         }}
                     >
-                        <View style={{ flexDirection: 'column' }}>
-                            <Text
-                                style={{
-                                    color: color.GM_BLUE,
-                                    width: '100%',
-                                    zIndex: 1,
-                                    fontFamily: 'SFProDisplay-Semibold',
-                                    fontSize: 17,
-                                }}
-                            >
-                                {item.name}
-                            </Text>
-                        </View>
+                        <View
+                            style={{
+                                backgroundColor: color.GM_CARD_BACKGROUND,
 
-                        <View style={{ marginTop: 5 }}>
-                            <Text
-                                style={{
-                                    color: '#696868',
-                                    width: '100%',
+                                marginTop: 5,
 
-                                    fontFamily: 'SFProDisplay-Regular',
-                                    fontSize: 15,
-                                }}
-                            >
-                                {item.number}
-                            </Text>
-                        </View>
-                        {item.isSelected ? (
-                            <>
-                                <View
+                                borderRadius: 10,
+                                // flex: 1,
+                                height: 80,
+                                marginHorizontal: 50,
+
+                                justifyContent: 'flex-start',
+                                flexDirection: 'row',
+                            }}
+                        >
+                            <View style={{ marginTop: 5 }}>
+                                <Image
+                                    source={this.renderProfileImage(item.image)}
                                     style={{
-                                        backgroundColor: color.GM_BLUE,
-                                        height: 21,
-                                        width: 21,
-                                        position: 'absolute',
-
-                                        right: 14,
-                                        top: 18,
-                                        borderRadius: 50,
+                                        height: 60,
+                                        width: 60,
+                                        borderRadius: 150 / 2,
+                                        overflow: 'hidden',
                                     }}
                                 />
-                                <View
-                                    style={{
-                                        position: 'absolute',
-                                        right: 17,
-                                        top: 21,
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <Icon
-                                        name="done"
-                                        pack="material"
+                            </View>
+
+                            <View
+                                style={{
+                                    marginTop: 5,
+                                    padding: 10,
+                                }}
+                            >
+                                <View style={{ flexDirection: 'column' }}>
+                                    <Text
                                         style={{
-                                            height: 15,
-                                            tintColor: 'white',
+                                            color: '#000000',
+                                            width: '100%',
+                                            zIndex: 1,
+                                            fontFamily: 'SFProDisplay-Regular',
+                                            fontSize: 18,
+                                        }}
+                                    >
+                                        {item.value}
+                                    </Text>
+                                </View>
+
+                                <View style={{ marginTop: 5 }}>
+                                    <Text
+                                        style={{
+                                            color: '#696868',
+                                            width: '100%',
+
+                                            fontFamily: 'SFProDisplay-Regular',
+                                            fontSize: 15,
+                                        }}
+                                    >
+                                        {item.number}
+                                    </Text>
+                                </View>
+
+                                <View style={{ right: 100, bottom: 50 }}>
+                                    <View
+                                        style={{
+                                            backgroundColor: item.isSelected
+                                                ? color.GM_BLUE
+                                                : 'transparent',
+                                            height: 21,
+                                            width: 22,
+
+                                            position: 'absolute',
+                                            left: 0,
+                                            top: 15,
+                                            borderRadius: 4,
+                                            borderColor: item.isSelected
+                                                ? 'transparent'
+                                                : 'grey',
+                                            borderWidth: 0.5,
                                         }}
                                     />
-                                </View>
-                            </>
-                        ) : null}
-                    </View>
-                </View>
-            </TouchableOpacity>
-        )
+                                    <View
+                                        style={{
+                                            position: 'absolute',
+                                            left: 2,
+                                            top: 17,
 
-        // console.log('this is cpontats', this.props.contacts)
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <Icon
+                                            name="done"
+                                            pack="material"
+                                            style={{
+                                                height: 15,
+
+                                                tintColor: 'white',
+                                            }}
+                                        />
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+
+                    <View
+                        style={{
+                            width: '86%',
+                            color: 'black',
+                            marginHorizontal: 25,
+                            borderColor: '#DADADA',
+
+                            borderWidth: 0.5,
+                        }}
+                    />
+                </>
+            )
+        }
+
         return (
             <>
-                <SafeAreaView
+                <View
                     style={{
                         flex: 1,
-                        backgroundColor: color.PG_BACKGROUND,
+                        backgroundColor: color.GM_CARD_BACKGROUND,
                     }}
                 >
-                    {this.state.loading ? (
-                        <ActivityIndicator />
+                    <SearchBarHeader backButton title={'Contacts'} />
+
+                    {this.state.isLoading ? (
+                        <ActivityIndicator
+                            size="medium"
+                            color="#42C0F5"
+                            style={{
+                                flex: 1,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        />
                     ) : (
                         <>
                             <View
                                 style={{
-                                    marginTop: 50,
-                                    // alignItems: 'center',
+                                    justifyContent: 'center',
+                                    marginTop: 10,
                                 }}
                             >
-                                <FlatList
-                                    style={{ padding: 6 }}
-                                    data={this.state.renderData}
-                                    // style={{ height: screenHeight * 0.7 }}
-                                    keyExtractor={(item) => item.id}
-                                    renderItem={({ item }) => renderUser(item)}
-                                    ItemSeparatorComponent={() => (
-                                        <View
-                                            style={{
-                                                borderWidth: 0.5,
-                                                borderColor: '#F1EEEE',
-                                            }}
-                                        ></View>
-                                    )}
+                                <TextInput
+                                    theme={{
+                                        colors: {
+                                            primary: 'grey',
+                                            underlineColor: 'transparent',
+                                        },
+                                    }}
+                                    value={this.state.friendsSearchText}
+                                    onChangeText={this.searchFriends}
+                                    style={{
+                                        backgroundColor: 'white',
+                                        borderRadius: 5,
+                                        borderWidth: 1,
+                                        borderColor: 'lightgrey',
+                                        width: '95%',
+                                        height: 35,
+                                        marginHorizontal: 10,
+
+                                        // padding: 10,
+                                    }}
+                                    underlineColor={'transparent'}
+                                    placeholder={'Search'}
+                                    left={
+                                        <TextInput.Icon
+                                            name={() => (
+                                                <MaterialIcons
+                                                    name={'search'}
+                                                    size={20}
+                                                    color="grey"
+                                                />
+                                            )}
+                                        />
+                                    }
                                 />
                             </View>
 
+                            <FlatList
+                                data={
+                                    this.state.friendsFilteredData &&
+                                    this.state.friendsFilteredData.length > 0
+                                        ? this.state.friendsFilteredData
+                                        : this.state.flatListData
+                                }
+                                renderItem={(item) => renderUser(item)}
+                                listKey={(item, index) =>
+                                    'D' + index.toString()
+                                }
+                                refreshing={this.state.isLoading}
+                                ListEmptyComponent={
+                                    this.props.refreshing ? null : (
+                                        <View
+                                            style={{
+                                                height: 50,
+                                                flex: 1,
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                            }}
+                                        >
+                                            <Text>No Contacts Found</Text>
+                                        </View>
+                                    )
+                                }
+                            />
+
                             <TouchableOpacity
-                                style={{ marginHorizontal: 100, left: 20 }}
+                                style={{}}
                                 onPress={async () => {
                                     try {
                                         const postData = await API.post(
@@ -314,10 +426,15 @@ class MessageToContactsModal extends Component {
                                                 link: inviteLink,
                                             }
                                         )
-                                        console.log(
-                                            'POST DATA RESPONSE',
-                                            postData
-                                        )
+                                        if (postData.status === 200) {
+                                            Alert.alert(postData.message, '', [
+                                                {
+                                                    text: 'Ok',
+                                                    onPress: () =>
+                                                        Actions.pop(),
+                                                },
+                                            ])
+                                        }
                                     } catch (error) {
                                         console.log('error', error.message)
                                     }
@@ -326,14 +443,15 @@ class MessageToContactsModal extends Component {
                                 <View
                                     style={{
                                         backgroundColor: '#42C0F5',
-                                        width: '80%',
+                                        width: '90%',
                                         justifyContent: 'center',
                                         alignItems: 'center',
                                         height: 40,
                                         borderColor: '#42C0F5',
                                         borderWidth: 2,
-                                        borderRadius: 7,
-                                        marginTop: 20,
+                                        borderRadius: 5,
+                                        marginBottom: 10,
+                                        marginHorizontal: 20,
                                     }}
                                 >
                                     <Text
@@ -350,24 +468,22 @@ class MessageToContactsModal extends Component {
                             </TouchableOpacity>
                         </>
                     )}
-                </SafeAreaView>
+                </View>
             </>
         )
     }
 }
+
+const styles = StyleSheet.create({})
 
 const mapStateToProps = (state, props) => {
     const { token } = state.auth.user
     const { user } = state.user
     const { inviteCode } = user
 
-    // const { contacts } = state.contacts
-    // console.log('contactss', contacts)
-
     return {
         token,
         inviteCode,
-        // contacts,
     }
 }
 

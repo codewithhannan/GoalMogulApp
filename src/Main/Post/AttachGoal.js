@@ -249,6 +249,26 @@ class AttachGoal extends Component {
                         refreshing={this.props.refreshing || false}
                         onRefresh={this.props.refreshMyUserGoals}
                         onEndReached={this.props.loadMoreMyUserGoals}
+                        ListEmptyComponent={() => {
+                            return (
+                                <View
+                                    style={{
+                                        marginTop: 100,
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontFamily: 'SFProDisplay-Regular',
+                                            fontSize: 15,
+                                            textAlign: 'center',
+                                        }}
+                                    >
+                                        You have no goals to update. Create Goal
+                                        first!
+                                    </Text>
+                                </View>
+                            )
+                        }}
                         onEndReachedThreshold={2}
                         ItemSeparatorComponent={this.renderItemSeparator}
                         style={{

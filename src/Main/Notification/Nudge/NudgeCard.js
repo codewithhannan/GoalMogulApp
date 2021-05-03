@@ -46,7 +46,7 @@ class NudgeCard extends React.PureComponent {
         const { _id, sender, receiver } = item
 
         this.props.handleNudgeResponsed(_id)
-        console.log('this card is pressed', item)
+        // console.log('this card is pressed', item)
 
         if (!item.hasResponded && !item.isDeleted) {
             return this.props.openProfile(userId)

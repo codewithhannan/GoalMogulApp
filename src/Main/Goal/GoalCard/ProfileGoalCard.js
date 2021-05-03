@@ -25,6 +25,10 @@ import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
 import CommentIcon from '../../../asset/utils/comment.png'
 import ShareIcon from '../../../asset/utils/forward.png'
 
+// Selector
+
+import { getUserData } from '../../../redux/modules/User/Selector'
+
 // Actions
 import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions'
 import { default_style, color, text } from '../../../styles/basic'
@@ -147,144 +151,154 @@ class ProfileGoalCard extends React.Component {
                             style={[GOALS_STYLE.commonPillIcon]}
                         />
 
-                        <Tooltip
-                            animated={true}
-                            //(Optional) When true, tooltip will animate in/out when showing/hiding
-                            arrowSize={{ width: 16, height: 8 }}
-                            //(Optional) Dimensions of arrow bubble pointing to the highlighted element
-                            backgroundColor="rgba(0,0,0,0.5)"
-                            //(Optional) Color of the fullscreen background beneath the tooltip.
-                            isVisible={this.state.toolTipVisible}
-                            contentStyle={{
-                                backgroundColor: '#EFEFEF',
-                                width: 395,
-                                right: 10,
-                            }}
-                            //(Must) When true, tooltip is displayed
-                            content={
-                                <>
-                                    <View
-                                        style={{
-                                            width: 900,
-                                            height: 75,
-
-                                            // backgroundColor: '#E5E5E5',
-                                            // marginBottom: 10,
-                                        }}
-                                    >
-                                        <View style={{ margin: 7 }}>
-                                            <Text
-                                                style={{
-                                                    fontSize: 15,
-                                                    fontWeight: '600',
-                                                    color: '#535353',
-                                                }}
-                                            >
-                                                Privacy:
-                                            </Text>
-                                        </View>
-
+                        {this.props.self ? (
+                            <Tooltip
+                                animated={true}
+                                //(Optional) When true, tooltip will animate in/out when showing/hiding
+                                arrowSize={{ width: 16, height: 8 }}
+                                //(Optional) Dimensions of arrow bubble pointing to the highlighted element
+                                backgroundColor="rgba(0,0,0,0.5)"
+                                //(Optional) Color of the fullscreen background beneath the tooltip.
+                                isVisible={this.state.toolTipVisible}
+                                contentStyle={{
+                                    backgroundColor: '#EFEFEF',
+                                    width: 395,
+                                    right: 10,
+                                }}
+                                //(Must) When true, tooltip is displayed
+                                content={
+                                    <>
                                         <View
                                             style={{
-                                                flexDirection: 'row',
-                                                alignItems: 'center',
+                                                width: 900,
+                                                height: 75,
+
+                                                // backgroundColor: '#E5E5E5',
+                                                // marginBottom: 10,
                                             }}
                                         >
-                                            {/* Privacy pill */}
+                                            <View style={{ margin: 7 }}>
+                                                <Text
+                                                    style={{
+                                                        fontSize: 15,
+                                                        fontWeight: '600',
+                                                        color: '#535353',
+                                                    }}
+                                                >
+                                                    Privacy:
+                                                </Text>
+                                            </View>
 
-                                            {privacyOptions.map((options) => {
-                                                return (
-                                                    <>
-                                                        <TouchableOpacity
-                                                            onPress={() => {
-                                                                this.props.submitGoalPrivacy(
-                                                                    goalId,
-                                                                    options.value,
-                                                                    token
-                                                                )
-                                                                this.setState({
-                                                                    toolTipVisible: false,
-                                                                })
-                                                            }}
-                                                        >
-                                                            <View
-                                                                style={[
-                                                                    GOALS_STYLE.commonPillContainer,
-                                                                    {
-                                                                        height: 35,
-                                                                        borderColor:
-                                                                            '#828282',
-                                                                        borderWidth:
-                                                                            options.text ==
-                                                                            privacyName
-                                                                                ? 1
-                                                                                : 0.3,
-                                                                        left: 10,
-                                                                        marginHorizontal: 3,
-                                                                        backgroundColor:
-                                                                            options.text ==
-                                                                            privacyName
-                                                                                ? '#EFEFEF'
-                                                                                : 'white',
-                                                                    },
-                                                                ]}
-                                                            >
-                                                                <Icon
-                                                                    pack="material-community"
-                                                                    name={
-                                                                        options.iconName
-                                                                    }
-                                                                    style={{
-                                                                        height: 12,
-                                                                        width: 12,
-                                                                        tintColor:
-                                                                            '#828282',
-                                                                    }}
-                                                                />
+                                            <View
+                                                style={{
+                                                    flexDirection: 'row',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                {/* Privacy pill */}
 
-                                                                <Text
-                                                                    style={{
-                                                                        fontFamily:
-                                                                            text
-                                                                                .FONT_FAMILY
-                                                                                .SEMI_BOLD,
-                                                                        fontSize: 14,
-                                                                        color:
-                                                                            '#828282',
-                                                                        marginLeft: 5,
+                                                {privacyOptions.map(
+                                                    (options) => {
+                                                        return (
+                                                            <>
+                                                                <TouchableOpacity
+                                                                    onPress={() => {
+                                                                        this.props.submitGoalPrivacy(
+                                                                            goalId,
+                                                                            options.value,
+                                                                            token
+                                                                        )
+                                                                        this.setState(
+                                                                            {
+                                                                                toolTipVisible: false,
+                                                                            }
+                                                                        )
                                                                     }}
                                                                 >
-                                                                    {
-                                                                        options.title
-                                                                    }
-                                                                </Text>
-                                                            </View>
-                                                        </TouchableOpacity>
-                                                    </>
-                                                )
-                                            })}
+                                                                    <View
+                                                                        style={[
+                                                                            GOALS_STYLE.commonPillContainer,
+                                                                            {
+                                                                                height: 35,
+                                                                                borderColor:
+                                                                                    '#828282',
+                                                                                borderWidth:
+                                                                                    options.text ==
+                                                                                    privacyName
+                                                                                        ? 1
+                                                                                        : 0.3,
+                                                                                left: 10,
+                                                                                marginHorizontal: 3,
+                                                                                backgroundColor:
+                                                                                    options.text ==
+                                                                                    privacyName
+                                                                                        ? '#EFEFEF'
+                                                                                        : 'white',
+                                                                            },
+                                                                        ]}
+                                                                    >
+                                                                        <Icon
+                                                                            pack="material-community"
+                                                                            name={
+                                                                                options.iconName
+                                                                            }
+                                                                            style={{
+                                                                                height: 12,
+                                                                                width: 12,
+                                                                                tintColor:
+                                                                                    '#828282',
+                                                                            }}
+                                                                        />
+
+                                                                        <Text
+                                                                            style={{
+                                                                                fontFamily:
+                                                                                    text
+                                                                                        .FONT_FAMILY
+                                                                                        .SEMI_BOLD,
+                                                                                fontSize: 14,
+                                                                                color:
+                                                                                    '#828282',
+                                                                                marginLeft: 5,
+                                                                            }}
+                                                                        >
+                                                                            {
+                                                                                options.title
+                                                                            }
+                                                                        </Text>
+                                                                    </View>
+                                                                </TouchableOpacity>
+                                                            </>
+                                                        )
+                                                    }
+                                                )}
+                                            </View>
                                         </View>
-                                    </View>
-                                </>
-                            }
-                            //(Must) This is the view displayed in the tooltip
-                            placement="bottom"
-                            //(Must) top, bottom, left, right, auto.
-                            onClose={() =>
-                                this.setState({ toolTipVisible: false })
-                            }
-                            //(Optional) Callback fired when the user taps the tooltip
-                        >
-                            <TouchableOpacity
-                                onPress={() =>
-                                    this.setState({ toolTipVisible: true })
+                                    </>
                                 }
+                                //(Must) This is the view displayed in the tooltip
+                                placement="bottom"
+                                //(Must) top, bottom, left, right, auto.
+                                onClose={() =>
+                                    this.setState({ toolTipVisible: false })
+                                }
+                                //(Optional) Callback fired when the user taps the tooltip
                             >
-                                <Text style={[GOALS_STYLE.commonPillText]}>
-                                    {privacyObj.text}
-                                </Text>
-                            </TouchableOpacity>
-                        </Tooltip>
+                                <TouchableOpacity
+                                    onPress={() =>
+                                        this.setState({ toolTipVisible: true })
+                                    }
+                                >
+                                    <Text style={[GOALS_STYLE.commonPillText]}>
+                                        {privacyObj.text}
+                                    </Text>
+                                </TouchableOpacity>
+                            </Tooltip>
+                        ) : (
+                            <Text style={[GOALS_STYLE.commonPillText]}>
+                                {privacyObj.text}
+                            </Text>
+                        )}
                     </View>
 
                     {/* Priority pill */}
@@ -483,9 +497,12 @@ const styles = {
 
 const mapStateToProps = (state, props) => {
     const { token } = state.auth.user
+    const { userId } = props
+    const self = userId === state.user.userId
 
     return {
         token,
+        self,
     }
 }
 

@@ -187,6 +187,8 @@ const mapStateToProps = (state) => {
     const { profilePic } = state.registration
     const { userId } = state.user
 
+    console.log('this is state', state)
+
     return { profilePic, userId }
 }
 

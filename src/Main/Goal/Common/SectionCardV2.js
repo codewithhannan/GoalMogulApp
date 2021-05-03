@@ -179,68 +179,72 @@ class SectionCardV2 extends Component {
             : [default_style.normalText_1, { marginLeft: 4 }]
 
         return (
-            <View
-                style={{
-                    marginRight: isSelf ? 4 : 0,
-                }}
-            >
-                {isSelf === true && !isCommentFocused ? (
-                    <TextInput
-                        placeholder={
-                            type === 'step'
-                                ? 'Add a step that takes you closer to your goal'
-                                : 'Add something you need help with'
-                        }
-                        scrollEnabled={false}
-                        ref={(ref) => (this.input = ref)}
-                        style={{
-                            ...textStyle,
-                            padding: 8,
-                            paddingTop: 8,
-                            backgroundColor: this.state.isInputFocused
-                                ? '#FAFAFA'
-                                : 'transparent',
-                        }}
-                        value={this.state.textValue}
-                        onFocus={() => {
-                            this.setState({ isInputFocused: true })
-                            if (this.props.onEdit) this.props.onEdit()
-                        }}
-                        onBlur={() => {
-                            if (
-                                this.state.textValue &&
-                                this.state.textValue.trim() !== ''
-                            )
-                                this.props.updateGoal(
-                                    _id,
-                                    type,
-                                    {
-                                        description: this.state.textValue.trim(),
-                                    },
-                                    goalRef,
-                                    pageId
-                                )
-                            this.setState({ isInputFocused: false })
-                        }}
-                        onChangeText={(text) =>
-                            this.setState({ textValue: text })
-                        }
-                    />
-                ) : (
-                    <Text style={textStyle} ellipsizeMode="tail">
-                        {textToDisplay}
-                    </Text>
-                )}
-                {!isCommentFocused && (
-                    <View
-                        style={{
-                            height: isSelf ? 2 : 0,
-                            backgroundColor: '#F2F2F2',
-                            marginBottom: 10,
-                        }}
-                    />
-                )}
-            </View>
+            <>
+                <View
+                    style={{
+                        marginRight: isSelf ? 4 : 0,
+                    }}
+                >
+                    {isSelf === true && !isCommentFocused ? (
+                        <>
+                            <TextInput
+                                placeholder={
+                                    type === 'step'
+                                        ? 'Add a step that takes you closer to your goal'
+                                        : 'Add something you need help with'
+                                }
+                                scrollEnabled={false}
+                                ref={(ref) => (this.input = ref)}
+                                style={{
+                                    ...textStyle,
+                                    padding: 8,
+                                    paddingTop: 8,
+                                    backgroundColor: this.state.isInputFocused
+                                        ? '#FAFAFA'
+                                        : 'transparent',
+                                }}
+                                value={this.state.textValue}
+                                onFocus={() => {
+                                    this.setState({ isInputFocused: true })
+                                    if (this.props.onEdit) this.props.onEdit()
+                                }}
+                                onBlur={() => {
+                                    if (
+                                        this.state.textValue &&
+                                        this.state.textValue.trim() !== ''
+                                    )
+                                        this.props.updateGoal(
+                                            _id,
+                                            type,
+                                            {
+                                                description: this.state.textValue.trim(),
+                                            },
+                                            goalRef,
+                                            pageId
+                                        )
+                                    this.setState({ isInputFocused: false })
+                                }}
+                                onChangeText={(text) =>
+                                    this.setState({ textValue: text })
+                                }
+                            />
+                        </>
+                    ) : (
+                        <Text style={textStyle} ellipsizeMode="tail">
+                            {textToDisplay}
+                        </Text>
+                    )}
+                    {!isCommentFocused && (
+                        <View
+                            style={{
+                                height: isSelf ? 2 : 0,
+                                backgroundColor: '#F2F2F2',
+                                marginBottom: 10,
+                            }}
+                        />
+                    )}
+                </View>
+            </>
         )
     }
 
@@ -271,25 +275,29 @@ class SectionCardV2 extends Component {
             : { backgroundColor: isActive ? '#F2F2F2' : styles.backgroundColor }
 
         return (
-            <DelayedButton
-                activeOpacity={0.6}
-                style={[styles.sectionContainerStyle, containerStyle]}
-                onPress={this.props.onCardPress || this.props.onBackPress}
-                onLayout={this.handleOnLayout}
-                onLongPress={drag}
-                disabled={isCreateCard}
-            >
-                {this.renderBackIcon()}
-                <View style={{ justifyContent: 'center' }}>
-                    {this.renderCheckBox(isCompleted, isCreateCard)}
-                </View>
-                <View style={{ flex: 1 }}>
-                    {this.renderTextStuff(isCommentFocused, description)}
-                    {!isCommentFocused &&
-                        !isCreateCard &&
-                        this.renderActionIcons()}
-                </View>
-            </DelayedButton>
+            <>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    style={[styles.sectionContainerStyle, containerStyle]}
+                    onPress={this.props.onCardPress || this.props.onBackPress}
+                    onLayout={this.handleOnLayout}
+                    onLongPress={drag}
+                    disabled={isCreateCard}
+                >
+                    {this.renderBackIcon()}
+
+                    <View style={{ justifyContent: 'center' }}>
+                        {this.renderCheckBox(isCompleted, isCreateCard)}
+                    </View>
+
+                    <View style={{ flex: 1 }}>
+                        {this.renderTextStuff(isCommentFocused, description)}
+                        {!isCommentFocused &&
+                            !isCreateCard &&
+                            this.renderActionIcons()}
+                    </View>
+                </DelayedButton>
+            </>
         )
     }
 }

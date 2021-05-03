@@ -19,6 +19,7 @@ const config = getEnvVars()
 const EMPTY_TOKEN_OBJECT = {
     token: undefined,
     createdAt: undefined,
+    accountOnHold: undefined,
 }
 const DAY_IN_MS = 24 * 60 * 60 * 1000
 const TOKEN_EXPIRATION_COMPENSATION_IN_MS = 5 * 60 * 1000 // 5 minute token refresh compensation
@@ -73,6 +74,7 @@ class TokenService {
 
         try {
             const credentialJsonString = await SecureStore.getItemAsync(key)
+            console.log('THIS IS CREDENTIQLASS', credentialJsonString)
             return JSON.parse(credentialJsonString)
         } catch (err) {
             // Best effort. Worst case scenario user needs to re-login
@@ -364,7 +366,8 @@ class TokenService {
         refreshToken,
         isOnboarded,
         userId,
-        accountOnHold
+        accountOnHold,
+        showQuestions
     ) {
         let userIdToUse = userId || this._userId
 
@@ -390,6 +393,7 @@ class TokenService {
                 isOnboarded,
                 userId: userIdToUse,
                 accountOnHold: accountOnHold,
+                showQuestions: showQuestions,
             }
             // Replace the authToken in cache
             this._authTokenObject = authTokenObject
@@ -413,6 +417,7 @@ class TokenService {
                 isOnboarded,
                 userId: userIdToUse,
                 accountOnHold: accountOnHold,
+                showQuestions: false,
             }
             // Replace the refreshToken in cache
             this._refreshTokenObject = refreshTokenObject
@@ -438,6 +443,7 @@ class TokenService {
     async checkAndGetValidAuthToken() {
         // First try to check from cache
         const tokenObject = this._authTokenObject
+
         Logger.log(
             '[TokenService] [checkAndGetValidAuthToken] authTokenObject loaded from cache is ',
             tokenObject,

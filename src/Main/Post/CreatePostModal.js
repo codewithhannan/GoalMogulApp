@@ -809,6 +809,7 @@ class CreatePostModal extends Component {
             uploading,
             attachGoalRequired,
         } = this.props
+
         const isGoalAttached =
             belongsToGoalStoryline && !!belongsToGoalStoryline.goalRef
         // Do not allow user to change the attached goal if editing this update
@@ -919,7 +920,6 @@ class CreatePostModal extends Component {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    marginVertical: 16,
                 }}
             >
                 <View style={{ flexDirection: 'row' }}>
@@ -1162,12 +1162,13 @@ const styles = {
     actionIconWrapperStyle: {
         flexDirection: 'row',
         backgroundColor: '#4F4F4F',
-        height: 74,
-        width: 74,
+        height: 100,
+        width: 110,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 5,
         marginRight: 8,
+        marginTop: 12,
     },
     userImageContainerStyle: {
         borderWidth: 0.5,
@@ -1202,7 +1203,12 @@ CreatePostModal = reduxForm({
 
 const mapStateToProps = (state, props) => {
     const selector = formValueSelector('createPostModal')
+
     const { user } = state.user
+    const { myGoals } = state.goals
+
+    const { data, refreshing, loading, filter } = myGoals
+
     const { profile } = user
 
     return {
@@ -1215,6 +1221,10 @@ const mapStateToProps = (state, props) => {
         mediaRef: selector(state, 'mediaRef'),
         formVals: state.form.createPostModal,
         uploading: state.posts.newPost.uploading,
+        data,
+        refreshing,
+        loading,
+        filter,
     }
 }
 

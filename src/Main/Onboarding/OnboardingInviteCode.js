@@ -101,10 +101,11 @@ class OnboardingInviteCode extends Component {
                             initialValues={{
                                 inviterCode: '',
                             }}
-                            onSubmit={async (value) => {
+                            onSubmit={async (value, { setSubmitting }) => {
                                 console.log('this isi value', value)
 
                                 this.props.authenticateInvitorCode(value)
+                                setSubmitting(false)
                             }}
                             validateOnBlur={true}
                         >
@@ -129,7 +130,7 @@ class OnboardingInviteCode extends Component {
                                     >
                                         <View
                                             style={{
-                                                width: '20%',
+                                                width: '35%',
                                                 height: 35,
                                                 borderRadius: 4,
                                                 borderBottomColor: '#42C0F5',
@@ -137,7 +138,7 @@ class OnboardingInviteCode extends Component {
                                                 borderLeftColor: 'transparent',
                                                 borderRightColor: 'transparent',
                                                 borderWidth: 2,
-                                                marginTop: 20,
+                                                marginTop: 15,
                                                 marginHorizontal: 20,
                                             }}
                                         >
@@ -152,21 +153,25 @@ class OnboardingInviteCode extends Component {
                                                 multiline={true}
                                                 style={styles.textinput}
                                                 textAlign="left"
-                                                keyboardType="numeric"
                                             />
                                         </View>
 
                                         <TouchableWithoutFeedback
                                             onPress={handleSubmit}
+                                            disabled={isSubmitting}
                                         >
                                             <View
                                                 style={{
-                                                    backgroundColor: '#42C0F5',
+                                                    backgroundColor: isSubmitting
+                                                        ? '#DBDADA'
+                                                        : '#42C0F5',
                                                     width: '25%',
                                                     justifyContent: 'center',
                                                     alignItems: 'center',
-                                                    height: 40,
-                                                    borderColor: '#42C0F5',
+                                                    height: 30,
+                                                    borderColor: isSubmitting
+                                                        ? '#DBDADA'
+                                                        : '#42C0F5',
                                                     borderWidth: 2,
                                                     borderRadius: 7,
                                                     marginTop: 20,

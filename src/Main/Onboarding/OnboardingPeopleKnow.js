@@ -6,14 +6,22 @@
  */
 
 import React from 'react'
-import { View, Text, Dimensions, Image } from 'react-native'
+import {
+    View,
+    Text,
+    Dimensions,
+    Image,
+    FlatList,
+    TouchableOpacity,
+} from 'react-native'
 import * as WebBrowser from 'expo-web-browser'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import OnboardingHeader from './Common/OnboardingHeader'
 
-import { text, color } from '../../styles/basic'
 import OnboardingStyles, { getCardBottomOffset } from '../../styles/Onboarding'
+
+import { text, default_style, color } from '../../styles/basic'
 
 import { PRIVACY_POLICY_URL } from '../../Utils/Constants'
 import { uploadContacts } from '../../redux/modules/registration/RegistrationActions'
@@ -27,11 +35,14 @@ import {
     trackWithProperties,
     EVENT as E,
 } from '../../monitoring/segment'
+import { handleRefresh, meetOnLoadMore } from '../../actions'
+import PYMKCard from '../MeetTab/PYMKCard'
+import { FONT_FAMILY } from '../../styles/basic/text'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const { button: buttonStyle, text: textStyle } = OnboardingStyles
 
-class OnboardingSyncContact extends React.Component {
+class OnboardingPeopleKnow extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -48,6 +59,11 @@ class OnboardingSyncContact extends React.Component {
             errMessage: undefined,
             loading: true,
         })
+
+    componentDidMount() {
+        // Refresh recommended users with force refresh
+        this.props.handleRefresh('suggested', true)
+    }
 
     closeModal = () =>
         this.setState({ ...this.state, syncContactInfoModalVisible: false })
@@ -130,32 +146,95 @@ class OnboardingSyncContact extends React.Component {
         screenTransitionCallback()
     }
 
+    renderPYMK = ({ item, index }) => {
+        return <PYMKCard user={item} index={index} />
+    }
+
+    renderItemSeparator = () => {
+        return <View style={{ height: 1, backgroundColor: '#F2F2F2' }} />
+    }
+
+    renderPymkHeader = () => {
+        return (
+            <View
+                style={{
+                    width: '100%',
+                    backgroundColor: 'white',
+                    marginBottom: 8,
+                }}
+            >
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        padding: styles.padding,
+                    }}
+                >
+                    <Text style={[default_style.titleText_1]}>
+                        People you May Know
+                    </Text>
+                    <View style={{ flex: 1 }} />
+                    <DelayedButton
+                        onPress={this.onSyncContact}
+                        style={{ flexDirection: 'row', alignItems: 'center' }}
+                        activeOpacity={1}
+                    >
+                        <Text
+                            style={[
+                                default_style.titleText_2,
+                                {
+                                    color: color.GM_BLUE,
+                                    fontFamily: FONT_FAMILY.SEMI_BOLD,
+                                },
+                            ]}
+                        >
+                            Sync Contacts
+                        </Text>
+                    </DelayedButton>
+                </View>
+                <View
+                    style={{
+                        height: 2,
+                        backgroundColor: '#F2F2F2',
+                        marginTop: 10,
+                    }}
+                />
+            </View>
+        )
+    }
+
+    renderListHeader = () => {
+        return <View style={{ width: '100%' }}>{this.renderPymkHeader()}</View>
+    }
+
     renderButtons() {
         return (
             <View style={{ width: '100%', justifyContent: 'center' }}>
-                <DelayedButton
-                    onPress={this.onSyncContact}
-                    style={
-                        buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.containerStyle
-                    }
-                >
-                    <Text
-                        style={buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT.textStyle}
+                <TouchableOpacity style={{}} onPress={this.onNotNow}>
+                    <View
+                        style={{
+                            backgroundColor: '#42C0F5',
+                            width: '100%',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: 40,
+                            borderColor: '#42C0F5',
+                            borderWidth: 2,
+                            borderRadius: 5,
+                        }}
                     >
-                        Sync Contacts
-                    </Text>
-                </DelayedButton>
-                <DelayedButton
-                    onPress={this.onNotNow}
-                    style={[
-                        buttonStyle.GM_WHITE_BG_GRAY_TEXT.containerStyle,
-                        { marginTop: 8 },
-                    ]}
-                >
-                    <Text style={buttonStyle.GM_WHITE_BG_GRAY_TEXT.textStyle}>
-                        Skip
-                    </Text>
-                </DelayedButton>
+                        <Text
+                            style={{
+                                color: 'white',
+                                fontWeight: '500',
+                                fontSize: 15,
+                                fontStyle: 'SFProDisplay-Regular',
+                            }}
+                        >
+                            Continue
+                        </Text>
+                    </View>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -163,19 +242,6 @@ class OnboardingSyncContact extends React.Component {
     /**
      * Render image impression for sync contact
      */
-    renderImage = () => {
-        return (
-            <View>
-                <Image
-                    source={Icons.ContactBook}
-                    style={{
-                        height: screenWidth * 0.76,
-                        width: screenWidth * 0.76,
-                    }}
-                />
-            </View>
-        )
-    }
 
     render() {
         return (
@@ -190,42 +256,23 @@ class OnboardingSyncContact extends React.Component {
                     <View
                         style={{
                             flexGrow: 1,
-                            alignItems: 'center',
+
                             width: '100%',
                         }}
                     >
-                        {this.renderImage()}
-                        <View style={{ width: '100%' }}>
-                            <Text
-                                style={
-                                    ([textStyle.title],
-                                    {
-                                        fontSize: 22,
-                                        fontWeight: '700',
-                                        textAlign: 'center',
-                                    })
+                        <View style={{ flex: 1, height: '100%' }}>
+                            <FlatList
+                                keyExtractor={(item) => item._id}
+                                data={this.props.pymkData}
+                                ListHeaderComponent={this.renderListHeader}
+                                renderItem={this.renderPYMK}
+                                // loading={this.props.loading}
+                                // onEndReached={() => this.props.meetOnLoadMore('suggested')}
+                                ItemSeparatorComponent={
+                                    this.renderItemSeparator
                                 }
-                            >
-                                Find friends who already use GoalMogul!
-                            </Text>
-                            {/* <Text style={textStyle.title}>use GoalMogul!</Text> */}
+                            />
                         </View>
-                        <Text style={styles.noteTextStyle}>
-                            {REGISTRATION_SYNC_CONTACT_NOTES}
-                            <Text
-                                style={{ color: color.GM_BLUE }}
-                                onPress={() =>
-                                    WebBrowser.openBrowserAsync(
-                                        PRIVACY_POLICY_URL,
-                                        {
-                                            showTitle: true,
-                                        }
-                                    )
-                                }
-                            >
-                                {` Learn more`}
-                            </Text>
-                        </Text>
                     </View>
                     {this.renderButtons()}
                 </View>
@@ -255,16 +302,37 @@ const styles = {
     },
 }
 
+const testData = [
+    {
+        name: 'Jay Patel',
+        profile: {
+            badges: {
+                milestoneBadge: {
+                    currentMilestone: 1,
+                },
+            },
+        },
+        topGoals: [
+            'Run 100 miles within 1 day 24 hours 20 seconds 203 milliseconds so that this is a super long goal',
+        ],
+    },
+]
+
 const mapStateToProps = (state) => {
     const { userId } = state.user
-    return { userId }
+    const { suggested } = state.meet
+    const { data, loading } = suggested
+    return { userId, pymkData: data, loading }
 }
 
 const AnalyticsWrapper = wrapAnalytics(
-    OnboardingSyncContact,
+    OnboardingPeopleKnow,
     SCREENS.REG_CONTACTY_SYNC
 )
 
 export default connect(mapStateToProps, {
     uploadContacts,
+
+    handleRefresh,
+    meetOnLoadMore,
 })(AnalyticsWrapper)

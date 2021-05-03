@@ -41,7 +41,7 @@ class OnboardingSelectionTarget extends React.Component {
 
     onNext = () => {
         // Transition to next screen
-        Actions.push('registration_tribe_selection')
+        Actions.replace('drawer')
 
         // Sent api request to upload survey
         this.props.uploadSurvey()

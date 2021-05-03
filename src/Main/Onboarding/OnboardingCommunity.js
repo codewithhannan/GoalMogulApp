@@ -23,6 +23,7 @@ import {
     EVENT as E,
     trackWithProperties,
 } from '../../monitoring/segment'
+import { Button } from 'react-native-paper'
 
 const { text: textStyle } = OnboardingStyles
 
@@ -31,6 +32,7 @@ class OnboardingCommunity extends React.Component {
         super(props)
         this.state = {
             swipeAll: false,
+            indexvalue: 0,
         }
     }
 
@@ -147,7 +149,19 @@ class OnboardingCommunity extends React.Component {
         )
     }
 
+    SwapSlide = (value) => {
+        if (!this.state.swipeAll) {
+            console.log('helooooo1')
+            this.setState({ indexvalue: value })
+        } else {
+            console.log('helooooo2')
+
+            this.onNext()
+        }
+    }
+
     render() {
+        console.log('this is state of swiper', this.state.swipeAll)
         return (
             <View style={styles.containerStyle}>
                 <OnboardingHeader />
@@ -181,8 +195,8 @@ class OnboardingCommunity extends React.Component {
                         style={{ flex: 1, alignItems: 'center', marginTop: 15 }}
                     >
                         <Carousel
-                            ref={(c) => {
-                                this._carousel = c
+                            ref={(value) => {
+                                this.SwapSlide = value
                             }}
                             data={this.props.communityGuidelines}
                             renderItem={this.renderCard}
@@ -197,9 +211,15 @@ class OnboardingCommunity extends React.Component {
                 <OnboardingFooter
                     totalStep={2}
                     currentStep={2}
-                    onNext={this.onNext}
+                    onNext={() => {
+                        if (!this.state.swipeAll) {
+                            this.SwapSlide.snapToNext()
+                        } else {
+                            this.onNext()
+                        }
+                    }}
                     onPrev={this.onBack}
-                    nextDisabled={!this.state.swipeAll}
+                    // nextDisabled={!this.state.swipeAll}
                 />
             </View>
         )

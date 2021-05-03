@@ -78,6 +78,7 @@ class PeopleSearch extends Component {
 
 const mapStateToProps = (state) => {
     const { people, searchContent } = state.search
+
     const { data, refreshing, loading } = people
 
     return {

@@ -286,13 +286,15 @@ class RegistrationAccount extends React.Component {
                     justifyContent: 'center',
                     paddingBottom: 8,
                     width: '100%',
+                    marginTop: 0,
                 }}
             >
                 <View
                     style={{
-                        height: 29,
+                        height: 0,
                         justifyContent: 'center',
                         alignItems: 'center',
+                        // marginBottom: 20,
                     }}
                 >
                     {registerErrMsg ? (
@@ -566,7 +568,7 @@ const mapStateToProps = (state) => {
     } = state.registration
 
     console.log('These are the props', state.registration)
-    console.log('These are erro', registerErrMsg)
+    // console.log('These are erro', registerErrMsg)
 
     return {
         name,

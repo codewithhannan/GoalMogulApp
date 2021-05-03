@@ -5,6 +5,9 @@
  */
 import Icons from '../../../asset/base64/Onboarding'
 import Tribes from '../../../asset/image/Tribes.png'
+import Community1 from '../../../asset/image/Community_1.png'
+import Community2 from '../../../asset/image/Community_2.png'
+import Community3 from '../../../asset/image/Community_3.png'
 
 export const REGISTRATION_TEXT_CHANGE = 'registration_text_change'
 export const REGISTRATION_TARGET_SELECTION = 'registration_target_selection'
@@ -91,22 +94,22 @@ export const REGISTRATION_COMMUNITY_GUIDELINE = [
     {
         title: "We're a positive, safe & judgement-free community",
         subTitle: '(NO NEGATIVITY AND NO TROLLING)',
-        picture: Icons.SafeCommunity,
+        picture: Community1,
     },
     {
         title: 'Give & get suggestions achieve more together!',
         subTitle: '',
-        picture: Tribes,
+        picture: Community2,
     },
     {
         title: 'Inspire others with supportive comments',
         subTitle: '',
-        picture: Icons.InspireOthers,
+        picture: Community3,
     },
     {
         title: 'Give & get suggestions, achieve more together!',
         subTitle: '',
-        picture: Icons.AchieveTogether,
+        picture: Tribes,
     },
 ]
 

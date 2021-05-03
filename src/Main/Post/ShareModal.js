@@ -409,6 +409,7 @@ class ShareModal extends React.Component {
 
     renderContentHeader(shareTo) {
         const { item, name } = shareTo
+
         const { shareToBasicTextStyle } = styles
         // If share to event or tribe, item must not be null
         if (!item && name !== 'Feed') return null

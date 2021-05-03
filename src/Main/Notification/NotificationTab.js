@@ -65,8 +65,6 @@ class NotificationTab extends Component {
         if (justFinishRefreshing && userOnNotificationPage) {
             this.props.markAllNotificationAsRead()
         }
-        const { token } = this.props
-        this.props.getAllNudges(token)
     }
 
     keyExtractor = (item) => item._id
@@ -104,12 +102,14 @@ class NotificationTab extends Component {
     renderHeader = ({ item }) => {
         return (
             <View style={{ flex: 1, backgroundColor: color.GM_BACKGROUND }}>
-                {this.renderSectionTitle({
-                    text: `You've been nudged`,
-                    type: 'header',
-                    length: 1,
-                })}
-                {this.renderNudge()}
+                {this.props.nudgesData.length > 0
+                    ? (this.renderSectionTitle({
+                          text: `You've been nudged`,
+                          type: 'header',
+                          length: 1,
+                      }),
+                      this.renderNudge())
+                    : null}
 
                 {this.renderSectionTitle({
                     text: 'Things your friends need',
@@ -327,6 +327,7 @@ const mapStateToProps = (state) => {
     const { shouldUpdateUnreadCount } = unread
     const { token } = state.auth.user
     const { loading: nudgesLoading } = state.nudges
+    const { nudgesData } = state.nudges
 
     return {
         refreshing: needs.refreshing || notifications.refreshing,
@@ -336,6 +337,7 @@ const mapStateToProps = (state) => {
         shouldUpdateUnreadCount,
         token,
         nudgesLoading,
+        nudgesData,
     }
 }
 

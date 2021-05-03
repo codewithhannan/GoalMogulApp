@@ -11,50 +11,43 @@ class PrivateGoalsToast extends Component {
     }
     render() {
         const { firstText, randomText } = this.props
+
         return (
             <>
-                <View
+                {/* <View
                     style={{
                         backgroundColor: color.PG_BACKGROUND,
-
-                        width: '90%',
-                        marginHorizontal: 20,
-                        paddingHorizontal: 20,
+                        // width: '100%',
+                        borderRadius: 8,
+                    }}
+                > */}
+                <View
+                    style={{
+                        flexDirection: 'row',
                     }}
                 >
-                    <View
+                    <Image
+                        source={CreateGoal}
                         style={{
                             height: 80,
-                            flexDirection: 'row',
+                            width: 40,
+
+                            resizeMode: 'contain',
+                        }}
+                    />
+
+                    <View
+                        style={{
+                            marginHorizontal: 20,
+                            justifyContent: 'center',
+                            // flexWrap: 'nowrap',
                         }}
                     >
-                        <Image
-                            source={CreateGoal}
-                            style={{
-                                height: 80,
-                                width: 40,
-
-                                resizeMode: 'contain',
-                            }}
-                        />
-
-                        <View
-                            style={{
-                                marginHorizontal: 30,
-                                justifyContent: 'center',
-                            }}
-                        >
-                            {firstText && (
-                                <Text style={{ ...default_style.normalText_1 }}>
-                                    {firstText}
-                                </Text>
-                            )}
-                            {randomText && (
-                                <Text style={{ ...default_style.normalText_1 }}>
-                                    {randomText}
-                                </Text>
-                            )}
-                        </View>
+                        {randomText && (
+                            <Text style={{ width: '50%', flexShrink: 1 }}>
+                                {randomText}
+                            </Text>
+                        )}
                     </View>
                 </View>
             </>
