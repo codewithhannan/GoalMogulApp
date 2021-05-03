@@ -56,7 +56,7 @@ class ModalTester extends Component {
                                 fontSize: 15,
                             }}
                         >
-                            Yes
+                            No
                         </Text>
                     </View>
                 </TouchableWithoutFeedback>
@@ -88,7 +88,7 @@ class ModalTester extends Component {
                                 fontSize: 15,
                             }}
                         >
-                            No
+                            Yes
                         </Text>
                     </View>
                 </TouchableWithoutFeedback>
@@ -102,7 +102,7 @@ class ModalTester extends Component {
         return (
             <>
                 <Modal
-                    backdropOpacity={0}
+                    backdropOpacity={0.5}
                     isVisible={this.props.isVisible}
                     style={{
                         borderRadius: 20,
@@ -192,7 +192,7 @@ class ModalTester extends Component {
                                 <Text
                                     style={{ fontWeight: '40', fontSize: 15 }}
                                 >
-                                    Do you want to nudge him?
+                                    Do you want to send a nudge?
                                 </Text>
                             </View>
 

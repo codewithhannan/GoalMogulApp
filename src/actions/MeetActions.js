@@ -339,25 +339,28 @@ export const updateFriendship = (userId, friendshipId, type, tab, callback) => (
                     },
                     url: baseUrl,
                 }
-            case 'acceptFriend':
+            case 'addAsFriend': {
+                // console.log('\nupdate friendship is called for addAsFriend')
                 return {
                     type: 'PUT',
                     data: {
                         friendshipId,
-                        acceptFriendshipRequest: true,
+                        closenessWithFriend: 'Friends',
                     },
                     url: baseUrl,
                 }
-            case 'addCloseFriend':
+            }
+            case 'addAsCloseFriend': {
+                // console.log('\nupdate friendship is called for addAsCloseFriend')
                 return {
                     type: 'PUT',
                     data: {
                         friendshipId,
                         closenessWithFriend: 'CloseFriends',
-                        acceptFriendshipRequest: true,
                     },
                     url: baseUrl,
                 }
+            }
             case 'deleteFriend':
                 return {
                     type: 'DELETE',

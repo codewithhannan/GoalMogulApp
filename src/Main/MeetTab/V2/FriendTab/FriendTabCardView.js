@@ -8,7 +8,7 @@
  * This View is the Friend Card View
  */
 import React from 'react'
-import { ActionSheetIOS } from 'react-native'
+import { Alert, ActionSheetIOS } from 'react-native'
 import { connect } from 'react-redux'
 import DelayedButton from '../../../Common/Button/DelayedButton'
 import { updateFriendship, blockUser, openProfile } from '../../../../actions'
@@ -108,6 +108,9 @@ class FriendTabCardView extends React.PureComponent {
 
     openOptionModal = () => this.bottomSheetRef.open()
 
+    openFriendshipTypeModal = () => this.friendshipTypeBottomSheetRef.open()
+    closeFriendshipTypeModal = () => this.friendshipTypeBottomSheetRef.close()
+
     makeFriendCardOptions = (item) => {
         const { maybeFriendshipRef } = item
 
@@ -118,6 +121,17 @@ class FriendTabCardView extends React.PureComponent {
         const friendshipId = maybeFriendshipRef._id
 
         return [
+            {
+                text: 'Edit Friend Type',
+                textStyle: { color: 'black' },
+                icon: { name: 'account-heart', pack: 'material-community' },
+                onPress: () => {
+                    this.closeOptionModal()
+                    setTimeout(() => {
+                        this.openFriendshipTypeModal()
+                    }, 500)
+                },
+            },
             {
                 text: 'Unfriend',
                 image: Icons.AccountRemove,
@@ -165,6 +179,75 @@ class FriendTabCardView extends React.PureComponent {
         )
     }
 
+    handleButtonOnPress = (type, item) => {
+        const { maybeFriendshipRef } = item
+        const friendshipId = maybeFriendshipRef._id
+
+        if (type === 'addAsCloseFriend') {
+            this.props.updateFriendship(
+                this.props.userId,
+                friendshipId,
+                'addAsCloseFriend',
+                'requests.outgoing',
+                undefined
+            )
+            Alert.alert('Added as close friend', '')
+            return
+        }
+
+        if (type === 'addAsFriend') {
+            this.props.updateFriendship(
+                this.props.userId,
+                friendshipId,
+                'addAsFriend',
+                'requests.outgoing',
+                undefined
+            )
+            Alert.alert('Removed from close friends', '')
+            return
+        }
+    }
+
+    makeFriendshipTypeOptions = (item) => {
+        return [
+            {
+                text: 'Friend',
+                textStyle: { color: 'black' },
+                onPress: () => {
+                    // close bottom sheet
+                    this.closeFriendshipTypeModal()
+                    setTimeout(() => {
+                        this.handleButtonOnPress('addAsFriend', item)
+                    }, 500)
+                },
+            },
+            {
+                text: 'Close Friend',
+                textStyle: { color: 'black' },
+                onPress: () => {
+                    // close bottom sheet
+                    this.closeFriendshipTypeModal()
+                    setTimeout(() => {
+                        this.handleButtonOnPress('addAsCloseFriend', item)
+                    }, 500)
+                },
+            },
+        ]
+    }
+
+    renderFriendshipTypeBottomSheet = (item) => {
+        const options = this.makeFriendshipTypeOptions(item)
+        // Options height + bottom space + bottom sheet handler height
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.friendshipTypeBottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
+    }
+
     render() {
         const { item, ...otherProps } = this.props
         if (!item) return null
@@ -180,6 +263,7 @@ class FriendTabCardView extends React.PureComponent {
                     <UserTopGoals user={item} />
                     {/* {this.renderButtons(item)} */}
                     {this.renderBottomSheet(item)}
+                    {this.renderFriendshipTypeBottomSheet(item)}
                 </DelayedButton>
             </AnimatedCardWrapper>
         )

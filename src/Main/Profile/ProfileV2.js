@@ -61,6 +61,7 @@ import { getFirstName } from '../../Utils/HelperMethods'
 import { api as API } from '../../redux/middleware/api'
 import VisitFriendsToast from '../../components/VisitFriendsToast'
 import FriendsGoalsVisit from '../../components/FriendsGoalsVisit'
+import ShareGoalPopup from '../Journey/ShareGoalPopup1'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
@@ -84,6 +85,7 @@ class ProfileV2 extends Component {
             popupName: '',
             showNudgePrivateGoals: false,
             showNudgeAddGoals: false,
+            showShareGoalPopup: false,
         }
         this.handleProfileDetailCardLayout = this.handleProfileDetailCardLayout.bind(
             this
@@ -177,7 +179,7 @@ class ProfileV2 extends Component {
     handlePopup = () => {
         // console.log('\nhandlePopup is called')
         const { popup, profile, goals } = this.props
-        console.log('\nThis is popup', profile)
+        // console.log('\nThis is popup', profile)
         if (!popup['FIRST_GOAL'].status && goals.length === 1) {
             this.props.uploadPopupData('FIRST_GOAL')
             this.setState({ showPopupModal: true, popupName: 'FIRST_GOAL' })
@@ -616,6 +618,14 @@ class ProfileV2 extends Component {
                     closeModal={() => {
                         this.setState({
                             showPopupModal: false,
+                        })
+                    }}
+                />
+                <ShareGoalPopup
+                    isVisible={this.state.showShareGoalPopup}
+                    closeModal={() => {
+                        this.setState({
+                            showShareGoalPopup: false,
                         })
                     }}
                 />

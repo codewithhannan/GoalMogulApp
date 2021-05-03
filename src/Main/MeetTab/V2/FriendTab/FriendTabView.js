@@ -60,7 +60,7 @@ class FriendTabView extends React.Component {
         inputC: '',
 
         friendsFilteredData: [],
-        closeFriendsFilterData: [],
+        closeFriendsFilteredData: [],
     }
 
     componentDidMount() {
@@ -102,16 +102,19 @@ class FriendTabView extends React.Component {
     }
 
     searchFriends = (input) => {
-        const { friendsSearchText } = this.state
-
         this.setState({ friendsSearchText: input })
-        // this.setState({ input })
-
         let friendsFilteredData = this.props.data.filter(function (item) {
             return item.name.includes(input)
         })
-
         this.setState({ friendsFilteredData: friendsFilteredData })
+    }
+
+    searchCloseFriends = (input, closeFriends) => {
+        this.setState({ closeFriendsSearchText: input })
+        let filteredData = closeFriends.filter((friend) =>
+            friend.name.includes(input)
+        )
+        this.setState({ closeFriendsFilteredData: filteredData })
     }
 
     _handleChangeTab = (index) => {
@@ -329,9 +332,9 @@ class FriendTabView extends React.Component {
                                         underlineColor: 'transparent',
                                     },
                                 }}
-                                value={this.state.inputB}
-                                onChangeText={(text) =>
-                                    this.setState({ inputB: text })
+                                value={this.state.closeFriendsSearchText}
+                                onChangeText={(input) =>
+                                    this.searchCloseFriends(input, closeFriends)
                                 }
                                 style={{
                                     backgroundColor: 'white',
@@ -370,9 +373,9 @@ class FriendTabView extends React.Component {
 
                         <FlatList
                             data={
-                                this.state.closeFriendsFilterData &&
-                                this.state.closeFriendsFilterData.length > 0
-                                    ? this.state.closeFriendsFilterData
+                                this.state.closeFriendsFilteredData &&
+                                this.state.closeFriendsFilteredData.length > 0
+                                    ? this.state.closeFriendsFilteredData
                                     : closeFriends
                             }
                             renderItem={this.renderItem}
@@ -384,9 +387,7 @@ class FriendTabView extends React.Component {
                             ListEmptyComponent={
                                 this.props.refreshing ? null : (
                                     <EmptyResult
-                                        text={
-                                            "You haven't added any close friends"
-                                        }
+                                        text={"You haven't added any "}
                                     />
                                 )
                             }

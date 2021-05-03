@@ -22,7 +22,7 @@ import {
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import { MessageText, Time, utils } from 'react-native-gifted-chat'
-import { color } from '../../../../styles/basic'
+import { color, text } from '../../../../styles/basic'
 import { MemberDocumentFetcher } from '../../../../Utils/UserUtils'
 import CommentRef from '../../../Goal/GoalDetailCard/Comment/CommentRef'
 import ChatMessageImage from '../../Modals/ChatMessageImage'
@@ -78,17 +78,28 @@ class Bubble extends React.Component {
     }
 
     onOptionSelect(selectedOption) {
-        if (selectedOption == 'Create Goal')
-            return this.openCreateGoal.bind(this)
-        if (selectedOption == 'View BadgeDetail')
-            return this.openBadgeDetails.bind(this)
-        if (selectedOption == 'View Goals')
-            return this.openProfileGoals.bind(this)
-        if (selectedOption == 'Invite Friends')
-            return this.openInviteFriends.bind(this)
-        if (selectedOption == 'Open TrendingGoals')
-            return this.openTrendingGoals.bind(this)
-        if (selectedOption == 'Open GoMo') return this.openGoMoChat.bind(this)
+        switch (selectedOption) {
+            case 'Create Goal': {
+                return this.openCreateGoal.bind(this)
+            }
+            case 'View BadgeDetail': {
+                return this.openBadgeDetails.bind(this)
+            }
+            case 'View Goals': {
+                return this.openProfileGoals.bind(this)
+            }
+            case 'Invite Friends': {
+                return this.openInviteFriends.bind(this)
+            }
+            case 'Open TrendingGoals': {
+                return this.openTrendingGoals.bind(this)
+            }
+            case 'Open GoMo': {
+                return this.openGoMoChat.bind(this)
+            }
+            default:
+                return
+        }
     }
 
     // For Gomo Bot messages
@@ -197,9 +208,10 @@ class Bubble extends React.Component {
                                     justifyContent: 'center',
                                     paddingTop: 9,
                                     paddingBottom: 9,
-                                    marginBottom: 9,
-                                    borderRadius: 6,
-                                    backgroundColor: '#F8F8F8',
+                                    marginBottom: 12,
+                                    borderRadius: 5,
+                                    borderColor: color.GM_BLUE,
+                                    borderWidth: 2,
                                     padding: 80,
                                 }}
                                 onPress={() => {
@@ -230,8 +242,11 @@ class Bubble extends React.Component {
                                     style={{
                                         color: '#fff',
                                         fontSize: 14,
+                                        fontWeight: '600',
+                                        fontFamily: text.FONT_FAMILY.REGULAR,
                                         color: color.GM_BLUE,
                                         width: '100%',
+                                        textAlign: 'center',
                                     }}
                                 >
                                     {option.optionTitle}

@@ -47,6 +47,7 @@ class FriendsGoals extends Component {
                     <View
                         style={{
                             width: '60%',
+                            paddingLeft: 15,
                         }}
                     >
                         <Text

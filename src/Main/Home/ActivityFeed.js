@@ -64,7 +64,22 @@ import GetBronzeBadge from '../../components/GetBronzeBadge'
 import VisitFriendsToast from '../../components/VisitFriendsToast'
 import VisitFriendsToast2 from '../../components/VisitFriendsToast2'
 import CloseFriendsToast from '../../components/CloseFriendsToast'
+import PopupFB from '../Journey/FbPopup'
+
 import { getRandomValue } from '../../Utils/HelperMethods'
+
+/*Tetsin Imports */
+import MyTribeBanner from '../Menu/Tribe/MyTribeBanner'
+import ShareGoalPopup1 from '../Journey/ShareGoalPopup1'
+import FeedbackPopup from '../Journey/FeedbackPopup'
+import FbPopup from '../Journey/FbPopup'
+import SubmitFeedbackPopup from '../Journey/SubmitFeedbackPopup'
+import SuggestionPopup from '../Journey/SuggestionPopup'
+import NudgePopup from '../Journey/NudgePopup'
+import InviteFriendsPopup from '../Journey/InviteFriendsPopup'
+import EnterDrawPopup from '../Journey/EnterDrawPopup'
+import HopePopup from '../Journey/HopePopup'
+/*Tetsin Imports */
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
@@ -142,6 +157,7 @@ class ActivityFeed extends Component {
             friendToVisit: '',
             visitFriendMore: '',
             closeFriendToVisit: '',
+            showFbModal: false,
 
             badges: {
                 milestoneBadge: {
@@ -489,6 +505,19 @@ class ActivityFeed extends Component {
         }
     }
 
+    renderFacebookPopup() {
+        return (
+            <PopupFB
+                isVisible={this.state.showFbModal}
+                closeModal={() => {
+                    this.setState({
+                        showFbModal: false,
+                    })
+                }}
+            />
+        )
+    }
+
     render() {
         const {
             data,
@@ -727,80 +756,82 @@ class ActivityFeed extends Component {
         const silverBadge = currentMilestone == 2
         const goldBadge = currentMilestone == 3
 
-        return (
-            <>
-                {!image ||
-                greenBadge ||
-                silverBadge ||
-                goldBadge ||
-                getGreenBadge ||
-                visitFriends ||
-                visitFriendsMore ||
-                getBronzeBadge ? (
-                    <Swiper
-                        style={{ height: 150 }}
-                        showsPagination={false}
-                        ref="swiper"
-                        index={0}
-                        onIndexChanged={(index) => {
-                            this.setState({ currIndex: index })
-                        }}
-                        loop={false}
-                    >
-                        {!image ? (
-                            <MissingProfileToast pageId={pageAb} />
-                        ) : null}
-                        {greenBadge && <GreenBadgeToast pageId={pageAb} />}
+        // return (
+        //     <>
+        //         {!image ||
+        //         greenBadge ||
+        //         silverBadge ||
+        //         goldBadge ||
+        //         getGreenBadge ||
+        //         visitFriends ||
+        //         visitFriendsMore ||
+        //         getBronzeBadge ? (
+        //             <Swiper
+        //                 style={{ height: 150 }}
+        //                 showsPagination={false}
+        //                 ref="swiper"
+        //                 index={0}
+        //                 onIndexChanged={(index) => {
+        //                     this.setState({ currIndex: index })
+        //                 }}
+        //                 loop={false}
+        //             >
+        //                 {!image ? (
+        //                     <MissingProfileToast pageId={pageAb} />
+        //                 ) : null}
+        //                 {greenBadge && <GreenBadgeToast pageId={pageAb} />}
 
-                        {goldBadge && <GoldBadge count={friendsCount} />}
-                        {silverBadge && (
-                            <SilverBadge heading={heading} text={text} />
-                        )}
-                        {getGreenBadge && <GetGreenBadge />}
-                        {getBronzeBadge && <GetBronzeBadge />}
-                        {this.state.friendToVisit && (
-                            <VisitFriendsToast
-                                name={this.state.friendToVisit}
-                            />
-                        )}
-                        {friendsToVisitMore.length > 0 &&
-                            this.state.visitFriendMore && (
-                                <VisitFriendsToast2
-                                    name={this.state.visitFriendMore}
-                                />
-                            )}
-                        {this.state.closeFriendToVisit && (
-                            <CloseFriendsToast
-                                friend={this.state.closeFriendToVisit}
-                            />
-                        )}
-                    </Swiper>
-                ) : null}
+        //                 {goldBadge && <GoldBadge count={friendsCount} />}
+        //                 {silverBadge && (
+        //                     <SilverBadge heading={heading} text={text} />
+        //                 )}
+        //                 {getGreenBadge && <GetGreenBadge />}
+        //                 {getBronzeBadge && <GetBronzeBadge />}
+        //                 {this.state.friendToVisit && (
+        //                     <VisitFriendsToast
+        //                         name={this.state.friendToVisit}
+        //                     />
+        //                 )}
+        //                 {friendsToVisitMore.length > 0 &&
+        //                     this.state.visitFriendMore && (
+        //                         <VisitFriendsToast2
+        //                             name={this.state.visitFriendMore}
+        //                         />
+        //                     )}
+        //                 {this.state.closeFriendToVisit && (
+        //                     <CloseFriendsToast
+        //                         friend={this.state.closeFriendToVisit}
+        //                     />
+        //                 )}
+        //             </Swiper>
+        //         ) : null}
 
-                <FlatList
-                    keyboardShouldPersistTaps="handled"
-                    scrollEnabled={false}
-                    data={processedData}
-                    renderItem={this.renderItem}
-                    numColumns={1}
-                    keyExtractor={this._keyExtractor}
-                    onViewableItemsChanged={this.handleOnViewableItemsChanged}
-                    viewabilityConfig={this.viewabilityConfig}
-                    ListEmptyComponent={
-                        !this.props.loading &&
-                        !this.props.refreshing && (
-                            <EmptyResult
-                                text={'No Activity'}
-                                textStyle={{ paddingTop: 230 }}
-                            />
-                        )
-                    }
-                    ListFooterComponent={this.renderListFooter()}
-                    onEndReached={this.handleOnLoadMore}
-                    onEndThreshold={2}
-                />
-            </>
-        )
+        //         <FlatList
+        //             keyboardShouldPersistTaps="handled"
+        //             scrollEnabled={false}
+        //             data={processedData}
+        //             renderItem={this.renderItem}
+        //             numColumns={1}
+        //             keyExtractor={this._keyExtractor}
+        //             onViewableItemsChanged={this.handleOnViewableItemsChanged}
+        //             viewabilityConfig={this.viewabilityConfig}
+        //             ListEmptyComponent={
+        //                 !this.props.loading &&
+        //                 !this.props.refreshing && (
+        //                     <EmptyResult
+        //                         text={'No Activity'}
+        //                         textStyle={{ paddingTop: 230 }}
+        //                     />
+        //                 )
+        //             }
+        //             ListFooterComponent={this.renderListFooter()}
+        //             onEndReached={this.handleOnLoadMore}
+        //             onEndThreshold={2}
+        //         />
+        //         {this.renderFacebookPopup()}
+        //     </>
+        // )
+        return <HopePopup isVisible={true} />
     }
 }
 

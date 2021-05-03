@@ -142,6 +142,8 @@ class ProfileDetailCard extends Component {
     openFriendRequestOptionModal = () => this.friendRequestBottomSheetRef.open()
     closeFriendRequestOptionModal = () =>
         this.friendRequestBottomSheetRef.close()
+    openFriendshipTypeModal = () => this.friendshipTypeBottomSheetRef.open()
+    closeFriendshipTypeModal = () => this.friendshipTypeBottomSheetRef.close()
 
     onLayout = (e) => {
         if (this.props.onLayout) {
@@ -212,6 +214,33 @@ class ProfileDetailCard extends Component {
         ]
     }
 
+    makeFriendshipTypeOptions = () => {
+        return [
+            {
+                text: 'Friend',
+                textStyle: { color: 'black' },
+                onPress: () => {
+                    // close bottom sheet
+                    this.closeFriendshipTypeModal()
+                    setTimeout(() => {
+                        this.handleButtonOnPress('addAsFriend')
+                    }, 500)
+                },
+            },
+            {
+                text: 'Close Friend',
+                textStyle: { color: 'black' },
+                onPress: () => {
+                    // close bottom sheet
+                    this.closeFriendshipTypeModal()
+                    setTimeout(() => {
+                        this.handleButtonOnPress('addAsCloseFriend')
+                    }, 500)
+                },
+            },
+        ]
+    }
+
     renderFriendshipStatusBottomSheet = () => {
         const options = this.makeFriendshipStatusOptions()
         // Options height + bottom space + bottom sheet handler height
@@ -219,6 +248,19 @@ class ProfileDetailCard extends Component {
         return (
             <BottomButtonsSheet
                 ref={(r) => (this.friendRequestBottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
+    }
+
+    renderFriendshipTypeBottomSheet = () => {
+        const options = this.makeFriendshipTypeOptions()
+        // Options height + bottom space + bottom sheet handler height
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.friendshipTypeBottomSheetRef = r)}
                 buttons={options}
                 height={sheetHeight}
             />
@@ -238,16 +280,31 @@ class ProfileDetailCard extends Component {
             return
         }
 
-        if (type === 'addCloseFriend') {
-            console.log('\n action is dispatched for addCloseFriend')
-            Alert.alert('Added as close friend', '')
-            // this.props.upateFriendship(
-            //     this.props.userId,
-            //     this.props.friendship._id,
-            //     'addCloseFriend',
-            //     'requests.outgoing',
-            //     undefined
+        if (type === 'addAsCloseFriend') {
+            // console.log('\n action is dispatched for addAsCloseFriend')
+            // console.log(
+            //     `\n parameters passed to update friendship userID:${this.props.userId} friendshipID:${this.props.friendship._id}`
             // )
+            this.props.updateFriendship(
+                this.props.userId,
+                this.props.friendship._id,
+                'addAsCloseFriend',
+                'requests.outgoing',
+                undefined
+            )
+            Alert.alert('Added as close friend', '')
+            return
+        }
+
+        if (type === 'addAsFriend') {
+            this.props.updateFriendship(
+                this.props.userId,
+                this.props.friendship._id,
+                'addAsFriend',
+                'requests.outgoing',
+                undefined
+            )
+            Alert.alert('Removed from close friends', '')
             return
         }
 
@@ -504,11 +561,6 @@ class ProfileDetailCard extends Component {
     }
 
     renderImage = () => {
-        console.log(
-            '\nThis is the image URL for profile picture: ',
-            this.state.imageUrl
-        )
-
         return (
             <View activeOpacity={0.6} style={styles.imageContainerStyle}>
                 {this.props.uploading ? (
@@ -656,13 +708,13 @@ class ProfileDetailCard extends Component {
         }
 
         const closeFriendOption = {
-            text: 'Add as Close Friend',
+            text: 'Edit Friend Type',
             textStyle: { color: 'black' },
             icon: { name: 'account-heart', pack: 'material-community' },
             onPress: () => {
                 this.closeOptionModal()
                 setTimeout(() => {
-                    this.handleButtonOnPress('addCloseFriend')
+                    this.openFriendshipTypeModal()
                 }, 500)
             },
         }
@@ -803,6 +855,7 @@ class ProfileDetailCard extends Component {
                         {this.renderMoreProfileActionButton()}
                         {this.renderBottomSheet()}
                         {this.renderFriendshipStatusBottomSheet()}
+                        {this.renderFriendshipTypeBottomSheet()}
                     </View>
                 </View>
                 <View style={styles.containerStyle}>

@@ -201,7 +201,6 @@ export const updateMessageList = (
     const oldestMessage = currentMessageList.sort(
         (doc1, doc2) => doc1.createdAt - doc2.createdAt
     )[0]
-    console.log('messages1', oldestMessage)
     if (oldestMessage) {
         MessageStorageService.getAllMessagesAfterMessage(
             chatRoom._id,
@@ -446,6 +445,7 @@ export const sendMessage = (
                             body.media = uploadedMediaRef
                         }
                         const handleRequestFailure = (failure) => {
+                            console.log('error sending message', failure)
                             Alert.alert(
                                 'Error',
                                 'Could not send message to others.'
