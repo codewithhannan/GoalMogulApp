@@ -73,7 +73,6 @@ class NudgePopup extends Component {
         return (
             <Modal isVisible={this.props.isVisible}>
                 <View style={styles.container}>
-                    {this.renderCancelButton()}
                     <View>
                         <Text
                             style={styles.title}
@@ -86,6 +85,7 @@ class NudgePopup extends Component {
                         </Text>
                     </View>
                     <View>{this.renderButtons()}</View>
+                    {this.renderCancelButton()}
                 </View>
             </Modal>
         )

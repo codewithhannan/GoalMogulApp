@@ -44,6 +44,10 @@ import { getAllContacts } from '../../../actions/ContactActions'
 import { FONT_FAMILY } from '../../../styles/basic/text'
 import { DEFAULT_CARDS } from './modalSvg'
 import { Icon } from '@ui-kitten/components'
+import { getUserData } from '../../../redux/modules/User/Selector'
+import { parseExpressionAndEval } from '../../../Utils/HelperMethods'
+import ArrowRight from '../../../asset/svgs/ArrowRightCircle'
+import ArrowLeft from '../../../asset/svgs/ArrowLeftCircle'
 
 const DEBUG_KEY = '[UI InviteFriendModal]'
 const DEFAULT_STATE = {
@@ -51,6 +55,34 @@ const DEFAULT_STATE = {
         "I'd love for us to keep each other inspired and motivated on our journeys. Add me on GoalMogul?",
     editEnabled: false,
 }
+const DESCRIPTIONS_TOP3 = [
+    `I’d love to grow closer with you by keeping up with each others’ goals and helping. GoalMogul makes it fun and easy. Please join and check out my goals.`,
+    `We barely have time to catch up these days. Can you join me on GoalMogul? It will help us keep up with each others’ life goals so we don't lose touch.`,
+    `I joined GoalMogul to share my goals with trusted friends. Can you have a look and provide feedback?`,
+]
+let DESCRIPTIONS_REMAINING = [
+    `It’s been a while since we connected. GoalMogul enables us to stay connected by helping each other achieve our goals. I invite you to keep up with my goals.`,
+    `I know you're super busy and don't always have the time to catch up. Can you join me on GoalMogul? I would love to share with each other what we’re trying to achieve in life!`,
+    `I'm working on improving myself by setting goals. When you have the time, can you please view them and tell me what you think? Thanks! `,
+    `It's been a while since we were in touch. Let's connect on GoalMogul so we can remain updated on what each other want in life!`,
+    `GoalMogul helps friends to grow closer by letting us keep up with each others’ goals. I want to stay connected, can you check out my goals?`,
+    `I wanted to share my goals with you because you're a great friend. I want you to join me on GoalMogul. We can crush our goals together.`,
+    `I've set some exciting goals using GoalMogul. Come and join me! It will be great for your aspirations!`,
+    `I know you have some goals you want to achieve. Why not use GoalMogul! It has some really cool resources for getting stuff done!`,
+    `You're always telling me how you want to do more in life. I think you should join GoalMogul -- it's great for discovering and setting new goals!`,
+    `It's been a while since you've had a change in life. I think you should join me on GoalMogul. It's great for finding motivation and inspiration!`,
+    `How often do we really talk about each other's life goals and dreams? Let's connect on GoalMogul so we can stay updated on what truly matters to us.`,
+    `Let's catch up on each other's goals. Join me on GoalMogul!`,
+    `I wanted to have more productive conversations with my friends, so I joined GoalMogul. Please join me so we can keep up with each others’ goals.`,
+    `Over the years, I lost touch with a lot of friends because I lost touch with what they wanted in life. I don't want the same to happen to us! Let's connect on GoalMogul over what truly matters -- our goals.`,
+    `We have both been busy in our own lives and career paths, so I want you to join me on GoalMogul. This way we can stay updated on each other’s goals in life.`,
+    `What are you up to these days? Join me on GoalMogul so we stay updated on what we’re both trying to achieve in life.`,
+    `I just set a new goal on GoalMogul. Would really appreciate it if you checked it out 🙏`,
+    `I wanna share a bit more about myself with you. Wanna check out my personal goals that I set?`,
+    `I set a goal recently that I would really appreciate some feedback in. Would you like to have a look and share your thoughts?`,
+    `You've been there for me many times before, so I wanted to ask you to view the goals I set. I know you'd give some really good advice!`,
+    `GoalMogul is an app for overachievers like us. Can you join me so we can keep in touch and help each other achieve our goals?`,
+]
 
 const EXCLUDE_ACTIVITY_TYPE = [
     'com.apple.reminders.RemindersEditorExtension',
@@ -58,9 +90,28 @@ const EXCLUDE_ACTIVITY_TYPE = [
 ]
 
 class InviteFriendModal extends React.PureComponent {
+    shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1))
+            ;[array[i], array[j]] = [array[j], array[i]]
+        }
+    }
+
+    makeDescriptionsArray = () => {
+        this.shuffleArray(DESCRIPTIONS_REMAINING)
+        return [...DESCRIPTIONS_TOP3, ...DESCRIPTIONS_REMAINING]
+    }
+
+    descriptionsArray = this.makeDescriptionsArray()
+
     constructor(props) {
         super(props)
-        this.state = { ...DEFAULT_STATE }
+        // this.state = { ...DEFAULT_STATE }
+        this.state = {
+            description: this.descriptionsArray[0],
+            descriptionIndex: 0,
+            editEnabled: false,
+        }
     }
 
     updateDescription = async (text) => {
@@ -75,7 +126,11 @@ class InviteFriendModal extends React.PureComponent {
     closeModal = () => {
         if (this.props.closeModal) {
             this.props.closeModal()
-            this.setState({ ...DEFAULT_STATE })
+            this.setState({
+                description: this.descriptionsArray[0],
+                descriptionIndex: 0,
+                editEnabled: false,
+            })
         }
     }
 
@@ -122,6 +177,26 @@ class InviteFriendModal extends React.PureComponent {
         setTimeout(() => {
             Actions.push(`${componentKeyToOpen}`)
         }, 300)
+    }
+
+    leftArrowClickHandler = () => {
+        this.state.descriptionIndex > 0 &&
+            this.setState({
+                descriptionIndex: this.state.descriptionIndex - 1,
+                description: this.descriptionsArray[
+                    this.state.descriptionIndex - 1
+                ],
+            })
+    }
+
+    rightArrowClickHandler = () => {
+        this.state.descriptionIndex < this.descriptionsArray.length - 1 &&
+            this.setState({
+                descriptionIndex: this.state.descriptionIndex + 1,
+                description: this.descriptionsArray[
+                    this.state.descriptionIndex + 1
+                ],
+            })
     }
 
     inviteSms = async (message, url) => {
@@ -412,7 +487,11 @@ class InviteFriendModal extends React.PureComponent {
                                         ref={(input) => {
                                             this.input = input
                                         }}
-                                        value={this.state.description}
+                                        value={
+                                            this.descriptionsArray[
+                                                this.state.descriptionIndex
+                                            ]
+                                        }
                                         onChangeText={(text) =>
                                             this.updateDescription(text)
                                         }
@@ -427,6 +506,7 @@ class InviteFriendModal extends React.PureComponent {
                                         multiline
                                     />
                                     <Text
+                                        numberOfLines={1}
                                         style={[
                                             default_style.titleText_1,
                                             {
@@ -435,6 +515,7 @@ class InviteFriendModal extends React.PureComponent {
                                                 fontFamily: FONT_FAMILY.REGULAR,
                                                 textDecorationLine: 'underline',
                                                 marginTop: 16,
+                                                width: '90%',
                                             },
                                         ]}
                                     >
@@ -452,7 +533,7 @@ class InviteFriendModal extends React.PureComponent {
                                             style={{
                                                 position: 'absolute',
                                                 right: 0,
-                                                bottom: 5,
+                                                bottom: 0,
                                             }}
                                         >
                                             <Icon
@@ -465,6 +546,26 @@ class InviteFriendModal extends React.PureComponent {
                                                 }}
                                             />
                                         </View>
+                                    </TouchableOpacity>
+                                </View>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
+                                        marginTop: '3%',
+                                    }}
+                                >
+                                    <TouchableOpacity
+                                        onPress={this.leftArrowClickHandler}
+                                        style={styles.arrowButtons}
+                                    >
+                                        <ArrowLeft />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={this.rightArrowClickHandler}
+                                        style={styles.arrowButtons}
+                                    >
+                                        <ArrowRight />
                                     </TouchableOpacity>
                                 </View>
                                 <Text
@@ -557,6 +658,9 @@ const styles = {
         alignItems: 'center',
         borderRadius: 5,
     },
+    arrowButtons: {
+        marginHorizontal: '1.5%',
+    },
 }
 
 const mapStateToProps = (state) => {
@@ -564,12 +668,12 @@ const mapStateToProps = (state) => {
     const { inviteCode } = user
     const { tab } = state.navigation
     const contacts = state.contacts
-
+    const check = state
     return {
-        user,
         inviteCode,
         tab,
         contacts,
+        check,
     }
 }
 

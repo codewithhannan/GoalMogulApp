@@ -26,6 +26,7 @@ import {
     openProfileDetailEditForm,
     refreshProfileData,
     getPopupData,
+    uploadPopupData,
 } from '../../actions'
 import { getAllNudges } from '../../actions/NudgeActions'
 
@@ -80,6 +81,7 @@ import NudgePopup from '../Journey/NudgePopup'
 import InviteFriendsPopup from '../Journey/InviteFriendsPopup'
 import EnterDrawPopup from '../Journey/EnterDrawPopup'
 import HopePopup from '../Journey/HopePopup'
+import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
 /*Tetsin Imports */
 
 const TAB_KEY = 'activityfeed'
@@ -228,6 +230,10 @@ class ActivityFeed extends Component {
         }
 
         this.props.getPopupData()
+
+        if (this.props.goals.length === 2) {
+            this.renderFacebookPopup()
+        }
     }
     shouldComponentUpdate(nextProps, nextState) {
         return (
@@ -528,17 +534,15 @@ class ActivityFeed extends Component {
         }
     }
 
-    renderFacebookPopup() {
-        return (
-            <PopupFB
-                isVisible={this.state.showFbModal}
-                closeModal={() => {
-                    this.setState({
-                        showFbModal: false,
-                    })
-                }}
-            />
-        )
+    renderFacebookPopup = () => {
+        const { popup, goals } = this.props
+        // console.log(
+        //     `status: ${popup['FBPOPUP_2ND_GOAL'].status} length: ${goals.length}`
+        // )
+        if (goals.length === 2 && !popup['FBPOPUP_2ND_GOAL'].status) {
+            this.props.uploadPopupData('FBPOPUP_2ND_GOAL')
+            this.setState({ showFbModal: true })
+        }
     }
 
     render() {
@@ -856,8 +860,17 @@ class ActivityFeed extends Component {
                     onEndReached={this.handleOnLoadMore}
                     onEndThreshold={2}
                 />
+                <PopupFB
+                    isVisible={this.state.showFbModal}
+                    closeModal={() => {
+                        this.setState({
+                            showFbModal: false,
+                        })
+                    }}
+                />
             </>
         )
+        // return <EarnBadgeModal isVisible={true} />
     }
 }
 
@@ -865,7 +878,7 @@ const mapStateToProps = (state, props) => {
     const getUserGoals = makeGetUserGoals()
     const { friends } = state.meet
     const { image, occupation, about } = state.user.user.profile
-    const { nudges } = state
+    const { nudges, popup } = state
 
     // const created = moment().format()
     // console.log('data of state', created)
@@ -909,9 +922,7 @@ const mapStateToProps = (state, props) => {
     return {
         goals,
         headline,
-
         userId,
-
         image,
         user,
         data,
@@ -925,9 +936,8 @@ const mapStateToProps = (state, props) => {
         profile,
         occupation,
         about,
-
         token,
-
+        popup,
         // currentMilestone: 0,
     }
 }
@@ -968,6 +978,7 @@ export default connect(
         fetchProfile,
         getAllNudges,
         getPopupData,
+        uploadPopupData,
     },
     null,
     { withRef: true }

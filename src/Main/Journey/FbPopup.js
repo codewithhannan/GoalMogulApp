@@ -17,7 +17,6 @@ import Modal from 'react-native-modal'
 
 import { GM_BLUE } from '../../styles/basic/color'
 import * as text from '../../styles/basic/text'
-import { openPopup } from '../../actions'
 import SvgImage from '../../asset/svgs/FbPopup'
 import cancel from '../../asset/utils/cancel_no_background.png'
 import DelayedButton from '../Common/Button/DelayedButton'
@@ -59,12 +58,9 @@ class PopupFB extends Component {
     }
 
     render() {
-        console.log('\n Props passed to popup modal', this.props)
-        // this.props.openPopup(popupName)
         return (
-            <Modal isVisible={this.props.isVisible}>
+            <Modal isVisible={this.props.isVisible} backdropOpacity={0.5}>
                 <View style={styles.container}>
-                    {this.renderCancelButton()}
                     <View>
                         <View style={styles.header}>
                             <Text style={styles.title}>
@@ -79,6 +75,7 @@ class PopupFB extends Component {
                         </Text>
                     </View>
                     <View>{this.renderButton()}</View>
+                    {this.renderCancelButton()}
                 </View>
             </Modal>
         )
@@ -135,6 +132,7 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         alignItems: 'center',
+        width: wp(70),
     },
     btnText: {
         color: '#ffffff',
@@ -143,7 +141,6 @@ const styles = StyleSheet.create({
     },
     title: {
         fontFamily: text.FONT_FAMILY.BOLD,
-        width: wp(76),
         textAlign: 'left',
         fontSize: hp(2.39),
     },
@@ -159,6 +156,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(mapStateToProps, {
-    openPopup,
-})(PopupFB)
+export default connect(mapStateToProps)(PopupFB)

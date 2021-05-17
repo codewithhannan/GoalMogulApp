@@ -59,11 +59,18 @@ import Popup from '../Journey/Popup'
 import PrivateGoalsNudge from '../../components/PrivateGoalsNudge'
 import { getFirstName } from '../../Utils/HelperMethods'
 import { api as API } from '../../redux/middleware/api'
+import InviteFriendModal from '../MeetTab//Modal/InviteFriendModal'
 
 import FriendsGoalsVisit from '../../components/FriendsGoalsVisit'
 import ShareGoalPopup from '../Journey/ShareGoalPopup1'
 import ProfilePictureModal from '../../components/ProfilePictureModal'
 import NoGoalToast from '../../components/NoGoalToast'
+import HopePopup from '../Journey/HopePopup'
+import EnterDrawPopup from '../Journey/EnterDrawPopup'
+import InviteFriendsPopup from '../Journey/InviteFriendsPopup'
+import ShareGoalPopup1 from '../Journey/ShareGoalPopup1'
+import FeedbackPopup from '../Journey/FeedbackPopup'
+import SubmitFeedbackPopup from '../Journey/SubmitFeedbackPopup'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
@@ -84,10 +91,16 @@ class ProfileV2 extends Component {
             showGoalVisibleModal: false,
             profileVisited: false,
             showPopupModal: false,
+            showQuestionModal: false,
+            showDrawModal: false,
+            showInviteFriendsModal: false,
             popupName: '',
             showNudgePrivateGoals: false,
             showNudgeAddGoals: false,
             showShareGoalPopup: false,
+            showShareGoalPopup1: false,
+            showFeedbackPopup: false,
+            showSubmitFeedbackPopup: false,
             profilePictureVisible: false,
         }
         this.handleProfileDetailCardLayout = this.handleProfileDetailCardLayout.bind(
@@ -135,6 +148,7 @@ class ProfileV2 extends Component {
         }
         if (this.props.isSelf) {
             this.handlePopup()
+            this.openShareGoalPopup1()
             return
         }
     }
@@ -275,7 +289,14 @@ class ProfileV2 extends Component {
     }
 
     openInviteFriendModal = () => {
-        this.setState({ showInviteFriendModal: true })
+        this.setState({
+            showInviteFriendsModal: false,
+        })
+        setTimeout(() => {
+            this.setState({
+                showInviteFriendModal: true,
+            })
+        }, 500)
     }
 
     closeInviteFriendModal = () => {
@@ -318,6 +339,86 @@ class ProfileV2 extends Component {
      */
     handleProfileDetailCardLayout = (e) => {
         return
+    }
+
+    handleQuestionPopup = () => {
+        // console.log('\ncoming in handleQuestionPopup')
+        this.setState({
+            showPopupModal: false,
+        })
+        setTimeout(() => {
+            if (!this.props.popup['INVITE_POPUPS'].status) {
+                this.props.uploadPopupData('INVITE_POPUPS')
+                this.setState({
+                    showQuestionModal: true,
+                })
+            }
+        }, 500)
+    }
+
+    handleDrawPopup = () => {
+        this.setState({
+            showQuestionModal: false,
+        })
+        setTimeout(() => {
+            this.setState({
+                showDrawModal: true,
+            })
+        }, 500)
+    }
+
+    handleInviteFriendsPopup = (feedback) => {
+        if (feedback) {
+            this.props.uploadPopupData('INVITE_POPUPS', feedback)
+        }
+        this.setState({
+            showDrawModal: false,
+        })
+        setTimeout(() => {
+            this.setState({
+                showInviteFriendsModal: true,
+            })
+        }, 500)
+    }
+
+    closeFeedbackPopup = (feedback) => {
+        console.log(`closeFeedbackPopup feedback: ${feedback}`)
+        if (feedback) {
+            this.props.uploadPopupData('SHAREGOALS_POPUP1', feedback)
+        }
+        this.setState({
+            showFeedbackPopup: false,
+        })
+        setTimeout(() => {
+            this.setState({
+                showSubmitFeedbackPopup: true,
+            })
+        }, 500)
+    }
+
+    openShareGoalPopup1 = () => {
+        const { goals, popup } = this.props
+        if (
+            goals.length == 4 &&
+            !popup['SHAREGOALS_POPUP1'].status &&
+            popup['SHAREGOALS_POPUP1'].shouldOpen
+        ) {
+            this.props.uploadPopupData('SHAREGOALS_POPUP1')
+            this.setState({ showShareGoalPopup1: true })
+        }
+    }
+
+    closeShareGoalPopup1 = (displayFeedbackPopup = false) => {
+        if (displayFeedbackPopup) {
+            this.setState({ showShareGoalPopup1: false })
+            setTimeout(() => {
+                this.setState({
+                    showFeedbackPopup: true,
+                })
+            }, 500)
+        } else {
+            this.setState({ showShareGoalPopup1: false })
+        }
     }
 
     _handleIndexChange = (nextIndex) => {
@@ -638,15 +739,50 @@ class ProfileV2 extends Component {
                     onClose={this.closeProfileModal}
                     userId={userId}
                 />
-
                 <Popup
                     popupName={this.state.popupName}
                     isVisible={this.state.showPopupModal}
                     closeModal={() => {
-                        this.setState({
-                            showPopupModal: false,
-                        })
+                        this.state.popupName == 'FIRST_GOAL'
+                            ? this.handleQuestionPopup()
+                            : this.setState({
+                                  showPopupModal: false,
+                              })
                     }}
+                />
+                <HopePopup
+                    isVisible={this.state.showQuestionModal}
+                    closeModal={(displayNextPopup = false) => {
+                        displayNextPopup
+                            ? this.handleDrawPopup()
+                            : this.setState({
+                                  showQuestionModal: false,
+                              })
+                    }}
+                />
+                <EnterDrawPopup
+                    isVisible={this.state.showDrawModal}
+                    closeModal={(displayNextPopup = false, feedback) => {
+                        displayNextPopup
+                            ? this.handleInviteFriendsPopup(feedback)
+                            : this.setState({
+                                  showDrawModal: false,
+                              })
+                    }}
+                />
+                <InviteFriendsPopup
+                    isVisible={this.state.showInviteFriendsModal}
+                    closeModal={(displayNextPopup = false) => {
+                        displayNextPopup
+                            ? this.openInviteFriendModal()
+                            : this.setState({
+                                  showInviteFriendsModal: false,
+                              })
+                    }}
+                />
+                <InviteFriendModal
+                    isVisible={this.state.showInviteFriendModal}
+                    closeModal={this.closeInviteFriendModal}
                 />
                 <ShareGoalPopup
                     isVisible={this.state.showShareGoalPopup}
@@ -655,6 +791,26 @@ class ProfileV2 extends Component {
                             showShareGoalPopup: false,
                         })
                     }}
+                />
+                <ShareGoalPopup1
+                    isVisible={this.state.showShareGoalPopup1}
+                    closeModal={this.closeShareGoalPopup1}
+                />
+                <FeedbackPopup
+                    isVisible={this.state.showFeedbackPopup}
+                    closeModal={(displayNextPopup = false, feedback) => {
+                        displayNextPopup
+                            ? this.closeFeedbackPopup(feedback)
+                            : this.setState({
+                                  showFeedbackPopup: false,
+                              })
+                    }}
+                />
+                <SubmitFeedbackPopup
+                    isVisible={this.state.showSubmitFeedbackPopup}
+                    closeModal={() =>
+                        this.setState({ showSubmitFeedbackPopup: false })
+                    }
                 />
                 <NudgeModal
                     name={this.props.user.name}

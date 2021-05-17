@@ -17,7 +17,6 @@ import Modal from 'react-native-modal'
 
 import { GM_BLUE } from '../../styles/basic/color'
 import * as text from '../../styles/basic/text'
-import { openPopup } from '../../actions'
 import SvgImage from '../../asset/svgs/HopePopup'
 import cancel from '../../asset/utils/cancel_no_background.png'
 import DelayedButton from '../Common/Button/DelayedButton'
@@ -30,7 +29,9 @@ class InviteFriendsPopup extends Component {
     renderButtons() {
         return (
             <>
-                <TouchableWithoutFeedback>
+                <TouchableWithoutFeedback
+                    onPress={() => this.props.closeModal(true)}
+                >
                     <View style={styles.btnContainer1}>
                         <Text style={styles.btnText1}>See the Question</Text>
                     </View>
@@ -59,12 +60,9 @@ class InviteFriendsPopup extends Component {
     }
 
     render() {
-        console.log('\n Props passed to popup modal', this.props)
-        // this.props.openPopup(popupName)
         return (
             <Modal isVisible={this.props.isVisible}>
                 <View style={styles.container}>
-                    {this.renderCancelButton()}
                     <View>
                         <View style={styles.header}>
                             <Text style={styles.title}>
@@ -88,6 +86,7 @@ class InviteFriendsPopup extends Component {
                         </Text>
                     </View>
                     <View>{this.renderButtons()}</View>
+                    {this.renderCancelButton()}
                 </View>
             </Modal>
         )
@@ -167,6 +166,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(mapStateToProps, {
-    openPopup,
-})(InviteFriendsPopup)
+export default connect(mapStateToProps)(InviteFriendsPopup)

@@ -877,26 +877,9 @@ class ProfileDetailCard extends Component {
                             height: 90 * default_style.uiScale,
                             backgroundColor: color.GM_BLUE_LIGHT_LIGHT,
                         }}
-                    >
-                        {self
-                            ? this.renderImage()
-                            : this.renderProfileImage(profile, self)}
-                    </View>
-
-                    <View style={{ flexDirection: 'row' }}>
-                        {/* <View style={{ flex: 1 }} /> */}
-                        {this.renderFriendshipStatusButton()}
-                        {this.renderMoreProfileActionButton()}
-                        {this.renderBottomSheet()}
-                        {this.renderFriendshipStatusBottomSheet()}
-                        {this.renderFriendshipTypeBottomSheet()}
-                    </View>
-                </View>
-                <View style={styles.containerStyle}>
-                    <View
-                        style={{ flexDirection: 'row', alignItems: 'center' }}
-                    >
-                        <Text
+                    />
+                    <View style={styles.topWrapperStyle}>
+                        <View
                             style={{
                                 flexGrow: 1,
                                 flexDirection: 'row',

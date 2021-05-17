@@ -65,7 +65,6 @@ class ShareGoalPopup2 extends Component {
         return (
             <Modal isVisible={this.props.isVisible}>
                 <View style={styles.container}>
-                    {this.renderCancelButton()}
                     <View>
                         <View
                             style={{
@@ -84,6 +83,7 @@ class ShareGoalPopup2 extends Component {
                         </Text>
                     </View>
                     <View>{this.renderButtons()}</View>
+                    {this.renderCancelButton()}
                 </View>
             </Modal>
         )

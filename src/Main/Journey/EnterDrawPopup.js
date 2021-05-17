@@ -17,26 +17,147 @@ import Modal from 'react-native-modal'
 
 import { GM_BLUE } from '../../styles/basic/color'
 import * as text from '../../styles/basic/text'
-import { openPopup } from '../../actions'
 import cancel from '../../asset/utils/cancel_no_background.png'
 import DelayedButton from '../Common/Button/DelayedButton'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
+const DEFAULT_STATE = {
+    opt1: false,
+    opt2: false,
+    opt3: false,
+    opt4: false,
+    opt5: false,
+    opt6: false,
+    opt7: false,
+    opt8: false,
+    opt9: false,
+    opt10: false,
+}
+const case0 = {
+    opt1: true,
+    opt2: false,
+    opt3: false,
+    opt4: false,
+    opt5: false,
+    opt6: false,
+    opt7: false,
+    opt8: false,
+    opt9: false,
+    opt10: false,
+}
+const case1 = {
+    opt1: true,
+    opt2: true,
+    opt3: false,
+    opt4: false,
+    opt5: false,
+    opt6: false,
+    opt7: false,
+    opt8: false,
+    opt9: false,
+    opt10: false,
+}
+const case2 = {
+    opt1: true,
+    opt2: true,
+    opt3: true,
+    opt4: false,
+    opt5: false,
+    opt6: false,
+    opt7: false,
+    opt8: false,
+    opt9: false,
+    opt10: false,
+}
+const case3 = {
+    opt1: true,
+    opt2: true,
+    opt3: true,
+    opt4: true,
+    opt5: false,
+    opt6: false,
+    opt7: false,
+    opt8: false,
+    opt9: false,
+    opt10: false,
+}
+const case4 = {
+    opt1: true,
+    opt2: true,
+    opt3: true,
+    opt4: true,
+    opt5: true,
+    opt6: false,
+    opt7: false,
+    opt8: false,
+    opt9: false,
+    opt10: false,
+}
+const case5 = {
+    opt1: true,
+    opt2: true,
+    opt3: true,
+    opt4: true,
+    opt5: true,
+    opt6: true,
+    opt7: false,
+    opt8: false,
+    opt9: false,
+    opt10: false,
+}
+const case6 = {
+    opt1: true,
+    opt2: true,
+    opt3: true,
+    opt4: true,
+    opt5: true,
+    opt6: true,
+    opt7: true,
+    opt8: false,
+    opt9: false,
+    opt10: false,
+}
+const case7 = {
+    opt1: true,
+    opt2: true,
+    opt3: true,
+    opt4: true,
+    opt5: true,
+    opt6: true,
+    opt7: true,
+    opt8: true,
+    opt9: false,
+    opt10: false,
+}
+const case8 = {
+    opt1: true,
+    opt2: true,
+    opt3: true,
+    opt4: true,
+    opt5: true,
+    opt6: true,
+    opt7: true,
+    opt8: true,
+    opt9: true,
+    opt10: false,
+}
+const case9 = {
+    opt1: true,
+    opt2: true,
+    opt3: true,
+    opt4: true,
+    opt5: true,
+    opt6: true,
+    opt7: true,
+    opt8: true,
+    opt9: true,
+    opt10: true,
+}
+
 class EnterDrawPopup extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            opt1: false,
-            opt2: false,
-            opt3: false,
-            opt4: false,
-            opt5: false,
-            opt6: false,
-            opt7: false,
-            opt8: false,
-            opt9: false,
-            opt10: false,
-        }
+        this.state = { ...DEFAULT_STATE }
     }
 
     options = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
@@ -46,16 +167,16 @@ class EnterDrawPopup extends Component {
             <View style={styles.optContainer}>
                 <Text style={styles.optText}>{option}</Text>
                 <TouchableWithoutFeedback
-                    onPress={() => this.handleCheckbox(`opt${index}`)}
+                    onPress={() => this.handleCheckbox(index)}
                 >
                     <Icon
                         name={
-                            this.state[`opt${index}`]
+                            this.state[`opt${index + 1}`]
                                 ? 'radio-button-checked'
                                 : 'radio-button-unchecked'
                         }
                         style={
-                            this.state[`opt${index}`]
+                            this.state[`opt${index + 1}`]
                                 ? styles.btnChecked
                                 : styles.btnUnchecked
                         }
@@ -65,14 +186,60 @@ class EnterDrawPopup extends Component {
         ))
     }
 
-    handleCheckbox(opt) {
-        this.setState({ [opt]: !this.state[opt] })
+    handleCheckbox(index) {
+        //As we know options are from 1 to 10
+        // console.log('this is the provided index', index)
+        switch (index) {
+            case 0: {
+                this.setState({ ...case0 })
+                break
+            }
+            case 1: {
+                this.setState({ ...case1 })
+                break
+            }
+            case 2: {
+                this.setState({ ...case2 })
+                break
+            }
+            case 3: {
+                this.setState({ ...case3 })
+                break
+            }
+            case 4: {
+                this.setState({ ...case4 })
+                break
+            }
+            case 5: {
+                this.setState({ ...case5 })
+                break
+            }
+            case 6: {
+                this.setState({ ...case6 })
+                break
+            }
+            case 7: {
+                this.setState({ ...case7 })
+                break
+            }
+            case 8: {
+                this.setState({ ...case8 })
+                break
+            }
+            case 9: {
+                this.setState({ ...case9 })
+                break
+            }
+        }
+        // this.setState({ [opt]: !this.state[opt] })
     }
 
     renderButtons() {
         return (
             <>
-                <TouchableWithoutFeedback>
+                <TouchableWithoutFeedback
+                    onPress={() => this.props.closeModal(true, this.state)}
+                >
                     <View style={styles.btnContainer}>
                         <Text style={styles.btnText}>Submit Entry</Text>
                     </View>
@@ -101,12 +268,9 @@ class EnterDrawPopup extends Component {
     }
 
     render() {
-        console.log('\n Props passed to popup modal', this.props)
-        // this.props.openPopup(popupName)
         return (
-            <Modal isVisible={this.props.isVisible}>
+            <Modal isVisible={this.props.isVisible} backdropOpacity={0.5}>
                 <View style={styles.container}>
-                    {this.renderCancelButton()}
                     <View>
                         <View style={styles.header}>
                             <Text style={styles.title}>
@@ -126,6 +290,7 @@ class EnterDrawPopup extends Component {
                         {this.renderOptions(this.options)}
                     </View>
                     {this.renderButtons()}
+                    {this.renderCancelButton()}
                 </View>
             </Modal>
         )
@@ -216,6 +381,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(mapStateToProps, {
-    openPopup,
-})(EnterDrawPopup)
+export default connect(mapStateToProps)(EnterDrawPopup)

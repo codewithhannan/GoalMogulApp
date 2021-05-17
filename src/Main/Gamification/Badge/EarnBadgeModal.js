@@ -24,8 +24,13 @@ import {
     modalContainerStyle,
     modalHeaderBadgeShadow,
 } from '../../../styles'
-import { Bronze3D, Silver3D, Gold3D, Green } from '../../../asset/banner'
-import { ConfettiFadedBackground } from '../../../asset/background'
+import { Silver3D, Gold3D, Green } from '../../../asset/banner'
+import BronzeBadgeNew from '../../../asset/banner/Bronze-New.png'
+import SilverBadgeNew from '../../../asset/banner/Silver-New.png'
+import GoldBadgeNew from '../../../asset/banner/Gold-New.png'
+import GreenBadgeNew from '../../../asset/banner/Green-New.png'
+// import { Bronze3D, Silver3D, Gold3D, Green } from '../../../asset/banner'
+// import { ConfettiFadedBackground } from '../../../asset/background'
 import {
     getBagdeIconByTier,
     getBadgeTextByTier,
@@ -33,6 +38,10 @@ import {
 import GoldBadgeInfoModal from './GoldBadgeInfoModal'
 import GoldBadgeRewardModal from './GoldBadgeRewardModal'
 import { color } from '../../../styles/basic'
+
+import ConfettiFadedBackground from '../../../asset/background/ConfettiBackground.png'
+import { GM_BLUE } from '../../../styles/basic/color'
+import QuestionMark from '../../../asset/banner/QuestionMark.png'
 
 const { CheckIcon, QuestionIcon } = Icons
 const DEBUG_KEY = '[ UI EarnBadgeModal ]'
@@ -103,29 +112,38 @@ class EarnBadgeModal extends React.PureComponent {
         const badgeIcon = getBagdeIconByTier(tier)
         return (
             <View style={{ ...modalHeaderBadgeShadow, marginTop: 10 }}>
-                <View style={{ height: 5, width: '100%' }} />
                 <View
                     style={{
-                        height: 60,
-                        width: 60,
-                        borderRadius: 30,
-                        backgroundColor: 'white',
+                        height: 185,
+                        width: 140,
                     }}
                 />
                 <View
                     style={{
                         position: 'absolute',
-                        top: 3,
-                        bottom: 3,
-                        left: 3,
-                        right: 3,
+                        top: 60,
                         alignItems: 'center',
                     }}
                 >
                     <Image
                         source={badgeIcon}
-                        style={{ height: 55, width: 50 }}
+                        style={{ height: 140, width: 135 }}
                     />
+                    {tier === 0 && (
+                        <View
+                            style={{
+                                position: 'absolute',
+                                top: 65,
+                                left: 52,
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Image
+                                source={QuestionMark}
+                                style={{ height: 29, width: 16 }}
+                            />
+                        </View>
+                    )}
                 </View>
             </View>
         )
@@ -139,10 +157,16 @@ class EarnBadgeModal extends React.PureComponent {
                 <DelayedButton
                     activeOpacity={0.6}
                     onPress={() => this.closeModal()}
-                    style={modalCancelIconContainerStyle}
+                    style={{
+                        ...modalCancelIconContainerStyle,
+                        backgroundColor: '#ffffff',
+                    }}
                     disabled={this.state.showGoldBagdeInfoModal}
                 >
-                    <Image source={cancel} style={modalCancelIconStyle} />
+                    <Image
+                        source={cancel}
+                        style={{ ...modalCancelIconStyle, tintColor: GM_BLUE }}
+                    />
                 </DelayedButton>
             </View>
         )
@@ -214,33 +238,39 @@ class EarnBadgeModal extends React.PureComponent {
                             }}
                         >
                             {this.renderCancelButton()}
-                            {tier > 0 && [
-                                <Text
-                                    style={{
-                                        color: 'rgb(0, 150, 203)',
-                                        fontWeight: '500',
-                                        fontSize: 22,
-                                        marginTop: 18,
-                                    }}
-                                >
-                                    Congratulations!
-                                </Text>,
+                            {tier >= 0 && [
                                 this.renderBadgeEarned(tier),
+                                // <Text
+                                //     style={{
+                                //         color: 'rgb(0, 150, 203)',
+                                //         fontWeight: '500',
+                                //         fontSize: 22,
+                                //         marginTop: 18,
+                                //     }}
+                                // >
+                                //     Congratulations!
+                                // </Text>,
                                 <Text
                                     style={{
-                                        color: 'rgb(153, 153, 153)',
-                                        fontSize: 14,
+                                        color: GM_BLUE,
+                                        textAlign: 'center',
+                                        width: '56.85%',
+                                        fontSize: 18,
+                                        fontWeight: '600',
                                         paddingTop: 15,
                                         paddingBottom: 7,
                                     }}
                                 >
-                                    You've earned a {getBadgeTextByTier(tier)}{' '}
-                                    Badge.
+                                    {tier === 0
+                                        ? `You have not earned a Badge yet`
+                                        : `You currently have the ${getBadgeTextByTier(
+                                              tier
+                                          )} Badge`}
                                 </Text>,
                                 <View
                                     style={{
-                                        width: '76%',
-                                        height: 0.5,
+                                        width: '100%',
+                                        height: 1,
                                         backgroundColor: 'rgb(238, 238, 238)',
                                         marginVertical: 3,
                                     }}
@@ -249,7 +279,7 @@ class EarnBadgeModal extends React.PureComponent {
                             <Text
                                 style={{
                                     color: 'rgb(51, 51, 51)',
-                                    fontSize: 17,
+                                    fontSize: 18,
                                     paddingVertical: 7,
                                 }}
                             >
@@ -260,9 +290,23 @@ class EarnBadgeModal extends React.PureComponent {
                                 let onLeadingIconPress = () => {}
                                 if (id && id === 'gold') {
                                     onLeadingIconPress = () => {
-                                        this.setState({
-                                            showGoldBagdeInfoModal: true,
-                                        })
+                                        if (tier != 4) {
+                                            this.setState({
+                                                showGoldBagdeInfoModal: true,
+                                            })
+                                        }
+                                    }
+                                }
+                                if (b.tier <= tier) {
+                                    b.leadingIcon = CheckIcon
+                                    b.leadingIconContainerStyle = {
+                                        ...b.leadingIconContainerStyle,
+                                        backgroundColor: '#42C0F5',
+                                        borderColor: '#42C0F5',
+                                    }
+                                    b.leadingIconStyle = {
+                                        ...b.leadingIconStyle,
+                                        tintColor: '#FFFFFF',
                                     }
                                 }
                                 return (
@@ -358,7 +402,7 @@ const BadgeInfoCard = (props) => {
                     <DelayedButton
                         style={[
                             leadingIconContainerStyle,
-                            { opacity: userTier >= tier || tier === 4 ? 1 : 0 },
+                            // { opacity: userTier >= tier || tier === 4 ? 1 : 0 },
                         ]}
                         onPress={onLeadingIconPress}
                     >
@@ -454,7 +498,7 @@ const DefaultBadgeIconStyle = {
 const DefaultLeadingIconStyle = {
     height: 11,
     width: 12,
-    tintColor: '#42C0F5',
+    tintColor: '#AFAFAF',
 }
 const GoldIconStyle = {
     height: 11,
@@ -466,7 +510,8 @@ const DefaultLeadingIconContainerStyle = {
     width: 21,
     borderRadius: 13,
     borderWidth: 0.8,
-    borderColor: '#42C0F5',
+    // borderColor: '#42C0F5',
+    borderColor: '#AFAFAF',
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 10,
@@ -490,15 +535,14 @@ const BadgeInfo = [
         infoTextList: [
             { text: 'Add a profile image', hasBulletPoint: true },
             {
-                text: "Fill out your 'Headline', 'Occupation',",
+                text: 'Fill in your profile',
                 hasBulletPoint: true,
             },
-            { text: " and 'About'", hasBulletPoint: false },
             { text: 'Set your 1st goal', hasBulletPoint: true },
         ],
-        badgeIcon: Green,
+        badgeIcon: GreenBadgeNew,
         badgeIconStyle: DefaultBadgeIconStyle,
-        leadingIcon: CheckIcon,
+        leadingIcon: QuestionIcon,
         bulletIcon: CheckIcon,
         leadingIconStyle: DefaultLeadingIconStyle,
         leadingIconContainerStyle: DefaultLeadingIconContainerStyle,
@@ -527,9 +571,9 @@ const BadgeInfo = [
                 hasBulletPoint: true,
             },
         ],
-        badgeIcon: Bronze3D,
+        badgeIcon: BronzeBadgeNew,
         badgeIconStyle: DefaultBadgeIconStyle,
-        leadingIcon: CheckIcon,
+        leadingIcon: QuestionIcon,
         bulletIcon: CheckIcon,
         leadingIconStyle: DefaultLeadingIconStyle,
         leadingIconContainerStyle: DefaultLeadingIconContainerStyle,
@@ -561,9 +605,9 @@ const BadgeInfo = [
             },
             { text: ' Green Badges', hasBulletPoint: false },
         ],
-        badgeIcon: Silver3D,
+        badgeIcon: SilverBadgeNew,
         badgeIconStyle: DefaultBadgeIconStyle,
-        leadingIcon: CheckIcon,
+        leadingIcon: QuestionIcon,
         bulletIcon: CheckIcon,
         leadingIconStyle: DefaultLeadingIconStyle,
         leadingIconContainerStyle: DefaultLeadingIconContainerStyle,
@@ -597,7 +641,7 @@ const BadgeInfo = [
                 hasBulletPoint: false,
             },
         ],
-        badgeIcon: Gold3D,
+        badgeIcon: GoldBadgeNew,
         badgeIconStyle: DefaultBadgeIconStyle,
         leadingIcon: QuestionIcon,
         bulletIcon: CheckIcon,

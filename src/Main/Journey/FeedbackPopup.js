@@ -149,7 +149,6 @@ class BottomModal extends React.Component {
                             height: this.state.opt4 ? hp(67.04) : hp(52.74),
                         }}
                     >
-                        {this.renderCancelButton()}
                         <View
                             style={{
                                 borderBottomColor: '#C4C4C4',
@@ -186,7 +185,7 @@ class BottomModal extends React.Component {
                                 opt4: '',
                             }}
                             onSubmit={(values, actions) => {
-                                console.log('These are values:', values)
+                                this.props.closeModal(true, values)
                                 actions.setSubmitting(false)
                             }}
                         >
@@ -210,6 +209,7 @@ class BottomModal extends React.Component {
                                 this.renderButton(props.handleSubmit),
                             ]}
                         </Formik>
+                        {this.renderCancelButton()}
                     </View>
                 </View>
             </Modal>

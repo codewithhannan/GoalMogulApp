@@ -4,40 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import _ from 'lodash'
 import { api as API } from '../redux/middleware/api/index'
 
-const initialState = {
-    FIRST_GOAL: {
-        status: false,
-        created: '',
-    },
-    SEVEN_GOALS: {
-        status: false,
-        created: '',
-    },
-    SILVER_BADGE: {
-        status: false,
-        created: '',
-    },
-    GOLD_BADGE: {
-        status: false,
-        created: '',
-    },
-    GREEN_BADGE: {
-        status: false,
-        created: '',
-    },
-    BRONZE_BADGE: {
-        status: false,
-        created: '',
-    },
-    STREAK: {
-        status: false,
-        created: '',
-    },
-    STREAK_MISSED: {
-        status: false,
-        created: '',
-    },
-}
+const initialState = {}
 
 const slice = createSlice({
     name: 'popup',

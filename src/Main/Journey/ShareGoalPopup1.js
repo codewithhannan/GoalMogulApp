@@ -35,7 +35,9 @@ class ShareGoalPopup1 extends Component {
                         <Text style={styles.btnText1}>Share My Goals</Text>
                     </View>
                 </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback>
+                <TouchableWithoutFeedback
+                    onPress={() => this.props.closeModal(true)}
+                >
                     <View style={styles.btnContainer2}>
                         <Text style={styles.btnText2}>No, thanks</Text>
                     </View>
@@ -69,7 +71,6 @@ class ShareGoalPopup1 extends Component {
         return (
             <Modal isVisible={this.props.isVisible}>
                 <View style={styles.container}>
-                    {this.renderCancelButton()}
                     <View>
                         <View style={styles.header}>
                             <Text style={styles.title}>
@@ -84,6 +85,7 @@ class ShareGoalPopup1 extends Component {
                         </View>
                     </View>
                     <View>{this.renderButtons()}</View>
+                    {this.renderCancelButton()}
                 </View>
             </Modal>
         )

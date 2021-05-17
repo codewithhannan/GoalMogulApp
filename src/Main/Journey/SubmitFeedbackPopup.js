@@ -52,7 +52,6 @@ class SubmitFeedbackPopup extends Component {
         return (
             <Modal isVisible={this.props.isVisible}>
                 <View style={styles.container}>
-                    {this.renderCancelButton()}
                     <View>
                         <View style={styles.header}>
                             <Text style={styles.title}>{`Thank You!`}</Text>
@@ -61,6 +60,7 @@ class SubmitFeedbackPopup extends Component {
                             {`We'll use your feedback to improve your GoalMogul Experience`}
                         </Text>
                     </View>
+                    {this.renderCancelButton()}
                 </View>
             </Modal>
         )

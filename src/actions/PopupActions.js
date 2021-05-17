@@ -19,11 +19,20 @@ export const getPopupData = () => async (dispatch, getState) => {
     }
 }
 
-export const uploadPopupData = (popupName) => async (dispatch, getState) => {
-    console.log('\n uploadPopupData is called from PopupActions')
+export const uploadPopupData = (popupName, popupFeedback) => async (
+    dispatch,
+    getState
+) => {
+    console.log(
+        `\n uploadPopupData is called from PopupActions ${popupName} and :`,
+        popupFeedback
+    )
     let data = _.cloneDeep(getState().popup)
     data[popupName].status = true
     data[popupName].created = moment().utc().format()
+    if (popupFeedback) {
+        data[popupName].feedback = popupFeedback
+    }
     dispatch(updatePopupData({ data }))
     const { user, popup: journeyObject } = getState()
     console.log('\nData updated ater dispatch:', journeyObject)

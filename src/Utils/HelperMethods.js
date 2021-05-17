@@ -44,7 +44,7 @@ const helperMethods = {
             let cI = right.indexOf('}}', oI)
             const variable = right.substring(oI + 2, cI)
             left.push(right.substring(0, oI))
-            console.log('These are the function names', variable)
+            console.log('\nThese are the function names', variable)
             if (variable in variableMethods) {
                 let res = variableMethods[variable](user)
                 left.push(res)
@@ -69,6 +69,19 @@ const variableMethods = {
                 return e.trim().length > 0
             })
             return path[0].toUpperCase()
+        } else return
+    },
+    /**
+     * @param String - string which contains full name of user
+     * @returns first name of the user
+     */
+    firstname(user) {
+        if (user.user.name) {
+            console.log('Ye hai user', user)
+            let path = user.user.name.split(/(\s+)/).filter(function (e) {
+                return e.trim().length > 0
+            })
+            return path[0]
         } else return
     },
     /**
