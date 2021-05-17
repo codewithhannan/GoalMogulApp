@@ -12,6 +12,8 @@ import {
     MEET_UPDATE_FRIENDSHIP_DONE,
     MEET_TAB_REFRESH,
     MEET_TAB_REFRESH_DONE,
+    MEET_TAB_ONBOARDING_REFRESH,
+    MEET_TAB_ONBOARDING_REFRESH_DONE,
     MEET_CHANGE_FILTER,
     MEET_REQUESTS_CHANGE_TAB,
 } from './types'
@@ -39,6 +41,7 @@ const BASE_ROUTE = 'secure/user/'
 
 const requestMap = {
     suggested: 'friendship/recommendations',
+    suggestedOnBoarding: 'friendship/inviter-friends',
     requests: {
         outgoing: 'friendship/invitations/outgoing',
         incoming: 'friendship/invitations/incoming',
@@ -235,6 +238,66 @@ const loadOneTab = (
     //   });
 }
 
+const loadOneTabOnBoarding = (
+    type,
+    skip,
+    limit,
+    token,
+    dispatch,
+    callback,
+    onError,
+    forceRefresh
+) => {
+    const route = _.get(requestMap, type)
+
+    let url = `${BASE_ROUTE}${route}`
+    if (forceRefresh) {
+        url = decorateRouteWithForceRefresh(url)
+    }
+
+    API.get(url, token)
+        .then((res) => {
+            console.log(
+                `loading type: ${type} with res length: `,
+                res.data ? res.data.length : 0
+            )
+
+            // TODO: update failure condition
+            if (res.data) {
+                if (callback) {
+                    return callback(res.data)
+                }
+            }
+
+            // fetch data failure
+            dispatch({
+                type: MEET_LOADING_DONE,
+                payload: {
+                    type,
+                    data: [],
+                },
+            })
+            if (onError) {
+                onError(res)
+            }
+        })
+        .catch((err) => {
+            console.log(
+                `fetching friendship for type: ${type}, fails with error: ${err}`
+            )
+            dispatch({
+                type: MEET_LOADING_DONE,
+                payload: {
+                    type,
+                    data: [],
+                },
+            })
+            if (onError) {
+                onError(err)
+            }
+        })
+}
+
 /**
  * Refresh current tab based on selected id
  * @param {String} key type of the meet to refresh for. See requestMap for defined routes.
@@ -284,6 +347,78 @@ export const handleRefresh = (key, forceRefresh) => (dispatch, getState) => {
         onError,
         forceRefresh
     )
+}
+
+export const handleRefreshOnBoarding = (key, forceRefresh) => (
+    dispatch,
+    getState
+) => {
+    const { token } = getState().user
+    const { limit } = _.get(getState().meet, key)
+    dispatch({
+        type: MEET_TAB_ONBOARDING_REFRESH,
+        payload: {
+            type: key,
+        },
+    })
+
+    const onError = (err) => {
+        dispatch({
+            type: MEET_TAB_ONBOARDING_REFRESH_DONE,
+            payload: {
+                type: key,
+                data: [],
+                skip: 0,
+                limit: 20,
+                hasNextPage: undefined,
+            },
+        })
+    }
+
+    loadOneTabOnBoarding(
+        key,
+        0,
+        limit,
+        token,
+        dispatch,
+        (data) => {
+            dispatch({
+                type: MEET_TAB_ONBOARDING_REFRESH_DONE,
+                payload: {
+                    type: key,
+                    data,
+                    skip: data.length,
+                    limit: 20,
+                    hasNextPage: !(data === undefined || data.length === 0),
+                },
+            })
+        },
+        onError,
+        forceRefresh
+    )
+}
+
+export const meetOnLoadMoreOnboarding = (key) => (dispatch, getState) => {
+    // TODO: dispatch onLoadMore start
+    console.log(`${DEBUG_KEY} Loading more for ${key}`)
+    const tabState = _.get(getState().meet, key)
+    const { skip, limit, hasNextPage, refreshing } = tabState
+    if (hasNextPage || hasNextPage === undefined) {
+        const { token } = getState().user
+        loadOneTabOnBoarding(key, skip, limit, token, dispatch, (data) => {
+            const newSkip = data.length === 0 ? skip : skip + data.length
+            dispatch({
+                type: MEET_LOADING_DONE,
+                payload: {
+                    type: key,
+                    data,
+                    skip: newSkip,
+                    limit,
+                    hasNextPage: !(data === undefined || data.length === 0),
+                },
+            })
+        })
+    }
 }
 
 // Load more data

@@ -46,12 +46,12 @@ class OnboardingAddPhotos extends Component {
             UserId: this.props.userId,
         })
 
-        Actions.push('registration_contact_sync')
+        Actions.push('registration_people_know')
     }
 
     onContinue = () => {
         // Screen transition first
-        Actions.push('registration_contact_sync')
+        Actions.push('registration_people_know')
 
         // Upload image
         this.props.registrationAddProfilePhoto()
@@ -92,7 +92,6 @@ class OnboardingAddPhotos extends Component {
 
     render() {
         const { openCamera, openCameraRoll, profilePic } = this.props
-        console.log('profileeeeee', this.props)
 
         return (
             <View
@@ -186,8 +185,6 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
     const { profilePic } = state.registration
     const { userId } = state.user
-
-    console.log('this is state', state)
 
     return { profilePic, userId }
 }

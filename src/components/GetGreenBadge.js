@@ -28,50 +28,61 @@ class GetGreenBadge extends Component {
 
                         marginHorizontal: 10,
                         flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
+                        justifyContent: 'space-evenly',
+
                         // paddingHorizontal: 96,
                         paddingVertical: 10,
                         // marginBottom: 10,
-                        paddingRight: 10,
-                        borderRadius: 5,
-                        marginTop: 5,
-                        width: '95%',
+
+                        borderRadius: 8,
+
+                        marginTop: 7,
                     }}
                 >
                     <View
                         style={{
-                            flexDirection: 'row',
-                            width: '35%',
-                            justifyContent: 'center',
-                            alignItems: 'center',
+                            width: '20%',
+                            marginBottom: 10,
+                            marginHorizontal: 50,
                         }}
                     >
                         <Image
                             source={GreenBadge}
                             style={{
-                                height: 130,
-                                width: '100%',
+                                height: 124,
+                                width: 93,
                                 resizeMode: 'contain',
                             }}
                         />
                     </View>
+
                     <View
                         style={{
-                            width: '60%',
+                            width: '80%',
                         }}
                     >
                         <Text
                             style={{
-                                ...default_style.titleText_1,
+                                fontFamily: 'SFProDisplay-Bold',
+                                fontWeight: '700',
+                                fontSize: 16,
+                                lineHeight: 21,
+                                width: '60%',
+                                marginHorizontal: 26,
+                                marginTop: 20,
                             }}
                         >
                             Get your Green Badge now
                         </Text>
                         <Text
                             style={{
-                                ...default_style.normalText_1,
-                                marginTop: 4,
+                                fontFamily: 'SFProDisplay-Regular',
+                                fontWeight: '700',
+                                fontSize: 16,
+                                lineHeight: 21,
+                                width: '80%',
+                                marginHorizontal: 25,
+                                marginTop: 5,
                             }}
                         >
                             Simply create your first goal!

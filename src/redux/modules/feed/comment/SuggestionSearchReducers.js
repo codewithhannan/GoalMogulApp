@@ -164,7 +164,7 @@ export default (state = INITIAL_STATE, action) => {
                 newState = _.set(
                     newState,
                     'searchRes.data',
-                    arrayUnique(oldData.concat(data))
+                    arrayUnique(oldData.concat([]))
                 )
                 newState.searchRes.loading = false
                 newState.searchRes.skip = skip

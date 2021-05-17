@@ -138,6 +138,15 @@ const EVENT = {
     REG_CONTACT_SKIP: 'Registration Contact Skiped', // no longer needs this event
     REG_CONTACT: 'Registration ContactSync Opened', // replaced by screen impression
 
+
+    //waitlist 
+    REG_WAITLIST_SKIP: 'Registration Waitlist Skiped',
+
+
+    //phoneVerification
+    REG_PHONE_VERIFICATION_SKIP: 'Registration Phone Verification Skiped',
+
+
     // Search
     SEARCH_OPENED: 'Search Opened',
     SEARCH_CLOSED: 'Search Closed',
@@ -219,6 +228,10 @@ const SCREENS = {
     REG_REISTER_ACCOUNT: 'RegistrationAccountView',
     REG_ADD_PHOTO: 'RegistrationAddPhotoView',
     REG_ADD_VIEW_PHOTO: 'RegistrationViewPhoto',
+    REG_INVITE_CODE: 'RegistrationInviteCode',
+    REG_WAITLIST: 'RegistrationWaitlist',
+    REG_ENTER_PHONE: 'RegistrationEnterPhone',
+    REG_VERIFY_PHONE: 'RegistrationVerifyPhone',
     REG_CONTACTY_SYNC: 'RegistrationContactSyncView',
     REG_SURVEY: 'RegistrationSurveyView',
     REG_TRIBES: 'RegistrationTribeView',

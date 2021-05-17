@@ -38,10 +38,10 @@ class GetBronzeBadge extends Component {
                     <View
                         style={{
                             backgroundColor: '#42C0F5',
-                            width: '50%',
+                            width: 133,
                             justifyContent: 'center',
                             alignItems: 'center',
-                            height: 35,
+                            height: 31,
                             borderColor: '#42C0F5',
                             borderWidth: 2,
                             borderRadius: 3,
@@ -55,7 +55,7 @@ class GetBronzeBadge extends Component {
                                 fontSize: 12,
                             }}
                         >
-                            Invite Friends
+                            Invite Your Friends
                         </Text>
                     </View>
                 </TouchableWithoutFeedback>
@@ -76,22 +76,21 @@ class GetBronzeBadge extends Component {
 
                         marginHorizontal: 10,
                         flexDirection: 'row',
-                        justifyContent: 'center',
+                        justifyContent: 'space-evenly',
                         alignItems: 'center',
                         // paddingHorizontal: 96,
                         paddingVertical: 10,
                         // marginBottom: 10,
-                        paddingRight: 10,
-                        borderRadius: 5,
-                        // marginTop: ,
-                        width: '95%',
-                        flex: 1,
+
+                        borderRadius: 8,
+
+                        marginTop: 7,
                     }}
                 >
                     <View
                         style={{
                             flexDirection: 'row',
-                            width: '35%',
+                            width: '40%',
                             justifyContent: 'center',
                             alignItems: 'center',
                             alignContent: 'center',
@@ -100,7 +99,7 @@ class GetBronzeBadge extends Component {
                         <Image
                             source={BronzeBadge}
                             style={{
-                                height: 120,
+                                height: 140,
                                 width: '100%',
                                 resizeMode: 'contain',
                             }}
@@ -109,11 +108,17 @@ class GetBronzeBadge extends Component {
                     <View
                         style={{
                             width: '70%',
+                            justifyContent: 'space-between',
+                            marginRight: 5,
                         }}
                     >
                         <Text
                             style={{
-                                ...default_style.titleText_1,
+                                fontFamily: 'SFProDisplay-Bold',
+                                fontWeight: '700',
+                                fontSize: 16,
+                                lineHeight: 21,
+                                width: '95%',
                             }}
                         >
                             You’re 1 friend away from earning your Bronze Badge.
@@ -121,7 +126,12 @@ class GetBronzeBadge extends Component {
 
                         <Text
                             style={{
-                                ...default_style.normalText_1,
+                                fontFamily: 'SFProDisplay-Regular',
+                                fontWeight: '700',
+                                fontSize: 16,
+
+                                width: '100%',
+                                marginTop: 5,
                             }}
                         >
                             Invite friends so they can appreciate knowing your

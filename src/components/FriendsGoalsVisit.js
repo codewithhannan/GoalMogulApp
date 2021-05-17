@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { View, Image, Text } from 'react-native'
 import { color, default_style } from '../styles/basic'
-import VisibleGoals from '../asset/image/Goal_Visible.png'
+import VisibleGoals from '../asset/image/Friends_Goals.png'
 
 class FriendsGoals extends Component {
     constructor(props) {
@@ -24,14 +24,14 @@ class FriendsGoals extends Component {
                         // paddingHorizontal: 96,
                         paddingVertical: 10,
                         marginBottom: 10,
-                        paddingRight: 10,
-                        borderRadius: 5,
+
+                        borderRadius: 6,
                     }}
                 >
                     <View
                         style={{
                             flexDirection: 'row',
-                            width: '35%',
+                            width: '40%',
                             alignItems: 'center',
                         }}
                     >
@@ -52,15 +52,26 @@ class FriendsGoals extends Component {
                     >
                         <Text
                             style={{
-                                ...default_style.titleText_1,
+                                fontFamily: 'SFProDisplay-Bold',
+                                fontWeight: '700',
+                                fontSize: 17,
+                                lineHeight: 19,
+                                width: '85%',
+                                bottom: 10,
+                                left: 2,
                             }}
                         >
                             Help {name} with your unbridled enthusiasm.
                         </Text>
                         <Text
                             style={{
-                                ...default_style.normalText_1,
-                                marginTop: 4,
+                                fontFamily: 'SFProDisplay-Regular',
+                                fontWeight: '100',
+                                fontSize: 16,
+                                lineHeight: 18,
+                                width: '95%',
+
+                                left: 2,
                             }}
                         >
                             Leave a comment or suggestion on his goals that will

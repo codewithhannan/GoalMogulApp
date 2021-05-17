@@ -419,7 +419,6 @@ class RegistrationAccount extends React.Component {
                     returnKeyType="inviterCode"
                     onSubmitEditing={() => {
                         this.validateInviteCode(inviterCode)
-                        this.refs['dateOfBirth'].focus()
                     }}
                     returnKeyType="done"
                     caption={``}

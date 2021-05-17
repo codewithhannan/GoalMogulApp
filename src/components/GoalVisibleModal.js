@@ -46,14 +46,14 @@ class ModalTester extends Component {
                             height: 40,
                             borderColor: '#42C0F5',
                             borderWidth: 2,
-                            borderRadius: 3,
+                            borderRadius: 4,
+                            marginRight: 15,
                         }}
                     >
                         <Text
                             style={{
+                                ...default_style.buttonText_1,
                                 color: '#42C0F5',
-
-                                fontSize: 15,
                             }}
                         >
                             No
@@ -73,23 +73,22 @@ class ModalTester extends Component {
                     <View
                         style={{
                             backgroundColor: '#42C0F5',
-                            width: '60%',
+                            width: '30%',
                             justifyContent: 'center',
                             alignItems: 'center',
                             height: 40,
                             borderColor: '#42C0F5',
-                            borderWidth: 2,
+                            borderWidth: 4,
                             borderRadius: 3,
                         }}
                     >
                         <Text
                             style={{
+                                ...default_style.buttonText_1,
                                 color: 'white',
-
-                                fontSize: 15,
                             }}
                         >
-                            Yes, make it public
+                            Yes
                         </Text>
                     </View>
                 </TouchableWithoutFeedback>
@@ -131,7 +130,15 @@ class ModalTester extends Component {
                                     flexDirection: 'row',
                                 }}
                             >
-                                <Text style={{ ...default_style.titleText_1 }}>
+                                <Text
+                                    style={{
+                                        fontStyle: 'SFProDisplay-Bold',
+                                        fontSize: 18,
+                                        lineHeight: 18,
+                                        fontWeight: 'bold',
+                                        padding: 5,
+                                    }}
+                                >
                                     Goal Visibility
                                 </Text>
                                 <TouchableOpacity
@@ -148,84 +155,65 @@ class ModalTester extends Component {
                             <View
                                 style={{
                                     width: '100%',
+                                    marginTop: 10,
                                 }}
                             >
                                 <Image
                                     source={GoalVisible}
                                     style={{
-                                        height: 160,
+                                        height: 170,
                                         width: '100%',
                                         resizeMode: 'contain',
                                     }}
                                 />
                             </View>
                             <View
-                                style={{
-                                    // justifyContent: 'center',
-                                    // alignItems: 'center',
-                                    marginHorizontal: 15,
-                                    width: '90%',
-                                }}
+                                style={
+                                    {
+                                        // justifyContent: 'center',
+                                        // alignItems: 'center',
+                                    }
+                                }
                             >
-                                <View
+                                <Text
                                     style={{
-                                        marginTop: 8,
-                                        // marginHorizontal: 5,
-                                        width: '100%',
+                                        fontStyle: 'SFProDisplay-Regular',
+                                        fontSize: 16,
+                                        lineHeight: 24,
+                                        marginTop: 6,
+
+                                        width: '90%',
+
+                                        alignSelf: 'center',
                                     }}
                                 >
-                                    <Text
-                                        style={{
-                                            ...default_style.subTitleText_1,
-                                            texAlign: 'center',
-                                        }}
-                                    >
-                                        We strongly suggest making your 1st goal
-                                        visible to Friends.
-                                    </Text>
-                                </View>
+                                    We strongly suggest making your first goal
+                                    visible to Friends. Or else, your Friends
+                                    will see a blank page.
+                                </Text>
 
-                                <View
+                                <Text
                                     style={{
-                                        marginTop: 8,
+                                        fontStyle: 'SFProDisplay-Semibold',
+                                        fontSize: 16,
+                                        lineHeight: 24,
+                                        marginTop: 30,
 
-                                        width: '100%',
+                                        width: '90%',
+                                        fontWeight: '500',
+
+                                        alignSelf: 'center',
                                     }}
                                 >
-                                    <Text
-                                        style={{
-                                            ...default_style.subTitleText_1,
-                                            texAlign: 'center',
-                                        }}
-                                    >
-                                        Otherwise, your Friends will see an
-                                        empty page when viewing your goals.
-                                    </Text>
-                                </View>
-
-                                <View
-                                    style={{
-                                        marginTop: 8,
-
-                                        width: '100%',
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            ...default_style.subTitleText_1,
-                                            texAlign: 'center',
-                                        }}
-                                    >
-                                        Do you want to make this goal visible to
-                                        Friends?
-                                    </Text>
-                                </View>
+                                    Do you want to make this goal visible to
+                                    Friends?
+                                </Text>
                             </View>
 
                             <View
                                 style={{
                                     flexDirection: 'row',
-                                    justifyContent: 'space-between',
+                                    justifyContent: 'center',
                                     marginTop: 10,
                                     padding: 15,
                                 }}

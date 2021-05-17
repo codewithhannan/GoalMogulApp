@@ -124,6 +124,9 @@ import TribeDiscover from './Main/Tribe/TribeDiscover'
 import EditInviteCodeForm from './Main/Setting/Account/EditInviteCodeForm'
 import Challenges from './Main/Challenges/Challenges'
 import OnboardingInviteCode from './Main/Onboarding/OnboardingInviteCode'
+import OnboardingWaitlist from './Main/Onboarding/OnboardingWaitlist'
+import OnboardingPhoneVerification from './Main/Onboarding/OnboardingPhoneVerification'
+import OnboardingComfirmPhone from './Main/Onboarding/OnboardingComfirmPhone'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -398,12 +401,25 @@ class RouterComponent extends Component {
                                 panHandlers={null}
                             >
                                 <Scene
+                                    initial
+                                    key="registration_enter_phone"
+                                    component={OnboardingPhoneVerification}
+                                />
+                                <Scene
+                                    key="registration_verify_phone"
+                                    component={OnboardingComfirmPhone}
+                                />
+                                <Scene
                                     key="registration_add_photo"
                                     component={OnboardingAddPhotos}
                                 />
                                 <Scene
-                                    key="registration_contact_sync"
+                                    key="registration_people_know"
                                     component={OnboardingPeopleKnow}
+                                />
+                                <Scene
+                                    key="registration_contact_sync"
+                                    component={OnboardingSyncContact}
                                 />
 
                                 {/* <Scene
@@ -442,8 +458,13 @@ class RouterComponent extends Component {
                                 panHandlers={null}
                             >
                                 <Scene
+                                    initial
                                     key="OnBoardingWaitlist"
                                     component={OnboardingInviteCode}
+                                />
+                                <Scene
+                                    key="OnBoardingWaitlistNoCode"
+                                    component={OnboardingWaitlist}
                                 />
                             </Stack>
                             <Stack

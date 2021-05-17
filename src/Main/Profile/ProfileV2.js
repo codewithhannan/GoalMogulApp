@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
+import StepsTooltip from '../../components/StepsTooltip'
 import { connect } from 'react-redux'
 /* Actions */
 import {
@@ -72,6 +73,8 @@ import ShareGoalPopup1 from '../Journey/ShareGoalPopup1'
 import FeedbackPopup from '../Journey/FeedbackPopup'
 import SubmitFeedbackPopup from '../Journey/SubmitFeedbackPopup'
 
+import { TouchableOpacity } from 'react-native-gesture-handler'
+
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
 
@@ -102,6 +105,7 @@ class ProfileV2 extends Component {
             showFeedbackPopup: false,
             showSubmitFeedbackPopup: false,
             profilePictureVisible: false,
+            toolTipVisible: true,
         }
         this.handleProfileDetailCardLayout = this.handleProfileDetailCardLayout.bind(
             this
@@ -526,11 +530,14 @@ class ProfileV2 extends Component {
             }
             case 'goals': {
                 return (
-                    <ProfileGoalCard
-                        item={item}
-                        pageId={pageId}
-                        userId={userId}
-                    />
+                    <>
+                        {/* <StepsTooltip /> */}
+                        <ProfileGoalCard
+                            item={item}
+                            pageId={pageId}
+                            userId={userId}
+                        />
+                    </>
                 )
             }
             case 'posts': {
@@ -630,6 +637,7 @@ class ProfileV2 extends Component {
                     style={{
                         marginBottom: 8,
                         backgroundColor: color.GM_CARD_BACKGROUND,
+                        zIndex: 1,
                     }}
                 >
                     {this.renderUserInfo(props)}
@@ -733,137 +741,162 @@ class ProfileV2 extends Component {
         // const visitedId = this.props.visitedUser
 
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                <ProfilePictureModal
-                    isVisible={this.state.profilePictureVisible}
-                    onClose={this.closeProfileModal}
-                    userId={userId}
-                />
-                <Popup
-                    popupName={this.state.popupName}
-                    isVisible={this.state.showPopupModal}
-                    closeModal={() => {
-                        this.state.popupName == 'FIRST_GOAL'
-                            ? this.handleQuestionPopup()
-                            : this.setState({
-                                  showPopupModal: false,
-                              })
-                    }}
-                />
-                <HopePopup
-                    isVisible={this.state.showQuestionModal}
-                    closeModal={(displayNextPopup = false) => {
-                        displayNextPopup
-                            ? this.handleDrawPopup()
-                            : this.setState({
-                                  showQuestionModal: false,
-                              })
-                    }}
-                />
-                <EnterDrawPopup
-                    isVisible={this.state.showDrawModal}
-                    closeModal={(displayNextPopup = false, feedback) => {
-                        displayNextPopup
-                            ? this.handleInviteFriendsPopup(feedback)
-                            : this.setState({
-                                  showDrawModal: false,
-                              })
-                    }}
-                />
-                <InviteFriendsPopup
-                    isVisible={this.state.showInviteFriendsModal}
-                    closeModal={(displayNextPopup = false) => {
-                        displayNextPopup
-                            ? this.openInviteFriendModal()
-                            : this.setState({
-                                  showInviteFriendsModal: false,
-                              })
-                    }}
-                />
-                <InviteFriendModal
-                    isVisible={this.state.showInviteFriendModal}
-                    closeModal={this.closeInviteFriendModal}
-                />
-                <ShareGoalPopup
-                    isVisible={this.state.showShareGoalPopup}
-                    closeModal={() => {
-                        this.setState({
-                            showShareGoalPopup: false,
-                        })
-                    }}
-                />
-                <ShareGoalPopup1
-                    isVisible={this.state.showShareGoalPopup1}
-                    closeModal={this.closeShareGoalPopup1}
-                />
-                <FeedbackPopup
-                    isVisible={this.state.showFeedbackPopup}
-                    closeModal={(displayNextPopup = false, feedback) => {
-                        displayNextPopup
-                            ? this.closeFeedbackPopup(feedback)
-                            : this.setState({
-                                  showFeedbackPopup: false,
-                              })
-                    }}
-                />
-                <SubmitFeedbackPopup
-                    isVisible={this.state.showSubmitFeedbackPopup}
-                    closeModal={() =>
-                        this.setState({ showSubmitFeedbackPopup: false })
-                    }
-                />
-                <NudgeModal
-                    name={this.props.user.name}
-                    isVisible={this.state.showNudgeAddGoals}
-                    onClose={() =>
-                        this.setState({
-                            showNudgeAddGoals: !this.state.showNudgeAddGoals,
-                        })
-                    }
-                />
-                <CreatePostModal
-                    attachGoalRequired
-                    onRef={(r) => (this.createPostModal = r)}
-                    openProfile={false}
-                    pageId={pageId}
-                />
-                <EarnBadgeModal
-                    isVisible={this.state.showBadgeEarnModal}
-                    closeModal={() => {
-                        this.setState({
-                            showBadgeEarnModal: false,
-                        })
-                    }}
-                    user={this.props.user}
-                />
-                <SearchBarHeader
-                    backButton={!this.props.isMainTab}
-                    rightIcon={this.props.isMainTab ? 'menu' : null}
-                    onBackPress={this.handleOnBackPress}
-                    userId={userId}
-                />
+            <>
+                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                    <ProfilePictureModal
+                        isVisible={this.state.profilePictureVisible}
+                        onClose={this.closeProfileModal}
+                        userId={userId}
+                    />
+                    <Popup
+                        popupName={this.state.popupName}
+                        isVisible={this.state.showPopupModal}
+                        closeModal={() => {
+                            this.state.popupName == 'FIRST_GOAL'
+                                ? this.handleQuestionPopup()
+                                : this.setState({
+                                      showPopupModal: false,
+                                  })
+                        }}
+                    />
+                    <HopePopup
+                        isVisible={this.state.showQuestionModal}
+                        closeModal={(displayNextPopup = false) => {
+                            displayNextPopup
+                                ? this.handleDrawPopup()
+                                : this.setState({
+                                      showQuestionModal: false,
+                                  })
+                        }}
+                    />
+                    <EnterDrawPopup
+                        isVisible={this.state.showDrawModal}
+                        closeModal={(displayNextPopup = false, feedback) => {
+                            displayNextPopup
+                                ? this.handleInviteFriendsPopup(feedback)
+                                : this.setState({
+                                      showDrawModal: false,
+                                  })
+                        }}
+                    />
+                    <InviteFriendsPopup
+                        isVisible={this.state.showInviteFriendsModal}
+                        closeModal={(displayNextPopup = false) => {
+                            displayNextPopup
+                                ? this.openInviteFriendModal()
+                                : this.setState({
+                                      showInviteFriendsModal: false,
+                                  })
+                        }}
+                    />
+                    <InviteFriendModal
+                        isVisible={this.state.showInviteFriendModal}
+                        closeModal={this.closeInviteFriendModal}
+                    />
+                    <ShareGoalPopup
+                        isVisible={this.state.showShareGoalPopup}
+                        closeModal={() => {
+                            this.setState({
+                                showShareGoalPopup: false,
+                            })
+                        }}
+                    />
+                    <ShareGoalPopup1
+                        isVisible={this.state.showShareGoalPopup1}
+                        closeModal={this.closeShareGoalPopup1}
+                    />
+                    <FeedbackPopup
+                        isVisible={this.state.showFeedbackPopup}
+                        closeModal={(displayNextPopup = false, feedback) => {
+                            displayNextPopup
+                                ? this.closeFeedbackPopup(feedback)
+                                : this.setState({
+                                      showFeedbackPopup: false,
+                                  })
+                        }}
+                    />
+                    <SubmitFeedbackPopup
+                        isVisible={this.state.showSubmitFeedbackPopup}
+                        closeModal={() =>
+                            this.setState({ showSubmitFeedbackPopup: false })
+                        }
+                    />
+                    <NudgeModal
+                        name={this.props.user.name}
+                        isVisible={this.state.showNudgeAddGoals}
+                        onClose={() =>
+                            this.setState({
+                                showNudgeAddGoals: !this.state
+                                    .showNudgeAddGoals,
+                            })
+                        }
+                    />
+                    <CreatePostModal
+                        attachGoalRequired
+                        onRef={(r) => (this.createPostModal = r)}
+                        openProfile={false}
+                        pageId={pageId}
+                    />
+                    <EarnBadgeModal
+                        isVisible={this.state.showBadgeEarnModal}
+                        closeModal={() => {
+                            this.setState({
+                                showBadgeEarnModal: false,
+                            })
+                        }}
+                        user={this.props.user}
+                    />
+                    <SearchBarHeader
+                        backButton={!this.props.isMainTab}
+                        rightIcon={this.props.isMainTab ? 'menu' : null}
+                        onBackPress={this.handleOnBackPress}
+                        userId={userId}
+                    />
 
-                <SectionList
-                    keyboardShouldPersistTaps="handled"
-                    sections={sectionsData}
-                    renderItem={this.renderItem}
-                    keyExtractor={(i) => i._id}
-                    onRefresh={this.handleRefresh}
-                    onEndReached={this.handleOnLoadMore}
-                    onEndReachedThreshold={2}
-                    refreshing={false}
-                    ListEmptyComponent={this.renderListEmptyState()}
-                    ListHeaderComponent={this.renderHeader({
-                        userId,
-                        pageId,
-                        selectedTab,
-                        navigationState,
-                        isSelf,
-                    })}
-                    ListFooterComponent={this.renderListFooter()}
-                    style={styles.containerStyle}
-                />
-            </MenuProvider>
+                    <CreatePostModal
+                        attachGoalRequired
+                        onRef={(r) => (this.createPostModal = r)}
+                        openProfile={false}
+                        pageId={pageId}
+                    />
+                    <EarnBadgeModal
+                        isVisible={this.state.showBadgeEarnModal}
+                        closeModal={() => {
+                            this.setState({
+                                showBadgeEarnModal: false,
+                            })
+                        }}
+                        user={this.props.user}
+                    />
+                    <SearchBarHeader
+                        backButton={!this.props.isMainTab}
+                        rightIcon={this.props.isMainTab ? 'menu' : null}
+                        onBackPress={this.handleOnBackPress}
+                        userId={userId}
+                    />
+
+                    <SectionList
+                        keyboardShouldPersistTaps="handled"
+                        sections={sectionsData}
+                        renderItem={this.renderItem}
+                        keyExtractor={(i) => i._id}
+                        onRefresh={this.handleRefresh}
+                        onEndReached={this.handleOnLoadMore}
+                        onEndReachedThreshold={2}
+                        refreshing={false}
+                        ListEmptyComponent={this.renderListEmptyState()}
+                        ListHeaderComponent={this.renderHeader({
+                            userId,
+                            pageId,
+                            selectedTab,
+                            navigationState,
+                            isSelf,
+                        })}
+                        ListFooterComponent={this.renderListFooter()}
+                        style={styles.containerStyle}
+                    />
+                </MenuProvider>
+            </>
         )
     }
 }
@@ -916,6 +949,7 @@ const makeMapStateToProps = () => {
         const userObject = getUserData(state, userId, '')
 
         const { mutualFriends, friendship } = userObject
+
         const friendsCount = state.meet.friends.count
 
         const { routes, index } = navigationState

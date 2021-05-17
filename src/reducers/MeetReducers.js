@@ -10,6 +10,8 @@ import {
     MEET_UPDATE_FRIENDSHIP_DONE,
     MEET_TAB_REFRESH,
     MEET_TAB_REFRESH_DONE,
+    MEET_TAB_ONBOARDING_REFRESH,
+    MEET_TAB_ONBOARDING_REFRESH_DONE,
     MEET_CHANGE_FILTER,
     MEET_REQUESTS_CHANGE_TAB,
     SETTING_BLOCK_BLOCK_REQUEST_DONE,
@@ -358,6 +360,23 @@ export default (state = INITIAL_STATE, action) => {
 
         // Handle tab refresh
         case MEET_TAB_REFRESH_DONE: {
+            const { type, data, hasNextPage } = action.payload
+            let newState = _.cloneDeep(state)
+            newState = _.set(newState, `${type}.refreshing`, false)
+            newState = _.set(newState, `${type}.skip`, action.payload.skip)
+            newState = _.set(newState, `${type}.data`, data)
+            newState = _.set(newState, `${type}.hasNextPage`, hasNextPage)
+            return { ...newState }
+        }
+
+        case MEET_TAB_ONBOARDING_REFRESH: {
+            const { type } = action.payload
+            const newState = _.cloneDeep(state)
+            return _.set(newState, `${type}.refreshing`, true)
+        }
+
+        // Handle tab refresh
+        case MEET_TAB_ONBOARDING_REFRESH_DONE: {
             const { type, data, hasNextPage } = action.payload
             let newState = _.cloneDeep(state)
             newState = _.set(newState, `${type}.refreshing`, false)

@@ -11,6 +11,15 @@ import { SubmissionError } from 'redux-form'
 
 import { updatePassword } from '../Utils/ProfileUtils'
 import { auth as Auth } from '../redux/modules/auth/Auth'
+import {
+    loadAllData,
+    getAllChats,
+    getAllTribes,
+    getAllUsers,
+    errorGettingData,
+    getLoadedUsers,
+} from '../reducers/ExistingAccounts'
+import { api as API } from '../redux/middleware/api'
 
 const DEBUG_KEY = '[ Action Account ]'
 /* Registration Account Actions */
@@ -65,5 +74,60 @@ export const handleUpdatePassword = (values) => {
         })
         console.log(`${DEBUG_KEY}: result is: `, result)
         Actions.pop()
+    }
+}
+
+export const getAllAccounts = () => {
+    return async (dispatch, getState) => {
+        const { token } = getState().user
+        const { skip, limit } = getState().account
+
+        try {
+            const res = await API.get(
+                `secure/user/account/pre-populated-search?skip=${skip}&limit=${limit}`,
+                token
+            )
+
+            dispatch(getAllUsers(res.users))
+
+            console.log(
+                `${DEBUG_KEY} This is the response of getting all account`,
+                res
+            )
+        } catch (err) {
+            console.log(
+                `${DEBUG_KEY} This is the error of getting all accounts`,
+                err
+            )
+        }
+    }
+}
+
+export const loadMoreAccounts = () => {
+    return async (dispatch, getState) => {
+        const { token } = getState().user
+        const { skip, limit } = getState().account
+
+        try {
+            const res = await API.get(
+                `secure/user/account/pre-populated-search?skip=${
+                    skip + 20
+                }&limit=${limit}`,
+                token
+            )
+
+            dispatch(getLoadedUsers(res.users))
+
+            const response = res
+            console.log(
+                `${DEBUG_KEY} This is the response of loading all account`,
+                response
+            )
+        } catch (err) {
+            console.log(
+                `${DEBUG_KEY} This is the error of loading all accounts`,
+                err
+            )
+        }
     }
 }

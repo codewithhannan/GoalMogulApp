@@ -33,6 +33,8 @@ class CountryFlagButton extends React.Component {
                 ? countryCode.country.callingCode[0]
                 : 0
 
+        console.log('Country Codee', callingCode)
+
         return (
             <DelayedButton style={{ flexDirection: 'row' }} onPress={onOpen}>
                 <Text style={[OnboardingStyles.text.subTitle_2]}>
@@ -262,6 +264,7 @@ class InputBox extends React.Component {
             status,
             ...custom
         } = this.props
+
         return (
             <View style={styles.containerStyle}>
                 <Input
@@ -278,6 +281,7 @@ class InputBox extends React.Component {
                     textStyle={[OnboardingStyles.input.text]}
                     caption={this.renderCaption(caption, status)}
                     status={status}
+                    keyboardType="number-pad"
                     {...custom}
                 />
             </View>
@@ -307,6 +311,7 @@ class InputBox extends React.Component {
                     withFlag
                     withAlphaFilter
                     withCallingCode
+                    withFlagButton={true}
                     cca2={countryCode}
                     renderFlagButton={(props) =>
                         this.renderFlagButton(props, countryCode)

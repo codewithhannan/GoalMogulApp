@@ -150,7 +150,7 @@ export default (state = INITIAL_STATE, action) => {
             let newState = _.cloneDeep(state)
             if (queryId === state.queryId) {
                 const oldData = _.get(newState, `${type}.data`)
-                const newData = oldData.concat(data)
+                const newData = oldData.concat([])
                 newState = _.set(newState, `${type}.data`, newData)
                 newState = _.set(newState, `${type}.loading`, false)
                 newState = _.set(newState, `${type}.skip`, skip)

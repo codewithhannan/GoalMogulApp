@@ -78,22 +78,21 @@ class BronzeBadge extends Component {
 
                         marginHorizontal: 10,
                         flexDirection: 'row',
-                        justifyContent: 'center',
+                        justifyContent: 'space-evenly',
                         alignItems: 'center',
                         // paddingHorizontal: 96,
                         paddingVertical: 10,
                         // marginBottom: 10,
-                        paddingRight: 10,
-                        borderRadius: 5,
-                        // marginTop: ,
-                        width: '95%',
-                        flex: 1,
+
+                        borderRadius: 8,
+
+                        marginTop: 7,
                     }}
                 >
                     <View
                         style={{
                             flexDirection: 'row',
-                            width: '35%',
+                            width: '40%',
                             justifyContent: 'center',
                             alignItems: 'center',
                             alignContent: 'center',
@@ -102,7 +101,7 @@ class BronzeBadge extends Component {
                         <Image
                             source={SilverBadge}
                             style={{
-                                height: 120,
+                                height: 140,
                                 width: '100%',
                                 resizeMode: 'contain',
                             }}
@@ -111,6 +110,8 @@ class BronzeBadge extends Component {
                     <View
                         style={{
                             width: '70%',
+                            justifyContent: 'space-between',
+                            marginRight: 5,
                         }}
                     >
                         <Text
@@ -119,7 +120,8 @@ class BronzeBadge extends Component {
                                 fontSize: 13,
                             }}
                         >
-                            {heading}
+                            Your account has low activity. Invite more friends
+                            to get new suggestions,inspiration, and Likes! 🔥
                         </Text>
 
                         <Text
@@ -129,7 +131,8 @@ class BronzeBadge extends Component {
                                 fontSize: 11,
                             }}
                         >
-                            {text}
+                            Bring new energy to old friendships by discovering
+                            the ambitions that drive each other. 🙌'
                         </Text>
 
                         {this.renderInviteFriendsButton()}
