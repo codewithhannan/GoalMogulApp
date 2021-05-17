@@ -379,7 +379,7 @@ const mountUserWithToken = (
  * Auto login when user starts the app.
  * TODO: there might be refactoring can be done by merging with {@code loginUser} function
  */
-export const authenticateInvitorCode = (value) => async (
+export const authenticateInvitorCode = (value, onError) => async (
     dispatch,
     getState
 ) => {
@@ -416,7 +416,7 @@ export const authenticateInvitorCode = (value) => async (
                 ...value,
             }
         )
-        console.log('response of postINvite COde', postInviteCode)
+
         authToken = await TokenService.getAuthToken(false)
     } catch (err) {
         // When refresh auth token failed, it will reject the promise returned. Hence we
@@ -470,12 +470,12 @@ export const authenticateInvitorCode = (value) => async (
         // console.log('2')
 
         // Go to Waitlist screen
-        Alert.alert('Please Enter a Valid Invite Code')
+        onError()
 
         Actions.replace('waitlist')
     } else if (isOnboarded == false && userObject.accountOnHold == false) {
         // console.log('ye hogya hai1')
-        Actions.replace('registration_add_photo')
+        Actions.replace('registration')
         await TokenService.populateAndPersistToken(
             authToken,
             refreshToken,
@@ -640,7 +640,7 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
             Actions.replace('waitlist')
         } else if (!accountOnHold && !userObject.isOnBoarded) {
             // Go to onboarding flow
-            Actions.replace('registration_add_photo')
+            Actions.push('registration')
             // } else if (!accountOnHold && userObject.isOnBoarded && showQuestions) {
             //     // Go to onboarding flow
             //     Actions.replace('questions')

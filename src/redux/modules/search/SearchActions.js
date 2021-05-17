@@ -144,6 +144,7 @@ export const searchUser = (searchContent, skip, limit, callback) => async (
         `secure/user/friendship/es?skip=${skip}&limit=${limit}&query=${searchContent}`,
         token
     )
+
     if (is2xxRespose(res.status)) {
         callback(res, searchContent)
         return

@@ -1,7 +1,13 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, Image, Text, TouchableWithoutFeedback } from 'react-native'
+import {
+    View,
+    Image,
+    Text,
+    TouchableWithoutFeedback,
+    TouchableOpacity,
+} from 'react-native'
 import { color, default_style } from '../styles/basic'
 import GreenBadge from '../asset/image/Green_Badge.png'
 import { openProfileDetailEditForm, refreshProfileData } from '../actions'
@@ -22,38 +28,40 @@ class GreenBadgeToast extends Component {
     renderEditProfileButton() {
         return (
             <>
-                <TouchableWithoutFeedback
+                <TouchableOpacity
                     onPress={() =>
                         this.props.openProfileDetailEditForm(
                             this.props.userId,
                             this.props.pageId
                         )
                     }
+                    style={{
+                        backgroundColor: '#42C0F5',
+                        width: 133,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: 30,
+                        borderColor: '#42C0F5',
+
+                        borderRadius: 3,
+                        marginHorizontal: 26,
+                        marginTop: 10,
+                    }}
                 >
-                    <View
-                        style={{
-                            backgroundColor: '#42C0F5',
-                            width: '70%',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            height: 35,
-                            borderColor: '#42C0F5',
-                            borderWidth: 2,
-                            borderRadius: 3,
-                            marginTop: 6,
-                        }}
-                    >
+                    <View style={{}}>
                         <Text
                             style={{
                                 color: 'white',
-                                fontWeight: 'bold',
-                                fontSize: 16,
+                                fontFamily: 'SFProDisplay-Bold',
+                                fontSize: 14,
+
+                                lineHeight: 16.71,
                             }}
                         >
                             Edit Profile
                         </Text>
                     </View>
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
             </>
         )
     }
@@ -67,42 +75,48 @@ class GreenBadgeToast extends Component {
 
                         marginHorizontal: 10,
                         flexDirection: 'row',
-                        justifyContent: 'center',
+                        justifyContent: 'space-evenly',
                         alignItems: 'center',
                         // paddingHorizontal: 96,
                         paddingVertical: 10,
                         // marginBottom: 10,
-                        paddingRight: 10,
-                        borderRadius: 5,
-                        marginTop: 5,
-                        width: '95%',
+
+                        borderRadius: 8,
+
+                        marginTop: 7,
                     }}
                 >
                     <View
                         style={{
-                            flexDirection: 'row',
-                            width: '35%',
-                            justifyContent: 'center',
-                            alignItems: 'center',
+                            width: '20%',
+                            marginBottom: 10,
+                            marginHorizontal: 20,
                         }}
                     >
                         <Image
                             source={GreenBadge}
                             style={{
-                                height: 130,
-                                width: '100%',
+                                height: 124,
+                                width: 93,
                                 resizeMode: 'contain',
                             }}
                         />
                     </View>
+
                     <View
                         style={{
-                            width: '60%',
+                            width: '80%',
+                            justifyContent: 'space-between',
                         }}
                     >
                         <Text
                             style={{
-                                ...default_style.titleText_1,
+                                fontFamily: 'SFProDisplay-Bold',
+                                fontWeight: '700',
+                                fontSize: 16,
+                                lineHeight: 21,
+                                width: '80%',
+                                marginHorizontal: 25,
                             }}
                         >
                             To earn your Green Badge, simply complete your
@@ -124,7 +138,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {
-    openProfileDetailEditForm,
-    refreshProfileData,
-})(GreenBadgeToast)
+export default GreenBadgeToast

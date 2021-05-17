@@ -19,7 +19,11 @@ class MainProfile extends Component {
         const { userId } = this.props
         const pageId = this.props.refreshProfileData(userId)
 
-        return <ProfileV2 userId={userId} pageId={pageId} isMainTab={true} />
+        return (
+            <>
+                <ProfileV2 userId={userId} pageId={pageId} isMainTab={true} />
+            </>
+        )
     }
 }
 

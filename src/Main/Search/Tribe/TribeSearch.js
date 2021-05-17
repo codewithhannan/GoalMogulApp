@@ -23,9 +23,35 @@ const key = 'tribes'
 const DEBUG_KEY = '[ Component TribeSearch ]'
 
 class TribeSearch extends Component {
+    state = {
+        listOfTribes: [],
+        skip: 0,
+        limit: 20,
+    }
+
     componentDidMount() {
         if (this.props.shouldPreload) {
             this.props.refreshPreloadData(TYPE)
+        }
+    }
+
+    fetchTribes = async () => {
+        const { limit, skip, listOfUsers } = this.state
+
+        try {
+            const res = await API.get(
+                `secure/user/account/pre-populated-search?skip=${skip}&limit=${limit}`,
+                this.props.token
+            )
+
+            console.log('RESPONSEEEE ', res)
+            this.setState({
+                listOfTribes: listOfTribes.concat(res.tribes),
+                skip: skip + 20,
+                limit: limit,
+            })
+        } catch (error) {
+            console.log('ERORRRRR', error.message)
         }
     }
 
@@ -88,9 +114,16 @@ class TribeSearch extends Component {
         return (
             <View style={{ flex: 1 }}>
                 {this.props.data.length === 0 &&
-                this.props.searchContent &&
+                !this.props.searchContent &&
                 !this.props.loading ? (
-                    <EmptyResult text={'No Results'} />
+                    <FlatList
+                        data={this.state.listOfTribes}
+                        renderItem={this.renderItem}
+                        keyExtractor={(item, index) => 'key' + index}
+                        onEndReached={this.fetchTribes}
+                        onEndReachedThreshold={0.5}
+                        keyboardShouldPersistTaps="always"
+                    />
                 ) : (
                     <FlatList
                         data={this.props.data}

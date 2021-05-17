@@ -56,7 +56,7 @@ class PhoneVerificationMoal extends React.Component {
         return (
             <Modal
                 swipeToClose={false}
-                isVisible={this.props.isOpen}
+                isVisible={true}
                 backdropOpacity={0.5}
                 onClosed={() => this.onClosed()}
                 hideModalContentWhileAnimating={true}

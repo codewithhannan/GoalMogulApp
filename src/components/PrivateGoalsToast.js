@@ -18,20 +18,22 @@ class PrivateGoalsToast extends Component {
 
                         marginHorizontal: 20,
                         flexDirection: 'row',
-                        justifyContent: 'center',
+                        justifyContent: 'space-evenly',
                         alignItems: 'center',
                         // paddingHorizontal: 96,
-                        paddingVertical: 10,
+
                         marginBottom: 10,
-                        paddingRight: 10,
-                        borderRadius: 5,
+
+                        padding: 10,
+                        borderRadius: 8,
+                        height: 165,
                     }}
                 >
                     <View
                         style={{
                             flexDirection: 'row',
                             width: '35%',
-                            alignItems: 'center',
+                            marginHorizontal: 10,
                         }}
                     >
                         <Image
@@ -50,7 +52,9 @@ class PrivateGoalsToast extends Component {
                     >
                         <Text
                             style={{
-                                ...default_style.titleText_1,
+                                fontStyle: 'SFProDisplay-Bold',
+                                fontSize: 16,
+                                fontWeight: 'bold',
                             }}
                         >
                             All your goals are set to Private.
@@ -58,7 +62,7 @@ class PrivateGoalsToast extends Component {
                         <Text
                             style={{
                                 ...default_style.normalText_1,
-                                marginTop: 4,
+                                marginTop: 6,
                             }}
                         >
                             Friends can't see your goals when viewing your
@@ -67,7 +71,7 @@ class PrivateGoalsToast extends Component {
                         <Text
                             style={{
                                 ...default_style.normalText_1,
-                                marginTop: 4,
+                                marginTop: 6,
                             }}
                         >
                             We strongly suggest making some goals visible to

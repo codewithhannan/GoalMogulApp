@@ -136,6 +136,9 @@ class MessageToContactsModal extends Component {
                             flatListData: renderData,
                         })
                     }
+                } else if (status === 'denied') {
+                    this.setState({ isLoading: false })
+                    Alert.alert('Please give access of your Contacts')
                 }
             } catch (error) {
                 console.log(

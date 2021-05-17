@@ -3,14 +3,17 @@
 import React, { Component } from 'react'
 import { View, Image, Text } from 'react-native'
 import { color, default_style } from '../styles/basic'
-import VisibleGoals from '../asset/image/Friends_Goals.png'
+import PrivateGoal from '../asset/image/NoSteps.png'
+import { connect } from 'react-redux'
+import { getFirstName } from '../Utils/HelperMethods'
 
-class FriendsGoals extends Component {
+class NoStepsToast extends Component {
     constructor(props) {
         super(props)
     }
+
     render() {
-        const { name } = this.props
+        const name = getFirstName(this.props.user.name)
         return (
             <>
                 <View
@@ -24,57 +27,58 @@ class FriendsGoals extends Component {
                         // paddingHorizontal: 96,
                         paddingVertical: 10,
                         marginBottom: 10,
-
+                        paddingRight: 10,
                         borderRadius: 6,
+                        width: '90%',
+                        height: '30%',
+                        top: 10,
                     }}
                 >
                     <View
                         style={{
-                            flexDirection: 'row',
-                            width: '40%',
-                            alignItems: 'center',
+                            width: '35%',
+                            marginHorizontal: 10,
                         }}
                     >
                         <Image
-                            source={VisibleGoals}
+                            source={PrivateGoal}
                             style={{
                                 height: 130,
                                 width: '100%',
+                                left: 5,
+
                                 resizeMode: 'contain',
                             }}
                         />
                     </View>
                     <View
                         style={{
-                            width: '60%',
+                            width: '65%',
+                            left: 1,
                         }}
                     >
                         <Text
                             style={{
-                                fontFamily: 'SFProDisplay-Bold',
-                                fontWeight: '700',
                                 fontSize: 17,
                                 lineHeight: 19,
-                                width: '85%',
                                 bottom: 10,
-                                left: 2,
+
+                                fontFamily: 'SFProDisplay-Bold',
                             }}
                         >
-                            Help {name} with your unbridled enthusiasm.
+                            Your goal has 0 Steps and Needs.
                         </Text>
+
                         <Text
                             style={{
-                                fontFamily: 'SFProDisplay-Regular',
-                                fontWeight: '100',
-                                fontSize: 16,
-                                lineHeight: 18,
-                                width: '95%',
+                                fontSize: 15,
+                                lineHeight: 19,
+                                marginTop: 5,
 
-                                left: 2,
+                                fontFamily: 'SFProDisplay-Regular',
                             }}
                         >
-                            Leave a comment or suggestion on his goals that will
-                            make {name} smile!
+                            Add Steps and Needs so friends know how to help you!
                         </Text>
                     </View>
                 </View>
@@ -83,4 +87,13 @@ class FriendsGoals extends Component {
     }
 }
 
-export default FriendsGoals
+const mapStateToProps = (state, props) => {
+    const { userId, user } = state.user
+
+    return {
+        user,
+        userId,
+    }
+}
+
+export default connect(mapStateToProps, {})(NoStepsToast)

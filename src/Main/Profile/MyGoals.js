@@ -83,6 +83,7 @@ class MyGoals extends Component {
                     filter={this.props.filter}
                     onMenuChange={this.handleOnMenuChange}
                 />
+
                 <FlatList
                     data={data}
                     renderItem={this.renderItem}

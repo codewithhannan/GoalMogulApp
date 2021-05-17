@@ -44,6 +44,8 @@ import {
     getUserDataByPageId,
 } from '../../redux/modules/User/Selector'
 
+import TestSwiper from '../../Main/Home/TestSwiper'
+
 import { fetchBadgeUserCount } from '../../actions/ProfileActions'
 
 import { markUserViewGoal } from '../../redux/modules/goal/GoalDetailActions'
@@ -765,7 +767,11 @@ class ActivityFeed extends Component {
                 visitFriends ||
                 visitFriendsMore ? (
                     <Swiper
-                        style={{ height: 150 }}
+                        style={{
+                            height: 150,
+                            backgroundColor: 'white',
+                            marginTop: 9,
+                        }}
                         showsPagination={false}
                         ref="swiper"
                         index={0}
@@ -804,6 +810,9 @@ class ActivityFeed extends Component {
                         )}
                     </Swiper>
                 ) : null}
+                {/* <View style={{ backgroundColor: 'white', marginTop: 8 }}>
+                    <TestSwiper />
+                </View> */}
 
                 <FlatList
                     keyboardShouldPersistTaps="handled"

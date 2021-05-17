@@ -164,7 +164,7 @@ export const PRIVACY_OPTIONS = [
         materialCommunityIconName: 'earth',
     },
     {
-        text: 'CloseFriends',
+        text: 'Close Friends',
         value: PRIVACY_CLOSEFRIENDS,
         materialCommunityIconName: 'heart',
     },

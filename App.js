@@ -36,7 +36,7 @@ import ThemeProvider from './theme/ThemeProvider'
 import { OnboardingAddPhotos } from './src/Main/Onboarding'
 import { YellowBox } from 'react-native'
 import TestModal from './src/Main/MeetTab/Modal/TestModal'
-import OnBoardingPeopleKnow from './src/Main/Onboarding/OnboardingPeopleKnow'
+import TestingCountryCode from './src/Main/Onboarding/TestingCountryCode'
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}

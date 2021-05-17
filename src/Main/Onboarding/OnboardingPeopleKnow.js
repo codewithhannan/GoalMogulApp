@@ -35,7 +35,11 @@ import {
     trackWithProperties,
     EVENT as E,
 } from '../../monitoring/segment'
-import { handleRefresh, meetOnLoadMore } from '../../actions'
+import {
+    handleRefreshOnBoarding,
+    handleRefresh,
+    meetOnLoadMoreOnboarding,
+} from '../../actions'
 import PYMKCard from '../MeetTab/PYMKCard'
 import { FONT_FAMILY } from '../../styles/basic/text'
 
@@ -55,7 +59,7 @@ class OnboardingPeopleKnow extends React.Component {
     openModal = () =>
         this.setState({
             ...this.state,
-            syncContactInfoModalVisible: true,
+
             errMessage: undefined,
             loading: true,
         })
@@ -63,77 +67,6 @@ class OnboardingPeopleKnow extends React.Component {
     componentDidMount() {
         // Refresh recommended users with force refresh
         this.props.handleRefresh('suggested', true)
-    }
-
-    closeModal = () =>
-        this.setState({ ...this.state, syncContactInfoModalVisible: false })
-
-    // Contact member not found. User chose to skip invite from contact
-    onModalNotNow = () => {
-        trackWithProperties(E.REG_CONTACT_INVITE_SKIPPED, {
-            UserId: this.props.userId,
-        })
-        this.closeModal()
-        setTimeout(() => {
-            this.onNotNow()
-        }, 150)
-    }
-
-    onModalInvite = () => {
-        this.closeModal()
-        setTimeout(() => {
-            Actions.push('registration_contact_invite', { inviteOnly: true })
-        }, 150)
-    }
-
-    /**
-     * TODO:
-     * 1. Show uploading overlay / modal
-     * 2. If not found say, show not found modal
-     *    - If invite, then go to invite page with only 1 tab
-     *    - otherwise, go to welcome page
-     * 3. If found, go to invite page with 2 tabs
-     */
-    onSyncContact = () => {
-        trackWithProperties(E.REG_CONTACT_SYNC, {
-            UserId: this.props.userId,
-        })
-
-        this.openModal()
-
-        // Match is not found
-        // Render failure result in modal
-        // by setting loading to false
-        const onMatchNotFound = () => {
-            this.setState({
-                ...this.state,
-                loading: false,
-            })
-        }
-
-        // close modal and go to invite page
-        const onMatchFound = () => {
-            this.closeModal()
-            setTimeout(() => {
-                Actions.push('registration_contact_invite')
-            }, 150)
-        }
-
-        const onError = (errType) => {
-            let errMessage = ''
-            if (errType == 'upload') {
-                errMessage =
-                    "We're sorry that some error happened. Please try again later."
-            }
-
-            this.setState({
-                ...this.state,
-                errMessage,
-                loading: false,
-            })
-        }
-
-        this.props.uploadContacts({ onMatchFound, onMatchNotFound, onError })
     }
 
     onNotNow = () => {
@@ -175,7 +108,9 @@ class OnboardingPeopleKnow extends React.Component {
                     </Text>
                     <View style={{ flex: 1 }} />
                     <DelayedButton
-                        onPress={this.onSyncContact}
+                        onPress={() =>
+                            Actions.push('registration_contact_sync')
+                        }
                         style={{ flexDirection: 'row', alignItems: 'center' }}
                         activeOpacity={1}
                     >
@@ -332,7 +267,7 @@ const AnalyticsWrapper = wrapAnalytics(
 
 export default connect(mapStateToProps, {
     uploadContacts,
-
+    meetOnLoadMoreOnboarding,
     handleRefresh,
-    meetOnLoadMore,
+    handleRefreshOnBoarding,
 })(AnalyticsWrapper)

@@ -54,6 +54,7 @@ import ChatRoomReducers from '../redux/modules/chat/ChatRoomReducers'
 import TabIconReducers from '../redux/modules/navigation/TabIconReducers'
 import ChatRoomMembersReducers from '../redux/modules/chat/ChatRoomMembersReducers'
 import ShareToChatReducers from '../redux/modules/chat/ShareToChatReducers'
+import AccountsReducers from './ExistingAccounts'
 
 //Nudge Reducers
 
@@ -67,6 +68,9 @@ import ContactsReducer from '../reducers/ContactsReducer'
 import Tutorials from '../redux/modules/User/Tutorials'
 // Contact Sync
 import ContactSyncReducers from '../redux/modules/User/ContactSync/ContactSyncReducers'
+
+//All Existing Accounts
+import ExistingAccountsReducers from './ExistingAccounts'
 
 const rootPersistConfig = {
     key: 'root',
@@ -126,6 +130,7 @@ export const reducers = combineReducers({
     popup: Popup,
     nudges: NudgeReducers,
     contacts: ContactsReducer,
+    account: AccountsReducers,
 })
 
 export default persistReducer(rootPersistConfig, reducers)

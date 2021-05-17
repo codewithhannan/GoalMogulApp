@@ -38,8 +38,6 @@ import {
 
 import { storeData } from '../../../store/storage'
 
-import SendContactMessage from './SendContactMessage'
-
 import { getAllContacts } from '../../../actions/ContactActions'
 import { FONT_FAMILY } from '../../../styles/basic/text'
 import { DEFAULT_CARDS } from './modalSvg'

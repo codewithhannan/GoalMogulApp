@@ -16,11 +16,16 @@ import {
     onLoadMore,
 } from '../../../redux/modules/search/SearchActions'
 
+import { ActivityIndicator } from 'react-native-paper'
+import { getAllAccounts, loadMoreAccounts } from '../../../actions'
+
 // tab key
 const key = 'people'
 const DEBUG_KEY = '[ Component PeopleSearch ]'
 
 class PeopleSearch extends Component {
+    state = {}
+
     _keyExtractor = (item) => item._id
 
     handleRefresh = () => {
@@ -34,9 +39,17 @@ class PeopleSearch extends Component {
         }
     }
 
+    componentDidMount() {
+        this.props.getAllAccounts()
+    }
+
     handleOnLoadMore = () => {
         console.log(`${DEBUG_KEY} Loading more for tab: `, key)
         this.props.onLoadMore(key)
+    }
+    handleOnLoadMoreAccounts = () => {
+        console.log(`${DEBUG_KEY} Loading more for tab: `, key)
+        this.props.loadMoreAccounts()
     }
 
     renderItem = ({ item }) => {
@@ -56,9 +69,17 @@ class PeopleSearch extends Component {
         return (
             <View style={{ flex: 1 }}>
                 {this.props.data.length === 0 &&
-                this.props.searchContent &&
+                !this.props.searchContent &&
                 !this.props.loading ? (
-                    <EmptyResult text={'No Results'} />
+                    <FlatList
+                        data={this.props.allUser}
+                        renderItem={this.renderItem}
+                        keyExtractor={(item, index) => 'key' + index}
+                        refreshing={this.state.isLoading}
+                        onEndReached={() => this.props.loadMoreAccounts()}
+                        onEndReachedThreshold={0.5}
+                        keyboardShouldPersistTaps="always"
+                    />
                 ) : (
                     <FlatList
                         data={SortedObjs}
@@ -78,8 +99,10 @@ class PeopleSearch extends Component {
 
 const mapStateToProps = (state) => {
     const { people, searchContent } = state.search
+    const { token } = state.user
 
     const { data, refreshing, loading } = people
+    const { allUser } = state.account
 
     return {
         people,
@@ -87,10 +110,13 @@ const mapStateToProps = (state) => {
         refreshing,
         loading,
         searchContent,
+        allUser,
     }
 }
 
 export default connect(mapStateToProps, {
     refreshSearchResult,
+    getAllAccounts,
+    loadMoreAccounts,
     onLoadMore,
 })(PeopleSearch)

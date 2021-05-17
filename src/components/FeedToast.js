@@ -19,55 +19,75 @@ class PrivateGoalsToast extends Component {
                         backgroundColor: color.PG_BACKGROUND,
 
                         flexDirection: 'row',
-                        justifyContent: 'center',
+                        justifyContent: 'space-between',
                         alignItems: 'center',
+                        flex: 1,
                         // paddingHorizontal: 96,
                         paddingVertical: 10,
                         marginBottom: 10,
                         paddingRight: 10,
                         borderRadius: 5,
+                        height: 198,
                     }}
                 >
                     <View
                         style={{
                             flexDirection: 'row',
-                            width: '35%',
-                            alignItems: 'center',
+                            width: '30%',
                         }}
                     >
                         <Image
                             source={image}
                             style={{
-                                height: height,
+                                height: 130,
                                 width: '100%',
                                 resizeMode: 'contain',
+                                left: 15,
                             }}
                         />
                     </View>
                     <View
                         style={{
-                            width: '65%',
+                            width: '70%',
+                            right: 5,
                         }}
                     >
                         <Text
                             style={{
-                                ...default_style.titleText_1,
+                                fontFamily: 'SFProDisplay-Bold',
+                                fontWeight: '400',
+                                fontSize: 14,
+                                width: '75%',
+                                lineHeight: 17,
+
+                                marginHorizontal: 25,
                             }}
                         >
                             {heading}
                         </Text>
                         <Text
                             style={{
-                                ...default_style.normalText_1,
-                                marginTop: 6,
+                                fontFamily: 'SFProDisplay-Regular',
+                                fontWeight: '400',
+                                fontSize: 14,
+                                lineHeight: 17,
+                                width: '95%',
+                                marginHorizontal: 25,
+                                marginTop: 10,
                             }}
                         >
                             {text1}
                         </Text>
                         <Text
                             style={{
-                                ...default_style.normalText_1,
-                                marginTop: 6,
+                                fontFamily: 'SFProDisplay-Regular',
+                                fontWeight: '400',
+                                fontSize: 14,
+                                lineHeight: 17,
+                                width: '75%',
+
+                                marginHorizontal: 25,
+                                marginTop: 10,
                             }}
                         >
                             {text2}
@@ -76,8 +96,15 @@ class PrivateGoalsToast extends Component {
                         {text3 ? (
                             <Text
                                 style={{
-                                    ...default_style.normalText_1,
-                                    marginTop: 6,
+                                    fontFamily: 'SFProDisplay-Regular',
+                                    fontWeight: '700',
+                                    fontSize: 14,
+                                    lineHeight: 17,
+                                    width: '75%',
+
+                                    marginHorizontal: 25,
+                                    marginTop: 10,
+                                    lineHeight: 17,
                                 }}
                             >
                                 {text3}

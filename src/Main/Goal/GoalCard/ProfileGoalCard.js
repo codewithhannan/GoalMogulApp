@@ -11,6 +11,7 @@ import { connect } from 'react-redux'
 import timeago from 'timeago.js'
 import _ from 'lodash'
 import Tooltip from 'react-native-walkthrough-tooltip'
+import StepsTooltip from '../../../components/StepsTooltip'
 
 import { Actions } from 'react-native-router-flux'
 
@@ -48,8 +49,8 @@ const privacyOptions = [
         value: 'friends',
     },
     {
-        text: 'CloseFriends',
-        title: 'CloseFriends',
+        text: 'Close Friends',
+        title: 'Close Friends',
         iconName: 'heart',
         value: 'close-friends',
     },
@@ -139,7 +140,6 @@ class ProfileGoalCard extends React.Component {
                         style={[
                             GOALS_STYLE.commonPillContainer,
                             {
-                                width: GOALS_STYLE.privacyPillWidth,
                                 borderWidth: isCompleted ? 0.25 : 0,
                                 borderColor: color.GM_MID_GREY,
                             },
@@ -362,14 +362,16 @@ class ProfileGoalCard extends React.Component {
     renderProgressBar(item) {
         const { start, end, steps, needs } = item
         return (
-            <GoalCardBody
-                startTime={start}
-                endTime={end}
-                steps={steps}
-                needs={needs}
-                goalRef={item}
-                pageId={this.props.pageId}
-            />
+            <>
+                <GoalCardBody
+                    startTime={start}
+                    endTime={end}
+                    steps={steps}
+                    needs={needs}
+                    goalRef={item}
+                    pageId={this.props.pageId}
+                />
+            </>
         )
     }
 
@@ -429,16 +431,18 @@ class ProfileGoalCard extends React.Component {
             ? '#F6F6F6'
             : color.GM_CARD_BACKGROUND
         return (
-            <DelayedButton
-                activeOpacity={1}
-                style={[styles.cardContainerStyle, { backgroundColor }]}
-                onPress={() => this.handleOnCardPress(item)}
-            >
-                {this.renderHeader(item)}
-                {this.renderTitle(item)}
-                {this.renderProgressBar(item)}
-                {this.renderStats(item)}
-            </DelayedButton>
+            <>
+                <DelayedButton
+                    activeOpacity={1}
+                    style={[styles.cardContainerStyle, { backgroundColor }]}
+                    onPress={() => this.handleOnCardPress(item)}
+                >
+                    {this.renderHeader(item)}
+                    {this.renderTitle(item)}
+                    {this.renderProgressBar(item)}
+                    {this.renderStats(item)}
+                </DelayedButton>
+            </>
         )
     }
 }

@@ -18,6 +18,7 @@ import EventSearch from './Event/EventSearch'
 import TribeSearch from './Tribe/TribeSearch'
 import ChatSearch from './Chat/ChatSearch'
 import { SearchIcon } from '../../Utils/Icons'
+import { api as API } from '../../redux/middleware/api'
 
 // Actions
 import {
@@ -38,6 +39,7 @@ import {
 } from '../../monitoring/segment'
 import { HEADER_STYLES } from '../../styles/Header'
 import { TEXT_COLOR } from '../../styles/basic/color'
+import { api } from '../../redux/middleware/api'
 
 const DEBUG_KEY = '[ Component Search ]'
 
@@ -51,9 +53,11 @@ class SearchOverlay extends Component {
             // We keep a local copy since debounced search takes a while to fire event to update reducer
             searchContent: undefined,
             tabTransition: false,
+            skip: 0,
+            limit: 20,
+            listOfUsers: [],
         }
     }
-
     componentDidMount() {
         track(E.SEARCH_OPENED)
     }
@@ -130,7 +134,13 @@ class SearchOverlay extends Component {
     }
 
     _renderScene = SceneMap({
-        people: () => <PeopleSearch type="GeneralSearch" />,
+        people: () => (
+            <PeopleSearch
+                listOfUsers={this.state.listOfUsers}
+                fetchPeople={this.fetchPeople}
+                type="GeneralSearch"
+            />
+        ),
         tribes: () => <TribeSearch type="GeneralSearch" />,
         chatRooms: () => <ChatSearch type="GeneralSearch" />,
     })
