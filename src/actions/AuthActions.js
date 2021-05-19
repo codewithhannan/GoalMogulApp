@@ -71,6 +71,7 @@ import * as Font from 'expo-font'
 import TokenService from '../services/token/TokenService'
 import getEnvVars from '../../environment'
 import { TUTORIAL_MARK_USER_ONBOARDED } from '../redux/modules/User/Tutorials'
+import { getVisitedTime, userLogout } from '../reducers/UserVisited'
 
 const DEBUG_KEY = '[ Action Auth ]'
 
@@ -549,6 +550,22 @@ export const authenticateInvitorCode = (value, onError) => async (
     loadTutorialState(payload.userId)(dispatch, getState)
 }
 
+export const getUserVisitedNumber = () => async (dispatch, getState) => {
+    const { token } = getState().user
+
+    try {
+        const res = await API.post('secure/user/profile/app-visits', token)
+
+        if (res.status === 200) {
+            dispatch(getVisitedTime(res.AppVisits))
+        }
+
+        console.log('THIS IS RESPONSE OF USER GET', res)
+    } catch (error) {
+        console.log('THIS IS ERROR OF USER GET', error.message)
+    }
+}
+
 export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     const refreshTokenObject = await TokenService.checkAndGetValidRefreshToken()
     Logger.log(
@@ -600,6 +617,9 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     } = refreshTokenObject
 
     let { showQuestions } = refreshTokenObject
+    let { visitedTime } = getState().usersVisited
+
+    console.log('APP VISITS', visitedTime)
 
     let userCreated = getState().user.user.created
     let currentDate = moment(Date.now())
@@ -637,10 +657,14 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         if (accountOnHold) {
             // Go to Waitlist screen
 
+            console.log('hey1')
+
             Actions.replace('waitlist')
         } else if (!accountOnHold && !userObject.isOnBoarded) {
             // Go to onboarding flow
-            Actions.push('registration')
+            Actions.replace('registration')
+            console.log('hey2')
+
             // } else if (!accountOnHold && userObject.isOnBoarded && showQuestions) {
             //     // Go to onboarding flow
             //     Actions.replace('questions')
@@ -675,7 +699,7 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         }
     } else {
         // Pass along the user onboarded state to state.user.user.isOnboarded
-        console.log('ye horaha ha2')
+
         dispatch({
             type: TUTORIAL_MARK_USER_ONBOARDED,
             payload: {
@@ -683,8 +707,17 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
             },
         })
 
+        const userObject = await fetchAppUserProfile(authToken, userId)(
+            dispatch,
+            getState
+        )
+
         // Go to home page
-        Actions.replace('drawer')
+        if (visitedTime == 1 && !accountOnHold && userObject.isOnBoarded) {
+            Actions.replace('contacts')
+        } else {
+            Actions.replace('drawer')
+        }
     }
 
     // Add a 50ms delay here to let screen transition finishes
@@ -965,6 +998,7 @@ export const logout = () => async (dispatch, getState) => {
     dispatch({
         type: USER_LOG_OUT,
     })
+    dispatch(userLogout())
 }
 
 const TOAST_IMAGE_STYLE = {

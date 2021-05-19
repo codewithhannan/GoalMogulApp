@@ -56,6 +56,8 @@ import ChatRoomMembersReducers from '../redux/modules/chat/ChatRoomMembersReduce
 import ShareToChatReducers from '../redux/modules/chat/ShareToChatReducers'
 import AccountsReducers from './ExistingAccounts'
 
+import VisitedUsers from './UserVisited'
+
 //Nudge Reducers
 
 import NudgeReducers from './NudgesReducer'
@@ -131,6 +133,7 @@ export const reducers = combineReducers({
     nudges: NudgeReducers,
     contacts: ContactsReducer,
     account: AccountsReducers,
+    usersVisited: VisitedUsers,
 })
 
 export default persistReducer(rootPersistConfig, reducers)

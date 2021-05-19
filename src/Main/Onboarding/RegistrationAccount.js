@@ -566,7 +566,7 @@ const mapStateToProps = (state) => {
         inviterCode,
     } = state.registration
 
-    console.log('These are the props', state.registration)
+    console.log('These are the props', state)
     // console.log('These are erro', registerErrMsg)
 
     return {

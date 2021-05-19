@@ -334,7 +334,9 @@ class Menu extends React.PureComponent {
                         <DelayedButton
                             activeOpacity={0.6}
                             onPress={() =>
-                                Linking.openURL('mailto:support@goalmogul.com')
+                                Linking.openURL(
+                                    `mailto:support@goalmogul.com?subject=${this.props.name}&body=body`
+                                )
                             }
                             style={styles.buttonStyle}
                         >
@@ -486,6 +488,7 @@ const styles = {
 
 const mapStateToProps = (state) => {
     const { user } = state.user
+    const { name } = user
 
     return {
         user,

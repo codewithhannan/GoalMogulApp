@@ -28,6 +28,7 @@ import {
     fetchAppUserProfile,
     fetchProfile,
     checkIfNewlyCreated,
+    getUserVisitedNumber,
 } from '../../actions'
 import {
     openCreateOverlay,
@@ -154,6 +155,8 @@ class Home extends Component {
         // Set timer to fetch profile again if previously failed
         this.setTimer()
         this.props.checkIfNewlyCreated()
+
+        this.props.getUserVisitedNumber()
 
         const { user } = this.props
         if (user && !user.isOnBoarded) {
@@ -405,6 +408,8 @@ const mapStateToProps = (state) => {
     const needRefreshActivity = _.isEmpty(state.home.activityfeed.data)
     const { user } = state.user
 
+    const userVisited = state.usersVisited
+
     // Tutorial related
     const { create_goal } = state.tutorials
     const { home } = create_goal
@@ -476,6 +481,7 @@ export default connect(
         resetTutorial,
         /* Contact sync related */
         saveRemoteMatches,
+        getUserVisitedNumber,
     },
     null,
     { withRef: true }

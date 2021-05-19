@@ -80,29 +80,66 @@ class SearchBarHeader extends Component {
         Actions.drawerOpen()
     }
 
+    backFunctionality = () => {
+        if (this.props.goToHome) {
+            console.log('Hey1')
+            Actions.replace('drawer')
+        } else if (this.props.backButton) {
+            console.log('Hey2')
+            this.handleBackOnClick()
+        } else {
+            console.log('Hey3')
+            return () => {}
+        }
+    }
+
+    renderIconAndImage = () => {
+        if (this.props.backButton) {
+            return (
+                <Icon
+                    name="chevron-left"
+                    pack="material-community"
+                    style={HEADER_STYLES.nakedButton}
+                />
+            )
+        } else if (this.props.goToHome) {
+            return (
+                <Icon
+                    name="chevron-left"
+                    pack="material-community"
+                    style={HEADER_STYLES.nakedButton}
+                />
+            )
+        } else {
+            return (
+                <Image
+                    source={Logo}
+                    resizeMode="contain"
+                    style={HEADER_STYLES.logo}
+                />
+            )
+        }
+    }
+
+    activeOpacity = () => {
+        if (this.props.backButton) {
+            return 0.6
+        } else if (this.props.goToHome) {
+            return 0.6
+        } else {
+            return 1
+        }
+    }
+
     renderLeftIcon() {
-        const { backButton } = this.props
+        const { backButton, goToHome } = this.props
         return (
             <DelayedButton
-                activeOpacity={backButton ? 0.6 : 1}
-                onPress={
-                    backButton ? this.handleBackOnClick.bind(this) : () => {}
-                }
+                activeOpacity={this.activeOpacity()}
+                onPress={this.backFunctionality}
                 style={{ justifyContent: 'center' }}
             >
-                {backButton ? (
-                    <Icon
-                        name="chevron-left"
-                        pack="material-community"
-                        style={HEADER_STYLES.nakedButton}
-                    />
-                ) : (
-                    <Image
-                        source={Logo}
-                        resizeMode="contain"
-                        style={HEADER_STYLES.logo}
-                    />
-                )}
+                {this.renderIconAndImage()}
             </DelayedButton>
         )
     }

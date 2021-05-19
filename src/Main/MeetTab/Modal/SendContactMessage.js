@@ -23,7 +23,6 @@ import { ActivityIndicator } from 'react-native-paper'
 import { MaterialIcons } from '@expo/vector-icons'
 
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
-import { AlphabetList } from 'react-native-section-alphabet-list'
 
 //MiddleWare to get the Invite Link
 import { generateInvitationLink } from '../../../redux/middleware/utils'
@@ -37,6 +36,9 @@ import { Actions } from 'react-native-router-flux'
 import { PG_BACKGROUND } from '../../../styles/basic/color'
 
 import { Image } from 'react-native-animatable'
+
+import { Platform } from 'react-native'
+import Constants from 'expo-constants'
 
 const screenHeight = Dimensions.get('screen').height
 
@@ -332,7 +334,7 @@ class MessageToContactsModal extends Component {
                         backgroundColor: color.GM_CARD_BACKGROUND,
                     }}
                 >
-                    <SearchBarHeader backButton title={'Contacts'} />
+                    <SearchBarHeader title={'Contacts'} goToHome />
 
                     {this.state.isLoading ? (
                         <ActivityIndicator
@@ -416,7 +418,7 @@ class MessageToContactsModal extends Component {
                                 }
                             />
 
-                            <TouchableOpacity
+                            <SafeAreaView
                                 style={{}}
                                 onPress={async () => {
                                     try {
@@ -453,7 +455,7 @@ class MessageToContactsModal extends Component {
                                         borderColor: '#42C0F5',
                                         borderWidth: 2,
                                         borderRadius: 5,
-                                        marginBottom: 10,
+
                                         marginHorizontal: 20,
                                     }}
                                 >
@@ -468,7 +470,7 @@ class MessageToContactsModal extends Component {
                                         Send Invite Message
                                     </Text>
                                 </View>
-                            </TouchableOpacity>
+                            </SafeAreaView>
                         </>
                     )}
                 </View>
