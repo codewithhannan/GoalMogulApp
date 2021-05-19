@@ -17,7 +17,6 @@ import Modal from 'react-native-modal'
 
 import { GM_BLUE } from '../../styles/basic/color'
 import * as text from '../../styles/basic/text'
-import { openPopup } from '../../actions'
 import SvgImage from '../../asset/svgs/ShareGoalPopup1'
 import cancel from '../../asset/utils/cancel_no_background.png'
 import DelayedButton from '../Common/Button/DelayedButton'
@@ -30,13 +29,15 @@ class ShareGoalPopup1 extends Component {
     renderButtons() {
         return (
             <>
-                <TouchableWithoutFeedback>
+                <TouchableWithoutFeedback
+                    onPress={() => this.props.closeModal('invitefriendpopup')}
+                >
                     <View style={styles.btnContainer1}>
                         <Text style={styles.btnText1}>Share My Goals</Text>
                     </View>
                 </TouchableWithoutFeedback>
                 <TouchableWithoutFeedback
-                    onPress={() => this.props.closeModal(true)}
+                    onPress={() => this.props.closeModal('feedbackpopup')}
                 >
                     <View style={styles.btnContainer2}>
                         <Text style={styles.btnText2}>No, thanks</Text>
@@ -66,8 +67,6 @@ class ShareGoalPopup1 extends Component {
     }
 
     render() {
-        console.log('\n Props passed to popup modal', this.props)
-        // this.props.openPopup(popupName)
         return (
             <Modal isVisible={this.props.isVisible}>
                 <View style={styles.container}>
@@ -185,6 +184,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(mapStateToProps, {
-    openPopup,
-})(ShareGoalPopup1)
+export default connect(mapStateToProps)(ShareGoalPopup1)

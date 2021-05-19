@@ -28,6 +28,7 @@ import {
     fetchAppUserProfile,
     fetchProfile,
     checkIfNewlyCreated,
+    uploadPopupData,
 } from '../../actions'
 import {
     openCreateOverlay,
@@ -258,6 +259,8 @@ class Home extends Component {
                 needRefreshActivity,
                 needRefreshMastermind,
                 user,
+                popup,
+                uploadPopupData,
             } = this.props
             if (user === undefined || _.isEmpty(user) || !user.profile) {
                 this.props.fetchAppUserProfile({ navigate: false })
@@ -398,6 +401,7 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state) => {
+    const { popup } = state
     const { userId } = state.user
     const refreshing = state.home.activityfeed.refreshing
     // || state.home.mastermind.refreshing
@@ -421,6 +425,7 @@ const mapStateToProps = (state) => {
         showTutorial,
         tutorialText,
         nextStepNumber,
+        popup,
     }
 }
 
@@ -476,6 +481,7 @@ export default connect(
         resetTutorial,
         /* Contact sync related */
         saveRemoteMatches,
+        uploadPopupData,
     },
     null,
     { withRef: true }

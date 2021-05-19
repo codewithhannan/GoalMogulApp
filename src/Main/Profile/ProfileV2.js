@@ -2,13 +2,7 @@
 
 import _ from 'lodash'
 import React, { Component } from 'react'
-import {
-    ActivityIndicator,
-    Animated,
-    SectionList,
-    View,
-    Text,
-} from 'react-native'
+import { ActivityIndicator, Animated, SectionList, View } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import StepsTooltip from '../../components/StepsTooltip'
@@ -63,7 +57,6 @@ import { api as API } from '../../redux/middleware/api'
 import InviteFriendModal from '../MeetTab//Modal/InviteFriendModal'
 
 import FriendsGoalsVisit from '../../components/FriendsGoalsVisit'
-import ShareGoalPopup from '../Journey/ShareGoalPopup1'
 import ProfilePictureModal from '../../components/ProfilePictureModal'
 import NoGoalToast from '../../components/NoGoalToast'
 import HopePopup from '../Journey/HopePopup'
@@ -72,6 +65,7 @@ import InviteFriendsPopup from '../Journey/InviteFriendsPopup'
 import ShareGoalPopup1 from '../Journey/ShareGoalPopup1'
 import FeedbackPopup from '../Journey/FeedbackPopup'
 import SubmitFeedbackPopup from '../Journey/SubmitFeedbackPopup'
+import ShareGoalPopup2 from '../Journey/ShareGoalPopup2'
 
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
@@ -100,8 +94,8 @@ class ProfileV2 extends Component {
             popupName: '',
             showNudgePrivateGoals: false,
             showNudgeAddGoals: false,
-            showShareGoalPopup: false,
             showShareGoalPopup1: false,
+            showShareGoalPopup2: false,
             showFeedbackPopup: false,
             showSubmitFeedbackPopup: false,
             profilePictureVisible: false,
@@ -154,6 +148,13 @@ class ProfileV2 extends Component {
             this.handlePopup()
             this.openShareGoalPopup1()
             return
+        }
+        if (
+            this.props.isSelf &&
+            this.props.popup['SHAREGOALS_POPUP2'].status !==
+                prevProps.popup['SHAREGOALS_POPUP2'].status
+        ) {
+            this.openShareGoalPopup2()
         }
     }
 
@@ -402,6 +403,9 @@ class ProfileV2 extends Component {
 
     openShareGoalPopup1 = () => {
         const { goals, popup } = this.props
+        console.log(
+            `status:${popup['SHAREGOALS_POPUP1'].status} goalcount:${goals.length} shouldOpen:${popup['SHAREGOALS_POPUP1'].shouldOpen}`
+        )
         if (
             goals.length == 4 &&
             !popup['SHAREGOALS_POPUP1'].status &&
@@ -411,17 +415,56 @@ class ProfileV2 extends Component {
             this.setState({ showShareGoalPopup1: true })
         }
     }
+    openShareGoalPopup2 = () => {
+        const { popup } = this.props
+        if (
+            popup['SHAREGOALS_POPUP1'].status &&
+            popup['SHAREGOALS_POPUP2'].status &&
+            !this.state.showShareGoalPopup1
+        ) {
+            this.setState({ showShareGoalPopup2: true })
+        }
+    }
 
-    closeShareGoalPopup1 = (displayFeedbackPopup = false) => {
-        if (displayFeedbackPopup) {
-            this.setState({ showShareGoalPopup1: false })
-            setTimeout(() => {
-                this.setState({
-                    showFeedbackPopup: true,
-                })
-            }, 500)
-        } else {
-            this.setState({ showShareGoalPopup1: false })
+    closeShareGoalPopup1 = (popupToDispaly) => {
+        switch (popupToDispaly) {
+            case 'feedbackpopup': {
+                this.setState({ showShareGoalPopup1: false })
+                setTimeout(() => {
+                    this.setState({
+                        showFeedbackPopup: true,
+                    })
+                }, 500)
+                break
+            }
+            case 'invitefriendpopup': {
+                this.setState({ showShareGoalPopup1: false })
+                setTimeout(() => {
+                    this.setState({
+                        showInviteFriendModal: true,
+                    })
+                }, 500)
+                break
+            }
+            default: {
+                this.setState({ showShareGoalPopup1: false })
+            }
+        }
+    }
+    closeShareGoalPopup2 = (popupToDispaly) => {
+        switch (popupToDispaly) {
+            case 'invitefriendpopup': {
+                this.setState({ showShareGoalPopup2: false })
+                setTimeout(() => {
+                    this.setState({
+                        showInviteFriendModal: true,
+                    })
+                }, 500)
+                break
+            }
+            default: {
+                this.setState({ showShareGoalPopup2: false })
+            }
         }
     }
 
@@ -793,17 +836,13 @@ class ProfileV2 extends Component {
                         isVisible={this.state.showInviteFriendModal}
                         closeModal={this.closeInviteFriendModal}
                     />
-                    <ShareGoalPopup
-                        isVisible={this.state.showShareGoalPopup}
-                        closeModal={() => {
-                            this.setState({
-                                showShareGoalPopup: false,
-                            })
-                        }}
-                    />
                     <ShareGoalPopup1
                         isVisible={this.state.showShareGoalPopup1}
                         closeModal={this.closeShareGoalPopup1}
+                    />
+                    <ShareGoalPopup2
+                        isVisible={this.state.showShareGoalPopup2}
+                        closeModal={this.closeShareGoalPopup2}
                     />
                     <FeedbackPopup
                         isVisible={this.state.showFeedbackPopup}
@@ -852,29 +891,6 @@ class ProfileV2 extends Component {
                         onBackPress={this.handleOnBackPress}
                         userId={userId}
                     />
-
-                    <CreatePostModal
-                        attachGoalRequired
-                        onRef={(r) => (this.createPostModal = r)}
-                        openProfile={false}
-                        pageId={pageId}
-                    />
-                    <EarnBadgeModal
-                        isVisible={this.state.showBadgeEarnModal}
-                        closeModal={() => {
-                            this.setState({
-                                showBadgeEarnModal: false,
-                            })
-                        }}
-                        user={this.props.user}
-                    />
-                    <SearchBarHeader
-                        backButton={!this.props.isMainTab}
-                        rightIcon={this.props.isMainTab ? 'menu' : null}
-                        onBackPress={this.handleOnBackPress}
-                        userId={userId}
-                    />
-
                     <SectionList
                         keyboardShouldPersistTaps="handled"
                         sections={sectionsData}

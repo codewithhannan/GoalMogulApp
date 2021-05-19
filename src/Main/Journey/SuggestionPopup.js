@@ -11,7 +11,6 @@ import Modal from 'react-native-modal'
 
 import { GM_BLUE } from '../../styles/basic/color'
 import * as text from '../../styles/basic/text'
-import { openPopup } from '../../actions'
 import SvgImage1 from '../../asset/svgs/SuggestionPopup'
 
 class SuggestionPopup extends Component {
@@ -41,8 +40,6 @@ class SuggestionPopup extends Component {
     }
 
     render() {
-        console.log('\n Props passed to popup modal', this.props)
-        // this.props.openPopup(popupName)
         return (
             <Modal isVisible={this.props.isVisible}>
                 <View style={styles.container}>
@@ -136,6 +133,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(mapStateToProps, {
-    openPopup,
-})(SuggestionPopup)
+export default connect(mapStateToProps)(SuggestionPopup)

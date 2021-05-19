@@ -90,7 +90,6 @@ class Popup extends Component {
     }
 
     render() {
-        console.log('\n Props passed to popup modal', this.props)
         const { popupName } = this.props
         if (popupName) {
             // this.props.openPopup(popupName)
