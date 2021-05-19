@@ -6,7 +6,11 @@ import { Dimensions, Image, Text, View } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 // Actions
-import { tryAutoLoginV2, loadInitialAssets } from './actions'
+import {
+    tryAutoLoginV2,
+    loadInitialAssets,
+    getUserVisitedNumber,
+} from './actions'
 /* Asset */
 import LogoText from './asset/header/GMText.png'
 import LogoIcon from './asset/header/header-logo-white.png'
@@ -39,6 +43,8 @@ class SplashScreen extends Component {
     async componentDidMount() {
         this.setState({ fontLoaded: true })
         trackViewScreen(Screen.SPLASH_SCREEN)
+
+        // this.props.getUserVisitedNumber()
     }
 
     handleGetStartedOnPress() {
@@ -192,6 +198,8 @@ const mapDispatchToProps = (dispatch) => {
         registration: () => Actions.push('registrationAccount'),
         login: () => Actions.push('login'),
         tryAutoLoginV2: (params) => dispatch(tryAutoLoginV2(params)),
+        getUserVisitedNumber: (params) =>
+            dispatch(getUserVisitedNumber(params)),
     }
 }
 

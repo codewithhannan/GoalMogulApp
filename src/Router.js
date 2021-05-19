@@ -467,6 +467,21 @@ class RouterComponent extends Component {
                                     component={OnboardingWaitlist}
                                 />
                             </Stack>
+
+                            <Stack
+                                key="contacts"
+                                hideNavBar
+                                type={ActionConst.RESET}
+                                drawerLockMode="locked-closed"
+                                gesturesEnabled={false}
+                                panHandlers={null}
+                            >
+                                <Scene
+                                    initial
+                                    key="Contacts_Stack"
+                                    component={SendContactMessage}
+                                />
+                            </Stack>
                             <Stack
                                 key="questions"
                                 hideNavBar

@@ -42,6 +42,7 @@ import {
 } from '../../actions'
 import PYMKCard from '../MeetTab/PYMKCard'
 import { FONT_FAMILY } from '../../styles/basic/text'
+import { api, api as API } from '../../redux/middleware/api'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const { button: buttonStyle, text: textStyle } = OnboardingStyles
@@ -53,6 +54,9 @@ class OnboardingPeopleKnow extends React.Component {
             syncContactInfoModalVisible: false,
             loading: true, // test loading param
             errMessage: undefined,
+            pymkData: [],
+            skip: 0,
+            limit: 20,
         }
     }
 
@@ -66,7 +70,27 @@ class OnboardingPeopleKnow extends React.Component {
 
     componentDidMount() {
         // Refresh recommended users with force refresh
+        this.fetchUsers()
         this.props.handleRefresh('suggested', true)
+    }
+
+    fetchUsers = async () => {
+        const { skip, limit, pymkData } = this.state
+
+        try {
+            const res = await API.get(
+                `secure/user/friendship/inviter-friends?limit=${limit}&skip=${skip}`,
+                this.props.token
+            )
+
+            this.setState({
+                pymkData: pymkData.concat(res.data),
+                skip: skip + 100,
+                limit: limit,
+            })
+        } catch (error) {
+            console.log('ERROR', error)
+        }
     }
 
     onNotNow = () => {
@@ -198,7 +222,7 @@ class OnboardingPeopleKnow extends React.Component {
                         <View style={{ flex: 1, height: '100%' }}>
                             <FlatList
                                 keyExtractor={(item) => item._id}
-                                data={this.props.pymkData}
+                                data={this.state.pymkData}
                                 ListHeaderComponent={this.renderListHeader}
                                 renderItem={this.renderPYMK}
                                 // loading={this.props.loading}
@@ -254,10 +278,10 @@ const testData = [
 ]
 
 const mapStateToProps = (state) => {
-    const { userId } = state.user
+    const { userId, token } = state.user
     const { suggested } = state.meet
     const { data, loading } = suggested
-    return { userId, pymkData: data, loading }
+    return { userId, pymkData: data, loading, token }
 }
 
 const AnalyticsWrapper = wrapAnalytics(
