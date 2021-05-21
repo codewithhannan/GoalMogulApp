@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, Image, Text } from 'react-native'
+import { View, Image, Text, Keyboard } from 'react-native'
 
 // Components
 import SectionCardV2 from '../../Common/SectionCardV2'
@@ -10,11 +10,56 @@ import { DotIcon } from '../../../../Utils/Icons'
 // Assets
 import HelpIcon from '../../../../asset/utils/help.png'
 import StepIcon from '../../../../asset/utils/steps.png'
+import { Icon } from '@ui-kitten/components'
+import DelayedButton from '../../../Common/Button/DelayedButton'
+import { createSuggestion } from '../../../../redux/modules/feed/comment/CommentActions'
+import { getNewCommentByTab } from '../../../../redux/modules/feed/comment/CommentSelector'
+import { getUserData } from '../../../../redux/modules/User/Selector'
+import { connect } from 'react-redux'
 
 // Styles
 import { default_style } from '../../../../styles/basic'
 
 class StepAndNeedCardV3 extends Component {
+    constructor(props) {
+        super(props)
+    }
+
+    renderSuggestionIcon() {
+        const { newComment, pageId, goalId } = this.props
+        const { mediaRef, commentType } = newComment
+        const disableButton = mediaRef !== undefined && mediaRef !== ''
+        if (commentType === 'Reply') return null
+
+        return (
+            <DelayedButton
+                activeOpacity={0.6}
+                onPress={() => {
+                    Keyboard.dismiss()
+                    this.props.createSuggestion(goalId, pageId)
+                }}
+                disabled={disableButton}
+                style={{
+                    paddingTop: 12,
+                    paddingBottom: 4,
+                }}
+            >
+                <Icon
+                    name="lightbulb-on-outline"
+                    pack="material-community"
+                    style={[
+                        styles.iconStyle,
+                        {
+                            position: 'relative',
+                            bottom: 2,
+                            tintColor: '#F2C94C',
+                        },
+                    ]}
+                />
+            </DelayedButton>
+        )
+    }
+
     renderSectionTitle(item) {
         if (item.sectionTitle === 'needs') {
             return (
@@ -26,6 +71,9 @@ class StepAndNeedCardV3 extends Component {
                     }}
                     text="Needs"
                     count={item.count}
+                    renderSuggestionIcon={() =>
+                        renderSuggestionIcon(this.props)
+                    }
                 />
             )
         }
@@ -35,12 +83,14 @@ class StepAndNeedCardV3 extends Component {
                 iconStyle={{ ...default_style.normalIcon_1, tintColor: '#333' }}
                 text="Steps"
                 count={item.count}
+                renderSuggestionIcon={() => renderSuggestionIcon(this.props)}
             />
         )
     }
 
     render() {
         const { item } = this.props
+        // console.log('Received props2:', this.props)
 
         if (item.sectionTitle) {
             return this.renderSectionTitle(item)
@@ -89,8 +139,52 @@ const SectionTitle = (props) => {
             >
                 {`${props.text}  |  ${props.count}`}
             </Text>
+            {props.renderSuggestionIcon()}
         </View>
     )
 }
 
-export default StepAndNeedCardV3
+const renderSuggestionIcon = (props) => {
+    const { newComment, pageId, goalId } = props
+    // const { mediaRef, commentType } = newComment
+    // const disableButton = mediaRef !== undefined && mediaRef !== ''
+    // if (commentType === 'Reply') return null
+
+    return !props.isSelf ? (
+        <DelayedButton
+            activeOpacity={0.6}
+            onPress={() => {
+                Keyboard.dismiss()
+                props.createSuggestion(goalId, pageId)
+            }}
+            // disabled={disableButton}
+        >
+            <Icon
+                name="lightbulb-on-outline"
+                pack="material-community"
+                style={{
+                    width: 20,
+                    height: 20,
+                    position: 'relative',
+                    left: 10,
+                    tintColor: '#F2C94C',
+                }}
+            />
+        </DelayedButton>
+    ) : null
+}
+
+const mapStateToProps = (state, props) => {
+    // console.log('Received props1:', props)
+    const { userId } = state.user
+    const user = getUserData(state, userId, 'user')
+    const appUser = state.user.user
+    return {
+        // newComment: getNewCommentByTab(state, props.pageId),
+        isSelf: user && appUser && userId === appUser._id,
+        ...props,
+        user,
+    }
+}
+
+export default connect(mapStateToProps, { createSuggestion })(StepAndNeedCardV3)

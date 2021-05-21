@@ -500,7 +500,13 @@ export class GoalDetailCardV3 extends React.Component {
     }
 
     _renderItem(props) {
-        const { goalDetail, navigationState, pageId, isSelf } = this.props
+        const {
+            goalDetail,
+            navigationState,
+            pageId,
+            isSelf,
+            goalId,
+        } = this.props
 
         console.log('NavigationState', navigationState)
         const { routes, index } = navigationState
@@ -550,6 +556,7 @@ export class GoalDetailCardV3 extends React.Component {
                             isSelf={this.props.isSelf}
                             count={item.count}
                             pageId={pageId}
+                            goalId={goalId}
                             drag={isSelf ? props.drag : null}
                             isActive={props.isActive}
                             onEdit={() => {

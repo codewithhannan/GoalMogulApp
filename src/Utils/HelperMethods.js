@@ -18,7 +18,6 @@ const helperMethods = {
      * @returns any random value from the array
      */
     getRandomValue(array) {
-        console.log('ye lo g bhai', Math.floor(Math.random() * array.length))
         return array[Math.floor(Math.random() * array.length)]
     },
     /**
@@ -44,7 +43,7 @@ const helperMethods = {
             let cI = right.indexOf('}}', oI)
             const variable = right.substring(oI + 2, cI)
             left.push(right.substring(0, oI))
-            console.log('\nThese are the function names', variable)
+            // console.log('\nFunction name from variable methods:', variable)
             if (variable in variableMethods) {
                 let res = variableMethods[variable](user)
                 left.push(res)
@@ -64,7 +63,7 @@ const variableMethods = {
      */
     firstNameCaps(user) {
         if (user.user.name) {
-            console.log('Ye hai user', user)
+            // console.log('This is the user:', user)
             let path = user.user.name.split(/(\s+)/).filter(function (e) {
                 return e.trim().length > 0
             })
@@ -77,7 +76,7 @@ const variableMethods = {
      */
     firstname(user) {
         if (user.user.name) {
-            console.log('Ye hai user', user)
+            // console.log('This is the user:', user)
             let path = user.user.name.split(/(\s+)/).filter(function (e) {
                 return e.trim().length > 0
             })

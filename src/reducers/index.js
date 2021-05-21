@@ -7,6 +7,7 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import { reducer as formReducer } from 'redux-form'
 
 /* reducers */
+import Tooltip from './TooltipReducer'
 import Challenges from './Challenges'
 import Popup from './PopupReducers'
 import AuthReducers from './AuthReducers'
@@ -130,6 +131,7 @@ export const reducers = combineReducers({
     challenges: Challenges,
     goalPrivacy: GoalPrivacyReducers,
     popup: Popup,
+    tooltip: Tooltip,
     nudges: NudgeReducers,
     contacts: ContactsReducer,
     account: AccountsReducers,

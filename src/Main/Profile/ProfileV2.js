@@ -138,23 +138,21 @@ class ProfileV2 extends Component {
             this.setState({
                 showBadgeEarnModal: true,
             })
-            return
         }
         if (!this.props.isSelf && prevProps.user._id !== this.props.user._id) {
             this.shouldSendNudge()
-            return
         }
         if (this.props.isSelf) {
             this.handlePopup()
             this.openShareGoalPopup1()
-            return
         }
         if (
             this.props.isSelf &&
-            this.props.popup['SHAREGOALS_POPUP2'].status !==
-                prevProps.popup['SHAREGOALS_POPUP2'].status
+            this.props.popup['SHAREGOALS_POPUP1'].status &&
+            !this.props.popup['SHAREGOALS_POPUP2'].status
         ) {
             this.openShareGoalPopup2()
+            return
         }
     }
 
@@ -403,9 +401,9 @@ class ProfileV2 extends Component {
 
     openShareGoalPopup1 = () => {
         const { goals, popup } = this.props
-        console.log(
-            `status:${popup['SHAREGOALS_POPUP1'].status} goalcount:${goals.length} shouldOpen:${popup['SHAREGOALS_POPUP1'].shouldOpen}`
-        )
+        // console.log(
+        //     `status:${popup['SHAREGOALS_POPUP1'].status} goalcount:${goals.length} shouldOpen:${popup['SHAREGOALS_POPUP1'].shouldOpen}`
+        // )
         if (
             goals.length == 4 &&
             !popup['SHAREGOALS_POPUP1'].status &&
@@ -416,13 +414,10 @@ class ProfileV2 extends Component {
         }
     }
     openShareGoalPopup2 = () => {
-        const { popup } = this.props
-        if (
-            popup['SHAREGOALS_POPUP1'].status &&
-            popup['SHAREGOALS_POPUP2'].status &&
-            !this.state.showShareGoalPopup1
-        ) {
-            this.setState({ showShareGoalPopup2: true })
+        console.log('Function called openShareGoalPopup2')
+        if (!this.state.showShareGoalPopup1) {
+            this.props.uploadPopupData('SHAREGOALS_POPUP2')
+            setTimeout(() => this.setState({ showShareGoalPopup2: true }), 500)
         }
     }
 
@@ -545,10 +540,10 @@ class ProfileV2 extends Component {
         )
     }
 
-    renderItem = ({ item }) => {
-        let result = false
+    renderItem = ({ item, index: itemIndex }) => {
+        // let result = false
 
-        const { pageId, userId, navigationState, goals } = this.props
+        const { pageId, userId, navigationState, goals, data } = this.props
 
         const { routes, index } = navigationState
 
@@ -574,7 +569,9 @@ class ProfileV2 extends Component {
             case 'goals': {
                 return (
                     <>
-                        {/* <StepsTooltip /> */}
+                        {itemIndex === 0 && !this.props.isSelf && (
+                            <StepsTooltip />
+                        )}
                         <ProfileGoalCard
                             item={item}
                             pageId={pageId}
@@ -773,7 +770,6 @@ class ProfileV2 extends Component {
         } = this.props
 
         // console.log('\n This is the data for sections', [{ data }])
-
         let sectionsData
         if (data.length > 0) {
             sectionsData = [{ data }]
@@ -946,6 +942,8 @@ const makeMapStateToProps = () => {
 
         const { token } = state.auth.user
 
+        const userVisited = state.usersVisited
+
         const selfUser = state.user.userId
         const visitedUserName = state.profile
         const visitedUser = state.profile.userId.userId
@@ -1031,6 +1029,7 @@ const makeMapStateToProps = () => {
             data,
             user, // user for the current profile page
             popup,
+            userVisited,
         }
     }
 

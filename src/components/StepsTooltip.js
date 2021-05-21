@@ -17,8 +17,9 @@ import { connect } from 'react-redux'
 import * as text from '../styles/basic/text'
 
 import { Entypo } from '@expo/vector-icons'
+import { setGoalProgressTooltip } from '../actions'
 
-class PrivateGoalsNudge extends Component {
+class StepsTooltip extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -28,9 +29,10 @@ class PrivateGoalsNudge extends Component {
     }
 
     render() {
+        const { tooltip, setGoalProgressTooltip } = this.props
         return (
             <>
-                {this.state.toolTipVisible ? (
+                {this.state.toolTipVisible && tooltip.goalProgressTooltip ? (
                     <View
                         style={{
                             position: 'absolute',
@@ -64,9 +66,11 @@ class PrivateGoalsNudge extends Component {
                                 </Text>
                             </View>
                             <TouchableOpacity
-                                onPress={() =>
+                                onPress={() => {
+                                    this.state.checked &&
+                                        setGoalProgressTooltip()
                                     this.setState({ toolTipVisible: false })
-                                }
+                                }}
                                 style={{
                                     position: 'absolute',
                                     right: 8,
@@ -136,4 +140,13 @@ class PrivateGoalsNudge extends Component {
     }
 }
 
-export default PrivateGoalsNudge
+const mapStateToProps = (state, ownProps) => {
+    const { tooltip } = state
+    return {
+        tooltip,
+    }
+}
+
+export default connect(mapStateToProps, { setGoalProgressTooltip })(
+    StepsTooltip
+)

@@ -28,7 +28,6 @@ import {
     fetchAppUserProfile,
     fetchProfile,
     checkIfNewlyCreated,
-    uploadPopupData,
     getUserVisitedNumber,
 } from '../../actions'
 import {
@@ -262,8 +261,6 @@ class Home extends Component {
                 needRefreshActivity,
                 needRefreshMastermind,
                 user,
-                popup,
-                uploadPopupData,
             } = this.props
             if (user === undefined || _.isEmpty(user) || !user.profile) {
                 this.props.fetchAppUserProfile({ navigate: false })
@@ -486,7 +483,6 @@ export default connect(
         resetTutorial,
         /* Contact sync related */
         saveRemoteMatches,
-        uploadPopupData,
         getUserVisitedNumber,
     },
     null,
