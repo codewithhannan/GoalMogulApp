@@ -460,7 +460,6 @@ class CommentBoxV2 extends Component {
 
     renderPost() {
         const { newComment } = this.props
-        console.log('this is props of comment', newComment)
         const { uploading, contentText, commentType, mediaRef } = newComment
         const isInValidComment =
             (commentType === 'Comment' || commentType === 'Reply') &&
@@ -573,7 +572,6 @@ class CommentBoxV2 extends Component {
 
     render() {
         const { pageId, newComment, comments } = this.props
-        console.log('this is comments', comments.data)
         if (!newComment || !newComment.parentRef) return null
         const { uploading } = newComment
 

@@ -55,8 +55,6 @@ class GreenBadgeToast extends Component {
         //     this.setState({ firstName })
         // }
 
-        console.log('comin into render')
-
         return (
             <>
                 <View

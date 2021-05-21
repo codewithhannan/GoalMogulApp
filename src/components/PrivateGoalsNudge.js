@@ -24,7 +24,6 @@ class PrivateGoalsNudge extends Component {
 
     renderNudgeButton() {
         const { visitedUser, token } = this.props
-        console.log('this is visitor', visitedUser)
         return (
             <>
                 <TouchableWithoutFeedback

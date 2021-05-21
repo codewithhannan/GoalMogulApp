@@ -9,7 +9,7 @@ import { setPopupData, updatePopupData } from '../reducers/PopupReducers'
 const DEBUG_KEY = '[ PopupActions ]'
 
 export const getPopupData = () => async (dispatch, getState) => {
-    console.log('\n getPopupData is called from PopupActions')
+    // console.log('\n getPopupData is called from PopupActions')
     const { token } = getState().user
     try {
         let data = await API.get('secure/user/profile/getJourney', token)
@@ -23,10 +23,10 @@ export const uploadPopupData = (popupName, popupFeedback) => async (
     dispatch,
     getState
 ) => {
-    console.log(
-        `\n uploadPopupData is called from PopupActions ${popupName} and :`,
-        popupFeedback
-    )
+    // console.log(
+    //     `\n uploadPopupData is called from PopupActions ${popupName} and :`,
+    //     popupFeedback
+    // )
     let data = _.cloneDeep(getState().popup)
     data[popupName].status = true
     data[popupName].created = moment().utc().format()
@@ -35,7 +35,7 @@ export const uploadPopupData = (popupName, popupFeedback) => async (
     }
     dispatch(updatePopupData({ data }))
     const { user, popup: journeyObject } = getState()
-    console.log('\nData updated ater dispatch:', journeyObject)
+    // console.log('\nData updated ater dispatch:', journeyObject)
     try {
         await API.post(
             'secure/user/profile/update-journey',
