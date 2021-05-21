@@ -619,8 +619,6 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     let { showQuestions } = refreshTokenObject
     let { visitedTime } = getState().usersVisited
 
-    console.log('APP VISITS', visitedTime)
-
     let userCreated = getState().user.user.created
     let currentDate = moment(Date.now())
     let comparedUser = moment.duration(currentDate.diff(userCreated)).asDays()
@@ -657,13 +655,10 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         if (accountOnHold) {
             // Go to Waitlist screen
 
-            console.log('hey1')
-
             Actions.replace('waitlist')
         } else if (!accountOnHold && !userObject.isOnBoarded) {
             // Go to onboarding flow
             Actions.replace('registration')
-            console.log('hey2')
 
             // } else if (!accountOnHold && userObject.isOnBoarded && showQuestions) {
             //     // Go to onboarding flow

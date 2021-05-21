@@ -43,6 +43,7 @@ import {
 import PYMKCard from '../MeetTab/PYMKCard'
 import { FONT_FAMILY } from '../../styles/basic/text'
 import { api, api as API } from '../../redux/middleware/api'
+import { ActivityIndicator } from 'react-native-paper'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const { button: buttonStyle, text: textStyle } = OnboardingStyles
@@ -56,7 +57,8 @@ class OnboardingPeopleKnow extends React.Component {
             errMessage: undefined,
             pymkData: [],
             skip: 0,
-            limit: 20,
+            limit: 10,
+            pymkLoading: true,
         }
     }
 
@@ -85,8 +87,9 @@ class OnboardingPeopleKnow extends React.Component {
 
             this.setState({
                 pymkData: pymkData.concat(res.data),
-                skip: skip + 100,
+                skip: skip + 10,
                 limit: limit,
+                pymkLoading: false,
             })
         } catch (error) {
             console.log('ERROR', error)
@@ -98,13 +101,13 @@ class OnboardingPeopleKnow extends React.Component {
             UserId: this.props.userId,
         })
         const screenTransitionCallback = () => {
-            Actions.push('registration_tribe_selection')
+            Actions.push('registration_community_guideline')
         }
         screenTransitionCallback()
     }
 
     renderPYMK = ({ item, index }) => {
-        return <PYMKCard user={item} index={index} />
+        return <PYMKCard user={item} index={index} hideOptions />
     }
 
     renderItemSeparator = () => {
@@ -211,30 +214,42 @@ class OnboardingPeopleKnow extends React.Component {
                 ]}
             >
                 <OnboardingHeader />
-                <View style={[OnboardingStyles.container.card]}>
-                    <View
+                {this.state.pymkLoading ? (
+                    <ActivityIndicator
+                        size="medium"
+                        color="#42C0F5"
                         style={{
-                            flexGrow: 1,
-
-                            width: '100%',
+                            flex: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center',
                         }}
-                    >
-                        <View style={{ flex: 1, height: '100%' }}>
-                            <FlatList
-                                keyExtractor={(item) => item._id}
-                                data={this.state.pymkData}
-                                ListHeaderComponent={this.renderListHeader}
-                                renderItem={this.renderPYMK}
-                                // loading={this.props.loading}
-                                // onEndReached={() => this.props.meetOnLoadMore('suggested')}
-                                ItemSeparatorComponent={
-                                    this.renderItemSeparator
-                                }
-                            />
+                    />
+                ) : (
+                    <View style={[OnboardingStyles.container.card]}>
+                        <View
+                            style={{
+                                flexGrow: 1,
+
+                                width: '100%',
+                            }}
+                        >
+                            <View style={{ flex: 1, height: '100%' }}>
+                                <FlatList
+                                    keyExtractor={(item) => item._id}
+                                    data={this.state.pymkData}
+                                    ListHeaderComponent={this.renderListHeader}
+                                    renderItem={this.renderPYMK}
+                                    // loading={this.props.loading}
+                                    // onEndReached={this.fetchUsers}
+                                    ItemSeparatorComponent={
+                                        this.renderItemSeparator
+                                    }
+                                />
+                            </View>
                         </View>
+                        {this.renderButtons()}
                     </View>
-                    {this.renderButtons()}
-                </View>
+                )}
                 <SyncContactInfoModal
                     isOpen={this.state.syncContactInfoModalVisible}
                     loading={this.state.loading}

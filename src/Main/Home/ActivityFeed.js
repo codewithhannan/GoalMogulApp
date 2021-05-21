@@ -84,6 +84,7 @@ import InviteFriendsPopup from '../Journey/InviteFriendsPopup'
 import EnterDrawPopup from '../Journey/EnterDrawPopup'
 import HopePopup from '../Journey/HopePopup'
 import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
+import NoGoalPrompt from '../../components/NoGoalPrompt'
 /*Tetsin Imports */
 
 const TAB_KEY = 'activityfeed'
@@ -176,10 +177,6 @@ class ActivityFeed extends Component {
     }
 
     async componentDidMount() {
-        const data = await getData('persist:root')
-
-        console.log('this is async data', data)
-
         // Refresh user friends
         this.props.handleRefreshFriend()
 
@@ -563,8 +560,6 @@ class ActivityFeed extends Component {
             about,
         } = this.props
 
-        console.log('this is goals', goals)
-
         const {
             heading,
             text,
@@ -791,6 +786,7 @@ class ActivityFeed extends Component {
 
         return (
             <>
+                {/* <NoGoalPrompt /> */}
                 {!image ||
                 greenBadge ||
                 getGreenBadge ||

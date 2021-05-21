@@ -2,7 +2,7 @@
 
 // This is a tab for General search
 import React, { Component } from 'react'
-import { View, FlatList } from 'react-native'
+import { View, FlatList, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 
@@ -20,6 +20,7 @@ import {
 import { componentKeyByTab } from '../../../redux/middleware/utils'
 
 import { trackWithProperties, EVENT as E } from '../../../monitoring/segment'
+import { loadMoreChats, getAllAccounts } from '../../../actions'
 
 // tab key
 const key = 'chatRooms'
@@ -29,6 +30,10 @@ class ChatSearch extends Component {
     constructor(props) {
         super(props)
         this.renderItem = this.renderItem.bind(this)
+    }
+
+    async componentDidMount() {
+        this.props.getAllAccounts()
     }
 
     _keyExtractor = (item) => item._id
@@ -100,15 +105,28 @@ class ChatSearch extends Component {
         )
     }
 
+    preHandleOnLoadMore = () => {
+        console.log(`${DEBUG_KEY} Loading more for tab: `, key)
+        this.props.loadMoreChats()
+    }
     render() {
         let SortedObjs = _.sortBy(this.props.data, 'name')
+        const { height } = Dimensions.get('window')
 
         return (
             <View style={{ flex: 1 }}>
                 {this.props.data.length === 0 &&
-                this.props.searchContent &&
+                !this.props.searchContent &&
                 !this.props.loading ? (
-                    <EmptyResult text={'No Results'} />
+                    <FlatList
+                        data={this.props.allChats}
+                        renderItem={this.renderItem}
+                        keyExtractor={this._keyExtractor}
+                        onEndReached={this.preHandleOnLoadMore}
+                        onEndReachedThreshold={0.5}
+                        refreshing={this.props.chatLoading}
+                        keyboardShouldPersistTaps="always"
+                    />
                 ) : (
                     <FlatList
                         data={SortedObjs}
@@ -130,6 +148,7 @@ const mapStateToProps = (state) => {
     const { chatRooms, searchContent } = state.search
     const { tab } = state.navigation
     const { data, refreshing, loading } = chatRooms
+    const { allChats, loading: chatLoading } = state.account
 
     return {
         chatRooms,
@@ -138,10 +157,14 @@ const mapStateToProps = (state) => {
         loading,
         searchContent,
         tab,
+        allChats,
+        chatLoading,
     }
 }
 
 export default connect(mapStateToProps, {
     refreshSearchResult,
     onLoadMore,
+    loadMoreChats,
+    getAllAccounts,
 })(ChatSearch)

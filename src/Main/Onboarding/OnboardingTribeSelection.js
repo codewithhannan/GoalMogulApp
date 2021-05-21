@@ -189,6 +189,7 @@ class OnboardingTribeSelection extends React.Component {
 
     render() {
         const { tribes } = this.props
+
         const tribesToRender = filterTribesByCategory({
             tribes,
             category: this.state.category,
@@ -205,7 +206,7 @@ class OnboardingTribeSelection extends React.Component {
                     canSelect
                     renderHeader={this.renderHeader}
                     renderHeaderText={this.renderHeaderText}
-                    renderCategorySelector={null}
+                    renderCategorySelector={this.renderCategorySelector}
                     itemOnPress={(tribeDoc) =>
                         this.props.registrationTribeSelection(
                             tribeDoc._id,

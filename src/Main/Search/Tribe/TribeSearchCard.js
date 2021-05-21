@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 
 // Assets
 import tribe_default_icon from '../../../asset/utils/tribeIcon.png'
+import members from '../../../asset/icons/2.png'
 import next from '../../../asset/utils/next.png'
 
 // Actions
@@ -16,6 +17,7 @@ import { tribeDetailOpen } from '../../../redux/modules/tribe/MyTribeActions'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import ProfileImage from '../../Common/ProfileImage'
 import { trackWithProperties, EVENT } from '../../../monitoring/segment'
+import { color } from '../../../styles/basic'
 
 const DEBUG_KEY = '[ Component SearchTribeCard ]'
 
@@ -58,7 +60,12 @@ class SearchTribeCard extends Component {
         const { picture } = this.props.item
         return (
             <ProfileImage
-                imageStyle={{ height: 55, width: 55 }}
+                imageStyle={{
+                    height: 48,
+                    width: 48,
+                    borderRadius: 0,
+                    borderColor: 'transparent',
+                }}
                 imageUrl={picture}
                 rounded
                 imageContainerStyle={styles.imageContainerStyle}
@@ -73,12 +80,27 @@ class SearchTribeCard extends Component {
                 <DelayedButton
                     activeOpacity={0.6}
                     onPress={() => this.onButtonClicked(item, type)}
-                    style={{ padding: 15 }}
+                    style={{
+                        height: 31,
+                        width: 65,
+                        backgroundColor: color.GM_BLUE,
+                        borderRadius: 3,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 3,
+                    }}
                 >
-                    <Image
-                        source={next}
-                        style={{ ...styles.iconStyle, opacity: 0.8 }}
-                    />
+                    <Text
+                        style={{
+                            color: 'white',
+                            fontSize: 12,
+                            fontWeight: '600',
+                            lineHeight: 14,
+                            fontFamily: 'SFProDisplay-Semibold',
+                        }}
+                    >
+                        Join
+                    </Text>
                 </DelayedButton>
             </View>
         )
@@ -124,14 +146,33 @@ class SearchTribeCard extends Component {
                     marginTop: 3,
                 }}
             >
-                {/*<Text style={defaultTextStyle}>{category}</Text>
-				<Dot />*/}
+                {/* <Text style={defaultTextStyle}>{category}</Text> */}
+                {/* <Dot /> */}
+                <Image
+                    source={members}
+                    style={{ height: 12, width: 12, marginHorizontal: 1 }}
+                    resizeMode="contain"
+                />
                 {count ? (
-                    <View style={{ flexDirection: 'row' }}>
-                        <Text style={{ ...defaultTextStyle, color: '#15aad6' }}>
+                    <View style={{ flexDirection: 'row', marginHorizontal: 3 }}>
+                        <Text
+                            style={{
+                                ...defaultTextStyle,
+                                color: '#737475',
+                                fontSize: 12,
+                                fontWeight: '500',
+                            }}
+                        >
                             {count}
                         </Text>
-                        <Text style={defaultTextStyle}>
+                        <Text
+                            style={{
+                                ...defaultTextStyle,
+                                color: '#737475',
+                                fontSize: 12,
+                                fontWeight: '500',
+                            }}
+                        >
                             &nbsp;{item.memberCount > 1 ? 'members' : 'member'}
                         </Text>
                     </View>
@@ -155,21 +196,23 @@ class SearchTribeCard extends Component {
                 }}
             >
                 {this.renderTitle(item)}
+                {this.renderInformation(item)}
                 <View style={{ marginTop: item.memberCount ? 3 : 6 }}>
                     <Text
                         style={{
                             flex: 1,
                             flexWrap: 'wrap',
-                            color: '#838f97',
-                            fontSize: 15,
+                            color: '#000000',
+                            fontSize: 14,
+                            // letterSpacing: -0.216066,
+                            fontFamily: 'SFProDisplay-Regular',
                         }}
-                        numberOfLines={1}
+                        // numberOfLines={1}
                         ellipsizeMode="tail"
                     >
                         {content}
                     </Text>
                 </View>
-                {this.renderInformation(item)}
             </View>
         )
     }
@@ -184,6 +227,7 @@ class SearchTribeCard extends Component {
                 <View style={styles.containerStyle}>
                     {this.renderTribeImage()}
                     {this.renderCardContent(item)}
+                    {this.renderButton(item, type)}
                 </View>
             </DelayedButton>
         )
@@ -207,7 +251,7 @@ const styles = {
     iconContainerStyle: {
         marginLeft: 8,
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-',
     },
     iconStyle: {
         height: 25,
@@ -216,9 +260,10 @@ const styles = {
         tintColor: '#17B3EC',
     },
     imageContainerStyle: {
-        alignItems: 'center',
-        alignSelf: 'center',
+        alignItems: 'flex-start',
+        alignSelf: 'flex-start',
         backgroundColor: 'white',
+        top: 5,
     },
 }
 

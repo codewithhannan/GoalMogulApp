@@ -769,7 +769,6 @@ class ProfileV2 extends Component {
             user,
         } = this.props
 
-        // console.log('\n This is the data for sections', [{ data }])
         let sectionsData
         if (data.length > 0) {
             sectionsData = [{ data }]

@@ -34,7 +34,7 @@ export const phoneNumberSent = (value, onError) => {
     }
 }
 
-export const phoneNumberVerify = (value) => {
+export const phoneNumberVerify = (value, onError) => {
     return async (dispatch, getState) => {
         try {
             const res = await API.post(
@@ -48,7 +48,10 @@ export const phoneNumberVerify = (value) => {
             const response = res
             if (res.success == true) {
                 Actions.push('registration_add_photo')
+            } else {
+                onError()
             }
+
             console.log(
                 `${DEBUG_KEY} This is the response of verifying phone number`,
                 response
@@ -58,7 +61,6 @@ export const phoneNumberVerify = (value) => {
                 `${DEBUG_KEY} This is the error of verifying phone number`,
                 err
             )
-            onError()
         }
     }
 }

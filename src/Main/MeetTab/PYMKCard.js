@@ -215,6 +215,7 @@ class PYMKCard extends React.Component {
                     <UserCardHeader
                         user={user}
                         optionsOnPress={this.openOptionModal}
+                        hideOptions
                     />
                     <UserTopGoals user={user} />
                     {this.renderButton(user._id)}

@@ -40,6 +40,7 @@ import {
 import { HEADER_STYLES } from '../../styles/Header'
 import { TEXT_COLOR } from '../../styles/basic/color'
 import { api } from '../../redux/middleware/api'
+import { getAllAccounts } from '../../actions'
 
 const DEBUG_KEY = '[ Component Search ]'
 
@@ -47,19 +48,18 @@ class SearchOverlay extends Component {
     constructor(props) {
         super(props)
         this.handleCancel = this.handleCancel.bind(this)
+
         this.handleOnEndSubmitting = this.handleOnEndSubmitting.bind(this)
         this.isCanceled = false
         this.state = {
             // We keep a local copy since debounced search takes a while to fire event to update reducer
             searchContent: undefined,
             tabTransition: false,
-            skip: 0,
-            limit: 20,
-            listOfUsers: [],
         }
     }
     componentDidMount() {
         track(E.SEARCH_OPENED)
+        this.props.getAllAccounts()
     }
 
     componentWillUnmount() {
@@ -247,6 +247,7 @@ const mapDispatchToProps = (dispatch) => {
     )
     return {
         debouncedSearch,
+        getAllAccounts,
         // searchSwitchTab: searchSwitchTab(dispatch),
         searchSwitchTab: (index) => dispatch(searchSwitchTab(index)),
         clearSearchState: clearSearchState(dispatch),

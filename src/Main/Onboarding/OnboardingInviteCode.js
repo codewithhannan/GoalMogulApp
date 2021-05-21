@@ -173,18 +173,30 @@ class OnboardingInviteCode extends Component {
                                                             Invalid Code. Try
                                                             again.
                                                         </Text>
-                                                        <Text
+                                                        <View
                                                             style={{
-                                                                fontFamily:
-                                                                    'SFProDisplay-Regular',
                                                                 fontSize: 12,
+                                                                width: '90%',
+                                                                bottom: 7,
                                                             }}
                                                         >
-                                                            *Your Code is the
-                                                            GoalMogul AccountID
-                                                            of the friend who
-                                                            invited you.
-                                                        </Text>
+                                                            <Text
+                                                                style={{
+                                                                    fontFamily:
+                                                                        'SFProDisplay-Regular',
+                                                                    fontSize: 12,
+
+                                                                    fontWeight:
+                                                                        '500',
+                                                                }}
+                                                            >
+                                                                *Hint: Your Code
+                                                                is the GoalMogul
+                                                                AccountID of the
+                                                                friend who
+                                                                invited you.
+                                                            </Text>
+                                                        </View>
                                                     </>
                                                 )}
                                             </View>

@@ -13,7 +13,6 @@ const DEBUG_KEY = '[ ContactActions ]'
 export const getAllContacts = () => {
     return async (dispatch, getState) => {
         const { status } = await Contacts.requestPermissionsAsync()
-        console.log('status', status)
 
         try {
             if (status === 'granted') {
@@ -21,7 +20,6 @@ export const getAllContacts = () => {
                 const { data } = await Contacts.getContactsAsync({
                     fields: [Contacts.Fields.PhoneNumbers],
                 })
-                console.log('data of contacts', data)
 
                 if (data.length > 0) {
                     const contactsData = data.map((data, index) => {

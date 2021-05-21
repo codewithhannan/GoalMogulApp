@@ -127,6 +127,7 @@ import OnboardingInviteCode from './Main/Onboarding/OnboardingInviteCode'
 import OnboardingWaitlist from './Main/Onboarding/OnboardingWaitlist'
 import OnboardingPhoneVerification from './Main/Onboarding/OnboardingPhoneVerification'
 import OnboardingComfirmPhone from './Main/Onboarding/OnboardingComfirmPhone'
+import ConversationGoal from './Main/Goal/NewGoal/ConversationGoal'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -138,6 +139,10 @@ function getCommonScenes(tab) {
         <Scene
             key={`${prefix}ContactMessage`}
             component={SendContactMessage}
+        />,
+        <Scene
+            key={`${prefix}ConversationNoGoal`}
+            component={ConversationGoal}
         />,
         ,
         <Scene key={`${prefix}goal`} component={GoalDetailCard} />,
