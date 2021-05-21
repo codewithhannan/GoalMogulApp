@@ -82,13 +82,10 @@ class SearchBarHeader extends Component {
 
     backFunctionality = () => {
         if (this.props.goToHome) {
-            console.log('Hey1')
             Actions.replace('drawer')
         } else if (this.props.backButton) {
-            console.log('Hey2')
             this.handleBackOnClick()
         } else {
-            console.log('Hey3')
             return () => {}
         }
     }

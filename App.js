@@ -33,10 +33,10 @@ import { initSentry } from './src/monitoring/sentry'
 
 // UI theme provider
 import ThemeProvider from './theme/ThemeProvider'
-import { OnboardingAddPhotos } from './src/Main/Onboarding'
+
 import { YellowBox } from 'react-native'
-import TestModal from './src/Main/MeetTab/Modal/TestModal'
-import TestingCountryCode from './src/Main/Onboarding/TestingCountryCode'
+
+import ConversationGoal from './src/Main/Goal/NewGoal/ConversationGoal'
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
@@ -77,10 +77,10 @@ export default class App extends React.Component {
                             closeInterval={7500}
                             containerStyle={styles.toastCustomContainerStyle}
                         />
-                        {/* <OnboardingAddPhotos /> */}
                     </PersistGate>
                 </ReduxProvider>
             </ThemeProvider>
+            // <ConversationGoal />
         )
     }
 }

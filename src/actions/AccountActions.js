@@ -18,6 +18,8 @@ import {
     getAllUsers,
     errorGettingData,
     getLoadedUsers,
+    getLoadedTribes,
+    getLoadedChats,
 } from '../reducers/ExistingAccounts'
 import { api as API } from '../redux/middleware/api'
 
@@ -80,38 +82,86 @@ export const handleUpdatePassword = (values) => {
 export const getAllAccounts = () => {
     return async (dispatch, getState) => {
         const { token } = getState().user
-        const { skip, limit } = getState().account
+        const { userSkip, tribeSkip, chatSkip, limit } = getState().account
+        const { selectedTab } = getState().search
 
-        try {
-            const res = await API.get(
-                `secure/user/account/pre-populated-search?skip=${skip}&limit=${limit}`,
-                token
-            )
+        if (selectedTab == 'people') {
+            try {
+                dispatch(loadAllData(true))
 
-            dispatch(getAllUsers(res.users))
+                const res = await API.get(
+                    `secure/user/account/pre-populated-search?skip=${userSkip}&limit=${limit}`,
+                    token
+                )
+                dispatch(getAllUsers(res.users))
+                dispatch(getAllTribes(res.tribes))
+                dispatch(getAllChats(res.chats))
+                dispatch(loadAllData(false))
 
-            console.log(
-                `${DEBUG_KEY} This is the response of getting all account`,
-                res
-            )
-        } catch (err) {
-            console.log(
-                `${DEBUG_KEY} This is the error of getting all accounts`,
-                err
-            )
+                console.log(
+                    `${DEBUG_KEY} This is the response of getting all users`,
+                    res
+                )
+            } catch (error) {
+                console.log(
+                    `${DEBUG_KEY} This is the error of getting all users`,
+                    error.message
+                )
+            }
+        } else if (selectedTab == 'tribes') {
+            try {
+                dispatch(loadAllData(true))
+
+                const res = await API.get(
+                    `secure/user/account/pre-populated-search?skip=${tribeSkip}&limit=${limit}`,
+                    token
+                )
+                console.log(
+                    `${DEBUG_KEY} This is the response of getting all tribes`,
+                    res
+                )
+                dispatch(getAllTribes(res.tribes))
+
+                dispatch(loadAllData(false))
+            } catch (error) {
+                console.log(
+                    `${DEBUG_KEY} This is the error of getting all tribes`,
+                    error.message
+                )
+            }
+        } else if (selectedTab == 'chatRooms') {
+            try {
+                dispatch(loadAllData(true))
+
+                const res = await API.get(
+                    `secure/user/account/pre-populated-search?skip=${chatSkip}&limit=${limit}`,
+                    token
+                )
+                console.log(
+                    `${DEBUG_KEY} This is the response of getting all chats`,
+                    res
+                )
+                dispatch(getAllChats(res.chats))
+                dispatch(loadAllData(false))
+            } catch (error) {
+                console.log(
+                    `${DEBUG_KEY} This is the error of getting all chats`,
+                    error.message
+                )
+            }
         }
     }
 }
 
-export const loadMoreAccounts = () => {
+export const loadMoreUsers = () => {
     return async (dispatch, getState) => {
         const { token } = getState().user
-        const { skip, limit } = getState().account
+        const { userSkip, limit } = getState().account
 
         try {
             const res = await API.get(
                 `secure/user/account/pre-populated-search?skip=${
-                    skip + 20
+                    userSkip + 10
                 }&limit=${limit}`,
                 token
             )
@@ -120,12 +170,69 @@ export const loadMoreAccounts = () => {
 
             const response = res
             console.log(
-                `${DEBUG_KEY} This is the response of loading all account`,
+                `${DEBUG_KEY} This is the response of loading all users`,
                 response
             )
         } catch (err) {
             console.log(
-                `${DEBUG_KEY} This is the error of loading all accounts`,
+                `${DEBUG_KEY} This is the error of loading all users`,
+                err
+            )
+        }
+    }
+}
+
+export const loadMoreTribes = () => {
+    return async (dispatch, getState) => {
+        const { token } = getState().user
+        const { tribeSkip, limit } = getState().account
+
+        try {
+            const res = await API.get(
+                `secure/user/account/pre-populated-search?skip=${
+                    tribeSkip + 10
+                }&limit=${limit}`,
+                token
+            )
+
+            dispatch(getLoadedTribes(res.tribes))
+
+            const response = res
+            console.log(
+                `${DEBUG_KEY} This is the response of loading all tribes`,
+                response
+            )
+        } catch (err) {
+            console.log(
+                `${DEBUG_KEY} This is the error of loading all tribes`,
+                err
+            )
+        }
+    }
+}
+export const loadMoreChats = () => {
+    return async (dispatch, getState) => {
+        const { token } = getState().user
+        const { chatSkip, limit } = getState().account
+
+        try {
+            const res = await API.get(
+                `secure/user/account/pre-populated-search?skip=${
+                    chatSkip + 10
+                }&limit=${limit}`,
+                token
+            )
+
+            dispatch(getLoadedChats(res.chats))
+
+            const response = res
+            console.log(
+                `${DEBUG_KEY} This is the response of loading all chats`,
+                response
+            )
+        } catch (err) {
+            console.log(
+                `${DEBUG_KEY} This is the error of loading all chats`,
                 err
             )
         }

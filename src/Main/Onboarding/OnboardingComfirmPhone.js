@@ -105,7 +105,7 @@ class OnBoardingComfirmPhone extends React.Component {
                         Submit
                     </Text>
                 </DelayedButton>
-                <DelayedButton
+                {/* <DelayedButton
                     onPress={this.onNotNow}
                     style={[
                         buttonStyle.GM_WHITE_BG_GRAY_TEXT.containerStyle,
@@ -115,7 +115,7 @@ class OnBoardingComfirmPhone extends React.Component {
                     <Text style={buttonStyle.GM_WHITE_BG_GRAY_TEXT.textStyle}>
                         Skip
                     </Text>
-                </DelayedButton>
+                </DelayedButton> */}
             </View>
         )
     }
@@ -189,7 +189,7 @@ class OnBoardingComfirmPhone extends React.Component {
                                     width: '80%',
                                 }}
                             >
-                                {this.state.errorMessage ? (
+                                {!this.state.errorMessage ? (
                                     <>
                                         <Text
                                             style={{

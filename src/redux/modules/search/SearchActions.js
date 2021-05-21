@@ -36,6 +36,7 @@ import {
     SENTRY_TAGS,
     SENTRY_TAG_VALUE,
 } from '../../../monitoring/sentry/Constants'
+import { clearExistingSearched } from '../../../reducers/ExistingAccounts'
 
 const DEBUG_KEY = '[ Action Search ]'
 
@@ -399,6 +400,7 @@ export const clearSearchState = curry((dispatch) => (tab) => {
             tab,
         },
     })
+    dispatch(clearExistingSearched())
 })
 
 const fetchData = curry(

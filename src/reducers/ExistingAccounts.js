@@ -9,8 +9,11 @@ const initialState = {
     allTribes: [],
     allChats: [],
     error: '',
-    skip: 0,
-    limit: 20,
+
+    userSkip: 0,
+    tribeSkip: 0,
+    chatSkip: 0,
+    limit: 10,
 }
 
 const slice = createSlice({
@@ -21,23 +24,30 @@ const slice = createSlice({
             state.loading = action.payload
         },
         getAllUsers: (state, action) => {
-            state.skip += 20
             state.allUser = action.payload
         },
         getLoadedUsers: (state, action) => {
-            state.skip += 20
+            state.userSkip += 10
+
             state.allUser = [...state.allUser, ...action.payload]
         },
 
         getAllTribes: (state, action) => {
             state.allTribes = action.payload
         },
+        getLoadedTribes: (state, action) => {
+            state.tribeSkip += 10
+            state.allTribes = [...state.allTribes, ...action.payload]
+        },
         getAllChats: (state, action) => {
             state.allChats = action.payload
         },
-        errorGettingData: (state, action) => {
-            state.loading = action.payload
+        getLoadedChats: (state, action) => {
+            state.chatSkip += 10
+
+            state.allChats = [...state.allChats, ...action.payload]
         },
+        clearExistingSearched: (state) => initialState,
     },
 })
 
@@ -47,6 +57,9 @@ export const {
     getAllUsers,
     getAllTribes,
     getAllChats,
+    getLoadedTribes,
     errorGettingData,
+    getLoadedChats,
     getLoadedUsers,
+    clearExistingSearched,
 } = slice.actions

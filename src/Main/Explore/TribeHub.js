@@ -59,10 +59,7 @@ class TribeHub extends Component {
         pageAb = pageId
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        console.log('this is myGoals', this.props.myGoals)
-        console.log('this is myGoals1', prevProps)
-    }
+    componentDidUpdate(prevProps, prevState) {}
 
     scrollToTop = () => {
         if (this.flatList)

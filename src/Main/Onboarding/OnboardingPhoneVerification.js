@@ -20,6 +20,7 @@ import { text } from '../../styles/basic'
 import OnboardingStyles, { getCardBottomOffset } from '../../styles/Onboarding'
 
 import DelayedButton from '../Common/Button/DelayedButton'
+import * as yup from 'yup'
 
 import InputBox from './Common/InputBox'
 import { Formik } from 'formik'
@@ -79,6 +80,10 @@ class OnboardingPhoneVerification extends React.Component {
         return this.props.phoneNumberSent(value, errorMessage)
     }
 
+    ReviewSchema = yup.object({
+        phoneNumber: yup.string().required(),
+    })
+
     render() {
         return (
             <>
@@ -95,6 +100,7 @@ class OnboardingPhoneVerification extends React.Component {
                             initialValues={{
                                 phoneNumber: '',
                             }}
+                            validationSchema={this.ReviewSchema}
                             onSubmit={async (value, { setSubmitting }) => {
                                 console.log(
                                     'this isi value',
@@ -116,6 +122,8 @@ class OnboardingPhoneVerification extends React.Component {
                                 handleBlur,
                                 handleSubmit,
                                 values,
+                                isValid,
+                                dirty,
                             }) => (
                                 <>
                                     <View
@@ -151,8 +159,7 @@ class OnboardingPhoneVerification extends React.Component {
                                                 {/* <Text style={textStyle.title}>use GoalMogul!</Text> */}
                                             </View>
                                             <Text style={styles.noteTextStyle}>
-                                                Want to win cash and cool prizes
-                                                for helping others?
+                                                Mobile Phone Verification
                                             </Text>
 
                                             <InputBox
@@ -258,6 +265,7 @@ class OnboardingPhoneVerification extends React.Component {
                                             }}
                                         >
                                             <DelayedButton
+                                                disabled={!(isValid && dirty)}
                                                 onPress={
                                                     // Actions.push(
                                                     //     'registration_verify_phone'
@@ -265,9 +273,22 @@ class OnboardingPhoneVerification extends React.Component {
                                                     handleSubmit
                                                 }
                                                 style={
-                                                    buttonStyle
-                                                        .GM_BLUE_BG_WHITE_BOLD_TEXT
-                                                        .containerStyle
+                                                    !(isValid && dirty)
+                                                        ? {
+                                                              height: 45,
+                                                              width: '100%',
+                                                              backgroundColor:
+                                                                  '#DBDADA',
+                                                              borderRadius: 3,
+                                                              alignItems:
+                                                                  'center',
+                                                              justifyContent:
+                                                                  'center',
+                                                              borderRadius: 5,
+                                                          }
+                                                        : buttonStyle
+                                                              .GM_BLUE_BG_WHITE_BOLD_TEXT
+                                                              .containerStyle
                                                 }
                                             >
                                                 <Text
@@ -277,7 +298,7 @@ class OnboardingPhoneVerification extends React.Component {
                                                             .textStyle
                                                     }
                                                 >
-                                                    Request Verification Code
+                                                    Submit
                                                 </Text>
                                             </DelayedButton>
                                             <DelayedButton
@@ -320,6 +341,7 @@ const styles = {
         alignSelf: 'flex-start',
         marginTop: 15,
         textAlign: 'center',
+        top: 7,
     },
 }
 

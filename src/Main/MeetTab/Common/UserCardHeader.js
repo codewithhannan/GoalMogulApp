@@ -117,35 +117,45 @@ class UserCardHeader extends React.PureComponent {
         )
     }
 
+    renderOptions = () => {
+        if (this.props.hideOptions && this.props.optionsOnPress) {
+            return null
+        } else if (this.props.optionsOnPress) {
+            return (
+                <DelayedButton
+                    style={{
+                        position: 'absolute',
+                        right: -16,
+                        top: -16,
+                        paddingBottom: 23,
+                        paddingLeft: 25,
+                        paddingTop: 14,
+                        paddingRight: 14,
+                    }}
+                    onPress={this.props.optionsOnPress}
+                >
+                    <Icon
+                        name="dots-horizontal"
+                        pack="material-community"
+                        style={{ height: 24, color: '#828282' }}
+                    />
+                </DelayedButton>
+            )
+        } else {
+            return null
+        }
+    }
+
     render() {
         const { user, optionsOnPress } = this.props
-        console.log('this is options on press', optionsOnPress)
+
         if (!user) {
             return null
         }
         return (
             <View style={styles.containerStyle}>
                 {this.renderHeader(user)}
-                {optionsOnPress ? (
-                    <DelayedButton
-                        style={{
-                            position: 'absolute',
-                            right: -16,
-                            top: -16,
-                            paddingBottom: 23,
-                            paddingLeft: 25,
-                            paddingTop: 14,
-                            paddingRight: 14,
-                        }}
-                        onPress={optionsOnPress}
-                    >
-                        <Icon
-                            name="dots-horizontal"
-                            pack="material-community"
-                            style={{ height: 24, color: '#828282' }}
-                        />
-                    </DelayedButton>
-                ) : null}
+                {this.renderOptions()}
             </View>
         )
     }

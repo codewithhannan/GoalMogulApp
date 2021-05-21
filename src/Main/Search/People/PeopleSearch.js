@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, FlatList } from 'react-native'
+import { View, FlatList, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 
 // Components
@@ -17,16 +17,24 @@ import {
 } from '../../../redux/modules/search/SearchActions'
 
 import { ActivityIndicator } from 'react-native-paper'
-import { getAllAccounts, loadMoreAccounts } from '../../../actions'
+import { loadMoreUsers, getAllAccounts } from '../../../actions'
 
 // tab key
 const key = 'people'
 const DEBUG_KEY = '[ Component PeopleSearch ]'
 
 class PeopleSearch extends Component {
-    state = {}
+    constructor(props) {
+        super(props)
+        this.onEndReachedCalledDuringMomentum = true
+        this.state = {}
+    }
 
     _keyExtractor = (item) => item._id
+
+    async componentDidMount() {
+        this.props.getAllAccounts()
+    }
 
     handleRefresh = () => {
         console.log(`${DEBUG_KEY} Refreshing tab: `, key)
@@ -39,17 +47,21 @@ class PeopleSearch extends Component {
         }
     }
 
-    componentDidMount() {
-        this.props.getAllAccounts()
-    }
-
     handleOnLoadMore = () => {
         console.log(`${DEBUG_KEY} Loading more for tab: `, key)
         this.props.onLoadMore(key)
     }
-    handleOnLoadMoreAccounts = () => {
+
+    preHandleOnLoadMore = () => {
         console.log(`${DEBUG_KEY} Loading more for tab: `, key)
-        this.props.loadMoreAccounts()
+        this.props.loadMoreUsers()
+    }
+
+    handleOnLoadMoreAccounts = ({ distanceFromEnd }) => {
+        if (!this.onEndReachedCalledDuringMomentum) {
+            this.props.loadMoreUsers()
+            this.onEndReachedCalledDuringMomentum = true
+        }
     }
 
     renderItem = ({ item }) => {
@@ -63,35 +75,52 @@ class PeopleSearch extends Component {
         )
     }
 
+    renderFlatList = (item) => {
+        if (
+            this.props.data.length === 0 &&
+            !this.props.searchContent &&
+            !this.props.loading
+        ) {
+            return (
+                <FlatList
+                    data={this.props.allUser}
+                    renderItem={this.renderItem}
+                    keyExtractor={(item, index) => 'key' + index}
+                    refreshing={this.props.peopleLoading}
+                    onEndReached={this.preHandleOnLoadMore}
+                    onEndReachedThreshold={0.5}
+                    keyboardShouldPersistTaps="always"
+                />
+            )
+        } else if (
+            this.props.data.length === 0 &&
+            this.props.searchContent &&
+            !this.props.loading
+        ) {
+            return <EmptyResult text={'No Results'} />
+        } else {
+            let SortedObjs = _.sortBy(this.props.data, 'name')
+            return (
+                <FlatList
+                    data={SortedObjs}
+                    renderItem={this.renderItem}
+                    keyExtractor={this._keyExtractor}
+                    onEndReached={this.handleOnLoadMore}
+                    onEndReachedThreshold={0.5}
+                    // onRefresh={this.handleRefresh}
+                    // refreshing={this.props.loading}
+                    keyboardShouldPersistTaps="always"
+                />
+            )
+        }
+    }
+
     render() {
-        let SortedObjs = _.sortBy(this.props.data, 'name')
+        const { height } = Dimensions.get('window')
 
         return (
-            <View style={{ flex: 1 }}>
-                {this.props.data.length === 0 &&
-                !this.props.searchContent &&
-                !this.props.loading ? (
-                    <FlatList
-                        data={this.props.allUser}
-                        renderItem={this.renderItem}
-                        keyExtractor={(item, index) => 'key' + index}
-                        refreshing={this.state.isLoading}
-                        onEndReached={() => this.props.loadMoreAccounts()}
-                        onEndReachedThreshold={0.5}
-                        keyboardShouldPersistTaps="always"
-                    />
-                ) : (
-                    <FlatList
-                        data={SortedObjs}
-                        renderItem={this.renderItem}
-                        keyExtractor={this._keyExtractor}
-                        onEndReached={this.handleOnLoadMore}
-                        onEndReachedThreshold={0.5}
-                        onRefresh={this.handleRefresh}
-                        refreshing={this.props.loading}
-                        keyboardShouldPersistTaps="always"
-                    />
-                )}
+            <View style={{ flex: 1, height: height }}>
+                {this.renderFlatList()}
             </View>
         )
     }
@@ -102,7 +131,7 @@ const mapStateToProps = (state) => {
     const { token } = state.user
 
     const { data, refreshing, loading } = people
-    const { allUser } = state.account
+    const { allUser, loading: peopleLoading } = state.account
 
     return {
         people,
@@ -111,12 +140,14 @@ const mapStateToProps = (state) => {
         loading,
         searchContent,
         allUser,
+        peopleLoading,
     }
 }
 
 export default connect(mapStateToProps, {
     refreshSearchResult,
-    getAllAccounts,
-    loadMoreAccounts,
+
+    loadMoreUsers,
     onLoadMore,
+    getAllAccounts,
 })(PeopleSearch)

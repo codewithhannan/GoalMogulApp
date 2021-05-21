@@ -2,7 +2,7 @@
 
 // This is a tab for General search
 import React, { Component } from 'react'
-import { View, FlatList } from 'react-native'
+import { View, FlatList, Dimensions, Text } from 'react-native'
 import { connect } from 'react-redux'
 
 // Components
@@ -17,42 +17,25 @@ import {
     loadPreloadData,
 } from '../../../redux/modules/search/SearchActions'
 
+import { loadMoreTribes, getAllAccounts } from '../../../actions'
+
 // tab key
 const TYPE = 'Tribe' // Used for preload function
 const key = 'tribes'
 const DEBUG_KEY = '[ Component TribeSearch ]'
 
 class TribeSearch extends Component {
-    state = {
-        listOfTribes: [],
-        skip: 0,
-        limit: 20,
+    constructor(props) {
+        super(props)
+        this.onEndReachedCalledDuringMomentum = true
+        this.state = {}
     }
 
     componentDidMount() {
         if (this.props.shouldPreload) {
             this.props.refreshPreloadData(TYPE)
         }
-    }
-
-    fetchTribes = async () => {
-        const { limit, skip, listOfUsers } = this.state
-
-        try {
-            const res = await API.get(
-                `secure/user/account/pre-populated-search?skip=${skip}&limit=${limit}`,
-                this.props.token
-            )
-
-            console.log('RESPONSEEEE ', res)
-            this.setState({
-                listOfTribes: listOfTribes.concat(res.tribes),
-                skip: skip + 20,
-                limit: limit,
-            })
-        } catch (error) {
-            console.log('ERORRRRR', error.message)
-        }
+        this.props.getAllAccounts()
     }
 
     _keyExtractor = (item) => item._id
@@ -99,6 +82,11 @@ class TribeSearch extends Component {
         }
     }
 
+    preHandleOnLoadMore = () => {
+        console.log(`${DEBUG_KEY} Loading more for tab: `, key)
+        this.props.loadMoreTribes()
+    }
+
     renderItem = ({ item }) => {
         return (
             <TribeSearchCard
@@ -110,32 +98,76 @@ class TribeSearch extends Component {
         )
     }
 
-    render() {
+    suggestedHeader = () => {
         return (
-            <View style={{ flex: 1 }}>
-                {this.props.data.length === 0 &&
-                !this.props.searchContent &&
-                !this.props.loading ? (
-                    <FlatList
-                        data={this.state.listOfTribes}
-                        renderItem={this.renderItem}
-                        keyExtractor={(item, index) => 'key' + index}
-                        onEndReached={this.fetchTribes}
-                        onEndReachedThreshold={0.5}
-                        keyboardShouldPersistTaps="always"
-                    />
-                ) : (
-                    <FlatList
-                        data={this.props.data}
-                        renderItem={this.renderItem}
-                        keyExtractor={this._keyExtractor}
-                        onEndReached={this.handleOnLoadMore}
-                        onEndReachedThreshold={0.5}
-                        onRefresh={this.handleRefresh}
-                        refreshing={this.props.loading}
-                        keyboardShouldPersistTaps="always"
-                    />
-                )}
+            <View>
+                <View
+                    style={{
+                        width: '100%',
+                        height: 1,
+                        backgroundColor: '#F2F2F2',
+                        marginTop: 10,
+                    }}
+                />
+                <Text
+                    style={{
+                        fontSize: 19,
+                        padding: 17,
+                        fontWeight: '600',
+                        fontFamily: 'SFProDisplay-Semibold',
+                    }}
+                >
+                    Suggested Tribes
+                </Text>
+            </View>
+        )
+    }
+
+    renderFlatList = (item) => {
+        if (
+            this.props.data.length === 0 &&
+            !this.props.searchContent &&
+            !this.props.loading
+        ) {
+            return (
+                <FlatList
+                    data={this.props.allTribes}
+                    renderItem={this.renderItem}
+                    keyExtractor={(item, index) => 'key' + index}
+                    ListHeaderComponent={this.suggestedHeader}
+                    onEndReached={this.preHandleOnLoadMore}
+                    refreshing={this.props.tribesLoading}
+                    onEndReachedThreshold={0.5}
+                    keyboardShouldPersistTaps="always"
+                />
+            )
+        } else if (
+            this.props.data.length === 0 &&
+            this.props.searchContent &&
+            !this.props.loading
+        ) {
+            return <EmptyResult text={'No Results'} />
+        } else {
+            return (
+                <FlatList
+                    data={this.props.data}
+                    renderItem={this.renderItem}
+                    keyExtractor={this._keyExtractor}
+                    onEndReached={this.handleOnLoadMore}
+                    onEndReachedThreshold={0.5}
+                    // onRefresh={this.handleRefresh}
+                    // refreshing={this.props.loading}
+                    keyboardShouldPersistTaps="always"
+                />
+            )
+        }
+    }
+
+    render() {
+        const { height } = Dimensions.get('window')
+        return (
+            <View style={{ flex: 1, height: height }}>
+                {this.renderFlatList()}
             </View>
         )
     }
@@ -144,6 +176,8 @@ class TribeSearch extends Component {
 const mapStateToProps = (state, props) => {
     const { tribes, searchContent } = state.search
     let refreshing, loading, data
+
+    const { allTribes, loading: tribesLoading } = state.account
 
     const { shouldPreload } = props
     if (shouldPreload && (!searchContent || searchContent.trim() === '')) {
@@ -163,6 +197,8 @@ const mapStateToProps = (state, props) => {
         refreshing,
         loading,
         searchContent,
+        allTribes,
+        tribesLoading,
     }
 }
 
@@ -171,4 +207,6 @@ export default connect(mapStateToProps, {
     onLoadMore,
     refreshPreloadData,
     loadPreloadData,
+    loadMoreTribes,
+    getAllAccounts,
 })(TribeSearch)

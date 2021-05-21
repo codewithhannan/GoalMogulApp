@@ -17,7 +17,7 @@ import { Entypo } from '@expo/vector-icons'
 import Constants from 'expo-constants'
 import { color, default_style } from '../styles/basic'
 import OnboardingStyles from '../styles/Onboarding'
-import { createFirstGoalNudge } from '../actions/NudgeActions'
+
 import { IMAGE_BASE_URL } from '../Utils/Constants'
 import { connect } from 'react-redux'
 
@@ -203,6 +203,4 @@ const mapStateToProps = (state, props) => {
     }
 }
 
-export default connect(mapStateToProps, {
-    createFirstGoalNudge,
-})(ProfilePictureModal)
+export default connect(mapStateToProps, {})(ProfilePictureModal)

@@ -531,7 +531,7 @@ class ProfileV2 extends Component {
             case 'goals': {
                 return (
                     <>
-                        {/* <StepsTooltip /> */}
+                        <StepsTooltip />
                         <ProfileGoalCard
                             item={item}
                             pageId={pageId}
@@ -729,8 +729,6 @@ class ProfileV2 extends Component {
             user,
         } = this.props
 
-        // console.log('\n This is the data for sections', [{ data }])
-
         let sectionsData
         if (data.length > 0) {
             sectionsData = [{ data }]
@@ -830,27 +828,6 @@ class ProfileV2 extends Component {
                                     .showNudgeAddGoals,
                             })
                         }
-                    />
-                    <CreatePostModal
-                        attachGoalRequired
-                        onRef={(r) => (this.createPostModal = r)}
-                        openProfile={false}
-                        pageId={pageId}
-                    />
-                    <EarnBadgeModal
-                        isVisible={this.state.showBadgeEarnModal}
-                        closeModal={() => {
-                            this.setState({
-                                showBadgeEarnModal: false,
-                            })
-                        }}
-                        user={this.props.user}
-                    />
-                    <SearchBarHeader
-                        backButton={!this.props.isMainTab}
-                        rightIcon={this.props.isMainTab ? 'menu' : null}
-                        onBackPress={this.handleOnBackPress}
-                        userId={userId}
                     />
 
                     <CreatePostModal
