@@ -43,7 +43,7 @@ const localDb = new MongoDatastore({
     autoload: true,
 })
 
-console.log('localDv', localDb)
+// console.log('localDB', localDb)
 // index the fields we will most commonly query by
 localDb.ensureIndex({ fieldName: 'chatRoomRef' })
 localDb.ensureIndex({ fieldName: 'recipient' })
@@ -416,6 +416,7 @@ class MessageStorageService {
                             markerMessage,
                             skip,
                             (err, remoteDocs) => {
+                                // console.log('This is remote doc:', remoteDocs)
                                 if (err) return callback(null, localDocs)
                                 if (!remoteDocs || !remoteDocs.length) {
                                     if (limit == 1 && skip == 0) {
@@ -428,11 +429,16 @@ class MessageStorageService {
                                 // transform and store the remote docs locally
                                 const transformedDocs = remoteDocs.map(
                                     (messageDoc) => {
-                                        this._transformMessageForLocalStorage(
+                                        return this._transformMessageForLocalStorage(
                                             messageDoc
                                         )
                                     }
                                 )
+
+                                // console.log(
+                                //     'These are transformed docs:',
+                                //     transformedDocs
+                                // )
 
                                 let insertedDocs = []
                                 let processedCount = 0
@@ -871,6 +877,7 @@ class MessageStorageService {
      * @return {Message}
      */
     _transformMessageForLocalStorage = (messageDoc) => {
+        // console.log('Msg to transform:', messageDoc)
         let transformedDoc = { ...messageDoc }
         transformedDoc.created = new Date(transformedDoc.created)
         if (
@@ -879,7 +886,7 @@ class MessageStorageService {
         ) {
             transformedDoc.isRead = true
         }
-
+        // console.log('Msg after transformation', transformedDoc)
         return transformedDoc
     }
 }

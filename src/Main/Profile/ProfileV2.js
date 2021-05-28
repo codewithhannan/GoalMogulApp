@@ -543,7 +543,14 @@ class ProfileV2 extends Component {
     renderItem = ({ item, index: itemIndex }) => {
         // let result = false
 
-        const { pageId, userId, navigationState, goals, data } = this.props
+        const {
+            pageId,
+            userId,
+            navigationState,
+            goals,
+            data,
+            friendship,
+        } = this.props
 
         const { routes, index } = navigationState
 
@@ -569,9 +576,9 @@ class ProfileV2 extends Component {
             case 'goals': {
                 return (
                     <>
-                        {itemIndex === 0 && !this.props.isSelf && (
-                            <StepsTooltip />
-                        )}
+                        {itemIndex === 0 &&
+                            !this.props.isSelf &&
+                            friendship.status && <StepsTooltip />}
                         <ProfileGoalCard
                             item={item}
                             pageId={pageId}

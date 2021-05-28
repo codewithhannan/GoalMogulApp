@@ -485,6 +485,15 @@ export const updateFriendship = (userId, friendshipId, type, tab, callback) => (
                     url: baseUrl,
                 }
             }
+            case 'acceptFriend':
+                return {
+                    type: 'PUT',
+                    data: {
+                        friendshipId,
+                        acceptFriendshipRequest: true,
+                    },
+                    url: baseUrl,
+                }
             case 'addAsCloseFriend': {
                 // console.log('\nupdate friendship is called for addAsCloseFriend')
                 return {

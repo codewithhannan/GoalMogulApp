@@ -13,6 +13,7 @@ import ActionButton from '../../Goal/Common/ActionButton'
 
 // assets
 import CommentIcon from '../../../asset/utils/comment.png'
+import ClarifyIcon from '../../../asset/icons/Clarify.png'
 import CommentSolidIcon from '../../../asset/utils/comment_solid.png'
 import ShareIcon from '../../../asset/utils/forward.png'
 import ShareSolidIcon from '../../../asset/utils/forward_solid.png'
@@ -83,6 +84,8 @@ class ActionBar extends React.Component {
             // Comment button
             onCommentButtonPress,
             onCommentSummaryPress,
+            //ClarifyButton
+            onClarifyButtonPress,
         } = this.props
 
         const { likeCount, shareCount, commentCount } = actionSummaries || {}
@@ -150,14 +153,29 @@ class ActionBar extends React.Component {
                             }
                             hidden={isShareContent}
                         />
-                        <ActionButton
-                            iconSource={CommentIcon}
-                            count={0}
-                            unitText="Reply"
-                            textStyle={{ color: color.GM_MID_GREY }}
-                            iconStyle={{ tintColor: color.GM_MID_GREY }}
-                            onPress={onCommentButtonPress}
-                        />
+                        {this.props.showClarifyButton ? (
+                            <ActionButton
+                                iconSource={ClarifyIcon}
+                                count={0}
+                                unitText="Clarify"
+                                textStyle={{ color: color.GM_MID_GREY }}
+                                iconStyle={{
+                                    tintColor: color.GM_MID_GREY,
+                                    height: 20,
+                                    width: 20,
+                                }}
+                                onPress={onClarifyButtonPress}
+                            />
+                        ) : (
+                            <ActionButton
+                                iconSource={CommentIcon}
+                                count={0}
+                                unitText="Reply"
+                                textStyle={{ color: color.GM_MID_GREY }}
+                                iconStyle={{ tintColor: color.GM_MID_GREY }}
+                                onPress={onCommentButtonPress}
+                            />
+                        )}
                     </ActionButtonGroup>
                 </View>
             </View>

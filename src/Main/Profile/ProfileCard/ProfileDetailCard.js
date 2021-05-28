@@ -896,6 +896,7 @@ class ProfileDetailCard extends Component {
                             {this.renderMoreProfileActionButton()}
                             {this.renderBottomSheet()}
                             {this.renderFriendshipStatusBottomSheet()}
+                            {this.renderFriendshipTypeBottomSheet()}
                         </View>
                     </View>
                     <View style={styles.containerStyle}>

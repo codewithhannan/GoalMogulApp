@@ -15,7 +15,7 @@ import { Entypo } from '@expo/vector-icons'
 import Constants from 'expo-constants'
 import { color, default_style } from '../styles/basic'
 import OnboardingStyles from '../styles/Onboarding'
-import { createFirstGoalNudge } from '../actions/NudgeActions'
+import { addNudge, NUDGE_TYPES } from '../actions/NudgeActions'
 import { connect } from 'react-redux'
 
 import GoalVisible from '../asset/image/Goalmogul_illustration.png'
@@ -33,7 +33,11 @@ class ModalTester extends Component {
             <>
                 <TouchableWithoutFeedback
                     onPress={() => {
-                        this.props.createFirstGoalNudge(visitedUser, token)
+                        this.props.addNudge(
+                            visitedUser,
+                            token,
+                            NUDGE_TYPES.createFirstGoal
+                        )
                         this.props.onClose()
                     }}
                 >
@@ -239,5 +243,5 @@ const mapStateToProps = (state, props) => {
 }
 
 export default connect(mapStateToProps, {
-    createFirstGoalNudge,
+    addNudge,
 })(ModalTester)

@@ -580,7 +580,6 @@ class Bubble extends React.Component {
                 {this.renderTicks()}
             </View>
         )
-        console.log('this is props of chat', this.props)
         return (
             <>
                 <View style={[styles.container, this.props.containerStyle]}>

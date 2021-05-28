@@ -24,12 +24,14 @@ class SuggestionPopup extends Component {
                 <View
                     style={{ flexDirection: 'row', justifyContent: 'center' }}
                 >
-                    <TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback
+                        onPress={this.props.showSuggestion}
+                    >
                         <View style={styles.btnContainer1}>
                             <Text style={styles.btnText1}>YES</Text>
                         </View>
                     </TouchableWithoutFeedback>
-                    <TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback onPress={this.props.closeModal}>
                         <View style={styles.btnContainer2}>
                             <Text style={styles.btnText2}>NO</Text>
                         </View>

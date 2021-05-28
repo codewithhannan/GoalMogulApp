@@ -117,6 +117,10 @@ export const initialLoad = (currentChatRoomId, pageSize) => (
                         } catch (e) {
                             /* best attempt */
                         }
+                        // console.log(
+                        //     'These are giftedchat msgs:',
+                        //     giftedChatMessages
+                        // )
                         dispatch({
                             type: CHAT_ROOM_LOAD_INITIAL,
                             payload: { messages: giftedChatMessages, chatRoom },

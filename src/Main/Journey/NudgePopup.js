@@ -20,6 +20,7 @@ import * as text from '../../styles/basic/text'
 import SvgImage1 from '../../asset/svgs/NudgePopup'
 import cancel from '../../asset/utils/cancel_no_background.png'
 import DelayedButton from '../Common/Button/DelayedButton'
+import { addNudge, NUDGE_TYPES } from '../../actions/NudgeActions'
 
 class NudgePopup extends Component {
     constructor(props) {
@@ -32,12 +33,21 @@ class NudgePopup extends Component {
                 <View
                     style={{ flexDirection: 'row', justifyContent: 'center' }}
                 >
-                    <TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback
+                        onPress={() => {
+                            this.props.addNudge(
+                                this.props.visitedUser,
+                                this.props.token,
+                                NUDGE_TYPES.clarifyGoals
+                            )
+                            this.props.closeModal()
+                        }}
+                    >
                         <View style={styles.btnContainer1}>
                             <Text style={styles.btnText1}>YES</Text>
                         </View>
                     </TouchableWithoutFeedback>
-                    <TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback onPress={this.props.closeModal}>
                         <View style={styles.btnContainer2}>
                             <Text style={styles.btnText2}>NO</Text>
                         </View>
@@ -54,7 +64,7 @@ class NudgePopup extends Component {
             >
                 <DelayedButton
                     activeOpacity={0.6}
-                    onPress={() => this.props.closeModal()}
+                    onPress={this.props.closeModal}
                     style={styles.modalCancelIconContainerStyle}
                 >
                     <Image
@@ -92,10 +102,14 @@ class NudgePopup extends Component {
 const mapStateToProps = (state, ownProps) => {
     const user = state.user
     const { isVisible, closeModal } = ownProps
+    const visitedUser = state.profile.userId.userId
+    const { token } = state.auth.user
     return {
         user,
         isVisible,
         closeModal,
+        visitedUser,
+        token,
     }
 }
 
@@ -174,4 +188,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(mapStateToProps)(NudgePopup)
+export default connect(mapStateToProps, { addNudge })(NudgePopup)

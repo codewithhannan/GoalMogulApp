@@ -901,69 +901,71 @@ export class GoalDetailCardV3 extends React.Component {
         const { focusType, focusRef } = navigationState
 
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                <LikeListModal
-                    isVisible={this.state.showCommentLikeList}
-                    closeModal={this.closeCommentLikeList}
-                    parentId={this.state.likeListParentId}
-                    parentType={this.state.likeListParentType}
-                    clearDataOnHide
-                />
-                <View style={styles.containerStyle}>
-                    <LoadingModal
-                        visible={this.props.updating}
-                        customIndicator={
-                            <DotIndicator size={12} color="white" />
-                        }
+            <>
+                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                    <LikeListModal
+                        isVisible={this.state.showCommentLikeList}
+                        closeModal={this.closeCommentLikeList}
+                        parentId={this.state.likeListParentId}
+                        parentType={this.state.likeListParentType}
+                        clearDataOnHide
                     />
-                    <SearchBarHeader
-                        backButton
-                        title="Goal"
-                        onBackPress={() =>
-                            this.props.closeGoalDetail(goalId, pageId)
-                        }
-                    />
+                    <View style={styles.containerStyle}>
+                        <LoadingModal
+                            visible={this.props.updating}
+                            customIndicator={
+                                <DotIndicator size={12} color="white" />
+                            }
+                        />
+                        <SearchBarHeader
+                            backButton
+                            title="Goal"
+                            onBackPress={() =>
+                                this.props.closeGoalDetail(goalId, pageId)
+                            }
+                        />
 
-                    <KeyboardAvoidingView
-                        style={[
-                            styles.containerStyle,
-                            {
-                                paddingBottom: displayGoals
-                                    ? 0
-                                    : this.commentBoxHeight,
-                            },
-                        ]}
-                        behavior={'height'}
-                    >
-                        {this.renderFlatList()}
-                    </KeyboardAvoidingView>
+                        <KeyboardAvoidingView
+                            style={[
+                                styles.containerStyle,
+                                {
+                                    paddingBottom: displayGoals
+                                        ? 0
+                                        : this.commentBoxHeight,
+                                },
+                            ]}
+                            behavior={'height'}
+                        >
+                            {this.renderFlatList()}
+                        </KeyboardAvoidingView>
 
-                    {this.renderCommentBox(focusType, pageId)}
+                        {this.renderCommentBox(focusType, pageId)}
 
-                    <SuggestionModal
-                        visible={this.props.showSuggestionModal}
-                        onCancel={() => {
-                            // Programmatically focus textinput to avoid floating input bug
-                            this.handleReplyTo()
-                            this.props.cancelSuggestion(pageId)
-                        }}
-                        onAttach={() => {
-                            // Programmatically focus textinput to avoid floating input bug
-                            this.handleReplyTo()
-                            this.props.attachSuggestion(
-                                goalDetail,
-                                focusType,
-                                focusRef,
-                                pageId
-                            )
-                        }}
-                        pageId={this.props.pageId}
-                        goalId={this.props.goalId}
-                        item={goalDetail}
-                    />
-                    {/** <Report showing={this.props.showingModalInDetail} /> */}
-                </View>
-            </MenuProvider>
+                        <SuggestionModal
+                            visible={this.props.showSuggestionModal}
+                            onCancel={() => {
+                                // Programmatically focus textinput to avoid floating input bug
+                                this.handleReplyTo()
+                                this.props.cancelSuggestion(pageId)
+                            }}
+                            onAttach={() => {
+                                // Programmatically focus textinput to avoid floating input bug
+                                this.handleReplyTo()
+                                this.props.attachSuggestion(
+                                    goalDetail,
+                                    focusType,
+                                    focusRef,
+                                    pageId
+                                )
+                            }}
+                            pageId={this.props.pageId}
+                            goalId={this.props.goalId}
+                            item={goalDetail}
+                        />
+                        {/** <Report showing={this.props.showingModalInDetail} /> */}
+                    </View>
+                </MenuProvider>
+            </>
         )
     }
 }

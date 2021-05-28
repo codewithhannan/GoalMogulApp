@@ -73,7 +73,6 @@ const refreshRequest = (key, isPaginated) => (dispatch, getState) => {
         : `${BASE_ROUTE}${route}`
 
     const onSuccess = (res) => {
-        console.log('succeessss', res)
         const { data } = res
         console.log(
             `${DEBUG_KEY}: refresh ${key} success with res: `,

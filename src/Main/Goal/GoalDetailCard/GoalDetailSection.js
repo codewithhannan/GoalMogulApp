@@ -67,7 +67,15 @@ import GoalCardBody from '../Common/GoalCardBody'
 import Timestamp from '../Common/Timestamp'
 import ActionBar from '../../Common/ContentCards/ActionBar'
 import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
+import SuggestionPopup from '../../Journey/SuggestionPopup'
+import NudgePopup from '../../Journey/NudgePopup'
+import { createSuggestion } from '../../../redux/modules/feed/comment/CommentActions'
 import { getButtonBottomSheetHeight } from '../../../styles'
+
+import {
+    makeGetGoalPageDetailByPageId,
+    makeGetGoalStepsAndNeedsV2,
+} from '../../../redux/modules/goal/selector'
 
 const { width } = Dimensions.get('window')
 const WINDOW_WIDTH = width
@@ -90,6 +98,8 @@ class GoalDetailSection extends React.PureComponent {
             showlikeListModal: false,
             floatingHeartCount: 0,
             likeButtonLeftOffset: 0,
+            showSuggestionPopup: false,
+            showNudgePopup: false,
         }
         this.handleGoalReminder = this.handleGoalReminder.bind(this)
         this.onTextLayout = this.onTextLayout.bind(this)
@@ -542,12 +552,15 @@ class GoalDetailSection extends React.PureComponent {
     }
 
     renderActionButtons(item, isOwnGoal) {
-        const { maybeLikeRef, _id, privacy } = item
+        // console.log('This is item from renderActionButtons:', item)
+        const { maybeLikeRef, _id, privacy, steps, needs } = item
         const likeCount = item.likeCount ? item.likeCount : 0
         const commentCount = item.commentCount ? item.commentCount : 0
         const shareCount = item.shareCount ? item.shareCount : 0
 
         const selfLiked = maybeLikeRef && maybeLikeRef.length > 0
+
+        const noStepsAndNeeds = needs.length === 0 && steps.length === 0
 
         const shareType = 'ShareGoal'
         const options = [
@@ -581,6 +594,7 @@ class GoalDetailSection extends React.PureComponent {
                 // Use this flag to hide share button
                 // if not own goal, then hide the button
                 isShareContent={!isOwnGoal}
+                showClarifyButton={noStepsAndNeeds && !isOwnGoal}
                 onLikeSummaryPress={() =>
                     this.setState({ showlikeListModal: true })
                 }
@@ -606,79 +620,114 @@ class GoalDetailSection extends React.PureComponent {
                 onCommentButtonPress={() => {
                     this.props.onSuggestion()
                 }}
+                onClarifyButtonPress={() => {
+                    this.setState({ showSuggestionPopup: true })
+                }}
             />
         )
     }
 
+    closeSuggestionPopup = () => {
+        this.setState({ showSuggestionPopup: false }, () => {
+            setTimeout(() => {
+                this.setState({ showNudgePopup: true })
+            }, 500)
+        })
+    }
+
+    showSuggestionModal = () => {
+        const { goalId, pageId } = this.props
+        this.setState({ showSuggestionPopup: false }, () => {
+            setTimeout(() => {
+                this.props.createSuggestion(goalId, pageId)
+            }, 500)
+        })
+    }
+
     render() {
-        const { item, isOwnGoal } = this.props
+        const { item, isOwnGoal, goalDetail } = this.props
         if (!item || _.isEmpty(item)) return null
 
         const goalReminderOptions = this.getOnGoalReminderOptions()
 
         return (
-            <View onLayout={this.handleOnLayout}>
-                <View style={{ paddingHorizontal: 16 }}>
-                    <LikeListModal
-                        testID="like-list-modal"
-                        isVisible={this.state.showlikeListModal}
-                        closeModal={() => {
-                            this.setState({
-                                showlikeListModal: false,
-                            })
-                        }}
-                        parentId={item._id}
-                        parentType="Goal"
-                    />
-                    <ShareListModal
-                        testID="share-list-modal"
-                        isVisible={this.state.showShareListModal}
-                        closeModal={() => {
-                            this.setState({
-                                showShareListModal: false,
-                            })
-                        }}
-                        entityId={item._id}
-                        entityType="Goal"
-                    />
-                    <BottomButtonsSheet
-                        ref={(r) => (this.bottomSheetRef = r)}
-                        buttons={goalReminderOptions}
-                        height={getButtonBottomSheetHeight(
-                            goalReminderOptions.length
-                        )}
-                        closeSheetOnOptionPress
-                    />
-                    <View style={styles.containerStyle}>
-                        {item.isCompleted ? (
-                            <Image
-                                source={ConfettiFadedBackgroundTopHalf}
-                                style={{
-                                    height: WINDOW_WIDTH * 0.6,
-                                    width: WINDOW_WIDTH,
-                                    position: 'absolute',
-                                    resizeMode: 'cover',
-                                    opacity: 0.55,
-                                }}
-                            />
-                        ) : null}
-                        <View style={{ marginTop: 16 }}>
-                            {this.renderUserDetail(item)}
-                            {this.renderCardContent(item)}
+            <>
+                <SuggestionPopup
+                    isVisible={this.state.showSuggestionPopup}
+                    name={goalDetail.owner.name}
+                    closeModal={this.closeSuggestionPopup}
+                    showSuggestion={this.showSuggestionModal}
+                />
+                <NudgePopup
+                    isVisible={this.state.showNudgePopup}
+                    name={goalDetail.owner.name}
+                    closeModal={() => {
+                        this.setState({ showNudgePopup: false })
+                    }}
+                />
+                <View onLayout={this.handleOnLayout}>
+                    <View style={{ paddingHorizontal: 16 }}>
+                        <LikeListModal
+                            testID="like-list-modal"
+                            isVisible={this.state.showlikeListModal}
+                            closeModal={() => {
+                                this.setState({
+                                    showlikeListModal: false,
+                                })
+                            }}
+                            parentId={item._id}
+                            parentType="Goal"
+                        />
+                        <ShareListModal
+                            testID="share-list-modal"
+                            isVisible={this.state.showShareListModal}
+                            closeModal={() => {
+                                this.setState({
+                                    showShareListModal: false,
+                                })
+                            }}
+                            entityId={item._id}
+                            entityType="Goal"
+                        />
+                        <BottomButtonsSheet
+                            ref={(r) => (this.bottomSheetRef = r)}
+                            buttons={goalReminderOptions}
+                            height={getButtonBottomSheetHeight(
+                                goalReminderOptions.length
+                            )}
+                            closeSheetOnOptionPress
+                        />
+                        <View style={styles.containerStyle}>
+                            {item.isCompleted ? (
+                                <Image
+                                    source={ConfettiFadedBackgroundTopHalf}
+                                    style={{
+                                        height: WINDOW_WIDTH * 0.6,
+                                        width: WINDOW_WIDTH,
+                                        position: 'absolute',
+                                        resizeMode: 'cover',
+                                        opacity: 0.55,
+                                    }}
+                                />
+                            ) : null}
+                            <View style={{ marginTop: 16 }}>
+                                {this.renderUserDetail(item)}
+                                {this.renderCardContent(item)}
+                            </View>
                         </View>
                     </View>
+                    <FloatingHearts
+                        count={this.state.floatingHeartCount}
+                        color={'#EB5757'}
+                        style={{
+                            zIndex: 5,
+                        }}
+                        leftOffset={this.state.likeButtonLeftOffset}
+                    />
+                    {this.renderActionButtons(item, isOwnGoal)}
+                    {this.renderGoalReminderDatePicker()}
                 </View>
-                <FloatingHearts
-                    count={this.state.floatingHeartCount}
-                    color={'#EB5757'}
-                    style={{
-                        zIndex: 5,
-                    }}
-                    leftOffset={this.state.likeButtonLeftOffset}
-                />
-                {this.renderActionButtons(item, isOwnGoal)}
-                {this.renderGoalReminderDatePicker()}
-            </View>
+            </>
         )
     }
 }
@@ -712,6 +761,10 @@ const styles = {
 }
 
 const mapStateToProps = (state, props) => {
+    const getGoalPageDetailByPageId = makeGetGoalPageDetailByPageId()
+    const { pageId, goalId } = props
+    const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId)
+    const { goal, goalPage } = goalDetail
     const { userId } = state.user
     const { tutorialText } = state.tutorials.goal_detail.goal_detail_page
     const ownerId = _.get(props, 'item.owner._id')
@@ -719,13 +772,17 @@ const mapStateToProps = (state, props) => {
         userId && ownerId && userId.toString() === ownerId.toString()
 
     return {
+        pageId,
+        goalId,
         userId,
         tutorialText,
         isOwnGoal,
+        goalDetail: goal,
     }
 }
 
 export default connect(mapStateToProps, {
+    createSuggestion,
     createReport,
     likeGoal,
     unLikeGoal,

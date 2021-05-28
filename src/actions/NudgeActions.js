@@ -11,65 +11,94 @@ import {
 } from '../reducers/NudgesReducer'
 
 const DEBUG_KEY = '[ NudgeActions ]'
+export const NUDGE_TYPES = {
+    makeGoalsPublic: 'makeGoalsPublic',
+    createFirstGoal: 'createFirstGoal',
+    clarifyGoals: 'clarifyGoals',
+}
 
-export const makeGoalsPublicNudge = (visitedId, token) => {
+export const addNudge = (visitedId, token, nudgeType) => {
     return async (dispatch, getState) => {
+        let obj = {
+            id: visitedId,
+            nudgeTypes: {
+                makeGoalsPublic: false,
+                createFirstGoal: false,
+                clarifyGoals: false,
+            },
+        }
+        obj.nudgeTypes[nudgeType] = true
         try {
-            const res = await API.post(
-                'secure/nudge/send-nudge',
-
-                {
-                    id: visitedId,
-                    nudgeTypes: {
-                        makeGoalsPublic: true,
-                        createFirstGoal: false,
-                    },
-                },
-                token
-            )
+            const res = await API.post('secure/nudge/send-nudge', obj, token)
             const response = res.result
             console.log(
-                `${DEBUG_KEY} This is the response of make goals public nudge`,
+                `${DEBUG_KEY} This is the response of addNudge`,
                 response
             )
         } catch (err) {
-            console.log(
-                `${DEBUG_KEY} This is the error of make goals public nudge`,
-                err
-            )
+            console.log(`${DEBUG_KEY} This is the error of addNudge`, err)
         }
     }
 }
 
-export const createFirstGoalNudge = (visitedId, token) => {
-    return async (dispatch, getState) => {
-        try {
-            const res = await API.post(
-                'secure/nudge/send-nudge',
+// export const makeGoalsPublicNudge = (visitedId, token) => {
+//     return async (dispatch, getState) => {
+//         try {
+//             const res = await API.post(
+//                 'secure/nudge/send-nudge',
 
-                {
-                    id: visitedId,
-                    nudgeTypes: {
-                        makeGoalsPublic: false,
-                        createFirstGoal: true,
-                    },
-                },
-                token
-            )
+//                 {
+//                     id: visitedId,
+//                     nudgeTypes: {
+//                         makeGoalsPublic: true,
+//                         createFirstGoal: false,
+//                     },
+//                 },
+//                 token
+//             )
+//             const response = res.result
+//             console.log(
+//                 `${DEBUG_KEY} This is the response of make goals public nudge`,
+//                 response
+//             )
+//         } catch (err) {
+//             console.log(
+//                 `${DEBUG_KEY} This is the error of make goals public nudge`,
+//                 err
+//             )
+//         }
+//     }
+// }
 
-            const response = res.result
-            console.log(
-                `${DEBUG_KEY} This is the response of create first goal nudge`,
-                response
-            )
-        } catch (err) {
-            console.log(
-                `${DEBUG_KEY} This is the error of create goals nudge`,
-                err
-            )
-        }
-    }
-}
+// export const createFirstGoalNudge = (visitedId, token) => {
+//     return async (dispatch, getState) => {
+//         try {
+//             const res = await API.post(
+//                 'secure/nudge/send-nudge',
+
+//                 {
+//                     id: visitedId,
+//                     nudgeTypes: {
+//                         makeGoalsPublic: false,
+//                         createFirstGoal: true,
+//                     },
+//                 },
+//                 token
+//             )
+
+//             const response = res.result
+//             console.log(
+//                 `${DEBUG_KEY} This is the response of create first goal nudge`,
+//                 response
+//             )
+//         } catch (err) {
+//             console.log(
+//                 `${DEBUG_KEY} This is the error of create goals nudge`,
+//                 err
+//             )
+//         }
+//     }
+// }
 
 export const getAllNudges = (token) => {
     return async (dispatch, getState) => {

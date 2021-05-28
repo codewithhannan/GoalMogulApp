@@ -17,7 +17,7 @@ import { Entypo } from '@expo/vector-icons'
 
 import { color, default_style } from '../styles/basic'
 
-import { createFirstGoalNudge } from '../actions/NudgeActions'
+import { addNudge, NUDGE_TYPES } from '../actions/NudgeActions'
 
 import { connect } from 'react-redux'
 
@@ -143,7 +143,13 @@ class NoGoalPrompt extends Component {
                             />
                             <DelayedButton
                                 activeOpacity={0.6}
-                                onPress={() => this.onButtonClicked(item, type)}
+                                onPress={() =>
+                                    addNudge(
+                                        visitedUser,
+                                        token,
+                                        NUDGE_TYPES.createFirstGoal
+                                    )
+                                }
                                 style={{
                                     height: 35,
                                     width: 171,
@@ -195,5 +201,5 @@ const mapStateToProps = (state, props) => {
 }
 
 export default connect(mapStateToProps, {
-    createFirstGoalNudge,
+    addNudge,
 })(NoGoalPrompt)

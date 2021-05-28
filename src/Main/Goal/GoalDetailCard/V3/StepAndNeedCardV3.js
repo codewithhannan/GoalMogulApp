@@ -25,41 +25,6 @@ class StepAndNeedCardV3 extends Component {
         super(props)
     }
 
-    renderSuggestionIcon() {
-        const { newComment, pageId, goalId } = this.props
-        const { mediaRef, commentType } = newComment
-        const disableButton = mediaRef !== undefined && mediaRef !== ''
-        if (commentType === 'Reply') return null
-
-        return (
-            <DelayedButton
-                activeOpacity={0.6}
-                onPress={() => {
-                    Keyboard.dismiss()
-                    this.props.createSuggestion(goalId, pageId)
-                }}
-                disabled={disableButton}
-                style={{
-                    paddingTop: 12,
-                    paddingBottom: 4,
-                }}
-            >
-                <Icon
-                    name="lightbulb-on-outline"
-                    pack="material-community"
-                    style={[
-                        styles.iconStyle,
-                        {
-                            position: 'relative',
-                            bottom: 2,
-                            tintColor: '#F2C94C',
-                        },
-                    ]}
-                />
-            </DelayedButton>
-        )
-    }
-
     renderSectionTitle(item) {
         if (item.sectionTitle === 'needs') {
             return (

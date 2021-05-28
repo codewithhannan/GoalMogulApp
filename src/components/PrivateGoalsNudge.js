@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import { color, default_style } from '../styles/basic'
 import MissingProfile from '../asset/image/Goals_Nudge.png'
-import { makeGoalsPublicNudge } from '../actions/NudgeActions'
+import { addNudge, NUDGE_TYPES } from '../actions/NudgeActions'
 import { connect } from 'react-redux'
 import * as text from '../styles/basic/text'
 
@@ -28,7 +28,11 @@ class PrivateGoalsNudge extends Component {
             <>
                 <TouchableWithoutFeedback
                     onPress={() => {
-                        this.props.makeGoalsPublicNudge(visitedUser, token)
+                        this.props.addNudge(
+                            visitedUser,
+                            token,
+                            NUDGE_TYPES.makeGoalsPublic
+                        )
                         this.props.onClose()
                     }}
                 >
@@ -127,5 +131,5 @@ const mapStateToProps = (state, props) => {
 }
 
 export default connect(mapStateToProps, {
-    makeGoalsPublicNudge,
+    addNudge,
 })(PrivateGoalsNudge)
