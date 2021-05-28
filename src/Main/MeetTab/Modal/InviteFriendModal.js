@@ -242,7 +242,7 @@ class InviteFriendModal extends React.PureComponent {
 
         if (type == 'contacts') {
             return (
-                Actions.push('ContactMessage'),
+                Actions.push('ConversationNoGoal'),
                 this.closeModal(),
                 await storeData('INVITEMESSAGE', this.state.description)
             )

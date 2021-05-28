@@ -60,7 +60,7 @@ class CompactGoalCard extends React.Component {
                             style={[
                                 GOALS_STYLE.commonPillContainer,
                                 {
-                                    width: GOALS_STYLE.privacyPillWidth,
+                                    // width: GOALS_STYLE.privacyPillWidth,
                                     borderWidth: isCompleted ? 0.25 : 0,
                                     borderColor: color.GM_MID_GREY,
                                 },

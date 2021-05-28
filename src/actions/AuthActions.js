@@ -72,6 +72,7 @@ import TokenService from '../services/token/TokenService'
 import getEnvVars from '../../environment'
 import { TUTORIAL_MARK_USER_ONBOARDED } from '../redux/modules/User/Tutorials'
 import { getVisitedTime, userLogout } from '../reducers/UserVisited'
+import { resetToastData } from '../reducers/ToastReducers'
 
 const DEBUG_KEY = '[ Action Auth ]'
 
@@ -994,6 +995,7 @@ export const logout = () => async (dispatch, getState) => {
         type: USER_LOG_OUT,
     })
     dispatch(userLogout())
+    dispatch(resetToastData())
 }
 
 const TOAST_IMAGE_STYLE = {

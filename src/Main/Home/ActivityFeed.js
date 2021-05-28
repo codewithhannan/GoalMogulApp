@@ -57,87 +57,14 @@ import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 import { ActivityGhost } from '../Common/Ghosts'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { Actions } from 'react-native-router-flux'
-import MissingProfileToast from '../../components/MissingProfile'
-import GreenBadgeToast from '../../components/GreenBadgeToast'
-import GetGreenBadge from '../../components/GetGreenBadge'
-import Profile from '../../reducers/Profile'
-import SilverBadge from '../../components/SilverBadge'
-import GoldBadge from '../../components/GoldBadge'
-import GetBronzeBadge from '../../components/GetBronzeBadge'
-import VisitFriendsToast from '../../components/VisitFriendsToast'
-import VisitFriendsToast2 from '../../components/VisitFriendsToast2'
-import CloseFriendsToast from '../../components/CloseFriendsToast'
+
 import PopupFB from '../Journey/FbPopup'
 
 import { getRandomValue } from '../../Utils/HelperMethods'
-import { getData } from '../../store/storage'
-
-/*Tetsin Imports */
-import MyTribeBanner from '../Menu/Tribe/MyTribeBanner'
-import ShareGoalPopup1 from '../Journey/ShareGoalPopup1'
-import FeedbackPopup from '../Journey/FeedbackPopup'
-import FbPopup from '../Journey/FbPopup'
-import SubmitFeedbackPopup from '../Journey/SubmitFeedbackPopup'
-import SuggestionPopup from '../Journey/SuggestionPopup'
-import NudgePopup from '../Journey/NudgePopup'
-import InviteFriendsPopup from '../Journey/InviteFriendsPopup'
-import EnterDrawPopup from '../Journey/EnterDrawPopup'
-import HopePopup from '../Journey/HopePopup'
-import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
-import NoGoalPrompt from '../../components/NoGoalPrompt'
-/*Tetsin Imports */
+import { getToastsData } from '../../actions/ToastActions'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
-
-const alternatingText = [
-    {
-        heading:
-            'Your account has low activity. Invite more friends to get new suggestions, inspiration, and Likes! 🔥',
-        text:
-            'Bring new energy to old friendships by discovering the ambitions that drive each other. 🙌',
-    },
-    {
-        heading:
-            'Make your friendships more authentic by crushing your goals together!',
-        text: '',
-    },
-    {
-        heading: 'Find out what your friends want in life and help them. 🤝',
-        text: '',
-    },
-    {
-        heading:
-            'Telling friends about your goals is a surefire way to get lit. Invite more friends to help you stay on track!',
-        text: '',
-    },
-    {
-        heading:
-            'Step up the excitement of reaching your goals by involving more friends in the process.',
-        text: 'Don’t let your journey be a lonely one.',
-    },
-    {
-        heading:
-            'After you get your Silver Badge, you’ll able to participate in other exciting Challenges!',
-        text: '',
-    },
-    {
-        heading:
-            'Sharing your goals helps you avoid procrastination and be more accountable.',
-        text:
-            'Having more friends on GoalMogul will motivate, encourage and help you stay focused!',
-    },
-    {
-        heading:
-            'Gain access to 200+ more goal planning questions when get your Silver Badge!',
-        text: '',
-    },
-    {
-        heading:
-            'Unlock the ability to create your own Tribe by getting your Silver Badge!',
-        text: '',
-    },
-]
 
 let pageAb = ''
 
@@ -199,12 +126,10 @@ class ActivityFeed extends Component {
         )
 
         const count = friendsBadges.filter((x) => x == 3).length
-        const item =
-            alternatingText[Math.floor(Math.random() * alternatingText.length)]
 
         this.setState({
-            heading: item.heading,
-            text: item.text,
+            heading: item,
+
             friendsCount: count,
         })
 
@@ -212,12 +137,13 @@ class ActivityFeed extends Component {
             this.props.loadUserInvitedFriendsCount()
         }
 
-        const pageId = this.props.refreshProfileData(userId)
+        const pageId = this.props.refreshProfileData(this.props.userId)
 
         pageAb = pageId
     }
+    async componentDidUpdate(prevProps) {
+        // this.props.getToastsData()
 
-    async componentDidUpdate() {
         if (this.props.data && this.props.data.length) {
             this.props.loadUserInvitedFriendsCount()
         }
@@ -230,7 +156,7 @@ class ActivityFeed extends Component {
 
         this.props.getPopupData()
 
-        if (this.props.goals.length === 2) {
+        if (this.props.myGoals.length === 2) {
             this.renderFacebookPopup()
         }
     }
@@ -534,11 +460,11 @@ class ActivityFeed extends Component {
     }
 
     renderFacebookPopup = () => {
-        const { popup, goals } = this.props
+        const { popup, myGoals } = this.props
         // console.log(
         //     `status: ${popup['FBPOPUP_2ND_GOAL'].status} length: ${goals.length}`
         // )
-        if (goals.length === 2 && !popup['FBPOPUP_2ND_GOAL'].status) {
+        if (myGoals.length === 2 && !popup['FBPOPUP_2ND_GOAL'].status) {
             this.props.uploadPopupData('FBPOPUP_2ND_GOAL')
             this.setState({ showFbModal: true })
         }
@@ -552,7 +478,7 @@ class ActivityFeed extends Component {
             loading,
             image,
             headline,
-            goals,
+
             profile,
             userId,
             friendsData,
@@ -724,70 +650,93 @@ class ActivityFeed extends Component {
 
         var greenBadge
 
-        if (currentMilestone == 0) {
-            if (
-                occupation == undefined &&
-                about == undefined &&
-                headline == undefined &&
-                image == undefined
-            ) {
-                greenBadge = true
-            } else {
-                greenBadge = false
-            }
-            if (
-                occupation == '' ||
-                about == '' ||
-                headline == '' ||
-                image == undefined
-            ) {
-                greenBadge = true
-            }
-        } else {
-            greenBadge = false
-        }
+        // if (currentMilestone == 0) {
+        //     if (
+        //         occupation == undefined &&
+        //         about == undefined &&
+        //         headline == undefined &&
+        //         image == undefined
+        //     ) {
+        //         greenBadge = true
+        //     } else {
+        //         greenBadge = false
+        //     }
+        //     if (
+        //         occupation == '' ||
+        //         about == '' ||
+        //         headline == '' ||
+        //         image == undefined
+        //     ) {
+        //         greenBadge = true
+        //     }
+        // } else {
+        //     greenBadge = false
+        // }
 
-        // console.log('greenbadge', greenBadge)
+        // // console.log('greenbadge', greenBadge)
 
-        var getGreenBadge
+        // var getGreenBadge
 
-        if (goals.length == 0 && currentMilestone == 0) {
-            if (
-                headline != '' &&
-                about != '' &&
-                occupation != '' &&
-                image != undefined
-            ) {
-                getGreenBadge = true
-            }
-        } else {
-            getGreenBadge = false
-        }
+        // if (goals.length == 0 && currentMilestone == 0) {
+        //     if (
+        //         headline != '' &&
+        //         about != '' &&
+        //         occupation != '' &&
+        //         image != undefined
+        //     ) {
+        //         getGreenBadge = true
+        //     }
+        // } else {
+        //     getGreenBadge = false
+        // }
 
-        var getBronzeBadge
+        // var getBronzeBadge
 
-        // console.log('greenBadgeee', headline)
-        // console.log('greenBadgeee1', about)
-        // console.log('greenBadgeee2', occupation)
-        // console.log('greenBadgeee3', image)
+        // // console.log('greenBadgeee', headline)
+        // // console.log('greenBadgeee1', about)
+        // // console.log('greenBadgeee2', occupation)
+        // // console.log('greenBadgeee3', image)
 
-        if (
-            this.state.getBronzeBadgeGoals &&
-            currentMilestone == 1 &&
-            this.props.friendsData.length > 4
-        ) {
-            this.setState({ getBronzeBadge: true })
-        } else {
-            this.setState({ getBronzeBadge: false })
-        }
+        // if (
+        //     this.state.getBronzeBadgeGoals &&
+        //     currentMilestone == 1 &&
+        //     this.props.friendsData.length > 4
+        // ) {
+        //     this.setState({ getBronzeBadge: true })
+        // } else {
+        //     this.setState({ getBronzeBadge: false })
+        // }
 
-        const silverBadge = currentMilestone == 2
-        const goldBadge = currentMilestone == 3
+        // const silverBadge = currentMilestone == 2
+        // const goldBadge = currentMilestone == 3
+
+        const { toastsData } = this.props
+
+        const {
+            friendsProfileToVisit,
+            showImageToast,
+            showGreenBadge,
+            showGetGreenBadge,
+            showGetBronzeBadge,
+            showGetSilverBadge,
+            showGetGoldBadge,
+            closeFriendsToVisit,
+        } = toastsData
+
+        const showNoToasts =
+            !friendsProfileToVisit.length > 0 &&
+            !showImageToast &&
+            !showGreenBadge &&
+            !showGetGreenBadge &&
+            !showGetBronzeBadge &&
+            !showGetSilverBadge &&
+            !showGetGoldBadge.toShow &&
+            !closeFriendsToVisit.length > 0
 
         return (
             <>
                 {/* <NoGoalPrompt /> */}
-                {!image ||
+                {/* {!image ||
                 greenBadge ||
                 getGreenBadge ||
                 this.state.getBronzeBadge ||
@@ -838,10 +787,13 @@ class ActivityFeed extends Component {
                             />
                         )}
                     </Swiper>
-                ) : null}
-                {/* <View style={{ backgroundColor: 'white', marginTop: 8 }}>
-                    <TestSwiper />
-                </View> */}
+                ) : null} */}
+                {/* || showNoToasts */}
+                {this.props.loading ? null : (
+                    <View style={{ backgroundColor: 'white', marginTop: 8 }}>
+                        <TestSwiper />
+                    </View>
+                )}
 
                 <FlatList
                     keyboardShouldPersistTaps="handled"
@@ -894,7 +846,7 @@ const mapStateToProps = (state, props) => {
 
     const { userId } = state.user
 
-    const goals = getUserGoals(state, userId, pageAb)
+    // const goals = getUserGoals(state, userId, pageAb)
 
     const { token } = state.auth.user
 
@@ -907,6 +859,8 @@ const mapStateToProps = (state, props) => {
     // const { data: friendsData, refreshing: friendsRefreshing } = friends
 
     const { myGoals } = state.goals
+
+    const { toastsData, loading: toastsLoading } = state.toasts
     // const {
     //     data: goals,
     //     refreshing: goalRefreshing,
@@ -924,8 +878,9 @@ const mapStateToProps = (state, props) => {
         randomNumber,
     } = state.home.activityfeed
 
+    // console.log('NO TOASTSS1', toastsData)
+
     return {
-        goals,
         headline,
         userId,
         image,
@@ -943,6 +898,9 @@ const mapStateToProps = (state, props) => {
         about,
         token,
         popup,
+        toastsData,
+        toastsLoading,
+        myGoals,
         // currentMilestone: 0,
     }
 }
@@ -984,6 +942,7 @@ export default connect(
         getAllNudges,
         getPopupData,
         uploadPopupData,
+        getToastsData,
     },
     null,
     { withRef: true }

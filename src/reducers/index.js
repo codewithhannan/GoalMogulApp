@@ -18,6 +18,7 @@ import User from './User'
 import Users from '../redux/modules/User/Users'
 import Profile from './Profile'
 import Setting from './Setting'
+import ToastsReducers from './ToastReducers'
 import NavigationReducers from './NavigationReducers'
 import MeetReducers from './MeetReducers'
 import Home from './Home'
@@ -136,6 +137,7 @@ export const reducers = combineReducers({
     contacts: ContactsReducer,
     account: AccountsReducers,
     usersVisited: VisitedUsers,
+    toasts: ToastsReducers,
 })
 
 export default persistReducer(rootPersistConfig, reducers)

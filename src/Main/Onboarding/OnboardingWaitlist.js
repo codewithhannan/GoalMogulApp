@@ -6,7 +6,15 @@
  */
 
 import React from 'react'
-import { View, Text, Dimensions, Image } from 'react-native'
+import {
+    View,
+    Text,
+    Dimensions,
+    Image,
+    TouchableOpacity,
+    Linking,
+    Platform,
+} from 'react-native'
 import * as WebBrowser from 'expo-web-browser'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
@@ -78,6 +86,14 @@ class OnBoardingWaitlist extends React.Component {
     }
 
     render() {
+        const pageID = 391422631718856
+        const scheme = Platform.select({
+            ios: 'fb://profile/',
+            android: 'fb://page/',
+        })
+
+        const url = `${scheme}${pageID}`
+
         return (
             <View
                 style={[
@@ -140,7 +156,8 @@ class OnBoardingWaitlist extends React.Component {
                             Follow us for updates
                         </Text>
 
-                        <View
+                        <TouchableOpacity
+                            onPress={() => Linking.openURL(url)}
                             style={{
                                 backgroundColor: 'white',
                                 height: 50,
@@ -193,7 +210,7 @@ class OnBoardingWaitlist extends React.Component {
                                     on Facebook
                                 </Text>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     </View>
                     {this.renderButtons()}
                 </View>
