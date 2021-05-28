@@ -84,7 +84,7 @@ class OnboardingWelcome extends React.Component {
                                     },
                                 ]}
                             >
-                                Create goals.Invite friends
+                                Create goals. Invite friends
                             </Text>
                         </View>
                     </View>

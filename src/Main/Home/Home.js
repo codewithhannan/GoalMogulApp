@@ -21,6 +21,7 @@ import CreatePostModal from '../Post/CreatePostModal'
 import CreateContentButtons from '../Common/Button/CreateContentButtons'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 import { track, EVENT as E } from '../../monitoring/segment'
+import { getToastsData } from '../../actions/ToastActions'
 
 // Actions
 import {
@@ -90,6 +91,7 @@ class Home extends Component {
     }
 
     componentDidUpdate(prevProps) {
+        // this.props.getToastsData()
         // if (!prevProps.showTutorial && this.props.showTutorial === true) {
         //     console.log(
         //         `${DEBUG_KEY}: [ componentDidUpdate ]: tutorial start: `,
@@ -484,6 +486,7 @@ export default connect(
         /* Contact sync related */
         saveRemoteMatches,
         getUserVisitedNumber,
+        getToastsData,
     },
     null,
     { withRef: true }

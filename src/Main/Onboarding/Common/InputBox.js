@@ -309,7 +309,6 @@ class InputBox extends React.Component {
                     countryCode={countryCode}
                     withFilter
                     withFlag
-                    withAlphaFilter
                     withCallingCode
                     withFlagButton={true}
                     cca2={countryCode}

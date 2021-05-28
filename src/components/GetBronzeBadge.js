@@ -1,16 +1,22 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, Image, Text, TouchableWithoutFeedback } from 'react-native'
+import {
+    View,
+    Image,
+    Text,
+    TouchableWithoutFeedback,
+    Dimensions,
+    ImageBackground,
+} from 'react-native'
 import { color, default_style } from '../styles/basic'
 import BronzeBadge from '../asset/image/Bronze_Badge.png'
 import InviteFriendModal from '../Main/MeetTab/Modal/InviteFriendModal'
 
 // import * as text from '../styles/basic/text'
 import { connect } from 'react-redux'
-// import * as newColor from '../styles/basic/color'
-
-// import { UI_SCALE } from '..'
+const ITEM_WIDTH = Dimensions.get('window').width
+const ITEM_HEIGHT = Dimensions.get('window').height
 
 class GetBronzeBadge extends Component {
     constructor(props) {
@@ -23,51 +29,41 @@ class GetBronzeBadge extends Component {
         // this.handleEditOnPressed = this.handleEditOnPressed.bind(this)
     }
 
-    openInviteFriendModal = () => {
-        this.setState({ showInviteFriendModal: true })
-    }
-
-    closeInviteFriendModal = () => {
-        this.setState({ showInviteFriendModal: false })
-    }
-
-    renderInviteFriendsButton() {
+    renderButtons(item) {
         return (
             <>
-                <TouchableWithoutFeedback onPress={this.openInviteFriendModal}>
+                <TouchableWithoutFeedback onPress={item.handleButtonPress}>
                     <View
                         style={{
                             backgroundColor: '#42C0F5',
-                            width: 133,
+                            width: '70%',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            height: 31,
+                            height: 35,
                             borderColor: '#42C0F5',
                             borderWidth: 2,
                             borderRadius: 3,
-                            marginTop: 10,
+                            marginTop: item.marginButtonTop,
                         }}
                     >
                         <Text
                             style={{
                                 color: 'white',
                                 fontWeight: 'bold',
-                                fontSize: 12,
+                                fontSize: 14,
                             }}
                         >
-                            Invite Your Friends
+                            {item.buttonText}
                         </Text>
                     </View>
                 </TouchableWithoutFeedback>
-                <InviteFriendModal
-                    isVisible={this.state.showInviteFriendModal}
-                    closeModal={this.closeInviteFriendModal}
-                />
             </>
         )
     }
 
     render() {
+        const { item } = this.props
+
         return (
             <>
                 <View
@@ -78,67 +74,78 @@ class GetBronzeBadge extends Component {
                         flexDirection: 'row',
                         justifyContent: 'space-evenly',
                         alignItems: 'center',
-                        // paddingHorizontal: 96,
-                        paddingVertical: 10,
+                        paddingHorizontal: 10,
+                        paddingVertical: 17,
                         // marginBottom: 10,
+                        // width: 373,
+                        height: 162,
 
                         borderRadius: 8,
 
-                        marginTop: 7,
+                        // marginTop: 7,
                     }}
                 >
                     <View
                         style={{
                             flexDirection: 'row',
-                            width: '40%',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            alignContent: 'center',
+                            width: '35%',
                         }}
                     >
-                        <Image
-                            source={BronzeBadge}
+                        <ImageBackground
+                            source={item.image}
                             style={{
                                 height: 140,
                                 width: '100%',
-                                resizeMode: 'contain',
                             }}
+                            resizeMode="contain"
                         />
                     </View>
-                    <View
-                        style={{
-                            width: '70%',
-                            justifyContent: 'space-between',
-                            marginRight: 5,
-                        }}
-                    >
+                    <View style={item.mainHeadingView}>
                         <Text
                             style={{
                                 fontFamily: 'SFProDisplay-Bold',
                                 fontWeight: '700',
-                                fontSize: 16,
-                                lineHeight: 21,
-                                width: '95%',
+                                fontSize: item.mainHeading.fontSize,
+                                lineHeight: item.mainHeading.lineheight,
+                                marginTop:
+                                    item.mainHeading.marginTop != undefined &&
+                                    item.mainHeading.marginTop,
                             }}
                         >
-                            You’re 1 friend away from earning your Bronze Badge.
+                            {item.mainHeading.title}
                         </Text>
 
-                        <Text
-                            style={{
-                                fontFamily: 'SFProDisplay-Regular',
-                                fontWeight: '700',
-                                fontSize: 16,
+                        {item.smallHeading != undefined ? (
+                            <Text
+                                style={{
+                                    fontFamily: 'SFProDisplay-Regular',
+                                    // fontWeight: '700',
+                                    fontSize: item.smallHeading.fontSize,
+                                    lineHeight: item.smallHeading.lineheight,
+                                    marginTop:
+                                        item.smallHeading.marginTop !=
+                                            undefined &&
+                                        item.smallHeading.marginTop,
+                                }}
+                            >
+                                {item.smallHeading.title}
+                            </Text>
+                        ) : null}
+                        {item.thirdText != undefined ? (
+                            <Text
+                                style={{
+                                    fontFamily: 'SFProDisplay-Regular',
+                                    // fontWeight: '700',
+                                    fontSize: 15,
+                                    lineHeight: 18,
+                                }}
+                            >
+                                You only need 6 more friends with Bronze Badges
+                                to earn your Gold Badge.
+                            </Text>
+                        ) : null}
 
-                                width: '100%',
-                                marginTop: 5,
-                            }}
-                        >
-                            Invite friends so they can appreciate knowing your
-                            goals!
-                        </Text>
-
-                        {this.renderInviteFriendsButton()}
+                        {item.renderButton ? this.renderButtons(item) : null}
                     </View>
                 </View>
             </>

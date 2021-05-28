@@ -235,6 +235,7 @@ class OnboardingPeopleKnow extends React.Component {
                         >
                             <View style={{ flex: 1, height: '100%' }}>
                                 <FlatList
+                                    showsVerticalScrollIndicator={false}
                                     keyExtractor={(item) => item._id}
                                     data={this.state.pymkData}
                                     ListHeaderComponent={this.renderListHeader}

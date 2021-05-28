@@ -417,59 +417,67 @@ class MessageToContactsModal extends Component {
                                     )
                                 }
                             />
-
-                            <SafeAreaView
-                                style={{}}
-                                onPress={async () => {
-                                    try {
-                                        const postData = await API.post(
-                                            'secure/user/account/send-invite',
-                                            {
-                                                usersToinvite: getSelectedData,
-                                                content: this.state
-                                                    .inviteMessage,
-                                                link: inviteLink,
-                                            }
-                                        )
-                                        if (postData.status === 200) {
-                                            Alert.alert(postData.message, '', [
+                            <SafeAreaView>
+                                <TouchableOpacity
+                                    style={{}}
+                                    onPress={async () => {
+                                        try {
+                                            const postData = await API.post(
+                                                'secure/user/account/send-invite',
                                                 {
-                                                    text: 'Ok',
-                                                    onPress: () =>
-                                                        Actions.pop(),
-                                                },
-                                            ])
+                                                    usersToinvite: getSelectedData,
+                                                    content: this.state
+                                                        .inviteMessage,
+                                                    link: inviteLink,
+                                                }
+                                            )
+                                            if (postData.status === 200) {
+                                                Alert.alert(
+                                                    postData.message,
+                                                    '',
+                                                    [
+                                                        {
+                                                            text: 'Ok',
+                                                            onPress: () =>
+                                                                Actions.replace(
+                                                                    'drawer'
+                                                                ),
+                                                        },
+                                                    ]
+                                                )
+                                            }
+                                        } catch (error) {
+                                            console.log('error', error.message)
                                         }
-                                    } catch (error) {
-                                        console.log('error', error.message)
-                                    }
-                                }}
-                            >
-                                <View
-                                    style={{
-                                        backgroundColor: '#42C0F5',
-                                        width: '90%',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        height: 40,
-                                        borderColor: '#42C0F5',
-                                        borderWidth: 2,
-                                        borderRadius: 5,
-
-                                        marginHorizontal: 20,
                                     }}
                                 >
-                                    <Text
+                                    <View
                                         style={{
-                                            color: 'white',
-                                            fontWeight: '500',
-                                            fontSize: 12,
-                                            fontStyle: 'SFProDisplay-Regular',
+                                            backgroundColor: '#42C0F5',
+                                            width: '90%',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            height: 40,
+                                            borderColor: '#42C0F5',
+                                            borderWidth: 2,
+                                            borderRadius: 5,
+
+                                            marginHorizontal: 20,
                                         }}
                                     >
-                                        Send Invite Message
-                                    </Text>
-                                </View>
+                                        <Text
+                                            style={{
+                                                color: 'white',
+                                                fontWeight: '500',
+                                                fontSize: 12,
+                                                fontStyle:
+                                                    'SFProDisplay-Regular',
+                                            }}
+                                        >
+                                            Send Invite Message
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
                             </SafeAreaView>
                         </>
                     )}
