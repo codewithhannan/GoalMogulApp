@@ -19,8 +19,9 @@ const slice = createSlice({
             state = action.payload.data
             return state
         },
+        clearPopupData: () => initialState,
     },
 })
 
 export default slice.reducer
-export const { setPopupData, updatePopupData } = slice.actions
+export const { setPopupData, updatePopupData, clearPopupData } = slice.actions

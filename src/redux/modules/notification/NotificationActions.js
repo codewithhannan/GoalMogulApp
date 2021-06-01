@@ -1,6 +1,8 @@
 /** @format */
 
-import { AsyncStorage } from 'react-native'
+// import { AsyncStorage } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
 /**
  * Actions for notification tab and general notification like subscribe
  */

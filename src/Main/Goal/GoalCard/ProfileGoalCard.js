@@ -423,7 +423,7 @@ class ProfileGoalCard extends React.Component {
     }
 
     render() {
-        const { item } = this.props
+        const { item, index } = this.props
 
         if (!item || _.isEmpty(item)) return null
 
@@ -433,6 +433,7 @@ class ProfileGoalCard extends React.Component {
         return (
             <>
                 <DelayedButton
+                    index={index}
                     activeOpacity={1}
                     style={[styles.cardContainerStyle, { backgroundColor }]}
                     onPress={() => this.handleOnCardPress(item)}

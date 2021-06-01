@@ -26,12 +26,10 @@ import { getAllNudges } from '../../../actions/NudgeActions'
 // Styles
 import { color } from '../../../styles/basic'
 
-const DEBUG_KEY = '[ UI NudgeListView ]'
-
 class NudgeListView extends React.PureComponent {
-    handleRefresh = () => {
-        this.props.refreshNotifications({ refreshForUnreadNotif: true })
-    }
+    // handleRefresh = () => {
+    //     this.props.refreshNotifications({ refreshForUnreadNotif: true })
+    // }
 
     handleOnLoadMore = () => {
         const { token } = this.props
@@ -82,9 +80,9 @@ class NudgeListView extends React.PureComponent {
                     renderItem={this.renderItem}
                     // keyExtractor={this._keyExtractor}
                     listKey={(item, index) => 'D' + index.toString()}
-                    onRefresh={this.handleRefresh}
+                    // onRefresh={this.handleRefresh}
                     refreshing={this.props.refreshing}
-                    onEndReached={this.handleOnLoadMore}
+                    // onEndReached={this.handleOnLoadMore}
                     onEndReachedThreshold={0}
                     ListEmptyComponent={
                         this.props.refreshing ? null : (

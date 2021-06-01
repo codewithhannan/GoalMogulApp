@@ -9,6 +9,7 @@ import {
     errorNudgesData,
     deleteSelectedNudge,
 } from '../reducers/NudgesReducer'
+import { setBadgeNumberAsyncByPlatform } from '../redux/modules/notification/NotificationTabActions'
 
 const DEBUG_KEY = '[ NudgeActions ]'
 export const NUDGE_TYPES = {
@@ -108,6 +109,7 @@ export const getAllNudges = (token) => {
             res = await API.get('secure/nudge/nudgesToRender', token)
 
             dispatch(getNudgesData(res.result))
+            setBadgeNumberAsyncByPlatform(res.result.length)
             dispatch(loadNudgesData(false))
             console.log(`${DEBUG_KEY} This is the response of nudge data`, res)
         } catch (err) {

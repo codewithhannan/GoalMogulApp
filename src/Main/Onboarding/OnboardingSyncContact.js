@@ -125,7 +125,7 @@ class OnboardingSyncContact extends React.Component {
             UserId: this.props.userId,
         })
         const screenTransitionCallback = () => {
-            Actions.push('registration_tribe_selection')
+            Actions.replace('drawer')
         }
         screenTransitionCallback()
     }

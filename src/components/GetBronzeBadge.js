@@ -108,8 +108,9 @@ class GetBronzeBadge extends Component {
                                 fontSize: item.mainHeading.fontSize,
                                 lineHeight: item.mainHeading.lineheight,
                                 marginTop:
-                                    item.mainHeading.marginTop != undefined &&
-                                    item.mainHeading.marginTop,
+                                    item.mainHeading.marginTop != undefined
+                                        ? item.mainHeading.marginTop
+                                        : 0,
                             }}
                         >
                             {item.mainHeading.title}
@@ -123,9 +124,9 @@ class GetBronzeBadge extends Component {
                                     fontSize: item.smallHeading.fontSize,
                                     lineHeight: item.smallHeading.lineheight,
                                     marginTop:
-                                        item.smallHeading.marginTop !=
-                                            undefined &&
-                                        item.smallHeading.marginTop,
+                                        item.smallHeading.marginTop != undefined
+                                            ? item.smallHeading.marginTop
+                                            : 0,
                                 }}
                             >
                                 {item.smallHeading.title}

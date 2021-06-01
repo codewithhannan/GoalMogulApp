@@ -508,13 +508,10 @@ export class GoalDetailCardV3 extends React.Component {
             goalId,
         } = this.props
 
-        console.log('NavigationState', navigationState)
         const { routes, index } = navigationState
         switch (routes[index].key) {
             case 'centralTab': {
                 const { item, index } = props
-
-                console.log('Itemssss', item)
 
                 let newCommentParams = {
                     commentDetail: {
@@ -660,8 +657,6 @@ export class GoalDetailCardV3 extends React.Component {
      * Render focused item.
      */
     renderFocusedItem() {
-        console.log('Ye chal raha hai')
-
         const { goalDetail, navigationState } = this.props
         const { focusType, focusRef } = navigationState
         if (!focusType) return null
@@ -811,8 +806,6 @@ export class GoalDetailCardV3 extends React.Component {
         } = this.props
 
         const { focusType } = navigationState
-
-        console.log('Focus Typeee', focusType)
 
         const initialScrollToComment =
             initial &&

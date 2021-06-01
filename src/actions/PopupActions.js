@@ -9,7 +9,7 @@ import { setPopupData, updatePopupData } from '../reducers/PopupReducers'
 const DEBUG_KEY = '[ PopupActions ]'
 
 export const getPopupData = () => async (dispatch, getState) => {
-    // console.log('\n getPopupData is called from PopupActions')
+    console.log('\n getPopupData is called from PopupActions')
     const { token } = getState().user
     try {
         let data = await API.get('secure/user/profile/getJourney', token)

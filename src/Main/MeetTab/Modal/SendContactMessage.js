@@ -334,7 +334,7 @@ class MessageToContactsModal extends Component {
                         backgroundColor: color.GM_CARD_BACKGROUND,
                     }}
                 >
-                    <SearchBarHeader title={'Contacts'} goToHome />
+                    <SearchBarHeader title={'Contacts'} backButton />
 
                     {this.state.isLoading ? (
                         <ActivityIndicator
@@ -439,9 +439,7 @@ class MessageToContactsModal extends Component {
                                                         {
                                                             text: 'Ok',
                                                             onPress: () =>
-                                                                Actions.replace(
-                                                                    'drawer'
-                                                                ),
+                                                                Actions.pop(),
                                                         },
                                                     ]
                                                 )

@@ -11232,6 +11232,13 @@
     "fbjs" "^0.8.4"
     "object-assign" "^4.1.0"
 
+"react-addons-update@^15.6.3":
+  "integrity" "sha512-wBkjgx5cR0XTjZEz5jl2kScChrjI9T7rWVdaM0dLiIdHSgeHycLRdHPPiTgKk7vK18Od4rXmLJv91qofBXlE0A=="
+  "resolved" "https://registry.npmjs.org/react-addons-update/-/react-addons-update-15.6.3.tgz"
+  "version" "15.6.3"
+  dependencies:
+    "object-assign" "^4.1.0"
+
 "react-art@>=16.5.1", "react-art@16.x.x":
   "integrity" "sha512-IDXRZCUlyl3AkQ6Xf3qg0C6MSDxKhOhf7amYzWNMaelH5K2W9KqUOUHL8mGwC0k/1BXFhhusSgsE1Bekz3aHEQ=="
   "resolved" "https://registry.npmjs.org/react-art/-/react-art-16.13.1.tgz"

@@ -64,7 +64,11 @@ export const refreshNotificationTab = () => (dispatch, getState) => {
 }
 
 export const setBadgeNumberAsyncByPlatform = Platform.select({
-    ios: async (number) => Notifications.setBadgeNumberAsync(number),
+    ios: async (number) => {
+        console.log('THIS IS NUMBER OF NOTIFICATION', number)
+        Notifications.setBadgeNumberAsync(number)
+    },
+
     // TODO: android: investigate why Notifications.setBadgeNumberAsync throws errors
     android: async (number) => {},
 })
@@ -402,6 +406,7 @@ export const fetchUnreadCount = () => (dispatch, getState) => {
         })
 
         const preUnreadCount = unreadCount || 0
+
         Logger.log(
             `${DEBUG_KEY}: prev unreadCount: ${preUnreadCount}, new unreadCount: ${res.count},` +
                 `should refresh: ${res.count > unreadCount}`,
@@ -410,6 +415,8 @@ export const fetchUnreadCount = () => (dispatch, getState) => {
         )
         // refresh data quietly
         if (res.count > preUnreadCount) {
+            console.log('YAHAN ARAHA HA')
+
             Logger.log(`${DEBUG_KEY}: refresh notification quietly`, null, 4)
             refreshNotifications({
                 showIndicator: false,
@@ -418,18 +425,18 @@ export const fetchUnreadCount = () => (dispatch, getState) => {
         }
     }
 
-    // const onError = (err) => {
-    //     console.warn(`${DEBUG_KEY}: fetch unread count failed with err: `, err)
-    // }
+    const onError = (err) => {
+        console.warn(`${DEBUG_KEY}: fetch unread count failed with err: `, err)
+    }
 
-    // API.get('secure/notification/entity/unread-count', token, 4)
-    //     .then((res) => {
-    //         if (res.status === 200) {
-    //             return onSuccess(res)
-    //         }
-    //         onError(res)
-    //     })
-    //     .catch((err) => {
-    //         onError(err)
-    //     })
+    API.get('secure/notification/entity/unread-count', token, 4)
+        .then((res) => {
+            if (res.status === 200) {
+                return onSuccess(res)
+            }
+            onError(res)
+        })
+        .catch((err) => {
+            onError(err)
+        })
 }
