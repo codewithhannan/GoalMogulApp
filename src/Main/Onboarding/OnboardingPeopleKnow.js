@@ -190,7 +190,6 @@ class OnboardingPeopleKnow extends React.Component {
                                 color: 'white',
                                 fontWeight: '500',
                                 fontSize: 15,
-                                fontStyle: 'SFProDisplay-Regular',
                             }}
                         >
                             Continue

@@ -73,6 +73,7 @@ import getEnvVars from '../../environment'
 import { TUTORIAL_MARK_USER_ONBOARDED } from '../redux/modules/User/Tutorials'
 import { getVisitedTime, userLogout } from '../reducers/UserVisited'
 import { resetToastData } from '../reducers/ToastReducers'
+import { clearPopupData } from '../reducers/PopupReducers'
 
 const DEBUG_KEY = '[ Action Auth ]'
 
@@ -193,6 +194,8 @@ const authenticate = (
                 undefined
             )
 
+            console.log('USER AUTHENTICATE', res)
+
             if (!res.token || !is2xxRespose(res.status)) {
                 if (!is4xxResponse(res.status)) {
                     // Record failure in Sentry excluding user behavior
@@ -219,6 +222,7 @@ const authenticate = (
                 token: res.token,
                 userId: res.userId,
                 created: Date.now(),
+                isOnBoarded: res.isOnBoarded,
                 accountOnHold: res.accountOnHold,
             }
 
@@ -335,6 +339,8 @@ const mountUserWithToken = (
         getState
     )
 
+    console.log('THIS IS USER OBJECT', userObject)
+
     // Let the screen transition happen first
     // before waiting on potential long duration operations
 
@@ -343,14 +349,15 @@ const mountUserWithToken = (
         dispatchHideSplashScreen(dispatch)
         return
     }
-
+    // if (userObject.isOnBoarded) {
+    //     Actions.replace('registration')
+    // }
     if (userObject.accountOnHold) {
         Actions.replace('waitlist')
-        // } else if (!userObject.accountOnHold && !userObject.isOnBoarded) {
-        //     console.log('B')
-        //     // Load profile success and user is marked as not onboarded
-        //     // Go to onboarding flow
-        //     Actions.replace('registration_add_photo')
+    } else if (!userObject.accountOnHold && !userObject.isOnBoarded) {
+        // Load profile success and user is marked as not onboarded
+        // Go to onboarding flow
+        Actions.replace('registration')
     } else {
         // Go to home page
 
@@ -996,6 +1003,7 @@ export const logout = () => async (dispatch, getState) => {
     })
     dispatch(userLogout())
     dispatch(resetToastData())
+    dispatch(clearPopupData())
 }
 
 const TOAST_IMAGE_STYLE = {

@@ -99,23 +99,37 @@ class NotificationTab extends Component {
     //     this.props.getAllNudges(token)
     // }
 
+    handleNudgeHeader = () => {
+        if (this.props.nudgesData.length > 0 && !this.props.refreshing) {
+            return (
+                this.renderSectionTitle({
+                    text: "You've been nudged",
+                    type: 'header',
+                    length: 1,
+                }),
+                this.renderNudge()
+            )
+        }
+    }
+
     renderHeader = ({ item }) => {
         return (
             <View style={{ flex: 1, backgroundColor: color.GM_BACKGROUND }}>
-                {this.props.nudgesData.length > 0
+                {/* {this.props.nudgesData.length > 0
                     ? (this.renderSectionTitle({
-                          text: `You've been nudged`,
+                          text: "You've been nudged",
                           type: 'header',
                           length: 1,
                       }),
                       this.renderNudge())
-                    : null}
-
+                    : null} */}
+                {this.handleNudgeHeader()}
                 {this.renderSectionTitle({
                     text: 'Things your friends need',
                     type: 'header',
                     length: 1,
                 })}
+
                 {this.renderFriendsNeeds()}
                 {this.renderSectionTitle({
                     text: 'Notifications',
@@ -170,6 +184,11 @@ class NotificationTab extends Component {
     renderNudge() {
         return (
             <>
+                <View style={styles.titleComponentContainerStyle}>
+                    <Text style={default_style.titleText_1}>
+                        You've been nudged
+                    </Text>
+                </View>
                 <View
                     style={{
                         flex: 1,

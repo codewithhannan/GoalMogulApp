@@ -242,7 +242,7 @@ class InviteFriendModal extends React.PureComponent {
 
         if (type == 'contacts') {
             return (
-                Actions.push('ConversationNoGoal'),
+                Actions.push('ContactMessage'),
                 this.closeModal(),
                 await storeData('INVITEMESSAGE', this.state.description)
             )
@@ -302,12 +302,13 @@ class InviteFriendModal extends React.PureComponent {
         )
     }
 
-    renderCard = (item) => {
+    renderCard = (item, index) => {
         if (!item) return null
         const { text, image, icon } = item
 
         return (
             <DelayedButton
+                index={index}
                 style={[
                     {
                         width: '100%',
@@ -588,7 +589,9 @@ class InviteFriendModal extends React.PureComponent {
                                     backgroundColor: 'white',
                                 }}
                             >
-                                {DEFAULT_CARDS.map((i) => this.renderCard(i))}
+                                {DEFAULT_CARDS.map((i, index) =>
+                                    this.renderCard(i, index)
+                                )}
 
                                 <DelayedButton
                                     style={[

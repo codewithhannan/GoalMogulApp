@@ -18,6 +18,7 @@ class ProgressBar extends React.Component {
             Animated.timing(this.animation, {
                 toValue: this.props.progress,
                 duration: this.props.duration,
+                useNativeDriver: false,
             }).start()
         }
     }

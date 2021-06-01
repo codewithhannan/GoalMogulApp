@@ -483,8 +483,12 @@ class RouterComponent extends Component {
                             >
                                 <Scene
                                     initial
-                                    key="Contacts_Stack"
-                                    component={SendContactMessage}
+                                    key="registration_contact_sync"
+                                    component={OnboardingSyncContact}
+                                />
+                                <Scene
+                                    key="registration_contact_invite"
+                                    component={SyncContactInvite}
                                 />
                             </Stack>
                             <Stack

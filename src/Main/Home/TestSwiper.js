@@ -16,6 +16,7 @@ import BronzeBadge from '../../asset/image/Bronze_Badge.png'
 import SilverBadge from '../../asset/image/Silver_Badge.png'
 import GoldBadge from '../../asset/image/Gold_Badge.png'
 import FriendsView from '../../asset/image/Friend_View.png'
+import update from 'react-addons-update'
 
 import CloseFriends from '../../asset/image/CloseFriend.png'
 
@@ -72,7 +73,6 @@ class TestSwiper extends Component {
     constructor(props) {
         super(props)
         this._renderItem = this._renderItem.bind(this)
-        this.heading = this.props.heading
 
         this.state = {
             index: 0,
@@ -80,352 +80,386 @@ class TestSwiper extends Component {
             heading: '',
             refreshCarousal: false,
 
-            toastsData: [
-                {
-                    _id: 1,
-                    image: MissingProfile,
-                    show: this.props.toastsData.showImageToast,
+            toastsData: [],
+        }
+    }
 
-                    mainHeadingView: {
-                        justifyContent: 'space-between',
+    TOAST_DATA = [
+        {
+            _id: 1,
+            image: MissingProfile,
+            show: false,
+            mainHeadingView: {
+                justifyContent: 'space-between',
 
-                        // alignItems: 'center',
+                // alignItems: 'center',
 
-                        flex: 1,
-                        // flexWrap: 'wrap',
-                        width: '65%',
-                        height: '100%',
-                        margin: 0,
-                        padding: 0,
-                        marginBottom: 8,
-                        marginHorizontal: 10,
-                    },
-                    mainHeading: {
-                        fontSize: UI_SCALE * 17,
-                        title: 'Something’s missing…',
-                        lineheight: 18,
-                        marginTop: 10,
-                    },
-                    smallHeading: {
-                        fontSize: UI_SCALE * 16,
-                        title: 'Add a profile photo so friends recognize you!',
-                        lineheight: 19,
-                    },
-                    renderButton: true,
-                    marginButtonTop: undefined,
-                    thirdText: undefined,
-                    buttonText: 'Edit Profile',
+                flex: 1,
+                // flexWrap: 'wrap',
+                width: '65%',
+                height: '100%',
+                margin: 0,
+                padding: 0,
+                marginBottom: 8,
+                marginHorizontal: 10,
+            },
+            mainHeading: {
+                fontSize: UI_SCALE * 17,
+                title: 'Something’s missing…',
+                lineheight: 18,
+                marginTop: 10,
+            },
+            smallHeading: {
+                fontSize: UI_SCALE * 16,
+                title: 'Add a profile photo so friends recognize you!',
+                lineheight: 19,
+            },
+            renderButton: true,
+            marginButtonTop: undefined,
+            thirdText: undefined,
+            buttonText: 'Edit Profile',
 
-                    handleButtonPress: () =>
-                        this.props.openProfileDetailEditForm(
-                            this.props.userId,
-                            pageAb
-                        ),
-                },
+            handleButtonPress: () =>
+                this.props.openProfileDetailEditForm(this.props.userId, pageAb),
+        },
 
-                {
-                    _id: 2,
-                    image: GreenBadge,
-                    show: this.props.toastsData.showGreenBadge,
+        {
+            _id: 2,
+            image: GreenBadge,
+            show: false,
+            mainHeadingView: {
+                justifyContent: 'space-between',
 
-                    mainHeadingView: {
-                        justifyContent: 'space-between',
+                // alignItems: 'center',
 
-                        // alignItems: 'center',
+                flex: 1,
+                // flexWrap: 'wrap',
+                width: '60%',
+                height: '100%',
+                margin: 0,
+                padding: 0,
+            },
+            mainHeading: {
+                fontSize: UI_SCALE * 18,
+                title: `To earn your Green Badge, simply complete your Profile and add your 1st goal!`,
+                lineheight: 21,
+            },
+            smallHeading: undefined,
+            renderButton: true,
+            marginButtonTop: 10,
+            thirdText: undefined,
+            buttonText: 'Edit Profile',
+            handleButtonPress: () =>
+                this.props.openProfileDetailEditForm(this.props.userId, pageAb),
+        },
 
-                        flex: 1,
-                        // flexWrap: 'wrap',
-                        width: '60%',
-                        height: '100%',
-                        margin: 0,
-                        padding: 0,
-                    },
-                    mainHeading: {
-                        fontSize: UI_SCALE * 18,
-                        title: `To earn your Green Badge, simply complete your Profile and add your 1st goal!`,
-                        lineheight: 21,
-                    },
-                    smallHeading: undefined,
-                    renderButton: true,
-                    marginButtonTop: 10,
-                    thirdText: undefined,
-                    buttonText: 'Edit Profile',
-                    handleButtonPress: () =>
-                        this.props.openProfileDetailEditForm(
-                            this.props.userId,
-                            pageAb
-                        ),
-                },
+        {
+            _id: 3,
+            image: GreenBadge,
+            show: false,
+            mainHeadingView: {
+                flex: 1,
+                // flexWrap: 'wrap',
+                width: '65%',
+                height: '100%',
+                margin: 0,
+                padding: 0,
+            },
+            mainHeading: {
+                fontSize: UI_SCALE * 18,
+                title: 'Get your Green Badge now',
 
-                {
-                    _id: 3,
-                    image: GreenBadge,
-                    show: this.props.toastsData.showGetGreenBadge,
+                lineHeight: 18,
+                marginTop: 20,
+            },
+            smallHeading: {
+                fontSize: UI_SCALE * 17,
+                title: 'Simply create your first goal!',
+                lineHeight: 18,
+                marginTop: 10,
+            },
+            renderButton: false,
+            buttonStyle: undefined,
+            marginButtonTop: undefined,
+            thirdText: undefined,
+            buttonText: undefined,
+            handleButtonPress: undefined,
+        },
 
-                    mainHeadingView: {
-                        flex: 1,
-                        // flexWrap: 'wrap',
-                        width: '65%',
-                        height: '100%',
-                        margin: 0,
-                        padding: 0,
-                    },
-                    mainHeading: {
-                        fontSize: UI_SCALE * 18,
-                        title: 'Get your Green Badge now',
+        {
+            _id: 4,
+            image: BronzeBadge,
+            show: false,
+            mainHeadingView: {
+                justifyContent: 'space-between',
 
-                        lineHeight: 18,
-                        marginTop: 20,
-                    },
-                    smallHeading: {
-                        fontSize: UI_SCALE * 17,
-                        title: 'Simply create your first goal!',
-                        lineHeight: 18,
-                        marginTop: 10,
-                    },
-                    renderButton: false,
-                    buttonStyle: undefined,
-                    marginButtonTop: undefined,
-                    thirdText: undefined,
-                    buttonText: undefined,
-                    handleButtonPress: undefined,
-                },
+                // alignItems: 'center',
 
-                {
-                    _id: 4,
-                    image: BronzeBadge,
-                    show: this.props.toastsData.showGetBronzeBadge,
+                flex: 1,
+                // flexWrap: 'wrap',
+                width: '65%',
+                height: '100%',
+                margin: 0,
+                padding: 0,
+            },
 
-                    mainHeadingView: {
-                        justifyContent: 'space-between',
+            mainHeading: {
+                fontSize: UI_SCALE * 16,
+                title: 'You’re 1 friend away from earning your Bronze Badge.',
+                lineheight: 18,
+            },
+            smallHeading: {
+                fontSize: UI_SCALE * 15,
+                title:
+                    'Invite friends so they can appreciate knowing your goals!',
+                lineheight: 17,
+            },
+            renderButton: true,
+            marginButtonTop: undefined,
+            thirdText: undefined,
+            buttonText: 'Invite your Friends',
+            handleButtonPress: () => this.openInviteFriendModal(),
+        },
+        {
+            _id: 5,
+            image: SilverBadge,
+            show: false,
+            mainHeadingView: {
+                // alignItems: 'center',
 
-                        // alignItems: 'center',
+                flex: 1,
+                // flexWrap: 'wrap',
+                width: '65%',
+                height: '100%',
+                margin: 0,
+                padding: 0,
+            },
 
-                        flex: 1,
-                        // flexWrap: 'wrap',
-                        width: '65%',
-                        height: '100%',
-                        margin: 0,
-                        padding: 0,
-                    },
+            mainHeading: {
+                fontSize: UI_SCALE * 16,
+                title: '',
+                lineheight: 21,
+                marginTop: 2,
+            },
+            smallHeading: undefined,
+            renderButton: true,
+            thirdText: undefined,
+            marginButtonTop: 10,
+            buttonText: 'Invite your Friends',
+            handleButtonPress: () => this.openInviteFriendModal(),
+        },
 
-                    mainHeading: {
-                        fontSize: UI_SCALE * 16,
-                        title:
-                            'You’re 1 friend away from earning your Bronze Badge.',
-                        lineheight: 18,
-                    },
-                    smallHeading: {
-                        fontSize: UI_SCALE * 15,
-                        title:
-                            'Invite friends so they can appreciate knowing your goals!',
-                        lineheight: 17,
-                    },
-                    renderButton: true,
-                    marginButtonTop: undefined,
-                    thirdText: undefined,
-                    buttonText: 'Invite your Friends',
-                    handleButtonPress: () => this.openInviteFriendModal(),
-                },
-                {
-                    _id: 5,
-                    image: SilverBadge,
-                    show: this.props.toastsData.showGetSilverBadge,
+        {
+            _id: 6,
+            image: GoldBadge,
+            show: false,
+            mainHeadingView: {
+                justifyContent: 'space-between',
 
-                    mainHeadingView: {
-                        // alignItems: 'center',
+                // alignItems: 'center',
 
-                        flex: 1,
-                        // flexWrap: 'wrap',
-                        width: '65%',
-                        height: '100%',
-                        margin: 0,
-                        padding: 0,
-                    },
+                flex: 1,
+                // flexWrap: 'wrap',
+                width: '65%',
+                height: '100%',
+                margin: 0,
+                padding: 0,
+            },
 
-                    mainHeading: {
-                        fontSize: UI_SCALE * 16,
-                        title: '',
-                        lineheight: 21,
-                        marginTop: 2,
-                    },
-                    smallHeading: undefined,
-                    renderButton: true,
-                    thirdText: undefined,
-                    marginButtonTop: 10,
-                    buttonText: 'Invite your Friends',
-                    handleButtonPress: () => this.openInviteFriendModal(),
-                },
+            mainHeading: {
+                fontSize: UI_SCALE * 16,
+                title: 'You know what would look great next to your name?',
+                lineheight: 18,
+            },
+            smallHeading: {
+                fontSize: UI_SCALE * 15,
+                title: 'The shining Gold Badge!',
+                lineheight: 17,
+            },
+            renderButton: false,
+            marginButtonTop: undefined,
+            thirdText:
+                'You only need 6 more friends with Bronze Badges to earn your Gold Badge.',
+            buttonText: undefined,
+            handleButtonPress: undefined,
+        },
 
-                {
-                    _id: 6,
-                    image: GoldBadge,
-                    show: this.props.toastsData.showGetGoldBadge.toShow,
+        {
+            _id: 7,
+            image: FriendsView,
+            show: false,
+            mainHeadingView: {
+                justifyContent: 'space-between',
 
-                    mainHeadingView: {
-                        justifyContent: 'space-between',
+                // alignItems: 'center',
 
-                        // alignItems: 'center',
+                flex: 1,
+                // flexWrap: 'wrap',
+                width: '65%',
+                height: '100%',
+                margin: 0,
+                padding: 0,
+            },
 
-                        flex: 1,
-                        // flexWrap: 'wrap',
-                        width: '65%',
-                        height: '100%',
-                        margin: 0,
-                        padding: 0,
-                    },
+            mainHeading: {
+                fontSize: UI_SCALE * 16,
+                title: `You haven’t seen ${
+                    this.props.friendsProfileToVisit.length == 0
+                        ? null
+                        : this.props.friendsProfileToVisit[0].name
+                }’s profile yet.`,
+                lineheight: 18,
+            },
+            smallHeading: {
+                fontSize: UI_SCALE * 15,
+                title: 'How about leaving him a memorable comment?',
+                lineheight: 17,
+            },
+            renderButton: true,
+            marginButtonTop: undefined,
+            thirdText: undefined,
+            buttonText: 'View his profile',
+            handleButtonPress: () =>
+                this.props.openProfile(this.props.friendsProfileToVisit[0]._id),
+        },
 
-                    mainHeading: {
-                        fontSize: UI_SCALE * 16,
-                        title:
-                            'You know what would look great next to your name?',
-                        lineheight: 18,
-                    },
-                    smallHeading: {
-                        fontSize: UI_SCALE * 15,
-                        title: 'The shining Gold Badge!',
-                        lineheight: 17,
-                    },
-                    renderButton: false,
-                    marginButtonTop: undefined,
-                    thirdText:
-                        'You only need 6 more friends with Bronze Badges to earn your Gold Badge.',
-                    buttonText: undefined,
-                    handleButtonPress: undefined,
-                },
+        {
+            _id: 8,
+            image: CloseFriends,
+            show: false,
+            mainHeadingView: {
+                justifyContent: 'space-between',
 
-                {
-                    _id: 7,
-                    image: FriendsView,
-                    show:
-                        this.props.toastsData.friendsProfileToVisit.length > 0
-                            ? true
-                            : false,
+                // alignItems: 'center',
 
-                    mainHeadingView: {
-                        justifyContent: 'space-between',
+                flex: 1,
+                // flexWrap: 'wrap',
+                width: '65%',
+                height: '100%',
+                margin: 0,
+                padding: 0,
+                marginHorizontal: 10,
+            },
 
-                        // alignItems: 'center',
+            mainHeading: {
+                fontSize: UI_SCALE * 16,
+                title: `You haven’t checked out ${
+                    this.props.closeFriendsToVisit.length == 0
+                        ? null
+                        : this.props.closeFriendsToVisit[0].name
+                }’s goals in while.`,
+                lineheight: 18,
+            },
+            smallHeading: {
+                fontSize: UI_SCALE * 15,
+                title:
+                    'Leave a thoughtful comment to supercharge your friendship.',
+                lineheight: 17,
+            },
+            renderButton: true,
+            marginButtonTop: undefined,
+            thirdText: undefined,
+            buttonText: 'View his profile',
+            handleButtonPress: () =>
+                this.props.openProfile(this.props.closeFriendsToVisit[0]._id),
+        },
+    ]
 
-                        flex: 1,
-                        // flexWrap: 'wrap',
-                        width: '65%',
-                        height: '100%',
-                        margin: 0,
-                        padding: 0,
-                    },
-
-                    mainHeading: {
-                        fontSize: UI_SCALE * 16,
-                        title: `You haven’t seen ${
+    handleToastCarousel = () => {
+        let updatedData = this.TOAST_DATA.filter((toast) => {
+            switch (toast._id) {
+                case 1: {
+                    if (this.props.showImageToast) {
+                        return toast
+                    } else {
+                        return null
+                    }
+                }
+                case 2: {
+                    if (this.props.showGreenBadge) {
+                        return toast
+                    } else {
+                        return null
+                    }
+                }
+                case 3: {
+                    if (this.props.showGetGreenBadge) {
+                        return toast
+                    } else {
+                        return null
+                    }
+                }
+                case 4: {
+                    if (this.props.showGetBronzeBadge) {
+                        return toast
+                    } else {
+                        return null
+                    }
+                }
+                case 5: {
+                    if (this.props.showGetSilverBadge) {
+                        let shuffledArray = underscore.shuffle(alternatingText)
+                        toast.mainHeading.title = shuffledArray[0]
+                        return toast
+                    } else {
+                        return null
+                    }
+                }
+                case 6: {
+                    if (this.props.showGetGoldBadge.toShow) {
+                        toast.thirdText = `You only need ${
+                            10 -
+                            this.props.showGetGoldBadge.friendsWithBronzeBadge
+                        } more friends with Bronze Badges to earn your Gold Badge.`
+                        return toast
+                    } else {
+                        return null
+                    }
+                }
+                case 7: {
+                    if (this.props.friendsProfileToVisit.length > 0) {
+                        toast.mainHeading.title = `You haven’t seen ${
                             this.props.friendsProfileToVisit.length == 0
                                 ? null
-                                : this.props.toastsData.friendsProfileToVisit[0]
-                                      .name
-                        }’s profile yet.`,
-                        lineheight: 18,
-                    },
-                    smallHeading: {
-                        fontSize: UI_SCALE * 15,
-                        title: 'How about leaving him a memorable comment?',
-                        lineheight: 17,
-                    },
-                    renderButton: true,
-                    marginButtonTop: undefined,
-                    thirdText: undefined,
-                    buttonText: 'View his profile',
-                    handleButtonPress: () =>
-                        this.props.openProfile(
-                            this.props.toastsDatafriendsProfileToVisit[0]._id
-                        ),
-                },
-
-                {
-                    _id: 8,
-                    image: CloseFriends,
-                    show:
-                        this.props.toastsData.closeFriendsToVisit.length > 0
-                            ? true
-                            : false,
-
-                    mainHeadingView: {
-                        justifyContent: 'space-between',
-
-                        // alignItems: 'center',
-
-                        flex: 1,
-                        // flexWrap: 'wrap',
-                        width: '65%',
-                        height: '100%',
-                        margin: 0,
-                        padding: 0,
-                        marginHorizontal: 10,
-                    },
-
-                    mainHeading: {
-                        fontSize: UI_SCALE * 16,
-                        title: `You haven’t checked out ${
-                            this.props.toastsData.closeFriendsToVisit.length ==
-                            0
+                                : this.props.friendsProfileToVisit[0].name
+                        }’s profile yet.`
+                        return toast
+                    } else {
+                        return null
+                    }
+                }
+                case 8: {
+                    if (this.props.closeFriendsToVisit.length > 0) {
+                        ;`You haven’t checked out ${
+                            this.props.closeFriendsToVisit.length == 0
                                 ? null
-                                : this.props.toastsData.closeFriendsToVisit[0]
-                                      .name
-                        }’s goals in while.`,
-                        lineheight: 18,
-                    },
-                    smallHeading: {
-                        fontSize: UI_SCALE * 15,
-                        title:
-                            'Leave a thoughtful comment to supercharge your friendship.',
-                        lineheight: 17,
-                    },
-                    renderButton: true,
-                    marginButtonTop: undefined,
-                    thirdText: undefined,
-                    buttonText: 'View his profile',
-                    handleButtonPress: () =>
-                        this.props.openProfile(
-                            this.props.toastsData.closeFriendsToVisit[0]._id
-                        ),
-                },
-            ],
-        }
+                                : this.props.closeFriendsToVisit[0].name
+                        }’s goals in while.`
+                        return toast
+                    }
+                }
+                default:
+                    return null
+            }
+        })
+
+        this.setState({ toastsData: updatedData })
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log('PREVPROPSS', prevProps.toastsData)
-        console.log('PREVPROPSS1', this.props.toastsData)
-        console.log(
-            'PREVPROPSS2',
-            !_.isEqual(prevProps.toastsData, this.props.toastsData)
-        )
+        // console.log('PREVPROSSS', !_.isEqual(prevProps, this.props))
 
-        if (!_.isEqual(prevProps.toastsData, this.props.toastsData)) {
-            this.setState({ toastsData: this.props.toastsData })
+        if (prevProps != this.props) {
+            this.handleToastCarousel()
         }
-        this.props.getToastsData()
+        if (!_.isEqual(prevProps, this.props)) {
+            this.props.getToastsData()
+        }
     }
-
-    // shouldComponentUpdate(nextProps, nextState) {
-    //     return (
-    //         !_.isEqual(this.props, nextProps) ||
-    //         !_.isEqual(this.state, nextState)
-    //     )
-    // }
 
     componentDidMount() {
         this.props.getToastsData()
-        const dataToShow = this.state.toastsData.filter((item) => {
-            if (item.show) {
-                if (item._id == 5) {
-                    const shuffledArray = underscore.shuffle(alternatingText)
-                    item.mainHeading.title = shuffledArray[0]
-                    return item
-                }
-                return item
-            }
-        })
-        this.setState({ toastsData: dataToShow })
+
         const { userId } = this.props
         const pageId = this.props.refreshProfileData(userId)
         pageAb = pageId
@@ -444,8 +478,6 @@ class TestSwiper extends Component {
     }
 
     render() {
-        // console.log('THIS IS STATE OF SWIPER', this.state.toastsData)
-
         return (
             <View>
                 <InviteFriendModal
@@ -479,6 +511,8 @@ const mapStateToProps = (state) => {
 
     const { toastsData } = state.toasts
 
+    // console.log('THIS IS TOASTS DATA', toastsData)
+
     const {
         friendsProfileToVisit,
         showImageToast,
@@ -496,13 +530,13 @@ const mapStateToProps = (state) => {
         loading,
         image,
         friendsProfileToVisit,
-        // showImageToast,
-        // showGetBronzeBadge,
-        // showGreenBadge,
-        // showGetGoldBadge,
-        // showGetSilverBadge,
-        // showGetGreenBadge,
-        // closeFriendsToVisit,
+        showImageToast,
+        showGetBronzeBadge,
+        showGreenBadge,
+        showGetGoldBadge,
+        showGetSilverBadge,
+        showGetGreenBadge,
+        closeFriendsToVisit,
         toastsData,
     }
 }

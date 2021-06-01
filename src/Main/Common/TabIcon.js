@@ -96,8 +96,12 @@ class TabIcon extends React.PureComponent {
             notificationCount,
             chatCount,
             chatConversationOpen,
+            nudgesCount,
         } = this.props
         // if (chatConversationOpen) return null;
+
+        // console.log('NOTIFIFCATION COUNT', notificationCount)
+        // console.log('NOTIFIFCATION COUNT 1', nudgesCount)
 
         const tintColor = focused ? color.GM_BLUE : '#BDBDBD'
         const style = {
@@ -216,16 +220,23 @@ const styles = {
 
 const mapStateToProps = (state) => {
     const { unreadCount } = state.notification.unread
+
+    const { nudgesData } = state.nudges
     const { chatCount } = state.navigationTabBadging
+
     const { activeChatRoomId } = state.chatRoom
     const { token } = state.user
 
     // TODO: @Jia Tutorial get showTutorial from tutorial reducer for this TUTORIAL_KEY
     return {
         notificationCount: unreadCount,
+        // == undefined
+        // ? state.notification.unread.data.length
+        // : unreadCount,
         chatCount,
         chatConversationOpen: activeChatRoomId,
         token,
+        nudgesCount: nudgesData.length,
     }
 }
 

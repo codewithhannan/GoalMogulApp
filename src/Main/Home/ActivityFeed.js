@@ -18,6 +18,7 @@ import EmptyResult from '../Common/Text/EmptyResult'
 import InviteFriendModal from '../MeetTab//Modal/InviteFriendModal'
 
 import { handleRefreshFriend } from '../../redux/modules/meet/MeetActions'
+import { fetchUnreadCount } from '../../redux/modules/notification/NotificationTabActions'
 
 import { fetchUserProfile } from '../../actions/ProfileActions'
 import { fetchProfile } from '../../actions/HomeActions'
@@ -105,7 +106,10 @@ class ActivityFeed extends Component {
 
     async componentDidMount() {
         // Refresh user friends
+        // this.props.fetchUnreadCount()
         this.props.handleRefreshFriend()
+
+        this.props.getPopupData()
 
         const { token } = this.props
 
@@ -415,7 +419,7 @@ class ActivityFeed extends Component {
         } else if (item.cardType == 'JoinSomeTribes') {
             return this.renderJoinSomeTribesCard()
         } else if (item.cardType == 'GetYourSilverBadge') {
-            return this.renderGetYourSilverBadgeCard()
+            return null
         }
         // TODO: render item
         return (
@@ -475,29 +479,8 @@ class ActivityFeed extends Component {
             data,
             userInvitedFriendsCount,
             refreshing,
-            loading,
-            image,
-            headline,
-
             profile,
-            userId,
-            friendsData,
-            occupation,
-            about,
         } = this.props
-
-        const {
-            heading,
-            text,
-            friendsCount,
-            noGoals,
-            someGoals,
-            friendToVisit,
-            visitFriendMore,
-            closeFriendToVisit,
-        } = this.state
-
-        const { currentMilestone } = profile.badges.milestoneBadge
 
         // const showGhostCards =
         //     this.props.refreshing &&
@@ -532,82 +515,82 @@ class ActivityFeed extends Component {
             })
         }
 
-        let allFriendsId = friendsData.map((friend) => friend._id)
-        console.log('\nAll friends IDs:', allFriendsId)
+        // let allFriendsId = friendsData.map((friend) => friend._id)
+        // console.log('\nAll friends IDs:', allFriendsId)
 
         // const friendsMileStone = friendsBadges.map((e) => e.milestoneBadge)
 
         // console.log('friendsMileStone', count)
 
-        let closeFriends = friendsData.filter((friend) => {
-            let check
-            for (let participant of friend.maybeFriendshipRef.participants) {
-                if (participant.closenessWithFriend === 'CloseFriends') {
-                    check = true
-                    break
-                }
-            }
-            if (check) return friend
-        })
-        this.setState({ closeFriendToVisit: getRandomValue(closeFriends) })
+        // let closeFriends = friendsData.filter((friend) => {
+        //     let check
+        //     for (let participant of friend.maybeFriendshipRef.participants) {
+        //         if (participant.closenessWithFriend === 'CloseFriends') {
+        //             check = true
+        //             break
+        //         }
+        //     }
+        //     if (check) return friend
+        // })
+        // this.setState({ closeFriendToVisit: getRandomValue(closeFriends) })
 
-        console.log('\nThese are the close friends of user:', closeFriends)
+        // console.log('\nThese are the close friends of user:', closeFriends)
 
-        let friendsArray = []
-        friendsData.map((friend) => {
-            if (friend.gender) {
-                friendsArray.push(friend)
-            }
-        })
-        console.log('\nThese are friends excluding chatbots', friendsArray)
+        // let friendsArray = []
+        // friendsData.map((friend) => {
+        //     if (friend.gender) {
+        //         friendsArray.push(friend)
+        //     }
+        // })
+        // console.log('\nThese are friends excluding chatbots', friendsArray)
 
-        let visitedFriendsId
-        if (profile.viewedFriendsProfile) {
-            visitedFriendsId = profile.viewedFriendsProfile.map(
-                (friend) => friend.userId
-            )
-        }
-        console.log(
-            '\nThese are the friends user has already visited',
-            visitedFriendsId
-        )
+        // let visitedFriendsId
+        // if (profile.viewedFriendsProfile) {
+        //     visitedFriendsId = profile.viewedFriendsProfile.map(
+        //         (friend) => friend.userId
+        //     )
+        // }
+        // console.log(
+        //     '\nThese are the friends user has already visited',
+        //     visitedFriendsId
+        // )
 
-        let friendsToVisit
-        if (friendsArray.length <= 7) {
-            if (visitedFriendsId) {
-                friendsToVisit = friendsArray.filter((friend) => {
-                    if (!visitedFriendsId.includes(friend._id)) return friend
-                })
-            } else {
-                friendsToVisit = friendsArray.map((friend) => friend)
-            }
-        }
-        this.setState({
-            friendToVisit: getRandomValue(friendsToVisit),
-        })
+        // let friendsToVisit
+        // if (friendsArray.length <= 7) {
+        //     if (visitedFriendsId) {
+        //         friendsToVisit = friendsArray.filter((friend) => {
+        //             if (!visitedFriendsId.includes(friend._id)) return friend
+        //         })
+        //     } else {
+        //         friendsToVisit = friendsArray.map((friend) => friend)
+        //     }
+        // }
+        // this.setState({
+        //     friendToVisit: getRandomValue(friendsToVisit),
+        // })
 
-        console.log(
-            '\nThese are the friends user has not visited',
-            friendsToVisit
-        )
+        // console.log(
+        //     '\nThese are the friends user has not visited',
+        //     friendsToVisit
+        // )
 
-        let friendsToVisitMore = []
-        if (friendsArray.length > 7) {
-            if (visitedFriendsId) {
-                friendsToVisitMore = friendsArray.filter((friend) => {
-                    if (!visitedFriendsId.includes(friend._id)) return friend
-                })
-            } else {
-                friendsToVisitMore = friendsArray.map((friend) => friend)
-            }
-        }
+        // let friendsToVisitMore = []
+        // if (friendsArray.length > 7) {
+        //     if (visitedFriendsId) {
+        //         friendsToVisitMore = friendsArray.filter((friend) => {
+        //             if (!visitedFriendsId.includes(friend._id)) return friend
+        //         })
+        //     } else {
+        //         friendsToVisitMore = friendsArray.map((friend) => friend)
+        //     }
+        // }
 
-        this.setState({ visitFriendMore: friendsToVisitMore })
+        // this.setState({ visitFriendMore: friendsToVisitMore })
 
-        console.log(
-            '\nThese are the more friends user has not visited',
-            friendsToVisitMore
-        )
+        // console.log(
+        //     '\nThese are the more friends user has not visited',
+        //     friendsToVisitMore
+        // )
 
         // console.log('friendsData', typeof visitedFriends)
         // console.log('friendsData1', visitedFriends)
@@ -644,11 +627,11 @@ class ActivityFeed extends Component {
 
         // console.log("friendsToVisitMore",friendsToVisitMore);
 
-        const visitFriends = friendsToVisit.length > 0
-        const visitFriendsMore = friendsToVisit.length > 0
-        const renderVisitCloseFriend = closeFriends.length > 0
+        // const visitFriends = friendsToVisit.length > 0
+        // const visitFriendsMore = friendsToVisit.length > 0
+        // const renderVisitCloseFriend = closeFriends.length > 0
 
-        var greenBadge
+        // var greenBadge
 
         // if (currentMilestone == 0) {
         //     if (
@@ -710,28 +693,30 @@ class ActivityFeed extends Component {
         // const silverBadge = currentMilestone == 2
         // const goldBadge = currentMilestone == 3
 
-        const { toastsData } = this.props
+        // const { toastsData } = this.props
 
-        const {
-            friendsProfileToVisit,
-            showImageToast,
-            showGreenBadge,
-            showGetGreenBadge,
-            showGetBronzeBadge,
-            showGetSilverBadge,
-            showGetGoldBadge,
-            closeFriendsToVisit,
-        } = toastsData
+        // const {
+        //     friendsProfileToVisit,
+        //     showImageToast,
+        //     showGreenBadge,
+        //     showGetGreenBadge,
+        //     showGetBronzeBadge,
+        //     showGetSilverBadge,
+        //     showGetGoldBadge,
+        //     closeFriendsToVisit,
+        // } = toastsData
 
-        const showNoToasts =
-            !friendsProfileToVisit.length > 0 &&
-            !showImageToast &&
-            !showGreenBadge &&
-            !showGetGreenBadge &&
-            !showGetBronzeBadge &&
-            !showGetSilverBadge &&
-            !showGetGoldBadge.toShow &&
-            !closeFriendsToVisit.length > 0
+        // const showNoToasts =
+        //     !friendsProfileToVisit.length > 0 &&
+        //     !showImageToast &&
+        //     !showGreenBadge &&
+        //     !showGetGreenBadge &&
+        //     !showGetBronzeBadge &&
+        //     !showGetSilverBadge &&
+        //     !showGetGoldBadge.toShow &&
+        //     !closeFriendsToVisit.length > 0
+
+        // console.log('THIS IS TOASTTTTTT CONDITIONS', showNoToasts)
 
         return (
             <>
@@ -788,7 +773,7 @@ class ActivityFeed extends Component {
                         )}
                     </Swiper>
                 ) : null} */}
-                {/* || showNoToasts */}
+
                 {this.props.loading ? null : (
                     <View style={{ backgroundColor: 'white', marginTop: 8 }}>
                         <TestSwiper />
@@ -796,6 +781,7 @@ class ActivityFeed extends Component {
                 )}
 
                 <FlatList
+                    keyExtractor={(item, index) => index.toString()}
                     keyboardShouldPersistTaps="handled"
                     scrollEnabled={false}
                     data={processedData}
@@ -836,37 +822,11 @@ const mapStateToProps = (state, props) => {
     const { friends } = state.meet
     const { image, occupation, about } = state.user.user.profile
     const { nudges, popup } = state
-
-    // const created = moment().format()
-    // console.log('data of state', created)
-
-    // console.log('greeen', state.user.user)
-
     const { headline, profile } = state.user.user
-
     const { userId } = state.user
-
-    // const goals = getUserGoals(state, userId, pageAb)
-
     const { token } = state.auth.user
-
-    // console.log('currentuser', currentUser)
-
-    // const { currentMilestone } = currentUser.profile.badges.milestoneBadge
-
-    // console.log('currenMilestrone', currentMilestone)
-
-    // const { data: friendsData, refreshing: friendsRefreshing } = friends
-
     const { myGoals } = state.goals
-
     const { toastsData, loading: toastsLoading } = state.toasts
-    // const {
-    //     data: goals,
-    //     refreshing: goalRefreshing,
-    //     loading: goalLoading,
-    //     filter,
-    // } = myGoals
 
     const {
         user,
@@ -877,8 +837,6 @@ const mapStateToProps = (state, props) => {
         userInvitedFriendsCount,
         randomNumber,
     } = state.home.activityfeed
-
-    // console.log('NO TOASTSS1', toastsData)
 
     return {
         headline,
@@ -943,6 +901,7 @@ export default connect(
         getPopupData,
         uploadPopupData,
         getToastsData,
+        fetchUnreadCount,
     },
     null,
     { withRef: true }

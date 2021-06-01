@@ -31,6 +31,7 @@ import {
     checkIfNewlyCreated,
     getUserVisitedNumber,
 } from '../../actions'
+
 import {
     openCreateOverlay,
     refreshGoalFeed,
@@ -63,6 +64,10 @@ import { color } from '../../styles/basic'
 // Utils
 import { CreateGoalTooltip } from '../Tutorial/Tooltip'
 import { Text } from 'react-native-animatable'
+import {
+    fetchUnreadCount,
+    refreshNotificationTab,
+} from '../../redux/modules/notification/NotificationTabActions'
 
 const DEBUG_KEY = '[ UI Home ]'
 
@@ -148,6 +153,9 @@ class Home extends Component {
     }
 
     componentDidMount() {
+        this.props.refreshNotificationTab()
+        // this.props.fetchUnreadCount()
+
         this.props.refreshActivityFeed()
         AppState.addEventListener('change', this.handleAppStateChange)
         this._notificationSubscription = Notifications.addListener(
@@ -376,6 +384,7 @@ class Home extends Component {
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />
 
                     <FlatList
+                        keyExtractor={(item, index) => index.toString()}
                         keyboardShouldPersistTaps="handled"
                         ref={(ref) => (this.flatList = ref)}
                         ListHeaderComponent={this._renderHeader({
@@ -469,6 +478,9 @@ export default connect(
         subscribeNotification,
         saveUnreadNotification,
         handlePushNotification,
+        fetchUnreadCount,
+        refreshNotificationTab,
+
         /* Feed related */
         refreshGoalFeed,
         refreshActivityFeed,
@@ -486,6 +498,7 @@ export default connect(
         /* Contact sync related */
         saveRemoteMatches,
         getUserVisitedNumber,
+
         getToastsData,
     },
     null,

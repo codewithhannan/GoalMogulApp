@@ -78,6 +78,7 @@ class EarnBadgeModal extends React.PureComponent {
                     () => {
                         Animated.timing(
                             this.animations.numberOfUsersOnSameBadgeOpacity,
+
                             {
                                 toValue: 1,
                                 duration: 400,

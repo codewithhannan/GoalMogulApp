@@ -201,6 +201,7 @@ class ActivityBody extends React.Component {
     // Render Activity Card body
     render() {
         const { item } = this.props
+
         if (!item) return null
 
         const { postRef, goalRef, actedUponEntityType } = item

@@ -57,7 +57,7 @@ class SyncContactInvite extends React.Component {
     }
 
     onNext = () => {
-        Actions.push('registration_tribe_selection')
+        Actions.replace('drawer')
     }
 
     /**

@@ -306,8 +306,6 @@ const makeMapStateToProps = () => {
 
         const goals = getUserGoals(state, userId, pageAb)
 
-        console.log('goalssss', state)
-
         let adminTribes = managedTribeSelector(state, TRIBE_TYPE.admin)
         let memberTribes = managedTribeSelector(state, TRIBE_TYPE.member)
         let requestedTribes = managedTribeSelector(state, TRIBE_TYPE.requested)

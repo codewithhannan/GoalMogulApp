@@ -146,6 +146,7 @@ class ProfileV2 extends Component {
             this.handlePopup()
             this.openShareGoalPopup1()
         }
+
         if (
             this.props.isSelf &&
             this.props.popup['SHAREGOALS_POPUP1'].status &&
@@ -199,8 +200,10 @@ class ProfileV2 extends Component {
     handlePopup = () => {
         // console.log('\nhandlePopup is called')
         const { popup, profile, goals } = this.props
+        // console.log('POPP UPP OBJECT', popup)
         // console.log('\nThis is popup', profile)
         if (!popup['FIRST_GOAL'].status && goals.length === 1) {
+            console.log('ISME ARAHA HA')
             this.props.uploadPopupData('FIRST_GOAL')
             this.setState({ showPopupModal: true, popupName: 'FIRST_GOAL' })
         } else if (
@@ -580,6 +583,7 @@ class ProfileV2 extends Component {
                             !this.props.isSelf &&
                             friendship.status && <StepsTooltip />}
                         <ProfileGoalCard
+                            index={itemIndex}
                             item={item}
                             pageId={pageId}
                             userId={userId}
