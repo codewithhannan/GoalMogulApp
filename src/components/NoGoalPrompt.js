@@ -6,22 +6,21 @@ import {
     Text,
     View,
     Image,
-    TouchableWithoutFeedback,
     TouchableOpacity,
-    TouchableHighlight,
     Dimensions,
 } from 'react-native'
 import Modal from 'react-native-modal'
 
 import { Entypo } from '@expo/vector-icons'
 
-import { color, default_style } from '../styles/basic'
+import { color } from '../styles/basic'
 
 import { addNudge, NUDGE_TYPES } from '../actions/NudgeActions'
 
 import { connect } from 'react-redux'
 
 import { getUserData } from '../redux/modules/User/Selector'
+import Carousel from 'react-native-snap-carousel' // Version can be specified in package.json
 
 import NoGoalPromptImage from '../asset/image/NoGoalPrompt.png'
 import NoGoalPromptQuestions from './NoGoalPromptQuestions'
@@ -30,24 +29,87 @@ import DelayedButton from '../Main/Common/Button/DelayedButton'
 const MODAL_WIDTH = Dimensions.get('window').width
 const MODAL_HEIGHT = Dimensions.get('window').height
 
+const SLIDER_WIDTH = Dimensions.get('window').width
+const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7)
+
 class NoGoalPrompt extends Component {
     constructor(props) {
         super(props)
 
+        this._renderItem = this._renderItem.bind(this)
+
         this.state = {
             imageUrl: undefined,
+            currentPage: '',
+            activeIndex: 0,
+            selected: '',
+            selectedText: '',
             randomQuestions: [
-                "What's a goal you'd be more likely to achieve if your friends held you accountable?",
-                'What exciting achievement would you throw a party to celebrate?',
-                'What life experience can make you feel truly alive?',
-                'What future travel experience would you be excited to have with your friends?',
-                'With more time and energy, what fun activity would you want to do with friends?',
-                'What goal can you achieve together with your friends?',
-                'What relaxing activity could you start to plan so that you can see your friends more often?',
-                `What's an interesting class or course you could enjoy taking with friends?`,
-                'What do you need to pursue to feel like you are living your HIGHEST PURPOSE?',
-                'If you had a few extra hours every week, how would you want to spend the additional time with your family or friends?',
-                'What do you regret not doing last year that you still want to do?',
+                {
+                    id: 1,
+                    title:
+                        "What's a goal you'd be more likely to achieve if your friends held you accountable?",
+                },
+
+                {
+                    id: 2,
+                    title:
+                        'What exciting achievement would you throw a party to celebrate?',
+                },
+
+                {
+                    id: 3,
+                    title:
+                        'What life experience can make you feel truly alive?',
+                },
+
+                {
+                    id: 4,
+
+                    title:
+                        'What future travel experience would you be excited to have with your friends?',
+                },
+                {
+                    id: 5,
+                    title:
+                        'With more time and energy, what fun activity would you want to do with friends?',
+                },
+
+                {
+                    id: 6,
+
+                    title:
+                        'What goal can you achieve together with your friends?',
+                },
+
+                {
+                    id: 7,
+                    title:
+                        'What relaxing activity could you start to plan so that you can see your friends more often?',
+                },
+
+                {
+                    id: 8,
+                    title: `What's an interesting class or course you could enjoy taking with friends?`,
+                },
+
+                {
+                    id: 9,
+                    title:
+                        'What do you need to pursue to feel like you are living your HIGHEST PURPOSE?',
+                },
+
+                {
+                    id: 10,
+                    title:
+                        'If you had a few extra hours every week, how would you want to spend the additional time with your family or friends?',
+                },
+
+                {
+                    id: 11,
+                    title:
+                        'What do you regret not doing last year that you still want to do?',
+                },
             ],
         }
     }
@@ -56,20 +118,54 @@ class NoGoalPrompt extends Component {
         const randomQuestions = this.state.randomQuestions.sort(
             () => Math.random() - 0.5
         )
-
         this.setState({ randomQuestions })
     }
 
-    async componentDidUpdate(prevProps, prevState, snapshot) {}
+    changeColor = (index, id) => {
+        this.setState({ activeIndex: index, selected: id })
+    }
+
+    _renderItem({ item, index }) {
+        return (
+            <View
+                style={{
+                    backgroundColor:
+                        this.state.selected == index
+                            ? color.GM_BLUE_LIGHT_LIGHT
+                            : '#E7E7E7',
+                    borderRadius: 5,
+                    height: 80,
+                    width: ITEM_WIDTH * 1.109,
+
+                    marginLeft: 30,
+                    flex: 1,
+                    justifyContent: 'center',
+                }}
+            >
+                <Text
+                    style={{
+                        fontSize: 16,
+                        color: '#333333',
+                        fontWeight: 'normal',
+                        lineHeight: 18,
+                        width: ITEM_WIDTH * 1.035,
+                        position: 'absolute',
+                        left: 16,
+
+                        fontFamily: 'SFProDisplay-Regular',
+                    }}
+                >
+                    {item.title}
+                </Text>
+            </View>
+        )
+    }
 
     render() {
-        const { image } = this.props
-
-        // let ImageSource = { currentImage: require(image) }
-        // console.log('IMAFGE SOURCE', ImageSource)
+        const { name, visitedUser, token } = this.props
         return (
             <>
-                <Modal backdropOpacity={0.8} isVisible={true}>
+                <Modal backdropOpacity={0.8} isVisible={this.props.isVisible}>
                     <View
                         style={{
                             flex: 1,
@@ -87,26 +183,37 @@ class NoGoalPrompt extends Component {
                                 borderRadius: 5,
                             }}
                         >
-                            <Entypo
-                                name="cross"
-                                size={22}
-                                color="#4F4F4F"
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.onClose()
+                                }}
                                 style={{
-                                    position: 'absolute',
-                                    right: 9,
+                                    alignSelf: 'flex-end',
+                                    right: 10,
                                     top: 9,
                                 }}
-                            />
+                            >
+                                <Entypo
+                                    name="cross"
+                                    size={22}
+                                    color="#4F4F4F"
+                                />
+                            </TouchableOpacity>
+
                             <Text
                                 style={{
                                     fontSize: 18,
                                     padding: 20,
-                                    textAlign: 'center',
+
                                     fontWeight: 'bold',
                                     fontFamily: 'SFProDisplay-Bold',
+                                    position: 'absolute',
+                                    top: 5,
+
+                                    alignSelf: 'center',
                                 }}
                             >
-                                Help Shunsuke achieve more!
+                                Help {name} achieve more!
                             </Text>
 
                             <Image
@@ -125,6 +232,7 @@ class NoGoalPrompt extends Component {
                                     fontSize: 16,
 
                                     fontWeight: 'normal',
+
                                     fontFamily: 'SFProDisplay-Regular',
                                     position: 'absolute',
                                     top: 271,
@@ -134,22 +242,69 @@ class NoGoalPrompt extends Component {
                                     color: '#333333',
                                 }}
                             >
-                                Ask Shunshuke a question that can inspire him to
+                                Ask {name} a question that can inspire him to
                                 set his first goal.
                             </Text>
 
-                            <NoGoalPromptQuestions
+                            {/* <NoGoalPromptQuestions
+                                carouselRef
+                                snapCallback={this.onSnap}
                                 randomQuestions={this.state.randomQuestions}
-                            />
+                            /> */}
+
+                            <View
+                                style={{
+                                    bottom: 75,
+                                    position: 'absolute',
+                                    width: '100%',
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <Carousel
+                                        layout={'default'}
+                                        ref={(ref) => (this.carousel = ref)}
+                                        data={this.state.randomQuestions}
+                                        sliderWidth={ITEM_WIDTH * 1.085}
+                                        itemWidth={ITEM_WIDTH * 1.085}
+                                        renderItem={this._renderItem}
+                                        onSnapToItem={(index) => {
+                                            this.setState({
+                                                selectedText: this.state
+                                                    .randomQuestions[index]
+                                                    .title,
+                                            })
+                                            this.changeColor(index, index)
+                                        }}
+                                        useScrollView
+                                        initialScrollIndex={0}
+                                        activeSlideOffset={0}
+                                        hasParallaxImages={true}
+                                    />
+                                </View>
+                            </View>
                             <DelayedButton
                                 activeOpacity={0.6}
-                                onPress={() =>
-                                    addNudge(
+                                onPress={() => {
+                                    let questionToSend =
+                                        this.state.selectedText === ''
+                                            ? this.state.randomQuestions[0]
+                                                  .title
+                                            : this.state.selectedText
+
+                                    this.props.addNudge(
                                         visitedUser,
                                         token,
-                                        NUDGE_TYPES.createFirstGoal
+                                        NUDGE_TYPES.inviteeGoalCheck,
+                                        questionToSend
                                     )
-                                }
+                                    this.props.onClose()
+                                }}
                                 style={{
                                     height: 35,
                                     width: 171,
@@ -159,7 +314,7 @@ class NoGoalPrompt extends Component {
                                     justifyContent: 'center',
 
                                     position: 'aboslute',
-                                    top: 380,
+                                    top: 410,
                                     alignSelf: 'center',
                                 }}
                             >
@@ -186,16 +341,13 @@ class NoGoalPrompt extends Component {
 const mapStateToProps = (state, props) => {
     const visitedUser = state.profile.userId.userId
     const { token } = state.auth.user
-    const { profile } = state.profile.user
     const { userId } = props
-
     const userObject = getUserData(state, userId, '')
     const { user } = userObject
 
     return {
         visitedUser,
         token,
-
         user,
     }
 }

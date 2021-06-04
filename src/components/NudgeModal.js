@@ -31,16 +31,7 @@ class ModalTester extends Component {
         const { visitedUser, token } = this.props
         return (
             <>
-                <TouchableWithoutFeedback
-                    onPress={() => {
-                        this.props.addNudge(
-                            visitedUser,
-                            token,
-                            NUDGE_TYPES.createFirstGoal
-                        )
-                        this.props.onClose()
-                    }}
-                >
+                <TouchableWithoutFeedback onPress={this.props.onClose}>
                     <View
                         style={{
                             width: '30%',
@@ -69,9 +60,19 @@ class ModalTester extends Component {
     }
 
     renderNoButton() {
+        const { visitedUser, token } = this.props
         return (
             <>
-                <TouchableWithoutFeedback onPress={this.props.onClose}>
+                <TouchableWithoutFeedback
+                    onPress={() => {
+                        this.props.addNudge(
+                            visitedUser,
+                            token,
+                            NUDGE_TYPES.createFirstGoal
+                        )
+                        this.props.onClose()
+                    }}
+                >
                     <View
                         style={{
                             backgroundColor: '#42C0F5',

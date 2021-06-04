@@ -15,6 +15,7 @@ import {
     refreshSearchResult,
     onLoadMore,
 } from '../../../redux/modules/search/SearchActions'
+import { getAllAccounts } from '../../../actions'
 
 // tab key
 const key = 'friends'
@@ -55,7 +56,7 @@ class FriendsSearch extends Component {
                     <EmptyResult text={'No Results'} />
                 ) : (
                     <FlatList
-                        data={SortedObjs}
+                        data={this.props.data}
                         renderItem={this.renderItem}
                         keyExtractor={this._keyExtractor}
                         onEndReached={this.handleOnLoadMore}
@@ -72,6 +73,9 @@ class FriendsSearch extends Component {
 const mapStateToProps = (state) => {
     const { friends, searchContent } = state.search
     const { data, refreshing, loading } = friends
+    const { allUsers } = state.account
+
+    console.log('THIS IS FRIENDSSS', data)
 
     return {
         friends,
@@ -79,6 +83,7 @@ const mapStateToProps = (state) => {
         refreshing,
         loading,
         searchContent,
+        allUsers,
     }
 }
 

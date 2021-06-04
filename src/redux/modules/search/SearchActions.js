@@ -498,6 +498,8 @@ export const refreshPreloadData = (type) => (dispatch, getState) => {
 
     API.get(route, token)
         .then((res) => {
+            console.log('THIS IS PRELOAD DATA', res)
+
             if (res.status === 200) {
                 return onSuccess(res)
             }
@@ -577,6 +579,8 @@ export const loadPreloadData = (type) => (dispatch, getState) => {
 
     API.get(route, token)
         .then((res) => {
+            console.log('THIS IS PRELOAD DATA', res)
+
             if (res.status === 200) {
                 return onSuccess(res)
             }

@@ -221,7 +221,7 @@ class TribeDiscover extends React.Component {
                         this.props.bounces === false ? this.props.bounces : true
                     }
                 />
-                {this.renderScroll(tribesToRender)}
+                {/* {this.renderScroll(tribesToRender)} */}
             </View>
         )
     }
@@ -229,6 +229,8 @@ class TribeDiscover extends React.Component {
 
 const mapStateToProps = (state) => {
     const { data, loading, sortBy, refreshing } = state.tribeTab
+
+    console.log('THIS IS DATA OF TRIBES', data)
 
     return {
         data,

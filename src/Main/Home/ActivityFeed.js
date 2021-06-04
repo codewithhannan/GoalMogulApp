@@ -63,6 +63,7 @@ import PopupFB from '../Journey/FbPopup'
 
 import { getRandomValue } from '../../Utils/HelperMethods'
 import { getToastsData } from '../../actions/ToastActions'
+import NoGoalPrompt from '../../components/NoGoalPrompt'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
@@ -107,6 +108,7 @@ class ActivityFeed extends Component {
     async componentDidMount() {
         // Refresh user friends
         // this.props.fetchUnreadCount()
+        this.props.getToastsData()
         this.props.handleRefreshFriend()
 
         this.props.getPopupData()

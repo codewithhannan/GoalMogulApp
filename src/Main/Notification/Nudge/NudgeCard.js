@@ -36,6 +36,7 @@ import { Logger } from '../../../redux/middleware/utils/Logger'
 import { Icon } from '@ui-kitten/components'
 import { color, text, default_style } from '../../../styles/basic'
 import { UI_SCALE } from '../../../styles'
+import { Actions } from 'react-native-router-flux'
 
 // Constants
 const DEBUG_KEY = '[ UI NudgeCard ]'
@@ -43,21 +44,30 @@ const DEBUG_KEY = '[ UI NudgeCard ]'
 class NudgeCard extends React.PureComponent {
     handleNudgeCardOnPress = () => {
         const { item, token, userId } = this.props
+
         const { _id, sender, receiver } = item
 
-        this.props.handleNudgeResponsed(_id)
-        // console.log('this card is pressed', item)
-
-        if (!item.hasResponded && !item.isDeleted) {
-            return this.props.openProfile(userId)
+        if (
+            !item.hasResponded &&
+            !item.isDeleted &&
+            item.type === 'inviteeGoalCheck'
+        ) {
+            return (
+                Actions.replace('no_goal_conversation', { item }),
+                this.props.handleNudgeResponsed(_id)
+            )
+        } else if (!item.hasResponded && !item.isDeleted) {
+            this.props.openProfile(userId), this.props.handleNudgeResponsed(_id)
         } else {
-            return this.props.openProfile(receiver._id)
+            return (
+                this.props.openProfile(receiver._id),
+                this.props.handleNudgeResponsed(_id)
+            )
         }
     }
 
     handleOptionsOnPress() {
         const { item, token } = this.props
-
         const options = switchByButtonIndex([
             [
                 R.equals(0),
@@ -70,11 +80,8 @@ class NudgeCard extends React.PureComponent {
                 },
             ],
         ])
-
         const requestOptions = ['Remove this Nudge', 'Cancel']
-
         const cancelIndex = 1
-
         const adminActionSheet = actionSheet(
             requestOptions,
             cancelIndex,
@@ -132,12 +139,7 @@ class NudgeCard extends React.PureComponent {
 
                 <ProfileImage
                     imageStyle={{ height: 50, width: 50 }}
-                    imageUrl={
-                        this.renderPictureByNudgeUser(item)
-                        // !item.hasResponded && !item.isDeleted && item.sender.hasOwnProperty('profile')
-                        //     ? item.sender.profile.image
-                        //     : defaultUserProfile
-                    }
+                    imageUrl={this.renderPictureByNudgeUser(item)}
                 />
             </View>
         )
@@ -184,6 +186,12 @@ class NudgeCard extends React.PureComponent {
             item.type === 'makeGoalsPublic'
         ) {
             return 'Tap here to make one of your goals visible to Friends.'
+        } else if (
+            !item.hasResponded &&
+            !item.isDeleted &&
+            item.type === 'inviteeGoalCheck'
+        ) {
+            return 'Tap here to see question'
         } else {
             return 'Tap here to view his goal.'
         }
@@ -202,6 +210,12 @@ class NudgeCard extends React.PureComponent {
             item.type === 'makeGoalsPublic'
         ) {
             return 'has nudged to see your goals.'
+        } else if (
+            !item.hasResponded &&
+            !item.isDeleted &&
+            item.type === 'inviteeGoalCheck'
+        ) {
+            return 'is curious about your goals!'
         } else {
             return 'has responded to your nudge.'
         }
@@ -209,7 +223,6 @@ class NudgeCard extends React.PureComponent {
 
     renderContent() {
         const { item } = this.props
-
         return (
             <View style={{ flex: 1, marginLeft: 10, marginRight: 18 }}>
                 <Text

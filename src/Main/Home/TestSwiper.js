@@ -278,8 +278,7 @@ class TestSwiper extends Component {
             },
             renderButton: false,
             marginButtonTop: undefined,
-            thirdText:
-                'You only need 6 more friends with Bronze Badges to earn your Gold Badge.',
+            thirdText: `You only need 1 more friends with Bronze Badges to earn your Gold Badge.`,
             buttonText: undefined,
             handleButtonPress: undefined,
         },
@@ -303,11 +302,7 @@ class TestSwiper extends Component {
 
             mainHeading: {
                 fontSize: UI_SCALE * 16,
-                title: `You haven’t seen ${
-                    this.props.friendsProfileToVisit.length == 0
-                        ? null
-                        : this.props.friendsProfileToVisit[0].name
-                }’s profile yet.`,
+                title: `You haven’t seen Mike’s profile yet.`,
                 lineheight: 18,
             },
             smallHeading: {
@@ -343,11 +338,7 @@ class TestSwiper extends Component {
 
             mainHeading: {
                 fontSize: UI_SCALE * 16,
-                title: `You haven’t checked out ${
-                    this.props.closeFriendsToVisit.length == 0
-                        ? null
-                        : this.props.closeFriendsToVisit[0].name
-                }’s goals in while.`,
+                title: `You haven’t checked out Mike’s goals in while.`,
                 lineheight: 18,
             },
             smallHeading: {
@@ -408,8 +399,7 @@ class TestSwiper extends Component {
                 case 6: {
                     if (this.props.showGetGoldBadge.toShow) {
                         toast.thirdText = `You only need ${
-                            10 -
-                            this.props.showGetGoldBadge.friendsWithBronzeBadge
+                            10 - this.props.friendsWithBronzeBadge
                         } more friends with Bronze Badges to earn your Gold Badge.`
                         return toast
                     } else {
@@ -447,8 +437,6 @@ class TestSwiper extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log('PREVPROSSS', !_.isEqual(prevProps, this.props))
-
         if (prevProps != this.props) {
             this.handleToastCarousel()
         }
@@ -506,13 +494,8 @@ const mapStateToProps = (state) => {
     const { user, userId } = state.user
     const { profile } = user
     const { image } = profile
-
     const { data, loading, loadingMore, refreshing } = state.home.mastermind
-
     const { toastsData } = state.toasts
-
-    // console.log('THIS IS TOASTS DATA', toastsData)
-
     const {
         friendsProfileToVisit,
         showImageToast,
@@ -523,6 +506,7 @@ const mapStateToProps = (state) => {
         showGetGoldBadge,
         closeFriendsToVisit,
     } = state.toasts.toastsData
+    const { friendsWithBronzeBadge } = showGetGoldBadge
 
     return {
         profile,
@@ -538,6 +522,7 @@ const mapStateToProps = (state) => {
         showGetGreenBadge,
         closeFriendsToVisit,
         toastsData,
+        friendsWithBronzeBadge,
     }
 }
 

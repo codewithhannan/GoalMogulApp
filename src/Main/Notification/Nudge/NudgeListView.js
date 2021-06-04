@@ -117,10 +117,10 @@ const mapStateToProps = (state) => {
     const { notifications } = state.notification
     const { data, refreshing, loading } = notifications
     const { nudgesData, loading: nudgeLoading } = state.nudges
+
     const { token } = state.auth.user
 
     return {
-        // data: data.filter(d => !d.parsedNoti.error),
         data,
         refreshing,
         loading,

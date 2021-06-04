@@ -140,10 +140,7 @@ function getCommonScenes(tab) {
             key={`${prefix}ContactMessage`}
             component={SendContactMessage}
         />,
-        <Scene
-            key={`${prefix}ConversationNoGoal`}
-            component={ConversationGoal}
-        />,
+
         ,
         <Scene key={`${prefix}goal`} component={GoalDetailCard} />,
         <Scene key={`${prefix}post`} component={PostDetailCard} />,
@@ -346,6 +343,7 @@ class RouterComponent extends Component {
                     shadowRadius: 0,
                     elevation: 0,
                 }}
+                {...this.props}
             >
                 <Modal key="modal" hideNavBar>
                     <Lightbox key="lightbox" hideNavBar>
@@ -426,6 +424,10 @@ class RouterComponent extends Component {
                                     key="registration_contact_sync"
                                     component={OnboardingSyncContact}
                                 />
+                                <Scene
+                                    key="registration_contact_invite"
+                                    component={SyncContactInvite}
+                                />
 
                                 {/* <Scene
                                     key="registration_transition"
@@ -435,19 +437,15 @@ class RouterComponent extends Component {
                                     key="registration_target_selection"
                                     component={OnboardingSelectionTarget}
                                 /> */}
-                                <Scene
+                                {/* <Scene
                                     key="registration_tribe_selection"
                                     component={OnboardingTribeSelection}
-                                />
+                                /> */}
                                 <Scene
                                     key="registration_community_guideline"
                                     component={OnboardingCommunity}
                                 />
 
-                                <Scene
-                                    key="registration_contact_invite"
-                                    component={SyncContactInvite}
-                                />
                                 <Scene
                                     key="registration_welcome"
                                     component={OnboardingWelcome}
@@ -506,6 +504,20 @@ class RouterComponent extends Component {
                                 <Scene
                                     key="registration_target_selection"
                                     component={OnboardingSelectionTarget}
+                                />
+                            </Stack>
+
+                            <Stack
+                                key="no_goal_conversation"
+                                hideNavBar
+                                type={ActionConst.RESET}
+                                drawerLockMode="locked-closed"
+                                gesturesEnabled={false}
+                                panHandlers={null}
+                            >
+                                <Scene
+                                    key="no_goal_conversation"
+                                    component={ConversationGoal}
                                 />
                             </Stack>
                             <Scene

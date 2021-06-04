@@ -291,7 +291,6 @@ class RegistrationAccount extends React.Component {
             >
                 <View
                     style={{
-                        height: 0,
                         justifyContent: 'center',
                         alignItems: 'center',
                         // marginBottom: 20,
@@ -301,6 +300,7 @@ class RegistrationAccount extends React.Component {
                         <Text style={styles.errorStyle}>{registerErrMsg}</Text>
                     ) : null}
                 </View>
+
                 <InputBox
                     key="name"
                     inputTitle="Full Name"
@@ -565,9 +565,6 @@ const mapStateToProps = (state) => {
         registerErrMsg,
         inviterCode,
     } = state.registration
-
-    console.log('These are the props', state)
-    // console.log('These are erro', registerErrMsg)
 
     return {
         name,

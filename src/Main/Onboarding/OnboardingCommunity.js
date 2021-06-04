@@ -151,17 +151,13 @@ class OnboardingCommunity extends React.Component {
 
     SwapSlide = (value) => {
         if (!this.state.swipeAll) {
-            console.log('helooooo1')
             this.setState({ indexvalue: value })
         } else {
-            console.log('helooooo2')
-
             this.onNext()
         }
     }
 
     render() {
-        console.log('this is state of swiper', this.state.swipeAll)
         return (
             <View style={styles.containerStyle}>
                 <OnboardingHeader />

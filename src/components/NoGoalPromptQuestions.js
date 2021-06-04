@@ -10,18 +10,17 @@ import Carousel from 'react-native-snap-carousel' // Version can be specified in
 import { scrollInterpolator, animatedStyles } from './noGoalAnimation'
 import { color } from '../styles/basic'
 
+import _ from 'lodash'
+
 const SLIDER_WIDTH = Dimensions.get('window').width
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7)
 const ITEM_HEIGHT = Math.round((ITEM_WIDTH * 3) / 12)
 
-const DATA = []
-for (let i = 0; i < 10; i++) {
-    DATA.push(i)
-}
-
 class CreateGoalToast extends Component {
     state = {
         activeIndex: 0,
+        selected: '',
+        selectedText: '',
     }
 
     constructor(props) {
@@ -29,15 +28,25 @@ class CreateGoalToast extends Component {
         this._renderItem = this._renderItem.bind(this)
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        const randomQuestions = this.props.randomQuestions.sort(
+            () => Math.random() - 0.5
+        )
+        this.setState({ randomQuestions })
+    }
 
-    _renderItem({ item }) {
-        const { firstText, randomText } = this.props
+    _onSnapToItem = (index, id) => {
+        this.setState({ activeIndex: index, selected: index })
+    }
 
+    _renderItem({ item, index }) {
         return (
             <View
                 style={{
-                    backgroundColor: color.GM_BLUE_LIGHT_LIGHT,
+                    backgroundColor:
+                        this.state.selected == index
+                            ? color.GM_BLUE_LIGHT_LIGHT
+                            : '#E7E7E7',
                     borderRadius: 5,
                     height: 80,
                     width: ITEM_WIDTH * 1.109,
@@ -49,7 +58,7 @@ class CreateGoalToast extends Component {
             >
                 <Text
                     style={{
-                        fontSize: 14,
+                        fontSize: 16,
                         color: '#333333',
                         fontWeight: 'normal',
                         lineHeight: 18,
@@ -57,10 +66,10 @@ class CreateGoalToast extends Component {
                         position: 'absolute',
                         left: 16,
 
-                        fontStyle: 'SFProDisplay-Regular',
+                        fontFamily: 'SFProDisplay-Regular',
                     }}
                 >
-                    {item}
+                    {item.title}
                 </Text>
             </View>
         )
@@ -76,33 +85,25 @@ class CreateGoalToast extends Component {
                         justifyContent: 'center',
                     }}
                 >
-                    {/* <Carousel
-                    ref={(c) => (this.carousel = c)}
-                    loop={true}
-                    loopClonesPerSide={20}
-                    data={this.props.randomQuestions}
-                    renderItem={this._renderItem}
-                    sliderWidth={SLIDER_WIDTH}
-                    itemWidth={ITEM_WIDTH}
-                    containerCustomStyle={styles.carouselContainer}
-                    inactiveSlideShift={0}
-                    onSnapToItem={(index) => this.setState({ index })}
-                    scrollInterpolator={scrollInterpolator}
-                    slideInterpolatedStyle={animatedStyles}
-                    useScrollView={true}
-                /> */}
                     <Carousel
                         layout={'default'}
-                        ref={(ref) => (this.carousel = ref)}
+                        ref={(ref) => {
+                            this.carousel = ref
+                        }}
                         data={this.props.randomQuestions}
                         sliderWidth={ITEM_WIDTH * 1.085}
                         itemWidth={ITEM_WIDTH * 1.085}
                         renderItem={this._renderItem}
-                        onSnapToItem={(index) =>
-                            this.setState({
-                                activeIndex: index,
-                            })
-                        }
+                        onSnapToItem={(index) => {
+                            console.log(
+                                'Current Item => ',
+                                this.props.randomQuestions[index]
+                            )
+                            this._onSnapToItem(index, index)
+                        }}
+                        initialScrollIndex={0}
+                        activeSlideOffset={0}
+                        hasParallaxImages={true}
                     />
                 </View>
             </View>

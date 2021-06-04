@@ -404,14 +404,14 @@ class Bubble extends React.Component {
                             ],
                         }}
                     />
-                    <RNUrlPreview
+                    {/* <RNUrlPreview
                         text={`${this.props.currentMessage.text}`}
                         containerStyle={{ width: '100%', marginTop: 10 }}
                         title={false}
                         descriptionStyle={{ width: '100%' }}
 
                         // titleStyle={{ fontSize: 12 }}s
-                    />
+                    /> */}
                 </>
             )
         } else if (this.props.currentMessage.text) {

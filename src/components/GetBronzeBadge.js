@@ -141,8 +141,7 @@ class GetBronzeBadge extends Component {
                                     lineHeight: 18,
                                 }}
                             >
-                                You only need 6 more friends with Bronze Badges
-                                to earn your Gold Badge.
+                                {item.thirdText}
                             </Text>
                         ) : null}
 

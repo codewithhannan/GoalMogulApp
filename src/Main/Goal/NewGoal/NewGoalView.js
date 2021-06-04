@@ -82,7 +82,7 @@ const TYPE_MAP = {
         text: 'Break your goals into steps that are easier to achieve',
     },
     need: {
-        title: 'Things I Need',
+        title: 'Needs',
         placeholder: 'Something your friends might be able to help with',
         buttonText: 'Add a Need',
         text: 'Something you are specifically looking for help with',
@@ -1713,7 +1713,7 @@ class NewGoalView extends Component {
                     {this.renderTimeline()}
                     {/* : null} */}
                     {/* {this.state.showMoreGoalInputs ? ( */}
-                    {/* <View
+                    <View
                         ref={(r) => {
                             this.view = r
                         }}
@@ -1722,7 +1722,7 @@ class NewGoalView extends Component {
                         <FieldArray name="steps" component={this.renderSteps} />
 
                         <FieldArray name="needs" component={this.renderNeeds} />
-                    </View> */}
+                    </View>
                     {/* ) : null} */}
                 </View>
                 <View style={{ marginBottom: 40 }}>

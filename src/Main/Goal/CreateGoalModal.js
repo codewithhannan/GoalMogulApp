@@ -273,6 +273,7 @@ class CreateGoalModal extends React.Component {
         }
 
         const { goal, initializeFromState, uploading, goals } = this.props
+
         if (!uploading) return // when uploading is false, it's actually uploading.
         const goalId = goal ? goal._id : undefined
 
