@@ -132,7 +132,7 @@ class ModalTester extends Component {
                             >
                                 <Text
                                     style={{
-                                        fontStyle: 'SFProDisplay-Bold',
+                                        fontFamily: 'SFProDisplay-Bold',
                                         fontSize: 18,
                                         lineHeight: 18,
                                         fontWeight: 'bold',
@@ -177,7 +177,7 @@ class ModalTester extends Component {
                             >
                                 <Text
                                     style={{
-                                        fontStyle: 'SFProDisplay-Regular',
+                                        fontFamily: 'SFProDisplay-Regular',
                                         fontSize: 16,
                                         lineHeight: 24,
                                         marginTop: 6,
@@ -194,7 +194,7 @@ class ModalTester extends Component {
 
                                 <Text
                                     style={{
-                                        fontStyle: 'SFProDisplay-Semibold',
+                                        fontFamily: 'SFProDisplay-Semibold',
                                         fontSize: 16,
                                         lineHeight: 24,
                                         marginTop: 30,

@@ -59,7 +59,7 @@ export const submitGoal = (
     callback,
     goalId,
     { needOpenProfile, needRefreshProfile },
-    moveTohome,
+
     pageId // TODO: profile reducer redesign to change here
 ) => (dispatch, getState) => {
     const { token, user } = getState().user
@@ -194,21 +194,7 @@ export const submitGoal = (
                 // TODO: dispatch changes to feed and clear CreateGoalForm state
                 callback(res.data)
                 onSuccess()
-                if (moveTohome) {
-                    Alert.alert(
-                        'Congratulations!',
-                        'Your first goal has been created.You can check your profile to view it.',
-                        [
-                            {
-                                text: 'Ok',
-                                onPress: () => {
-                                    Actions.replace('drawer')
-                                },
-                            },
-                        ],
-                        { cancelable: false }
-                    )
-                }
+
                 // dispatch(reset('createGoalModal'));
                 return
             }

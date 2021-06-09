@@ -42,8 +42,9 @@ const { text: textStyle, button: buttonStyle } = OnboardingStyles
 class OnboardingAddPhotos extends Component {
     /**Navigate to next step. */
     onSkip = () => {
-        trackWithProperties(E.REG_ADD_PHOTO_SKIPPED, {
-            UserId: this.props.userId,
+        trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
+            onboardingStep: 'upload_photo',
+            photo_uploaded: false,
         })
 
         Actions.push('registration_people_know')
@@ -68,24 +69,24 @@ class OnboardingAddPhotos extends Component {
                 UserId: this.props.userId,
             })
 
-        // this.props.openCamera(null, trackOpenCamera, trackImageAttached)
+        this.props.openCamera(null, trackOpenCamera, trackImageAttached)
     }
 
     openCameraRoll = () => {
-        const trackOpenCameraRoll = () =>
-            trackWithProperties(E.REG_CAMROLL, {
-                UserId: this.props.userId,
-            })
+        // const trackOpenCameraRoll = () =>
+        //     trackWithProperties(E.REG_CAMROLL, {
+        //         UserId: this.props.userId,
+        //     })
 
         const trackImageAttached = () =>
-            trackWithProperties(E.REG_ADD_PHOTO_ATTACHED, {
-                UserId: this.props.userId,
+            trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
+                photo_uploaded: true,
             })
 
         this.props.openCameraRoll(
             null,
             null,
-            trackOpenCameraRoll,
+            // trackOpenCameraRoll,
             trackImageAttached
         )
     }

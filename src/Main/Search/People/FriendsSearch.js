@@ -75,8 +75,6 @@ const mapStateToProps = (state) => {
     const { data, refreshing, loading } = friends
     const { allUsers } = state.account
 
-    console.log('THIS IS FRIENDSSS', data)
-
     return {
         friends,
         data,

@@ -84,10 +84,9 @@ class ConversationGoal extends Component {
 
             goalId,
             {
-                needOpenProfile: true,
+                needOpenProfile,
             },
-            pageAb,
-            true
+            pageAb
         )
     }
 

@@ -81,8 +81,6 @@ class CreateGoalModal extends React.Component {
     }
 
     componentDidMount() {
-        // console.log('userIDdddddd', userId)
-
         const { userId } = this.props
         const pageId = this.props.refreshProfileData(userId)
         pageAb = pageId
@@ -279,6 +277,7 @@ class CreateGoalModal extends React.Component {
 
         const getGoalPrivacy =
             this.props.formVals.values.privacy === 'self' && goals.length == 0
+
         if (getGoalPrivacy) {
             this.setState({ goalModalVisible: true })
         } else {
@@ -288,7 +287,7 @@ class CreateGoalModal extends React.Component {
                 this.props.initializeFromState
                     ? E.GOAL_UPDATED
                     : E.GOAL_CREATED,
-                { ...this.props.formVals.values, DurationSec: durationSec }
+                { goalsCreated: goals.length + 1 }
             )
 
             return this.props.submitGoal(
@@ -403,7 +402,7 @@ class CreateGoalModal extends React.Component {
             (new Date().getTime() - this.startTime.getTime()) / 1000
         trackWithProperties(
             this.props.initializeFromState ? E.GOAL_UPDATED : E.GOAL_CREATED,
-            { ...this.props.formVals.values, DurationSec: durationSec }
+            { goalsCreated: goals.length + 1 }
         )
 
         let changedPrivacy = {
@@ -471,7 +470,7 @@ class CreateGoalModal extends React.Component {
             (new Date().getTime() - this.startTime.getTime()) / 1000
         trackWithProperties(
             this.props.initializeFromState ? E.GOAL_UPDATED : E.GOAL_CREATED,
-            { ...this.props.formVals.values, DurationSec: durationSec }
+            { goalsCreated: goals.length + 1 }
         )
 
         return this.props.submitGoal(
@@ -651,15 +650,15 @@ const styles = {
 
 const mapStateToProps = (state, props) => {
     const getUserGoals = makeGetUserGoals()
-    const { userId } = state.user
 
+    const { userId } = state.user
     const goals = getUserGoals(state, userId, pageAb)
 
     const { navigationState, uploading } = state.createGoal
     const { user } = state.user
-
     // Tutorial related
     const { create_goal } = state.tutorials
+
     const { create_goal_modal } = create_goal
     const { hasShown, showTutorial, tutorialText } = create_goal_modal
 

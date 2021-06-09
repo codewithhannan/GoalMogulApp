@@ -52,12 +52,12 @@ class NudgeCard extends React.PureComponent {
             !item.isDeleted &&
             item.type === 'inviteeGoalCheck'
         ) {
+            return Actions.replace('no_goal_conversation', { item })
+        } else if (!item.hasResponded && !item.isDeleted) {
             return (
-                Actions.replace('no_goal_conversation', { item }),
+                this.props.openProfile(userId),
                 this.props.handleNudgeResponsed(_id)
             )
-        } else if (!item.hasResponded && !item.isDeleted) {
-            this.props.openProfile(userId), this.props.handleNudgeResponsed(_id)
         } else {
             return (
                 this.props.openProfile(receiver._id),

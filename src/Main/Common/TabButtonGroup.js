@@ -36,7 +36,7 @@ class TabButtonGroup extends Component {
                       ...default_style.buttonText_1,
                       backgroundColor: color.GM_BLUE,
                       color: 'white',
-                      tintColor: 'white',
+                      //   tintColor: 'white',
                   }
                 : (buttonStyle && buttonStyle.unselected) || {
                       ...default_style.buttonText_1,

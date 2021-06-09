@@ -84,6 +84,12 @@ class OnboardingPhoneVerification extends React.Component {
         phoneNumber: yup.string().required(),
     })
 
+    componentDidMount() {
+        trackWithProperties(E.REG_MOBILE_VERIFICATION_START, {
+            verification_method: 'sms',
+        })
+    }
+
     render() {
         return (
             <>
@@ -301,7 +307,7 @@ class OnboardingPhoneVerification extends React.Component {
                                                     Submit
                                                 </Text>
                                             </DelayedButton>
-                                            {/* <DelayedButton
+                                            <DelayedButton
                                                 onPress={this.onNotNow}
                                                 style={[
                                                     buttonStyle
@@ -319,7 +325,7 @@ class OnboardingPhoneVerification extends React.Component {
                                                 >
                                                     Skip
                                                 </Text>
-                                            </DelayedButton> */}
+                                            </DelayedButton>
                                         </View>
                                     </View>
                                 </>

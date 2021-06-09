@@ -1693,7 +1693,7 @@ class NewGoalView extends Component {
                         // marginBottom: 30,
                     }}
                 >
-                    {/* {!this.state.showMoreGoalInputs ? (
+                    {!this.state.showMoreGoalInputs ? (
                         <TouchableWithoutFeedback
                             onPress={this.enableMoreGoalInputs}
                         >
@@ -1708,22 +1708,28 @@ class NewGoalView extends Component {
                                 + Add a Timeline, Steps or Needs
                             </Text>
                         </TouchableWithoutFeedback>
-                    ) : null} */}
-                    {/* {this.state.showMoreGoalInputs ?  */}
-                    {this.renderTimeline()}
-                    {/* : null} */}
-                    {/* {this.state.showMoreGoalInputs ? ( */}
-                    <View
-                        ref={(r) => {
-                            this.view = r
-                        }}
-                        // style={{ bottom: 60 }}
-                    >
-                        <FieldArray name="steps" component={this.renderSteps} />
+                    ) : null}
+                    {this.state.showMoreGoalInputs
+                        ? this.renderTimeline()
+                        : null}
+                    {this.state.showMoreGoalInputs ? (
+                        <View
+                            ref={(r) => {
+                                this.view = r
+                            }}
+                            // style={{ bottom: 60 }}
+                        >
+                            <FieldArray
+                                name="steps"
+                                component={this.renderSteps}
+                            />
 
-                        <FieldArray name="needs" component={this.renderNeeds} />
-                    </View>
-                    {/* ) : null} */}
+                            <FieldArray
+                                name="needs"
+                                component={this.renderNeeds}
+                            />
+                        </View>
+                    ) : null}
                 </View>
                 <View style={{ marginBottom: 40 }}>
                     <Button

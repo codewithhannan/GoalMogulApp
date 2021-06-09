@@ -1,14 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react'
-import {
-    Text,
-    View,
-    Dimensions,
-    StyleSheet,
-    Image,
-    SafeAreaView,
-} from 'react-native'
+import { View, Dimensions, StyleSheet } from 'react-native'
 
 import MissingProfile from '../../asset/image/MissingProfile.png'
 import GreenBadge from '../../asset/image/Green_Badge.png'
@@ -16,11 +9,7 @@ import BronzeBadge from '../../asset/image/Bronze_Badge.png'
 import SilverBadge from '../../asset/image/Silver_Badge.png'
 import GoldBadge from '../../asset/image/Gold_Badge.png'
 import FriendsView from '../../asset/image/Friend_View.png'
-import update from 'react-addons-update'
-
 import CloseFriends from '../../asset/image/CloseFriend.png'
-
-import { getToastsData } from '../../actions/ToastActions'
 
 import _ from 'lodash'
 
@@ -31,14 +20,14 @@ import {
     refreshProfileData,
 } from '../../actions'
 import { connect } from 'react-redux'
+import { getToastsData } from '../../actions/ToastActions'
 
-import { scrollInterpolator, animatedStyles } from './animation'
+import { scrollInterpolator, animatedStyles } from './homeToastAnimation'
 
-import GetBronzeBadge from '../../components/GetBronzeBadge'
+import ToastCard from '../../components/ToastCard'
 import { UI_SCALE } from '../../styles'
 import InviteFriendModal from '../MeetTab/Modal/InviteFriendModal'
 import * as underscore from 'underscore'
-import { Actions } from 'react-native-router-flux'
 
 const SLIDER_WIDTH = Dimensions.get('window').width
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.95)
@@ -69,7 +58,7 @@ const alternatingText = [
 
 let pageAb = ''
 
-class TestSwiper extends Component {
+class HomeFeedToast extends Component {
     constructor(props) {
         super(props)
         this._renderItem = this._renderItem.bind(this)
@@ -79,7 +68,6 @@ class TestSwiper extends Component {
             showInviteFriendModal: false,
             heading: '',
             refreshCarousal: false,
-
             toastsData: [],
         }
     }
@@ -91,11 +79,8 @@ class TestSwiper extends Component {
             show: false,
             mainHeadingView: {
                 justifyContent: 'space-between',
-
-                // alignItems: 'center',
-
                 flex: 1,
-                // flexWrap: 'wrap',
+
                 width: '65%',
                 height: '100%',
                 margin: 0,
@@ -129,11 +114,7 @@ class TestSwiper extends Component {
             show: false,
             mainHeadingView: {
                 justifyContent: 'space-between',
-
-                // alignItems: 'center',
-
                 flex: 1,
-                // flexWrap: 'wrap',
                 width: '60%',
                 height: '100%',
                 margin: 0,
@@ -159,7 +140,6 @@ class TestSwiper extends Component {
             show: false,
             mainHeadingView: {
                 flex: 1,
-                // flexWrap: 'wrap',
                 width: '65%',
                 height: '100%',
                 margin: 0,
@@ -192,11 +172,7 @@ class TestSwiper extends Component {
             show: false,
             mainHeadingView: {
                 justifyContent: 'space-between',
-
-                // alignItems: 'center',
-
                 flex: 1,
-                // flexWrap: 'wrap',
                 width: '65%',
                 height: '100%',
                 margin: 0,
@@ -225,10 +201,7 @@ class TestSwiper extends Component {
             image: SilverBadge,
             show: false,
             mainHeadingView: {
-                // alignItems: 'center',
-
                 flex: 1,
-                // flexWrap: 'wrap',
                 width: '65%',
                 height: '100%',
                 margin: 0,
@@ -255,11 +228,7 @@ class TestSwiper extends Component {
             show: false,
             mainHeadingView: {
                 justifyContent: 'space-between',
-
-                // alignItems: 'center',
-
                 flex: 1,
-                // flexWrap: 'wrap',
                 width: '65%',
                 height: '100%',
                 margin: 0,
@@ -289,11 +258,7 @@ class TestSwiper extends Component {
             show: false,
             mainHeadingView: {
                 justifyContent: 'space-between',
-
-                // alignItems: 'center',
-
                 flex: 1,
-                // flexWrap: 'wrap',
                 width: '65%',
                 height: '100%',
                 margin: 0,
@@ -324,11 +289,7 @@ class TestSwiper extends Component {
             show: false,
             mainHeadingView: {
                 justifyContent: 'space-between',
-
-                // alignItems: 'center',
-
                 flex: 1,
-                // flexWrap: 'wrap',
                 width: '65%',
                 height: '100%',
                 margin: 0,
@@ -462,7 +423,7 @@ class TestSwiper extends Component {
     }
 
     _renderItem({ item }) {
-        return <GetBronzeBadge item={item} />
+        return <ToastCard item={item} />
     }
 
     render() {
@@ -472,6 +433,7 @@ class TestSwiper extends Component {
                     isVisible={this.state.showInviteFriendModal}
                     closeModal={this.closeInviteFriendModal}
                 />
+
                 <Carousel
                     ref={(c) => (this.carousel = c)}
                     data={this.state.toastsData}
@@ -494,7 +456,7 @@ const mapStateToProps = (state) => {
     const { user, userId } = state.user
     const { profile } = user
     const { image } = profile
-    const { data, loading, loadingMore, refreshing } = state.home.mastermind
+    const { loading } = state.home.mastermind
     const { toastsData } = state.toasts
     const {
         friendsProfileToVisit,
@@ -531,7 +493,7 @@ export default connect(mapStateToProps, {
     refreshProfileData,
     openProfile,
     getToastsData,
-})(TestSwiper)
+})(HomeFeedToast)
 
 const styles = StyleSheet.create({
     carouselContainer: {

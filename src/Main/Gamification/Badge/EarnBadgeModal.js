@@ -436,12 +436,13 @@ const BadgeInfoCard = (props) => {
                     >
                         {title}
                     </Text>
-                    {infoTextList.map((t) => {
+                    {infoTextList.map((t, index) => {
                         const { text, hasBulletPoint } = t
                         if (hasBulletPoint) {
                             return (
                                 <>
                                     <View
+                                        key={index}
                                         style={{
                                             flexDirection: 'row',
                                             marginTop: 3,

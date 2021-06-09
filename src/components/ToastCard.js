@@ -9,24 +9,15 @@ import {
     Dimensions,
     ImageBackground,
 } from 'react-native'
-import { color, default_style } from '../styles/basic'
-import BronzeBadge from '../asset/image/Bronze_Badge.png'
-import InviteFriendModal from '../Main/MeetTab/Modal/InviteFriendModal'
-
-// import * as text from '../styles/basic/text'
+import { color } from '../styles/basic'
 import { connect } from 'react-redux'
-const ITEM_WIDTH = Dimensions.get('window').width
-const ITEM_HEIGHT = Dimensions.get('window').height
 
-class GetBronzeBadge extends Component {
+class ToastCard extends Component {
     constructor(props) {
         super(props)
-
         this.state = {
             showInviteFriendModal: false,
         }
-
-        // this.handleEditOnPressed = this.handleEditOnPressed.bind(this)
     }
 
     renderButtons(item) {
@@ -69,20 +60,14 @@ class GetBronzeBadge extends Component {
                 <View
                     style={{
                         backgroundColor: color.PG_BACKGROUND,
-
                         marginHorizontal: 10,
                         flexDirection: 'row',
                         justifyContent: 'space-evenly',
                         alignItems: 'center',
                         paddingHorizontal: 10,
                         paddingVertical: 17,
-                        // marginBottom: 10,
-                        // width: 373,
                         height: 162,
-
                         borderRadius: 8,
-
-                        // marginTop: 7,
                     }}
                 >
                     <View
@@ -120,7 +105,6 @@ class GetBronzeBadge extends Component {
                             <Text
                                 style={{
                                     fontFamily: 'SFProDisplay-Regular',
-                                    // fontWeight: '700',
                                     fontSize: item.smallHeading.fontSize,
                                     lineHeight: item.smallHeading.lineheight,
                                     marginTop:
@@ -136,7 +120,6 @@ class GetBronzeBadge extends Component {
                             <Text
                                 style={{
                                     fontFamily: 'SFProDisplay-Regular',
-                                    // fontWeight: '700',
                                     fontSize: 15,
                                     lineHeight: 18,
                                 }}
@@ -165,4 +148,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, null)(GetBronzeBadge)
+export default connect(mapStateToProps, null)(ToastCard)

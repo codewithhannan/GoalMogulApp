@@ -9,6 +9,8 @@ import {
     StatusBar,
     Settings,
     Platform,
+    AppState,
+    Alert,
 } from 'react-native'
 import DropdownAlert from 'react-native-dropdownalert-jia'
 
@@ -28,15 +30,13 @@ import Router from './src/Router'
 import SocketIOManager from './src/socketio/SocketIOManager'
 import LiveChatService from './src/socketio/services/LiveChatService'
 import MessageStorageService from './src/services/chat/MessageStorageService'
-import { initSegment } from './src/monitoring/segment'
+import { initSegment, EVENT as E, track } from './src/monitoring/segment'
 import { initSentry } from './src/monitoring/sentry'
+
+import { setJSExceptionHandler } from 'react-native-exception-handler' // If an error occurs or app crashes these functions are called we used them to send sengments
 
 // UI theme provider
 import ThemeProvider from './theme/ThemeProvider'
-
-import { YellowBox } from 'react-native'
-
-import ConversationGoal from './src/Main/Goal/NewGoal/ConversationGoal'
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
@@ -47,6 +47,16 @@ initSegment()
 
 // Initialize Sentry
 initSentry()
+
+setJSExceptionHandler((error, isFatal) => {
+    if (isFatal) {
+        track(E.ERROR_OCCURED)
+    }
+}, true)
+
+// setNativeExceptionHandler((errorString) => {
+//     console.log('setNativeExceptionHandler')
+// })
 
 export default class App extends React.Component {
     constructor(props) {
@@ -65,6 +75,7 @@ export default class App extends React.Component {
 
     render() {
         console.disableYellowBox = true
+
         return (
             <ThemeProvider>
                 <ReduxProvider store={store}>

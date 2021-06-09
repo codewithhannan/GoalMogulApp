@@ -122,16 +122,13 @@ class NotificationCard extends React.PureComponent {
 
     renderContent(item, isInvalidCommentNotif) {
         const { created, parsedNoti } = item
-
         let textToDisplay =
             parsedNoti && parsedNoti.notificationMessage
                 ? parsedNoti.notificationMessage
                 : ''
 
         let actorName = _.get(item, 'parsedNoti.actorName', undefined)
-
         let startWithName = textToDisplay.startsWith(actorName)
-
         if (actorName && startWithName) {
             textToDisplay = textToDisplay.replace(`${actorName}`, '')
         }
@@ -175,11 +172,13 @@ class NotificationCard extends React.PureComponent {
 
     render() {
         const { item } = this.props
+
         if (!item) return null
         if (!item.parsedNoti) return null
 
         // Right now we do a hack to go around invalid commentRef
         const isInvalidCommentNotif = item.commentRef === null
+
         if (item.parsedNoti.error && !isInvalidCommentNotif) {
             console.warn(
                 `${DEBUG_KEY}: invalid notification with error: `,
@@ -222,6 +221,8 @@ const styles = {
 const mapStateToProps = (state, props) => {
     const { data } = state.notification.unread
     const { item } = props
+
+    console.log()
     let read = true
     if (item && item._id) {
         read = !data.some((a) => a._id === item._id)

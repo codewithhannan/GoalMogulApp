@@ -8,6 +8,7 @@ import { reducer as formReducer } from 'redux-form'
 
 /* reducers */
 import Tooltip from './TooltipReducer'
+import FriendsRequests from './FriendsRequestReducer'
 import Challenges from './Challenges'
 import Popup from './PopupReducers'
 import AuthReducers from './AuthReducers'
@@ -138,6 +139,7 @@ export const reducers = combineReducers({
     account: AccountsReducers,
     usersVisited: VisitedUsers,
     toasts: ToastsReducers,
+    friendsRequest: FriendsRequests,
 })
 
 export default persistReducer(rootPersistConfig, reducers)

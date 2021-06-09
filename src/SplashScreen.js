@@ -14,8 +14,8 @@ import {
 /* Asset */
 import LogoText from './asset/header/GMText.png'
 import LogoIcon from './asset/header/header-logo-white.png'
-import HandshakeArt from './asset/header/handshake.png'
-import { trackViewScreen } from './monitoring/segment'
+
+import { track, trackViewScreen, EVENT as E } from './monitoring/segment'
 import { Screen } from './monitoring/segment/Constants'
 import { IS_BIG_IPHONE } from './Utils/Constants'
 // Components
@@ -195,8 +195,14 @@ const styles = {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        registration: () => Actions.push('registrationAccount'),
-        login: () => Actions.push('login'),
+        registration: () => {
+            Actions.push('registrationAccount')
+            track(E.SPLASH_SCREEN_SIGN_UP)
+        },
+        login: () => {
+            Actions.push('login')
+            track(E.LOGIN_STARTED)
+        },
         tryAutoLoginV2: (params) => dispatch(tryAutoLoginV2(params)),
         getUserVisitedNumber: (params) =>
             dispatch(getUserVisitedNumber(params)),

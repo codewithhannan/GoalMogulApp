@@ -128,6 +128,7 @@ import OnboardingWaitlist from './Main/Onboarding/OnboardingWaitlist'
 import OnboardingPhoneVerification from './Main/Onboarding/OnboardingPhoneVerification'
 import OnboardingComfirmPhone from './Main/Onboarding/OnboardingComfirmPhone'
 import ConversationGoal from './Main/Goal/NewGoal/ConversationGoal'
+import { EVENT as E, track } from './monitoring/segment'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -209,9 +210,29 @@ class RouterComponent extends Component {
     onTabPress = (all) => {
         const { state, isFocused } = all.navigation
 
+        switch (state.key) {
+            case 'homeTab':
+                track(E.BOTTOM_HOME_CLICKED)
+                break
+            case 'exploreTab':
+                track(E.BOTTOM_TRIBE_CLICKED)
+                break
+            case 'profileTab':
+                track(E.BOTTOM_PROFILE_CLICKED)
+                break
+            case 'notificationTab':
+                track(E.BOTTOM_NOTIFICATION_CLICKED)
+                break
+            case 'chatTab':
+                track(E.BOTTOM_CHAT_CLICKED)
+                break
+            default:
+                return null
+        }
+
         // Back to initial for homeTab
         if (state.key === 'homeTab' && isFocused() && state.routes.length > 1) {
-            return Actions.popTo('home')
+            return Actions.popTo('home'), track(EVENT.BOTTOM_HOME_CLICKED, {})
         }
 
         // Back to initial for exploreTab

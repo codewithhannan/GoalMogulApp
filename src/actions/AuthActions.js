@@ -33,8 +33,6 @@ import {
     loadTutorialState,
 } from '../redux/modules/User/TutorialActions'
 
-import moment from 'moment'
-
 import { refreshActivityFeed } from '../redux/modules/home/feed/actions'
 
 import { refreshGoalFeed } from '../redux/modules/home/mastermind/actions'
@@ -74,6 +72,7 @@ import { TUTORIAL_MARK_USER_ONBOARDED } from '../redux/modules/User/Tutorials'
 import { getVisitedTime, userLogout } from '../reducers/UserVisited'
 import { resetToastData } from '../reducers/ToastReducers'
 import { clearPopupData } from '../reducers/PopupReducers'
+import { trackWithProperties } from 'expo-analytics-segment'
 
 const DEBUG_KEY = '[ Action Auth ]'
 
@@ -133,6 +132,7 @@ const authenticate = (
 ) => {
     // Call the endpoint to use username and password to signin
     // Obtain the credential
+
     const data = validateEmail(username)
         ? {
               email: username,
@@ -172,6 +172,10 @@ const authenticate = (
                 username,
             })
 
+            trackWithProperties(E.LOGIN_COMPLETED, {
+                error_details: errorMessage,
+            })
+
             dispatch({
                 type: LOGIN_USER_FAIL,
             })
@@ -194,9 +198,11 @@ const authenticate = (
                 undefined
             )
 
-            console.log('USER AUTHENTICATE', res)
-
             if (!res.token || !is2xxRespose(res.status)) {
+                trackWithProperties(E.LOGIN_COMPLETED, {
+                    result: 'error',
+                })
+
                 if (!is4xxResponse(res.status)) {
                     // Record failure in Sentry excluding user behavior
                     new SentryRequestBuilder(
@@ -225,6 +231,9 @@ const authenticate = (
                 isOnBoarded: res.isOnBoarded,
                 accountOnHold: res.accountOnHold,
             }
+            trackWithProperties(E.LOGIN_COMPLETED, {
+                result: 'success',
+            })
 
             TokenService.mountUser(res.userId)
             await TokenService.populateAndPersistToken(
@@ -339,8 +348,6 @@ const mountUserWithToken = (
         getState
     )
 
-    console.log('THIS IS USER OBJECT', userObject)
-
     // Let the screen transition happen first
     // before waiting on potential long duration operations
 
@@ -362,6 +369,7 @@ const mountUserWithToken = (
         // Go to home page
 
         Actions.replace('drawer')
+
         tokenObjectToUpdate = _.set(tokenObjectToUpdate, 'isOnboarded', true)
     }
 
@@ -514,6 +522,7 @@ export const authenticateInvitorCode = (value, onError) => async (
         })
 
         // Go to home page
+
         Actions.replace('drawer')
     }
 
@@ -560,17 +569,20 @@ export const authenticateInvitorCode = (value, onError) => async (
 
 export const getUserVisitedNumber = () => async (dispatch, getState) => {
     const { token } = getState().user
-
     try {
         const res = await API.post('secure/user/profile/app-visits', token)
-
         if (res.status === 200) {
             dispatch(getVisitedTime(res.AppVisits))
         }
-
-        console.log('THIS IS RESPONSE OF USER GET', res)
+        console.log(
+            `${DEBUG_KEY} This is response of getting user's visited times`,
+            res
+        )
     } catch (error) {
-        console.log('THIS IS ERROR OF USER GET', error.message)
+        console.log(
+            `${DEBUG_KEY} Error getting user's visited times`,
+            error.message
+        )
     }
 }
 
@@ -598,6 +610,7 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     } catch (err) {
         // When refresh auth token failed, it will reject the promise returned. Hence we
         // should catch the error here
+
         Logger.log(
             '[tryAutoLoginV2] fail to get auth token with error: ',
             err,
@@ -624,17 +637,14 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         accountOnHold,
     } = refreshTokenObject
 
-    let { showQuestions } = refreshTokenObject
-    let { visitedTime } = getState().usersVisited
+    let { visitedTime } = getState().usersVisited // The visited time is one less than the value in the state because we are calling it in the ACTIVITY FEED
 
-    let userCreated = getState().user.user.created
-    let currentDate = moment(Date.now())
-    let comparedUser = moment.duration(currentDate.diff(userCreated)).asDays()
-    let daysCreated = Math.floor(comparedUser)
+    console.log('THIS IS THE VISITED TIME', visitedTime)
+    // let userCreated = getState().user.user.created
 
-    if (daysCreated == 0) {
-        showQuestions = true
-    }
+    // let currentDate = moment(Date.now())
+    // let comparedUser = moment.duration(currentDate.diff(userCreated)).asDays()
+    // let daysCreated = Math.floor(comparedUser)
 
     // Saturate User.js and AuthReducers.js with user token and userId for other actions to work
     dispatch({
@@ -666,27 +676,14 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
             Actions.replace('waitlist')
         } else if (!accountOnHold && !userObject.isOnBoarded) {
             // Go to onboarding flow
+
             Actions.replace('registration')
-
-            // } else if (!accountOnHold && userObject.isOnBoarded && showQuestions) {
-            //     // Go to onboarding flow
-            //     Actions.replace('questions')
-            //     await TokenService.populateAndPersistToken(
-            //         authToken,
-            //         refreshToken,
-            //         true,
-            //         userId,
-            //         false
-            //     )
         } else {
-            // This is to update the TokenService isOnboarded flag
-
             await TokenService.populateAndPersistToken(
                 authToken,
                 refreshToken,
                 true,
-                userId,
-                accountOnHold
+                userId
             )
 
             // Pass along the user onboarded state to state.user.user.isOnboarded
@@ -698,18 +695,17 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
             })
 
             // Go to home page
+
             Actions.replace('drawer')
         }
     } else {
         // Pass along the user onboarded state to state.user.user.isOnboarded
-
         dispatch({
             type: TUTORIAL_MARK_USER_ONBOARDED,
             payload: {
                 userId: userId,
             },
         })
-
         const userObject = await fetchAppUserProfile(authToken, userId)(
             dispatch,
             getState
@@ -718,15 +714,22 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         // Go to home page
         if (visitedTime == 1 && !accountOnHold && userObject.isOnBoarded) {
             Actions.replace('contacts')
+        } else if (
+            visitedTime == 2 &&
+            !accountOnHold &&
+            userObject.isOnBoarded
+        ) {
+            Actions.replace('questions')
         } else {
             Actions.replace('drawer')
         }
     }
 
     // Add a 50ms delay here to let screen transition finishes
-    await new Promise((resolve, rej) => setTimeout(() => resolve(), 50))
+    await new Promise((resolve, rej) => setTimeout(() => resolve(), 500))
 
     // Step 2 hide splash screen
+
     dispatchHideSplashScreen(dispatch)
 
     // Step 3 Setup all necessary service and configuration

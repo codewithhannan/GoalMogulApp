@@ -74,7 +74,7 @@ class TokenService {
 
         try {
             const credentialJsonString = await SecureStore.getItemAsync(key)
-            console.log('THIS IS CREDENTIQLASS', credentialJsonString)
+
             return JSON.parse(credentialJsonString)
         } catch (err) {
             // Best effort. Worst case scenario user needs to re-login
@@ -366,8 +366,7 @@ class TokenService {
         refreshToken,
         isOnboarded,
         userId,
-        accountOnHold,
-        showQuestions
+        accountOnHold
     ) {
         let userIdToUse = userId || this._userId
 
@@ -393,7 +392,6 @@ class TokenService {
                 isOnboarded,
                 userId: userIdToUse,
                 accountOnHold: accountOnHold,
-                showQuestions: showQuestions,
             }
             // Replace the authToken in cache
             this._authTokenObject = authTokenObject
@@ -417,7 +415,6 @@ class TokenService {
                 isOnboarded,
                 userId: userIdToUse,
                 accountOnHold: accountOnHold,
-                showQuestions: false,
             }
             // Replace the refreshToken in cache
             this._refreshTokenObject = refreshTokenObject

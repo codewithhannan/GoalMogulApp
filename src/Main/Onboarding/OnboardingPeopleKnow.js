@@ -10,11 +10,9 @@ import {
     View,
     Text,
     Dimensions,
-    Image,
     FlatList,
     TouchableOpacity,
 } from 'react-native'
-import * as WebBrowser from 'expo-web-browser'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import OnboardingHeader from './Common/OnboardingHeader'
@@ -23,12 +21,9 @@ import OnboardingStyles, { getCardBottomOffset } from '../../styles/Onboarding'
 
 import { text, default_style, color } from '../../styles/basic'
 
-import { PRIVACY_POLICY_URL } from '../../Utils/Constants'
 import { uploadContacts } from '../../redux/modules/registration/RegistrationActions'
-import { REGISTRATION_SYNC_CONTACT_NOTES } from '../../redux/modules/registration/RegistrationReducers'
 import DelayedButton from '../Common/Button/DelayedButton'
 import SyncContactInfoModal from './SyncContactInfoModal'
-import Icons from '../../asset/base64/Icons'
 import {
     wrapAnalytics,
     SCREENS,
@@ -45,9 +40,6 @@ import { FONT_FAMILY } from '../../styles/basic/text'
 import { api, api as API } from '../../redux/middleware/api'
 import { ActivityIndicator } from 'react-native-paper'
 
-const screenWidth = Math.round(Dimensions.get('window').width)
-const { button: buttonStyle, text: textStyle } = OnboardingStyles
-
 class OnboardingPeopleKnow extends React.Component {
     constructor(props) {
         super(props)
@@ -59,6 +51,7 @@ class OnboardingPeopleKnow extends React.Component {
             skip: 0,
             limit: 20,
             pymkLoading: true,
+            requestsSent: 0,
         }
     }
 
@@ -88,8 +81,9 @@ class OnboardingPeopleKnow extends React.Component {
     }
 
     onNotNow = () => {
-        trackWithProperties(E.REG_CONTACT_SYNC_SKIP, {
-            UserId: this.props.userId,
+        trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
+            onboardingStep: 'add_friends',
+            // friends_added: 0,
         })
         const screenTransitionCallback = () => {
             Actions.push('registration_community_guideline')
@@ -98,7 +92,14 @@ class OnboardingPeopleKnow extends React.Component {
     }
 
     renderPYMK = ({ item, index }) => {
-        return <PYMKCard user={item} index={index} hideOptions />
+        return (
+            <PYMKCard
+                user={item}
+                index={index}
+                hideOptions
+                requests={this.state.requestsSent}
+            />
+        )
     }
 
     renderItemSeparator = () => {
@@ -276,6 +277,8 @@ class OnboardingPeopleKnow extends React.Component {
      */
 
     render() {
+        console.log('THESE ARE THE FRIENDS', this.state.requestsSent)
+
         return (
             <View
                 style={[
@@ -367,6 +370,8 @@ const mapStateToProps = (state) => {
     const { userId, token } = state.user
     const { suggested } = state.meet
     const { data, loading } = suggested
+    const { friendsRequest } = state
+
     return { userId, pymkData: data, loading, token }
 }
 

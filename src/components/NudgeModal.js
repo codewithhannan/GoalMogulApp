@@ -177,7 +177,7 @@ class ModalTester extends Component {
                             >
                                 <Text
                                     style={{
-                                        fontWeight: '40',
+                                        fontWeight: '400',
                                         fontSize: 15,
                                     }}
                                 >
@@ -195,7 +195,7 @@ class ModalTester extends Component {
                                 }}
                             >
                                 <Text
-                                    style={{ fontWeight: '40', fontSize: 15 }}
+                                    style={{ fontWeight: '400', fontSize: 15 }}
                                 >
                                     Do you want to send a nudge?
                                 </Text>

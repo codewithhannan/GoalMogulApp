@@ -197,8 +197,6 @@ const mapStateToProps = (state, props) => {
 
     const { shouldPreload } = props
 
-    console.log('THIS IS DATA PRELOAD', state.search)
-
     if (shouldPreload && (!searchContent || searchContent.trim() === '')) {
         // Display preload data when search content is null and shouldPreload is true
 
