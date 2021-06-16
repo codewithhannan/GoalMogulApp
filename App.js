@@ -32,15 +32,20 @@ import LiveChatService from './src/socketio/services/LiveChatService'
 import MessageStorageService from './src/services/chat/MessageStorageService'
 import { initSegment, EVENT as E, track } from './src/monitoring/segment'
 import { initSentry } from './src/monitoring/sentry'
+import * as Linking from 'expo-linking'
+import MultipleImagePicker from './src/Main/Menu/MutlipleImagePicker'
 
 import { setJSExceptionHandler } from 'react-native-exception-handler' // If an error occurs or app crashes these functions are called we used them to send sengments
 
 // UI theme provider
 import ThemeProvider from './theme/ThemeProvider'
+import FeedbackCard from './src/Main/Menu/FeedBackCard'
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
 Text.defaultProps.allowFontScaling = false
+
+const DEBUG_KEY = '[APP ROOT]'
 
 // Initialize Segment
 initSegment()
@@ -51,6 +56,7 @@ initSentry()
 setJSExceptionHandler((error, isFatal) => {
     if (isFatal) {
         track(E.ERROR_OCCURED)
+        console.log(`${DEBUG_KEY} Error while doing the action`, error)
     }
 }, true)
 
@@ -58,12 +64,15 @@ setJSExceptionHandler((error, isFatal) => {
 //     console.log('setNativeExceptionHandler')
 // })
 
+const prefix = Linking.makeUrl('/')
+
 export default class App extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             appReady: false,
             image: null,
+            data: null,
         }
 
         // must be initialized in this order as each depends on the previous
@@ -72,6 +81,28 @@ export default class App extends React.Component {
         MessageStorageService.initialize()
         StatusBar.setBarStyle('light-content')
     }
+
+    // getInitialUrl = async () => {
+    //     const initialUrl = await Linking.getInitialURL()
+    //     console.log('THIS IS DATA OF INISITAL', initialUrl)
+    //     if (initialUrl) this.setState({ data: Linking.parse(initialUrl) })
+    // }
+
+    // handleDeepLink = (event) => {
+    //     let data = Linking.parse(event.url)
+    //     this.setState({ data })
+    // }
+
+    // componentDidMount() {
+    //     Linking.addEventListener('url', this.handleDeepLink)
+    //     if (!this.state.data) {
+    //         this.getInitialUrl()
+    //     }
+    // }
+
+    // componentWillUnmount() {
+    //     Linking.removeEventListener('url')
+    // }
 
     render() {
         console.disableYellowBox = true
@@ -91,6 +122,9 @@ export default class App extends React.Component {
                     </PersistGate>
                 </ReduxProvider>
             </ThemeProvider>
+
+            // <MultipleImagePicker />
+
             // <ConversationGoal />
         )
     }

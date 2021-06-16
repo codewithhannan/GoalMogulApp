@@ -4,6 +4,12 @@ import React, { Component } from 'react'
 import { View, Image, Text } from 'react-native'
 import { color, default_style } from '../styles/basic'
 import VisibleGoals from '../asset/image/Friends_Goals.png'
+import LottieView from 'lottie-react-native'
+import FRIENDS_GOAL_LOTTIE from '../asset/toast_popup_lotties/promt_/promt_.json'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 
 class FriendsGoals extends Component {
     constructor(props) {
@@ -35,13 +41,19 @@ class FriendsGoals extends Component {
                             alignItems: 'center',
                         }}
                     >
-                        <Image
+                        {/* <Image
                             source={VisibleGoals}
                             style={{
                                 height: 130,
                                 width: '100%',
                                 resizeMode: 'contain',
                             }}
+                        /> */}
+                        <LottieView
+                            style={{ height: hp(19), bottom: 3 }}
+                            source={FRIENDS_GOAL_LOTTIE}
+                            autoPlay
+                            loop
                         />
                     </View>
                     <View

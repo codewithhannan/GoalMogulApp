@@ -36,6 +36,7 @@ import {
     validatePhoneCode,
     cancelRegistration,
 } from '../../redux/modules/registration/RegistrationActions'
+PhoneVerificationMoal
 import UserAgreementCheckBox from './UserAgreementCheckBox'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { DEVICE_PLATFORM } from '../../Utils/Constants'
@@ -47,6 +48,7 @@ import {
     EVENT as E,
 } from '../../monitoring/segment'
 import { trackWithProperties } from 'expo-analytics-segment'
+import PhoneVerificationMoal from './PhoneVerificationModal'
 
 const NEXT_STEP = 'registration'
 const FIELD_REQUIREMENTS = {
@@ -541,7 +543,8 @@ class RegistrationAccount extends React.Component {
                         </DelayedButton>
                     </View>
                 </KeyboardAwareScrollView>
-                {/* As documented in the header, this is for phone verification method 2
+                {/* As documented in the header, this is for phone verification
+                method 2
                 <PhoneVerificationMoal
                     isOpen={this.state.isModalOpen}
                     phoneVerify={(code) => this.phoneVerify(code)}

@@ -35,14 +35,6 @@ import {
 } from '../../redux/modules/User/TutorialActions'
 
 // Assets
-import Setting from '../../asset/header/setting.png'
-import Challenges from '../../asset/icons/Challenges.png'
-import Mail from '../../asset/icons/Mail.png'
-import Settings from '../../asset/icons/Settings.png'
-import Friends from '../../asset/icons/Friends.png'
-import Feedback from '../../asset/icons/Feedback.png'
-import Policy from '../../asset/icons/Policy.png'
-import Logout from '../../asset/icons/LogOut.png'
 import Icons from '../../asset/base64/Icons'
 import Silver from '../../asset/banner/silver.png'
 import Gold from '../../asset/banner/gold.png'
@@ -334,9 +326,10 @@ class Menu extends React.PureComponent {
                         <DelayedButton
                             activeOpacity={0.6}
                             onPress={() =>
-                                Linking.openURL(
-                                    `mailto:support@goalmogul.com?subject=${this.props.name}&body=body`
-                                )
+                                // Linking.openURL(
+                                //     `mailto:support@goalmogul.com?subject=${this.props.name}&body=body`
+                                // )
+                                Actions.push('sendFeedback')
                             }
                             style={styles.buttonStyle}
                         >

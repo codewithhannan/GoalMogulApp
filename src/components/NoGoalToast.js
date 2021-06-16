@@ -8,6 +8,12 @@ import NoGoal from '../asset/image/NoGoal_Toast.png'
 import { openProfileDetailEditForm, refreshProfileData } from '../actions'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
+import LottieView from 'lottie-react-native'
+import NO_GOAL_LOTTIE from '../asset/toast_popup_lotties/You_have no_goals/You_have no_ goals.json'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 
 class NoGoalToast extends Component {
     constructor(props) {
@@ -86,29 +92,23 @@ class NoGoalToast extends Component {
                         }}
                     >
                         <View style={{ flexDirection: 'row' }}>
-                            <View
+                            <LottieView
                                 style={{
-                                    width: '45%',
-                                    marginTop: 10,
+                                    height: hp(14),
+
+                                    left: 5,
+                                    top: 2,
                                 }}
-                            >
-                                <Image
-                                    source={NoGoal}
-                                    style={{
-                                        height: 120,
-                                        width: '100%',
-                                        resizeMode: 'contain',
-                                        top: 5,
-                                        right: 3,
-                                    }}
-                                />
-                            </View>
+                                source={NO_GOAL_LOTTIE}
+                                autoPlay
+                                loop
+                            />
                             <View
                                 style={{
                                     width: '55%',
                                     marginTop: 30,
-                                    right: 8,
-                                    marginHorizontal: 2,
+
+                                    marginHorizontal: 22,
                                 }}
                             >
                                 <Text

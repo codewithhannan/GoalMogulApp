@@ -14,10 +14,13 @@ import { Entypo } from '@expo/vector-icons'
 import Constants from 'expo-constants'
 import { color, default_style } from '../styles/basic'
 import OnboardingStyles from '../styles/Onboarding'
-
+import LottieView from 'lottie-react-native'
+import PRIVATE_GOAL_LOTTIE from '../asset/toast_popup_lotties/Goal-visibility/Goal-visibilty.json'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 import GoalVisible from '../asset/image/Goal_Visible.png'
-
-const { text: textStyle, button: buttonStyle } = OnboardingStyles
 
 class ModalTester extends Component {
     constructor(props) {
@@ -105,6 +108,8 @@ class ModalTester extends Component {
                     style={{
                         borderRadius: 20,
                     }}
+                    animationIn="zoomInUp"
+                    animationInTiming={400}
                 >
                     <View
                         style={{
@@ -117,9 +122,9 @@ class ModalTester extends Component {
                             style={{
                                 // height: '0%',
                                 width: '100%',
-                                backgroundColor: 'green',
+
                                 borderRadius: 8,
-                                backgroundColor: color.GV_MODAL,
+                                backgroundColor: color.GM_BACKGROUND,
                             }}
                         >
                             <View
@@ -143,7 +148,7 @@ class ModalTester extends Component {
                                 </Text>
                                 <TouchableOpacity
                                     onPress={() => this.props.handleClose()}
-                                    style={{ marginTop: -2 }}
+                                    style={{ bottom: 3 }}
                                 >
                                     <Entypo
                                         name="cross"
@@ -152,21 +157,22 @@ class ModalTester extends Component {
                                     />
                                 </TouchableOpacity>
                             </View>
-                            <View
-                                style={{
-                                    width: '100%',
-                                    marginTop: 10,
-                                }}
-                            >
-                                <Image
+
+                            {/* <Image
                                     source={GoalVisible}
                                     style={{
                                         height: 170,
                                         width: '100%',
                                         resizeMode: 'contain',
                                     }}
-                                />
-                            </View>
+                                /> */}
+                            <LottieView
+                                style={{ height: hp(22) }}
+                                source={PRIVATE_GOAL_LOTTIE}
+                                autoPlay
+                                loop
+                            />
+
                             <View
                                 style={
                                     {
@@ -178,7 +184,7 @@ class ModalTester extends Component {
                                 <Text
                                     style={{
                                         fontFamily: 'SFProDisplay-Regular',
-                                        fontSize: 16,
+                                        fontSize: 17,
                                         lineHeight: 24,
                                         marginTop: 6,
 
@@ -195,9 +201,9 @@ class ModalTester extends Component {
                                 <Text
                                     style={{
                                         fontFamily: 'SFProDisplay-Semibold',
-                                        fontSize: 16,
+                                        fontSize: 17,
                                         lineHeight: 24,
-                                        marginTop: 30,
+                                        marginTop: 20,
 
                                         width: '90%',
                                         fontWeight: '500',

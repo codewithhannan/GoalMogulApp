@@ -4,6 +4,12 @@ import React, { Component } from 'react'
 import { View, Image, Text } from 'react-native'
 import { color, default_style } from '../styles/basic'
 import LionMascot from '../asset/image/LionMascot_shadow.png'
+import LottieView from 'lottie-react-native'
+import NO_GOALS_LOTTIE from '../asset/toast_popup_lotties/TribeNoGoal/tribeNoGoal.json'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 
 class PrivateGoalsToast extends Component {
     constructor(props) {
@@ -30,7 +36,7 @@ class PrivateGoalsToast extends Component {
                         height: 198,
                     }}
                 >
-                    <View
+                    {/* <View
                         style={{
                             flexDirection: 'row',
                             width: '30%',
@@ -45,7 +51,13 @@ class PrivateGoalsToast extends Component {
                                 left: 15,
                             }}
                         />
-                    </View>
+                    </View> */}
+                    <LottieView
+                        style={{ height: hp(19), left: 5 }}
+                        source={NO_GOALS_LOTTIE}
+                        autoPlay
+                        loop
+                    />
                     <View
                         style={{
                             width: '70%',

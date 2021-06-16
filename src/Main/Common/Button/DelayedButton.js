@@ -84,6 +84,7 @@ class DelayedButton extends React.PureComponent {
                     {...this.props}
                     index={index}
                     onPress={this.handleOnPress}
+                    onLongPress={this.props.onLongPress}
                     disabled={this.state.disabled || this.props.disabled}
                     ref={onRef || (() => {})}
                 >

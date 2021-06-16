@@ -13,6 +13,7 @@ const ImageTypes = [
     'PageImage',
     'GoalImage',
     'ChatFile',
+    'FeedbackImage',
 ]
 const getImageUrl = (type) => {
     let imageType
@@ -28,6 +29,33 @@ const getImageUrl = (type) => {
 
 const ImageUtils = {
     getPresignedUrl(file, token, dispatch, type) {
+        return new Promise(async (resolve, reject) => {
+            const url = getImageUrl(type)
+            const authToken = await TokenService.getAuthToken()
+            const param = {
+                url,
+                method: 'post',
+                data: {
+                    fileType: 'image/jpeg',
+                    token: authToken,
+                },
+            }
+            axios(param)
+                .then((res) => {
+                    const { objectKey, signedRequest } = res.data
+                    if (dispatch) {
+                        dispatch(objectKey)
+                    }
+                    resolve({ signedRequest, file, objectKey })
+                })
+                .catch((err) => {
+                    console.log('error uploading: ', err)
+                    reject(err)
+                })
+        })
+    },
+
+    getPresignedMultipleUrl(file, token, dispatch, type) {
         return new Promise(async (resolve, reject) => {
             const url = getImageUrl(type)
             const authToken = await TokenService.getAuthToken()
@@ -88,6 +116,18 @@ const ImageUtils = {
         })
     },
 
+    async getMultipleImageSize(file) {
+        return await new Promise((resolve, reject) => {
+            let imageUri = []
+            file.map((url) => {
+                return Image.getSize(url, (width, height) => {
+                    imageUri.push({ width, height })
+                    resolve(imageUri)
+                })
+            })
+        })
+    },
+
     /**
      *
      * @param {*} file
@@ -96,6 +136,67 @@ const ImageUtils = {
      * @param {object} capDimensions: { capHeight, capWidth }
      */
     resizeImage(file, width, height, capDimensions) {
+        console.log('file to resize is: ', file)
+        const widthCap =
+            capDimensions && capDimensions.capWidth
+                ? capDimensions.capWidth
+                : 500
+        const heightCap =
+            capDimensions && capDimensions.capHeight
+                ? capDimensions.capHeight
+                : 500
+
+        const cropData = {
+            offset: { x: 0, y: 0 },
+            size: {
+                width,
+                height,
+            },
+            displaySize: {
+                width: widthCap * (width > height ? 1 : width / height),
+                height: heightCap * (height > width ? 1 : height / width),
+            },
+            resizeMode: 'cover',
+        }
+
+        // get info for original image
+        const fileType = 'jpeg'
+        const actions = [
+            {
+                resize: {
+                    width: widthCap * (width > height ? 1 : width / height),
+                    height: heightCap * (height > width ? 1 : height / width),
+                },
+            },
+        ]
+        const saveOptions = {
+            compress: 1, // no compress since we resize the image
+            format: ImageManipulator.SaveFormat.JPEG,
+        }
+
+        const promise = new Promise(async (resolve, reject) => {
+            try {
+                const editedImage = await ImageManipulator.manipulateAsync(
+                    file,
+                    actions,
+                    saveOptions
+                )
+
+                resolve({
+                    uri: editedImage.uri,
+                    name: `photo.${fileType}`,
+                    type: `image/${fileType}`,
+                })
+            } catch (error) {
+                console.log('edited err: ', err)
+                reject(err)
+            }
+        })
+
+        return promise
+    },
+
+    resizeMultipleImage(file, width, height, capDimensions) {
         console.log('file to resize is: ', file)
         const widthCap =
             capDimensions && capDimensions.capWidth

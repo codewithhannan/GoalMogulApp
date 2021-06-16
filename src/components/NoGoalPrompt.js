@@ -25,6 +25,12 @@ import Carousel from 'react-native-snap-carousel' // Version can be specified in
 import NoGoalPromptImage from '../asset/image/NoGoalPrompt.png'
 import NoGoalPromptQuestions from './NoGoalPromptQuestions'
 import DelayedButton from '../Main/Common/Button/DelayedButton'
+import LottieView from 'lottie-react-native'
+import NO_GOAL_LOTTIE from '../asset/toast_popup_lotties/ask_question/ask_question.json'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 
 const MODAL_WIDTH = Dimensions.get('window').width
 const MODAL_HEIGHT = Dimensions.get('window').height
@@ -165,7 +171,12 @@ class NoGoalPrompt extends Component {
         const { name, visitedUser, token } = this.props
         return (
             <>
-                <Modal backdropOpacity={0.8} isVisible={this.props.isVisible}>
+                <Modal
+                    backdropOpacity={0.8}
+                    isVisible={this.props.isVisible}
+                    animationIn="zoomInUp"
+                    animationInTiming={400}
+                >
                     <View
                         style={{
                             flex: 1,
@@ -216,7 +227,7 @@ class NoGoalPrompt extends Component {
                                 Help {name} achieve more!
                             </Text>
 
-                            <Image
+                            {/* <Image
                                 source={NoGoalPromptImage}
                                 resizeMode="contain"
                                 style={{
@@ -226,6 +237,19 @@ class NoGoalPrompt extends Component {
                                     top: 76,
                                     left: 20,
                                 }}
+                            /> */}
+
+                            <LottieView
+                                style={{
+                                    height: hp(21),
+                                    top: 20,
+                                    alignSelf: 'center',
+
+                                    position: 'absolute',
+                                }}
+                                source={NO_GOAL_LOTTIE}
+                                autoPlay
+                                loop
                             />
                             <Text
                                 style={{

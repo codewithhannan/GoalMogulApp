@@ -1,5 +1,6 @@
 {
     "expo": {
+        "scheme": "goalmogul",
         "name": "GoalMogul",
         "icon": "./assets/logo.png",
         "sdkVersion": "38.0.0",

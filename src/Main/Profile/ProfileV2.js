@@ -881,7 +881,7 @@ class ProfileV2 extends Component {
                         }
                     />
                     <NudgeModal
-                        name={this.props.user.name}
+                        name={getFirstName(this.props.user.name)}
                         isVisible={this.state.showNudgeAddGoals}
                         onClose={() =>
                             this.setState({

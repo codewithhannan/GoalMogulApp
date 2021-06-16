@@ -381,6 +381,8 @@ class CreateGoalModal extends React.Component {
 
     handleModalYes = (scheduleNotificationCallback) => {
         this.setState({ goalModalVisible: false })
+
+        console.log('YE CHAL RAHA HA')
         Keyboard.dismiss()
         const errors = validate(this.props.formVals.values)
         console.log(
@@ -394,7 +396,7 @@ class CreateGoalModal extends React.Component {
             return Alert.alert('Error', 'You have incomplete fields.')
         }
 
-        const { goal, initializeFromState, uploading } = this.props
+        const { goal, initializeFromState, uploading, goals } = this.props
         if (!uploading) return // when uploading is false, it's actually uploading.
         const goalId = goal ? goal._id : undefined
 
@@ -462,7 +464,7 @@ class CreateGoalModal extends React.Component {
             return Alert.alert('Error', 'You have incomplete fields.')
         }
 
-        const { goal, initializeFromState, uploading } = this.props
+        const { goal, initializeFromState, uploading, goals } = this.props
         if (!uploading) return // when uploading is false, it's actually uploading.
         const goalId = goal ? goal._id : undefined
 

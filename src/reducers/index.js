@@ -58,6 +58,7 @@ import TabIconReducers from '../redux/modules/navigation/TabIconReducers'
 import ChatRoomMembersReducers from '../redux/modules/chat/ChatRoomMembersReducers'
 import ShareToChatReducers from '../redux/modules/chat/ShareToChatReducers'
 import AccountsReducers from './ExistingAccounts'
+import FeedBackReducers from './FeedbackReducers'
 
 import VisitedUsers from './UserVisited'
 
@@ -140,6 +141,7 @@ export const reducers = combineReducers({
     usersVisited: VisitedUsers,
     toasts: ToastsReducers,
     friendsRequest: FriendsRequests,
+    feedback: FeedBackReducers,
 })
 
 export default persistReducer(rootPersistConfig, reducers)

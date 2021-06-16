@@ -450,6 +450,8 @@ class ActivityFeed extends Component {
     render() {
         const { data, userInvitedFriendsCount, refreshing } = this.props
 
+        console.log('THIS IS DATA OF THE HOME FEED', data)
+
         let processedData = _.clone(data)
 
         if (!processedData.length && !refreshing) {

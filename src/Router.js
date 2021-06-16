@@ -16,6 +16,7 @@ import {
 } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import LoginPage from './LoginPage'
+import * as Linking from 'expo-linking'
 // Chat
 import Chat from './Main/Chat/Chat'
 import ChatRoomConversation from './Main/Chat/ChatRoom/ChatRoomConversation'
@@ -129,6 +130,8 @@ import OnboardingPhoneVerification from './Main/Onboarding/OnboardingPhoneVerifi
 import OnboardingComfirmPhone from './Main/Onboarding/OnboardingComfirmPhone'
 import ConversationGoal from './Main/Goal/NewGoal/ConversationGoal'
 import { EVENT as E, track } from './monitoring/segment'
+import SendFeedback from './Main/Menu/SendFeedback'
+import MultipleImagePicker from './Main/Menu/MutlipleImagePicker'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -141,8 +144,8 @@ function getCommonScenes(tab) {
             key={`${prefix}ContactMessage`}
             component={SendContactMessage}
         />,
-
-        ,
+        <Scene key={`${prefix}ImagePicker`} component={MultipleImagePicker} />,
+        <Scene key={`${prefix}sendFeedback`} component={SendFeedback} />,
         <Scene key={`${prefix}goal`} component={GoalDetailCard} />,
         <Scene key={`${prefix}post`} component={PostDetailCard} />,
         <Scene key={`${prefix}share`} component={ShareDetailCard} />,

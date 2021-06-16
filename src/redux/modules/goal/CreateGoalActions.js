@@ -52,6 +52,7 @@ export const validate = (values) => {
 }
 
 // Submit values
+
 export const submitGoal = (
     values,
     userId,
@@ -59,7 +60,6 @@ export const submitGoal = (
     callback,
     goalId,
     { needOpenProfile, needRefreshProfile },
-
     pageId // TODO: profile reducer redesign to change here
 ) => (dispatch, getState) => {
     const { token, user } = getState().user
@@ -186,7 +186,6 @@ export const submitGoal = (
         },
         token
     )
-
         .then((res) => {
             if (res.status === 200 || (res.data && !_.isEmpty(res.data))) {
                 console.log(`${DEBUG_KEY}: creating goal success`)
@@ -194,7 +193,6 @@ export const submitGoal = (
                 // TODO: dispatch changes to feed and clear CreateGoalForm state
                 callback(res.data)
                 onSuccess()
-
                 // dispatch(reset('createGoalModal'));
                 return
             }

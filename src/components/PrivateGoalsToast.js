@@ -4,6 +4,12 @@ import React, { Component } from 'react'
 import { View, Image, Text } from 'react-native'
 import { color, default_style } from '../styles/basic'
 import PrivateGoal from '../asset/image/Private_Goal.png'
+import LottieView from 'lottie-react-native'
+import PRIVATE_GOAL_LOTTIE from '../asset/toast_popup_lotties/All_your goals set to private/All_your goals set to private.json'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 
 class PrivateGoalsToast extends Component {
     constructor(props) {
@@ -29,22 +35,13 @@ class PrivateGoalsToast extends Component {
                         height: 165,
                     }}
                 >
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            width: '35%',
-                            marginHorizontal: 10,
-                        }}
-                    >
-                        <Image
-                            source={PrivateGoal}
-                            style={{
-                                height: 130,
-                                width: '100%',
-                                resizeMode: 'contain',
-                            }}
-                        />
-                    </View>
+                    <LottieView
+                        style={{ height: hp(19) }}
+                        source={PRIVATE_GOAL_LOTTIE}
+                        autoPlay
+                        loop
+                    />
+
                     <View
                         style={{
                             width: '60%',
