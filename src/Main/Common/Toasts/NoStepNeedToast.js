@@ -2,24 +2,22 @@
 
 import React, { Component } from 'react'
 import { View, Image, Text } from 'react-native'
-import { color, default_style } from '../styles/basic'
-import PrivateGoal from '../asset/image/NoComments.png'
+
 import { connect } from 'react-redux'
-import { getFirstName } from '../Utils/HelperMethods'
 import LottieView from 'lottie-react-native'
-import NO_COMMENT_LOTTIE from '../asset/toast_popup_lotties/Help_to get first comment on goal/Help_to get first comment on goal.json'
+import NO_STEP_LOTTIE from '../../../asset/toast_popup_lotties/NoStepsNeeds/NoStepsNeeds.json'
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen'
+import { color } from '../../../styles/basic'
 
-class PrivateGoalsToast extends Component {
+class NoStepNeedToast extends Component {
     constructor(props) {
         super(props)
     }
 
     render() {
-        const name = getFirstName(this.props.name)
         return (
             <>
                 <View
@@ -27,7 +25,7 @@ class PrivateGoalsToast extends Component {
                         backgroundColor: color.PG_BACKGROUND,
 
                         marginHorizontal: 20,
-                        flexDirection: 'row',
+
                         justifyContent: 'center',
                         alignItems: 'center',
                         // paddingHorizontal: 96,
@@ -58,7 +56,7 @@ class PrivateGoalsToast extends Component {
                         /> */}
                         <LottieView
                             style={{ height: hp(16) }}
-                            source={NO_COMMENT_LOTTIE}
+                            source={NO_STEP_LOTTIE}
                             autoPlay
                             loop
                         />
@@ -78,19 +76,7 @@ class PrivateGoalsToast extends Component {
                                 fontFamily: 'SFProDisplay-Bold',
                             }}
                         >
-                            Help {name} to get the first comment on his goal.
-                        </Text>
-
-                        <Text
-                            style={{
-                                fontSize: 15,
-                                lineHeight: 19,
-
-                                fontFamily: 'SFProDisplay-Regular',
-                            }}
-                        >
-                            Oh no! No one has commented on {name}'s goal yet! Be
-                            the first to leave a suggestion or encouragement!
+                            This goal has currently no Steps and Needs
                         </Text>
                     </View>
                 </View>
@@ -108,4 +94,4 @@ const mapStateToProps = (state, props) => {
     }
 }
 
-export default connect(mapStateToProps, {})(PrivateGoalsToast)
+export default connect(mapStateToProps, {})(NoStepNeedToast)

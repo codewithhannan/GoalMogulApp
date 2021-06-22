@@ -290,6 +290,8 @@ class ActivityHeader extends Component {
 
     render() {
         const { item } = this.props
+
+        console.log('THIS IS ITEM', item)
         if (!item || _.isEmpty(item)) return null
 
         return <View>{this.renderUserDetail(item)}</View>

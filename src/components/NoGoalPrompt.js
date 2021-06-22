@@ -22,8 +22,6 @@ import { connect } from 'react-redux'
 import { getUserData } from '../redux/modules/User/Selector'
 import Carousel from 'react-native-snap-carousel' // Version can be specified in package.json
 
-import NoGoalPromptImage from '../asset/image/NoGoalPrompt.png'
-import NoGoalPromptQuestions from './NoGoalPromptQuestions'
 import DelayedButton from '../Main/Common/Button/DelayedButton'
 import LottieView from 'lottie-react-native'
 import NO_GOAL_LOTTIE from '../asset/toast_popup_lotties/ask_question/ask_question.json'

@@ -381,7 +381,7 @@ class HomeFeedToast extends Component {
                 }
                 case 8: {
                     if (this.props.closeFriendsToVisit.length > 0) {
-                        ;`You haven’t checked out ${
+                        toast.mainHeading.title = `You haven’t checked out ${
                             this.props.closeFriendsToVisit.length == 0
                                 ? null
                                 : this.props.closeFriendsToVisit[0].name

@@ -87,6 +87,7 @@ import StepAndNeedCardV3 from './V3/StepAndNeedCardV3'
 import NoCommentsToast from '../../../components/NoCommentsToast'
 import NoStepsToast from '../../../components/NoStepsToast'
 import { ScrollView } from 'react-native-gesture-handler'
+import NoStepNeedToast from '../../Common/Toasts/NoStepNeedToast'
 
 const DEBUG_KEY = '[ UI GoalDetailCardV3 ]'
 const COMPONENT_NAME = 'goalDetail'
@@ -785,6 +786,8 @@ export class GoalDetailCardV3 extends React.Component {
             return <NoCommentsToast name={this.props.name} />
         } else if (this.props.self && focus == undefined) {
             return <NoStepsToast />
+        } else if (!this.props.self && focus == undefined) {
+            return <NoStepNeedToast />
         } else {
             return (
                 <EmptyResult

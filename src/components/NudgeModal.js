@@ -17,6 +17,8 @@ import { addNudge, NUDGE_TYPES } from '../actions/NudgeActions'
 import { connect } from 'react-redux'
 import LottieView from 'lottie-react-native'
 import NO_GOAL_LOTTIE from '../asset/toast_popup_lotties/help_friend/help_friend.json'
+import YES_LOTTIE from '../asset/toast_popup_lotties/yes-button/yes_button.json'
+
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -40,14 +42,15 @@ class ModalTester extends Component {
                 <TouchableWithoutFeedback onPress={this.props.onClose}>
                     <View
                         style={{
-                            width: '30%',
+                            width: '26%',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            height: 38,
+                            height: 40,
                             borderColor: '#42C0F5',
                             borderWidth: 2,
                             borderRadius: 3,
-                            right: 13,
+                            right: 20,
+                            marginTop: 6,
                         }}
                     >
                         <Text
@@ -81,26 +84,18 @@ class ModalTester extends Component {
                 >
                     <View
                         style={{
-                            backgroundColor: '#42C0F5',
-                            width: '30%',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            height: 38,
-                            borderColor: '#42C0F5',
-                            borderWidth: 2,
-                            borderRadius: 3,
+                            bottom: 3,
                             left: 13,
                         }}
                     >
-                        <Text
-                            style={{
-                                color: 'white',
-                                fontWeight: '600',
-                                fontSize: 15,
-                            }}
-                        >
-                            Yes
-                        </Text>
+                        <LottieView
+                            style={{ height: hp(5) }}
+                            source={YES_LOTTIE}
+                            autoPlay
+                            loop
+                        />
                     </View>
                 </TouchableWithoutFeedback>
             </>

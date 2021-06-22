@@ -864,6 +864,7 @@ class ProfileDetailCard extends Component {
     }
 
     render() {
+        console.log('THIS IS IMAGE URI', this.state.imageUrl)
         const { user, self } = this.props
         if (!user) return null
         const { name, headline, profile } = user

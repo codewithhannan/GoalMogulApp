@@ -16,6 +16,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { connect } from 'react-redux'
 import { color } from '../../styles/basic'
 import { Image } from 'react-native-animatable'
+import { BlurView } from 'expo-blur'
+
 import { Formik } from 'formik'
 
 import * as _ from 'underscore'
@@ -27,7 +29,7 @@ import FeedBackCard from './FeedBackCard'
 import { DEVICE_PLATFORM } from '../../Utils/Constants'
 import { getBottomSpace } from 'react-native-iphone-x-helper'
 import { Actions } from 'react-native-router-flux'
-import { clearfeedbackImages } from '../../reducers/FeedbackReducers'
+
 import DelayedButton from '../Common/Button/DelayedButton'
 import OnboardingStyles from '../../styles/Onboarding'
 import EmptyResult from '../Common/Text/EmptyResult'
@@ -35,6 +37,9 @@ import {
     openFeedBackCameraRoll,
     sendFeedbackImages,
 } from '../../actions/FeedbackActions'
+
+import FeedbackModal from '../Common/Modal/FeedbackModal'
+import { ActivityIndicator } from 'react-native-paper'
 
 const { text: textStyle, button: buttonStyle } = OnboardingStyles
 const screenHeight = Dimensions.get('screen').height
@@ -45,10 +50,33 @@ class SendFeedback extends Component {
         super(props)
         this.state = {
             data: [{}, {}, {}],
+            feedbackModalVisible: false,
+            description: '',
+            disable: false,
         }
     }
 
-    async componentDidMount() {}
+    showFeedBackModal = () => this.setState({ feedbackModalVisible: true })
+
+    onNext = (description) => {
+        const showModal = () => {
+            this.showFeedBackModal()
+        }
+
+        return (
+            this.props.sendFeedbackImages(description, showModal),
+            this.setState({ disable: true })
+        )
+    }
+
+    closeFeedbackModal = () => {
+        return (
+            this.setState({ feedbackModalVisible: false }),
+            setTimeout(() => {
+                Actions.pop()
+            }, 600)
+        )
+    }
 
     openCameraRoll = () => {
         this.props.openFeedBackCameraRoll(null, null, null)
@@ -101,6 +129,11 @@ class SendFeedback extends Component {
                         backgroundColor: color.GM_CARD_BACKGROUND,
                     }}
                 >
+                    <FeedbackModal
+                        isVisible={this.state.feedbackModalVisible}
+                        isClose={this.closeFeedbackModal}
+                    />
+
                     <KeyboardAwareScrollView
                         bounces={false}
                         enableOnAndroid={true}
@@ -148,101 +181,74 @@ class SendFeedback extends Component {
                             </View>
                         </TouchableOpacity>
 
-                        <Formik
-                            initialValues={{
-                                inviterCode: '',
-                            }}
-                            onSubmit={async (value, { setSubmitting }) => {
-                                console.log('this isi value', value)
-                                Keyboard.dismiss()
-                                this.onNext(value)
-
-                                setSubmitting(false)
-                            }}
-                            validateOnBlur={true}
-                        >
-                            {({
-                                handleChange,
-                                handleBlur,
-                                handleSubmit,
-                                values,
-                            }) => (
-                                <>
-                                    <View style={styles.textAreaContainer}>
-                                        <TextInput
-                                            multiline={true}
-                                            style={styles.textArea}
-                                            textAlign="left"
-                                            keyboardType="default"
-                                            numberOfLines={10}
-                                            placeholder="Describe the issue you're having"
-                                        />
-                                    </View>
-                                    <FlatList
-                                        showsVerticalScrollIndicator={false}
-                                        data={this.props.feedback}
-                                        renderItem={this.renderItem}
-                                        ListHeaderComponent={
-                                            this.lisHeaderComponent
-                                        }
-                                        listKey={(item, index) =>
-                                            'D' + index.toString()
-                                        }
-                                        onEndReachedThreshold={0}
-                                        ItemSeparatorComponent={
-                                            this.itemSeperatorComponent
-                                        }
-                                        ListEmptyComponent={() => {
-                                            return (
-                                                <EmptyResult
-                                                    text="No Screenshot Attached"
-                                                    textStyle={{
-                                                        paddingTop: 65,
-                                                    }}
-                                                />
-                                            )
+                        <View style={styles.textAreaContainer}>
+                            <TextInput
+                                multiline={true}
+                                style={styles.textArea}
+                                textAlign="left"
+                                keyboardType="default"
+                                numberOfLines={10}
+                                onChangeText={(description) =>
+                                    this.setState({ description })
+                                }
+                                value={this.state.description}
+                                placeholder="Describe the issue you're having"
+                            />
+                        </View>
+                        <FlatList
+                            showsVerticalScrollIndicator={false}
+                            data={this.props.feedback}
+                            renderItem={this.renderItem}
+                            ListHeaderComponent={this.lisHeaderComponent}
+                            listKey={(item, index) => 'D' + index.toString()}
+                            onEndReachedThreshold={0}
+                            ItemSeparatorComponent={this.itemSeperatorComponent}
+                            ListEmptyComponent={() => {
+                                return (
+                                    <EmptyResult
+                                        text="No Screenshot Attached"
+                                        textStyle={{
+                                            paddingTop: 65,
                                         }}
                                     />
-                                    {this.props.feedback.length > 0 ? (
-                                        <DelayedButton
-                                            style={[
-                                                buttonStyle
-                                                    .GM_BLUE_BG_WHITE_BOLD_TEXT
-                                                    .containerStyle,
-                                                {
-                                                    marginTop: 6,
-                                                    marginBottom: 5,
-                                                    backgroundColor:
-                                                        color.GM_BLUE,
-                                                    width: '90%',
-                                                    height: 35,
-                                                    alignSelf: 'center',
-                                                },
-                                            ]}
-                                            onPress={() => {
-                                                // Actions.pop()
-                                                // this.props.clearfeedbackImages()
-                                                this.props.sendFeedbackImages()
-                                            }}
-                                        >
-                                            <Text
-                                                style={
-                                                    (buttonStyle
-                                                        .GM_BLUE_BG_WHITE_BOLD_TEXT
-                                                        .textStyle,
-                                                    {
-                                                        fontWeight: 'normal',
-                                                        color: 'white',
-                                                    })
-                                                }
-                                            >
-                                                Send
-                                            </Text>
-                                        </DelayedButton>
-                                    ) : null}
-                                </>
-                            )}
-                        </Formik>
+                                )
+                            }}
+                        />
+                        {this.props.feedback.length > 0 ? (
+                            <DelayedButton
+                                disabled={this.state.disable}
+                                style={[
+                                    buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
+                                        .containerStyle,
+                                    {
+                                        marginTop: 6,
+                                        marginBottom: 5,
+                                        backgroundColor: this.state.disable
+                                            ? color.GM_BLUE_LIGHT
+                                            : color.GM_BLUE,
+                                        width: '90%',
+                                        height: 35,
+                                        alignSelf: 'center',
+                                    },
+                                ]}
+                                onPress={() => {
+                                    return this.onNext(this.state.description)
+                                }}
+                            >
+                                <Text
+                                    style={
+                                        (buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
+                                            .textStyle,
+                                        {
+                                            fontWeight: 'normal',
+                                            color: 'white',
+                                        })
+                                    }
+                                >
+                                    Send
+                                </Text>
+                            </DelayedButton>
+                        ) : null}
                     </KeyboardAwareScrollView>
                 </View>
             </>
@@ -264,6 +270,10 @@ const styles = StyleSheet.create({
         height: 150,
         justifyContent: 'center',
     },
+    nonBlurredContent: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 })
 
 const mapStateToProps = (state, props) => {
@@ -278,6 +288,6 @@ const mapStateToProps = (state, props) => {
 
 export default connect(mapStateToProps, {
     openFeedBackCameraRoll,
-    clearfeedbackImages,
+
     sendFeedbackImages,
 })(SendFeedback)

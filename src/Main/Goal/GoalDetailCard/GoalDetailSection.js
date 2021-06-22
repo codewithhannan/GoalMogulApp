@@ -40,6 +40,15 @@ import {
     scheduleNotification,
     shareGoalToMastermind,
 } from '../../../redux/modules/goal/GoalDetailActions'
+import Tooltip from 'react-native-walkthrough-tooltip'
+import LottieView from 'lottie-react-native'
+import * as Animatable from 'react-native-animatable'
+
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
+
 import { likeGoal, unLikeGoal } from '../../../redux/modules/like/LikeActions'
 import {
     subscribeEntityNotification,
@@ -76,8 +85,13 @@ import {
     makeGetGoalPageDetailByPageId,
     makeGetGoalStepsAndNeedsV2,
 } from '../../../redux/modules/goal/selector'
+import {
+    LOTTIE_DATA,
+    renderUnitText,
+} from '../../Common/ContentCards/LikeSheetData'
 
 const { width } = Dimensions.get('window')
+const TOOLTIP_WIDTH = Dimensions.get('screen').width
 const WINDOW_WIDTH = width
 
 const { CheckIcon, BellIcon } = Icons
@@ -100,6 +114,8 @@ class GoalDetailSection extends React.PureComponent {
             likeButtonLeftOffset: 0,
             showSuggestionPopup: false,
             showNudgePopup: false,
+            toolTipVisible: false,
+            unitText: '',
         }
         this.handleGoalReminder = this.handleGoalReminder.bind(this)
         this.onTextLayout = this.onTextLayout.bind(this)
@@ -553,7 +569,7 @@ class GoalDetailSection extends React.PureComponent {
 
     renderActionButtons(item, isOwnGoal) {
         // console.log('This is item from renderActionButtons:', item)
-        const { maybeLikeRef, _id, privacy, steps, needs } = item
+        const { maybeLikeRef, _id, privacy, steps, needs, likeType } = item
         const likeCount = item.likeCount ? item.likeCount : 0
         const commentCount = item.commentCount ? item.commentCount : 0
         const shareCount = item.shareCount ? item.shareCount : 0
@@ -584,46 +600,161 @@ class GoalDetailSection extends React.PureComponent {
         ]
 
         return (
-            <ActionBar
-                isContentLiked={selfLiked}
-                actionSummaries={{
-                    likeCount,
-                    shareCount,
-                    commentCount,
+            <Tooltip
+                isVisible={this.state.toolTipVisible}
+                arrowSize={{
+                    height: 2,
+                    width: 2,
                 }}
-                // Use this flag to hide share button
-                // if not own goal, then hide the button
-                isShareContent={!isOwnGoal}
-                showClarifyButton={noStepsAndNeeds && !isOwnGoal}
-                onLikeSummaryPress={() =>
-                    this.setState({ showlikeListModal: true })
+                contentStyle={{
+                    // backgroundColor: '#F9F9F9',
+                    borderRadius: 40,
+                    width: TOOLTIP_WIDTH * 0.85,
+                    flex: 1,
+                }}
+                content={
+                    <>
+                        <Animatable.View
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                width: TOOLTIP_WIDTH * 0.8,
+                            }}
+                            animation="fadeInLeft"
+                            delay={150}
+                            duration={500}
+                            easing="ease-in-out-expo"
+                        >
+                            {LOTTIE_DATA.map((lottie) => {
+                                return (
+                                    <>
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                if (selfLiked) {
+                                                    return (
+                                                        this.props.unLikeGoal(
+                                                            'goal',
+                                                            _id,
+                                                            maybeLikeRef
+                                                        ),
+                                                        setTimeout(() => {
+                                                            this.props.likeGoal(
+                                                                'goal',
+                                                                _id,
+                                                                '',
+                                                                '',
+                                                                lottie.value
+                                                            )
+                                                        }, 1000),
+                                                        this.setState({
+                                                            unitText:
+                                                                lottie.title,
+                                                            toolTipVisible: false,
+                                                        })
+                                                    )
+                                                }
+                                                this.incrementFloatingHeartCount()
+                                                this.props.likeGoal(
+                                                    'goal',
+                                                    _id,
+                                                    '',
+                                                    '',
+                                                    lottie.value
+                                                )
+                                                this.setState({
+                                                    unitText: lottie.title,
+                                                    toolTipVisible: false,
+                                                })
+                                            }}
+                                        >
+                                            <LottieView
+                                                style={{
+                                                    height: hp(5),
+                                                }}
+                                                source={lottie.lottieSource}
+                                                autoPlay
+                                                loop
+                                            />
+                                            <Text
+                                                style={{
+                                                    fontSize: 8,
+                                                    color: '#818181',
+                                                    alignSelf: 'center',
+                                                }}
+                                            >
+                                                {lottie.name}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </>
+                                )
+                            })}
+                        </Animatable.View>
+                    </>
                 }
-                onLikeButtonPress={() => {
-                    if (selfLiked) {
-                        return this.props.unLikeGoal('goal', _id, maybeLikeRef)
+                disableShadow={false}
+                topAdjustment={2}
+                placement="top"
+                showChildInTooltip={false}
+                backgroundColor="transparent"
+                onClose={() => this.setState({ toolTipVisible: false })}
+            >
+                <ActionBar
+                    isContentLiked={selfLiked}
+                    actionSummaries={{
+                        likeCount,
+                        shareCount,
+                        commentCount,
+                    }}
+                    // Use this flag to hide share button
+                    // if not own goal, then hide the button
+                    isShareContent={!isOwnGoal}
+                    unitText={
+                        this.state.unitText == ''
+                            ? renderUnitText(likeType)
+                            : this.state.unitText
                     }
-                    this.incrementFloatingHeartCount()
-                    this.props.likeGoal('goal', _id)
-                }}
-                onLikeButtonLayout={({ nativeEvent }) =>
-                    this.setState({
-                        likeButtonLeftOffset: nativeEvent.layout.x,
-                    })
-                }
-                onShareSummaryPress={() =>
-                    this.setState({ showShareListModal: true })
-                }
-                onShareButtonOptions={options}
-                onCommentSummaryPress={() => {
-                    // TODO scroll down to comments section
-                }}
-                onCommentButtonPress={() => {
-                    this.props.onSuggestion()
-                }}
-                onClarifyButtonPress={() => {
-                    this.setState({ showSuggestionPopup: true })
-                }}
-            />
+                    showClarifyButton={noStepsAndNeeds && !isOwnGoal}
+                    onLikeSummaryPress={() =>
+                        this.setState({ showlikeListModal: true })
+                    }
+                    onLikeButtonPress={() => {
+                        if (selfLiked) {
+                            return (
+                                this.props.unLikeGoal(
+                                    'goal',
+                                    _id,
+                                    maybeLikeRef
+                                ),
+                                this.setState({ unitText: 'Like' })
+                            )
+                        }
+                        this.incrementFloatingHeartCount()
+                        this.props.likeGoal('goal', _id, '', '', 'Thumbsup')
+                        this.setState({ unitText: 'Like' })
+                    }}
+                    onLikeButtonLayout={({ nativeEvent }) =>
+                        this.setState({
+                            likeButtonLeftOffset: nativeEvent.layout.x,
+                        })
+                    }
+                    onLikeLongPress={() => {
+                        this.setState({ toolTipVisible: true })
+                    }}
+                    onShareSummaryPress={() =>
+                        this.setState({ showShareListModal: true })
+                    }
+                    onShareButtonOptions={options}
+                    onCommentSummaryPress={() => {
+                        // TODO scroll down to comments section
+                    }}
+                    onCommentButtonPress={() => {
+                        this.props.onSuggestion()
+                    }}
+                    onClarifyButtonPress={() => {
+                        this.setState({ showSuggestionPopup: true })
+                    }}
+                />
+            </Tooltip>
         )
     }
 

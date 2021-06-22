@@ -25,6 +25,7 @@ const getImageUrl = (type) => {
         throw new Error(`Image type: ${type} is not included`)
     }
     return `https://api.goalmogul.com/api/secure/s3/${imageType}/signature`
+    // return `http:/192.168.1.3:8081/api/secure/s3/${imageType}/signature`
 }
 
 const ImageUtils = {

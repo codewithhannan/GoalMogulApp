@@ -16,6 +16,7 @@ import { color, default_style } from '../styles/basic'
 import OnboardingStyles from '../styles/Onboarding'
 import LottieView from 'lottie-react-native'
 import PRIVATE_GOAL_LOTTIE from '../asset/toast_popup_lotties/Goal-visibility/Goal-visibilty.json'
+import YES_LOTTIE from '../asset/toast_popup_lotties/yes-button/yes_button.json'
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -43,7 +44,7 @@ class ModalTester extends Component {
                 >
                     <View
                         style={{
-                            width: '30%',
+                            width: '29%',
                             justifyContent: 'center',
                             alignItems: 'center',
                             height: 40,
@@ -75,24 +76,17 @@ class ModalTester extends Component {
                 >
                     <View
                         style={{
-                            backgroundColor: '#42C0F5',
-                            width: '30%',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            height: 40,
-                            borderColor: '#42C0F5',
-                            borderWidth: 4,
-                            borderRadius: 3,
+                            bottom: 3,
                         }}
                     >
-                        <Text
-                            style={{
-                                ...default_style.buttonText_1,
-                                color: 'white',
-                            }}
-                        >
-                            Yes
-                        </Text>
+                        <LottieView
+                            style={{ height: hp(5) }}
+                            source={YES_LOTTIE}
+                            autoPlay
+                            loop
+                        />
                     </View>
                 </TouchableWithoutFeedback>
             </>

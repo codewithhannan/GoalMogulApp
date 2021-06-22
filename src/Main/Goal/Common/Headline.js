@@ -88,7 +88,7 @@ class Headline extends React.PureComponent {
             : () => this.props.markGoalAsComplete(_id, true, this.props.pageId)
 
         if (val === 'Delete') return this.props.caretOnDelete()
-        if (val === 'Edit Goal') return this.props.editGoal(item)
+        if (val === '') return this.props.editGoal(item)
         if (val === 'Share to Goal Feed')
             return this.props.shareGoalToMastermind(_id, this.props.pageId)
         if (val === 'Unmark as Complete' || val === 'Mark as Complete') {
@@ -137,7 +137,7 @@ class Headline extends React.PureComponent {
                     this.headlineMenu = ref
                 }}
                 options={[
-                    { option: 'Edit Goal', iconSource: EditIcon },
+                    { option: '', iconSource: EditIcon },
                     { option: 'Share to Goal Feed', iconSource: ShareIcon },
                     {
                         option: isCompleted
