@@ -82,7 +82,7 @@ const TYPE_MAP = {
         text: 'Break your goals into steps that are easier to achieve',
     },
     need: {
-        title: 'Things I Need',
+        title: 'Needs',
         placeholder: 'Something your friends might be able to help with',
         buttonText: 'Add a Need',
         text: 'Something you are specifically looking for help with',
@@ -1325,7 +1325,7 @@ class NewGoalView extends Component {
                         <View style={{ position: 'absolute', left: 0 }}>
                             <Text style={{ color: '#333333' }}>Start</Text>
                         </View>
-                        <View style={{ right: 140, position: 'absolute' }}>
+                        <View style={{ right: 125, position: 'absolute' }}>
                             <Text
                                 style={{
                                     color: '#333333',
@@ -1339,9 +1339,9 @@ class NewGoalView extends Component {
                         style={{
                             marginTop: 8,
                             flexDirection: 'row',
-
-                            flexWrap: 'wrap',
+                            // flexWrap: 'wrap',
                             justifyContent: 'space-between',
+                            alignItems: 'center',
                         }}
                     >
                         <TouchableOpacity
@@ -1351,7 +1351,7 @@ class NewGoalView extends Component {
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 ...styles.borderStyle,
-                                width: 170,
+                                width: 150,
                             }}
                             onPress={() =>
                                 this.props.change('startTime', {
@@ -1376,7 +1376,7 @@ class NewGoalView extends Component {
                                 alignItems: 'center',
                                 justifyContent: 'flex-start',
                                 ...styles.borderStyle,
-                                width: 170,
+                                width: 150,
                             }}
                             onPress={() =>
                                 this.props.change('endTime', {
@@ -1693,7 +1693,7 @@ class NewGoalView extends Component {
                         // marginBottom: 30,
                     }}
                 >
-                    {/* {!this.state.showMoreGoalInputs ? (
+                    {!this.state.showMoreGoalInputs ? (
                         <TouchableWithoutFeedback
                             onPress={this.enableMoreGoalInputs}
                         >
@@ -1708,22 +1708,28 @@ class NewGoalView extends Component {
                                 + Add a Timeline, Steps or Needs
                             </Text>
                         </TouchableWithoutFeedback>
-                    ) : null} */}
-                    {/* {this.state.showMoreGoalInputs ?  */}
-                    {this.renderTimeline()}
-                    {/* : null} */}
-                    {/* {this.state.showMoreGoalInputs ? ( */}
-                    {/* <View
-                        ref={(r) => {
-                            this.view = r
-                        }}
-                        // style={{ bottom: 60 }}
-                    >
-                        <FieldArray name="steps" component={this.renderSteps} />
+                    ) : null}
+                    {this.state.showMoreGoalInputs
+                        ? this.renderTimeline()
+                        : null}
+                    {this.state.showMoreGoalInputs ? (
+                        <View
+                            ref={(r) => {
+                                this.view = r
+                            }}
+                            // style={{ bottom: 60 }}
+                        >
+                            <FieldArray
+                                name="steps"
+                                component={this.renderSteps}
+                            />
 
-                        <FieldArray name="needs" component={this.renderNeeds} />
-                    </View> */}
-                    {/* ) : null} */}
+                            <FieldArray
+                                name="needs"
+                                component={this.renderNeeds}
+                            />
+                        </View>
+                    ) : null}
                 </View>
                 <View style={{ marginBottom: 40 }}>
                     <Button

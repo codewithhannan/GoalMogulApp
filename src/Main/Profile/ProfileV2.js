@@ -797,7 +797,7 @@ class ProfileV2 extends Component {
                         onClose={this.closeProfileModal}
                         userId={userId}
                     />
-                    <Popup
+                    {/* <Popup
                         popupName={this.state.popupName}
                         isVisible={this.state.showPopupModal}
                         closeModal={() => {
@@ -807,7 +807,7 @@ class ProfileV2 extends Component {
                                       showPopupModal: false,
                                   })
                         }}
-                    />
+                    /> */}
                     <HopePopup
                         isVisible={this.state.showQuestionModal}
                         closeModal={(displayNextPopup = false) => {

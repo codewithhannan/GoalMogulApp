@@ -251,7 +251,7 @@ const styles = {
     iconContainerStyle: {
         marginLeft: 8,
         flexDirection: 'row',
-        justifyContent: 'flex-',
+        // justifyContent: 'center',
     },
     iconStyle: {
         height: 25,

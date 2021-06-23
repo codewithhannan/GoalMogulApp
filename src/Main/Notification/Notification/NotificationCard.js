@@ -15,6 +15,8 @@ import {
 import ProfileImage from '../../Common/ProfileImage'
 import Timestamp from '../../Goal/Common/Timestamp'
 import DelayedButton from '../../Common/Button/DelayedButton'
+import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
+import { getButtonBottomSheetHeight } from '../../../styles'
 
 // Actions
 import {
@@ -53,31 +55,30 @@ class NotificationCard extends React.PureComponent {
         this.props.openNotificationDetail(item)
     }
 
+    handleDotPress() {}
+
     handleOptionsOnPress() {
-        const { item } = this.props
-        const { _id } = item
-        const options = switchByButtonIndex([
-            [
-                R.equals(0),
-                () => {
-                    console.log(
-                        `${DEBUG_KEY} User chooses to remove notification`
-                    )
-                    return this.props.removeNotification(_id)
-                },
-            ],
-        ])
-
-        const requestOptions = ['Remove this notification', 'Cancel']
-
-        const cancelIndex = 1
-
-        const adminActionSheet = actionSheet(
-            requestOptions,
-            cancelIndex,
-            options
-        )
-        adminActionSheet()
+        // const { item } = this.props
+        // const { _id } = item
+        // const options = switchByButtonIndex([
+        //     [
+        //         R.equals(0),
+        //         () => {
+        //             console.log(
+        //                 `${DEBUG_KEY} User chooses to remove notification`
+        //             )
+        //             return this.props.removeNotification(_id)
+        //         },
+        //     ],
+        // ])
+        // const requestOptions = ['Remove this notification', 'Cancel']
+        // const cancelIndex = 1
+        // const adminActionSheet = actionSheet(
+        //     requestOptions,
+        //     cancelIndex,
+        //     options
+        // )
+        // adminActionSheet()
     }
 
     renderProfileImage(item) {
@@ -96,7 +97,7 @@ class NotificationCard extends React.PureComponent {
         return (
             <TouchableOpacity
                 activeOpacity={0.6}
-                onPress={() => this.handleOptionsOnPress()}
+                onPress={() => this.openNotificationBottomSheet()}
                 style={{
                     alignSelf: 'center',
                     justifyContent: 'center',
@@ -117,6 +118,45 @@ class NotificationCard extends React.PureComponent {
                     ]}
                 />
             </TouchableOpacity>
+        )
+    }
+
+    openNotificationBottomSheet = () =>
+        this.notificationRefBottomSheetRef.open()
+    closeNotificationBottomSheet = () =>
+        this.notificationRefBottomSheetRef.close()
+
+    makeNotificationRefOptions = () => {
+        return [
+            {
+                text: 'Remove Notification',
+                onPress: () => {
+                    this.closeNotificationBottomSheet()
+                    setTimeout(() => {
+                        const { item } = this.props
+                        const { _id } = item
+                        this.props.removeNotification(_id)
+                    }, 500)
+                },
+            },
+            {
+                text: 'Cancel',
+                onPress: () => this.closeNotificationBottomSheet(),
+            },
+        ]
+    }
+
+    renderNotificationRefBottomSheet = () => {
+        const options = this.makeNotificationRefOptions()
+
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.notificationRefBottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
         )
     }
 
@@ -193,16 +233,19 @@ class NotificationCard extends React.PureComponent {
             ? { ...styles.cardContainerStyle }
             : { ...styles.cardContainerStyle, backgroundColor: '#eef8fb' }
         return (
-            <DelayedButton
-                delay={600}
-                activeOpacity={0.6}
-                style={cardContainerStyle}
-                onPress={() => this.handleNotificationCardOnPress(item)}
-            >
-                {this.renderProfileImage(item)}
-                {this.renderContent(item, isInvalidCommentNotif)}
-                {this.renderOptions(item)}
-            </DelayedButton>
+            <>
+                <DelayedButton
+                    delay={600}
+                    activeOpacity={0.6}
+                    style={cardContainerStyle}
+                    onPress={() => this.handleNotificationCardOnPress(item)}
+                >
+                    {this.renderProfileImage(item)}
+                    {this.renderContent(item, isInvalidCommentNotif)}
+                    {this.renderOptions(item)}
+                </DelayedButton>
+                {this.renderNotificationRefBottomSheet()}
+            </>
         )
     }
 }

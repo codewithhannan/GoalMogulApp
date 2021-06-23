@@ -35,17 +35,10 @@ import {
 } from '../../redux/modules/User/TutorialActions'
 
 // Assets
-import Setting from '../../asset/header/setting.png'
-import Challenges from '../../asset/icons/Challenges.png'
-import Mail from '../../asset/icons/Mail.png'
-import Settings from '../../asset/icons/Settings.png'
-import Friends from '../../asset/icons/Friends.png'
-import Feedback from '../../asset/icons/Feedback.png'
-import Policy from '../../asset/icons/Policy.png'
-import Logout from '../../asset/icons/LogOut.png'
 import Icons from '../../asset/base64/Icons'
-import Silver from '../../asset/banner/silver.png'
-import Gold from '../../asset/banner/gold.png'
+import Silver from '../../asset/banner/silver_cup.png'
+import Gold from '../../asset/banner/gold_cup.png'
+import Winner from '../../asset/banner/winner.png'
 
 import {
     IPHONE_MODELS,
@@ -201,20 +194,21 @@ class Menu extends React.PureComponent {
 
                 <Tooltip
                     animated={true}
-                    arrowSize={{ width: 16, height: 11 }}
+                    showChildInTooltip={false}
+                    // arrowSize={{ width: 16, height: 11 }}
                     backgroundColor="rgba(0,0,0,0.12)"
                     isVisible={this.state.toolTipVisible}
                     contentStyle={{
-                        backgroundColor: '#EFEFEF',
+                        backgroundColor: 'white',
                         width: 220,
                         // right: 2,
-                        position: 'absolute',
+                        // position: 'absolute',
 
                         // marginBottom: 100,
-                        bottom: 430,
-                        marginHorizontal: 40,
-
-                        borderRadius: 15,
+                        // bottom: 430,
+                        marginHorizontal: -20,
+                        marginVertical: -15,
+                        borderRadius: 5,
                     }}
                     content={
                         <>
@@ -231,7 +225,20 @@ class Menu extends React.PureComponent {
                                             SILVER_CHALLENGE_URL
                                         )
                                     }}
+                                    style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                    }}
                                 >
+                                    <View style={{ top: 5, marginRight: 10 }}>
+                                        <Image
+                                            source={Silver}
+                                            style={{
+                                                height: 20,
+                                                width: 22,
+                                            }}
+                                        />
+                                    </View>
                                     <View
                                         style={{
                                             marginTop: 10,
@@ -245,17 +252,8 @@ class Menu extends React.PureComponent {
                                                 fontWeight: '400',
                                             }}
                                         >
-                                            Silver Challenges
+                                            Silver
                                         </Text>
-                                        <View style={{ top: 5 }}>
-                                            <Image
-                                                source={Silver}
-                                                style={{
-                                                    height: 20,
-                                                    width: 22,
-                                                }}
-                                            />
-                                        </View>
                                     </View>
                                 </TouchableOpacity>
 
@@ -266,7 +264,20 @@ class Menu extends React.PureComponent {
                                             GOLD_CHALLENGE_URL
                                         )
                                     }}
+                                    style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                    }}
                                 >
+                                    <View style={{ top: 5, marginRight: 10 }}>
+                                        <Image
+                                            source={Gold}
+                                            style={{
+                                                height: 20,
+                                                width: 22,
+                                            }}
+                                        />
+                                    </View>
                                     <View
                                         style={{
                                             marginTop: 10,
@@ -280,17 +291,43 @@ class Menu extends React.PureComponent {
                                                 fontWeight: '400',
                                             }}
                                         >
-                                            Gold Challenges
+                                            Gold
                                         </Text>
-                                        <View style={{ top: 2, left: 2 }}>
-                                            <Image
-                                                source={Gold}
-                                                style={{
-                                                    height: 20,
-                                                    width: 22,
-                                                }}
-                                            />
-                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.setState({ toolTipVisible: false })
+                                    }}
+                                    style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <View style={{ top: 5, marginRight: 10 }}>
+                                        <Image
+                                            source={Winner}
+                                            style={{
+                                                height: 20,
+                                                width: 22,
+                                            }}
+                                        />
+                                    </View>
+                                    <View
+                                        style={{
+                                            marginTop: 10,
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-evenly',
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: 21,
+                                                fontWeight: '400',
+                                            }}
+                                        >
+                                            Winners List
+                                        </Text>
                                     </View>
                                 </TouchableOpacity>
                             </View>
@@ -298,35 +335,35 @@ class Menu extends React.PureComponent {
                     }
                     placement="bottom"
                     onClose={() => this.setState({ toolTipVisible: false })}
-                />
-
-                <DelayedButton
-                    activeOpacity={0.6}
-                    onPress={() =>
-                        // this.props.openChallenges(
-                        //     'https://new5reactpages.web.app/page4'
-                        // )
-                        this.setState({ toolTipVisible: true })
-                    }
-                    style={styles.buttonStyle}
                 >
-                    <Text style={styles.titleTextStyle}>Challenges</Text>
-                    <View style={{ position: 'absolute', right: 0 }}>
-                        <Svg
-                            width={25}
-                            height={25}
-                            viewBox="0 0 22 22"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            {...this.props}
-                        >
-                            <Path
-                                d="M20.9 1.1h-3.3V0H4.4v1.1H1.1C.44 1.1 0 1.54 0 2.2v2.64c0 2.53 1.87 4.62 4.4 4.95v.11c0 3.19 2.2 5.83 5.17 6.49L8.8 18.7H6.27c-.44 0-.88.33-.99.77L4.4 22h13.2l-.88-2.53c-.11-.44-.55-.77-.99-.77H13.2l-.77-2.31c2.97-.66 5.17-3.3 5.17-6.49v-.11c2.53-.33 4.4-2.42 4.4-4.95V2.2c0-.66-.44-1.1-1.1-1.1zM4.4 7.59c-1.21-.33-2.2-1.43-2.2-2.75V3.3h2.2v4.29zM13.2 11L11 9.79 8.8 11l.55-2.2L7.7 6.6h2.31L11 4.4l.99 2.2h2.31l-1.65 2.2.55 2.2zm6.6-6.16c0 1.32-.99 2.53-2.2 2.75V3.3h2.2v1.54z"
-                                fill="#828282"
-                            />
-                        </Svg>
-                    </View>
-                </DelayedButton>
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        onPress={() =>
+                            // this.props.openChallenges(
+                            //     'https://new5reactpages.web.app/page4'
+                            // )
+                            this.setState({ toolTipVisible: true })
+                        }
+                        style={styles.buttonStyle}
+                    >
+                        <Text style={styles.titleTextStyle}>Challenges</Text>
+                        <View style={{ position: 'absolute', right: 0 }}>
+                            <Svg
+                                width={25}
+                                height={25}
+                                viewBox="0 0 22 22"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                {...this.props}
+                            >
+                                <Path
+                                    d="M20.9 1.1h-3.3V0H4.4v1.1H1.1C.44 1.1 0 1.54 0 2.2v2.64c0 2.53 1.87 4.62 4.4 4.95v.11c0 3.19 2.2 5.83 5.17 6.49L8.8 18.7H6.27c-.44 0-.88.33-.99.77L4.4 22h13.2l-.88-2.53c-.11-.44-.55-.77-.99-.77H13.2l-.77-2.31c2.97-.66 5.17-3.3 5.17-6.49v-.11c2.53-.33 4.4-2.42 4.4-4.95V2.2c0-.66-.44-1.1-1.1-1.1zM4.4 7.59c-1.21-.33-2.2-1.43-2.2-2.75V3.3h2.2v4.29zM13.2 11L11 9.79 8.8 11l.55-2.2L7.7 6.6h2.31L11 4.4l.99 2.2h2.31l-1.65 2.2.55 2.2zm6.6-6.16c0 1.32-.99 2.53-2.2 2.75V3.3h2.2v1.54z"
+                                    fill="#828282"
+                                />
+                            </Svg>
+                        </View>
+                    </DelayedButton>
+                </Tooltip>
 
                 {/* Bottom Section */}
                 <View style={styles.bottomContainer}>
@@ -334,9 +371,10 @@ class Menu extends React.PureComponent {
                         <DelayedButton
                             activeOpacity={0.6}
                             onPress={() =>
-                                Linking.openURL(
-                                    `mailto:support@goalmogul.com?subject=${this.props.name}&body=body`
-                                )
+                                // Linking.openURL(
+                                //     `mailto:support@goalmogul.com?subject=${this.props.name}&body=body`
+                                // )
+                                Actions.push('sendFeedback')
                             }
                             style={styles.buttonStyle}
                         >
