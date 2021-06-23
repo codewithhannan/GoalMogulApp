@@ -204,6 +204,7 @@ class ProfileDetailEditForm extends Component {
         return (
             <View style={{ flex: 1 }}>
                 <FormHeader
+                    segmants
                     title="Profile"
                     onSubmit={handleSubmit(this.submit)}
                     actionDisabled={!isValidValues || uploading}

@@ -608,9 +608,9 @@ export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
             })
         })
 
-        if (hasImageModified) {
-            track(E.PROFILE_PHOTO_UPDATED)
-        }
+        // if (hasImageModified) {
+        //     track(E.PROFILE_PHOTO_UPDATED)
+        // }
 
         let updatePasswordPromise = null
         if (oldPassword && newPassword) {
@@ -636,10 +636,10 @@ export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
                     ...accountUpdateRes,
                     profile: { ...profileUpdateRes },
                 }
-                trackWithProperties(E.PROFILE_UPDATED, {
-                    ...user,
-                    UserId: userId,
-                })
+                // trackWithProperties(E.PROFILE_UPDATED, {
+                //     ...user,
+                //     UserId: userId,
+                // })
 
                 dispatch({
                     type: PROFILE_UPDATE_SUCCESS,

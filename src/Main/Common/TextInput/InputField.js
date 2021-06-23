@@ -124,6 +124,7 @@ class InputField extends Component {
             autoCapitalize,
             blurOnSubmit,
             inputContainerStyle,
+
             ...custom
         } = this.props
 
@@ -160,6 +161,7 @@ class InputField extends Component {
                     multiline={multiline || false}
                     editable={editable}
                     placeholder={placeholder}
+                    onEndEditing={this.props.onEndEditing}
                     style={{ ...style }}
                     value={_.isEmpty(value) ? '' : value}
                     {...custom}

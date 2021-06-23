@@ -58,14 +58,10 @@ export const getLikeList = (parentId, parentType, callback) => (
  * @params id: goal/post/comment id
  * @params pageId: if post / comment, we need to provide pageId
  */
-export const likeGoal = (
-    type,
-    id,
-    pageId,
-    parentId,
-    likeType,
-    maybeUpdateCount
-) => (dispatch, getState) => {
+export const likeGoal = (type, id, pageId, parentId, likeType) => (
+    dispatch,
+    getState
+) => {
     const { token, userId } = getState().user
     const { tab } = getState().navigation
     const tmp = ((request) => {

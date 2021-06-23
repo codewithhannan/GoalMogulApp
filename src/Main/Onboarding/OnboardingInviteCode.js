@@ -273,10 +273,7 @@ const mapStateToProps = (state) => {
     return { profilePic, userId }
 }
 
-const AnalyticsWrapper = wrapAnalytics(
-    OnboardingInviteCode,
-    SCREENS.REG_INVITE_CODE
-)
+const AnalyticsWrapper = wrapAnalytics(OnboardingInviteCode)
 
 export default connect(mapStateToProps, {
     authenticateInvitorCode,

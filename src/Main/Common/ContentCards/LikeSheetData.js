@@ -16,6 +16,8 @@ import Salute from '../../../asset/icons/salute.png'
 import Rockon from '../../../asset/icons/rockon.png'
 import Metoo from '../../../asset/icons/metoo.png'
 
+import { color } from '../../../styles/basic'
+
 export const LOTTIE_DATA = [
     {
         name: `    Love`,
@@ -106,11 +108,11 @@ export const renderTextStyle = (unitText) => {
         case 'Applause':
             return '#EBA823'
         case 'Love':
-            return 'red'
+            return color.GM_RED
         case 'Me Too!':
             return '#EBA823'
         case 'Hearthand':
-            return 'red'
+            return color.GM_RED
         case 'Rock-on':
             return '#EBA823'
         case 'Salute':
@@ -118,6 +120,17 @@ export const renderTextStyle = (unitText) => {
         case 'Wow':
             return '#EBA823'
         default:
-            return 'red'
+            return color.GM_RED
     }
+}
+
+export const updateLikeIcon = (reactions, liketype) => {
+    const filteredReactions = reactions.filter((reaction) => {
+        console.log('THIS IS REACTIONSS', reaction)
+        console.log('THIS IS REACTIONSS 1', liketype)
+        if (reaction.value == liketype) {
+            return filteredReactions
+        }
+    })
+    console.log('UPDATEDDD REACTION', filteredReactions)
 }

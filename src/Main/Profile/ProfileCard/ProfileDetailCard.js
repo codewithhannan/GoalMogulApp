@@ -55,6 +55,11 @@ import _ from 'lodash'
 import { getButtonBottomSheetHeight } from '../../../styles'
 import ProfileImage from '../../Common/ProfileImage'
 import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
+import {
+    EVENT as E,
+    track,
+    trackWithProperties,
+} from '../../../monitoring/segment'
 
 const { InfoIcon } = Icons
 const { width } = Dimensions.get('window')
@@ -167,6 +172,7 @@ class ProfileDetailCard extends Component {
     handleEditOnPressed() {
         const { userId, pageId } = this.props
         this.props.openProfileDetailEditForm(userId, pageId)
+        track(E.PROFILE_EDIT_PRESSED)
     }
 
     handleBannerInfoIconOnPress = () => {
@@ -864,7 +870,6 @@ class ProfileDetailCard extends Component {
     }
 
     render() {
-        console.log('THIS IS IMAGE URI', this.state.imageUrl)
         const { user, self } = this.props
         if (!user) return null
         const { name, headline, profile } = user

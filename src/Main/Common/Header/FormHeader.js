@@ -15,14 +15,25 @@ import { back } from '../../../actions'
 import DelayedButton from '../Button/DelayedButton'
 
 import { HEADER_STYLES } from '../../../styles/Header'
+import { EVENT, trackWithProperties } from '../../../monitoring/segment'
 
 class FormHeader extends Component {
     onSavePress = () => {
-        this.props.onSubmit()
+        if (this.props.segmants) {
+            trackWithProperties(EVENT.PROFILE_UPDATED, 'save')
+            this.props.onSubmit()
+        } else {
+            this.props.onSubmit()
+        }
     }
 
     onCancelPress = () => {
-        this.props.back()
+        if (this.props.segmants) {
+            trackWithProperties(EVENT.PROFILE_UPDATED, 'cancel')
+            this.props.back()
+        } else {
+            this.props.back()
+        }
     }
 
     render() {

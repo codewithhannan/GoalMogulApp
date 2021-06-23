@@ -19,13 +19,13 @@ const EVENT = {
     // Goal
     CREATE_GOAL_MODAL_OPENED: 'goal_creation_clicked',
     CREATE_GOAL_MODAL_CANCELLED: 'CreateGoalModal Cancelled',
-    GOAL_CREATED: 'Goal Created',
+    GOAL_CREATED: 'goal_created',
     EDIT_GOAL_MODAL_OPENED: 'EditGoalModal Opened',
     EDIT_GOAL_MODAL_CANCELLED: 'EditGoalModal Cancelled',
     GOAL_UPDATED: 'Goal Updated',
     GOAL_DELETED: 'Goal Deleted',
     GOAL_DEADLINE_ADDED: 'Goal Deadline Added',
-    GOAL_STEP_ADDED: 'Goal Step Added',
+    GOAL_STEP_ADDED: 'goal_created',
     GOAL_NEED_ADDED: 'Goal Need Added',
     GOAL_MARKED_DONE: 'Goal Marked Complete',
     GOAL_MARKED_UNDONE: 'Goal Marked Incomplete',
@@ -35,7 +35,7 @@ const EVENT = {
     GOAL_UNFOLLOWED: 'Goal Unfollowed', //
 
     // Post
-    CREATE_POST_MODAL_OPENED: 'CreatePostModal Opened',
+    CREATE_POST_MODAL_OPENED: 'share_update_clicked',
     CREATE_POST_MODAL_CANCELLED: 'CreatePostModal Cancelled',
     POST_CREATED: 'Post Created',
     EDIT_POST_MODAL_OPENED: 'EditPostModal Opened',
@@ -99,7 +99,7 @@ const EVENT = {
     CHATROOM_MESSAGE_SENT: 'Chatroom Message Sent',
 
     // Profile
-    PROFILE_UPDATED: 'Profile Updated',
+    PROFILE_UPDATED: 'profile_updated',
     VERIFY_EMAIL_RESENT: 'VerificationEmail Resent',
     EMAIL_UPDATED: 'Email Updated',
     PHONE_UPDATED: 'Phone Updated',
@@ -109,6 +109,8 @@ const EVENT = {
     PROFILE_OPENED: 'Profile Opened',
     PROFILE_REFRESHED: 'Profile Refreshed',
     PROFILE_PHOTO_UPDATED: 'profilePhoto',
+    PROFILE_EDIT_PRESSED:"profile_edit_started",
+
 
     /** Registration */ 
     REG_ACCOUNT_CREATED: 'signup_completed', //ok
@@ -179,6 +181,15 @@ const EVENT = {
     TRIBE_MEMBER_SEARCHED: 'Tribe Member Searched',
     SEARCH_RESULT_CLICKED: 'Search Result Clicked',
     SEARCH_COMPLETED:"search_completed",
+
+    //home
+
+    INVITE_FRIENDS_OPEN :"invite_friends_clicked",
+
+    //discover tribe
+
+    DISCOVER_TRIBE_OPEN:"discover_tribes_clicked",
+
 
     // Report
     USER_REPORTED: 'User Reported',
@@ -255,7 +266,6 @@ const SCREENS = {
     REG_REISTER_ACCOUNT: 'RegistrationAccountView',
     REG_ADD_PHOTO: 'RegistrationAddPhotoView',
     REG_ADD_VIEW_PHOTO: 'RegistrationViewPhoto',
-    REG_INVITE_CODE: 'RegistrationInviteCode',
     REG_WAITLIST: 'RegistrationWaitlist',
     REG_ENTER_PHONE: 'RegistrationEnterPhone',
     REG_VERIFY_PHONE: 'RegistrationVerifyPhone',

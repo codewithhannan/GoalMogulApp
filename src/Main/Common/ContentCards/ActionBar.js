@@ -18,7 +18,7 @@ import CommentSolidIcon from '../../../asset/utils/comment_solid.png'
 import ShareIcon from '../../../asset/utils/forward.png'
 import ShareSolidIcon from '../../../asset/utils/forward_solid.png'
 import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
-import LoveIcon from '../../../asset/utils/love.png'
+import LoveIcon from '../../../asset/icons/Like.png'
 import Clap from '../../../asset/icons/clap.png'
 import Hearthand from '../../../asset/icons/handheart.png'
 import Wow from '../../../asset/icons/wow.png'
@@ -87,6 +87,7 @@ class ActionBar extends React.Component {
             actionSummaries,
             unitText,
             reactions,
+            updateReaction,
             // Like button
             isContentLiked,
             onLikeButtonPress,
@@ -134,7 +135,8 @@ class ActionBar extends React.Component {
                         actionItemSummaryWrapperStyle,
                         summaryIconStyle,
                         summaryTextStyle,
-                        reactions
+                        reactions,
+                        updateReaction
                     )}
                     <ActionButtonGroup>
                         <ActionButton
@@ -268,7 +270,8 @@ const renderActionSummaryBar = (
     actionItemSummaryWrapperStyle,
     summaryIconStyle,
     summaryTextStyle,
-    reactions
+    reactions,
+    updateReaction
 ) => {
     // Hide summary bar if no actions have been taken on this content
     if (!(likeCount + shareCount + commentCount)) return null
@@ -290,7 +293,8 @@ const renderActionSummaryBar = (
                 actionItemSummaryWrapperStyle,
                 summaryIconStyle,
                 summaryTextStyle,
-                reactions
+                reactions,
+                updateReaction
             )}
             {/* Share */}
             {renderSummaryItem(
@@ -325,8 +329,6 @@ const renderActionSummaryBar = (
 }
 
 const renderImageSource = (reaction) => {
-    console.log('REACTIONN', reaction)
-
     switch (reaction) {
         case 'Thumbsup':
             return LoveIcon
@@ -335,7 +337,6 @@ const renderImageSource = (reaction) => {
         case 'Clap':
             return Clap
         case 'Metoo':
-            console.log('THIS IS METOO')
             return Metoo
         case 'Salute':
             return Salute
@@ -349,40 +350,43 @@ const renderImageSource = (reaction) => {
     }
 }
 
-// const renderLikeIcons = (
-//     reactions,
-//     itemIcon,
-//     itemIconColor,
-//     summaryIconStyle
-// ) => {
-//     if (reactions != undefined) {
-//         return reactions.map((reaction) => {
-//             if (reaction.count > 0) {
-//                 return (
-//                     <Image
-//                         source={renderImageSource(reaction.type)}
-//                         style={[styles.summaryIcon, summaryIconStyle]}
-//                     />
-//                 )
-//             }
-//         })
-//     } else {
-//         return (
-//             <Image
-//                 source={itemIcon}
-//                 style={[
-//                     styles.summaryIcon,
-//                     itemIconColor
-//                         ? {
-//                               tintColor: itemIconColor,
-//                           }
-//                         : {},
-//                     summaryIconStyle,
-//                 ]}
-//             />
-//         )
-//     }
-// }
+const renderLikeIcons = (
+    reactions,
+    itemIcon,
+    itemIconColor,
+    summaryIconStyle,
+    itemCount,
+    summaryTextStyle,
+    updateReaction
+) => {
+    if (reactions != undefined) {
+        return reactions.map((reaction) => {
+            if (reaction.count > 0) {
+                return (
+                    <Image
+                        source={renderImageSource(reaction.type)}
+                        style={[styles.summaryIcon, summaryIconStyle]}
+                    />
+                )
+            }
+        })
+    } else {
+        return (
+            <Image
+                source={itemIcon}
+                style={[
+                    styles.summaryIcon,
+                    itemIconColor
+                        ? {
+                              tintColor: itemIconColor,
+                          }
+                        : {},
+                    summaryIconStyle,
+                ]}
+            />
+        )
+    }
+}
 
 /**
  * Renders a small action count button to be displayed in the Like/Share/Comment actions summary bar
@@ -406,7 +410,8 @@ const renderSummaryItem = (
     actionItemSummaryWrapperStyle,
     summaryIconStyle,
     summaryTextStyle,
-    reactions
+    reactions,
+    updateReaction
 ) => (
     <DelayedButton
         touchableWithoutFeedback
@@ -419,6 +424,15 @@ const renderSummaryItem = (
                 actionItemSummaryWrapperStyle,
             ]}
         >
+            {/* {renderLikeIcons(
+                reactions,
+                itemIcon,
+                itemIconColor,
+                summaryIconStyle,
+                summaryTextStyle,
+                actionItemSummaryWrapperStyle,
+                updateReaction
+            )} */}
             <Image
                 source={itemIcon}
                 style={[
@@ -431,12 +445,6 @@ const renderSummaryItem = (
                     summaryIconStyle,
                 ]}
             />
-            {/* {renderLikeIcons(
-                reactions,
-                itemIcon,
-                itemIconColor,
-                summaryIconStyle
-            )} */}
             <Text style={[styles.summaryText, summaryTextStyle]}>
                 {itemCount}
             </Text>

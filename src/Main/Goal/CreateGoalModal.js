@@ -57,6 +57,7 @@ import {
     trackWithProperties,
     EVENT as E,
 } from '../../monitoring/segment'
+import { identifyWithTraits } from 'expo-analytics-segment'
 
 const DEBUG_KEY = '[ UI CreateGoalModal ]'
 let pageAb = ''
@@ -209,6 +210,10 @@ class CreateGoalModal extends React.Component {
                             )
                         }
                         this.handleCreate(scheduleNotificationCallback)
+                        trackWithProperties(EVENT.GOAL_CREATED, {
+                            reminder_set: true,
+                            reminder_type: 'tomorrow',
+                        })
                     },
                 },
                 {
@@ -226,6 +231,10 @@ class CreateGoalModal extends React.Component {
                             )
                         }
                         this.handleCreate(scheduleNotificationCallback)
+                        trackWithProperties(EVENT.GOAL_CREATED, {
+                            reminder_set: true,
+                            reminder_type: 'nextweek',
+                        })
                     },
                 },
                 {
@@ -235,6 +244,10 @@ class CreateGoalModal extends React.Component {
                             ...this.state,
                             goalReminderDatePicker: true,
                         })
+                        trackWithProperties(EVENT.GOAL_CREATED, {
+                            reminder_set: true,
+                            reminder_type: 'custom',
+                        })
                     },
                 },
                 {
@@ -242,6 +255,9 @@ class CreateGoalModal extends React.Component {
                     onPress: () => {
                         // Use chooses not to set reminder
                         this.handleCreate()
+                        trackWithProperties(EVENT.GOAL_CREATED, {
+                            reminder_set: false,
+                        })
                     },
                     style: 'cancel',
                 },
@@ -283,12 +299,10 @@ class CreateGoalModal extends React.Component {
         } else {
             const durationSec =
                 (new Date().getTime() - this.startTime.getTime()) / 1000
-            trackWithProperties(
-                this.props.initializeFromState
-                    ? E.GOAL_UPDATED
-                    : E.GOAL_CREATED,
-                { goalsCreated: goals.length + 1 }
-            )
+
+            identifyWithTraits(this.props.userId, {
+                goalsCreated: goals.length + 1,
+            })
 
             return this.props.submitGoal(
                 this.props.formVals.values,
@@ -402,10 +416,9 @@ class CreateGoalModal extends React.Component {
 
         const durationSec =
             (new Date().getTime() - this.startTime.getTime()) / 1000
-        trackWithProperties(
-            this.props.initializeFromState ? E.GOAL_UPDATED : E.GOAL_CREATED,
-            { goalsCreated: goals.length + 1 }
-        )
+        identifyWithTraits(this.props.userId, {
+            goalsCreated: goals.length + 1,
+        })
 
         let changedPrivacy = {
             ...this.props.formVals.values,
@@ -470,10 +483,9 @@ class CreateGoalModal extends React.Component {
 
         const durationSec =
             (new Date().getTime() - this.startTime.getTime()) / 1000
-        trackWithProperties(
-            this.props.initializeFromState ? E.GOAL_UPDATED : E.GOAL_CREATED,
-            { goalsCreated: goals.length + 1 }
-        )
+        identifyWithTraits(this.props.userId, {
+            goalsCreated: goals.length + 1,
+        })
 
         return this.props.submitGoal(
             this.props.formVals.values,

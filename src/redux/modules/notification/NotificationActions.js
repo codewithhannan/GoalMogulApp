@@ -62,6 +62,7 @@ import {
     SENTRY_TAG_VALUE,
     SENTRY_MESSAGE_TYPE,
 } from '../../../monitoring/sentry/Constants'
+import { identifyWithTraits } from 'expo-analytics-segment'
 
 const BASE_ROUTE = 'secure/notification'
 const DEBUG_KEY = '[ Action Notification ]'
@@ -473,6 +474,9 @@ export const subscribeNotification = () => async (dispatch, getState) => {
                             trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
                                 notification_enabled: true,
                             })
+                            identifyWithTraits(userId, {
+                                notificationEnabled: true,
+                            })
                         },
                     },
                     {
@@ -481,6 +485,9 @@ export const subscribeNotification = () => async (dispatch, getState) => {
                             console.log('User cancel share to enable')
                             trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
                                 notification_enabled: false,
+                            })
+                            identifyWithTraits(userId, {
+                                notificationEnabled: false,
                             })
                         },
 

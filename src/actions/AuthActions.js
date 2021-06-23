@@ -48,7 +48,13 @@ import { MemberDocumentFetcher } from '../Utils/UserUtils'
 import { Logger } from '../redux/middleware/utils/Logger'
 import { saveRemoteMatches, loadRemoteMatches } from './MeetActions'
 import { setUser, SentryRequestBuilder } from '../monitoring/sentry'
-import { identify, resetUser, track, EVENT as E } from '../monitoring/segment'
+import {
+    identify,
+    resetUser,
+    track,
+    EVENT as E,
+    trackWithProperties,
+} from '../monitoring/segment'
 import {
     SENTRY_TAGS,
     SENTRY_MESSAGE_LEVEL,
@@ -72,7 +78,6 @@ import { TUTORIAL_MARK_USER_ONBOARDED } from '../redux/modules/User/Tutorials'
 import { getVisitedTime, userLogout } from '../reducers/UserVisited'
 import { resetToastData } from '../reducers/ToastReducers'
 import { clearPopupData } from '../reducers/PopupReducers'
-import { trackWithProperties } from 'expo-analytics-segment'
 
 const DEBUG_KEY = '[ Action Auth ]'
 
@@ -156,6 +161,7 @@ const authenticate = (
             return
 
         const { loading } = getState().auth
+        let userLastActive = getState().userActivity
 
         // If user loading is already triggerred, do nothing
         // Potential place to trigger loading is at Router
@@ -173,6 +179,7 @@ const authenticate = (
             })
 
             trackWithProperties(E.LOGIN_COMPLETED, {
+                result: 'error',
                 error_details: errorMessage,
             })
 
@@ -199,10 +206,6 @@ const authenticate = (
             )
 
             if (!res.token || !is2xxRespose(res.status)) {
-                trackWithProperties(E.LOGIN_COMPLETED, {
-                    result: 'error',
-                })
-
                 if (!is4xxResponse(res.status)) {
                     // Record failure in Sentry excluding user behavior
                     new SentryRequestBuilder(
@@ -233,6 +236,8 @@ const authenticate = (
             }
             trackWithProperties(E.LOGIN_COMPLETED, {
                 result: 'success',
+                error_details: '',
+                // lastLoginDate: userLastActive,
             })
 
             TokenService.mountUser(res.userId)
@@ -360,6 +365,9 @@ const mountUserWithToken = (
     //     Actions.replace('registration')
     // }
     if (userObject.accountOnHold) {
+        trackWithProperties(E.REG_INVITE_CODE, {
+            result: 'waitlist',
+        })
         Actions.replace('waitlist')
     } else if (!userObject.accountOnHold && !userObject.isOnBoarded) {
         // Load profile success and user is marked as not onboarded
@@ -367,6 +375,10 @@ const mountUserWithToken = (
         Actions.replace('registration')
     } else {
         // Go to home page
+
+        trackWithProperties(E.REG_INVITE_CODE, {
+            result: 'signed_up',
+        })
 
         Actions.replace('drawer')
 
