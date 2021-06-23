@@ -66,7 +66,10 @@ class OnboardingSyncContact extends React.Component {
     onModalInvite = () => {
         this.closeModal()
         setTimeout(() => {
-            Actions.push('registration_contact_invite', { inviteOnly: true })
+            Actions.push('registration_contact_invite', {
+                inviteOnly: true,
+                navigateToHome: true,
+            })
         }, 150)
     }
 

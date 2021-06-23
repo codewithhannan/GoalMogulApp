@@ -164,7 +164,7 @@ class EnterDrawPopup extends Component {
 
     renderOptions(options) {
         return options.map((option, index) => (
-            <View style={styles.optContainer}>
+            <View style={styles.optContainer} key={index}>
                 <Text style={styles.optText}>{option}</Text>
                 <TouchableWithoutFeedback
                     onPress={() => this.handleCheckbox(index)}

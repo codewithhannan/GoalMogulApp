@@ -58,10 +58,14 @@ export const getLikeList = (parentId, parentType, callback) => (
  * @params id: goal/post/comment id
  * @params pageId: if post / comment, we need to provide pageId
  */
-export const likeGoal = (type, id, pageId, parentId) => (
-    dispatch,
-    getState
-) => {
+export const likeGoal = (
+    type,
+    id,
+    pageId,
+    parentId,
+    likeType,
+    maybeUpdateCount
+) => (dispatch, getState) => {
     const { token, userId } = getState().user
     const { tab } = getState().navigation
     const tmp = ((request) => {
@@ -74,6 +78,7 @@ export const likeGoal = (type, id, pageId, parentId) => (
                 return {
                     requestBody: {
                         goalRef: id,
+                        type: likeType,
                     },
                     action: (likeId) =>
                         dispatch({
@@ -85,6 +90,7 @@ export const likeGoal = (type, id, pageId, parentId) => (
                                 type,
                             },
                         }),
+
                     undoAction: () =>
                         dispatch({
                             type: LIKE_GOAL,
@@ -105,6 +111,7 @@ export const likeGoal = (type, id, pageId, parentId) => (
                 return {
                     requestBody: {
                         postRef: id,
+                        type: likeType,
                     },
                     action: (likeId) =>
                         dispatch({
@@ -136,6 +143,7 @@ export const likeGoal = (type, id, pageId, parentId) => (
                 return {
                     requestBody: {
                         commentRef: id,
+                        type: likeType,
                     },
                     action: (likeId) =>
                         dispatch({
@@ -184,6 +192,25 @@ export const likeGoal = (type, id, pageId, parentId) => (
             )
             return tmp.undoAction()
         })
+}
+
+export const updateLikeType = (type, likeId) => (dispatch, getState) => {
+    const { token, userId } = getState().user
+
+    try {
+        let res
+        res = API.put(
+            `${LIKE_BASE_ROUTE}`,
+            {
+                type: type,
+                likeId: likeId,
+            },
+            token
+        )
+        console.log('THIS IS RESPONSE OF UPDATE LIKE', res)
+    } catch (error) {
+        console.log('THIS IS ERROR OF UPDATING LIKE', error.message)
+    }
 }
 
 /**

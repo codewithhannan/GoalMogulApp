@@ -14,7 +14,6 @@ class ImageRow extends Component {
     }
 
     render() {
-        console.log('this is propsssss', this.props)
         const uri = this.props.photo.node.image.uri
         return (
             <TouchableWithoutFeedback

@@ -30,6 +30,7 @@ import {
     fetchProfile,
     checkIfNewlyCreated,
     getUserVisitedNumber,
+    refreshProfileData,
 } from '../../actions'
 
 import {
@@ -68,8 +69,12 @@ import {
     fetchUnreadCount,
     refreshNotificationTab,
 } from '../../redux/modules/notification/NotificationTabActions'
+import { makeGetUserGoals } from '../../redux/modules/User/Selector'
+import { trackWithProperties } from 'expo-analytics-segment'
 
 const DEBUG_KEY = '[ UI Home ]'
+
+let pageAb
 
 class Home extends Component {
     constructor(props) {
@@ -153,6 +158,10 @@ class Home extends Component {
     }
 
     componentDidMount() {
+        const pageId = this.props.refreshProfileData(this.props.userId)
+
+        pageAb = pageId
+
         this.props.refreshNotificationTab()
         // this.props.fetchUnreadCount()
 
@@ -266,7 +275,11 @@ class Home extends Component {
             console.log(
                 `${DEBUG_KEY}: [handleAppStateChange] App has become active!`
             )
-            track(E.APP_ACTIVE)
+
+            trackWithProperties(E.APP_ACTIVE, {
+                source: 'direct',
+            })
+
             const {
                 needRefreshActivity,
                 needRefreshMastermind,
@@ -289,7 +302,9 @@ class Home extends Component {
             console.log(
                 `${DEBUG_KEY}: [handleAppStateChange] App has become inactive!`
             )
-            track(E.APP_INACTIVE)
+            trackWithProperties(E.APP_ACTIVE, {
+                source: 'direct',
+            })
             await this.props.saveUnreadNotification()
             await this.props.saveTutorialState()
         }
@@ -320,7 +335,9 @@ class Home extends Component {
                     onCreateUpdatePress={() =>
                         this.createPostModal && this.createPostModal.open()
                     }
-                    onCreateGoalPress={Actions.createGoalModal}
+                    onCreateGoalPress={() =>
+                        Actions.push('createGoalModal', { pageId: pageAb })
+                    }
                 />
                 {/* Hid switching tabs to clean up the main view to just friend's Goals and Updates */}
                 {/* <View style={styles.tabContainer}>
@@ -420,8 +437,6 @@ const mapStateToProps = (state) => {
     const needRefreshActivity = _.isEmpty(state.home.activityfeed.data)
     const { user } = state.user
 
-    const userVisited = state.usersVisited
-
     // Tutorial related
     const { create_goal } = state.tutorials
     const { home } = create_goal
@@ -487,6 +502,7 @@ export default connect(
         fetchProfile,
         checkIfNewlyCreated,
         closeCreateOverlay,
+        refreshProfileData,
         /* Tutorial related */
         showNextTutorialPage,
         startTutorial,

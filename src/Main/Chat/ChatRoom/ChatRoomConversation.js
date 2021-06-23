@@ -34,9 +34,11 @@ import {
     Platform,
     TextInput,
     TouchableOpacity,
+    Text,
     View,
 } from 'react-native'
 import CameraRoll from '@react-native-community/cameraroll'
+import { Video } from 'expo-av'
 import { Avatar, SystemMessage } from 'react-native-gifted-chat'
 import { Actions } from 'react-native-router-flux'
 import { TypingAnimation } from 'react-native-typing-animation'
@@ -45,6 +47,8 @@ import UUID from 'uuid/v4'
 import { openCamera, openCameraRoll, openProfile } from '../../../actions'
 import defaultProfilePic from '../../../asset/utils/defaultUserProfile.png'
 import defaultGroupChatPic from '../../../asset/icons/AccountMulti.png'
+import ChatGallery from '../../../asset/background/FeedbackScreenShot.png'
+
 import NextButton from '../../../asset/utils/next.png'
 // Components
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal'
@@ -141,6 +145,9 @@ class ChatRoomConversation extends React.Component {
             lastEmittedTypingIndicatorStatus: false,
 
             messageDoc: {},
+            showCameraRoll: false,
+            status: {},
+            video: '',
         }
     }
 
@@ -446,52 +453,59 @@ class ChatRoomConversation extends React.Component {
     makeMediaRefOptions = () => {
         return [
             {
-                text: 'Take Photo',
-                icon: { name: 'camera', pack: 'material-community' },
-                iconStyle: { height: 24, color: 'black' },
-                onPress: () => {
-                    this.closeAddMediaBottomSheet()
-                    this._textInput.blur()
-                    setTimeout(() => {
-                        this.handleOpenCamera()
-                    }, 500)
-                },
+                // text: 'Take Photo',
+                // icon: { name: 'camera', pack: 'material-community' },
+                // iconStyle: { height: 24, color: 'black' },
+                // onPress: () => {
+                //     this.closeAddMediaBottomSheet()
+                //     this._textInput.blur()
+                //     setTimeout(() => {
+                //         this.handleOpenCamera()
+                //     }, 500)
+                // },
             },
-            {
-                text: 'Open Camera Roll',
-                textStyle: { color: 'black' },
-                icon: { name: 'image-outline', pack: 'material-community' },
-                iconStyle: { height: 24, color: 'black' },
-                imageStyle: { tintColor: 'black' },
-                onPress: () => {
-                    this.closeAddMediaBottomSheet()
-                    this._textInput.blur()
-                    setTimeout(() => {
-                        this.handleOpenCameraRoll()
-                    }, 500)
-                },
-            },
+            // {
+            //     text: 'Open Camera Roll',
+            //     textStyle: { color: 'black' },
+            //     icon: { name: 'image-outline', pack: 'material-community' },
+            //     iconStyle: { height: 24, color: 'black' },
+            //     imageStyle: { tintColor: 'black' },
+            //     onPress: () => {
+            //         this.closeAddMediaBottomSheet()
+            //         this._textInput.blur()
+            //         setTimeout(() => {
+            //             this.handleOpenCameraRoll()
+            //         }, 500)
+            //     },
+            // },
         ]
     }
 
     renderAddMediaRefBottomSheet = () => {
         const options = this.makeMediaRefOptions()
 
-        const sheetHeight = getButtonBottomSheetHeight(options.length)
+        const sheetHeight = getButtonBottomSheetHeight(3)
 
         return (
             <BottomButtonsSheet
                 ref={(r) => (this.mediaRefBottomSheetRef = r)}
                 buttons={options}
                 height={sheetHeight}
+                chatGallary
+                chatGallaryPress={this.handleOpenCameraRoll}
             />
         )
     }
 
     handleOpenCamera = () => {
-        this.props.openCamera((result) => {
-            this.props.changeMessageMediaRef(result.uri)
-        })
+        this.props.openCamera(
+            (result) => {
+                this.props.changeMessageMediaRef(result.uri)
+            },
+            null,
+            null,
+            true
+        )
     }
     handleOpenCameraRoll = () => {
         const callback = R.curry((result) => {
@@ -525,23 +539,23 @@ class ChatRoomConversation extends React.Component {
 
     closeOptionModal = () => this.bottomSheetRef.close()
 
-    makeShareOptions = () => {
+    handleCamraIcon = () => {
         const { user, chatRoom, messages } = this.props
-        const shareGoalOption = {
-            text: 'Share a Goal',
-            textStyle: { color: 'black' },
-            icon: { name: 'bullseye-arrow', pack: 'material-community' },
-            onPress: () => {
-                this.closeOptionModal()
-                // Wait for bottom sheet to close
-                // before showing unfriend alert confirmation
-                setTimeout(() => {
-                    if (this.attachGoalModal) {
-                        this.attachGoalModal.open()
-                    }
-                }, 500)
-            },
-        }
+        // const shareGoalOption = {
+        //     text: 'Share a Goal',
+        //     textStyle: { color: 'black' },
+        //     icon: { name: 'bullseye-arrow', pack: 'material-community' },
+        //     onPress: () => {
+        //         this.closeOptionModal()
+        //         // Wait for bottom sheet to  close
+        //         // before showing unfriend alert confirmation
+        //         setTimeout(() => {
+        //             if (this.attachGoalModal) {
+        //                 this.attachGoalModal.open()
+        //             }
+        //         }, 500)
+        //     },
+        // }
 
         // Current version we don't support share an update
         // const shareUpdateOption = {
@@ -552,42 +566,42 @@ class ChatRoomConversation extends React.Component {
         // }
 
         const shareUserOption = {
-            text: 'Share a Friend',
-            textStyle: { color: 'black' },
-            icon: { name: 'account', pack: 'material-community' },
-            onPress: () => {
-                this.closeOptionModal()
-                // Wait for bottom sheet to close
-                // before showing unfriend alert confirmation
-                const searchFor = {
-                    type: 'directChat',
-                }
-                const cardIconStyle = { tintColor: color.GM_BLUE_LIGHT }
-                const cardIconSource = NextButton
-                const callback = (selectedUserId) =>
-                    this.props.sendMessage(
-                        [
-                            {
-                                sharedEntity: {
-                                    userRef: selectedUserId,
-                                },
-                                text: '',
-                                user,
-                                createdAt: new Date(),
-                                _id: UUID(),
-                            },
-                        ],
-                        null,
-                        chatRoom,
-                        messages
-                    )
-                Actions.push('searchPeopleLightBox', {
-                    searchFor,
-                    cardIconSource,
-                    cardIconStyle,
-                    callback,
-                })
-            },
+            // text: 'Share a Friend',
+            // textStyle: { color: 'black' },
+            // icon: { name: 'account', pack: 'material-community' },
+            // onPress: () => {
+            //     this.closeOptionModal()
+            //     // Wait for bottom sheet to close
+            //     // before showing unfriend alert confirmation
+            //     const searchFor = {
+            //         type: 'directChat',
+            //     }
+            //     const cardIconStyle = { tintColor: color.GM_BLUE_LIGHT }
+            //     const cardIconSource = NextButton
+            //     const callback = (selectedUserId) =>
+            //         this.props.sendMessage(
+            //             [
+            //                 {
+            //                     sharedEntity: {
+            //                         userRef: selectedUserId,
+            //                     },
+            //                     text: '',
+            //                     user,
+            //                     createdAt: new Date(),
+            //                     _id: UUID(),
+            //                 },
+            //             ],
+            //             null,
+            //             chatRoom,
+            //             messages
+            //         )
+            //     Actions.push('searchPeopleLightBox', {
+            //         searchFor,
+            //         cardIconSource,
+            //         cardIconStyle,
+            //         callback,
+            //     })
+            // },
         }
 
         // Current version we don't support share a tribe
@@ -625,7 +639,7 @@ class ChatRoomConversation extends React.Component {
         // }
 
         return [
-            shareGoalOption,
+            // shareGoalOption,
             // shareUpdateOption,
             shareUserOption,
             // shareTribeOption,
@@ -716,28 +730,38 @@ class ChatRoomConversation extends React.Component {
                 }}
                 onPress={this.openAddMediaBottomSheet}
             >
-                <Icon
+                {/* <Icon
                     name="image-outline"
                     pack="material-community"
                     style={[styles.iconStyle, { tintColor: '#4F4F4F' }]}
+                /> */}
+                <Image
+                    source={require('../../../asset/icons/ChatGallary.png')}
+                    style={{ height: 25, width: 25, marginBottom: 2 }}
+                    resizeMode="contain"
                 />
             </TouchableOpacity>
         )
     }
-    renderShareContentButton() {
+
+    openRecordingModal = () => this.bottomRecodingSheet.open()
+
+    closeRecordingnModal = () => this.bottomRecodingSheet.close()
+
+    renderRecordButton() {
         return (
             <TouchableOpacity
                 activeOpacity={0.6}
                 style={{
                     // use padding instead of margin to space buttons so it increases tapable area
-                    paddingLeft: 6,
+                    paddingLeft: 10,
                     paddingRight: 6,
                     ...styles.iconContainerStyle,
                 }}
-                onPress={this.openOptionModal}
+                onPress={this.openRecordingModal}
             >
-                <Icon
-                    name="lightbulb-on-outline"
+                {/* <Icon
+                    name="zmdi-mic"
                     pack="material-community"
                     style={[
                         styles.iconStyle,
@@ -747,6 +771,44 @@ class ChatRoomConversation extends React.Component {
                             tintColor: '#F2C94C',
                         },
                     ]}
+                /> */}
+                <Image
+                    source={require('../../../asset/icons/Audio.png')}
+                    style={{ height: 22, width: 22, marginBottom: 4 }}
+                    resizeMode="contain"
+                />
+            </TouchableOpacity>
+        )
+    }
+
+    renderCameraButton() {
+        return (
+            <TouchableOpacity
+                activeOpacity={0.6}
+                style={{
+                    // use padding instead of margin to space buttons so it increases tapable area
+                    paddingLeft: 7,
+                    paddingRight: 6,
+                    ...styles.iconContainerStyle,
+                }}
+                onPress={this.openOptionModal}
+            >
+                {/* <Icon
+                    name="zmdi-mic"
+                    pack="material-community"
+                    style={[
+                        styles.iconStyle,
+                        {
+                            position: 'relative',
+                            bottom: 2,
+                            tintColor: '#F2C94C',
+                        },
+                    ]}
+                /> */}
+                <Image
+                    source={require('../../../asset/icons/ChatCamera.png')}
+                    style={{ height: 22, width: 22, marginBottom: 4 }}
+                    resizeMode="contain"
                 />
             </TouchableOpacity>
         )
@@ -754,6 +816,8 @@ class ChatRoomConversation extends React.Component {
 
     renderAttachedImage = () => {
         const { messageMediaRef } = this.props
+        console.log('THIS IS MESSAGEMEDIA REF', messageMediaRef)
+
         if (!messageMediaRef) return null
         const onPress = () => {}
         const onRemove = () => {
@@ -775,10 +839,20 @@ class ChatRoomConversation extends React.Component {
                     }}
                     onPress={onPress}
                 >
-                    <Image
+                    <Video
+                        ref={this.state.video}
                         source={{ uri: messageMediaRef }}
-                        style={{ height: 75, width: 65, borderRadius: 5 }}
+                        style={{
+                            height: 75,
+                            width: 65,
+                            borderRadius: 5,
+                        }}
+                        shouldPlay
                         resizeMode="cover"
+                        isLooping
+                        onPlaybackStatusUpdate={(status) =>
+                            this.setState({ status })
+                        }
                     />
                     <RemoveAttachedImageButton onRemove={onRemove} />
                 </TouchableOpacity>
@@ -812,7 +886,8 @@ class ChatRoomConversation extends React.Component {
                             {messageMediaRef
                                 ? null
                                 : this.renderSendImageButton()}
-                            {this.renderShareContentButton()}
+                            {this.renderCameraButton()}
+                            {this.renderRecordButton()}
                         </View>
                         <View
                             style={{
@@ -941,14 +1016,31 @@ class ChatRoomConversation extends React.Component {
     }
 
     renderBottomButtonSheet = () => {
-        const options = this.makeShareOptions()
+        const options = this.handleCamraIcon()
         // Options height + bottom space + bottom sheet handler height
-        const sheetHeight = getButtonBottomSheetHeight(options.length)
+        const sheetHeight = getButtonBottomSheetHeight(3)
         return (
             <BottomButtonsSheet
                 ref={(r) => (this.bottomSheetRef = r)}
                 buttons={options}
                 height={sheetHeight}
+                chatCameraPress
+                chatCameraPress={this.handleOpenCamera}
+            />
+        )
+    }
+
+    renderBottomVoiceRecording = () => {
+        const options = this.handleCamraIcon()
+        // Options height + bottom space + bottom sheet handler height
+        const sheetHeight = getButtonBottomSheetHeight(6)
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.bottomRecodingSheet = r)}
+                buttons={[{}]}
+                height={sheetHeight}
+                chatRecordingPress
+                chatRecordingPress={this.handleOpenCamera}
             />
         )
     }
@@ -987,6 +1079,7 @@ class ChatRoomConversation extends React.Component {
     render() {
         const { useDefaultChatRoomImage } = this.props
         const { _id, name, profile } = this.props.user
+        const { messageMediaRef } = this.props
         // console.log('this is the props', this.props)
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
@@ -1074,8 +1167,10 @@ class ChatRoomConversation extends React.Component {
                         deleteMessage={this.deleteMessage}
                         dismissGoalSuggestion={this.dismissGoalSuggestion}
                     />
+
                     {this.renderBottomButtonSheet()}
                     {this.renderAttachGoal()}
+                    {this.renderBottomVoiceRecording()}
                     {this.renderAddMediaRefBottomSheet()}
                 </Layout>
             </MenuProvider>
@@ -1213,8 +1308,8 @@ const styles = {
         width: 30,
     },
     iconStyle: {
-        height: 30,
-        width: 30,
+        height: 28,
+        width: 28,
     },
     mediaContainerStyle: {
         flexDirection: 'row',

@@ -1,21 +1,10 @@
 /** @format */
 
 import React, { Component } from 'react'
-import {
-    View,
-    Image,
-    Text,
-    TouchableWithoutFeedback,
-    Dimensions,
-    TouchableOpacity,
-    ImageBackground,
-} from 'react-native'
-import { color, default_style } from '../styles/basic'
+import { View, Text, TouchableOpacity, ImageBackground } from 'react-native'
+
 import { Icon } from '@ui-kitten/components'
-
 import { connect } from 'react-redux'
-import * as text from '../styles/basic/text'
-
 import { Entypo } from '@expo/vector-icons'
 import { setGoalProgressTooltip } from '../actions'
 

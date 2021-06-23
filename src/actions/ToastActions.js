@@ -1,6 +1,5 @@
 /** @format */
 
-import { postRequest, getRequest } from '../store/services'
 import { api as API } from '../redux/middleware/api'
 
 import {
@@ -8,7 +7,6 @@ import {
     loadToastData,
     resetToastData,
 } from '../reducers/ToastReducers'
-import { Actions } from 'react-native-router-flux'
 
 const DEBUG_KEY = '[ ToastActions ]'
 

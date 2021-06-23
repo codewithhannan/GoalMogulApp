@@ -49,7 +49,11 @@ import {
     NOTIFICATION_UNREAD_MARK_AS_READ_BY_PARSEDNOTI,
 } from './NotificationTabReducers'
 import LiveChatService from '../../../socketio/services/LiveChatService'
-import { EVENT as E, trackWithProperties } from '../../../monitoring/segment'
+import {
+    EVENT as E,
+    track,
+    trackWithProperties,
+} from '../../../monitoring/segment'
 
 import { SentryRequestBuilder } from '../../../monitoring/sentry'
 import {
@@ -128,6 +132,7 @@ export const handlePushNotification = (notification) => (
         Type: entityType,
         Id: entityId,
         Item: notification,
+        source: 'push notification',
     })
 
     // Mark this notification as read
@@ -463,12 +468,22 @@ export const subscribeNotification = () => async (dispatch, getState) => {
                 [
                     {
                         text: 'Settings',
-                        onPress: () => Linking.openURL('app-settings:'),
+                        onPress: () => {
+                            Linking.openURL('app-settings:')
+                            trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
+                                notification_enabled: true,
+                            })
+                        },
                     },
                     {
                         text: 'Cancel',
-                        onPress: () =>
-                            console.log('User cancel share to enable'),
+                        onPress: () => {
+                            console.log('User cancel share to enable')
+                            trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
+                                notification_enabled: false,
+                            })
+                        },
+
                         style: 'cancel',
                     },
                 ]

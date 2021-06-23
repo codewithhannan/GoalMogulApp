@@ -1,9 +1,10 @@
 {
     "expo": {
+        "scheme": "goalmogul",
         "name": "GoalMogul",
         "icon": "./assets/logo.png",
         "sdkVersion": "38.0.0",
-        "version": "1.0.6",
+        "version": "1.0.10",
         "slug": "goalmogul",
         "orientation": "portrait",
         "ios": {

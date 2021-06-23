@@ -36,11 +36,19 @@ import {
     validatePhoneCode,
     cancelRegistration,
 } from '../../redux/modules/registration/RegistrationActions'
+PhoneVerificationMoal
 import UserAgreementCheckBox from './UserAgreementCheckBox'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { DEVICE_PLATFORM } from '../../Utils/Constants'
 import { getBottomSpace } from 'react-native-iphone-x-helper'
-import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
+import {
+    wrapAnalytics,
+    SCREENS,
+    track,
+    EVENT as E,
+} from '../../monitoring/segment'
+import { trackWithProperties } from 'expo-analytics-segment'
+import PhoneVerificationMoal from './PhoneVerificationModal'
 
 const NEXT_STEP = 'registration'
 const FIELD_REQUIREMENTS = {
@@ -239,6 +247,17 @@ class RegistrationAccount extends React.Component {
         }
     }
 
+    profileFilledTrack = () => {
+        if (
+            this.state.nameStatus == FIELD_REQUIREMENTS.done &&
+            this.state.emailStatus == FIELD_REQUIREMENTS.done &&
+            this.props.dateOfBirth &&
+            this.props.gender
+        ) {
+            return track(E.REG_FIELDS_FILL)
+        }
+    }
+
     renderLogin() {
         return (
             <View style={[styles.loginBoxStyle, { opacity: 0 }]}>
@@ -291,7 +310,6 @@ class RegistrationAccount extends React.Component {
             >
                 <View
                     style={{
-                        height: 0,
                         justifyContent: 'center',
                         alignItems: 'center',
                         // marginBottom: 20,
@@ -301,6 +319,7 @@ class RegistrationAccount extends React.Component {
                         <Text style={styles.errorStyle}>{registerErrMsg}</Text>
                     ) : null}
                 </View>
+
                 <InputBox
                     key="name"
                     inputTitle="Full Name"
@@ -423,7 +442,12 @@ class RegistrationAccount extends React.Component {
                     returnKeyType="done"
                     caption={``}
                     disabled={this.props.loading}
-                    onBlur={() => this.validateInviteCode(inviterCode)}
+                    onBlur={() => {
+                        this.validateInviteCode(inviterCode)
+                        trackWithProperties(E.REG_INVITE_CODE, {
+                            result: 'signed_up',
+                        })
+                    }}
                     onChangeText={(val) => {
                         if (
                             this.state.inviteCodeStatus !=
@@ -471,6 +495,7 @@ class RegistrationAccount extends React.Component {
     render() {
         return (
             <View style={[OnboardingStyles.container.page, { zIndex: 1 }]}>
+                {this.profileFilledTrack()}
                 <KeyboardAwareScrollView
                     bounces={false}
                     enableOnAndroid={true}
@@ -518,7 +543,8 @@ class RegistrationAccount extends React.Component {
                         </DelayedButton>
                     </View>
                 </KeyboardAwareScrollView>
-                {/* As documented in the header, this is for phone verification method 2
+                {/* As documented in the header, this is for phone verification
+                method 2
                 <PhoneVerificationMoal
                     isOpen={this.state.isModalOpen}
                     phoneVerify={(code) => this.phoneVerify(code)}
@@ -565,9 +591,6 @@ const mapStateToProps = (state) => {
         registerErrMsg,
         inviterCode,
     } = state.registration
-
-    console.log('These are the props', state)
-    // console.log('These are erro', registerErrMsg)
 
     return {
         name,

@@ -33,6 +33,7 @@ class TribeSearch extends Component {
 
     componentDidMount() {
         if (this.props.shouldPreload) {
+            console.log('YAHAN ARAHA HA')
             this.props.refreshPreloadData(TYPE)
         }
         this.props.getAllAccounts()
@@ -167,7 +168,22 @@ class TribeSearch extends Component {
         const { height } = Dimensions.get('window')
         return (
             <View style={{ flex: 1, height: height }}>
-                {this.renderFlatList()}
+                {this.props.data.length === 0 &&
+                this.props.searchContent &&
+                !this.props.loading ? (
+                    <EmptyResult text={'No Results'} />
+                ) : (
+                    <FlatList
+                        data={this.props.data}
+                        renderItem={this.renderItem}
+                        keyExtractor={this._keyExtractor}
+                        onEndReached={this.handleOnLoadMore}
+                        onEndReachedThreshold={0.5}
+                        onRefresh={this.handleRefresh}
+                        refreshing={this.props.loading}
+                        keyboardShouldPersistTaps="always"
+                    />
+                )}
             </View>
         )
     }
@@ -180,8 +196,10 @@ const mapStateToProps = (state, props) => {
     const { allTribes, loading: tribesLoading } = state.account
 
     const { shouldPreload } = props
+
     if (shouldPreload && (!searchContent || searchContent.trim() === '')) {
         // Display preload data when search content is null and shouldPreload is true
+
         data = tribes.preload.data
         refreshing = tribes.preload.refreshing
         loading = tribes.preload.loading

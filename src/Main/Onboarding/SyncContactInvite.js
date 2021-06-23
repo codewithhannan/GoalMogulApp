@@ -57,7 +57,13 @@ class SyncContactInvite extends React.Component {
     }
 
     onNext = () => {
-        Actions.replace('drawer')
+        const { navigateToHome } = this.props
+
+        if (navigateToHome) {
+            return Actions.replace('drawer')
+        } else {
+            return Actions.push('registration_community_guideline')
+        }
     }
 
     /**
@@ -160,6 +166,8 @@ class SyncContactInvite extends React.Component {
 
     render() {
         const { inviteOnly } = this.props
+
+        console.log('THIS IS PROPSSS', this.props)
         return (
             <View style={styles.containerStyle}>
                 <OnboardingHeader />
@@ -214,6 +222,7 @@ const styles = {
 
 const mapStateToProps = (state) => {
     const { userId } = state.user
+
     return {
         // NOTE: local contacts are fired by callback of
         // redux/modules/registration/RegistrationActions#uploadContacts

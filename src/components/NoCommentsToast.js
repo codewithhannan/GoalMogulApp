@@ -6,6 +6,12 @@ import { color, default_style } from '../styles/basic'
 import PrivateGoal from '../asset/image/NoComments.png'
 import { connect } from 'react-redux'
 import { getFirstName } from '../Utils/HelperMethods'
+import LottieView from 'lottie-react-native'
+import NO_COMMENT_LOTTIE from '../asset/toast_popup_lotties/Help_to get first comment on goal/Help_to get first comment on goal.json'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 
 class PrivateGoalsToast extends Component {
     constructor(props) {
@@ -13,7 +19,7 @@ class PrivateGoalsToast extends Component {
     }
 
     render() {
-        const name = getFirstName(this.props.user.name)
+        const name = getFirstName(this.props.name)
         return (
             <>
                 <View
@@ -40,7 +46,7 @@ class PrivateGoalsToast extends Component {
                             marginHorizontal: 10,
                         }}
                     >
-                        <Image
+                        {/* <Image
                             source={PrivateGoal}
                             style={{
                                 height: 130,
@@ -49,6 +55,12 @@ class PrivateGoalsToast extends Component {
 
                                 resizeMode: 'contain',
                             }}
+                        /> */}
+                        <LottieView
+                            style={{ height: hp(16) }}
+                            source={NO_COMMENT_LOTTIE}
+                            autoPlay
+                            loop
                         />
                     </View>
                     <View
@@ -77,8 +89,8 @@ class PrivateGoalsToast extends Component {
                                 fontFamily: 'SFProDisplay-Regular',
                             }}
                         >
-                            Oh no! No one has commented on Shunshuke's goal yet!
-                            Be the first to leave a suggestion or encouragement!
+                            Oh no! No one has commented on {name}'s goal yet! Be
+                            the first to leave a suggestion or encouragement!
                         </Text>
                     </View>
                 </View>

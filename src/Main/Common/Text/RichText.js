@@ -117,9 +117,6 @@ class RichText extends React.Component {
         const { contentText, contentTags, contentLinks } = this.props
         // const { parsedLink } = this.state
 
-        console.log('contentLinks', contentLinks)
-        console.log('contentLinks', typeof contentText)
-
         if (!contentText) return null
 
         // console.log(`${DEBUG_KEY}: render contentText: ${contentText.substring(0, 5)}`);

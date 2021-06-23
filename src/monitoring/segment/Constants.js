@@ -10,7 +10,7 @@ const Screen = {
     NOTIFICATION_PAGE: 'Notification',
     EXPLORE_PAGE: 'Explore',
     CHAT_PAGE: 'Chat',
-    SPLASH_SCREEN: 'SplashScreen',
+    SPLASH_SCREEN: 'onboarding_page_viewed',
 }
 
 export { Screen }

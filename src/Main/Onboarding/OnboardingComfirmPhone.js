@@ -9,12 +9,14 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
     Keyboard,
+    Platform,
 } from 'react-native'
 import * as WebBrowser from 'expo-web-browser'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import OnboardingHeader from './Common/OnboardingHeader'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
+import OTPTextInput from 'react-native-otp-textinput'
 
 import { text } from '../../styles/basic'
 import OnboardingStyles, { getCardBottomOffset } from '../../styles/Onboarding'
@@ -35,7 +37,6 @@ import {
     phoneNumberSent,
 } from '../../redux/modules/auth/phoneVerification'
 
-const screenWidth = Math.round(Dimensions.get('window').width)
 const { button: buttonStyle, text: textStyle } = OnboardingStyles
 
 class OnBoardingComfirmPhone extends React.Component {
@@ -44,7 +45,7 @@ class OnBoardingComfirmPhone extends React.Component {
         this.state = {
             loading: true, // test loading param
             errMessage: undefined,
-            code: undefined,
+            code: '',
             hasFilled: false,
             phoneNumber: '',
             errorMessage: false,
@@ -164,23 +165,42 @@ class OnBoardingComfirmPhone extends React.Component {
                                 seconds to arrive.
                             </Text>
 
-                            <OTPInputView
-                                style={{
-                                    width: '90%',
-                                    height: 50,
-                                    marginTop: 25,
-                                    marginBottom: 25,
-                                }}
-                                pinCount={6}
-                                // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
-                                // onCodeChanged = {code => { this.setState({code})}}
-                                autoFocusOnLoad
-                                codeInputFieldStyle={
-                                    styles.digitInputContainerStyle
-                                }
-                                onCodeFilled={this.onCodeFilled}
-                                placeholderTextColor={'black'}
-                            />
+                            {Platform.OS == 'android' ? (
+                                <OTPTextInput
+                                    ref={(e) => (this.otpInput = e)}
+                                    inputCount={6}
+                                    defaultValue={this.state.code}
+                                    handleTextChange={(code) => {
+                                        this.setState({ code })
+                                    }}
+                                    tintColor="#45C9F6"
+                                    containerStyle={{
+                                        marginTop: 25,
+                                        marginBottom: 25,
+                                    }}
+                                />
+                            ) : (
+                                <OTPInputView
+                                    style={{
+                                        width: '90%',
+                                        height: 50,
+                                        marginTop: 25,
+                                        marginBottom: 25,
+                                    }}
+                                    pinCount={6}
+                                    code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
+                                    onCodeChanged={(code) => {
+                                        this.setState({ code })
+                                    }}
+                                    autoFocusOnLoad
+                                    codeInputFieldStyle={
+                                        styles.digitInputContainerStyle
+                                    }
+                                    onCodeFilled={this.onCodeFilled}
+                                    placeholderTextColor={'black'}
+                                />
+                            )}
+
                             <View
                                 style={{
                                     alignSelf: 'flex-start',

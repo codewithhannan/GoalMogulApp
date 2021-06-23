@@ -84,6 +84,12 @@ class OnboardingPhoneVerification extends React.Component {
         phoneNumber: yup.string().required(),
     })
 
+    componentDidMount() {
+        trackWithProperties(E.REG_MOBILE_VERIFICATION_START, {
+            verification_method: 'sms',
+        })
+    }
+
     render() {
         return (
             <>

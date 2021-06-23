@@ -87,6 +87,7 @@ import StepAndNeedCardV3 from './V3/StepAndNeedCardV3'
 import NoCommentsToast from '../../../components/NoCommentsToast'
 import NoStepsToast from '../../../components/NoStepsToast'
 import { ScrollView } from 'react-native-gesture-handler'
+import NoStepNeedToast from '../../Common/Toasts/NoStepNeedToast'
 
 const DEBUG_KEY = '[ UI GoalDetailCardV3 ]'
 const COMPONENT_NAME = 'goalDetail'
@@ -782,9 +783,11 @@ export class GoalDetailCardV3 extends React.Component {
 
     renderEmptyListComponent = (focus) => {
         if (!this.props.isSelf && focus === 'comment') {
-            return <NoCommentsToast />
+            return <NoCommentsToast name={this.props.name} />
         } else if (this.props.self && focus == undefined) {
             return <NoStepsToast />
+        } else if (!this.props.self && focus == undefined) {
+            return <NoStepNeedToast />
         } else {
             return (
                 <EmptyResult
@@ -998,8 +1001,12 @@ const makeMapStateToProps = () => {
     const mapStateToProps = (state, props) => {
         const { pageId, goalId } = props
         const newComment = getNewCommentByTab(state, pageId)
+
         const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId)
+
         const { goal, goalPage } = goalDetail
+        const { owner } = goal
+        const { name } = owner
         const { navigationStateV2, updating } = goalPage
         const { showingModalInDetail } = state.report
         const { userId, user } = state.user
@@ -1067,6 +1074,7 @@ const makeMapStateToProps = () => {
             displayGoals,
             loading: itemsLoading,
             data: items,
+            name, // Focused Goal User Name
             originalComments: data, // All comments in raw form
             goalDetail: goal,
             navigationState: navigationStateV2,

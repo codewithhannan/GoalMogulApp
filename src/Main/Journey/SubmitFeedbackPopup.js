@@ -47,7 +47,11 @@ class SubmitFeedbackPopup extends Component {
 
     render() {
         return (
-            <Modal isVisible={this.props.isVisible}>
+            <Modal
+                isVisible={this.props.isVisible}
+                animationIn="zoomInUp"
+                animationInTiming={400}
+            >
                 <View style={styles.container}>
                     <View>
                         <View style={styles.header}>

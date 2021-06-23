@@ -1,7 +1,7 @@
 /** @format */
 
 import React from 'react'
-import { Image, View, Text } from 'react-native'
+import { Image, View, Text, Dimensions, TouchableOpacity } from 'react-native'
 
 // utils
 import { default_style, color } from '../../../styles/basic'
@@ -19,8 +19,16 @@ import ShareIcon from '../../../asset/utils/forward.png'
 import ShareSolidIcon from '../../../asset/utils/forward_solid.png'
 import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
 import LoveIcon from '../../../asset/utils/love.png'
+import Clap from '../../../asset/icons/clap.png'
+import Hearthand from '../../../asset/icons/handheart.png'
+import Wow from '../../../asset/icons/wow.png'
+import Salute from '../../../asset/icons/salute.png'
+import Rockon from '../../../asset/icons/rockon.png'
+import Metoo from '../../../asset/icons/metoo.png'
+
 import BottomButtonsSheet from '../Modal/BottomButtonsSheet'
 import { getButtonBottomSheetHeight } from '../../../styles'
+import { renderTextIcon, renderTextStyle } from './LikeSheetData'
 
 /**
  * Renders the action bar for a content card
@@ -49,7 +57,12 @@ import { getButtonBottomSheetHeight } from '../../../styles'
  * @prop onCommentButtonPress
  * @prop onCommentSummaryPress
  */
+
 class ActionBar extends React.Component {
+    state = {
+        toolTipVisible: false,
+    }
+
     render() {
         // Extract style overrides from props and fallback to empty objects
         let {
@@ -72,9 +85,12 @@ class ActionBar extends React.Component {
             onContainerLayout,
             isShareContent,
             actionSummaries,
+            unitText,
+            reactions,
             // Like button
             isContentLiked,
             onLikeButtonPress,
+            onLikeLongPress,
             onLikeSummaryPress,
             onLikeButtonLayout,
             // Share button
@@ -117,28 +133,38 @@ class ActionBar extends React.Component {
                         actionSummaryContainerStyle,
                         actionItemSummaryWrapperStyle,
                         summaryIconStyle,
-                        summaryTextStyle
+                        summaryTextStyle,
+                        reactions
                     )}
                     <ActionButtonGroup>
                         <ActionButton
+                            onLongPress={() =>
+                                this.setState({ toolTipVisible: true })
+                            }
                             iconSource={
-                                isContentLiked ? LoveIcon : LoveOutlineIcon
+                                !isContentLiked
+                                    ? LoveOutlineIcon
+                                    : renderTextIcon(unitText)
                             }
                             count={0}
-                            unitText="Like"
+                            unitText={!isContentLiked ? 'Like' : unitText}
                             textStyle={{
                                 color: isContentLiked
-                                    ? color.GM_RED
+                                    ? renderTextStyle(unitText)
                                     : color.GM_MID_GREY,
                             }}
                             iconStyle={{
-                                tintColor: isContentLiked
-                                    ? color.GM_RED
-                                    : color.GM_MID_GREY,
+                                tintColor: !isContentLiked
+                                    ? color.GM_MID_GREY
+                                    : null,
+                                height: 25,
+                                width: 25,
                             }}
                             onPress={onLikeButtonPress}
                             onLayout={onLikeButtonLayout}
+                            onLongPress={onLikeLongPress}
                         />
+
                         <ActionButton
                             iconSource={ShareIcon}
                             count={0}
@@ -241,7 +267,8 @@ const renderActionSummaryBar = (
     actionSummaryContainerStyle,
     actionItemSummaryWrapperStyle,
     summaryIconStyle,
-    summaryTextStyle
+    summaryTextStyle,
+    reactions
 ) => {
     // Hide summary bar if no actions have been taken on this content
     if (!(likeCount + shareCount + commentCount)) return null
@@ -262,7 +289,8 @@ const renderActionSummaryBar = (
                 color.GM_RED,
                 actionItemSummaryWrapperStyle,
                 summaryIconStyle,
-                summaryTextStyle
+                summaryTextStyle,
+                reactions
             )}
             {/* Share */}
             {renderSummaryItem(
@@ -296,6 +324,66 @@ const renderActionSummaryBar = (
     )
 }
 
+const renderImageSource = (reaction) => {
+    console.log('REACTIONN', reaction)
+
+    switch (reaction) {
+        case 'Thumbsup':
+            return LoveIcon
+        case 'Rockon':
+            return Rockon
+        case 'Clap':
+            return Clap
+        case 'Metoo':
+            console.log('THIS IS METOO')
+            return Metoo
+        case 'Salute':
+            return Salute
+        case 'Hearthand':
+            return Hearthand
+        case 'Wow':
+            return Wow
+
+        default:
+            return null
+    }
+}
+
+// const renderLikeIcons = (
+//     reactions,
+//     itemIcon,
+//     itemIconColor,
+//     summaryIconStyle
+// ) => {
+//     if (reactions != undefined) {
+//         return reactions.map((reaction) => {
+//             if (reaction.count > 0) {
+//                 return (
+//                     <Image
+//                         source={renderImageSource(reaction.type)}
+//                         style={[styles.summaryIcon, summaryIconStyle]}
+//                     />
+//                 )
+//             }
+//         })
+//     } else {
+//         return (
+//             <Image
+//                 source={itemIcon}
+//                 style={[
+//                     styles.summaryIcon,
+//                     itemIconColor
+//                         ? {
+//                               tintColor: itemIconColor,
+//                           }
+//                         : {},
+//                     summaryIconStyle,
+//                 ]}
+//             />
+//         )
+//     }
+// }
+
 /**
  * Renders a small action count button to be displayed in the Like/Share/Comment actions summary bar
  * @param itemCount - if 0, item is hidden
@@ -317,7 +405,8 @@ const renderSummaryItem = (
     itemIconColor,
     actionItemSummaryWrapperStyle,
     summaryIconStyle,
-    summaryTextStyle
+    summaryTextStyle,
+    reactions
 ) => (
     <DelayedButton
         touchableWithoutFeedback
@@ -342,6 +431,12 @@ const renderSummaryItem = (
                     summaryIconStyle,
                 ]}
             />
+            {/* {renderLikeIcons(
+                reactions,
+                itemIcon,
+                itemIconColor,
+                summaryIconStyle
+            )} */}
             <Text style={[styles.summaryText, summaryTextStyle]}>
                 {itemCount}
             </Text>

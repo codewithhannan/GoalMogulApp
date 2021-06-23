@@ -10,11 +10,9 @@ import {
     View,
     Text,
     Dimensions,
-    Image,
     FlatList,
     TouchableOpacity,
 } from 'react-native'
-import * as WebBrowser from 'expo-web-browser'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import OnboardingHeader from './Common/OnboardingHeader'
@@ -23,12 +21,9 @@ import OnboardingStyles, { getCardBottomOffset } from '../../styles/Onboarding'
 
 import { text, default_style, color } from '../../styles/basic'
 
-import { PRIVACY_POLICY_URL } from '../../Utils/Constants'
 import { uploadContacts } from '../../redux/modules/registration/RegistrationActions'
-import { REGISTRATION_SYNC_CONTACT_NOTES } from '../../redux/modules/registration/RegistrationReducers'
 import DelayedButton from '../Common/Button/DelayedButton'
 import SyncContactInfoModal from './SyncContactInfoModal'
-import Icons from '../../asset/base64/Icons'
 import {
     wrapAnalytics,
     SCREENS,
@@ -45,9 +40,6 @@ import { FONT_FAMILY } from '../../styles/basic/text'
 import { api, api as API } from '../../redux/middleware/api'
 import { ActivityIndicator } from 'react-native-paper'
 
-const screenWidth = Math.round(Dimensions.get('window').width)
-const { button: buttonStyle, text: textStyle } = OnboardingStyles
-
 class OnboardingPeopleKnow extends React.Component {
     constructor(props) {
         super(props)
@@ -57,23 +49,15 @@ class OnboardingPeopleKnow extends React.Component {
             errMessage: undefined,
             pymkData: [],
             skip: 0,
-            limit: 10,
+            limit: 20,
             pymkLoading: true,
+            requestsSent: 0,
         }
     }
-
-    openModal = () =>
-        this.setState({
-            ...this.state,
-
-            errMessage: undefined,
-            loading: true,
-        })
 
     componentDidMount() {
         // Refresh recommended users with force refresh
         this.fetchUsers()
-        this.props.handleRefresh('suggested', true)
     }
 
     fetchUsers = async () => {
@@ -87,7 +71,7 @@ class OnboardingPeopleKnow extends React.Component {
 
             this.setState({
                 pymkData: pymkData.concat(res.data),
-                skip: skip + 10,
+                skip: skip + 20,
                 limit: limit,
                 pymkLoading: false,
             })
@@ -97,8 +81,9 @@ class OnboardingPeopleKnow extends React.Component {
     }
 
     onNotNow = () => {
-        trackWithProperties(E.REG_CONTACT_SYNC_SKIP, {
-            UserId: this.props.userId,
+        trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
+            onboardingStep: 'add_friends',
+            // friends_added: 0,
         })
         const screenTransitionCallback = () => {
             Actions.push('registration_community_guideline')
@@ -107,7 +92,14 @@ class OnboardingPeopleKnow extends React.Component {
     }
 
     renderPYMK = ({ item, index }) => {
-        return <PYMKCard user={item} index={index} hideOptions />
+        return (
+            <PYMKCard
+                user={item}
+                index={index}
+                hideOptions
+                requests={this.state.requestsSent}
+            />
+        )
     }
 
     renderItemSeparator = () => {
@@ -135,9 +127,7 @@ class OnboardingPeopleKnow extends React.Component {
                     </Text>
                     <View style={{ flex: 1 }} />
                     <DelayedButton
-                        onPress={() =>
-                            Actions.push('registration_contact_sync')
-                        }
+                        onPress={this.onSyncContact}
                         style={{ flexDirection: 'row', alignItems: 'center' }}
                         activeOpacity={1}
                     >
@@ -200,11 +190,95 @@ class OnboardingPeopleKnow extends React.Component {
         )
     }
 
+    openModal = () =>
+        this.setState({
+            ...this.state,
+            syncContactInfoModalVisible: true,
+            errMessage: undefined,
+            loading: true,
+        })
+
+    closeModal = () =>
+        this.setState({ ...this.state, syncContactInfoModalVisible: false })
+
+    // Contact member not found. User chose to skip invite from contact
+    onModalNotNow = () => {
+        trackWithProperties(E.REG_CONTACT_INVITE_SKIPPED, {
+            UserId: this.props.userId,
+        })
+        this.closeModal()
+        setTimeout(() => {
+            this.onNotNow()
+        }, 150)
+    }
+
+    onModalInvite = () => {
+        this.closeModal()
+        setTimeout(() => {
+            Actions.push('registration_contact_invite', {
+                inviteOnly: true,
+                navigateToHome: false,
+            })
+        }, 150)
+    }
+
+    /**
+     * TODO:
+     * 1. Show uploading overlay / modal
+     * 2. If not found say, show not found modal
+     *    - If invite, then go to invite page with only 1 tab
+     *    - otherwise, go to welcome page
+     * 3. If found, go to invite page with 2 tabs
+     */
+    onSyncContact = () => {
+        trackWithProperties(E.REG_CONTACT_SYNC, {
+            UserId: this.props.userId,
+        })
+
+        this.openModal()
+
+        // Match is not found
+        // Render failure result in modal
+        // by setting loading to false
+        const onMatchNotFound = () => {
+            this.setState({
+                ...this.state,
+                loading: false,
+            })
+        }
+
+        // close modal and go to invite page
+        const onMatchFound = () => {
+            this.closeModal()
+            setTimeout(() => {
+                Actions.push('registration_contact_invite')
+            }, 150)
+        }
+
+        const onError = (errType) => {
+            let errMessage = ''
+            if (errType == 'upload') {
+                errMessage =
+                    "We're sorry that some error happened. Please try again later."
+            }
+
+            this.setState({
+                ...this.state,
+                errMessage,
+                loading: false,
+            })
+        }
+
+        this.props.uploadContacts({ onMatchFound, onMatchNotFound, onError })
+    }
+
     /**
      * Render image impression for sync contact
      */
 
     render() {
+        console.log('THESE ARE THE FRIENDS', this.state.requestsSent)
+
         return (
             <View
                 style={[
@@ -239,8 +313,8 @@ class OnboardingPeopleKnow extends React.Component {
                                     data={this.state.pymkData}
                                     ListHeaderComponent={this.renderListHeader}
                                     renderItem={this.renderPYMK}
-                                    // loading={this.props.loading}
-                                    // onEndReached={this.fetchUsers}
+                                    loading={this.props.loading}
+                                    onEndReached={this.fetchUsers}
                                     ItemSeparatorComponent={
                                         this.renderItemSeparator
                                     }
@@ -296,6 +370,8 @@ const mapStateToProps = (state) => {
     const { userId, token } = state.user
     const { suggested } = state.meet
     const { data, loading } = suggested
+    const { friendsRequest } = state
+
     return { userId, pymkData: data, loading, token }
 }
 

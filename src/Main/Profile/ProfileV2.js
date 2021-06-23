@@ -53,6 +53,7 @@ import { postRequest } from '../../store/services'
 import Popup from '../Journey/Popup'
 import PrivateGoalsNudge from '../../components/PrivateGoalsNudge'
 import { getFirstName } from '../../Utils/HelperMethods'
+
 import { api as API } from '../../redux/middleware/api'
 import InviteFriendModal from '../MeetTab//Modal/InviteFriendModal'
 
@@ -68,6 +69,7 @@ import SubmitFeedbackPopup from '../Journey/SubmitFeedbackPopup'
 import ShareGoalPopup2 from '../Journey/ShareGoalPopup2'
 
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import NoGoalPrompt from '../../components/NoGoalPrompt'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
@@ -94,6 +96,7 @@ class ProfileV2 extends Component {
             popupName: '',
             showNudgePrivateGoals: false,
             showNudgeAddGoals: false,
+            showNudgeInviteeGoals: false,
             showShareGoalPopup1: false,
             showShareGoalPopup2: false,
             showFeedbackPopup: false,
@@ -196,6 +199,11 @@ class ProfileV2 extends Component {
     toggleNudgeAddGoals = () => {
         this.setState({ showNudgeAddGoals: !this.state.showNudgeAddGoals })
     }
+    toggleNudgeInviteeGoals = () => {
+        this.setState({
+            showNudgeInviteeGoals: !this.state.showNudgeInviteeGoals,
+        })
+    }
 
     handlePopup = () => {
         // console.log('\nhandlePopup is called')
@@ -249,10 +257,15 @@ class ProfileV2 extends Component {
                     '\n Response from nudge API to check conditions',
                     res
                 )
-                let { makeGoalsPublic, createFirstGoal } = res.result
+                let {
+                    makeGoalsPublic,
+                    createFirstGoal,
+                    inviteeGoalCheck,
+                } = res.result
                 this.setState({
                     showNudgePrivateGoals: makeGoalsPublic,
                     showNudgeAddGoals: createFirstGoal,
+                    showNudgeInviteeGoals: inviteeGoalCheck,
                 })
             } catch (err) {
                 console.log(
@@ -817,6 +830,7 @@ class ProfileV2 extends Component {
                                       showQuestionModal: false,
                                   })
                         }}
+                        name={getFirstName(this.props.user.name)}
                     />
                     <EnterDrawPopup
                         isVisible={this.state.showDrawModal}
@@ -867,12 +881,22 @@ class ProfileV2 extends Component {
                         }
                     />
                     <NudgeModal
-                        name={this.props.user.name}
+                        name={getFirstName(this.props.user.name)}
                         isVisible={this.state.showNudgeAddGoals}
                         onClose={() =>
                             this.setState({
                                 showNudgeAddGoals: !this.state
                                     .showNudgeAddGoals,
+                            })
+                        }
+                    />
+                    <NoGoalPrompt
+                        name={getFirstName(this.props.user.name)}
+                        isVisible={this.state.showNudgeInviteeGoals}
+                        onClose={() =>
+                            this.setState({
+                                showNudgeInviteeGoals: !this.state
+                                    .showNudgeInviteeGoals,
                             })
                         }
                     />

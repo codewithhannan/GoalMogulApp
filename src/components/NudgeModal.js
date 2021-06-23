@@ -2,25 +2,33 @@
 
 import React, { Component } from 'react'
 import {
-    Button,
     Text,
     View,
     Image,
     TouchableWithoutFeedback,
     TouchableOpacity,
-    TouchableHighlight,
+    Dimensions,
 } from 'react-native'
 import Modal from 'react-native-modal'
 import { Entypo } from '@expo/vector-icons'
-import Constants from 'expo-constants'
 import { color, default_style } from '../styles/basic'
 import OnboardingStyles from '../styles/Onboarding'
 import { addNudge, NUDGE_TYPES } from '../actions/NudgeActions'
 import { connect } from 'react-redux'
+import LottieView from 'lottie-react-native'
+import NO_GOAL_LOTTIE from '../asset/toast_popup_lotties/help_friend/help_friend.json'
+import YES_LOTTIE from '../asset/toast_popup_lotties/yes-button/yes_button.json'
+
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 
 import GoalVisible from '../asset/image/Goalmogul_illustration.png'
 
 const { text: textStyle, button: buttonStyle } = OnboardingStyles
+const MODAL_WIDTH = Dimensions.get('screen').width
+const MODAL_HEIGHT = Dimensions.get('screen').height
 
 class ModalTester extends Component {
     constructor(props) {
@@ -31,26 +39,18 @@ class ModalTester extends Component {
         const { visitedUser, token } = this.props
         return (
             <>
-                <TouchableWithoutFeedback
-                    onPress={() => {
-                        this.props.addNudge(
-                            visitedUser,
-                            token,
-                            NUDGE_TYPES.createFirstGoal
-                        )
-                        this.props.onClose()
-                    }}
-                >
+                <TouchableWithoutFeedback onPress={this.props.onClose}>
                     <View
                         style={{
-                            width: '30%',
+                            width: '26%',
                             justifyContent: 'center',
                             alignItems: 'center',
                             height: 40,
                             borderColor: '#42C0F5',
                             borderWidth: 2,
                             borderRadius: 3,
-                            right: 10,
+                            right: 20,
+                            marginTop: 6,
                         }}
                     >
                         <Text
@@ -69,31 +69,33 @@ class ModalTester extends Component {
     }
 
     renderNoButton() {
+        const { visitedUser, token } = this.props
         return (
             <>
-                <TouchableWithoutFeedback onPress={this.props.onClose}>
+                <TouchableWithoutFeedback
+                    onPress={() => {
+                        this.props.addNudge(
+                            visitedUser,
+                            token,
+                            NUDGE_TYPES.createFirstGoal
+                        )
+                        this.props.onClose()
+                    }}
+                >
                     <View
                         style={{
-                            backgroundColor: '#42C0F5',
-                            width: '30%',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            height: 40,
-                            borderColor: '#42C0F5',
-                            borderWidth: 2,
-                            borderRadius: 3,
-                            left: 20,
+                            bottom: 3,
+                            left: 13,
                         }}
                     >
-                        <Text
-                            style={{
-                                color: 'white',
-                                fontWeight: '600',
-                                fontSize: 15,
-                            }}
-                        >
-                            Yes
-                        </Text>
+                        <LottieView
+                            style={{ height: hp(5) }}
+                            source={YES_LOTTIE}
+                            autoPlay
+                            loop
+                        />
                     </View>
                 </TouchableWithoutFeedback>
             </>
@@ -111,6 +113,8 @@ class ModalTester extends Component {
                     style={{
                         borderRadius: 20,
                     }}
+                    animationIn="zoomInUp"
+                    animationInTiming={400}
                 >
                     <View
                         style={{
@@ -123,18 +127,18 @@ class ModalTester extends Component {
                             style={{
                                 // height: '0%',
                                 width: '100%',
-                                backgroundColor: 'green',
+
                                 borderRadius: 8,
                                 backgroundColor: color.GV_MODAL,
-                                height: 350,
+                                height: MODAL_HEIGHT * 0.357,
                             }}
                         >
                             <View
                                 style={{
-                                    margin: 15,
-
                                     justifyContent: 'space-between',
                                     flexDirection: 'row',
+                                    marginTop: 10,
+                                    marginHorizontal: 25,
                                 }}
                             >
                                 <Text style={{ ...default_style.titleText_1 }}>
@@ -142,7 +146,7 @@ class ModalTester extends Component {
                                 </Text>
                                 <TouchableOpacity
                                     onPress={this.props.onClose}
-                                    style={{ marginTop: -2 }}
+                                    style={{ bottom: 5 }}
                                 >
                                     <Entypo
                                         name="cross"
@@ -151,50 +155,37 @@ class ModalTester extends Component {
                                     />
                                 </TouchableOpacity>
                             </View>
-                            <View
+                            <LottieView
                                 style={{
-                                    width: '100%',
+                                    height: hp(16),
+                                    marginTop: 2,
+                                    alignSelf: 'center',
+                                }}
+                                source={NO_GOAL_LOTTIE}
+                                autoPlay
+                                loop
+                            />
+
+                            <Text
+                                style={{
+                                    fontWeight: '400',
+                                    fontSize: 15,
+                                    textAlign: 'center',
+                                    marginTop: 12,
                                 }}
                             >
-                                <Image
-                                    source={GoalVisible}
-                                    style={{
-                                        height: 140,
-                                        width: '100%',
-                                        resizeMode: 'contain',
-                                    }}
-                                />
-                            </View>
+                                Your friend {name} has not set any goals yet.
+                            </Text>
 
                             <View
                                 style={{
                                     marginTop: 8,
 
-                                    alignItems: 'center',
-                                    marginRight: 10,
+                                    alignSelf: 'center',
                                 }}
                             >
                                 <Text
-                                    style={{
-                                        fontWeight: '40',
-                                        fontSize: 15,
-                                    }}
-                                >
-                                    Your friend {name} has not set any goals
-                                    yet.
-                                </Text>
-                            </View>
-
-                            <View
-                                style={{
-                                    marginTop: 8,
-                                    width: '90%',
-                                    alignItems: 'center',
-                                    marginHorizontal: 10,
-                                }}
-                            >
-                                <Text
-                                    style={{ fontWeight: '40', fontSize: 15 }}
+                                    style={{ fontWeight: '400', fontSize: 15 }}
                                 >
                                     Do you want to send a nudge?
                                 </Text>
@@ -202,20 +193,11 @@ class ModalTester extends Component {
 
                             <View
                                 style={{
-                                    marginTop: 8,
-                                    width: '90%',
-                                    alignItems: 'center',
-                                    marginHorizontal: 3,
-                                }}
-                            ></View>
-
-                            <View
-                                style={{
                                     flex: 1,
                                     flexDirection: 'row',
                                     justifyContent: 'space-evenly',
-                                    // marginTop: 20,
-                                    margin: 20,
+                                    marginTop: 20,
+
                                     // paddingleft: 10,
                                     // padding: 15,
                                     // marginLeft: 20,

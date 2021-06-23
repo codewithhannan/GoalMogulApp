@@ -81,8 +81,6 @@ class CreateGoalModal extends React.Component {
     }
 
     componentDidMount() {
-        // console.log('userIDdddddd', userId)
-
         const { userId } = this.props
         const pageId = this.props.refreshProfileData(userId)
         pageAb = pageId
@@ -273,11 +271,13 @@ class CreateGoalModal extends React.Component {
         }
 
         const { goal, initializeFromState, uploading, goals } = this.props
+
         if (!uploading) return // when uploading is false, it's actually uploading.
         const goalId = goal ? goal._id : undefined
 
         const getGoalPrivacy =
             this.props.formVals.values.privacy === 'self' && goals.length == 0
+
         if (getGoalPrivacy) {
             this.setState({ goalModalVisible: true })
         } else {
@@ -287,7 +287,7 @@ class CreateGoalModal extends React.Component {
                 this.props.initializeFromState
                     ? E.GOAL_UPDATED
                     : E.GOAL_CREATED,
-                { ...this.props.formVals.values, DurationSec: durationSec }
+                { goalsCreated: goals.length + 1 }
             )
 
             return this.props.submitGoal(
@@ -381,6 +381,8 @@ class CreateGoalModal extends React.Component {
 
     handleModalYes = (scheduleNotificationCallback) => {
         this.setState({ goalModalVisible: false })
+
+        console.log('YE CHAL RAHA HA')
         Keyboard.dismiss()
         const errors = validate(this.props.formVals.values)
         console.log(
@@ -394,7 +396,7 @@ class CreateGoalModal extends React.Component {
             return Alert.alert('Error', 'You have incomplete fields.')
         }
 
-        const { goal, initializeFromState, uploading } = this.props
+        const { goal, initializeFromState, uploading, goals } = this.props
         if (!uploading) return // when uploading is false, it's actually uploading.
         const goalId = goal ? goal._id : undefined
 
@@ -402,7 +404,7 @@ class CreateGoalModal extends React.Component {
             (new Date().getTime() - this.startTime.getTime()) / 1000
         trackWithProperties(
             this.props.initializeFromState ? E.GOAL_UPDATED : E.GOAL_CREATED,
-            { ...this.props.formVals.values, DurationSec: durationSec }
+            { goalsCreated: goals.length + 1 }
         )
 
         let changedPrivacy = {
@@ -462,7 +464,7 @@ class CreateGoalModal extends React.Component {
             return Alert.alert('Error', 'You have incomplete fields.')
         }
 
-        const { goal, initializeFromState, uploading } = this.props
+        const { goal, initializeFromState, uploading, goals } = this.props
         if (!uploading) return // when uploading is false, it's actually uploading.
         const goalId = goal ? goal._id : undefined
 
@@ -470,7 +472,7 @@ class CreateGoalModal extends React.Component {
             (new Date().getTime() - this.startTime.getTime()) / 1000
         trackWithProperties(
             this.props.initializeFromState ? E.GOAL_UPDATED : E.GOAL_CREATED,
-            { ...this.props.formVals.values, DurationSec: durationSec }
+            { goalsCreated: goals.length + 1 }
         )
 
         return this.props.submitGoal(
@@ -650,15 +652,15 @@ const styles = {
 
 const mapStateToProps = (state, props) => {
     const getUserGoals = makeGetUserGoals()
-    const { userId } = state.user
 
+    const { userId } = state.user
     const goals = getUserGoals(state, userId, pageAb)
 
     const { navigationState, uploading } = state.createGoal
     const { user } = state.user
-
     // Tutorial related
     const { create_goal } = state.tutorials
+
     const { create_goal_modal } = create_goal
     const { hasShown, showTutorial, tutorialText } = create_goal_modal
 

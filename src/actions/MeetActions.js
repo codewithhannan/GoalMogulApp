@@ -35,6 +35,7 @@ import { CONTACT_SYNC_LOAD_CONTACT_DONE } from '../redux/modules/User/ContactSyn
 
 // Utils
 import { componentKeyByTab } from '../redux/middleware/utils'
+import { setRequestsSent } from '../reducers/FriendsRequestReducer'
 
 const BASE_ROUTE = 'secure/user/'
 // const BASE_ROUTE = 'dummy/user/';
@@ -534,6 +535,9 @@ export const updateFriendship = (userId, friendshipId, type, tab, callback) => (
     )
         .then((res) => {
             console.log(`${DEBUG_KEY}: response for ${type}: `, res)
+
+            console.log('RESSSSS', res)
+
             if (
                 res.status !== 200 ||
                 (res.message &&

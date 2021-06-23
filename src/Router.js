@@ -16,6 +16,7 @@ import {
 } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import LoginPage from './LoginPage'
+import * as Linking from 'expo-linking'
 // Chat
 import Chat from './Main/Chat/Chat'
 import ChatRoomConversation from './Main/Chat/ChatRoom/ChatRoomConversation'
@@ -128,6 +129,9 @@ import OnboardingWaitlist from './Main/Onboarding/OnboardingWaitlist'
 import OnboardingPhoneVerification from './Main/Onboarding/OnboardingPhoneVerification'
 import OnboardingComfirmPhone from './Main/Onboarding/OnboardingComfirmPhone'
 import ConversationGoal from './Main/Goal/NewGoal/ConversationGoal'
+import { EVENT as E, track } from './monitoring/segment'
+import SendFeedback from './Main/Menu/SendFeedback'
+import MultipleImagePicker from './Main/Menu/MutlipleImagePicker'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -140,11 +144,8 @@ function getCommonScenes(tab) {
             key={`${prefix}ContactMessage`}
             component={SendContactMessage}
         />,
-        <Scene
-            key={`${prefix}ConversationNoGoal`}
-            component={ConversationGoal}
-        />,
-        ,
+        <Scene key={`${prefix}ImagePicker`} component={MultipleImagePicker} />,
+        <Scene key={`${prefix}sendFeedback`} component={SendFeedback} />,
         <Scene key={`${prefix}goal`} component={GoalDetailCard} />,
         <Scene key={`${prefix}post`} component={PostDetailCard} />,
         <Scene key={`${prefix}share`} component={ShareDetailCard} />,
@@ -212,9 +213,29 @@ class RouterComponent extends Component {
     onTabPress = (all) => {
         const { state, isFocused } = all.navigation
 
+        switch (state.key) {
+            case 'homeTab':
+                track(E.BOTTOM_HOME_CLICKED)
+                break
+            case 'exploreTab':
+                track(E.BOTTOM_TRIBE_CLICKED)
+                break
+            case 'profileTab':
+                track(E.BOTTOM_PROFILE_CLICKED)
+                break
+            case 'notificationTab':
+                track(E.BOTTOM_NOTIFICATION_CLICKED)
+                break
+            case 'chatTab':
+                track(E.BOTTOM_CHAT_CLICKED)
+                break
+            default:
+                return null
+        }
+
         // Back to initial for homeTab
         if (state.key === 'homeTab' && isFocused() && state.routes.length > 1) {
-            return Actions.popTo('home')
+            return Actions.popTo('home'), track(EVENT.BOTTOM_HOME_CLICKED, {})
         }
 
         // Back to initial for exploreTab
@@ -346,6 +367,7 @@ class RouterComponent extends Component {
                     shadowRadius: 0,
                     elevation: 0,
                 }}
+                {...this.props}
             >
                 <Modal key="modal" hideNavBar>
                     <Lightbox key="lightbox" hideNavBar>
@@ -426,6 +448,10 @@ class RouterComponent extends Component {
                                     key="registration_contact_sync"
                                     component={OnboardingSyncContact}
                                 />
+                                <Scene
+                                    key="registration_contact_invite"
+                                    component={SyncContactInvite}
+                                />
 
                                 {/* <Scene
                                     key="registration_transition"
@@ -435,19 +461,15 @@ class RouterComponent extends Component {
                                     key="registration_target_selection"
                                     component={OnboardingSelectionTarget}
                                 /> */}
-                                <Scene
+                                {/* <Scene
                                     key="registration_tribe_selection"
                                     component={OnboardingTribeSelection}
-                                />
+                                /> */}
                                 <Scene
                                     key="registration_community_guideline"
                                     component={OnboardingCommunity}
                                 />
 
-                                <Scene
-                                    key="registration_contact_invite"
-                                    component={SyncContactInvite}
-                                />
                                 <Scene
                                     key="registration_welcome"
                                     component={OnboardingWelcome}
@@ -506,6 +528,20 @@ class RouterComponent extends Component {
                                 <Scene
                                     key="registration_target_selection"
                                     component={OnboardingSelectionTarget}
+                                />
+                            </Stack>
+
+                            <Stack
+                                key="no_goal_conversation"
+                                hideNavBar
+                                type={ActionConst.RESET}
+                                drawerLockMode="locked-closed"
+                                gesturesEnabled={false}
+                                panHandlers={null}
+                            >
+                                <Scene
+                                    key="no_goal_conversation"
+                                    component={ConversationGoal}
                                 />
                             </Stack>
                             <Scene

@@ -71,11 +71,7 @@ const searchWithId = (searchContent, queryId, searchType) => (
     console.log(
         `${DEBUG_KEY} with text: ${searchContent} and queryId: ${queryId}`
     )
-    trackWithProperties(E.SEARCH_QUERY_SENT, {
-        Term: searchContent,
-        Type: searchType,
-        UserId: userId,
-    })
+
     dispatch({
         type: SEARCH_REQUEST,
         payload: {
@@ -93,6 +89,13 @@ const searchWithId = (searchContent, queryId, searchType) => (
         token,
         (res) => {
             const data = res.data ? res.data : []
+
+            trackWithProperties(E.SEARCH_COMPLETED, {
+                keyword: searchContent,
+                search_type: searchType,
+                number_of_search_results: data.length,
+            })
+
             dispatch({
                 type: SEARCH_REQUEST_DONE,
                 payload: {
@@ -119,7 +122,6 @@ const generateQueryId = (text) => hashCode(text)
  * @param type: ['people', 'tribes', 'events', 'chatRooms']
  */
 export const handleSearch = (searchContent, type) => {
-    console.log('searchContent is: ', searchContent)
     const queryId = generateQueryId(searchContent)
     return searchCurry(searchContent, queryId, type)
 }
@@ -498,6 +500,8 @@ export const refreshPreloadData = (type) => (dispatch, getState) => {
 
     API.get(route, token)
         .then((res) => {
+            console.log('THIS IS PRELOAD DATA', res)
+
             if (res.status === 200) {
                 return onSuccess(res)
             }
@@ -577,6 +581,8 @@ export const loadPreloadData = (type) => (dispatch, getState) => {
 
     API.get(route, token)
         .then((res) => {
+            console.log('THIS IS PRELOAD DATA', res)
+
             if (res.status === 200) {
                 return onSuccess(res)
             }

@@ -3,10 +3,8 @@
 import React, { Component } from 'react'
 import {
     View,
-    Image,
     Text,
     TouchableWithoutFeedback,
-    TextInput,
     KeyboardAvoidingView,
     StyleSheet,
     TouchableOpacity,

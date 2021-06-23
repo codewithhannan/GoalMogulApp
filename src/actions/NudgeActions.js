@@ -16,19 +16,24 @@ export const NUDGE_TYPES = {
     makeGoalsPublic: 'makeGoalsPublic',
     createFirstGoal: 'createFirstGoal',
     clarifyGoals: 'clarifyGoals',
+    inviteeGoalCheck: 'inviteeGoalCheck',
 }
 
-export const addNudge = (visitedId, token, nudgeType) => {
-    return async (dispatch, getState) => {
+export const addNudge = (visitedId, token, nudgeType, question) => {
+    return async () => {
         let obj = {
             id: visitedId,
             nudgeTypes: {
                 makeGoalsPublic: false,
                 createFirstGoal: false,
                 clarifyGoals: false,
+                inviteeGoalCheck: false,
             },
         }
         obj.nudgeTypes[nudgeType] = true
+        if (obj.nudgeTypes.inviteeGoalCheck) {
+            obj.question = question
+        }
         try {
             const res = await API.post('secure/nudge/send-nudge', obj, token)
             const response = res.result
@@ -42,67 +47,8 @@ export const addNudge = (visitedId, token, nudgeType) => {
     }
 }
 
-// export const makeGoalsPublicNudge = (visitedId, token) => {
-//     return async (dispatch, getState) => {
-//         try {
-//             const res = await API.post(
-//                 'secure/nudge/send-nudge',
-
-//                 {
-//                     id: visitedId,
-//                     nudgeTypes: {
-//                         makeGoalsPublic: true,
-//                         createFirstGoal: false,
-//                     },
-//                 },
-//                 token
-//             )
-//             const response = res.result
-//             console.log(
-//                 `${DEBUG_KEY} This is the response of make goals public nudge`,
-//                 response
-//             )
-//         } catch (err) {
-//             console.log(
-//                 `${DEBUG_KEY} This is the error of make goals public nudge`,
-//                 err
-//             )
-//         }
-//     }
-// }
-
-// export const createFirstGoalNudge = (visitedId, token) => {
-//     return async (dispatch, getState) => {
-//         try {
-//             const res = await API.post(
-//                 'secure/nudge/send-nudge',
-
-//                 {
-//                     id: visitedId,
-//                     nudgeTypes: {
-//                         makeGoalsPublic: false,
-//                         createFirstGoal: true,
-//                     },
-//                 },
-//                 token
-//             )
-
-//             const response = res.result
-//             console.log(
-//                 `${DEBUG_KEY} This is the response of create first goal nudge`,
-//                 response
-//             )
-//         } catch (err) {
-//             console.log(
-//                 `${DEBUG_KEY} This is the error of create goals nudge`,
-//                 err
-//             )
-//         }
-//     }
-// }
-
 export const getAllNudges = (token) => {
-    return async (dispatch, getState) => {
+    return async (dispatch) => {
         try {
             let res
             dispatch(loadNudgesData(true))
@@ -127,7 +73,6 @@ export const deleteNudge = (nudgeId) => {
     return async (dispatch, getState) => {
         try {
             let res
-
             const { token, userId } = getState().user
             res = await API.delete('secure/nudge/handleActiontypesForNudge', {
                 id: nudgeId,
@@ -138,7 +83,6 @@ export const deleteNudge = (nudgeId) => {
                 token,
             })
             dispatch(deleteSelectedNudge(nudgeId))
-
             console.log(
                 `${DEBUG_KEY} This is the response of deleting nudge`,
                 res
@@ -153,11 +97,9 @@ export const deleteNudge = (nudgeId) => {
 }
 
 export const handleNudgeResponsed = (nudgeId) => {
-    return async (dispatch, getState) => {
+    return async () => {
         try {
             let res
-
-            const { token, userId } = getState().user
             res = await API.delete('secure/nudge/handleActiontypesForNudge', {
                 id: nudgeId,
                 type: {

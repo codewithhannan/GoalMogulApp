@@ -84,6 +84,8 @@ class DelayedButton extends React.PureComponent {
                     {...this.props}
                     index={index}
                     onPress={this.handleOnPress}
+                    onLongPress={this.props.onLongPress}
+                    delayLongPress={200}
                     disabled={this.state.disabled || this.props.disabled}
                     ref={onRef || (() => {})}
                 >
@@ -95,7 +97,9 @@ class DelayedButton extends React.PureComponent {
             <TouchableOpacity
                 {...this.props}
                 index={index}
+                onLongPress={this.props.onLongPress}
                 onPress={this.handleOnPress}
+                delayLongPress={200}
                 disabled={this.state.disabled || this.props.disabled}
                 ref={onRef || (() => {})}
             >

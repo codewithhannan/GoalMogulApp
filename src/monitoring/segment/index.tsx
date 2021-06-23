@@ -17,7 +17,7 @@ const TAG = '[Segment]'
  */
 const EVENT = {
     // Goal
-    CREATE_GOAL_MODAL_OPENED: 'CreateGoalModal Opened',
+    CREATE_GOAL_MODAL_OPENED: 'goal_creation_clicked',
     CREATE_GOAL_MODAL_CANCELLED: 'CreateGoalModal Cancelled',
     GOAL_CREATED: 'Goal Created',
     EDIT_GOAL_MODAL_OPENED: 'EditGoalModal Opened',
@@ -108,10 +108,14 @@ const EVENT = {
     USER_UNBLOCKED: 'User Unblocked',
     PROFILE_OPENED: 'Profile Opened',
     PROFILE_REFRESHED: 'Profile Refreshed',
-    PROFILE_PHOTO_UPDATED: 'Profile Photo Updated',
+    PROFILE_PHOTO_UPDATED: 'profilePhoto',
 
     /** Registration */ 
-    REG_ACCOUNT_CREATED: 'Registration Account Created', //ok
+    REG_ACCOUNT_CREATED: 'signup_completed', //ok
+    REG_FIELDS_FILL :"signup_continue",
+    REG_INVITE_CODE:"signup_invitecode_submitted", 
+
+
     // add profile photo
     REG_ADD_PHOTO_SKIPPED: 'Registration AddPhoto Skipped',
     REG_ADD_PHOTO_ATTACHED: 'Registration AddPhoto Attached',
@@ -145,15 +149,36 @@ const EVENT = {
 
     //phoneVerification
     REG_PHONE_VERIFICATION_SKIP: 'Registration Phone Verification Skiped',
+    REG_MOBILE_VERIFICATION_START: 'signup_mobile_verification_started',
+    REG_MOBILE_VERIFICATION_SUBMIT: 'signup_mobile_verification_submitted',
 
+    //Bottom Tab
+
+    BOTTOM_HOME_CLICKED:"home_button_clicked",
+    BOTTOM_TRIBE_CLICKED:"tribe_button_clicked",
+    BOTTOM_PROFILE_CLICKED:"profile_button_clicked",
+    BOTTOM_NOTIFICATION_CLICKED:"notification_button_clicked",
+    BOTTOM_CHAT_CLICKED:"chat_button_clicked",
+
+    //Onboarding 
+
+    ONBOARDING_STEP_COMPLETED:"onboarding_step_completed",
+    ONBOARDING_DONE: 'onboarding_completed',
+  
+
+    //Login 
+
+    LOGIN_STARTED:"login_started",
+    LOGIN_COMPLETED:"login_complete",
 
     // Search
-    SEARCH_OPENED: 'Search Opened',
+    SEARCH_OPENED: 'search_started',
     SEARCH_CLOSED: 'Search Closed',
     USER_SEARCHED: 'User Searched',
     SEARCH_QUERY_SENT: 'Search Query Sent',
     TRIBE_MEMBER_SEARCHED: 'Tribe Member Searched',
     SEARCH_RESULT_CLICKED: 'Search Result Clicked',
+    SEARCH_COMPLETED:"search_completed",
 
     // Report
     USER_REPORTED: 'User Reported',
@@ -165,20 +190,22 @@ const EVENT = {
     GENERAL_REPORT_CREATED: 'General Report Created',
 
     // App
-    APP_ACTIVE: 'App Active',
-    APP_INACTIVE: 'App Inactive',
-    USER_LOGOUT: 'User Logout',
+    APP_ACTIVE: 'app_opened',
+    APP_INACTIVE: 'app_closed',
+    USER_LOGOUT: 'logged_out',
     TUTORIAL_STARTED: 'Tutorial Started',
     TUTORIAL_PAGE_VIEWED: 'Tutorial Page Viewed',
     TUTORIAL_DONE: 'Tutorial Done',
-    ONBOARDING_DONE: 'Onboarding Done',
-    NOTIFICATION_SELECTED: 'Notification Selected',
+    SPLASH_SCREEN_SIGN_UP:"signup_started",
+    ERROR_OCCURED:'error_encountered',
+    NOTIFICATION_SELECTED: 'app_opened',
     NOTIFICATION_DETAIL_OPENED: 'Notification Detail Opened',
+    NOTIFICATION_ENABLED:"notification_enabled"
 }
 
 const SCREENS = {
-    SPLASH_SCREEN: 'SplashScreen',
-    LOGIN_PAGE: 'LoginPage',
+    SPLASH_SCREEN: 'onboarding_page_viewed',
+    LOGIN_PAGE: 'login_started',
     HOME: 'Home',
     HOME_GOAL: 'HomeGoalTab',
     HOME_FEED: 'HomeFeedTab',

@@ -8,11 +8,17 @@ import {
     TouchableWithoutFeedback,
     Dimensions,
 } from 'react-native'
-import { color, default_style } from '../styles/basic'
+
 import MissingProfile from '../asset/image/Goals_Nudge.png'
 import { addNudge, NUDGE_TYPES } from '../actions/NudgeActions'
 import { connect } from 'react-redux'
 import * as text from '../styles/basic/text'
+import LottieView from 'lottie-react-native'
+import NO_GOAL_LOTTIE from '../asset/toast_popup_lotties/Tiger-with-fly/Tiger-with-fly.json'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 
 const windowHeight = Dimensions.get('window').height
 
@@ -42,7 +48,7 @@ class PrivateGoalsNudge extends Component {
                             width: '90%',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            height: 52,
+                            height: 40,
                             borderColor: '#42C0F5',
                             borderWidth: 2,
                             borderRadius: 3,
@@ -72,47 +78,48 @@ class PrivateGoalsNudge extends Component {
                     style={{
                         backgroundColor: 'white',
                         flexDirection: 'column',
-                        justifyContent: 'center',
+
                         alignItems: 'center',
                         borderRadius: 5,
                         width: '100%',
-                        height: windowHeight * 0.45,
+                        height: windowHeight * 0.4,
                     }}
                 >
                     <View
                         style={{
-                            width: '100%',
                             justifyContent: 'center',
                             alignItems: 'center',
-                        }}
-                    >
-                        <Image
-                            source={MissingProfile}
-                            style={{
-                                height: 170,
-                                width: '100%',
-                                resizeMode: 'contain',
-                            }}
-                        />
-                    </View>
-                    <View
-                        style={{
-                            width: '70%',
                             marginTop: 10,
                         }}
                     >
-                        <Text
+                        <LottieView
+                            style={{ height: hp(15) }}
+                            source={NO_GOAL_LOTTIE}
+                            autoPlay
+                            loop
+                        />
+
+                        <View
                             style={{
-                                fontFamily: text.FONT_FAMILY.REGULAR,
-                                fontWeight: '600',
-                                fontSize: 18,
-                                textAlign: 'center',
+                                width: '70%',
+                                marginTop: 10,
                             }}
                         >
-                            {this.props.name}'s goals are all set to Private.
-                            Nudge him to make some goals visible to Friends.
-                        </Text>
+                            <Text
+                                style={{
+                                    fontFamily: text.FONT_FAMILY.REGULAR,
+                                    fontWeight: '600',
+                                    fontSize: 18,
+                                    textAlign: 'center',
+                                }}
+                            >
+                                {this.props.name}'s goals are all set to
+                                Private. Nudge him to make some goals visible to
+                                Friends.
+                            </Text>
+                        </View>
                     </View>
+
                     {this.renderNudgeButton()}
                 </View>
             </>

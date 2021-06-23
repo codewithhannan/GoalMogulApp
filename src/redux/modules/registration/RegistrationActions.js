@@ -297,6 +297,7 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
     })
 
     let message = ''
+
     try {
         const res = await API.post('pub/user/', { ...data })
 

@@ -4,6 +4,7 @@ import { Actions } from 'react-native-router-flux'
 import { ImagePickerIOS } from 'react-native'
 import CameraRoll from '@react-native-community/cameraroll'
 import * as ImagePicker from 'expo-image-picker'
+import * as FeedBackImagePicker from 'react-native-image-crop-picker'
 import * as Permissions from 'expo-permissions'
 import { SubmissionError } from 'redux-form'
 import { api as API } from '../redux/middleware/api'
@@ -44,6 +45,7 @@ import {
 
 import LiveChatService from '../socketio/services/LiveChatService'
 import MessageStorageService from '../services/chat/MessageStorageService'
+import { feedbackImagesSelected } from '../reducers/FeedbackReducers'
 
 const DEBUG_KEY = '[ Action Registration ]'
 export const registrationLogin = () => {
@@ -295,12 +297,15 @@ export const registrationNextIntro = (skip) => {
 export const openCamera = (
     callback,
     maybeTrackCameraOpen,
-    maybeTrackImageSelected
+    maybeTrackImageSelected,
+    mayBeVideoOpen
 ) => async (dispatch, getState) => {
+    var result
     const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
 
     const permissionGranted = await ImageUtils.checkPermission(permissions)
     console.log(`${DEBUG_KEY}: permissionGranted is: ${permissionGranted}`)
+
     if (!permissionGranted) {
         return
     }
@@ -309,9 +314,15 @@ export const openCamera = (
         maybeTrackCameraOpen()
     }
 
-    const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: 'Images',
-    }).catch((error) => console.log(permissions, { error }))
+    if (mayBeVideoOpen) {
+        result = await ImagePicker.launchCameraAsync({
+            mediaTypes: 'All',
+        }).catch((error) => console.log('THIS IS ERROR OF IMAGE', error))
+    } else {
+        result = await ImagePicker.launchCameraAsync({
+            mediaTypes: 'Images',
+        }).catch((error) => console.log('THIS IS ERROR OF IMAGE', error))
+    }
 
     if (!result.cancelled) {
         if (callback) {
@@ -366,11 +377,14 @@ export const openCameraRoll = (
 
     const result = await ImagePicker.launchImageLibraryAsync(
         disableEditing
-            ? {}
+            ? {
+                  mediaTypes: 'All',
+              }
             : {
                   allowsEditing: true,
                   aspect: [4, 3],
                   quality: 0.9,
+                  exif: true,
               }
     )
 

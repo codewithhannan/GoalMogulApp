@@ -17,6 +17,11 @@ import { getButtonBottomSheetHeight } from '../../styles'
 
 const { width } = Dimensions.get('window')
 
+const DATA = []
+for (let i = 0; i < 10; i++) {
+    DATA.push(i)
+}
+
 /**
  * People you may know card to display user information
  *
@@ -30,6 +35,7 @@ class PYMKCard extends React.Component {
             // When this card is initially displayed, there is no friendship request.
             // If friendship is sent, then in the next refresh, the card won't exist.
             invited: false,
+            invitedCount: 0,
         }
     }
 
@@ -143,13 +149,18 @@ class PYMKCard extends React.Component {
 
     renderInviteButton = (userId) => {
         const text = 'Add Friend'
+
+        const { index } = this.props
+
         return (
             <DelayedButton
                 style={[
                     styles.buttonTextContainerStyle,
                     { backgroundColor: color.GM_BLUE },
                 ]}
-                onPress={() => this.handleRequestFriend(userId)}
+                onPress={() => {
+                    this.handleRequestFriend(userId)
+                }}
                 activeOpacity={0.6}
             >
                 <Text
@@ -200,6 +211,7 @@ class PYMKCard extends React.Component {
     }
 
     render() {
+        console.log('THIS IS REQUESTTT SENT', this.state.invitedCount)
         const { user, ...otherProps } = this.props
         if (!user) {
             return null

@@ -10,8 +10,11 @@ import {
     ImageBackground,
     TouchableWithoutFeedback,
     View,
+    TouchableOpacity,
+    Text,
 } from 'react-native'
 import { connect } from 'react-redux'
+import * as Animatable from 'react-native-animatable'
 import {
     getProfileImageOrDefaultFromUser,
     isSharedPost,
@@ -26,7 +29,15 @@ import { openPostDetail } from '../../redux/modules/feed/post/PostActions'
 import { chooseShareDest } from '../../redux/modules/feed/post/ShareActions'
 import { refreshActivityFeed } from '../../redux/modules/home/feed/actions'
 import { openGoalDetail } from '../../redux/modules/home/mastermind/actions'
-import { likeGoal, unLikeGoal } from '../../redux/modules/like/LikeActions'
+import {
+    likeGoal,
+    unLikeGoal,
+    updateLikeType,
+} from '../../redux/modules/like/LikeActions'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 // Styles
 import { imagePreviewContainerStyle } from '../../styles'
 import { default_style, color } from '../../styles/basic'
@@ -36,6 +47,7 @@ import {
     DEVICE_PLATFORM,
     CONTENT_PREVIEW_MAX_NUMBER_OF_LINES,
 } from '../../Utils/Constants'
+
 import DelayedButton from '../Common/Button/DelayedButton'
 import FloatingHearts from '../Common/FloatingHearts/FloatingHearts'
 import ImageModal from '../Common/ImageModal'
@@ -49,8 +61,16 @@ import ActivityHeader from './ActivityHeader'
 import ActivitySummary from './ActivitySummary'
 import ActionBar from '../Common/ContentCards/ActionBar'
 import { shareGoalToMastermind } from '../../redux/modules/goal/GoalDetailActions'
+import {
+    LOTTIE_DATA,
+    renderUnitText,
+} from '../Common/ContentCards/LikeSheetData'
+import Tooltip from 'react-native-walkthrough-tooltip'
+import LottieView from 'lottie-react-native'
 
 const DEBUG_KEY = '[ UI ActivityCard ]'
+
+const TOOLTIP_WIDTH = Dimensions.get('screen').width
 // Share option for own goal
 const SHARE_TO_MENU_OPTTIONS_GOAL = [
     'Publish to Home Feed',
@@ -74,6 +94,8 @@ class ActivityCard extends React.PureComponent {
             actionBarOffsetY: 0,
             likeButtonLeftOffset: 0,
             cardHeight: 0,
+            toolTipVisible: false,
+            unitText: '',
         }
         this.renderCommentRef = this.renderCommentRef.bind(this)
         this.renderMedia = this.renderMedia.bind(this)
@@ -172,17 +194,26 @@ class ActivityCard extends React.PureComponent {
         }
     }
 
+    setTextonUnlike = (selfLiked) => {
+        if (!selfLiked) {
+            return this.setState({ unitText: '' }), selfLiked
+        } else {
+            return selfLiked
+        }
+    }
+
     renderActionButtons(
         { postRef, goalRef, actedUponEntityType, actedWith },
         currentUserId
     ) {
         const isPost = actedUponEntityType === 'Post'
         const item = isPost ? postRef : goalRef
+
+        console.log('THIS IS UNIT TEXT', this.state.unitText)
+
         // Sanity check if ref exists
         if (!item) return null
-
-        const { maybeLikeRef, _id, owner } = item
-
+        const { maybeLikeRef, _id, owner, likeType, reactions } = item
         const likeCount = item.likeCount ? item.likeCount : 0
         const shareCount = item.shareCount ? item.shareCount : 0
         const commentCount = item.commentCount ? item.commentCount : 0
@@ -196,64 +227,187 @@ class ActivityCard extends React.PureComponent {
         const isShare = (isPost && isSharedPost(postRef.postType)) || !selfOwned
 
         return (
-            <ActionBar
-                isContentLiked={selfLiked}
-                isShareContent={isShare}
-                actionSummaries={{
-                    likeCount,
-                    shareCount,
-                    commentCount,
+            <Tooltip
+                isVisible={this.state.toolTipVisible}
+                arrowSize={{
+                    height: 2,
+                    width: 2,
                 }}
-                onContainerLayout={({ nativeEvent }) =>
-                    this.setState({
-                        actionBarOffsetY: nativeEvent.layout.y,
-                    })
+                contentStyle={{
+                    // backgroundColor: '#F9F9F9',
+                    borderRadius: 40,
+                    width: TOOLTIP_WIDTH * 0.85,
+                    flex: 1,
+                }}
+                content={
+                    <>
+                        <Animatable.View
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                width: TOOLTIP_WIDTH * 0.8,
+                            }}
+                            animation="fadeInLeft"
+                            delay={150}
+                            duration={500}
+                            easing="ease-in-out-expo"
+                        >
+                            {LOTTIE_DATA.map((lottie) => {
+                                return (
+                                    <>
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                if (selfLiked) {
+                                                    return (
+                                                        this.props.unLikeGoal(
+                                                            isPost
+                                                                ? 'post'
+                                                                : 'goal',
+                                                            _id,
+                                                            maybeLikeRef
+                                                        ),
+                                                        setTimeout(() => {
+                                                            this.props.likeGoal(
+                                                                isPost
+                                                                    ? 'post'
+                                                                    : 'goal',
+                                                                _id,
+                                                                '',
+                                                                '',
+                                                                lottie.value
+                                                            )
+                                                        }, 1000),
+                                                        this.setState({
+                                                            unitText:
+                                                                lottie.title,
+                                                            toolTipVisible: false,
+                                                        })
+                                                    )
+                                                }
+                                                this.incrementFloatingHeartCount()
+                                                this.props.likeGoal(
+                                                    isPost ? 'post' : 'goal',
+                                                    _id,
+                                                    '',
+                                                    '',
+                                                    lottie.value
+                                                )
+                                                this.setState({
+                                                    unitText: lottie.title,
+                                                    toolTipVisible: false,
+                                                })
+                                            }}
+                                        >
+                                            <LottieView
+                                                style={{
+                                                    height: hp(5),
+                                                }}
+                                                source={lottie.lottieSource}
+                                                autoPlay
+                                                loop
+                                            />
+                                            <Text
+                                                style={{
+                                                    fontSize: 8,
+                                                    color: '#818181',
+                                                    alignSelf: 'center',
+                                                }}
+                                            >
+                                                {lottie.name}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </>
+                                )
+                            })}
+                        </Animatable.View>
+                    </>
                 }
-                onLikeSummaryPress={() => {
-                    // TODO open liker list
-                }}
-                onLikeButtonPress={() => {
-                    if (selfLiked) {
-                        return this.props.unLikeGoal(
+                disableShadow={false}
+                topAdjustment={2}
+                placement="top"
+                showChildInTooltip={false}
+                backgroundColor="transparent"
+                onClose={() => this.setState({ toolTipVisible: false })}
+            >
+                <ActionBar
+                    isContentLiked={selfLiked}
+                    reactions={reactions}
+                    isShareContent={isShare}
+                    actionSummaries={{
+                        likeCount,
+                        shareCount,
+                        commentCount,
+                    }}
+                    onContainerLayout={({ nativeEvent }) =>
+                        this.setState({
+                            actionBarOffsetY: nativeEvent.layout.y,
+                        })
+                    }
+                    onLikeSummaryPress={() => {
+                        // TODO open liker list
+                    }}
+                    // onLikeLongPress={() => {
+                    //     this.setState({ toolTipVisible: true })
+                    // }}
+                    unitText={
+                        this.state.unitText == ''
+                            ? renderUnitText(likeType)
+                            : this.state.unitText
+                    }
+                    onLikeButtonPress={() => {
+                        if (selfLiked) {
+                            return (
+                                this.props.unLikeGoal(
+                                    isPost ? 'post' : 'goal',
+                                    _id,
+                                    maybeLikeRef
+                                ),
+                                this.setState({ unitText: 'Like' })
+                            )
+                        }
+
+                        this.incrementFloatingHeartCount()
+                        this.props.likeGoal(
                             isPost ? 'post' : 'goal',
                             _id,
-                            maybeLikeRef
+                            '',
+                            '',
+                            'Thumbsup'
+                        ),
+                            this.setState({ unitText: 'Like' })
+                    }}
+                    onLikeButtonLayout={({ nativeEvent }) =>
+                        this.setState({
+                            likeButtonLeftOffset: nativeEvent.layout.x,
+                        })
+                    }
+                    onShareSummaryPress={() => {
+                        // TODO open sharers list
+                    }}
+                    onShareButtonOptions={this.getOnShareOptions(
+                        actedUponEntityType
+                    )}
+                    onCommentSummaryPress={() =>
+                        this.props.onPress(
+                            item,
+                            (actedWith === 'Comment' ||
+                                actedWith === 'Like' ||
+                                actedWith === 'Goal') &&
+                                actedUponEntityType === 'Goal',
+                            { shouldNotFocusCommentBox: true }
                         )
                     }
-                    this.incrementFloatingHeartCount()
-                    this.props.likeGoal(isPost ? 'post' : 'goal', _id)
-                }}
-                onLikeButtonLayout={({ nativeEvent }) =>
-                    this.setState({
-                        likeButtonLeftOffset: nativeEvent.layout.x,
-                    })
-                }
-                onShareSummaryPress={() => {
-                    // TODO open sharers list
-                }}
-                onShareButtonOptions={this.getOnShareOptions(
-                    actedUponEntityType
-                )}
-                onCommentSummaryPress={() =>
-                    this.props.onPress(
-                        item,
-                        (actedWith === 'Comment' ||
-                            actedWith === 'Like' ||
-                            actedWith === 'Goal') &&
-                            actedUponEntityType === 'Goal',
-                        { shouldNotFocusCommentBox: true }
-                    )
-                }
-                onCommentButtonPress={() =>
-                    this.props.onPress(
-                        item,
-                        (actedWith === 'Comment' ||
-                            actedWith === 'Like' ||
-                            actedWith === 'Goal') &&
-                            actedUponEntityType === 'Goal'
-                    )
-                }
-            />
+                    onCommentButtonPress={() =>
+                        this.props.onPress(
+                            item,
+                            (actedWith === 'Comment' ||
+                                actedWith === 'Like' ||
+                                actedWith === 'Goal') &&
+                                actedUponEntityType === 'Goal'
+                        )
+                    }
+                />
+            </Tooltip>
         )
     }
 
@@ -515,4 +669,5 @@ export default connect(mapStateToProps, {
     refreshActivityFeed,
     openProfile,
     shareGoalToMastermind,
+    updateLikeType,
 })(ActivityCard)

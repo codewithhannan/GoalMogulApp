@@ -1,18 +1,56 @@
 /** @format */
 
 import React from 'react'
-import { Image, Text, View } from 'react-native'
+import { Image, Text, View, Dimensions, TouchableOpacity } from 'react-native'
 // Components
 import DelayedButton from '../../Common/Button/DelayedButton'
+
 import { default_style } from '../../../styles/basic'
 
 const DEBUG_KEY = '[ UI ActionButton ]'
 
+const TOOLTIP_WIDTH = Dimensions.get('screen').width
+
+// const LOTTIE_DATA = [
+//     {
+//         name: `    Love`,
+//         lottieSource: ROCKON_LOTTIE,
+//         value: '',
+//     },
+//     {
+//         name: 'Applause',
+//         lottieSource: CLAP_LOTTIE,
+//         value: '',
+//     },
+//     {
+//         name: 'Me Too!',
+//         lottieSource: METOO_LOTTIE,
+//         value: '',
+//     },
+//     {
+//         name: '    Rock-on',
+//         lottieSource: ROCKON_LOTTIE,
+//         value: '',
+//     },
+//     {
+//         name: '   Salute',
+//         lottieSource: SALUTE_LOTTIE,
+//         value: '',
+//     },
+//     {
+//         name: 'Wow',
+//         lottieSource: WOO_LOTTIE,
+//         value: '',
+//     },
+// ]
+
 class ActionButton extends React.PureComponent {
+    handleViewRef = (ref) => (this.view = ref)
     constructor(props) {
         super(props)
         this.state = {
             buttonDisabled: false,
+            toolTipVisible: false,
         }
     }
 
@@ -41,6 +79,7 @@ class ActionButton extends React.PureComponent {
             unitText,
         } = this.props
         if (hidden) return null
+
         const buttonDisabled = this.state.buttonDisabled
 
         const countText = (
@@ -51,6 +90,7 @@ class ActionButton extends React.PureComponent {
                 }
                 style={textContainerStyle}
                 disabled={buttonDisabled}
+                onLongPress={this.props.onLongPress}
             >
                 <Text style={[styles.textStyle, this.props.textStyle]}>
                     {count > 0 ? `${count} ` : ''}
@@ -60,27 +100,30 @@ class ActionButton extends React.PureComponent {
         )
 
         return (
-            <DelayedButton
-                touchableWithoutFeedback
-                activeOpacity={0.6}
-                onPress={this.handleOnPress}
-                disabled={buttonDisabled}
-                onLayout={this.props.onLayout}
-            >
-                <View style={[styles.containerStyle, containerStyle]}>
-                    <View style={this.props.iconContainerStyle}>
-                        <Image
-                            resizeMode="contain"
-                            source={this.props.iconSource}
-                            style={[
-                                default_style.buttonIcon_1,
-                                this.props.iconStyle,
-                            ]}
-                        />
+            <>
+                <DelayedButton
+                    touchableWithoutFeedback
+                    activeOpacity={0.6}
+                    onPress={this.handleOnPress}
+                    disabled={buttonDisabled}
+                    onLayout={this.props.onLayout}
+                    onLongPress={this.props.onLongPress}
+                >
+                    <View style={[styles.containerStyle, containerStyle]}>
+                        <View style={this.props.iconContainerStyle}>
+                            <Image
+                                resizeMode="contain"
+                                source={this.props.iconSource}
+                                style={[
+                                    // default_style.buttonIcon_1,
+                                    this.props.iconStyle,
+                                ]}
+                            />
+                        </View>
+                        {countText}
                     </View>
-                    {countText}
-                </View>
-            </DelayedButton>
+                </DelayedButton>
+            </>
         )
     }
 }

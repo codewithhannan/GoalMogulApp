@@ -14,10 +14,14 @@ import { Entypo } from '@expo/vector-icons'
 import Constants from 'expo-constants'
 import { color, default_style } from '../styles/basic'
 import OnboardingStyles from '../styles/Onboarding'
-
+import LottieView from 'lottie-react-native'
+import PRIVATE_GOAL_LOTTIE from '../asset/toast_popup_lotties/Goal-visibility/Goal-visibilty.json'
+import YES_LOTTIE from '../asset/toast_popup_lotties/yes-button/yes_button.json'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 import GoalVisible from '../asset/image/Goal_Visible.png'
-
-const { text: textStyle, button: buttonStyle } = OnboardingStyles
 
 class ModalTester extends Component {
     constructor(props) {
@@ -40,7 +44,7 @@ class ModalTester extends Component {
                 >
                     <View
                         style={{
-                            width: '30%',
+                            width: '29%',
                             justifyContent: 'center',
                             alignItems: 'center',
                             height: 40,
@@ -72,24 +76,17 @@ class ModalTester extends Component {
                 >
                     <View
                         style={{
-                            backgroundColor: '#42C0F5',
-                            width: '30%',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            height: 40,
-                            borderColor: '#42C0F5',
-                            borderWidth: 4,
-                            borderRadius: 3,
+                            bottom: 3,
                         }}
                     >
-                        <Text
-                            style={{
-                                ...default_style.buttonText_1,
-                                color: 'white',
-                            }}
-                        >
-                            Yes
-                        </Text>
+                        <LottieView
+                            style={{ height: hp(5) }}
+                            source={YES_LOTTIE}
+                            autoPlay
+                            loop
+                        />
                     </View>
                 </TouchableWithoutFeedback>
             </>
@@ -105,6 +102,8 @@ class ModalTester extends Component {
                     style={{
                         borderRadius: 20,
                     }}
+                    animationIn="zoomInUp"
+                    animationInTiming={400}
                 >
                     <View
                         style={{
@@ -117,9 +116,9 @@ class ModalTester extends Component {
                             style={{
                                 // height: '0%',
                                 width: '100%',
-                                backgroundColor: 'green',
+
                                 borderRadius: 8,
-                                backgroundColor: color.GV_MODAL,
+                                backgroundColor: color.GM_BACKGROUND,
                             }}
                         >
                             <View
@@ -132,7 +131,7 @@ class ModalTester extends Component {
                             >
                                 <Text
                                     style={{
-                                        fontStyle: 'SFProDisplay-Bold',
+                                        fontFamily: 'SFProDisplay-Bold',
                                         fontSize: 18,
                                         lineHeight: 18,
                                         fontWeight: 'bold',
@@ -143,7 +142,7 @@ class ModalTester extends Component {
                                 </Text>
                                 <TouchableOpacity
                                     onPress={() => this.props.handleClose()}
-                                    style={{ marginTop: -2 }}
+                                    style={{ bottom: 3 }}
                                 >
                                     <Entypo
                                         name="cross"
@@ -152,21 +151,22 @@ class ModalTester extends Component {
                                     />
                                 </TouchableOpacity>
                             </View>
-                            <View
-                                style={{
-                                    width: '100%',
-                                    marginTop: 10,
-                                }}
-                            >
-                                <Image
+
+                            {/* <Image
                                     source={GoalVisible}
                                     style={{
                                         height: 170,
                                         width: '100%',
                                         resizeMode: 'contain',
                                     }}
-                                />
-                            </View>
+                                /> */}
+                            <LottieView
+                                style={{ height: hp(22) }}
+                                source={PRIVATE_GOAL_LOTTIE}
+                                autoPlay
+                                loop
+                            />
+
                             <View
                                 style={
                                     {
@@ -177,8 +177,8 @@ class ModalTester extends Component {
                             >
                                 <Text
                                     style={{
-                                        fontStyle: 'SFProDisplay-Regular',
-                                        fontSize: 16,
+                                        fontFamily: 'SFProDisplay-Regular',
+                                        fontSize: 17,
                                         lineHeight: 24,
                                         marginTop: 6,
 
@@ -194,10 +194,10 @@ class ModalTester extends Component {
 
                                 <Text
                                     style={{
-                                        fontStyle: 'SFProDisplay-Semibold',
-                                        fontSize: 16,
+                                        fontFamily: 'SFProDisplay-Semibold',
+                                        fontSize: 17,
                                         lineHeight: 24,
-                                        marginTop: 30,
+                                        marginTop: 20,
 
                                         width: '90%',
                                         fontWeight: '500',

@@ -98,7 +98,7 @@ class ProfilePictureModal extends Component {
                     backdropOpacity={0.8}
                     isVisible={this.props.isVisible}
                     animationIn="zoomInUp"
-                    animationOut="zoomOutDown"
+                    animationInTiming={400}
                 >
                     <View
                         style={{

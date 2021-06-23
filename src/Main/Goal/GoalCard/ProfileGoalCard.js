@@ -198,10 +198,11 @@ class ProfileGoalCard extends React.Component {
                                                 {/* Privacy pill */}
 
                                                 {privacyOptions.map(
-                                                    (options) => {
+                                                    (options, index) => {
                                                         return (
                                                             <>
                                                                 <TouchableOpacity
+                                                                    key={index}
                                                                     onPress={() => {
                                                                         this.props.submitGoalPrivacy(
                                                                             goalId,

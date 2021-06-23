@@ -89,7 +89,10 @@ class Bubble extends React.Component {
                 return this.openProfileGoals.bind(this)
             }
             case 'Invite Friends': {
-                return this.openInviteFriends.bind(this)
+                return this.setState({
+                    ...this.state,
+                    showInviteFriendModal: true,
+                })
             }
             case 'Open TrendingGoals': {
                 return this.openTrendingGoals.bind(this)
@@ -132,6 +135,9 @@ class Bubble extends React.Component {
     }
     openInviteFriends() {
         this.setState({ ...this.state, showInviteFriendModal: true })
+    }
+    closeInviteFriends() {
+        this.setState({ ...this.state, showInviteFriendModal: false })
     }
     openTrendingGoals() {
         Actions.push('trendingGoalView')
@@ -187,7 +193,7 @@ class Bubble extends React.Component {
             let transformedOption = { ...options[option], optionTitle: option }
             optionsArray.push(transformedOption)
         }
-        // console.log('optionsArrayyyyy', optionsArray)
+        console.log('optionsArrayyyyy', optionsArray)
         return (
             <View>
                 {optionsArray.map((option) => {
@@ -204,20 +210,35 @@ class Bubble extends React.Component {
                             <TouchableHighlight
                                 underlayColor="#ECECEC"
                                 style={{
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
                                     paddingTop: 9,
                                     paddingBottom: 9,
                                     marginBottom: 12,
                                     borderRadius: 5,
                                     borderColor: color.GM_BLUE,
                                     borderWidth: 2,
-                                    padding: 80,
+                                    // padding: 80,
                                 }}
                                 onPress={() => {
-                                    let trigger = this.onOptionSelect(
-                                        option.optionAction[0].action
-                                    ).bind(this)
+                                    if (option.optionAction !== null) {
+                                        if (
+                                            option.optionTitle ===
+                                            'Invite friends'
+                                        ) {
+                                            setTimeout(() => {
+                                                this.setState({
+                                                    showInviteFriendModal: true,
+                                                })
+                                            }, 3000)
+                                        } else {
+                                            let trigger = this.onOptionSelect(
+                                                option.optionAction[0].action
+                                            ).bind(this)
+                                            setTimeout(() => {
+                                                return trigger()
+                                            }, 3000)
+                                        }
+                                    }
+
                                     this.props.sendMessage(
                                         [
                                             {
@@ -232,9 +253,7 @@ class Bubble extends React.Component {
                                         chatRoom,
                                         messages
                                     )
-                                    setTimeout(() => {
-                                        return trigger()
-                                    }, 700)
+
                                     // return trigger()
                                 }}
                             >
@@ -245,7 +264,6 @@ class Bubble extends React.Component {
                                         fontWeight: '600',
                                         fontFamily: text.FONT_FAMILY.REGULAR,
                                         color: color.GM_BLUE,
-                                        width: '100%',
                                         textAlign: 'center',
                                     }}
                                 >
@@ -346,6 +364,10 @@ class Bubble extends React.Component {
                         </Text>
                     </TouchableOpacity>
                 </View>
+                <InviteFriendModal
+                    isVisible={this.state.showInviteFriendModal}
+                    closeModal={this.closeInviteFriends}
+                />
             </View>
         )
     }
@@ -404,14 +426,14 @@ class Bubble extends React.Component {
                             ],
                         }}
                     />
-                    <RNUrlPreview
+                    {/* <RNUrlPreview
                         text={`${this.props.currentMessage.text}`}
                         containerStyle={{ width: '100%', marginTop: 10 }}
                         title={false}
                         descriptionStyle={{ width: '100%' }}
 
                         // titleStyle={{ fontSize: 12 }}s
-                    />
+                    /> */}
                 </>
             )
         } else if (this.props.currentMessage.text) {
@@ -682,6 +704,7 @@ Bubble.defaultProps = {
     touchableProps: {},
     onLongPress: null,
     renderMessageImage: null,
+    renderMessageVideo: null,
     renderMessageText: null,
     renderCustomView: null,
     renderTime: null,

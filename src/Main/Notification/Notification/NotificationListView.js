@@ -87,6 +87,7 @@ class NotificationListView extends React.PureComponent {
 
 const mapStateToProps = (state) => {
     const { notifications } = state.notification
+
     const { data, refreshing, loading } = notifications
 
     return {
