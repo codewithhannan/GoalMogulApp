@@ -9222,9 +9222,9 @@ lottie-ios@^3.1.8:
   resolved "https://registry.npmjs.org/lottie-ios/-/lottie-ios-3.2.3.tgz"
   integrity sha512-mubYMN6+1HXa8z3EJKBvNBkl4UoVM4McjESeB2PgvRMSngmJtC5yUMRdhbbrIAn5Liu3hFGao/14s5hQIgtkRQ==
 
-lottie-react-native@^3.5.0:
+lottie-react-native@^3.1.0:
   version "3.5.0"
-  resolved "https://registry.npmjs.org/lottie-react-native/-/lottie-react-native-3.5.0.tgz"
+  resolved "https://registry.yarnpkg.com/lottie-react-native/-/lottie-react-native-3.5.0.tgz#749fed964bdc9fabfae24ef81696f90f4d758f59"
   integrity sha512-yKYj58xynDAG/BqJUhg9LTATBqwD4ATGXJKL2Ho6g4BTmPexOjDBNnPSeRBwjlpBxQ1nP4Qw//0zbuFsTFD1TA==
   dependencies:
     invariant "^2.2.2"

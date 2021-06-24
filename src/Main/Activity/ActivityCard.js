@@ -365,9 +365,9 @@ class ActivityCard extends React.PureComponent {
                     onLikeSummaryPress={() => {
                         // TODO open liker list
                     }}
-                    // onLikeLongPress={() => {
-                    //     this.setState({ toolTipVisible: true })
-                    // }}
+                    onLikeLongPress={() => {
+                        this.setState({ toolTipVisible: true })
+                    }}
                     unitText={
                         this.state.unitText == ''
                             ? renderUnitText(likeType)
