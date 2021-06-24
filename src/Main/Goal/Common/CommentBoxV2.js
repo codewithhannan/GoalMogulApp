@@ -5,6 +5,7 @@ import _ from 'lodash'
 import R from 'ramda'
 import React, { Component } from 'react'
 import { Icon } from '@ui-kitten/components'
+import { Actions } from 'react-native-router-flux'
 import {
     ActivityIndicator,
     Dimensions,
@@ -50,6 +51,14 @@ import DelayedButton from '../../Common/Button/DelayedButton'
 import ProfileImage from '../../Common/ProfileImage'
 import { getButtonBottomSheetHeight } from '../../../styles'
 import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
+import InviteFriendModal from '../../MeetTab/Modal/InviteFriendModal'
+
+//icons
+import user from '../../../asset/suggestion/user.png'
+import contact from '../../../asset/suggestion/contact.png'
+import step from '../../../asset/suggestion/step.png'
+import need from '../../../asset/suggestion/need.png'
+import tribe from '../../../asset/suggestion/tribe.png'
 
 // Consts
 const maxHeight = 120
@@ -74,6 +83,7 @@ class CommentBoxV2 extends Component {
             defaultValue: DEFAULT_WRITE_COMMENT_PLACEHOLDER,
             keyword: '',
             tagSearchData: INITIAL_TAG_SEARCH,
+            showInviteFriendModal: false,
         }
         this.updateSearchRes = this.updateSearchRes.bind(this)
         this.focus = this.focus.bind(this)
@@ -104,6 +114,14 @@ class CommentBoxV2 extends Component {
         if (this.reqTimer) {
             clearTimeout(this.reqTimer)
         }
+    }
+
+    openInviteFriendModal = () => {
+        this.setState({ ...this.state, showInviteFriendModal: true })
+    }
+
+    closeInviteFriendModal = () => {
+        this.setState({ ...this.state, showInviteFriendModal: false })
     }
 
     onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
@@ -313,38 +331,112 @@ class CommentBoxV2 extends Component {
         })
     }
 
+    openSuggestionBottomSheet = () => this.suggestionRefBottomSheetRef.open()
+    closeSuggestionBottomSheet = () => this.suggestionRefBottomSheetRef.close()
+
+    makeSuggestionRefOptions = () => {
+        return [
+            {
+                title: 'Suggest a:',
+            },
+            {
+                text: 'User',
+                image: user,
+                onPress: () => {
+                    this.closeSuggestionBottomSheet()
+                    setTimeout(() => {
+                        Actions.push('FriendList')
+                    }, 500)
+                },
+            },
+            {
+                text: 'Contact',
+                image: contact,
+                onPress: () => {
+                    this.closeSuggestionBottomSheet()
+                    setTimeout(() => {
+                        this.openInviteFriendModal()
+                    }, 500)
+                },
+            },
+            {
+                text: 'Step',
+                image: step,
+                onPress: () => {
+                    this.closeSuggestionBottomSheet()
+                    setTimeout(() => {}, 500)
+                },
+            },
+            {
+                text: 'Need',
+                image: need,
+                onPress: () => {
+                    this.closeSuggestionBottomSheet()
+                    setTimeout(() => {}, 500)
+                },
+            },
+            {
+                text: 'Tribe',
+                image: tribe,
+                onPress: () => {
+                    this.closeSuggestionBottomSheet()
+                    setTimeout(() => {}, 500)
+                },
+            },
+        ]
+    }
+
+    renderSuggestionRefBottomSheet = () => {
+        const options = this.makeSuggestionRefOptions()
+
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.suggestionRefBottomSheetRef = r)}
+                // sheetHeader="test"
+                title="Suggest a:"
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
+    }
+
     renderSuggestionIcon() {
         const { newComment, pageId, goalId } = this.props
         const { mediaRef, commentType } = newComment
         const disableButton = mediaRef !== undefined && mediaRef !== ''
         if (commentType === 'Reply') return null
-
+        const options = this.makeSuggestionRefOptions()
         return (
-            <DelayedButton
-                activeOpacity={0.6}
-                onPress={() => {
-                    Keyboard.dismiss()
-                    this.props.createSuggestion(goalId, pageId)
-                }}
-                disabled={disableButton}
-                style={{
-                    paddingTop: 12,
-                    paddingBottom: 4,
-                }}
-            >
-                <Icon
-                    name="lightbulb-on-outline"
-                    pack="material-community"
-                    style={[
-                        styles.iconStyle,
-                        {
-                            position: 'relative',
-                            bottom: 2,
-                            tintColor: '#F2C94C',
-                        },
-                    ]}
-                />
-            </DelayedButton>
+            <View>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    onPress={() => {
+                        Keyboard.dismiss()
+                        // this.props.createSuggestion(goalId, pageId)
+                        this.openSuggestionBottomSheet()
+                    }}
+                    disabled={disableButton}
+                    style={{
+                        paddingTop: 12,
+                        paddingBottom: 4,
+                    }}
+                >
+                    <Icon
+                        name="lightbulb-on-outline"
+                        pack="material-community"
+                        style={[
+                            styles.iconStyle,
+                            {
+                                position: 'relative',
+                                bottom: 2,
+                                tintColor: '#F2C94C',
+                            },
+                        ]}
+                    />
+                </DelayedButton>
+            </View>
         )
     }
 
@@ -582,44 +674,51 @@ class CommentBoxV2 extends Component {
               }
             : styles.inputStyle
         return (
-            <MentionsTextInput
-                ref={(r) => (this.textInput = r)}
-                placeholder={this.state.defaultValue}
-                onChangeText={(val) =>
-                    this.props.newCommentOnTextChange(val, pageId)
-                }
-                editable={!uploading}
-                maxHeight={maxHeight}
-                multiline
-                value={newComment.contentText}
-                contentTags={newComment.contentTags}
-                contentTagsReg={newComment.contentTags.map((t) => t.tagReg)}
-                tagSearchRes={this.state.tagSearchData.data}
-                defaultValue={this.state.defaultValue}
-                onBlur={this.handleOnBlur}
-                onSubmitEditing={this.handleOnSubmitEditing}
-                renderSuggestionPreview={this.renderSuggestionPreview}
-                renderMedia={this.renderMedia}
-                renderLeftIcons={this.renderLeftIcons}
-                renderPost={this.renderPost}
-                textInputContainerStyle={styles.inputContainerStyle}
-                textInputStyle={inputStyle}
-                validateTags={this.validateContentTags}
-                suggestionsPanelStyle={{
-                    backgroundColor: 'rgba(100,100,100,0.1)',
-                }}
-                loadingComponent={this.renderLoadingComponent}
-                trigger={'@'}
-                triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
-                triggerCallback={this.callback}
-                triggerLoadMore={this.handleTagSearchLoadMore}
-                renderSuggestionsRow={this.renderSuggestionsRow}
-                suggestionsData={this.state.tagSearchData.data} // array of objects
-                keyExtractor={(item) => item._id}
-                suggestionRowHeight={50}
-                horizontal={false} // defaut is true, change the orientation of the list
-                MaxVisibleRowCount={7} // this is required if horizontal={false}
-            />
+            <>
+                <MentionsTextInput
+                    ref={(r) => (this.textInput = r)}
+                    placeholder={this.state.defaultValue}
+                    onChangeText={(val) =>
+                        this.props.newCommentOnTextChange(val, pageId)
+                    }
+                    editable={!uploading}
+                    maxHeight={maxHeight}
+                    multiline
+                    value={newComment.contentText}
+                    contentTags={newComment.contentTags}
+                    contentTagsReg={newComment.contentTags.map((t) => t.tagReg)}
+                    tagSearchRes={this.state.tagSearchData.data}
+                    defaultValue={this.state.defaultValue}
+                    onBlur={this.handleOnBlur}
+                    onSubmitEditing={this.handleOnSubmitEditing}
+                    renderSuggestionPreview={this.renderSuggestionPreview}
+                    renderMedia={this.renderMedia}
+                    renderLeftIcons={this.renderLeftIcons}
+                    renderPost={this.renderPost}
+                    textInputContainerStyle={styles.inputContainerStyle}
+                    textInputStyle={inputStyle}
+                    validateTags={this.validateContentTags}
+                    suggestionsPanelStyle={{
+                        backgroundColor: 'rgba(100,100,100,0.1)',
+                    }}
+                    loadingComponent={this.renderLoadingComponent}
+                    trigger={'@'}
+                    triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
+                    triggerCallback={this.callback}
+                    triggerLoadMore={this.handleTagSearchLoadMore}
+                    renderSuggestionsRow={this.renderSuggestionsRow}
+                    suggestionsData={this.state.tagSearchData.data} // array of objects
+                    keyExtractor={(item) => item._id}
+                    suggestionRowHeight={50}
+                    horizontal={false} // defaut is true, change the orientation of the list
+                    MaxVisibleRowCount={7} // this is required if horizontal={false}
+                />
+                {this.renderSuggestionRefBottomSheet()}
+                <InviteFriendModal
+                    isVisible={this.state.showInviteFriendModal}
+                    closeModal={this.closeInviteFriendModal}
+                />
+            </>
         )
     }
 }

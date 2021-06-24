@@ -372,7 +372,7 @@ class HomeFeedToast extends Component {
                         toast.mainHeading.title = `You haven’t seen ${
                             this.props.friendsProfileToVisit.length == 0
                                 ? null
-                                : this.props.friendsProfileToVisit[0].name
+                                : this.props.friendsProfileToVisit[0]?.name
                         }’s profile yet.`
                         return toast
                     } else {

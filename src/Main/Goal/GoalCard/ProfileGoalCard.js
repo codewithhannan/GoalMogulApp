@@ -202,7 +202,10 @@ class ProfileGoalCard extends React.Component {
                                                         return (
                                                             <>
                                                                 <TouchableOpacity
-                                                                    key={index}
+                                                                    key={
+                                                                        options.title +
+                                                                        index
+                                                                    }
                                                                     onPress={() => {
                                                                         this.props.submitGoalPrivacy(
                                                                             goalId,
