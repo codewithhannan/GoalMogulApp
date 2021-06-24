@@ -73,6 +73,7 @@ class OnboardingCommunity extends React.Component {
 
     renderCard = ({ index, item }) => {
         const { title, subTitle, picture } = item
+        console.log('Text onboarding=======>', item)
         const width = this.getImageWidth()
         return (
             <View
@@ -82,7 +83,7 @@ class OnboardingCommunity extends React.Component {
                     paddingTop: 0,
                     paddingBottom: 30,
                     alignItems: 'center',
-                    margin: 8,
+                    margin: 5,
                     borderWidth: 1,
                     borderColor: color.GM_CARD_BACKGROUND,
                     borderRadius: 10,
@@ -90,7 +91,9 @@ class OnboardingCommunity extends React.Component {
                 }}
                 key={index}
             >
-                <View style={{ paddingTop: 12 }}>
+                <View
+                    style={{ paddingTop: 0, position: 'absolute', bottom: 100 }}
+                >
                     {picture ? (
                         <Image
                             style={{
@@ -114,7 +117,13 @@ class OnboardingCommunity extends React.Component {
                 </View>
 
                 <View
-                    style={{ width: '90%', justifyContent: 'center', flex: 1 }}
+                    style={{
+                        // width: '90%',
+                        bottom: 15,
+                        position: 'absolute',
+                        justifyContent: 'center',
+                        // backgroundColor: 'red',
+                    }}
                 >
                     <Text
                         style={[

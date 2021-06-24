@@ -1352,7 +1352,7 @@ class NewGoalView extends Component {
                         <View style={{ position: 'absolute', left: 0 }}>
                             <Text style={{ color: '#333333' }}>Start</Text>
                         </View>
-                        <View style={{ right: 140, position: 'absolute' }}>
+                        <View style={{ right: 125, position: 'absolute' }}>
                             <Text
                                 style={{
                                     color: '#333333',
@@ -1366,9 +1366,9 @@ class NewGoalView extends Component {
                         style={{
                             marginTop: 8,
                             flexDirection: 'row',
-
-                            flexWrap: 'wrap',
+                            // flexWrap: 'wrap',
                             justifyContent: 'space-between',
+                            alignItems: 'center',
                         }}
                     >
                         <TouchableOpacity
@@ -1378,7 +1378,7 @@ class NewGoalView extends Component {
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 ...styles.borderStyle,
-                                width: 170,
+                                width: 150,
                             }}
                             onPress={() =>
                                 this.props.change('startTime', {
@@ -1403,7 +1403,7 @@ class NewGoalView extends Component {
                                 alignItems: 'center',
                                 justifyContent: 'flex-start',
                                 ...styles.borderStyle,
-                                width: 170,
+                                width: 150,
                             }}
                             onPress={() =>
                                 this.props.change('endTime', {
