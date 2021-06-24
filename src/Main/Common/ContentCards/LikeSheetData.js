@@ -126,8 +126,6 @@ export const renderTextStyle = (unitText) => {
 
 export const updateLikeIcon = (reactions, liketype) => {
     const filteredReactions = reactions.filter((reaction) => {
-        console.log('THIS IS REACTIONSS', reaction)
-        console.log('THIS IS REACTIONSS 1', liketype)
         if (reaction.value == liketype) {
             return filteredReactions
         }
