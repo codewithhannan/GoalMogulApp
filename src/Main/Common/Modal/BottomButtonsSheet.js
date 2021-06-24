@@ -1,13 +1,11 @@
 /** @format */
 
 import React from 'react'
-import { View, Image, Text, TouchableOpacity } from 'react-native'
+import { View, Image, Text } from 'react-native'
 import { default_style, color } from '../../../styles/basic'
 import DelayedButton from '../Button/DelayedButton'
 import BottomSheet from './BottomSheet'
 import { Icon } from '@ui-kitten/components'
-import ChatGallery from '../../../asset/background/FeedbackScreenShot.png'
-import ChatCamera from '../../../asset/background/ChatCamera.png'
 
 /**
  * This bottom sheet uses https://github.com/nysamnang/react-native-raw-bottom-sheet#readme
@@ -34,124 +32,84 @@ class BottomButtonsSheet extends React.PureComponent {
 
             // context is passed into the onPress tot let it handle itself
             return (
-                <DelayedButton
-                    onPress={() => {
-                        onPress && onPress()
-                        if (closeSheetOnOptionPress) this.close()
-                    }}
-                    key={text}
-                    style={{
-                        backgroundColor: color.GM_CARD_BACKGROUND,
-                        flexDirection: 'row',
-                        paddingVertical: 12,
-                        alignItems: 'center',
-                    }}
-                    {...otherProps}
-                >
-                    {/* First try to render image and then Icon */}
-                    {image ? (
-                        <Image
-                            source={image}
-                            style={[styles.defaultImageStyle, imageStyle]}
-                        />
-                    ) : icon ? (
-                        <Icon
-                            {...icon}
-                            style={[styles.defaultIconStyle, iconStyle]}
-                        />
-                    ) : null}
-
-                    {/* <Image /> */}
-                    <Text style={[default_style.goalTitleText_1, textStyle]}>
-                        {text}
-                    </Text>
-                </DelayedButton>
+                <>
+                    <DelayedButton
+                        onPress={() => {
+                            onPress && onPress()
+                            if (closeSheetOnOptionPress) this.close()
+                        }}
+                        key={text}
+                        style={{
+                            top: 20,
+                            backgroundColor: color.GM_CARD_BACKGROUND,
+                            flexDirection: 'row',
+                            paddingVertical: 10,
+                            // alignItems: 'center',
+                        }}
+                        {...otherProps}
+                    >
+                        {/* First try to render image and then Icon */}
+                        {image ? (
+                            <Image
+                                source={image}
+                                style={[styles.defaultImageStyle, imageStyle]}
+                            />
+                        ) : icon ? (
+                            <Icon
+                                {...icon}
+                                style={[styles.defaultIconStyle, iconStyle]}
+                            />
+                        ) : null}
+                        {/* <Image /> */}
+                        <Text
+                            style={[default_style.goalTitleText_1, textStyle]}
+                        >
+                            {text}
+                        </Text>
+                    </DelayedButton>
+                </>
             )
         })
-        if (this.props.chatGallary) {
-            return (
-                <View
-                    style={{
-                        backgroundColor: '#E5F7FF',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        height: 150,
-                        width: '90%',
-                        alignSelf: 'center',
-                    }}
-                >
-                    <TouchableOpacity
-                        onPress={() => {
-                            this.close()
-                            setTimeout(() => {
-                                this.props.chatGallaryPress()
-                            }, 500)
+        const title = this.props.title
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    // backgroundColor: 'red',
+                    justifyContent: 'flex-start',
+                    paddingHorizontal: 16,
+                }}
+            >
+                {title && (
+                    <View
+                        style={{
+                            paddingHorizontal: 5,
                         }}
                     >
-                        <Image
-                            source={ChatGallery}
+                        <Text
                             style={{
-                                height: 50,
-                                width: 50,
-                                alignSelf: 'center',
+                                fontSize: 16,
+                                fontWeight: 'bold',
+                                color: '#3B414B',
                             }}
-                            resizeMode="contain"
-                        />
-                        <Text style={{ color: '#42C0F5' }}>
-                            Open Camera Roll
+                        >
+                            {title}
                         </Text>
-                    </TouchableOpacity>
-                </View>
-            )
-        } else if (this.props.chatCameraPress) {
-            return (
-                <View
-                    style={{
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        height: 150,
-                        width: '90%',
-                        alignSelf: 'center',
-                    }}
-                >
-                    <TouchableOpacity
-                        onPress={() => {
-                            this.close()
-                            setTimeout(() => {
-                                this.props.chatCameraPress()
-                            }, 500)
-                        }}
-                    >
-                        <Image
-                            source={ChatCamera}
+                        <View
                             style={{
-                                height: 60,
-                                width: 60,
+                                bottom: -20,
                                 alignSelf: 'center',
+                                height: 1,
+                                width: '112%',
+                                backgroundColor: 'lightgray',
+                                zIndex: 5,
                             }}
-                            resizeMode="contain"
                         />
-                        <Text style={{ color: '#42C0F5', marginTop: 8 }}>
-                            Open Camera
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            )
-        } else if (this.props.chatRecordingPress) {
-            return <Text>Hannan</Text>
-        } else {
-            return (
-                <View
-                    style={{
-                        flex: 1,
-                        justifyContent: 'flex-start',
-                        paddingHorizontal: 16,
-                    }}
-                >
-                    {items}
-                </View>
-            )
-        }
+                    </View>
+                )}
+                {items}
+            </View>
+        )
     }
 
     render() {

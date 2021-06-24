@@ -312,9 +312,10 @@ class SuggestionModal extends Component {
         return (
             <Modal
                 animationType="slide"
-                transparent={false}
+                // transparent={false}
                 visible={this.props.visible}
                 onDismiss={this.resetIconMap}
+                style={{ backgroundColor: 'red' }}
             >
                 <ModalHeader
                     title="Suggestion"
