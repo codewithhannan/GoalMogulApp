@@ -375,10 +375,7 @@ const mapStateToProps = (state) => {
     return { userId, pymkData: data, loading, token }
 }
 
-const AnalyticsWrapper = wrapAnalytics(
-    OnboardingPeopleKnow,
-    SCREENS.REG_CONTACTY_SYNC
-)
+const AnalyticsWrapper = wrapAnalytics(OnboardingPeopleKnow)
 
 export default connect(mapStateToProps, {
     uploadContacts,

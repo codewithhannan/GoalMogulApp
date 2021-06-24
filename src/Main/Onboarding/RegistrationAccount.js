@@ -444,9 +444,6 @@ class RegistrationAccount extends React.Component {
                     disabled={this.props.loading}
                     onBlur={() => {
                         this.validateInviteCode(inviterCode)
-                        trackWithProperties(E.REG_INVITE_CODE, {
-                            result: 'signed_up',
-                        })
                     }}
                     onChangeText={(val) => {
                         if (

@@ -70,6 +70,7 @@ import {
     ScrollView,
     TouchableWithoutFeedback,
 } from 'react-native-gesture-handler'
+import { EVENT, trackWithProperties } from '../../../monitoring/segment'
 
 const { Popover } = renderers
 const { width } = Dimensions.get('window')
@@ -77,12 +78,14 @@ const { width } = Dimensions.get('window')
 const TYPE_MAP = {
     step: {
         title: 'Steps',
+        segmentsValue: 'steps',
         placeholder: 'Whats the first thing you should do?',
         buttonText: 'Add a Step',
         text: 'Break your goals into steps that are easier to achieve',
     },
     need: {
         title: 'Needs',
+        segmentsValue: 'needs',
         placeholder: 'Something your friends might be able to help with',
         buttonText: 'Add a Need',
         text: 'Something you are specifically looking for help with',
@@ -630,6 +633,9 @@ class NewGoalView extends Component {
 
     handleCatergoryOnSelect = (value) => {
         console.log('category selected is: ', value)
+        trackWithProperties(EVENT.GOAL_CREATED, {
+            category: value,
+        })
         this.props.change('category', value)
     }
 
@@ -749,7 +755,10 @@ class NewGoalView extends Component {
                     required={false}
                     selectedValue={this.props.privacy}
                     onChangeText={(value) => {
-                        this.props.change('privacy', value)
+                        this.props.change('privacy', value),
+                            trackWithProperties(EVENT.GOAL_CREATED, {
+                                privacy: value,
+                            })
                     }}
                 />
             </View>
@@ -816,9 +825,15 @@ class NewGoalView extends Component {
                         placeholder="Make your goal as specific as possible"
                         autoCorrect
                         // autoFocus={true}
+
                         autoCapitalize={'sentences'}
                         multiline
                         blurOnSubmit
+                        onEndEditing={() =>
+                            trackWithProperties(EVENT.GOAL_CREATED, {
+                                goal_title: this.props.title,
+                            })
+                        }
                         maxLength={90}
                     />
                     {/* <View style={{ flexDirection: 'row', marginTop: 5 }}>
@@ -1065,6 +1080,12 @@ class NewGoalView extends Component {
                                             this.handlePriorityOnSelect(
                                                 val.value
                                             )
+                                            trackWithProperties(
+                                                EVENT.GOAL_CREATED,
+                                                {
+                                                    goal_importance: val.value,
+                                                }
+                                            )
                                         }}
                                     >
                                         <View
@@ -1117,6 +1138,9 @@ class NewGoalView extends Component {
                 onConfirm={(date) => {
                     if (validateTime(date, this.props.endTime.date)) {
                         this.props.change('startTime', { date, picker: false })
+                        trackWithProperties(EVENT.GOAL_CREATED, {
+                            start_date: date,
+                        })
                         return
                     }
                     Alert.alert('Start time cannot be later than end time')
@@ -1175,7 +1199,10 @@ class NewGoalView extends Component {
                 isVisible={this.props.endTime.picker}
                 onConfirm={(date) => {
                     if (validateTime(this.props.startTime.date, date)) {
-                        this.props.change('endTime', { date, picker: false })
+                        this.props.change('endTime', { date, picker: false }),
+                            trackWithProperties(EVENT.GOAL_CREATED, {
+                                end_date: date,
+                            })
                         return
                     }
                     alert('End time cannot be early than start time')
@@ -1499,7 +1526,13 @@ class NewGoalView extends Component {
                 <Button
                     text={TYPE_MAP[type].buttonText}
                     source={plus}
-                    onPress={() => fields.push({})}
+                    onPress={() => {
+                        trackWithProperties(
+                            EVENT.GOAL_CREATED,
+                            TYPE_MAP[type].segmentsValue
+                        )
+                        fields.push({})
+                    }}
                     containerStyle={{
                         width: '100%',
                         justifyContent: 'center',
@@ -1571,7 +1604,7 @@ class NewGoalView extends Component {
         )
     }
     render() {
-        const { initializeFromState } = this.props
+        const { initializeFromState, title } = this.props
 
         return (
             <KeyboardAwareScrollView

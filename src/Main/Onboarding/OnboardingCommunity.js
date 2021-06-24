@@ -49,9 +49,8 @@ class OnboardingCommunity extends React.Component {
     }
 
     onSwipedAll = (index) => {
-        trackWithProperties(E.REG_COMMUNITY_SWIPED, {
-            Index: index,
-            UserId: this.props.userId,
+        trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
+            step_number: index,
         })
 
         if (index == this.props.communityGuidelines.length - 1) {

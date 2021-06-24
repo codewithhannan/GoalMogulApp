@@ -36,6 +36,7 @@ import {
     wrapAnalytics,
     SCREENS,
 } from '../../monitoring/segment'
+import { identifyWithTraits } from 'expo-analytics-segment'
 
 const { text: textStyle, button: buttonStyle } = OnboardingStyles
 
@@ -45,6 +46,9 @@ class OnboardingAddPhotos extends Component {
         trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
             onboardingStep: 'upload_photo',
             photo_uploaded: false,
+        })
+        identifyWithTraits(this.props.userId, {
+            profilePhoto: false,
         })
 
         Actions.push('registration_people_know')
@@ -56,6 +60,11 @@ class OnboardingAddPhotos extends Component {
 
         // Upload image
         this.props.registrationAddProfilePhoto()
+
+        trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
+            onboardingStep: 'upload_photo',
+            photo_uploaded: true,
+        })
     }
 
     openCamera = () => {
@@ -79,8 +88,8 @@ class OnboardingAddPhotos extends Component {
         //     })
 
         const trackImageAttached = () =>
-            trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
-                photo_uploaded: true,
+            identifyWithTraits(this.props.userId, {
+                profilePhoto: true,
             })
 
         this.props.openCameraRoll(

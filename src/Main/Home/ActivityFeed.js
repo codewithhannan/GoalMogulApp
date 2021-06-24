@@ -47,6 +47,7 @@ import {
     SCREENS,
     trackWithProperties,
     EVENT as E,
+    track,
 } from '../../monitoring/segment'
 
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
@@ -55,6 +56,7 @@ import { Actions } from 'react-native-router-flux'
 import PopupFB from '../Journey/FbPopup'
 
 import { getToastsData } from '../../actions/ToastActions'
+import { identifyWithTraits } from 'expo-analytics-segment'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
@@ -108,11 +110,12 @@ class ActivityFeed extends Component {
             this.props.loadUserInvitedFriendsCount()
         }
 
-        if (this.props.userLastActive) {
-            trackWithProperties(E.LOGIN_COMPLETED, {
-                lastLoginData: this.props.userLastActive,
-            })
-        }
+        // if (this.props.userLastActive) {
+
+        // }
+        identifyWithTraits(this.props.userId, {
+            lastLoginDate: this.props.userLastActive,
+        })
 
         const pageId = this.props.refreshProfileData(this.props.userId)
 
@@ -164,6 +167,7 @@ class ActivityFeed extends Component {
 
     openInviteFriendModal = () => {
         this.setState({ showInviteFriendModal: true })
+        track(E.INVITE_FRIENDS_OPEN)
     }
 
     closeInviteFriendModal = () => {
@@ -361,7 +365,10 @@ class ActivityFeed extends Component {
                         Join a Tribe and help someone.{'\n'}
                     </Text>
                     <TouchableWithoutFeedback
-                        onPress={() => Actions.push('tribeDiscover')}
+                        onPress={() => {
+                            Actions.push('tribeDiscover')
+                            track(E.DISCOVER_TRIBE_OPEN)
+                        }}
                         style={{
                             backgroundColor: color.GM_LIGHT_GRAY,
                             paddingVertical: 12,

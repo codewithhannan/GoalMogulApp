@@ -64,6 +64,7 @@ import { shareGoalToMastermind } from '../../redux/modules/goal/GoalDetailAction
 import {
     LOTTIE_DATA,
     renderUnitText,
+    updateLikeIcon,
 } from '../Common/ContentCards/LikeSheetData'
 import Tooltip from 'react-native-walkthrough-tooltip'
 import LottieView from 'lottie-react-native'
@@ -96,6 +97,7 @@ class ActivityCard extends React.PureComponent {
             cardHeight: 0,
             toolTipVisible: false,
             unitText: '',
+            updateReaction: '',
         }
         this.renderCommentRef = this.renderCommentRef.bind(this)
         this.renderMedia = this.renderMedia.bind(this)
@@ -209,11 +211,20 @@ class ActivityCard extends React.PureComponent {
         const isPost = actedUponEntityType === 'Post'
         const item = isPost ? postRef : goalRef
 
-        console.log('THIS IS UNIT TEXT', this.state.unitText)
-
         // Sanity check if ref exists
         if (!item) return null
         const { maybeLikeRef, _id, owner, likeType, reactions } = item
+
+        console.log('THIS IS REACTIONSS', reactions)
+
+        let filteredReaction = []
+
+        reactions.map((reaction) => {
+            if (reaction.count > 0) {
+                return filteredReaction.push(reaction)
+            }
+        })
+
         const likeCount = item.likeCount ? item.likeCount : 0
         const shareCount = item.shareCount ? item.shareCount : 0
         const commentCount = item.commentCount ? item.commentCount : 0
@@ -266,6 +277,10 @@ class ActivityCard extends React.PureComponent {
                                                             _id,
                                                             maybeLikeRef
                                                         ),
+                                                        updateLikeIcon(
+                                                            reactions,
+                                                            lottie.value
+                                                        ),
                                                         setTimeout(() => {
                                                             this.props.likeGoal(
                                                                 isPost
@@ -281,6 +296,8 @@ class ActivityCard extends React.PureComponent {
                                                             unitText:
                                                                 lottie.title,
                                                             toolTipVisible: false,
+                                                            updateReaction:
+                                                                lottie.value,
                                                         })
                                                     )
                                                 }
@@ -295,6 +312,7 @@ class ActivityCard extends React.PureComponent {
                                                 this.setState({
                                                     unitText: lottie.title,
                                                     toolTipVisible: false,
+                                                    updateReaction: '',
                                                 })
                                             }}
                                         >
@@ -331,7 +349,8 @@ class ActivityCard extends React.PureComponent {
             >
                 <ActionBar
                     isContentLiked={selfLiked}
-                    reactions={reactions}
+                    reactions={filteredReaction}
+                    updateReaction={this.state.updateReaction}
                     isShareContent={isShare}
                     actionSummaries={{
                         likeCount,
@@ -654,6 +673,7 @@ const isValidActivity = (item) => {
 
 const mapStateToProps = (state) => {
     const { userId } = state.user
+    // console.log('THESE ARE THE POSTTTT', state)
 
     return {
         userId,

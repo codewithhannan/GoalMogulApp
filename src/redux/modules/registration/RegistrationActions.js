@@ -690,9 +690,7 @@ export const uploadContacts = ({
 export const markUserAsOnboarded = () => async (dispatch, getState) => {
     const { userId, token } = getState().user
     Logger.log(`${DEBUG_KEY}: [ markUserAsOnboarded ] for user: `, userId, 1)
-    trackWithProperties(E.ONBOARDING_DONE, {
-        UserId: userId,
-    })
+    track(E.ONBOARDING_DONE)
 
     // Update onboarding status on SecureStore
     // This should be fired regardless of API call succeeds or not

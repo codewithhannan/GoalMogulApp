@@ -453,9 +453,9 @@ export const updateGoal = (itemId, type, updates, goal, pageId) => (
         }
 
         if (type === 'step') {
-            trackWithProperties(EVENT.GOAL_STEP_ADDED, { Steps: itemsToUpdate })
+            trackWithProperties(EVENT.GOAL_STEP_ADDED, { steps: itemsToUpdate })
         } else {
-            trackWithProperties(EVENT.GOAL_NEED_ADDED, { Needs: itemsToUpdate })
+            trackWithProperties(EVENT.GOAL_NEED_ADDED, { needs: itemsToUpdate })
         }
 
         dispatch({
