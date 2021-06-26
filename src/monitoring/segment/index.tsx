@@ -200,6 +200,8 @@ const EVENT = {
     COMMENT_REPORTED: 'Comment Reported',
     GENERAL_REPORT_CREATED: 'General Report Created',
 
+    SPLASH_SCREEN:'onboarding_page_viewed',
+
     // App
     APP_ACTIVE: 'app_opened',
     APP_INACTIVE: 'app_closed',
@@ -215,7 +217,7 @@ const EVENT = {
 }
 
 const SCREENS = {
-    SPLASH_SCREEN: 'onboarding_page_viewed',
+   
     LOGIN_PAGE: 'login_started',
     HOME: 'Home',
     HOME_GOAL: 'HomeGoalTab',

@@ -30,7 +30,12 @@ import Router from './src/Router'
 import SocketIOManager from './src/socketio/SocketIOManager'
 import LiveChatService from './src/socketio/services/LiveChatService'
 import MessageStorageService from './src/services/chat/MessageStorageService'
-import { initSegment, EVENT as E, track } from './src/monitoring/segment'
+import {
+    initSegment,
+    EVENT as E,
+    track,
+    trackWithProperties,
+} from './src/monitoring/segment'
 import { initSentry } from './src/monitoring/sentry'
 import * as Linking from 'expo-linking'
 import MultipleImagePicker from './src/Main/Menu/MutlipleImagePicker'
@@ -40,6 +45,7 @@ import { setJSExceptionHandler } from 'react-native-exception-handler' // If an 
 // UI theme provider
 import ThemeProvider from './theme/ThemeProvider'
 import SwipeLeft from './src/Main/Common/SwipeLeft'
+import SwipeGesture from './src/Main/Common/SwiperTest'
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
@@ -54,10 +60,10 @@ initSegment()
 initSentry()
 
 setJSExceptionHandler((error, isFatal) => {
-    if (isFatal) {
-        track(E.ERROR_OCCURED)
-        console.log(`${DEBUG_KEY} Error while doing the action`, error)
-    }
+    console.log(`${DEBUG_KEY} Error while doing the action`, error)
+    trackWithProperties(E.ERROR_OCCURED, {
+        error_name: error,
+    })
 }, true)
 
 // setNativeExceptionHandler((errorString) => {

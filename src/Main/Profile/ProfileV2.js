@@ -67,12 +67,15 @@ import ShareGoalPopup1 from '../Journey/ShareGoalPopup1'
 import FeedbackPopup from '../Journey/FeedbackPopup'
 import SubmitFeedbackPopup from '../Journey/SubmitFeedbackPopup'
 import ShareGoalPopup2 from '../Journey/ShareGoalPopup2'
+import SWIPER_BACKGROUND from '../../asset/utils/tooltipBackground.png'
 
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import NoGoalPrompt from '../../components/NoGoalPrompt'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
+
+const goalDetailTooltipText = `Tap goal for details; OR swipe left and right to reveal more cool ways to interact!`
 
 class ProfileV2 extends Component {
     constructor(props) {
@@ -594,10 +597,15 @@ class ProfileV2 extends Component {
                     <>
                         {itemIndex === 0 &&
                             !this.props.isSelf &&
-                            friendship.status && <StepsTooltip />}
+                            friendship.status == 'Accepted' && <StepsTooltip />}
+
+                        {/* {itemIndex === 0 &&
+                            !this.props.isSelf &&
+                            friendship.status == 'Accepted' && <Tooltip title={goalDetailTooltipText} imageSource = {too} />} */}
                         <ProfileGoalCard
                             index={itemIndex}
                             item={item}
+                            friendShip={friendship.status == 'Accepted'}
                             pageId={pageId}
                             userId={userId}
                         />

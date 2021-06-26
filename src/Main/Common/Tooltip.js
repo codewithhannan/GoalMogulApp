@@ -6,9 +6,10 @@ import { View, Text, TouchableOpacity, ImageBackground } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { connect } from 'react-redux'
 import { Entypo } from '@expo/vector-icons'
-import { setProgressTooltip } from '../actions'
+import { setProgressTooltip } from '../../actions'
+import * as Animatable from 'react-native-animatable'
 
-class StepsTooltip extends Component {
+class Tooltip extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -17,22 +18,27 @@ class StepsTooltip extends Component {
         }
     }
 
+    componentDidMount() {}
+
     render() {
-        const { tooltip, setProgressTooltip } = this.props
+        const { tooltip, setProgressTooltip, imageSource, type } = this.props
         return (
             <>
                 {this.state.toolTipVisible && tooltip.goalProgressTooltip ? (
-                    <View
+                    <Animatable.View
+                        animation="fadeIn"
+                        delay={500}
+                        duration={500}
                         style={{
                             position: 'absolute',
                             zIndex: 1,
-                            bottom: 78,
-                            right: 25,
+                            left: 13,
+                            top: 10,
                         }}
                     >
                         <ImageBackground
                             resizeMode="cover"
-                            source={require('../asset/image/messageUI.png')}
+                            source={imageSource}
                             style={{
                                 width: 217,
                                 height: 95,
@@ -50,14 +56,13 @@ class StepsTooltip extends Component {
                                         fontFamily: 'SFProDisplay-Semibold',
                                     }}
                                 >
-                                    This horizontal bar shows how much goal
-                                    progress has been made.
+                                    {this.props.title}
                                 </Text>
                             </View>
                             <TouchableOpacity
                                 onPress={() => {
                                     this.state.checked &&
-                                        setProgressTooltip('goal')
+                                        setProgressTooltip(type)
                                     this.setState({ toolTipVisible: false })
                                 }}
                                 style={{
@@ -122,7 +127,7 @@ class StepsTooltip extends Component {
                                 </View>
                             </View>
                         </ImageBackground>
-                    </View>
+                    </Animatable.View>
                 ) : null}
             </>
         )
@@ -136,4 +141,4 @@ const mapStateToProps = (state, ownProps) => {
     }
 }
 
-export default connect(mapStateToProps, { setProgressTooltip })(StepsTooltip)
+export default connect(mapStateToProps, { setProgressTooltip })(Tooltip)

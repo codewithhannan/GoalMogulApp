@@ -53,7 +53,10 @@ const DEFAULT_STATE = {
         "I'd love for us to keep each other inspired and motivated on our journeys. Add me on GoalMogul?",
     editEnabled: false,
 }
+
 const DESCRIPTIONS_TOP3 = [
+    // this.props.shouldOpenFromComments
+    //     ? this.props.goalTosend
     `I’d love to grow closer with you by keeping up with each others’ goals and helping. GoalMogul makes it fun and easy. Please join and check out my goals.`,
     `We barely have time to catch up these days. Can you join me on GoalMogul? It will help us keep up with each others’ life goals so we don't lose touch.`,
     `I joined GoalMogul to share my goals with trusted friends. Can you have a look and provide feedback?`,
@@ -96,8 +99,15 @@ class InviteFriendModal extends React.PureComponent {
     }
 
     makeDescriptionsArray = () => {
-        this.shuffleArray(DESCRIPTIONS_REMAINING)
-        return [...DESCRIPTIONS_TOP3, ...DESCRIPTIONS_REMAINING]
+        console.log('THIS IS PROPSSS', this.props)
+
+        if (this.props.shouldOpenFromComments) {
+            this.shuffleArray(DESCRIPTIONS_REMAINING)
+            return [this.props.goalTosend, ...DESCRIPTIONS_REMAINING]
+        } else {
+            this.shuffleArray(DESCRIPTIONS_REMAINING)
+            return [...DESCRIPTIONS_TOP3, ...DESCRIPTIONS_REMAINING]
+        }
     }
 
     descriptionsArray = this.makeDescriptionsArray()

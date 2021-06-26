@@ -11,7 +11,8 @@ import { connect } from 'react-redux'
 import timeago from 'timeago.js'
 import _ from 'lodash'
 import Tooltip from 'react-native-walkthrough-tooltip'
-import StepsTooltip from '../../../components/StepsTooltip'
+
+import SwiperTooltip from '../../../Main/Common/Tooltip'
 
 import { Actions } from 'react-native-router-flux'
 
@@ -25,10 +26,17 @@ import LoveIcon from '../../../asset/utils/love.png'
 import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
 import CommentIcon from '../../../asset/utils/comment.png'
 import ShareIcon from '../../../asset/utils/forward.png'
+import RECORDING from '../../../asset/utils/Recording.png'
+import VIDEO from '../../../asset/utils/Video.png'
+import ACCOUNTABILITY from '../../../asset/utils/Accountability.png'
+import SWIPER_BACKGROUND from '../../../asset/image/messageUI1.png'
 
 // Selector
 
 import { getUserData } from '../../../redux/modules/User/Selector'
+
+import Swipeable from 'react-native-gesture-handler/Swipeable'
+import * as Animatable from 'react-native-animatable'
 
 // Actions
 import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions'
@@ -40,6 +48,10 @@ import { Icon } from '@ui-kitten/components'
 import { submitGoalPrivacy } from '../../../redux/modules/goal/CreateGoalActions'
 
 let privacyName = ''
+let row = []
+let prevOpenedRow
+
+const swiperText = 'You can leave a video or voice comment! 😃'
 
 const privacyOptions = [
     {
@@ -68,9 +80,36 @@ const privacyOptions = [
     },
 ]
 
+const SWIPED_DATA = [
+    {
+        id: 1,
+        source: ACCOUNTABILITY,
+        onPress: () => console.log('Account'),
+        backgroundColor: '#CEFFBC',
+    },
+
+    {
+        id: 3,
+        source: RECORDING,
+        onPress: () => console.log('Record'),
+        backgroundColor: '#D7F3FF',
+    },
+    {
+        id: 2,
+        source: VIDEO,
+        onPress: () => console.log('Video'),
+        backgroundColor: '#E5F7FF',
+    },
+]
+
 class ProfileGoalCard extends React.Component {
-    state = {
-        toolTipVisible: false,
+    constructor(props) {
+        super(props)
+        this.state = {
+            toolTipVisible: false,
+            swiperToolTipVisible: false,
+        }
+        this.refsArray = [] // add this
     }
 
     /* Handler functions for actions */
@@ -426,6 +465,54 @@ class ProfileGoalCard extends React.Component {
         )
     }
 
+    rightSwipeActions = () => {
+        return (
+            <>
+                {this.state.swiperToolTipVisible && this.props.index == 0 ? (
+                    <SwiperTooltip
+                        title={swiperText}
+                        imageSource={SWIPER_BACKGROUND}
+                    />
+                ) : null}
+
+                {SWIPED_DATA.map((item, index) => {
+                    return (
+                        <View>
+                            <TouchableOpacity
+                                onPress={item.onPress}
+                                key={index}
+                                activeOpacity={0.7}
+                            >
+                                <Animatable.View
+                                    style={{
+                                        backgroundColor: item.backgroundColor,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        width: 100,
+                                        height: 138,
+                                    }}
+                                >
+                                    <Image
+                                        source={item.source}
+                                        resizeMode="contain"
+                                        style={{ height: 40, width: 40 }}
+                                    />
+                                </Animatable.View>
+                            </TouchableOpacity>
+                        </View>
+                    )
+                })}
+            </>
+        )
+    }
+
+    closeRow = (index) => {
+        if (prevOpenedRow && prevOpenedRow !== row[index]) {
+            prevOpenedRow.close()
+        }
+        prevOpenedRow = row[index]
+    }
+
     render() {
         const { item, index } = this.props
 
@@ -436,17 +523,48 @@ class ProfileGoalCard extends React.Component {
             : color.GM_CARD_BACKGROUND
         return (
             <>
-                <DelayedButton
-                    index={index}
-                    activeOpacity={1}
-                    style={[styles.cardContainerStyle, { backgroundColor }]}
-                    onPress={() => this.handleOnCardPress(item)}
-                >
-                    {this.renderHeader(item)}
-                    {this.renderTitle(item)}
-                    {this.renderProgressBar(item)}
-                    {this.renderStats(item)}
-                </DelayedButton>
+                {!this.props.isSelf && this.props.friendShip ? (
+                    <>
+                        <Swipeable
+                            renderRightActions={this.rightSwipeActions}
+                            friction={2}
+                            ref={(ref) => (row[index] = ref)}
+                            leftThreshold={80}
+                            rightThreshold={40}
+                            onSwipeableRightOpen={() =>
+                                this.setState({ swiperToolTipVisible: true })
+                            }
+                            onSwipeableOpen={this.closeRow(index)}
+                        >
+                            <DelayedButton
+                                index={index}
+                                activeOpacity={1}
+                                style={[
+                                    styles.cardContainerStyle,
+                                    { backgroundColor },
+                                ]}
+                                onPress={() => this.handleOnCardPress(item)}
+                            >
+                                {this.renderHeader(item)}
+                                {this.renderTitle(item)}
+                                {this.renderProgressBar(item)}
+                                {this.renderStats(item)}
+                            </DelayedButton>
+                        </Swipeable>
+                    </>
+                ) : (
+                    <DelayedButton
+                        index={index}
+                        activeOpacity={1}
+                        style={[styles.cardContainerStyle, { backgroundColor }]}
+                        onPress={() => this.handleOnCardPress(item)}
+                    >
+                        {this.renderHeader(item)}
+                        {this.renderTitle(item)}
+                        {this.renderProgressBar(item)}
+                        {this.renderStats(item)}
+                    </DelayedButton>
+                )}
             </>
         )
     }

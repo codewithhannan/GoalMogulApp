@@ -332,7 +332,7 @@ export const refreshProfileData = (userId) => (dispatch, getState) => {
             pageId,
         },
     })
-    trackWithProperties(E.PROFILE_REFRESHED, { UserId: userId })
+    // trackWithProperties(E.PROFILE_REFRESHED, { UserId: userId })
 
     const { token } = getState().user
     const self = userId.toString() === getState().user.userId.toString()
