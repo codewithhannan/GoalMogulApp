@@ -301,6 +301,10 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
     try {
         const res = await API.post('pub/user/', { ...data })
 
+        if (res.status == 200) {
+            track(E.REG_ACCOUNT_CREATED)
+        }
+
         Logger.log(
             '[RegistrationActions] [registerAccount] registration response is: ',
             res,
@@ -354,10 +358,6 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
                 onSuccess()
             }
 
-            trackWithProperties(E.REG_ACCOUNT_CREATED, {
-                UserId: res.userId,
-            })
-
             // set up chat listeners
             LiveChatService.mountUser({
                 userId: res.userId,
@@ -367,6 +367,7 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
                 userId: res.userId,
                 authToken: res.token,
             })
+
             return
         } else {
             // fail to register account

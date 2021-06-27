@@ -215,7 +215,7 @@ class ActivityCard extends React.PureComponent {
         if (!item) return null
         const { maybeLikeRef, _id, owner, likeType, reactions } = item
 
-        console.log('THIS IS REACTIONSS', reactions)
+        console.log('THIS IS REACTIONSS', this.state.updateReaction)
 
         let filteredReaction = []
 
@@ -276,10 +276,6 @@ class ActivityCard extends React.PureComponent {
                                                                 : 'goal',
                                                             _id,
                                                             maybeLikeRef
-                                                        ),
-                                                        updateLikeIcon(
-                                                            reactions,
-                                                            lottie.value
                                                         ),
                                                         setTimeout(() => {
                                                             this.props.likeGoal(

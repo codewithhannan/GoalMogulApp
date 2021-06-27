@@ -268,6 +268,7 @@ class Home extends Component {
     }
 
     handleAppStateChange = async (nextAppState) => {
+        console.log('THIS IS APP STATE', this.state.appState)
         if (
             this.state.appState.match(/inactive|background/) &&
             nextAppState === 'active'
@@ -302,9 +303,7 @@ class Home extends Component {
             console.log(
                 `${DEBUG_KEY}: [handleAppStateChange] App has become inactive!`
             )
-            trackWithProperties(E.APP_ACTIVE, {
-                source: 'direct',
-            })
+            track(E.APP_INACTIVE)
             await this.props.saveUnreadNotification()
             await this.props.saveTutorialState()
         }

@@ -105,6 +105,8 @@ class ActionBar extends React.Component {
             onClarifyButtonPress,
         } = this.props
 
+        console.log('THIS IS STATE OF UPDATED', updateReaction)
+
         const { likeCount, shareCount, commentCount } = actionSummaries || {}
 
         return (

@@ -716,6 +716,8 @@ class CommentBoxV2 extends Component {
                 <InviteFriendModal
                     isVisible={this.state.showInviteFriendModal}
                     closeModal={this.closeInviteFriendModal}
+                    goalTosend={`My friend ${this.props.name} has the goal ${this.props.title} I thought you might be able to help. Please join us on GoalMogul so I can connect you!`}
+                    shouldOpenFromComments
                 />
             </>
         )
@@ -811,10 +813,15 @@ const styles = {
 }
 
 const mapStateToProps = (state, props) => {
-    const { comments } = state
+    const { comments, goalDetail } = state
+    const { title, owner } = goalDetail.goal.goal
+    const { name } = owner
+
     return {
         newComment: getNewCommentByTab(state, props.pageId),
         comments,
+        title,
+        name,
     }
 }
 

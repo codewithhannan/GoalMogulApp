@@ -633,9 +633,9 @@ class NewGoalView extends Component {
 
     handleCatergoryOnSelect = (value) => {
         console.log('category selected is: ', value)
-        trackWithProperties(EVENT.GOAL_CREATED, {
-            category: value,
-        })
+        // trackWithProperties(EVENT.GOAL_CREATED, {
+        //     category: value,
+        // })
         this.props.change('category', value)
     }
 
@@ -755,10 +755,7 @@ class NewGoalView extends Component {
                     required={false}
                     selectedValue={this.props.privacy}
                     onChangeText={(value) => {
-                        this.props.change('privacy', value),
-                            trackWithProperties(EVENT.GOAL_CREATED, {
-                                privacy: value,
-                            })
+                        this.props.change('privacy', value)
                     }}
                 />
             </View>
@@ -829,11 +826,11 @@ class NewGoalView extends Component {
                         autoCapitalize={'sentences'}
                         multiline
                         blurOnSubmit
-                        onEndEditing={() =>
-                            trackWithProperties(EVENT.GOAL_CREATED, {
-                                goal_title: this.props.title,
-                            })
-                        }
+                        // onEndEditing={() =>
+                        //     trackWithProperties(EVENT.GOAL_CREATED, {
+                        //         goal_title: this.props.title,
+                        //     })
+                        // }
                         maxLength={90}
                     />
                     {/* <View style={{ flexDirection: 'row', marginTop: 5 }}>
@@ -1080,12 +1077,12 @@ class NewGoalView extends Component {
                                             this.handlePriorityOnSelect(
                                                 val.value
                                             )
-                                            trackWithProperties(
-                                                EVENT.GOAL_CREATED,
-                                                {
-                                                    goal_importance: val.value,
-                                                }
-                                            )
+                                            // trackWithProperties(
+                                            //     EVENT.GOAL_CREATED,
+                                            //     {
+                                            //         goal_importance: val.value,
+                                            //     }
+                                            // )
                                         }}
                                     >
                                         <View
@@ -1138,9 +1135,9 @@ class NewGoalView extends Component {
                 onConfirm={(date) => {
                     if (validateTime(date, this.props.endTime.date)) {
                         this.props.change('startTime', { date, picker: false })
-                        trackWithProperties(EVENT.GOAL_CREATED, {
-                            start_date: date,
-                        })
+                        // trackWithProperties(EVENT.GOAL_CREATED, {
+                        //     start_date: date,
+                        // })
                         return
                     }
                     Alert.alert('Start time cannot be later than end time')
@@ -1199,10 +1196,8 @@ class NewGoalView extends Component {
                 isVisible={this.props.endTime.picker}
                 onConfirm={(date) => {
                     if (validateTime(this.props.startTime.date, date)) {
-                        this.props.change('endTime', { date, picker: false }),
-                            trackWithProperties(EVENT.GOAL_CREATED, {
-                                end_date: date,
-                            })
+                        this.props.change('endTime', { date, picker: false })
+
                         return
                     }
                     alert('End time cannot be early than start time')
@@ -1527,10 +1522,10 @@ class NewGoalView extends Component {
                     text={TYPE_MAP[type].buttonText}
                     source={plus}
                     onPress={() => {
-                        trackWithProperties(
-                            EVENT.GOAL_CREATED,
-                            TYPE_MAP[type].segmentsValue
-                        )
+                        // trackWithProperties(
+                        //     EVENT.GOAL_CREATED,
+                        //     TYPE_MAP[type].segmentsValue
+                        // )
                         fields.push({})
                     }}
                     containerStyle={{
