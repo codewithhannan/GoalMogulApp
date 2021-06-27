@@ -199,6 +199,7 @@ class MessageToContactsModal extends Component {
         const inviteLink = this.getInviteLink()
 
         const renderUser = ({ item }) => {
+            console.log('CONTACT ITEMS======>', item)
             return (
                 <>
                     <TouchableOpacity

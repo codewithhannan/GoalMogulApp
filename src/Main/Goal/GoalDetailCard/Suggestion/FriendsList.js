@@ -10,6 +10,7 @@ import {
     Alert,
     StyleSheet,
 } from 'react-native'
+import _ from 'lodash'
 import { Actions } from 'react-native-router-flux'
 import { Icon } from '@ui-kitten/components'
 import { TextInput } from 'react-native-paper'
@@ -18,10 +19,22 @@ import { SafeAreaView } from 'react-navigation'
 import { MaterialIcons } from '@expo/vector-icons'
 import { connect } from 'react-redux'
 
-import { color } from '../../../styles/basic'
-import { IMAGE_BASE_URL } from '../../../Utils/Constants'
-import SearchBarHeader from '../../Common/Header/SearchBarHeader'
-import SendContactMessage from '../../MeetTab/Modal/SendContactMessage'
+import { color } from '../../../../styles/basic'
+import { IMAGE_BASE_URL } from '../../../../Utils/Constants'
+import SearchBarHeader from '../../../Common/Header/SearchBarHeader'
+import UserCard from './UserCard'
+import SendContactMessage from '../../../MeetTab/Modal/SendContactMessage'
+
+import { getNewCommentByTab } from '../../../../redux/modules/feed/comment/CommentSelector'
+import { arrayUnique } from '../../../../reducers/MeetReducers'
+import {
+    handleSearch,
+    clearSearchState,
+    refreshSearchResult,
+    onLoadMore,
+    refreshPreloadData,
+    loadMorePreloadData,
+} from '../../../../redux/modules/feed/comment/SuggestionSearchActions'
 
 class FriendsList extends Component {
     constructor(props) {
@@ -38,7 +51,7 @@ class FriendsList extends Component {
             pageOffset: 0,
             imageUrl: '',
             currentPagination: [],
-
+            selectedItem: null,
             friendsFilteredData: [],
         }
     }
@@ -46,33 +59,28 @@ class FriendsList extends Component {
     componentDidMount() {
         this.setState({ isLoading: true })
 
-        this.setState({ flatListData: this.props.userFriends })
+        const filteredData = this.props.userFriends.map((item) => {
+            return {
+                id: item._id,
+                name: item.name,
+                image: item.profile.image,
+            }
+        })
+
+        this.setState({ flatListData: filteredData })
 
         this.setState({ isLoading: false })
-    }
-
-    selectItem = (id) => {
-        let flatListData = [...this.state.flatListData]
-        for (let item of flatListData) {
-            if (item.id == id) {
-                item.isSelected =
-                    item.isSelected == null ? true : !item.isSelected
-                break
-            }
-        }
-        this.setState({ flatListData })
     }
 
     searchFriends = (input) => {
         const { friendsSearchText } = this.state
 
         this.setState({ friendsSearchText: input })
-        // this.setState({ input })
 
         let friendsFilteredData = this.state.flatListData.filter(function (
             item
         ) {
-            return item.value.includes(input)
+            return item.name.includes(input)
         })
 
         this.setState({ friendsFilteredData: friendsFilteredData })
@@ -80,24 +88,20 @@ class FriendsList extends Component {
 
     renderProfileImage(item) {
         if (item == null) {
-            return require('../../../asset/utils/defaultUserProfile.png')
+            return require('../../../../asset/utils/defaultUserProfile.png')
         } else {
             return { uri: `${IMAGE_BASE_URL}${item}` }
         }
     }
 
     render() {
-        const getSelectedData = this.state.renderData.filter((item) => {
-            return item.isSelected
-        })
-
-        const renderUser = ({ item }) => {
+        const RenderUser = ({ item, onPress, checked }) => {
             console.log('item===>', item)
             return (
                 <>
                     <View style={styles.itemContainer}>
                         <TouchableOpacity
-                            onPress={() => this.selectItem(item.profile.id)}
+                            onPress={onPress}
                             style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
@@ -107,10 +111,10 @@ class FriendsList extends Component {
                                 style={[
                                     styles.itemSelected,
                                     {
-                                        backgroundColor: item.isSelected
+                                        backgroundColor: checked
                                             ? color.GM_BLUE
                                             : 'transparent',
-                                        borderColor: item.isSelected
+                                        borderColor: checked
                                             ? 'transparent'
                                             : 'grey',
                                     },
@@ -134,7 +138,7 @@ class FriendsList extends Component {
                             >
                                 <Image
                                     source={this.renderProfileImage(
-                                        item.profile.image
+                                        item.item.image
                                     )}
                                     style={{
                                         height: 40,
@@ -153,7 +157,7 @@ class FriendsList extends Component {
                                     fontSize: 16,
                                 }}
                             >
-                                {item.name}
+                                {item.item.name}
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -161,6 +165,8 @@ class FriendsList extends Component {
                 </>
             )
         }
+
+        const { selectedItem } = this.state
         return (
             <View
                 style={{ flex: 1, backgroundColor: color.GM_CARD_BACKGROUND }}
@@ -228,7 +234,17 @@ class FriendsList extends Component {
                                     ? this.state.friendsFilteredData
                                     : this.state.flatListData
                             }
-                            renderItem={(item) => renderUser(item)}
+                            renderItem={(item) => (
+                                <RenderUser
+                                    item={item}
+                                    checked={item.item.id === selectedItem}
+                                    onPress={() =>
+                                        this.setState({
+                                            selectedItem: item.item.id,
+                                        })
+                                    }
+                                />
+                            )}
                             listKey={(item, index) => 'D' + index.toString()}
                             refreshing={this.state.isLoading}
                             ListEmptyComponent={
@@ -358,5 +374,57 @@ const mapStateToProps = (state, props) => {
         userFriends: data,
     }
 }
+
+// const mapStateToProps = (state, props) => {
+//     // const { suggestionType, selectedItem } = getNewCommentByTab(
+//     //     state,
+//     //     props.pageId
+//     // ).tmpSuggestion
+//     const {
+//         searchRes,
+//         searchContent,
+//         preloadData,
+//         searchType,
+//     } = state.suggestionSearch
+//     const { data, loading, refreshing, hasNextPage } = searchRes
+
+//     let dataToRender = data
+//     let refreshingToUse = refreshing
+//     let loadingToUse = loading
+//     if (_.has(preloadData, searchType)) {
+//         // Get the preloaded data with the right path
+//         // e.g. User.data, Event.data...
+//         const preloadDataToRender = _.get(preloadData, `${searchType}.data`)
+//         const preloadDataLoadingState = _.get(
+//             preloadData,
+//             `${searchType}.loading`
+//         )
+//         const preloadDataRefreshingState = _.get(
+//             preloadData,
+//             `${searchType}.refreshing`
+//         )
+
+//         if (searchContent === undefined || searchContent.trim() === '') {
+//             // Use preload data when searchContent is empty
+//             dataToRender = preloadDataToRender
+//             refreshingToUse = preloadDataRefreshingState
+//         } else if (hasNextPage === false) {
+//             // Data concat with preload data when hasNextPage is false
+//             dataToRender = arrayUnique(data.concat(preloadDataToRender))
+//             loadingToUse = preloadDataLoadingState
+//         }
+//     }
+
+//     return {
+//         // suggestionType,
+//         data: dataToRender,
+//         loading: loadingToUse,
+//         refreshing: refreshingToUse,
+//         searchContent,
+//         // selectedItem,
+//         searchType,
+//         hasNextPage, // For handleLoadMore to determine whether to load more preload data or search data
+//     }
+// }
 
 export default connect(mapStateToProps, null)(FriendsList)

@@ -227,35 +227,36 @@ class SearchSuggestion extends React.Component {
     render() {
         const { opacity, searchType } = this.props
         return (
-            <Animated.View style={{ opacity }}>
+            // <Animated.View style={{ opacity }}>
+
+            <View
+                style={{
+                    flex: 1,
+                    marginTop: 0.5,
+                    backgroundColor: 'white',
+                }}
+            >
                 {this.renderSearch()}
-                <View
-                    style={{
-                        flex: 1,
-                        marginTop: 0.5,
-                        backgroundColor: 'white',
-                    }}
-                >
-                    <FlatList
-                        data={this.props.data}
-                        renderItem={this.renderItem}
-                        keyExtractor={(item) => item._id}
-                        onEndReached={() => this.handleLoadMore()}
-                        onEndReachedThreshold={0}
-                        onRefresh={() => this.handleRefresh()}
-                        refreshing={this.props.refreshing}
-                        ListFooterComponent={this.renderListFooter()}
-                        ListEmptyComponent={
-                            this.props.refreshing ? null : (
-                                <EmptyResult
-                                    text={switchEmptyText(searchType)}
-                                    textStyle={{ paddingTop: 130 }}
-                                />
-                            )
-                        }
-                    />
-                </View>
-            </Animated.View>
+                <FlatList
+                    data={this.props.data}
+                    renderItem={this.renderItem}
+                    keyExtractor={(item) => item._id}
+                    onEndReached={() => this.handleLoadMore()}
+                    onEndReachedThreshold={0}
+                    onRefresh={() => this.handleRefresh()}
+                    refreshing={this.props.refreshing}
+                    ListFooterComponent={this.renderListFooter()}
+                    ListEmptyComponent={
+                        this.props.refreshing ? null : (
+                            <EmptyResult
+                                text={switchEmptyText(searchType)}
+                                textStyle={{ paddingTop: 130 }}
+                            />
+                        )
+                    }
+                />
+            </View>
+            // </Animated.View>
         )
     }
 }

@@ -41,6 +41,11 @@ import Friend from '../../../asset/suggestion/friend.png'
 import Other from '../../../asset/suggestion/other.png'
 // import HelpIcon from '../../../asset/utils/help.png';
 import StepIcon from '../../../asset/utils/steps.png'
+import user from '../../../asset/suggestion/user.png'
+import contact from '../../../asset/suggestion/contact.png'
+import step from '../../../asset/suggestion/step.png'
+import need from '../../../asset/suggestion/need.png'
+import tribe from '../../../asset/suggestion/tribe.png'
 
 // Actions
 import { updateSuggestionType } from '../../../redux/modules/feed/comment/CommentActions'
@@ -253,7 +258,7 @@ class SuggestionModal extends Component {
                     }}
                 >
                     {optionsLeft}
-                    {optionsRight}
+                    {/* {optionsRight} */}
                 </Animated.View>
             </View>
         )
@@ -270,20 +275,29 @@ class SuggestionModal extends Component {
             suggestionType === 'ChatConvoRoom'
         ) {
             return (
-                <SearchSuggestion
-                    pageId={this.props.pageId}
-                    opacity={this.suggestionOpacity}
-                    onCancel={() => {
-                        Keyboard.dismiss()
-                    }}
-                    onSelect={() => {
-                        // Right now don't turn on this
-                        // this.scrollview.props.scrollToPosition(0, 0);
-                    }}
-                    onFocus={() => {
-                        this.scrollview.props.scrollToPosition(0, 120)
-                    }}
-                />
+                <Modal visible={true}>
+                    <View style={{ flex: 1, alignItems: 'center' }}>
+                        <View style={{ height: '100%', width: '100%' }}>
+                            <SearchSuggestion
+                                pageId={this.props.pageId}
+                                opacity={this.suggestionOpacity}
+                                onCancel={() => {
+                                    Keyboard.dismiss()
+                                }}
+                                onSelect={() => {
+                                    // Right now don't turn on this
+                                    // this.scrollview.props.scrollToPosition(0, 0);
+                                }}
+                                onFocus={() => {
+                                    this.scrollview.props.scrollToPosition(
+                                        0,
+                                        120
+                                    )
+                                }}
+                            />
+                        </View>
+                    </View>
+                </Modal>
             )
         }
         if (suggestionType === 'NewNeed' || suggestionType === 'NewStep') {
@@ -312,41 +326,61 @@ class SuggestionModal extends Component {
         return (
             <Modal
                 animationType="slide"
-                // transparent={false}
+                transparent={true}
                 visible={this.props.visible}
                 onDismiss={this.resetIconMap}
-                style={{ backgroundColor: 'red' }}
             >
-                <ModalHeader
-                    title="Suggestion"
-                    actionText="Attach"
-                    onCancel={this.props.onCancel}
-                    onAction={() => this.props.onAttach()}
-                />
-                <KeyboardAwareScrollView
-                    innerRef={(ref) => {
-                        this.scrollview = ref
-                    }}
-                    style={styles.scroll}
-                    extraScrollHeight={13}
-                    contentContainerStyle={{
-                        backgroundColor: 'white',
-                        flexGrow: 1, // this will fix scrollview scroll issue by passing parent view width and height to it
-                    }}
-                    onKeyboardWillShow={() => {
-                        this.scrollview.props.scrollToPosition(0, 120)
-                    }}
-                    onKeyboardWillHide={() => {
-                        this.scrollview.props.scrollToPosition(0, 0)
+                <View
+                    style={{
+                        // opacity: 0.5,
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
                     }}
                 >
-                    <View style={{ flex: 1 }}>
-                        {this.renderGoalPreview(item)}
-                        {this.renderSuggestionFor(newComment, item)}
-                        {this.renderOptions(newComment)}
-                        {this.renderSuggestionBody(newComment)}
+                    <View
+                        style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            height: 350,
+                            width: '100%',
+                            backgroundColor: 'white',
+                        }}
+                    >
+                        {/* <ModalHeader
+                            title="Suggestion"
+                            actionText="Attach"
+                            onCancel={this.props.onCancel}
+                            onAction={() => this.props.onAttach()}
+                        /> */}
+                        <KeyboardAwareScrollView
+                            innerRef={(ref) => {
+                                this.scrollview = ref
+                            }}
+                            style={styles.scroll}
+                            extraScrollHeight={13}
+                            contentContainerStyle={{
+                                backgroundColor: 'white',
+                                // flexGrow: 1, // this will fix scrollview scroll issue by passing parent view width and height to it
+                            }}
+                            onKeyboardWillShow={() => {
+                                this.scrollview.props.scrollToPosition(0, 120)
+                            }}
+                            onKeyboardWillHide={() => {
+                                this.scrollview.props.scrollToPosition(0, 0)
+                            }}
+                        >
+                            <View style={{}}>
+                                {/* {this.renderGoalPreview(item)} */}
+                                {/* {this.renderSuggestionFor(newComment, item)} */}
+                                {this.renderOptions(newComment)}
+                                {this.renderSuggestionBody(newComment)}
+                            </View>
+                        </KeyboardAwareScrollView>
                     </View>
-                </KeyboardAwareScrollView>
+                </View>
             </Modal>
         )
     }
@@ -414,25 +448,43 @@ const IconMapLeft = [
         key: 'User',
         text: 'User',
         value: {
-            iconSource: Friend,
+            iconSource: user,
             iconStyle: {},
         },
         selected: undefined,
     },
     {
-        key: 'ChatConvoRoom',
-        text: 'Chatroom',
+        key: 'Contact',
+        text: 'Contact',
         value: {
-            iconSource: Chat,
+            iconSource: contact,
             iconStyle: {},
         },
         selected: undefined,
     },
     {
-        key: 'NewNeed',
-        text: 'Step or Need',
+        key: 'Tribe',
+        text: 'Tribe',
         value: {
-            iconSource: StepIcon,
+            iconSource: tribe,
+            iconStyle: {},
+        },
+        selected: undefined,
+    },
+    {
+        key: 'Need',
+        text: 'Need',
+        value: {
+            iconSource: need,
+            iconStyle: {},
+        },
+        selected: undefined,
+    },
+    {
+        key: 'Step',
+        text: 'Step',
+        value: {
+            iconSource: step,
             iconStyle: {},
         },
         selected: undefined,
@@ -441,10 +493,10 @@ const IconMapLeft = [
 
 const IconMapRight = [
     {
-        key: 'Event',
-        text: 'Event',
+        key: 'Need',
+        text: 'Need',
         value: {
-            iconSource: Event,
+            iconSource: need,
             iconStyle: {},
         },
         selected: undefined,

@@ -95,7 +95,7 @@ import Contacts from './Registration/Contacts'
 import ContactSync from './Registration/ContactSync'
 import IntroForm from './Registration/IntroForm'
 import SendContactMessage from './Main/MeetTab/Modal/SendContactMessage'
-import FriendsList from './Main/Goal/Common/FriendsList'
+import FriendsList from './Main/Goal/GoalDetailCard/Suggestion/FriendsList'
 /* Registration */
 // import RegistrationAccount from './Registration/Account';
 // import RegistrationAccount from './Registration/RegistrationAccount';
