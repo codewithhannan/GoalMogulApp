@@ -110,11 +110,28 @@ class ActivityFeed extends Component {
             this.props.loadUserInvitedFriendsCount()
         }
 
+        console.log('USERRRRR', this.props.myGoals)
+
         // if (this.props.userLastActive) {
 
         // }
         identifyWithTraits(this.props.userId, {
             lastLoginDate: this.props.userLastActive,
+            country: this.props.userLogedIn.user.profile.ipLocation.country,
+            age: moment(this.props.userLogedIn.user.dateOfBirth)
+                .fromNow()
+                .slice(0, 2),
+            createdAt: this.props.userLogedIn.user.created,
+            email: this.props.userLogedIn.user.email.address,
+            firstname: this.props.userLogedIn.user.name,
+            gender: this.props.userLogedIn.user.gender,
+            gender: this.props.userLogedIn.user.gender,
+            headline: this.props.userLogedIn.user?.headline,
+            occupation: this.props.userLogedIn.user.profile.occupation,
+            location: this.props.userLogedIn.user.profile.location,
+            elevatorPitch: this.props.userLogedIn.user.profile.elevatorPitch,
+            about: this.props.userLogedIn.user.profile.about,
+            goalsCreated: this.props.myGoals.data.length,
         })
 
         const pageId = this.props.refreshProfileData(this.props.userId)
@@ -455,6 +472,7 @@ class ActivityFeed extends Component {
     }
 
     render() {
+        console.log('Activity user', this.props.userLogedIn.user)
         const { data, userInvitedFriendsCount, refreshing } = this.props
 
         let processedData = _.clone(data)
@@ -525,6 +543,8 @@ const mapStateToProps = (state, props) => {
 
     let userLastActive
 
+    console.log('THIS IS STATEEEE', state)
+
     if (userActivity.sessionActivity != undefined) {
         userLastActive = userActivity.sessionActivity.lastActive
     }
@@ -534,6 +554,7 @@ const mapStateToProps = (state, props) => {
     const { popup } = state
     const { headline, profile } = state.user.user
     const { userId } = state.user
+    const userLogedIn = state.user
     const { token } = state.auth.user
     const { myGoals } = state.goals
     const { toastsData, loading: toastsLoading } = state.toasts
@@ -571,6 +592,7 @@ const mapStateToProps = (state, props) => {
         toastsData,
         toastsLoading,
         myGoals,
+        userLogedIn,
     }
 }
 

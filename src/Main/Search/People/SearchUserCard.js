@@ -34,10 +34,10 @@ class SearchUserCard extends Component {
 
     onButtonClicked = (_id, itemIsSelected) => {
         console.log(`${DEBUG_KEY} open profile with id: `, _id)
-        trackWithProperties(EVENT.SEARCH_RESULT_CLICKED, {
-            Type: 'people',
-            Id: _id,
-        })
+        // trackWithProperties(EVENT.SEARCH_RESULT_CLICKED, {
+        //     Type: 'people',
+        //     Id: _id,
+        // })
         if (this.props.onSelect && this.props.onSelect instanceof Function) {
             return this.props.onSelect(_id, this.props.item)
         }

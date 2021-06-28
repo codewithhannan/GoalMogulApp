@@ -217,7 +217,7 @@ export const openProfile = (userId, tab, initialFilter, props) => (
             pageId,
         },
     })
-    trackWithProperties(E.PROFILE_OPENED, { UserId: userId })
+    // trackWithProperties(E.PROFILE_OPENED, { UserId: userId })
     // Refresh goals on open
     if (tab) {
         selectProfileTabByName(
@@ -416,7 +416,7 @@ export const openProfileDetail = (userId) => (dispatch, getState) => {
     // pageId here should be created when a profile component is opened.
     // We append the detail to the end of pageId to create a new one
     const newPageId = constructPageId('user_profile_detail')
-    trackWithProperties(E.PROFILE_OPENED, { UserId: userId })
+    // trackWithProperties(E.PROFILE_OPENED, { UserId: userId })
     dispatch({
         type: PROFILE_OPEN_PROFILE_DETAIL,
         payload: {
@@ -640,6 +640,7 @@ export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
                 //     ...user,
                 //     UserId: userId,
                 // })
+                track(E.PROFILE_UPDATED)
 
                 dispatch({
                     type: PROFILE_UPDATE_SUCCESS,

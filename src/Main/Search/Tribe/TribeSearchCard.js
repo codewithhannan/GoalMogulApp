@@ -32,10 +32,10 @@ class SearchTribeCard extends Component {
      */
     onButtonClicked = (item, type) => {
         const { onItemSelect, selectTribe, tribeDetailOpen } = this.props
-        trackWithProperties(EVENT.SEARCH_RESULT_CLICKED, {
-            Type: 'tribe',
-            Id: item._id,
-        })
+        // trackWithProperties(EVENT.SEARCH_RESULT_CLICKED, {
+        //     Type: 'tribe',
+        //     Id: item._id,
+        // })
         if (!type || type === 'SearchSuggestion') {
             console.log(`${DEBUG_KEY} select tribe: `, item)
 

@@ -82,9 +82,9 @@ class OnboardingSyncContact extends React.Component {
      * 3. If found, go to invite page with 2 tabs
      */
     onSyncContact = () => {
-        trackWithProperties(E.REG_CONTACT_SYNC, {
-            UserId: this.props.userId,
-        })
+        // trackWithProperties(E.REG_CONTACT_SYNC, {
+        //     UserId: this.props.userId,
+        // })
 
         this.openModal()
 
@@ -124,9 +124,9 @@ class OnboardingSyncContact extends React.Component {
     }
 
     onNotNow = () => {
-        trackWithProperties(E.REG_CONTACT_SYNC_SKIP, {
-            UserId: this.props.userId,
-        })
+        // trackWithProperties(E.REG_CONTACT_SYNC_SKIP, {
+        //     UserId: this.props.userId,
+        // })
         const screenTransitionCallback = () => {
             Actions.replace('drawer')
         }

@@ -53,7 +53,7 @@ const DEBUG_KEY = '[ UI GoalDetailCard2.GoalDetailSection ]'
 const SHARE_TO_MENU_OPTTIONS = ['Share to a Tribe', 'Cancel']
 const CANCEL_INDEX = 1
 
-class PostPreviewCard extends React.PureComponent {
+class PostPreviewCard extends React.Component {
     constructor(props) {
         super(props)
         this.state = {

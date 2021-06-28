@@ -103,6 +103,7 @@ class ContactDetail extends Component {
 
     render() {
         const { item } = this.props
+        console.log('PEOPLE CARD DETAIL ITEM======>', item)
         if (!item) return null
         const { name, headline } = item
         return (

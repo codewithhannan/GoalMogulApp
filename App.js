@@ -39,6 +39,14 @@ import {
 import { initSentry } from './src/monitoring/sentry'
 import * as Linking from 'expo-linking'
 import MultipleImagePicker from './src/Main/Menu/MutlipleImagePicker'
+import LottieView from 'lottie-react-native'
+import Tooltip from 'react-native-walkthrough-tooltip'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
+
+import tesetLottie from './src/asset/emojis/test.json'
 
 import { setJSExceptionHandler } from 'react-native-exception-handler' // If an error occurs or app crashes these functions are called we used them to send sengments
 
@@ -128,6 +136,22 @@ export default class App extends React.Component {
                     </PersistGate>
                 </ReduxProvider>
             </ThemeProvider>
+            // <View
+            //     style={{
+            //         justifyContent: 'center',
+            //         alignSelf: 'center',
+            //         flex: 1,
+            //     }}
+            // >
+            //     <LottieView
+            //         style={{
+            //             height: hp(20),
+            //         }}
+            //         source={tesetLottie}
+            //         autoPlay
+            //         loop
+            //     />
+            // </View>
         )
     }
 }

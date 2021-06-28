@@ -394,7 +394,6 @@ class CommentBoxV2 extends Component {
         return (
             <BottomButtonsSheet
                 ref={(r) => (this.suggestionRefBottomSheetRef = r)}
-                // sheetHeader="test"
                 title="Suggest a:"
                 buttons={options}
                 height={sheetHeight}
@@ -414,8 +413,8 @@ class CommentBoxV2 extends Component {
                     activeOpacity={0.6}
                     onPress={() => {
                         Keyboard.dismiss()
-                        // this.props.createSuggestion(goalId, pageId)
-                        this.openSuggestionBottomSheet()
+                        this.props.createSuggestion(goalId, pageId)
+                        // this.openSuggestionBottomSheet()
                     }}
                     disabled={disableButton}
                     style={{
