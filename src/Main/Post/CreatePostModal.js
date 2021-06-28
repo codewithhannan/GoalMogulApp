@@ -443,13 +443,14 @@ class CreatePostModal extends Component {
 
         const durationSec =
             (new Date().getTime() - this.startTime.getTime()) / 1000
-        trackWithProperties(
-            initializeFromState ? E.POST_UPDATED : E.POST_CREATED,
-            {
-                ...this.props.formVals.values,
-                DurationSec: durationSec,
-            }
-        )
+        // trackWithProperties(
+        //     initializeFromState ? E.POST_UPDATED : E.POST_CREATED,
+        //     {
+        //         ...this.props.formVals.values,
+        //         DurationSec: durationSec,
+        //     }
+        // )
+        // track(E.POST_UPDATED_N)
         const callback = (props) => {
             if (this.props.callBack) this.props.callBack(props)
             this.resetForm()
@@ -475,12 +476,12 @@ class CreatePostModal extends Component {
     handleCancel = (callback) => {
         const durationSec =
             (new Date().getTime() - this.startTime.getTime()) / 1000
-        trackWithProperties(
-            this.props.initializeFromState
-                ? E.EDIT_POST_MODAL_CANCELLED
-                : E.CREATE_POST_MODAL_CANCELLED,
-            { DurationSec: durationSec }
-        )
+        // trackWithProperties(
+        //     this.props.initializeFromState
+        //         ? E.EDIT_POST_MODAL_CANCELLED
+        //         : E.CREATE_POST_MODAL_CANCELLED,
+        //     { DurationSec: durationSec }
+        // )
         this.handleDraftCancel(() => {
             if (callback) callback()
             // reset form vals

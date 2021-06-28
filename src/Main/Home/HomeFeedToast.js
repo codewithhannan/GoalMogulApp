@@ -28,6 +28,7 @@ import ToastCard from '../../components/ToastCard'
 import { UI_SCALE } from '../../styles'
 import InviteFriendModal from '../MeetTab/Modal/InviteFriendModal'
 import * as underscore from 'underscore'
+import { track, EVENT as E } from '../../monitoring/segment'
 
 const SLIDER_WIDTH = Dimensions.get('window').width
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.95)
@@ -194,7 +195,10 @@ class HomeFeedToast extends Component {
             marginButtonTop: undefined,
             thirdText: undefined,
             buttonText: 'Invite your Friends',
-            handleButtonPress: () => this.openInviteFriendModal(),
+            handleButtonPress: () => {
+                this.openInviteFriendModal()
+                track(E.INVITE_FRIENDS_OPEN)
+            },
         },
         {
             _id: 5,

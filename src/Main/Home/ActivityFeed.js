@@ -115,6 +115,7 @@ class ActivityFeed extends Component {
         // }
         identifyWithTraits(this.props.userId, {
             lastLoginDate: this.props.userLastActive,
+            // firstname: this.props.userLogedIn.user.profile.iplocation.country,
         })
 
         const pageId = this.props.refreshProfileData(this.props.userId)
@@ -455,6 +456,10 @@ class ActivityFeed extends Component {
     }
 
     render() {
+        console.log(
+            'Activity user',
+            this.props.userLogedIn.user.profile.ipLocation.country
+        )
         const { data, userInvitedFriendsCount, refreshing } = this.props
 
         let processedData = _.clone(data)
@@ -534,6 +539,7 @@ const mapStateToProps = (state, props) => {
     const { popup } = state
     const { headline, profile } = state.user.user
     const { userId } = state.user
+    const userLogedIn = state.user
     const { token } = state.auth.user
     const { myGoals } = state.goals
     const { toastsData, loading: toastsLoading } = state.toasts
@@ -571,6 +577,7 @@ const mapStateToProps = (state, props) => {
         toastsData,
         toastsLoading,
         myGoals,
+        userLogedIn,
     }
 }
 

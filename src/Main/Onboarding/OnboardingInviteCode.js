@@ -50,7 +50,12 @@ class OnboardingInviteCode extends Component {
     //     this.props.openProfileDetailEditForm(userId, pageId)
     // }
 
-    onError = () => this.setState({ errorMessage: true })
+    onError = () => {
+        this.setState({ errorMessage: true })
+        trackWithProperties(E.REG_INVITE_CODE, {
+            result: 'waitlist',
+        })
+    }
 
     onNext = (value) => {
         // User attempts to click next when no fields have been set

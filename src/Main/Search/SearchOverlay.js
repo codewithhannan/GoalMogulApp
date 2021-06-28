@@ -63,7 +63,7 @@ class SearchOverlay extends Component {
     }
 
     componentWillUnmount() {
-        track(E.SEARCH_CLOSED)
+        // track(E.SEARCH_CLOSED)
     }
 
     // Search bar functions

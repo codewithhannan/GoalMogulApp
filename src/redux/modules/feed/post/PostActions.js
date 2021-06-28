@@ -43,7 +43,11 @@ import {
     PRIVACY_PUBLIC,
 } from '../../../../Utils/Constants'
 import { Logger } from '../../../middleware/utils/Logger'
-import { trackWithProperties, EVENT as E } from '../../../../monitoring/segment'
+import {
+    trackWithProperties,
+    EVENT as E,
+    track,
+} from '../../../../monitoring/segment'
 
 const DRAFTS = 'draft_posts'
 const DEBUG_KEY = '[ Action Post ]'
@@ -324,6 +328,7 @@ export const submitCreatingPost = (
                 })
             })
     }
+    track(E.POST_UPDATED_N)
 }
 
 /**

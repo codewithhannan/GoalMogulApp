@@ -548,7 +548,7 @@ export const registrationNextContactSync = ({ skip }) => {
     const type = skip
         ? REGISTRATION_CONTACT_SYNC_SKIP
         : REGISTRATION_CONTACT_SYNC
-    track(skip ? E.REG_CONTACT_SYNC_SKIP : E.REG_CONTACT_SYNC)
+    // track(skip ? E.REG_CONTACT_SYNC_SKIP : E.REG_CONTACT_SYNC)
 
     if (skip) {
         return (dispatch, getState) => {
