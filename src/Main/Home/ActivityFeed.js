@@ -543,8 +543,6 @@ const mapStateToProps = (state, props) => {
 
     let userLastActive
 
-    console.log('THIS IS STATEEEE', state)
-
     if (userActivity.sessionActivity != undefined) {
         userLastActive = userActivity.sessionActivity.lastActive
     }

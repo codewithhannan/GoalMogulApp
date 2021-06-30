@@ -99,8 +99,6 @@ class InviteFriendModal extends React.PureComponent {
     }
 
     makeDescriptionsArray = () => {
-        console.log('THIS IS PROPSSS', this.props)
-
         if (this.props.shouldOpenFromComments) {
             this.shuffleArray(DESCRIPTIONS_REMAINING)
             return [this.props.goalTosend, ...DESCRIPTIONS_REMAINING]

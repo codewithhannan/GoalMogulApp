@@ -211,7 +211,6 @@ class PYMKCard extends React.Component {
     }
 
     render() {
-        console.log('THIS IS REQUESTTT SENT', this.state.invitedCount)
         const { user, ...otherProps } = this.props
         if (!user) {
             return null

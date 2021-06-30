@@ -892,6 +892,7 @@ export class GoalDetailCardV3 extends React.Component {
             goalId,
             displayGoals,
         } = this.props
+
         if (!goalDetail || _.isEmpty(goalDetail)) return null
 
         const { focusType, focusRef } = navigationState
@@ -1017,6 +1018,7 @@ const makeMapStateToProps = () => {
         const isSelf = userId === _.get(goal, 'owner._id', '')
 
         const comments = getCommentByEntityId(state, goalId, pageId)
+
         const { data, transformedComments, loading } = comments || {
             transformedComments: [],
             loading: false,

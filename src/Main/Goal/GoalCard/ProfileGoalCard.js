@@ -14,8 +14,6 @@ import Tooltip from 'react-native-walkthrough-tooltip'
 
 import SwiperTooltip from '../../../Main/Common/Tooltip'
 
-import { Actions } from 'react-native-router-flux'
-
 // Components
 import Timestamp from '../Common/Timestamp'
 import GoalCardBody from '../Common/GoalCardBody'
@@ -46,6 +44,9 @@ import { PRIVACY_OPTIONS } from '../../../Utils/Constants'
 import { PRIORTY_PILL_STYLES, GOALS_STYLE } from '../../../styles/Goal'
 import { Icon } from '@ui-kitten/components'
 import { submitGoalPrivacy } from '../../../redux/modules/goal/CreateGoalActions'
+import { openCameraForVideo, openCameraRollForVideo } from '../../../actions'
+import { getButtonBottomSheetHeight } from '../../../styles'
+import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
 
 let privacyName = ''
 let row = []
@@ -80,28 +81,6 @@ const privacyOptions = [
     },
 ]
 
-const SWIPED_DATA = [
-    {
-        id: 1,
-        source: ACCOUNTABILITY,
-        onPress: () => console.log('Account'),
-        backgroundColor: '#CEFFBC',
-    },
-
-    {
-        id: 3,
-        source: RECORDING,
-        onPress: () => console.log('Record'),
-        backgroundColor: '#D7F3FF',
-    },
-    {
-        id: 2,
-        source: VIDEO,
-        onPress: () => console.log('Video'),
-        backgroundColor: '#E5F7FF',
-    },
-]
-
 class ProfileGoalCard extends React.Component {
     constructor(props) {
         super(props)
@@ -110,6 +89,66 @@ class ProfileGoalCard extends React.Component {
             swiperToolTipVisible: false,
         }
         this.refsArray = [] // add this
+        this.SWIPED_DATA = [
+            {
+                id: 1,
+                source: ACCOUNTABILITY,
+                onPress: () => console.log('Account'),
+                backgroundColor: '#CEFFBC',
+            },
+
+            {
+                id: 3,
+                source: RECORDING,
+                onPress: () => console.log('Record'),
+                backgroundColor: '#D7F3FF',
+            },
+            {
+                id: 2,
+                source: VIDEO,
+                onPress: () => this.openCameraRollBottomSheet(),
+                backgroundColor: '#E5F7FF',
+            },
+        ]
+    }
+
+    openCameraRollBottomSheet = () => this.CameraRefBottomSheetRef.open()
+    closeNotificationBottomSheet = () => this.CameraRefBottomSheetRef.close()
+
+    makeCameraRefOptions = () => {
+        return [
+            {
+                text: 'Open Camera Roll',
+                onPress: () => {
+                    this.closeNotificationBottomSheet()
+
+                    this.props.openCameraRollForVideo()
+                },
+            },
+            {
+                text: 'Take Video',
+                onPress: () => {
+                    this.closeNotificationBottomSheet(),
+                        setTimeout(() => {
+                            this.props.openCameraForVideo()
+                        }, 500)
+                },
+            },
+        ]
+    }
+
+    renderCameraRollBottomSheet = () => {
+        const options = this.makeCameraRefOptions()
+
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.CameraRefBottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
     }
 
     /* Handler functions for actions */
@@ -122,27 +161,6 @@ class ProfileGoalCard extends React.Component {
             ? this.props.onPress()
             : this.props.openGoalDetail(item)
     }
-
-    // handlePrivacyChange = async (Id, value, token) => {
-    //     {
-    //         try {
-    //             const apiResponse = await putRequest(
-    //                 'http://192.168.1.4:8081/api/secure/goal/change-privacy',
-    //                 {
-    //                     goalId: Id,
-    //                     privacy: value,
-    //                 },
-    //                 {
-    //                     'x-access-token': token,
-    //                 }
-    //             )
-
-    //             console.log('this is response', apiResponse)
-    //         } catch (error) {
-    //             console.log('this is error', error.message)
-    //         }
-    //     }
-    // }
 
     /* Renderers for views */
 
@@ -475,31 +493,29 @@ class ProfileGoalCard extends React.Component {
                     />
                 ) : null}
 
-                {SWIPED_DATA.map((item, index) => {
+                {this.SWIPED_DATA.map((item, index) => {
                     return (
-                        <View>
+                        <Animatable.View
+                            style={{
+                                backgroundColor: item.backgroundColor,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: 100,
+                                height: '95%',
+                            }}
+                        >
                             <TouchableOpacity
                                 onPress={item.onPress}
                                 key={index}
                                 activeOpacity={0.7}
                             >
-                                <Animatable.View
-                                    style={{
-                                        backgroundColor: item.backgroundColor,
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        width: 100,
-                                        height: 138,
-                                    }}
-                                >
-                                    <Image
-                                        source={item.source}
-                                        resizeMode="contain"
-                                        style={{ height: 40, width: 40 }}
-                                    />
-                                </Animatable.View>
+                                <Image
+                                    source={item.source}
+                                    resizeMode="contain"
+                                    style={{ height: 40, width: 40 }}
+                                />
                             </TouchableOpacity>
-                        </View>
+                        </Animatable.View>
                     )
                 })}
             </>
@@ -551,6 +567,7 @@ class ProfileGoalCard extends React.Component {
                                 {this.renderStats(item)}
                             </DelayedButton>
                         </Swipeable>
+                        {this.renderCameraRollBottomSheet()}
                     </>
                 ) : (
                     <DelayedButton
@@ -636,4 +653,6 @@ const mapStateToProps = (state, props) => {
 export default connect(mapStateToProps, {
     openGoalDetail,
     submitGoalPrivacy,
+    openCameraForVideo,
+    openCameraRollForVideo,
 })(wrapAnalytics(ProfileGoalCard, SCREENS.PROFILE_GOAL_TAB))

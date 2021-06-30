@@ -45,7 +45,12 @@ import {
 
 import LiveChatService from '../socketio/services/LiveChatService'
 import MessageStorageService from '../services/chat/MessageStorageService'
-import { feedbackImagesSelected } from '../reducers/FeedbackReducers'
+
+import {
+    setVideoFromCameraUri,
+    setVideoUri,
+    setVoiceUri,
+} from '../reducers/ProfileGoalSwipeReducer'
 
 const DEBUG_KEY = '[ Action Registration ]'
 export const registrationLogin = () => {
@@ -338,6 +343,58 @@ export const openCamera = (
     }
 
     console.log('user took image fail with result: ', result)
+}
+
+export const openCameraForVideo = (callback) => async (dispatch, getState) => {
+    var result
+    const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
+
+    const permissionGranted = await ImageUtils.checkPermission(permissions)
+    console.log(`${DEBUG_KEY}: permissionGranted is: ${permissionGranted}`)
+
+    if (!permissionGranted) {
+        return
+    }
+
+    result = await ImagePicker.launchCameraAsync({
+        mediaTypes: 'Videos',
+    }).catch((error) =>
+        console.log('THIS IS ERROR OF OPENING CAMERA FOR VIDEO', error)
+    )
+    console.log('user took video with result ', result)
+
+    if (!result.cancelled) {
+        if (callback) {
+            return callback(result)
+        }
+
+        return dispatch(setVideoUri(result.uri))
+    }
+
+    console.log('user took video fail with result: ', result)
+}
+
+export const openCameraRollForVideo = (callback) => async (dispatch) => {
+    const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
+
+    const permissionGranted = await ImageUtils.checkPermission(permissions)
+    if (!permissionGranted) {
+        // TODO: fire event to say permission not granted
+        return
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: 'Videos',
+    })
+
+    if (!result.cancelled) {
+        if (callback) {
+            return callback(result)
+        }
+        return dispatch(setVideoFromCameraUri(result.uri))
+    }
+
+    console.log('user choosing from camera roll fail with result: ', result)
 }
 
 export const getPhotosAsync = async () => {

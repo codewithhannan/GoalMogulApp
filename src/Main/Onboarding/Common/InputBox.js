@@ -209,7 +209,7 @@ class InputBox extends React.Component {
     }
 
     renderInputTitle = () => {
-        const { inputTitle, optional } = this.props
+        const { inputTitle, optional, hideRedStar } = this.props
         if (optional) {
             return (
                 <Text
@@ -240,7 +240,7 @@ class InputBox extends React.Component {
                 <Text
                     style={[OnboardingStyles.input.title, { marginBottom: 5 }]}
                 >
-                    <Text style={{ color: 'red' }}>*</Text>
+                    {!hideRedStar && <Text style={{ color: 'red' }}>*</Text>}
                     <Text
                         style={{
                             fontWeight: 'bold',

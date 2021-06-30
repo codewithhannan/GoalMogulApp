@@ -54,6 +54,7 @@ import { setJSExceptionHandler } from 'react-native-exception-handler' // If an 
 import ThemeProvider from './theme/ThemeProvider'
 import SwipeLeft from './src/Main/Common/SwipeLeft'
 import SwipeGesture from './src/Main/Common/SwiperTest'
+import CommentVideoModal from './src/Main/Common/Modal/CommentVideoModal'
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
@@ -136,22 +137,7 @@ export default class App extends React.Component {
                     </PersistGate>
                 </ReduxProvider>
             </ThemeProvider>
-            // <View
-            //     style={{
-            //         justifyContent: 'center',
-            //         alignSelf: 'center',
-            //         flex: 1,
-            //     }}
-            // >
-            //     <LottieView
-            //         style={{
-            //             height: hp(20),
-            //         }}
-            //         source={tesetLottie}
-            //         autoPlay
-            //         loop
-            //     />
-            // </View>
+            // <CommentVideoModal />
         )
     }
 }

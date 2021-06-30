@@ -190,25 +190,6 @@ export const likeGoal = (type, id, pageId, parentId, likeType) => (
         })
 }
 
-export const updateLikeType = (type, likeId) => (dispatch, getState) => {
-    const { token, userId } = getState().user
-
-    try {
-        let res
-        res = API.put(
-            `${LIKE_BASE_ROUTE}`,
-            {
-                type: type,
-                likeId: likeId,
-            },
-            token
-        )
-        console.log('THIS IS RESPONSE OF UPDATE LIKE', res)
-    } catch (error) {
-        console.log('THIS IS ERROR OF UPDATING LIKE', error.message)
-    }
-}
-
 /**
  * action to unlike a goal / post / comment
  * @params id: entityId

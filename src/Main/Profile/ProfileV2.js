@@ -71,6 +71,7 @@ import SWIPER_BACKGROUND from '../../asset/utils/tooltipBackground.png'
 
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import NoGoalPrompt from '../../components/NoGoalPrompt'
+import CommentVideoModal from '../Common/Modal/CommentVideoModal'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
@@ -818,6 +819,7 @@ class ProfileV2 extends Component {
                         onClose={this.closeProfileModal}
                         userId={userId}
                     />
+                    {/* <CommentVideoModal /> */}
                     <Popup
                         popupName={this.state.popupName}
                         isVisible={this.state.showPopupModal}

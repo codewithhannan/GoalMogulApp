@@ -261,6 +261,7 @@ class Bubble extends React.Component {
                                     style={{
                                         color: '#fff',
                                         fontSize: 14,
+                                        width: '99.8%',
                                         fontWeight: '600',
                                         fontFamily: text.FONT_FAMILY.REGULAR,
                                         color: color.GM_BLUE,

@@ -300,6 +300,10 @@ class CreateGoalModal extends React.Component {
             const durationSec =
                 (new Date().getTime() - this.startTime.getTime()) / 1000
 
+            identifyWithTraits(this.props.userId, {
+                goalsCreated: goals.length + 1,
+            })
+
             trackWithProperties(E.GOAL_CREATED, {
                 goal_title: this.props.formVals.values.title,
                 category: this.props.formVals.values.category,
@@ -310,10 +314,6 @@ class CreateGoalModal extends React.Component {
                 steps: this.props.formVals.values.steps.length,
                 needs: this.props.formVals.values.needs.length,
             })
-
-            // identifyWithTraits(this.props.userId, {
-            //     goalsCreated: goals.length + 1,
-            // })
 
             return this.props.submitGoal(
                 this.props.formVals.values,
@@ -428,6 +428,7 @@ class CreateGoalModal extends React.Component {
 
         const durationSec =
             (new Date().getTime() - this.startTime.getTime()) / 1000
+
         identifyWithTraits(this.props.userId, {
             goalsCreated: goals.length + 1,
         })
@@ -507,6 +508,7 @@ class CreateGoalModal extends React.Component {
 
         const durationSec =
             (new Date().getTime() - this.startTime.getTime()) / 1000
+
         identifyWithTraits(this.props.userId, {
             goalsCreated: goals.length + 1,
         })
