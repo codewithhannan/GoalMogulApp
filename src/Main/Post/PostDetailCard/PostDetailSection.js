@@ -189,6 +189,7 @@ class PostDetailSection extends React.PureComponent {
             privacy,
             belongsToTribe,
         } = item
+
         const timeStamp =
             created === undefined || created.length === 0 ? new Date() : created
 

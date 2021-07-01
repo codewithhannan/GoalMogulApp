@@ -345,7 +345,7 @@ export const openCamera = (
     console.log('user took image fail with result: ', result)
 }
 
-export const openCameraForVideo = (callback) => async (dispatch, getState) => {
+export const openCameraForVideo = (showModal) => async (dispatch, getState) => {
     var result
     const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
 
@@ -358,23 +358,26 @@ export const openCameraForVideo = (callback) => async (dispatch, getState) => {
 
     result = await ImagePicker.launchCameraAsync({
         mediaTypes: 'Videos',
+        quality: 0.5,
+        videoMaxDuration: 10,
     }).catch((error) =>
         console.log('THIS IS ERROR OF OPENING CAMERA FOR VIDEO', error)
     )
     console.log('user took video with result ', result)
 
     if (!result.cancelled) {
-        if (callback) {
-            return callback(result)
-        }
-
-        return dispatch(setVideoUri(result.uri))
+        return (
+            dispatch(setVideoUri(result.uri)),
+            setTimeout(() => {
+                showModal()
+            }, 500)
+        )
     }
 
     console.log('user took video fail with result: ', result)
 }
 
-export const openCameraRollForVideo = (callback) => async (dispatch) => {
+export const openCameraRollForVideo = (showModal) => async (dispatch) => {
     const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
 
     const permissionGranted = await ImageUtils.checkPermission(permissions)
@@ -387,11 +390,12 @@ export const openCameraRollForVideo = (callback) => async (dispatch) => {
         mediaTypes: 'Videos',
     })
 
+    setTimeout(() => {
+        showModal()
+    }, 1000)
+
     if (!result.cancelled) {
-        if (callback) {
-            return callback(result)
-        }
-        return dispatch(setVideoFromCameraUri(result.uri))
+        return dispatch(setVideoUri(result.uri))
     }
 
     console.log('user choosing from camera roll fail with result: ', result)

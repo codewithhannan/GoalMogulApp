@@ -1040,7 +1040,6 @@ class ChatRoomConversation extends React.Component {
                 buttons={[{}]}
                 height={sheetHeight}
                 chatRecordingPress
-                chatRecordingPress={this.handleOpenCamera}
             />
         )
     }

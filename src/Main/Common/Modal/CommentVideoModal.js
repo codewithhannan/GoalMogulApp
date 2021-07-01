@@ -16,20 +16,20 @@ import {
 import Modal from 'react-native-modal'
 import { Icon } from '@ui-kitten/components'
 import { Entypo } from '@expo/vector-icons'
-import Constants from 'expo-constants'
+
 import { connect } from 'react-redux'
 import { color, text } from '../../../styles/basic'
 import OnboardingStyles from '../../../styles/Onboarding'
-import InputBox from '../../Onboarding/Common/InputBox'
-import { PRIVACY_OPTIONS } from '../../../Utils/Constants'
+import VideoPlayer from 'expo-video-player'
 import { Video } from 'expo-av'
 import { GOALS_STYLE } from '../../../styles/Goal'
 import DelayedButton from '../Button/DelayedButton'
+import { backToInitialState } from '../../../reducers/ProfileGoalSwipeReducer'
 
 const { text: textStyle, button: buttonStyle } = OnboardingStyles
 
-const MODAL_WIDTH = Dimensions.get('window').width
-const MODAL_HEIGHT = Dimensions.get('window').height
+const MODAL_WIDTH = Dimensions.get('screen').width
+const MODAL_HEIGHT = Dimensions.get('screen').height
 
 const privacyOptions = [
     // {
@@ -68,6 +68,7 @@ class CommentVideoModal extends Component {
             video: '',
             status: {},
             selected: '',
+            isLoading: true,
         }
     }
 
@@ -76,30 +77,16 @@ class CommentVideoModal extends Component {
     async componentDidUpdate(prevProps, prevState) {}
 
     changeColor = (id) => {
-        console.log('IDDD', id)
         this.setState({ selected: id })
-    }
-    renderPrivacyControl() {
-        return (
-            <View style={{ padding: 10 }}>
-                <InputBox
-                    privacyOptions={PRIVACY_OPTIONS}
-                    required={false}
-                    inputTitle={'Privacy'}
-                    selectedValue={this.props.privacy}
-                    onChangeText={(value) => {
-                        this.props.change('privacy', value)
-                    }}
-                />
-            </View>
-        )
     }
 
     render() {
+        const { videoUri } = this.props
+
         return (
             <>
                 <Modal
-                    isVisible={true}
+                    isVisible={this.props.isVisible}
                     animationIn="zoomInUp"
                     animationInTiming={400}
                 >
@@ -115,7 +102,7 @@ class CommentVideoModal extends Component {
                                 width: MODAL_WIDTH * 0.9,
 
                                 backgroundColor: color.GV_MODAL,
-                                height: MODAL_HEIGHT * 0.55,
+                                height: MODAL_HEIGHT * 0.5,
                                 borderRadius: 5,
                             }}
                         >
@@ -125,7 +112,10 @@ class CommentVideoModal extends Component {
                                 }}
                             >
                                 <TouchableOpacity
-                                    onPress={() => this.props.onClose()}
+                                    onPress={() => {
+                                        this.props.onClose()
+                                        this.props.backToInitialState()
+                                    }}
                                     style={{
                                         position: 'absolute',
                                         right: 10,
@@ -252,14 +242,14 @@ class CommentVideoModal extends Component {
                             <View
                                 style={{
                                     marginTop: 15,
-                                    flex: 1,
                                 }}
                             >
-                                <Video
+                                {/* <Video
                                     ref={this.state.video}
                                     source={{
                                         uri:
                                             'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+                                        'file:///var/mobile/Containers/Data/Application/DB0E429C-1C64-4902-A008-74081503A97A/Library/Caches/ExponentExperienceData/%2540abdulhannan96%252Fgoalmogul/ImagePicker/113BBD27-8D9F-4444-B929-12053F3ED6C7.mov',
                                     }}
                                     style={{
                                         height: MODAL_HEIGHT * 0.3,
@@ -267,12 +257,35 @@ class CommentVideoModal extends Component {
                                         borderRadius: 5,
                                         alignSelf: 'center',
                                     }}
-                                    shouldPlay
-                                    resizeMode="stretch"
-                                    isLooping
+                                    resizeMode="contain"
                                     onPlaybackStatusUpdate={(status) =>
                                         this.setState({ status })
                                     }
+                                    shouldPlay
+                                    shouldCorrectPitch
+                                    shouldRasterizeIOS
+                                /> */}
+
+                                <VideoPlayer
+                                    videoProps={{
+                                        shouldPlay: true,
+                                        resizeMode: Video.RESIZE_MODE_CONTAIN,
+                                        source: {
+                                            uri: videoUri,
+                                        },
+                                    }}
+                                    style={{
+                                        // videoBackgroundColor: 'transparent',
+                                        // controlsBackgroundColor: 'transparent',
+                                        height: 200,
+                                    }}
+                                    fullscreen={{
+                                        visible: false,
+                                    }}
+                                    activityIndicator={{
+                                        color: color.GM_BLUE,
+                                        size: 'large',
+                                    }}
                                 />
                             </View>
 
@@ -295,9 +308,15 @@ class CommentVideoModal extends Component {
                                                 'rgba(66, 192, 245, 0.22)',
                                             borderColor:
                                                 'rgba(66, 192, 245, 0.22)',
+                                            height: 40,
                                         },
                                     ]}
-                                    onPress={this._onRecordPressed}
+                                    onPress={() => {
+                                        this.props.onClose()
+                                        setTimeout(() => {
+                                            this.props.onRecordPress()
+                                        }, 500)
+                                    }}
                                 >
                                     <Text
                                         style={[
@@ -318,6 +337,7 @@ class CommentVideoModal extends Component {
                                         {
                                             width: 110,
                                             marginTop: 20,
+                                            height: 40,
                                         },
                                     ]}
                                     // onPress={}
@@ -342,7 +362,14 @@ class CommentVideoModal extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-    return {}
+    const { goalSwiper } = state
+    const { videoUri } = goalSwiper
+
+    return {
+        videoUri,
+    }
 }
 
-export default connect(mapStateToProps, {})(CommentVideoModal)
+export default connect(mapStateToProps, {
+    backToInitialState,
+})(CommentVideoModal)

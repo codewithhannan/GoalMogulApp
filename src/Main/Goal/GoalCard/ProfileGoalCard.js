@@ -47,10 +47,12 @@ import { submitGoalPrivacy } from '../../../redux/modules/goal/CreateGoalActions
 import { openCameraForVideo, openCameraRollForVideo } from '../../../actions'
 import { getButtonBottomSheetHeight } from '../../../styles'
 import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
+import CommentVideoModal from '../../Common/Modal/CommentVideoModal'
 
 let privacyName = ''
 let row = []
 let prevOpenedRow
+// file:///var/mobile/Containers/Data/Application/DB0E429C-1C64-4902-A008-74081503A97A/Library/Caches/ExponentExperienceData/%2540abdulhannan96%252Fgoalmogul/ImagePicker/113BBD27-8D9F-4444-B929-12053F3ED6C7.mov
 
 const swiperText = 'You can leave a video or voice comment! 😃'
 
@@ -87,6 +89,7 @@ class ProfileGoalCard extends React.Component {
         this.state = {
             toolTipVisible: false,
             swiperToolTipVisible: false,
+            isVisible: false,
         }
         this.refsArray = [] // add this
         this.SWIPED_DATA = [
@@ -100,7 +103,10 @@ class ProfileGoalCard extends React.Component {
             {
                 id: 3,
                 source: RECORDING,
-                onPress: () => console.log('Record'),
+                onPress: () => {
+                    prevOpenedRow.close()
+                    this.openRecordingModal()
+                },
                 backgroundColor: '#D7F3FF',
             },
             {
@@ -112,29 +118,61 @@ class ProfileGoalCard extends React.Component {
         ]
     }
 
+    showVideoModal = () => this.setState({ isVisible: true })
     openCameraRollBottomSheet = () => this.CameraRefBottomSheetRef.open()
     closeNotificationBottomSheet = () => this.CameraRefBottomSheetRef.close()
+    openRecordingModal = () => this.bottomRecodingSheet.open()
+    closeRecordingnModal = () => this.bottomRecodingSheet.close()
+
+    onVideoPress = () => {
+        const showModal = () => {
+            this.showVideoModal()
+        }
+        return this.props.openCameraForVideo(showModal)
+    }
+
+    onVideoSelect = () => {
+        const showModal = () => {
+            this.showVideoModal()
+        }
+        return this.props.openCameraRollForVideo(showModal)
+    }
 
     makeCameraRefOptions = () => {
         return [
             {
                 text: 'Open Camera Roll',
                 onPress: () => {
+                    prevOpenedRow.close()
                     this.closeNotificationBottomSheet()
-
-                    this.props.openCameraRollForVideo()
+                    setTimeout(() => {
+                        this.onVideoSelect()
+                    }, 500)
                 },
             },
             {
                 text: 'Take Video',
                 onPress: () => {
+                    prevOpenedRow.close()
                     this.closeNotificationBottomSheet(),
                         setTimeout(() => {
-                            this.props.openCameraForVideo()
+                            this.onVideoPress()
                         }, 500)
                 },
             },
         ]
+    }
+
+    renderBottomVoiceRecording = () => {
+        const sheetHeight = getButtonBottomSheetHeight(5)
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.bottomRecodingSheet = r)}
+                buttons={[{}]}
+                height={sheetHeight}
+                chatRecordingPress
+            />
+        )
     }
 
     renderCameraRollBottomSheet = () => {
@@ -541,6 +579,11 @@ class ProfileGoalCard extends React.Component {
             <>
                 {!this.props.isSelf && this.props.friendShip ? (
                     <>
+                        <CommentVideoModal
+                            isVisible={this.state.isVisible}
+                            onClose={() => this.setState({ isVisible: false })}
+                            onRecordPress={this.openCameraRollBottomSheet}
+                        />
                         <Swipeable
                             renderRightActions={this.rightSwipeActions}
                             friction={2}
@@ -568,6 +611,7 @@ class ProfileGoalCard extends React.Component {
                             </DelayedButton>
                         </Swipeable>
                         {this.renderCameraRollBottomSheet()}
+                        {this.renderBottomVoiceRecording()}
                     </>
                 ) : (
                     <DelayedButton
