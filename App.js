@@ -45,8 +45,6 @@ import { setJSExceptionHandler } from 'react-native-exception-handler' // If an 
 
 // UI theme provider
 import ThemeProvider from './theme/ThemeProvider'
-import SwipeLeft from './src/Main/Common/SwipeLeft'
-import SwipeGesture from './src/Main/Common/SwiperTest'
 
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
@@ -129,6 +127,7 @@ export default class App extends React.Component {
                     </PersistGate>
                 </ReduxProvider>
             </ThemeProvider>
+            // <TestVideo />
         )
     }
 }

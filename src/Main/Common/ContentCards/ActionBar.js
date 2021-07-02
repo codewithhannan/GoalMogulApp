@@ -26,6 +26,8 @@ import Salute from '../../../asset/icons/salute.png'
 import Rockon from '../../../asset/icons/rockon.png'
 import Metoo from '../../../asset/icons/metoo.png'
 
+import LikeImages from '../../../asset/LikeImages'
+
 import BottomButtonsSheet from '../Modal/BottomButtonsSheet'
 import { getButtonBottomSheetHeight } from '../../../styles'
 import { renderTextIcon, renderTextStyle } from './LikeSheetData'
@@ -104,8 +106,6 @@ class ActionBar extends React.Component {
             //ClarifyButton
             onClarifyButtonPress,
         } = this.props
-
-        console.log('THIS IS STATE OF UPDATED', updateReaction)
 
         const { likeCount, shareCount, commentCount } = actionSummaries || {}
 
@@ -366,7 +366,7 @@ const renderLikeIcons = (
             if (reaction.count > 0) {
                 return (
                     <Image
-                        source={renderImageSource(reaction.type)}
+                        source={LikeImages[reaction.type]}
                         style={[styles.summaryIcon, summaryIconStyle]}
                     />
                 )

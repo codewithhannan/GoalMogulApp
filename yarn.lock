@@ -2082,6 +2082,11 @@
   dependencies:
     invariant "^2.2.4"
 
+"@react-native-community/slider@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/slider/-/slider-3.0.0.tgz#ffbf78689fc0572fb5c1e2ccb61b2ef074d3dcd2"
+  integrity sha512-deNc3JHBHz24YN+0DTAocXfrYFIFc1DvsIriMJSsJlR/MvsLzoq2+qwaEN+0/LJ37pstv85wZWY0pNugk4e41g==
+
 "@react-navigation/core@^3.7.9":
   version "3.7.9"
   resolved "https://registry.npmjs.org/@react-navigation/core/-/core-3.7.9.tgz"
@@ -5753,6 +5758,16 @@ expo-blur@~8.1.2:
   dependencies:
     prop-types "^15.6.0"
 
+expo-camera@~8.3.1:
+  version "8.3.1"
+  resolved "https://registry.npmjs.org/expo-camera/-/expo-camera-8.3.1.tgz"
+  integrity sha512-weFanDVsJKAbm5g90zWIUD4zVrXKoQq7g2BTg4zy4p24YsGfXKYRH4ja0YRgr3Ci/abGaaRNZjsPMJiNskR+tA==
+  dependencies:
+    fbjs "1.0.0"
+    invariant "2.2.4"
+    lodash "^4.6.0"
+    prop-types "^15.6.0"
+
 expo-checkbox@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/expo-checkbox/-/expo-checkbox-1.0.2.tgz"
@@ -5895,6 +5910,13 @@ expo-screen-orientation@^3.0.0:
   dependencies:
     "@expo/config-plugins" "^1.0.18"
 
+expo-screen-orientation@~1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npmjs.org/expo-screen-orientation/-/expo-screen-orientation-1.1.1.tgz"
+  integrity sha512-o3RhmidIhVK4lXHVActnO2iD0ZrZKxzWuRrJaTSpRsvRjCabeE74xkpZWPGcEcXhAxEwMaAAizHO8rlJDdrVzw==
+  dependencies:
+    fbjs "1.0.0"
+
 expo-secure-store@~9.0.1:
   version "9.0.1"
   resolved "https://registry.npmjs.org/expo-secure-store/-/expo-secure-store-9.0.1.tgz"
@@ -5919,6 +5941,18 @@ expo-sqlite@~8.2.1:
   dependencies:
     "@expo/websql" "^1.0.1"
     lodash "^4.17.15"
+
+expo-status-bar@^1.0.0:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/expo-status-bar/-/expo-status-bar-1.0.4.tgz"
+  integrity sha512-s7nc496D/Zn1NGiMJ5wu6HyIdXxbgGtmZZtbHm7rpbcmLdf28GmMSNHDx7M0t00BMhky7VAurTCUo+BJs8ugsw==
+
+expo-video-player@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/expo-video-player/-/expo-video-player-2.0.1.tgz#533d0c10c6405d9bdcd62719897d50625a491fe7"
+  integrity sha512-+bBgyOI9IgKFQBEV/x+NcCz5qZ5MDvohpokpmAV00XvQWKZYYiAo3mVQcjGuxVkEHYDjiUIuj6q2SjAUHK9rGA==
+  dependencies:
+    tslib "^2.3.0"
 
 expo-web-browser@~8.3.1:
   version "8.3.1"
@@ -9224,7 +9258,7 @@ lottie-ios@^3.1.8:
 
 lottie-react-native@^3.1.0:
   version "3.5.0"
-  resolved "https://registry.yarnpkg.com/lottie-react-native/-/lottie-react-native-3.5.0.tgz#749fed964bdc9fabfae24ef81696f90f4d758f59"
+  resolved "https://registry.npmjs.org/lottie-react-native/-/lottie-react-native-3.5.0.tgz"
   integrity sha512-yKYj58xynDAG/BqJUhg9LTATBqwD4ATGXJKL2Ho6g4BTmPexOjDBNnPSeRBwjlpBxQ1nP4Qw//0zbuFsTFD1TA==
   dependencies:
     invariant "^2.2.2"
@@ -13723,6 +13757,11 @@ tslib@^1.10.0, tslib@^1.9.0, tslib@^1.9.3:
   version "1.14.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
+
+tslib@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
+  integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
 
 tunnel-agent@^0.6.0:
   version "0.6.0"

@@ -1033,14 +1033,13 @@ class ChatRoomConversation extends React.Component {
     renderBottomVoiceRecording = () => {
         const options = this.handleCamraIcon()
         // Options height + bottom space + bottom sheet handler height
-        const sheetHeight = getButtonBottomSheetHeight(6)
+        const sheetHeight = getButtonBottomSheetHeight(5)
         return (
             <BottomButtonsSheet
                 ref={(r) => (this.bottomRecodingSheet = r)}
                 buttons={[{}]}
                 height={sheetHeight}
                 chatRecordingPress
-                chatRecordingPress={this.handleOpenCamera}
             />
         )
     }

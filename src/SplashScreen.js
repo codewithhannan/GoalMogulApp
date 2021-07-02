@@ -42,7 +42,7 @@ class SplashScreen extends Component {
 
     async componentDidMount() {
         this.setState({ fontLoaded: true })
-        trackViewScreen(Screen.SPLASH_SCREEN)
+        track(E.SPLASH_SCREEN)
 
         // this.props.getUserVisitedNumber()
     }

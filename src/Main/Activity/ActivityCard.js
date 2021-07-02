@@ -215,7 +215,7 @@ class ActivityCard extends React.PureComponent {
         if (!item) return null
         const { maybeLikeRef, _id, owner, likeType, reactions } = item
 
-        console.log('THIS IS REACTIONSS', this.state.updateReaction)
+        // console.log('FILTEREDDDREACTIONNN 1', reactions)
 
         let filteredReaction = []
 
@@ -224,6 +224,8 @@ class ActivityCard extends React.PureComponent {
                 return filteredReaction.push(reaction)
             }
         })
+
+        // console.log('FILTEREDDDREACTIONNN', filteredReaction)
 
         const likeCount = item.likeCount ? item.likeCount : 0
         const shareCount = item.shareCount ? item.shareCount : 0
@@ -263,7 +265,7 @@ class ActivityCard extends React.PureComponent {
                             duration={500}
                             easing="ease-in-out-expo"
                         >
-                            {LOTTIE_DATA.map((lottie) => {
+                            {LOTTIE_DATA.map((lottie, index) => {
                                 return (
                                     <>
                                         <TouchableOpacity
@@ -286,14 +288,18 @@ class ActivityCard extends React.PureComponent {
                                                                 '',
                                                                 '',
                                                                 lottie.value
-                                                            )
+                                                            ),
+                                                                updateLikeIcon(
+                                                                    reactions,
+                                                                    lottie.value
+                                                                )
+                                                            // this.props.refreshActivityFeed()
                                                         }, 1000),
                                                         this.setState({
                                                             unitText:
                                                                 lottie.title,
                                                             toolTipVisible: false,
-                                                            updateReaction:
-                                                                lottie.value,
+                                                            updateReaction: reactions,
                                                         })
                                                     )
                                                 }
@@ -305,6 +311,7 @@ class ActivityCard extends React.PureComponent {
                                                     '',
                                                     lottie.value
                                                 )
+
                                                 this.setState({
                                                     unitText: lottie.title,
                                                     toolTipVisible: false,
@@ -345,7 +352,11 @@ class ActivityCard extends React.PureComponent {
             >
                 <ActionBar
                     isContentLiked={selfLiked}
-                    reactions={filteredReaction}
+                    reactions={
+                        this.state.updateReaction == ''
+                            ? filteredReaction
+                            : this.state.updateReaction
+                    }
                     updateReaction={this.state.updateReaction}
                     isShareContent={isShare}
                     actionSummaries={{
@@ -669,7 +680,6 @@ const isValidActivity = (item) => {
 
 const mapStateToProps = (state) => {
     const { userId } = state.user
-    // console.log('THESE ARE THE POSTTTT', state)
 
     return {
         userId,

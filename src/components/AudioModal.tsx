@@ -47,7 +47,7 @@ type State = {
     rate: number
 }
 
-export default class App extends React.Component<Props, State> {
+export default class AudioModal extends React.Component<Props, State> {
     private recording: Audio.Recording | null
     private sound: Audio.Sound | null
     private isSeeking: boolean
@@ -418,7 +418,7 @@ export default class App extends React.Component<Props, State> {
                                 </Text>
                             </DelayedButton>
                             <View style={{ width: 20 }} />
-                            <DelayedButton
+                            {/* <DelayedButton
                                 style={[
                                     buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
                                         .containerStyle,
@@ -435,7 +435,7 @@ export default class App extends React.Component<Props, State> {
                                 >
                                     Send
                                 </Text>
-                            </DelayedButton>
+                            </DelayedButton> */}
                         </View>
                     ) : this.state.soundDuration ? (
                         <View style={{ flexDirection: 'row' }}>

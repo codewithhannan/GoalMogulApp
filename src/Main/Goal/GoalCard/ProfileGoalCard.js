@@ -14,8 +14,6 @@ import Tooltip from 'react-native-walkthrough-tooltip'
 
 import SwiperTooltip from '../../../Main/Common/Tooltip'
 
-import { Actions } from 'react-native-router-flux'
-
 // Components
 import Timestamp from '../Common/Timestamp'
 import GoalCardBody from '../Common/GoalCardBody'
@@ -46,10 +44,17 @@ import { PRIVACY_OPTIONS } from '../../../Utils/Constants'
 import { PRIORTY_PILL_STYLES, GOALS_STYLE } from '../../../styles/Goal'
 import { Icon } from '@ui-kitten/components'
 import { submitGoalPrivacy } from '../../../redux/modules/goal/CreateGoalActions'
+import { openCameraForVideo, openCameraRollForVideo } from '../../../actions'
+import { getButtonBottomSheetHeight } from '../../../styles'
+import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
+import CommentVideoModal from '../../Common/Modal/CommentVideoModal'
+import AccountabilityPopUp from '../../Common/Modal/AccountabilityPopUp'
+import { getFirstName } from '../../../Utils/HelperMethods'
 
 let privacyName = ''
 let row = []
 let prevOpenedRow
+// file:///var/mobile/Containers/Data/Application/DB0E429C-1C64-4902-A008-74081503A97A/Library/Caches/ExponentExperienceData/%2540abdulhannan96%252Fgoalmogul/ImagePicker/113BBD27-8D9F-4444-B929-12053F3ED6C7.mov
 
 const swiperText = 'You can leave a video or voice comment! 😃'
 
@@ -80,36 +85,114 @@ const privacyOptions = [
     },
 ]
 
-const SWIPED_DATA = [
-    {
-        id: 1,
-        source: ACCOUNTABILITY,
-        onPress: () => console.log('Account'),
-        backgroundColor: '#CEFFBC',
-    },
-
-    {
-        id: 3,
-        source: RECORDING,
-        onPress: () => console.log('Record'),
-        backgroundColor: '#D7F3FF',
-    },
-    {
-        id: 2,
-        source: VIDEO,
-        onPress: () => console.log('Video'),
-        backgroundColor: '#E5F7FF',
-    },
-]
-
 class ProfileGoalCard extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             toolTipVisible: false,
             swiperToolTipVisible: false,
+            videoModalVisible: false,
+            accountPopUpVisible: false,
         }
         this.refsArray = [] // add this
+        this.SWIPED_DATA = [
+            {
+                id: 1,
+                source: ACCOUNTABILITY,
+                onPress: () => {
+                    prevOpenedRow.close()
+                    this.setState({ accountPopUpVisible: true })
+                },
+                backgroundColor: '#CEFFBC',
+            },
+
+            {
+                id: 3,
+                source: RECORDING,
+                onPress: () => {
+                    prevOpenedRow.close()
+                    this.openRecordingModal()
+                },
+                backgroundColor: '#D7F3FF',
+            },
+            {
+                id: 2,
+                source: VIDEO,
+                onPress: () => this.openCameraRollBottomSheet(),
+                backgroundColor: '#E5F7FF',
+            },
+        ]
+    }
+
+    showVideoModal = () => this.setState({ videoModalVisible: true })
+    openCameraRollBottomSheet = () => this.CameraRefBottomSheetRef.open()
+    closeNotificationBottomSheet = () => this.CameraRefBottomSheetRef.close()
+    openRecordingModal = () => this.bottomRecodingSheet.open()
+    closeRecordingnModal = () => this.bottomRecodingSheet.close()
+
+    onVideoPress = () => {
+        const showModal = () => {
+            this.showVideoModal()
+        }
+        return this.props.openCameraForVideo(showModal)
+    }
+
+    onVideoSelect = () => {
+        const showModal = () => {
+            this.showVideoModal()
+        }
+        return this.props.openCameraRollForVideo(showModal)
+    }
+
+    makeCameraRefOptions = () => {
+        return [
+            {
+                text: 'Open Camera Roll',
+                onPress: () => {
+                    prevOpenedRow.close()
+                    this.closeNotificationBottomSheet()
+                    setTimeout(() => {
+                        this.onVideoSelect()
+                    }, 500)
+                },
+            },
+            {
+                text: 'Take Video',
+                onPress: () => {
+                    prevOpenedRow.close()
+                    this.closeNotificationBottomSheet(),
+                        setTimeout(() => {
+                            this.onVideoPress()
+                        }, 500)
+                },
+            },
+        ]
+    }
+
+    renderBottomVoiceRecording = () => {
+        const sheetHeight = getButtonBottomSheetHeight(5)
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.bottomRecodingSheet = r)}
+                buttons={[{}]}
+                height={sheetHeight}
+                chatRecordingPress
+            />
+        )
+    }
+
+    renderCameraRollBottomSheet = () => {
+        const options = this.makeCameraRefOptions()
+
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.CameraRefBottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
     }
 
     /* Handler functions for actions */
@@ -122,27 +205,6 @@ class ProfileGoalCard extends React.Component {
             ? this.props.onPress()
             : this.props.openGoalDetail(item)
     }
-
-    // handlePrivacyChange = async (Id, value, token) => {
-    //     {
-    //         try {
-    //             const apiResponse = await putRequest(
-    //                 'http://192.168.1.4:8081/api/secure/goal/change-privacy',
-    //                 {
-    //                     goalId: Id,
-    //                     privacy: value,
-    //                 },
-    //                 {
-    //                     'x-access-token': token,
-    //                 }
-    //             )
-
-    //             console.log('this is response', apiResponse)
-    //         } catch (error) {
-    //             console.log('this is error', error.message)
-    //         }
-    //     }
-    // }
 
     /* Renderers for views */
 
@@ -472,34 +534,39 @@ class ProfileGoalCard extends React.Component {
                     <SwiperTooltip
                         title={swiperText}
                         imageSource={SWIPER_BACKGROUND}
+                        type="swiperDetail"
+                        viewStyle={{
+                            position: 'absolute',
+                            zIndex: 1,
+                            left: 13,
+                            top: 10,
+                        }}
                     />
                 ) : null}
 
-                {SWIPED_DATA.map((item, index) => {
+                {this.SWIPED_DATA.map((item, index) => {
                     return (
-                        <View>
+                        <Animatable.View
+                            style={{
+                                backgroundColor: item.backgroundColor,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: 100,
+                                height: '95%',
+                            }}
+                        >
                             <TouchableOpacity
                                 onPress={item.onPress}
                                 key={index}
                                 activeOpacity={0.7}
                             >
-                                <Animatable.View
-                                    style={{
-                                        backgroundColor: item.backgroundColor,
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        width: 100,
-                                        height: 138,
-                                    }}
-                                >
-                                    <Image
-                                        source={item.source}
-                                        resizeMode="contain"
-                                        style={{ height: 40, width: 40 }}
-                                    />
-                                </Animatable.View>
+                                <Image
+                                    source={item.source}
+                                    resizeMode="contain"
+                                    style={{ height: 40, width: 40 }}
+                                />
                             </TouchableOpacity>
-                        </View>
+                        </Animatable.View>
                     )
                 })}
             </>
@@ -514,7 +581,7 @@ class ProfileGoalCard extends React.Component {
     }
 
     render() {
-        const { item, index } = this.props
+        const { item, index, visitedUserName } = this.props
 
         if (!item || _.isEmpty(item)) return null
 
@@ -525,6 +592,13 @@ class ProfileGoalCard extends React.Component {
             <>
                 {!this.props.isSelf && this.props.friendShip ? (
                     <>
+                        <CommentVideoModal
+                            isVisible={this.state.videoModalVisible}
+                            onClose={() =>
+                                this.setState({ videoModalVisible: false })
+                            }
+                            onRecordPress={this.openCameraRollBottomSheet}
+                        />
                         <Swipeable
                             renderRightActions={this.rightSwipeActions}
                             friction={2}
@@ -551,6 +625,15 @@ class ProfileGoalCard extends React.Component {
                                 {this.renderStats(item)}
                             </DelayedButton>
                         </Swipeable>
+                        {this.renderCameraRollBottomSheet()}
+                        {this.renderBottomVoiceRecording()}
+                        <AccountabilityPopUp
+                            isVisible={this.state.accountPopUpVisible}
+                            onClose={() =>
+                                this.setState({ accountPopUpVisible: false })
+                            }
+                            name={getFirstName(visitedUserName)}
+                        />
                     </>
                 ) : (
                     <DelayedButton
@@ -627,13 +710,18 @@ const mapStateToProps = (state, props) => {
     const { userId } = props
     const self = userId === state.user.userId
 
+    const visitedUserName = state.profile.user.name
+
     return {
         token,
         self,
+        visitedUserName,
     }
 }
 
 export default connect(mapStateToProps, {
     openGoalDetail,
     submitGoalPrivacy,
+    openCameraForVideo,
+    openCameraRollForVideo,
 })(wrapAnalytics(ProfileGoalCard, SCREENS.PROFILE_GOAL_TAB))

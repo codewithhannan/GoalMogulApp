@@ -105,6 +105,7 @@ class CommentUserDetail extends Component {
      * @param {commentObject} item
      */
     renderCommentMedia(item) {
+        console.log('THIS IS ITEMMMM', item)
         const { mediaRef } = item
         if (!mediaRef) return null
 

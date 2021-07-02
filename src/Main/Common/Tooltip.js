@@ -21,20 +21,25 @@ class Tooltip extends Component {
     componentDidMount() {}
 
     render() {
-        const { tooltip, setProgressTooltip, imageSource, type } = this.props
+        const {
+            tooltip,
+            setProgressTooltip,
+            imageSource,
+            type,
+            viewStyle,
+        } = this.props
         return (
             <>
-                {this.state.toolTipVisible && tooltip.goalProgressTooltip ? (
+                {this.state.toolTipVisible &&
+                (tooltip.goalProgressTooltip ||
+                    tooltip.swipeToolTipStatus ||
+                    tooltip.profileGoalDetail ||
+                    tooltip.accountabilityTooltip) ? (
                     <Animatable.View
                         animation="fadeIn"
                         delay={500}
                         duration={500}
-                        style={{
-                            position: 'absolute',
-                            zIndex: 1,
-                            left: 13,
-                            top: 10,
-                        }}
+                        style={viewStyle}
                     >
                         <ImageBackground
                             resizeMode="cover"
@@ -88,7 +93,7 @@ class Tooltip extends Component {
                                             width: 13,
                                             borderWidth: 1,
                                             marginHorizontal: 3,
-                                            bottom: 5,
+                                            bottom: 14,
 
                                             borderColor: 'white',
                                             backgroundColor: this.state.checked
@@ -104,7 +109,7 @@ class Tooltip extends Component {
                                         style={{
                                             height: 12,
                                             position: 'absolute',
-                                            bottom: 5,
+                                            bottom: 14,
                                             left: 3,
                                             tintColor: '#42C0F5',
                                         }}
@@ -112,7 +117,7 @@ class Tooltip extends Component {
                                 </TouchableOpacity>
 
                                 <View
-                                    style={{ bottom: 6, marginHorizontal: 5 }}
+                                    style={{ bottom: 15, marginHorizontal: 5 }}
                                 >
                                     <Text
                                         style={{
