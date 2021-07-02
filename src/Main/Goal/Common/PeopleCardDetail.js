@@ -117,14 +117,14 @@ class ContactDetail extends Component {
                     >
                         {name}
                     </Text>
-                    <Image style={styles.imageStyle} source={badge} />
-                    <Text
+                    {/* <Image style={styles.imageStyle} source={badge} /> */}
+                    {/* <Text
                         style={styles.titleTextStyle}
                         numberOfLines={1}
                         ellipsizeMode="tail"
                     >
                         {headline}
-                    </Text>
+                    </Text> */}
                 </View>
             </View>
         )

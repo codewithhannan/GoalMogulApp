@@ -37,7 +37,7 @@ import {
 } from '../../../redux/middleware/utils'
 
 import { storeData } from '../../../store/storage'
-
+import { cancelSuggestion } from '../../../redux/modules/feed/comment/CommentActions'
 import { getAllContacts } from '../../../actions/ContactActions'
 import { FONT_FAMILY } from '../../../styles/basic/text'
 import { DEFAULT_CARDS } from './modalSvg'
@@ -250,6 +250,7 @@ class InviteFriendModal extends React.PureComponent {
 
         if (type == 'contacts') {
             return (
+                this.props.cancelSuggestion(this.props.pageId),
                 Actions.push('ContactMessage'),
                 this.closeModal(),
                 await storeData('INVITEMESSAGE', this.state.description)
@@ -609,12 +610,12 @@ class InviteFriendModal extends React.PureComponent {
                                             paddingHorizontal: 16,
                                         },
                                     ]}
-                                    onPress={() =>
+                                    onPress={() => {
                                         this.inviteNative(
                                             this.state.description,
                                             inviteLink
                                         )
-                                    }
+                                    }}
                                 >
                                     <View
                                         style={[
@@ -688,4 +689,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
     getAllContacts,
+    cancelSuggestion,
 })(InviteFriendModal)

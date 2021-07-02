@@ -124,7 +124,7 @@ class CommentBoxV2 extends Component {
         this.setState({ ...this.state, showInviteFriendModal: false })
     }
 
-    onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
+    onTaggingSuggestionTap = (item, hidePanel, cursorPosition) => {
         hidePanel()
         const { name } = item
         const { pageId, newComment } = this.props
@@ -204,7 +204,7 @@ class CommentBoxV2 extends Component {
         this.props.newCommentOnTagsChange(newContentTags, pageId)
     }
 
-    updateSearchRes(res, searchContent) {
+    updateSearchRes = (res, searchContent) => {
         if (searchContent !== this.state.keyword) return
         this.setState({
             // keyword,
@@ -217,7 +217,7 @@ class CommentBoxV2 extends Component {
         })
     }
 
-    callback(keyword) {
+    callback = (keyword) => {
         if (this.reqTimer) {
             clearTimeout(this.reqTimer)
         }
@@ -401,7 +401,7 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderSuggestionIcon() {
+    renderSuggestionIcon = () => {
         const { newComment, pageId, goalId } = this.props
         const { mediaRef, commentType } = newComment
         const disableButton = mediaRef !== undefined && mediaRef !== ''
@@ -439,7 +439,7 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderLeftIcons() {
+    renderLeftIcons = () => {
         const { newComment, pageId, hasSuggestion, goalId } = this.props
         const suggestionIcon = hasSuggestion
             ? this.renderSuggestionIcon(newComment, pageId, goalId)
@@ -459,7 +459,7 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderImageIcon() {
+    renderImageIcon = () => {
         const { newComment } = this.props
         const { commentType } = newComment
         // Disable image icon if there is a valid suggestion
@@ -506,7 +506,7 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderMedia() {
+    renderMedia = () => {
         const { newComment } = this.props
         const { mediaRef } = newComment
         if (!mediaRef) return null
@@ -549,7 +549,7 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderPost() {
+    renderPost = () => {
         const { newComment } = this.props
         const { uploading, contentText, commentType, mediaRef } = newComment
         const isInValidComment =
@@ -610,7 +610,7 @@ class CommentBoxV2 extends Component {
      * @param hidePanel: lib passed in funct to close suggestion panel
      * @param item: suggestion item to render
      */
-    renderSuggestionsRow({ item }, hidePanel, cursorPosition) {
+    renderSuggestionsRow = ({ item }, hidePanel, cursorPosition) => {
         const { name } = item
         return (
             <TouchableOpacity
@@ -637,7 +637,7 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderLoadingComponent() {
+    renderLoadingComponent = () => {
         if (this.state.tagSearchData.loading) {
             return (
                 <View
@@ -665,6 +665,18 @@ class CommentBoxV2 extends Component {
         const { pageId, newComment, comments } = this.props
         if (!newComment || !newComment.parentRef) return null
         const { uploading } = newComment
+
+        const { contentText, commentType, mediaRef } = newComment
+        const isInValidComment =
+            (commentType === 'Comment' || commentType === 'Reply') &&
+            (!contentText || contentText === '' || contentText.trim() === '') &&
+            mediaRef === undefined
+
+        const isInValidSuggestion = !validSuggestion(newComment)
+
+        console.log('THIS IS COMMENT', uploading)
+        console.log('THIS IS COMMENT 2', isInValidComment)
+        console.log('THIS IS COMMENT 3', isInValidSuggestion)
 
         const inputStyle = uploading
             ? {
@@ -713,12 +725,12 @@ class CommentBoxV2 extends Component {
                     MaxVisibleRowCount={7} // this is required if horizontal={false}
                 />
                 {this.renderSuggestionRefBottomSheet()}
-                <InviteFriendModal
+                {/* <InviteFriendModal
                     isVisible={this.state.showInviteFriendModal}
                     closeModal={this.closeInviteFriendModal}
                     goalTosend={`My friend ${this.props.name} has the goal ${this.props.title} I thought you might be able to help. Please join us on GoalMogul so I can connect you!`}
                     shouldOpenFromComments
-                />
+                /> */}
             </>
         )
     }
@@ -727,7 +739,6 @@ class CommentBoxV2 extends Component {
 const validSuggestion = (newComment) => {
     const { commentType, suggestion } = newComment
     if (commentType === 'Comment' || commentType === 'Reply') return true
-
     if (isInvalidObject(suggestion)) {
         return false
     }

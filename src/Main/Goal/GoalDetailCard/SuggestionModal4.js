@@ -12,24 +12,31 @@
 import React, { Component } from 'react'
 import {
     View,
-    Modal,
     Text,
+    Modal,
     Image,
     TouchableOpacity,
     Animated,
+    Alert,
     Keyboard,
 } from 'react-native'
 import { connect } from 'react-redux'
 import _ from 'lodash'
+// import RNModal from 'react-native-modal'
+import RNModal from 'react-native-modalbox'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 // Components
 import ModalHeader from '../../../Main/Common/Header/ModalHeader'
 import SearchSuggestion from './Suggestion/SearchSuggestion'
 import GeneralSuggestion from './Suggestion/GeneralSuggestion'
 import NeedStepSuggestion from './Suggestion/NeedStepSuggestion'
 import SuggestionGoalPreview from './Suggestion/SuggestionGoalPreview'
-
+import SearchBarHeader from '../../Common/Header/SearchBarHeader'
+import InviteFriendModal from '../../MeetTab/Modal/InviteFriendModal'
 // Asset
 // import Book from '../../../asset/suggestion/book.png';
 import Chat from '../../../asset/suggestion/chat.png'
@@ -41,9 +48,17 @@ import Friend from '../../../asset/suggestion/friend.png'
 import Other from '../../../asset/suggestion/other.png'
 // import HelpIcon from '../../../asset/utils/help.png';
 import StepIcon from '../../../asset/utils/steps.png'
+import user from '../../../asset/suggestion/user.png'
+import contact from '../../../asset/suggestion/contact.png'
+import step from '../../../asset/suggestion/step.png'
+import need from '../../../asset/suggestion/need.png'
+import tribe from '../../../asset/suggestion/tribe.png'
 
 // Actions
-import { updateSuggestionType } from '../../../redux/modules/feed/comment/CommentActions'
+import {
+    updateSuggestionType,
+    cancelSuggestion,
+} from '../../../redux/modules/feed/comment/CommentActions'
 
 import { getNewCommentByTab } from '../../../redux/modules/feed/comment/CommentSelector'
 
@@ -65,10 +80,13 @@ class SuggestionModal extends Component {
         this.suggestionOpacity = new Animated.Value(0.001)
         this.state = {
             query: '',
-            iconMapRight: [...IconMapRight],
+            // iconMapRight: [...IconMapRight],
             iconMapLeft: [...IconMapLeft],
             optionsCollapsed: false,
             optionsHeight: 150,
+            modalVisible: false,
+            showInviteFriendModal: false,
+            showNeedStepModal: false,
         }
     }
 
@@ -134,7 +152,7 @@ class SuggestionModal extends Component {
         this.handleExpand()
         this.setState({
             ...this.state,
-            iconMapRight: [...IconMapRight],
+            // iconMapRight: [...IconMapRight],
             iconMapLeft: [...IconMapLeft],
         })
     }
@@ -142,16 +160,27 @@ class SuggestionModal extends Component {
     // Update icon map with selected options
     updateIconMap = (suggestionType) => {
         this.props.updateSuggestionType(suggestionType, this.props.pageId)
-        const { iconMapRight, iconMapLeft } = this.state
-        const newIconMapRight = updateIconMap(suggestionType, iconMapRight)
+        const { iconMapLeft } = this.state
+        // const newIconMapRight = updateIconMap(suggestionType, iconMapRight)
         const newIconMapLeft = updateIconMap(suggestionType, iconMapLeft)
 
         this.setState({
             ...this.state,
-            iconMapRight: newIconMapRight,
+            // iconMapRight: newIconMapRight,
             iconMapLeft: newIconMapLeft,
         })
-        this.handleCollapse()
+        if (suggestionType === 'User' || suggestionType === 'Tribe') {
+            this.setState({ modalVisible: true })
+        }
+        if (suggestionType === 'Contact') {
+            this.setState({ showInviteFriendModal: true })
+        }
+
+        if (suggestionType === 'NewNeed' || suggestionType === 'NewStep') {
+            this.setState({ showNeedStepModal: true })
+        }
+
+        // this.handleCollapse()
     }
 
     renderGoalPreview(item) {
@@ -174,11 +203,11 @@ class SuggestionModal extends Component {
 
     renderOptions(newComment) {
         const { suggestionType } = newComment.tmpSuggestion
-        const { iconMapRight, iconMapLeft, optionsCollapsed } = this.state
+        const { iconMapLeft, optionsCollapsed } = this.state
 
-        const optionsRight = (
-            <Options iconMap={iconMapRight} onPress={this.updateIconMap} />
-        )
+        // const optionsRight = (
+        //     <Options iconMap={iconMapRight} onPress={this.updateIconMap} />
+        // )
 
         const optionsLeft = (
             <Options iconMap={iconMapLeft} onPress={this.updateIconMap} />
@@ -228,23 +257,34 @@ class SuggestionModal extends Component {
                     style={{ flexDirection: 'row', justifyContent: 'center' }}
                 >
                     {optionsCollapsedText}
-                    <View style={{ flex: 1 }}>
+                    <View
+                        style={{
+                            flex: 1,
+                            marginVertical: 10,
+                            marginHorizontal: 25,
+                        }}
+                    >
                         <Text
                             style={{
-                                fontSize: 14,
-                                fontWeight: '500',
-                                alignSelf: 'center',
+                                fontSize: 16,
+                                fontWeight: 'bold',
+                                // alignSelf: 'center',
                                 justifyContent: 'center',
-                                marginTop: 10,
-                                marginBottom: 10,
                             }}
                         >
-                            Suggest {suggestionForText}
+                            Suggest a:
                         </Text>
                     </View>
-                    {optionsCollapsed ? <View style={{ width: 50 }} /> : null}
-                </View>
 
+                    {/* {optionsCollapsed ? <View style={{ width: 50 }} /> : null} */}
+                </View>
+                <View
+                    style={{
+                        width: hp('100%'),
+                        height: 2,
+                        backgroundColor: 'lightgray',
+                    }}
+                />
                 <Animated.View
                     style={{
                         flexDirection: 'row',
@@ -253,7 +293,7 @@ class SuggestionModal extends Component {
                     }}
                 >
                     {optionsLeft}
-                    {optionsRight}
+                    {/* {optionsRight} */}
                 </Animated.View>
             </View>
         )
@@ -261,69 +301,144 @@ class SuggestionModal extends Component {
 
     renderSuggestionBody(newComment) {
         const { suggestionType } = newComment.tmpSuggestion
-        if (!this.state.optionsCollapsed) return null
+        // if (!this.state.optionsCollapsed) return null
         if (
             suggestionType === 'User' ||
-            suggestionType === 'Friend' ||
+            suggestionType === '' ||
             suggestionType === 'Event' ||
             suggestionType === 'Tribe' ||
             suggestionType === 'ChatConvoRoom'
         ) {
             return (
-                <SearchSuggestion
-                    pageId={this.props.pageId}
-                    opacity={this.suggestionOpacity}
-                    onCancel={() => {
-                        Keyboard.dismiss()
-                    }}
-                    onSelect={() => {
-                        // Right now don't turn on this
-                        // this.scrollview.props.scrollToPosition(0, 0);
-                    }}
-                    onFocus={() => {
-                        this.scrollview.props.scrollToPosition(0, 120)
-                    }}
-                />
+                <RNModal
+                    isOpen={this.state.modalVisible}
+                    onClosed={() => this.setState({ modalVisible: false })}
+                    coverScreen={true}
+                    swipeToClose={false}
+                    style={{ flex: 1, flexDirection: 'column' }}
+                >
+                    <View style={{ flex: 1, alignItems: 'center' }}>
+                        <View style={{ width: '100%', height: '100%' }}>
+                            <SearchBarHeader
+                                title={
+                                    suggestionType === 'User'
+                                        ? 'Friends'
+                                        : 'Tribes'
+                                }
+                                backButton
+                                onBackPress={() => {
+                                    this.resetIconMap()
+                                    this.setState({ modalVisible: false })
+                                    this.handleExpand()
+                                }}
+                            />
+                            <SearchSuggestion
+                                pageId={this.props.pageId}
+                                opacity={this.suggestionOpacity}
+                                onCancel={() => {
+                                    Keyboard.dismiss()
+                                }}
+                                onSelect={() => {
+                                    // Right now don't turn on this
+                                    // this.scrollview.props.scrollToPosition(0, 0);
+                                }}
+                                onFocus={() => {
+                                    this.scrollview.props.scrollToPosition(
+                                        0,
+                                        120
+                                    )
+                                }}
+                            />
+                            <TouchableOpacity
+                                style={{}}
+                                onPress={() => {
+                                    this.props.onAttach()
+                                    this.resetIconMap()
+                                    // this.handleExpand()
+                                    this.setState({ modalVisible: false })
+                                }}
+                            >
+                                <View style={styles.buttonContainer}>
+                                    <Text style={styles.buttonText}>Done</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </RNModal>
             )
         }
         if (suggestionType === 'NewNeed' || suggestionType === 'NewStep') {
             return (
                 <NeedStepSuggestion
+                    openModal={this.state.showNeedStepModal}
+                    onClose={() => this.setState({ showNeedStepModal: false })}
+                    onAction={() => this.props.onAttach()}
                     pageId={this.props.pageId}
                     opacity={this.suggestionOpacity}
                 />
             )
         }
-        if (suggestionType === 'Custom') {
+        if (suggestionType === 'Contact') {
             return (
-                <GeneralSuggestion
+                <InviteFriendModal
                     pageId={this.props.pageId}
-                    opacity={this.suggestionOpacity}
+                    isVisible={this.state.showInviteFriendModal}
+                    closeModal={this.closeInviteFriendModal}
+                    goalTosend={`My friend ${this.props.name} has the goal ${this.props.title} I thought you might be able to help. Please join us on GoalMogul so I can connect you!`}
+                    shouldOpenFromComments
                 />
             )
         }
         return null
     }
 
+    closeInviteFriendModal = () => {
+        this.setState({ ...this.state, showInviteFriendModal: false })
+    }
+
     render() {
         const { newComment, item } = this.props
         if (!newComment || !item) return null
-
         return (
-            <View style={{ height: 30 }}>
-                <Modal
-                    animationType="slide"
-                    transparent={false}
-                    visible={this.props.visible}
-                    onDismiss={this.resetIconMap}
+            <RNModal
+                // animationType="slide"
+                // transparent={true}
+                isOpen={this.props.visible}
+                onClosed={this.resetIconMap}
+                swipeDirection="down"
+                swipeToClose={true}
+                coverScreen={true}
+                style={{ height: 100, position: 'absolute', bottom: 300 }}
+                useNativeDriver={true}
+            >
+                {/* <View
+                          style={{
+                              // opacity: 0.5,
+                              flex: 1,
+                              // flexDirection: 'column',
+                              // justifyContent: 'center',
+                              // alignItems: 'center',
+                              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                          }}
+                      > */}
+
+                <View
+                    style={{
+                        alignSelf: 'center',
+                        position: 'absolute',
+                        bottom: -20,
+                        height: hp(40),
+                        width: wp('100%'),
+                        backgroundColor: 'white',
+                    }}
                 >
-                    <ModalHeader
-                        title="Suggestion"
-                        actionText="Attach"
-                        onCancel={this.props.onCancel}
-                        onAction={() => this.props.onAttach()}
-                    />
-                    <KeyboardAwareScrollView
+                    {/* <ModalHeader
+                              title="Suggestion"
+                              actionText="Attach"
+                              onCancel={this.props.onCancel}
+                              onAction={() => this.props.onAttach()}
+                          /> */}
+                    {/* <KeyboardAwareScrollView
                         innerRef={(ref) => {
                             this.scrollview = ref
                         }}
@@ -339,16 +454,26 @@ class SuggestionModal extends Component {
                         onKeyboardWillHide={() => {
                             this.scrollview.props.scrollToPosition(0, 0)
                         }}
-                    >
-                        <View style={{}}>
-                            {/* {this.renderGoalPreview(item)} */}
-                            {this.renderSuggestionFor(newComment, item)}
-                            {this.renderOptions(newComment)}
-                            {this.renderSuggestionBody(newComment)}
-                        </View>
-                    </KeyboardAwareScrollView>
-                </Modal>
-            </View>
+                    > */}
+                    <View
+                        style={{
+                            marginVertical: 5,
+                            width: 30,
+                            height: 3,
+                            borderRadius: 5,
+                            alignSelf: 'center',
+                            backgroundColor: 'lightgray',
+                        }}
+                    />
+                    <View style={{}}>
+                        {/* {this.renderGoalPreview(item)} */}
+                        {this.renderSuggestionFor(newComment, item)}
+                        {this.renderOptions(newComment)}
+                        {this.renderSuggestionBody(newComment)}
+                    </View>
+                    {/* </KeyboardAwareScrollView> */}
+                </View>
+            </RNModal>
         )
     }
 }
@@ -360,19 +485,19 @@ class SuggestionModal extends Component {
 const styles = {
     // Options style
     selectedSuggestionIconStyle: {
-        tintColor: '#17B3EC',
-        height: 20,
-        width: 20,
+        // tintColor: '#17B3EC',
+        height: 25,
+        width: 25,
     },
     suggestionIconStyle: {
-        tintColor: '#b8c7cb',
-        height: 20,
-        width: 20,
+        // tintColor: '#b8c7cb',
+        height: 25,
+        width: 25,
     },
     selectedSuggestionTextStyle: {
-        color: 'black',
+        color: '#535353',
         fontSize: 14,
-        fontWeight: '700',
+        fontWeight: '500',
         marginLeft: 15,
     },
     suggestionTextStyle: {
@@ -388,13 +513,31 @@ const styles = {
         justifyContent: 'center',
     },
     optionsContainerStyle: {
-        backgroundColor: 'white',
-        marginTop: 0.5,
-        marginLeft: 15,
-        marginRight: 15,
-        borderBottomColor: 'lightgray',
-        borderBottomWidth: 0.5,
-        paddingBottom: 5,
+        // backgroundColor: 'white',
+        // marginTop: 0.5,
+        // marginLeft: 15,
+        // marginRight: 15,
+        // borderBottomColor: 'lightgray',
+        // borderBottomWidth: 0.5,
+        // paddingBottom: 5,
+    },
+    buttonContainer: {
+        backgroundColor: '#42C0F5',
+        width: '90%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 40,
+        borderColor: '#42C0F5',
+        borderWidth: 2,
+        borderRadius: 5,
+        marginHorizontal: 20,
+        marginVertical: 10,
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 15,
+        // fontStyle: 'SFProDisplay-Regular',
     },
 }
 
@@ -415,37 +558,34 @@ const IconMapLeft = [
         key: 'User',
         text: 'User',
         value: {
-            iconSource: Friend,
+            iconSource: user,
             iconStyle: {},
         },
         selected: undefined,
     },
     {
-        key: 'ChatConvoRoom',
-        text: 'Chatroom',
+        key: 'Contact',
+        text: 'Contact',
         value: {
-            iconSource: Chat,
+            iconSource: contact,
+            iconStyle: {},
+        },
+        selected: undefined,
+    },
+    {
+        key: 'NewStep',
+        text: 'Step',
+        value: {
+            iconSource: step,
             iconStyle: {},
         },
         selected: undefined,
     },
     {
         key: 'NewNeed',
-        text: 'Step or Need',
+        text: 'Need',
         value: {
-            iconSource: StepIcon,
-            iconStyle: {},
-        },
-        selected: undefined,
-    },
-]
-
-const IconMapRight = [
-    {
-        key: 'Event',
-        text: 'Event',
-        value: {
-            iconSource: Event,
+            iconSource: need,
             iconStyle: {},
         },
         selected: undefined,
@@ -454,21 +594,42 @@ const IconMapRight = [
         key: 'Tribe',
         text: 'Tribe',
         value: {
-            iconSource: Flag,
-            iconStyle: {},
-        },
-        selected: undefined,
-    },
-    {
-        key: 'Custom',
-        text: 'Custom',
-        value: {
-            iconSource: Other,
+            iconSource: tribe,
             iconStyle: {},
         },
         selected: undefined,
     },
 ]
+
+// const IconMapRight = [
+//     {
+//         key: 'Need',
+//         text: 'Need',
+//         value: {
+//             iconSource: need,
+//             iconStyle: {},
+//         },
+//         selected: undefined,
+//     },
+//     {
+//         key: 'Tribe',
+//         text: 'Tribe',
+//         value: {
+//             iconSource: Flag,
+//             iconStyle: {},
+//         },
+//         selected: undefined,
+//     },
+//     {
+//         key: 'Custom',
+//         text: 'Custom',
+//         value: {
+//             iconSource: Other,
+//             iconStyle: {},
+//         },
+//         selected: undefined,
+//     },
+// ]
 
 const updateIconMap = (suggestionType, iconMap) =>
     iconMap.map((item) => {
@@ -529,7 +690,7 @@ const Options = (props) => {
                     }}
                 >
                     <Image source={iconSource} style={style} />
-                    <Text style={textStyle}>{text.toUpperCase()}</Text>
+                    <Text style={textStyle}>{text}</Text>
                 </View>
             </TouchableOpacity>
         )
@@ -544,6 +705,7 @@ const Options = (props) => {
  */
 const SuggestedItem = (props) => {
     const { goal, type, suggestionForRef, stepRef, needRef } = props
+    console.log('SUGGESTEDITEM TYPE==>', type)
     let refToSearchFor = suggestionForRef
 
     let items = []
@@ -614,4 +776,5 @@ const mapStateToProps = (state, props) => {
 export default connect(mapStateToProps, {
     updateSuggestionType,
     refreshPreloadData,
+    cancelSuggestion,
 })(SuggestionModal)
