@@ -16,10 +16,14 @@ export const setProgressTooltip = (type) => async (dispatch, getState) => {
             swiperTooltip.swipeToolTipStatus = false
             return dispatch(setTooltipStatus({ swiperTooltip }))
 
-        case 'goalDetail':
+        case 'swiperDetail':
             let swiperDetail = getState().tooltip
             swiperDetail.profileGoalDetail = false
             return dispatch(setTooltipStatus({ swiperDetail }))
+        case 'accountability':
+            let accountability = getState().tooltip
+            swiperDetail.accountabilityTooltip = false
+            return dispatch(setTooltipStatus({ accountability }))
 
         default:
             return null

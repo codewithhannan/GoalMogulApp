@@ -48,6 +48,8 @@ import { openCameraForVideo, openCameraRollForVideo } from '../../../actions'
 import { getButtonBottomSheetHeight } from '../../../styles'
 import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
 import CommentVideoModal from '../../Common/Modal/CommentVideoModal'
+import AccountabilityPopUp from '../../Common/Modal/AccountabilityPopUp'
+import { getFirstName } from '../../../Utils/HelperMethods'
 
 let privacyName = ''
 let row = []
@@ -89,14 +91,18 @@ class ProfileGoalCard extends React.Component {
         this.state = {
             toolTipVisible: false,
             swiperToolTipVisible: false,
-            isVisible: false,
+            videoModalVisible: false,
+            accountPopUpVisible: false,
         }
         this.refsArray = [] // add this
         this.SWIPED_DATA = [
             {
                 id: 1,
                 source: ACCOUNTABILITY,
-                onPress: () => console.log('Account'),
+                onPress: () => {
+                    prevOpenedRow.close()
+                    this.setState({ accountPopUpVisible: true })
+                },
                 backgroundColor: '#CEFFBC',
             },
 
@@ -118,7 +124,7 @@ class ProfileGoalCard extends React.Component {
         ]
     }
 
-    showVideoModal = () => this.setState({ isVisible: true })
+    showVideoModal = () => this.setState({ videoModalVisible: true })
     openCameraRollBottomSheet = () => this.CameraRefBottomSheetRef.open()
     closeNotificationBottomSheet = () => this.CameraRefBottomSheetRef.close()
     openRecordingModal = () => this.bottomRecodingSheet.open()
@@ -528,6 +534,13 @@ class ProfileGoalCard extends React.Component {
                     <SwiperTooltip
                         title={swiperText}
                         imageSource={SWIPER_BACKGROUND}
+                        type="swiperDetail"
+                        viewStyle={{
+                            position: 'absolute',
+                            zIndex: 1,
+                            left: 13,
+                            top: 10,
+                        }}
                     />
                 ) : null}
 
@@ -568,7 +581,7 @@ class ProfileGoalCard extends React.Component {
     }
 
     render() {
-        const { item, index } = this.props
+        const { item, index, visitedUserName } = this.props
 
         if (!item || _.isEmpty(item)) return null
 
@@ -580,8 +593,10 @@ class ProfileGoalCard extends React.Component {
                 {!this.props.isSelf && this.props.friendShip ? (
                     <>
                         <CommentVideoModal
-                            isVisible={this.state.isVisible}
-                            onClose={() => this.setState({ isVisible: false })}
+                            isVisible={this.state.videoModalVisible}
+                            onClose={() =>
+                                this.setState({ videoModalVisible: false })
+                            }
                             onRecordPress={this.openCameraRollBottomSheet}
                         />
                         <Swipeable
@@ -612,6 +627,13 @@ class ProfileGoalCard extends React.Component {
                         </Swipeable>
                         {this.renderCameraRollBottomSheet()}
                         {this.renderBottomVoiceRecording()}
+                        <AccountabilityPopUp
+                            isVisible={this.state.accountPopUpVisible}
+                            onClose={() =>
+                                this.setState({ accountPopUpVisible: false })
+                            }
+                            name={getFirstName(visitedUserName)}
+                        />
                     </>
                 ) : (
                     <DelayedButton
@@ -688,9 +710,12 @@ const mapStateToProps = (state, props) => {
     const { userId } = props
     const self = userId === state.user.userId
 
+    const visitedUserName = state.profile.user.name
+
     return {
         token,
         self,
+        visitedUserName,
     }
 }
 
