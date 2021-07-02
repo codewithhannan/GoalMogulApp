@@ -42,6 +42,7 @@ class NoStepNeedToast extends Component {
                         style={{
                             width: '35%',
                             marginHorizontal: 10,
+                            marginVertical: 15,
                         }}
                     >
                         {/* <Image
@@ -55,7 +56,7 @@ class NoStepNeedToast extends Component {
                             }}
                         /> */}
                         <LottieView
-                            style={{ height: hp(16) }}
+                            style={{ height: hp(22), alignSelf: 'center' }}
                             source={NO_STEP_LOTTIE}
                             autoPlay
                             loop
@@ -63,15 +64,18 @@ class NoStepNeedToast extends Component {
                     </View>
                     <View
                         style={{
-                            width: '65%',
-                            left: 1,
+                            // width: '65%',
+                            // left: 1,
+                            top: 0,
+                            marginVertical: 5,
+                            position: 'absolute',
+                            alignSelf: 'center',
                         }}
                     >
                         <Text
                             style={{
                                 fontSize: 17,
                                 lineHeight: 19,
-                                bottom: 10,
 
                                 fontFamily: 'SFProDisplay-Bold',
                             }}

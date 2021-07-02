@@ -21,6 +21,7 @@ import {
     wrapAnalytics,
     SCREENS,
     EVENT as E,
+    track,
     trackWithProperties,
 } from '../../monitoring/segment'
 import { Button } from 'react-native-paper'
@@ -46,12 +47,16 @@ class OnboardingCommunity extends React.Component {
             Actions.push('registration_welcome')
         }
         screenTransitionCallback()
+        // track(E.REG_ACCOUNT_CREATED)
     }
 
     onSwipedAll = (index) => {
         trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
             step_number: index,
         })
+        if (index === 3) {
+            track(E.REG_ACCOUNT_CREATED)
+        }
 
         if (index == this.props.communityGuidelines.length - 1) {
             this.setState({ ...this.state, swipeAll: true })

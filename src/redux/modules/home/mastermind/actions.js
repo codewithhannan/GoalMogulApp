@@ -94,6 +94,7 @@ export const openGoalDetail = (goal, initialProps) => (dispatch, getState) => {
     // In the version 0.3.9 and later, loading goal and comment is done in goal detail
     // refreshComments('Goal', _id, tab, pageId)(dispatch, getState);
     const componentToOpen = componentKeyByTab(tab, 'goal')
+    console.log('Component to open =======================>', componentToOpen)
     Actions.push(`${componentToOpen}`, {
         initial: initialProps,
         goalId: _id,

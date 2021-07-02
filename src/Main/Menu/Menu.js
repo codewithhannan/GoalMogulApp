@@ -27,6 +27,8 @@ import { openMyTribeTab } from '../../redux/modules/tribe/MyTribeTabActions'
 
 import { openMeet, openSetting, logout, openChallenges } from '../../actions'
 import InviteFriendModal from '../MeetTab/Modal/InviteFriendModal'
+import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
+import WincashModal from '../Common/Modal/WincashModal'
 
 import {
     showNextTutorialPage,
@@ -39,6 +41,11 @@ import Icons from '../../asset/base64/Icons'
 import Silver from '../../asset/banner/silver_cup.png'
 import Gold from '../../asset/banner/gold_cup.png'
 import Winner from '../../asset/banner/winner.png'
+import Trending from '../../asset/icons/trending.png'
+import Badges from '../../asset/icons/badges.png'
+import Win from '../../asset/icons/win.png'
+import FB from '../../asset/icons/fb.png'
+import Feedback from '../../asset/icons/feedback.png'
 
 import {
     IPHONE_MODELS,
@@ -67,6 +74,8 @@ class Menu extends React.PureComponent {
         this.state = {
             showInviteFriendModal: false,
             toolTipVisible: false,
+            showBadgeModal: false,
+            showWincashModal: false,
         }
     }
 
@@ -104,10 +113,18 @@ class Menu extends React.PureComponent {
                 ? 30
                 : 40
 
+        const pageID = 391422631718856
+        const scheme = Platform.select({
+            ios: 'fb://profile/',
+            android: 'fb://page/',
+        })
+
+        const url = `${scheme}${pageID}`
+
         return (
             <View style={{ flex: 1 }}>
                 <View style={{ ...styles.headerStyle, paddingTop }}>
-                    <View style={{ height: 15 }} />
+                    {/* <View style={{ height: 15 }} /> */}
                 </View>
 
                 <DelayedButton
@@ -118,7 +135,7 @@ class Menu extends React.PureComponent {
                     }}
                     style={styles.buttonStyle}
                 >
-                    <Text style={styles.titleTextStyle}>Invite a friend</Text>
+                    <Text style={styles.titleTextStyle}>Invite Friends</Text>
                     <View style={{ position: 'absolute', right: 0 }}>
                         <Svg
                             width={25}
@@ -140,7 +157,7 @@ class Menu extends React.PureComponent {
                     onPress={() => this.props.openMeet()}
                     style={styles.buttonStyle}
                 >
-                    <Text style={styles.titleTextStyle}>My friends</Text>
+                    <Text style={styles.titleTextStyle}>People & Friends</Text>
                     <View style={{ position: 'absolute', right: 0 }}>
                         <Svg
                             width={25}
@@ -158,40 +175,54 @@ class Menu extends React.PureComponent {
                     </View>
                 </DelayedButton>
                 {/* Trending goals - this is unavailable for now, so commented out. */}
-                {/* <DelayedButton
-                    activeOpacity={0.6}
-                    onPress={() => this.props.openMeet()}
-                    style={styles.buttonStyle}
-                >
-                    <Image
-                        source={AccountMultiple}
-                        style={[styles.iconStyle, { tintColor: '#828282' }]}
-                    />
-                    <Text style={styles.titleTextStyle}>Trending goals</Text>
-                </DelayedButton> */}
                 <DelayedButton
                     activeOpacity={0.6}
-                    onPress={() => this.props.openSetting()}
+                    onPress={() => Actions.push('trendingGoalView')}
                     style={styles.buttonStyle}
                 >
-                    <Text style={styles.titleTextStyle}>Account settings</Text>
+                    <Text style={styles.titleTextStyle}>Trending goals</Text>
+                    <View style={{ position: 'absolute', right: 0 }}>
+                        <Image
+                            resizeMode="contain"
+                            source={Trending}
+                            style={[styles.iconStyle, { tintColor: '#828282' }]}
+                        />
+                    </View>
+                </DelayedButton>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    onPress={() => this.setState({ showBadgeModal: true })}
+                    style={styles.buttonStyle}
+                >
+                    <Text style={styles.titleTextStyle}>Badges</Text>
                     <View style={{ position: 'absolute', right: 0 }}>
                         <Svg
                             width={25}
                             height={25}
-                            viewBox="0 0 18 20"
+                            viewBox="0 0 22 22"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
                             {...this.props}
                         >
                             <Path
-                                d="M9 13.209a3.208 3.208 0 110-6.416 3.208 3.208 0 010 6.416zm6.81-2.32c.037-.292.065-.586.065-.888 0-.303-.027-.605-.064-.917l1.934-1.494a.463.463 0 00.11-.587l-1.833-3.172c-.11-.201-.358-.284-.56-.201l-2.282.916c-.477-.357-.972-.669-1.55-.898l-.338-2.429a.463.463 0 00-.459-.385H7.167a.463.463 0 00-.459.385l-.339 2.43c-.577.228-1.072.54-1.549.897L2.537 3.63a.45.45 0 00-.559.201L.145 7.003a.452.452 0 00.11.587l1.934 1.494a7.838 7.838 0 00-.064.917c0 .302.027.596.064.889L.255 12.41a.452.452 0 00-.11.587l1.833 3.172a.46.46 0 00.56.201l2.282-.925a6.37 6.37 0 001.55.907l.338 2.43c.037.22.23.384.459.384h3.666c.23 0 .422-.165.459-.385l.339-2.429a6.68 6.68 0 001.549-.907l2.283.926a.46.46 0 00.559-.202l1.833-3.172a.463.463 0 00-.11-.586l-1.934-1.522z"
+                                d="M11 2H4v15.417L11 20l7-2.583V2h-7z"
                                 fill="#828282"
+                            />
+                            <Path
+                                d="M15.16 9.49l-3.293-.294L10.58 6 9.293 9.196 6 9.49l2.496 2.28-.746 3.39 2.83-1.798 2.83 1.798-.75-3.39 2.5-2.28z"
+                                fill="#fff"
+                            />
+                            <Path
+                                d="M11 1H4v17.13L11 21l7-2.87V1h-7z"
+                                fill="#828282"
+                            />
+                            <Path
+                                d="M16 8.81l-3.595-.32L11 5 9.595 8.49 6 8.81l2.725 2.49L7.91 15 11 13.037 14.09 15l-.82-3.7L16 8.81z"
+                                fill="#fff"
                             />
                         </Svg>
                     </View>
                 </DelayedButton>
-
                 {/**
                  * This is the button to handle challenges
                  * */}
@@ -368,6 +399,84 @@ class Menu extends React.PureComponent {
                         </View>
                     </DelayedButton>
                 </Tooltip>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    onPress={() => this.props.openSetting()}
+                    style={styles.buttonStyle}
+                >
+                    <Text style={styles.titleTextStyle}>Account settings</Text>
+                    <View style={{ position: 'absolute', right: 0 }}>
+                        <Svg
+                            width={25}
+                            height={25}
+                            viewBox="0 0 18 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            {...this.props}
+                        >
+                            <Path
+                                d="M9 13.209a3.208 3.208 0 110-6.416 3.208 3.208 0 010 6.416zm6.81-2.32c.037-.292.065-.586.065-.888 0-.303-.027-.605-.064-.917l1.934-1.494a.463.463 0 00.11-.587l-1.833-3.172c-.11-.201-.358-.284-.56-.201l-2.282.916c-.477-.357-.972-.669-1.55-.898l-.338-2.429a.463.463 0 00-.459-.385H7.167a.463.463 0 00-.459.385l-.339 2.43c-.577.228-1.072.54-1.549.897L2.537 3.63a.45.45 0 00-.559.201L.145 7.003a.452.452 0 00.11.587l1.934 1.494a7.838 7.838 0 00-.064.917c0 .302.027.596.064.889L.255 12.41a.452.452 0 00-.11.587l1.833 3.172a.46.46 0 00.56.201l2.282-.925a6.37 6.37 0 001.55.907l.338 2.43c.037.22.23.384.459.384h3.666c.23 0 .422-.165.459-.385l.339-2.429a6.68 6.68 0 001.549-.907l2.283.926a.46.46 0 00.559-.202l1.833-3.172a.463.463 0 00-.11-.586l-1.934-1.522z"
+                                fill="#828282"
+                            />
+                        </Svg>
+                    </View>
+                </DelayedButton>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    onPress={() => Linking.openURL(url)}
+                    style={{
+                        width: '100%',
+                        height: 50,
+                        backgroundColor: '#F6FCFF',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <View style={{ marginHorizontal: 25 }}>
+                        <Text
+                            style={[
+                                styles.titleTextStyle,
+                                { color: '#475993' },
+                            ]}
+                        >
+                            Like us on Facebook!
+                        </Text>
+                        <View style={{ position: 'absolute', right: 0 }}>
+                            <Image
+                                resizeMode="center"
+                                source={FB}
+                                style={[styles.iconStyle]}
+                            />
+                        </View>
+                    </View>
+                </DelayedButton>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    onPress={() => this.setState({ showWincashModal: true })}
+                    style={{
+                        width: '100%',
+                        height: 50,
+                        backgroundColor: 'rgba(46, 125, 50, 0.16)',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <View style={{ marginHorizontal: 25 }}>
+                        <Text
+                            style={[
+                                styles.titleTextStyle,
+                                { color: '#2E7D32', fontWeight: 'bold' },
+                            ]}
+                        >
+                            $$ Win Cash $$
+                        </Text>
+                        <View style={{ position: 'absolute', right: 0 }}>
+                            <Image
+                                resizeMode="center"
+                                source={Win}
+                                style={[styles.iconStyle]}
+                            />
+                        </View>
+                    </View>
+                </DelayedButton>
 
                 {/* Bottom Section */}
                 <View style={styles.bottomContainer}>
@@ -386,19 +495,14 @@ class Menu extends React.PureComponent {
                                 Give us feedback
                             </Text>
                             <View style={{ position: 'absolute', right: 0 }}>
-                                <Svg
-                                    width={25}
-                                    height={25}
-                                    viewBox="0 0 18 18"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    {...this.props}
-                                >
-                                    <Path
-                                        d="M17.974 6.934a.527.527 0 00-.425-.359l-5.58-.81L9.473.707a.527.527 0 00-.946 0L6.032 5.764l-5.58.811a.527.527 0 00-.293.9l4.038 3.936-.953 5.557a.527.527 0 00.765.556L9 14.9l4.99 2.624a.527.527 0 00.766-.556l-.953-5.557 4.038-3.936a.527.527 0 00.133-.54z"
-                                        fill="#828282"
-                                    />
-                                </Svg>
+                                <Image
+                                    resizeMode="contain"
+                                    source={Feedback}
+                                    style={[
+                                        styles.iconStyle,
+                                        { tintColor: '#828282' },
+                                    ]}
+                                />
                             </View>
                         </DelayedButton>
                         <DelayedButton
@@ -478,6 +582,23 @@ class Menu extends React.PureComponent {
                     isVisible={this.state.showInviteFriendModal}
                     closeModal={this.closeInviteFriendModal}
                 />
+                <EarnBadgeModal
+                    isVisible={this.state.showBadgeModal}
+                    closeModal={() => {
+                        this.setState({
+                            showBadgeModal: false,
+                        })
+                    }}
+                    user={this.props.user}
+                />
+                <WincashModal
+                    isVisible={this.state.showWincashModal}
+                    closeModal={() => {
+                        this.setState({
+                            showWincashModal: false,
+                        })
+                    }}
+                />
             </View>
         )
     }
@@ -497,16 +618,16 @@ const styles = {
         paddingBottom: 10,
         // justifyContent: 'space-around',
         flexDirection: 'row',
-
+        // width: '100%',
         alignItems: 'center',
         marginHorizontal: 25,
         justifyContent: 'flex-start',
     },
     iconStyle: {
-        marginLeft: 15,
-        marginRight: 15,
-        height: 20,
-        width: 22,
+        // marginLeft: 15,
+        // marginRight: 15,
+        height: 25,
+        width: 25,
     },
     titleTextStyle: {
         color: 'black',

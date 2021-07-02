@@ -11,27 +11,59 @@ import {
     View,
 } from 'react-native'
 import { Audio, AVPlaybackStatus } from 'expo-av'
+import * as FileSystem from 'expo-file-system'
+import * as Font from 'expo-font'
 import * as Permissions from 'expo-permissions'
+// import * as Icons from "./components/Icons";
+
 import DelayedButton from '../Main/Common/Button/DelayedButton'
 import OnboardingStyles, { getCardBottomOffset } from '../styles/Onboarding'
-
+const { text: textStyle, button: buttonStyle } = OnboardingStyles
 const play = require('../../src/asset/icons/play.png')
 
-const { text: textStyle, button: buttonStyle } = OnboardingStyles
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const BACKGROUND_COLOR = '#FFF8ED'
+const LIVE_COLOR = '#FF0000'
+const DISABLED_OPACITY = 0.5
+const RATE_SCALE = 3.0
 
-export default class App extends React.Component {
-    constructor(props) {
+type Props = {}
+
+type State = {
+    haveRecordingPermissions: boolean
+    isLoading: boolean
+    record: string | null
+    isPlaybackAllowed: boolean
+    muted: boolean
+    soundPosition: number | null
+    soundDuration: number | null
+    recordingDuration: number | null
+    shouldPlay: boolean
+    isPlaying: boolean
+    isRecording: boolean
+    fontLoaded: boolean
+    shouldCorrectPitch: boolean
+    volume: number
+    rate: number
+}
+
+export default class App extends React.Component<Props, State> {
+    private recording: Audio.Recording | null
+    private sound: Audio.Sound | null
+    private isSeeking: boolean
+    private shouldPlayAtEndOfSeek: boolean
+    private readonly recordingSettings: Audio.RecordingOptions
+
+    constructor(props: Props) {
         super(props)
         this.recording = null
         this.sound = null
         this.isSeeking = false
         this.shouldPlayAtEndOfSeek = false
         this.state = {
-            record: null,
             haveRecordingPermissions: false,
             isLoading: false,
+            record: null,
             isPlaybackAllowed: false,
             muted: false,
             soundPosition: null,
@@ -40,55 +72,38 @@ export default class App extends React.Component {
             shouldPlay: false,
             isPlaying: false,
             isRecording: false,
+            fontLoaded: false,
             shouldCorrectPitch: true,
             volume: 1.0,
             rate: 1.0,
         }
-        this.recordingSettings = JSON.parse(
-            JSON.stringify(Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY)
-        )
+        this.recordingSettings = Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY
 
         // UNCOMMENT THIS TO TEST maxFileSize:
         /* this.recordingSettings = {
-          ...this.recordingSettings,
-          android: {
-            ...this.recordingSettings.android,
-            maxFileSize: 12000,
-          },
-        };*/
+      ...this.recordingSettings,
+      android: {
+        ...this.recordingSettings.android,
+        maxFileSize: 12000,
+      },
+    };*/
     }
 
     componentDidMount() {
+        ;(async () => {
+            this.setState({ fontLoaded: true })
+        })()
         this._askForPermissions()
-        this.setup()
     }
 
-    _askForPermissions = async () => {
+    private _askForPermissions = async () => {
         const response = await Permissions.askAsync(Permissions.AUDIO_RECORDING)
         this.setState({
             haveRecordingPermissions: response.status === 'granted',
         })
     }
 
-    setup = async () => {
-        await TrackPlayer.setupPlayer({})
-        await TrackPlayer.updateOptions({
-            stopWithApp: true,
-            capabilities: [
-                TrackPlayer.CAPABILITY_PLAY,
-                TrackPlayer.CAPABILITY_PAUSE,
-                TrackPlayer.CAPABILITY_SKIP_TO_NEXT,
-                TrackPlayer.CAPABILITY_SKIP_TO_PREVIOUS,
-                TrackPlayer.CAPABILITY_STOP,
-            ],
-            compactCapabilities: [
-                TrackPlayer.CAPABILITY_PLAY,
-                TrackPlayer.CAPABILITY_PAUSE,
-            ],
-        })
-    }
-
-    _updateScreenForSoundStatus = (status) => {
+    private _updateScreenForSoundStatus = (status: AVPlaybackStatus) => {
         if (status.isLoaded) {
             this.setState({
                 soundDuration: status.durationMillis || null,
@@ -113,7 +128,9 @@ export default class App extends React.Component {
         }
     }
 
-    _updateScreenForRecordingStatus = (status) => {
+    private _updateScreenForRecordingStatus = (
+        status: Audio.RecordingStatus
+    ) => {
         if (status.canRecord) {
             this.setState({
                 isRecording: status.isRecording,
@@ -130,7 +147,7 @@ export default class App extends React.Component {
         }
     }
 
-    async _stopPlaybackAndBeginRecording() {
+    private async _stopPlaybackAndBeginRecording() {
         this.setState({
             isLoading: true,
         })
@@ -163,14 +180,13 @@ export default class App extends React.Component {
         this.setState({
             record: recording._uri,
         })
-        this.props.voice(recording._uri)
         await this.recording.startAsync() // Will call this._updateScreenForRecordingStatus to update the screen.
         this.setState({
             isLoading: false,
         })
     }
 
-    async _stopRecordingAndEnablePlayback() {
+    private async _stopRecordingAndEnablePlayback() {
         this.setState({
             isLoading: true,
         })
@@ -180,25 +196,7 @@ export default class App extends React.Component {
         try {
             await this.recording.stopAndUnloadAsync()
         } catch (error) {
-            // On Android, calling stop before any data has been collected results in
-            // an E_AUDIO_NODATA error. This means no audio data has been written to
-            // the output file is invalid.
-            if (error.code === 'E_AUDIO_NODATA') {
-                console.log(
-                    `Stop was called too quickly, no data has yet been received (${error.message})`
-                )
-            } else {
-                console.log(
-                    'STOP ERROR: ',
-                    error.code,
-                    error.name,
-                    error.message
-                )
-            }
-            this.setState({
-                isLoading: false,
-            })
-            return
+            // Do nothing -- we are already unloaded.
         }
         // const info = await FileSystem.getInfoAsync(this.recording.getURI() || "");
         // console.log(`FILE INFO: ${JSON.stringify(info)}`);
@@ -230,7 +228,7 @@ export default class App extends React.Component {
         })
     }
 
-    _onRecordPressed = () => {
+    private _onRecordPressed = () => {
         if (this.state.isRecording) {
             this._stopRecordingAndEnablePlayback()
         } else {
@@ -238,16 +236,14 @@ export default class App extends React.Component {
         }
     }
 
-    _onPausePressed = () => {
+    private _onPausePressed = () => {
         this.sound?.pauseAsync()
     }
 
-    _onPlayPressed = () => {
+    private _onPlayPausePressed = () => {
         // if (this.sound != null) {
         //     if (this.state.isPlaying) {
-        //         this.sound.pauseAsync().then(() => {
-        //             this.sound.playAsync()
-        //         })
+        //         this.sound.pauseAsync()
         //     } else {
         //         this.sound.playAsync()
         //     }
@@ -266,7 +262,43 @@ export default class App extends React.Component {
         }
     }
 
-    _onSeekSliderValueChange = (value) => {
+    private _onStopPressed = () => {
+        if (this.sound != null) {
+            this.sound.stopAsync()
+        }
+    }
+
+    private _onMutePressed = () => {
+        if (this.sound != null) {
+            this.sound.setIsMutedAsync(!this.state.muted)
+        }
+    }
+
+    private _onVolumeSliderValueChange = (value: number) => {
+        if (this.sound != null) {
+            this.sound.setVolumeAsync(value)
+        }
+    }
+
+    private _trySetRate = async (rate: number, shouldCorrectPitch: boolean) => {
+        if (this.sound != null) {
+            try {
+                await this.sound.setRateAsync(rate, shouldCorrectPitch)
+            } catch (error) {
+                // Rate changing could not be performed, possibly because the client's Android API is too old.
+            }
+        }
+    }
+
+    private _onRateSliderSlidingComplete = async (value: number) => {
+        this._trySetRate(value * RATE_SCALE, this.state.shouldCorrectPitch)
+    }
+
+    private _onPitchCorrectionPressed = () => {
+        this._trySetRate(this.state.rate, !this.state.shouldCorrectPitch)
+    }
+
+    private _onSeekSliderValueChange = (value: number) => {
         if (this.sound != null && !this.isSeeking) {
             this.isSeeking = true
             this.shouldPlayAtEndOfSeek = this.state.shouldPlay
@@ -274,19 +306,19 @@ export default class App extends React.Component {
         }
     }
 
-    _onSeekSliderSlidingComplete = async (value) => {
-        // if (this.sound != null) {
-        //     this.isSeeking = false;
-        //     const seekPosition = value * (this.state.soundDuration || 0);
-        //     if (this.shouldPlayAtEndOfSeek) {
-        //         this.sound.playFromPositionAsync(seekPosition);
-        //     } else {
-        //         this.sound.setPositionAsync(seekPosition);
-        //     }
-        // }
+    private _onSeekSliderSlidingComplete = async (value: number) => {
+        if (this.sound != null) {
+            this.isSeeking = false
+            const seekPosition = value * (this.state.soundDuration || 0)
+            if (this.shouldPlayAtEndOfSeek) {
+                this.sound.playFromPositionAsync(seekPosition)
+            } else {
+                this.sound.setPositionAsync(seekPosition)
+            }
+        }
     }
 
-    _getSeekSliderPosition() {
+    private _getSeekSliderPosition() {
         if (
             this.sound != null &&
             this.state.soundPosition != null &&
@@ -297,12 +329,12 @@ export default class App extends React.Component {
         return 0
     }
 
-    _getMMSSFromMillis(millis) {
+    private _getMMSSFromMillis(millis: number) {
         const totalSeconds = millis / 1000
         const seconds = Math.floor(totalSeconds % 60)
         const minutes = Math.floor(totalSeconds / 60)
 
-        const padWithZero = (number) => {
+        const padWithZero = (number: number) => {
             const string = number.toString()
             if (number < 10) {
                 return '0' + string
@@ -312,18 +344,20 @@ export default class App extends React.Component {
         return padWithZero(minutes) + ':' + padWithZero(seconds)
     }
 
-    _getPlaybackTimestamp() {
+    private _getPlaybackTimestamp() {
         if (
             this.sound != null &&
             this.state.soundPosition != null &&
             this.state.soundDuration != null
         ) {
-            return `${this._getMMSSFromMillis(this.state.soundPosition)}`
+            return `${this._getMMSSFromMillis(
+                this.state.soundPosition
+            )} / ${this._getMMSSFromMillis(this.state.soundDuration)}`
         }
         return ''
     }
 
-    _getRecordingTimestamp() {
+    private _getRecordingTimestamp() {
         if (this.state.recordingDuration != null) {
             return `${this._getMMSSFromMillis(this.state.recordingDuration)}`
         }
@@ -342,7 +376,7 @@ export default class App extends React.Component {
                             onPress={
                                 this.state.isPlaying
                                     ? this._onPausePressed
-                                    : this._onPlayPressed
+                                    : this._onPlayPausePressed
                             }
                         >
                             <Image
@@ -403,7 +437,7 @@ export default class App extends React.Component {
                                 </Text>
                             </DelayedButton>
                         </View>
-                    ) : this.state.record ? (
+                    ) : this.state.soundDuration ? (
                         <View style={{ flexDirection: 'row' }}>
                             <DelayedButton
                                 style={[
@@ -431,7 +465,7 @@ export default class App extends React.Component {
                                     ,
                                     { width: 150 },
                                 ]}
-                                // onPress={this._onRecordPressed}
+                                // onPress={}
                             >
                                 <Text
                                     style={[

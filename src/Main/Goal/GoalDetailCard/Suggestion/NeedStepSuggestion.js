@@ -4,6 +4,9 @@ import React from 'react'
 import { View, TextInput, SafeAreaView, Text, Animated } from 'react-native'
 import { connect } from 'react-redux'
 import { CheckBox } from 'react-native-elements'
+import RNModal from 'react-native-modalbox'
+
+import ModalHeader from '../../../../Main/Common/Header/ModalHeader'
 
 // Actions
 import {
@@ -74,12 +77,42 @@ class NeedStepSuggestion extends React.Component {
     }
 
     render() {
-        const { opacity } = this.props
+        const { opacity, suggestionType } = this.props
         return (
-            <Animated.View style={{ marginLeft: 15, marginRight: 15, opacity }}>
-                {this.renderCheckBox()}
-                {this.renderInputField()}
-            </Animated.View>
+            <RNModal
+                isOpen={this.props.openModal}
+                coverScreen={true}
+                onClosed={this.props.onClose}
+                style={{ flex: 1, flexDirection: 'column' }}
+            >
+                <View
+                    style={{
+                        height: '100%',
+                        width: '100%',
+                    }}
+                >
+                    <ModalHeader
+                        title={
+                            suggestionType === 'NewNeed'
+                                ? 'Suggest a Need'
+                                : 'Suggest a Step'
+                        }
+                        actionText="Attach"
+                        back
+                        onCancel={this.props.onClose}
+                        onAction={this.props.onAction}
+                    />
+                    <View style={{ flexx: 1, alignItems: 'center' }}>
+                        {/* <Animated.View
+                    style={{ marginLeft: 15, marginRight: 15, opacity }}
+                > */}
+                        {this.renderCheckBox()}
+                        {this.renderInputField()}
+
+                        {/* </Animated.View> */}
+                    </View>
+                </View>
+            </RNModal>
         )
     }
 }

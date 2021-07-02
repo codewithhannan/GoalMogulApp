@@ -311,9 +311,9 @@ class CreateGoalModal extends React.Component {
                 needs: this.props.formVals.values.needs.length,
             })
 
-            // identifyWithTraits(this.props.userId, {
-            //     goalsCreated: goals.length + 1,
-            // })
+            identifyWithTraits(this.props.userId, {
+                goalsCreated: goals.length + 1,
+            })
 
             return this.props.submitGoal(
                 this.props.formVals.values,

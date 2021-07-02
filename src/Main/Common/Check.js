@@ -7,16 +7,24 @@ const { CheckIcon: check } = Icons
 
 const Check = ({ selected }) => {
     const checkIconContainerStyle = selected
-        ? { ...styles.checkIconContainerStyle, backgroundColor: '#a5e5c0' }
-        : { ...styles.checkIconContainerStyle, backgroundColor: '#efefef' }
+        ? {
+              ...styles.checkIconContainerStyle,
+              backgroundColor: '#42C0F5',
+              borderColor: '#42C0F5',
+          }
+        : { ...styles.checkIconContainerStyle, backgroundColor: 'white' }
 
     const checkIconStyle = selected
-        ? { ...styles.checkIconStyle, tintColor: '#4e966d' }
+        ? { ...styles.checkIconStyle, tintColor: 'white' }
         : { ...styles.checkIconStyle, tintColor: '#999' }
 
     return (
         <View style={checkIconContainerStyle}>
-            <Image source={check} resizeMode="contain" style={checkIconStyle} />
+            <Image
+                source={selected ? check : null}
+                resizeMode="contain"
+                style={checkIconStyle}
+            />
         </View>
     )
 }
@@ -28,9 +36,9 @@ const styles = {
         width: 24,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 12,
-        // borderWidth: 0.5,
-        // borderColor: 'lightgray',
+        borderRadius: 5,
+        borderWidth: 0.5,
+        borderColor: 'gray',
         alignSelf: 'center',
     },
     checkIconStyle: {
