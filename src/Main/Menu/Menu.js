@@ -45,7 +45,7 @@ import Trending from '../../asset/icons/trending.png'
 import Badges from '../../asset/icons/badges.png'
 import Win from '../../asset/icons/win.png'
 import FB from '../../asset/icons/fb.png'
-import Feedback from '../../asset/icons/feedback.png'
+import Feedback from '../../asset/icons/Feedback.png'
 
 import {
     IPHONE_MODELS,

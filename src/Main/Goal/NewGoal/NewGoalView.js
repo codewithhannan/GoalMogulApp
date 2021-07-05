@@ -18,7 +18,7 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { CopilotStep, walkthroughable } from 'react-native-copilot-gm'
 import DraggableFlatlist from 'react-native-draggable-flatlist'
-import DateTimePicker from 'react-native-modal-datetime-picker'
+import DateTimePickerModal from 'react-native-modal-datetime-picker'
 import Swiper from 'react-native-swiper'
 import {
     Menu,
@@ -1129,9 +1129,10 @@ class NewGoalView extends Component {
 
         const newPicker = true
         const startDatePicker = newPicker ? (
-            <DateTimePicker
-                isVisible={this.props.startTime.picker}
+            <DateTimePickerModal
                 date={new Date()}
+                isVisible={this.props.startTime.picker}
+                mode="date"
                 onConfirm={(date) => {
                     if (validateTime(date, this.props.endTime.date)) {
                         this.props.change('startTime', { date, picker: false })
@@ -1140,72 +1141,68 @@ class NewGoalView extends Component {
                         // })
                         return
                     }
-                    Alert.alert('Start time cannot be later than end time')
+                    setTimeout(() => {
+                        Alert.alert('Start time cannot be later than end time')
+                    }, 500)
                     this.props.change('startTime', {
                         date: this.props.endTime.date,
                         picker: false,
                     })
                 }}
+                // display="spinner"
                 onCancel={() =>
                     this.props.change('startTime', {
                         date: this.props.startTime.date,
                         picker: false,
                     })
                 }
-                isDarkModeEnabled={false}
             />
-        ) : (
-            <Modal
-                animationType="fade"
-                transparent={false}
-                visible={this.props.startTime.picker}
-            >
-                <ModalHeader
-                    title="Select start time"
-                    actionText="Done"
-                    onAction={() =>
-                        this.props.change('startTime', {
-                            date: this.props.startTime.date,
-                            picker: false,
-                        })
-                    }
-                    onCancel={() =>
-                        this.props.change('startTime', {
-                            date: this.props.startTime.date,
-                            picker: false,
-                        })
-                    }
-                />
-                <View style={{ flex: 1 }}>
-                    <DatePickerIOS
-                        date={this.props.startTime.date}
-                        onDateChange={(date) =>
-                            this.props.change('startTime', {
-                                date,
-                                picker: true,
-                            })
-                        }
-                        mode="date"
-                    />
-                </View>
-            </Modal>
-        )
+        ) : null
+        // <Modal
+        //     animationType="fade"
+        //     transparent={false}
+        //     visible={this.props.startTime.picker}
+        // >
+        //     <ModalHeader
+        //         title="Select start time"
+        //         actionText="Done"
+        //         onAction={() =>
+        //             this.props.change('startTime', {
+        //                 date: this.props.startTime.date,
+        //                 picker: false,
+        //             })
+        //         }
+        //         onCancel={() =>
+        //             this.props.change('startTime', {
+        //                 date: this.props.startTime.date,
+        //                 picker: false,
+        //             })
+        //         }
+        //     />
+
+        // </Modal>
 
         const endDatePicker = newPicker ? (
-            <DateTimePicker
+            <DateTimePickerModal
                 isVisible={this.props.endTime.picker}
+                date={new Date()}
                 onConfirm={(date) => {
                     if (validateTime(this.props.startTime.date, date)) {
                         this.props.change('endTime', { date, picker: false })
-
                         return
                     }
-                    alert('End time cannot be early than start time')
+
+                    setTimeout(() => {
+                        Alert.alert('End time cannot be early than start time')
+                    }, 500)
+
                     this.props.change('endTime', {
                         date: this.props.startTime.date,
                         picker: false,
                     })
                 }}
+                mode="date"
+                pickerContainerStyleIOS={{ height: 100 }}
                 onCancel={() =>
                     this.props.change('endTime', {
                         date: this.props.endTime.date,

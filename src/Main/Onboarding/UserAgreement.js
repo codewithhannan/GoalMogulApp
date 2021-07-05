@@ -27,10 +27,12 @@ class UserAgreement extends React.Component {
                 <WebView
                     javaScriptEnabled={true}
                     mixedContentMode={'always'}
-                    style={{ flex: 1, resizeMode: 'cover', width }}
+                    style={{ flex: 1, resizeMode: 'contain' }}
                     scalesPageToFit={false}
                     source={{ uri: TERMS_OF_SERVICE_URL }}
                     bounces={false}
+                    showsHorizontalScrollIndicator={false}
+                    hor
                     onLoadEnd={(e) => {
                         if (!this.state.loaded) {
                             // Wait for WebView to be fully loaded and converted to transparent.

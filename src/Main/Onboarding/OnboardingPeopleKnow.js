@@ -277,8 +277,6 @@ class OnboardingPeopleKnow extends React.Component {
      */
 
     render() {
-        console.log('THESE ARE THE FRIENDS', this.state.requestsSent)
-
         return (
             <View
                 style={[
@@ -318,6 +316,19 @@ class OnboardingPeopleKnow extends React.Component {
                                     ItemSeparatorComponent={
                                         this.renderItemSeparator
                                     }
+                                    ListEmptyComponent={() => {
+                                        return (
+                                            <View
+                                                style={{
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    marginTop: 100,
+                                                }}
+                                            >
+                                                <Text>No People Found</Text>
+                                            </View>
+                                        )
+                                    }}
                                 />
                             </View>
                         </View>

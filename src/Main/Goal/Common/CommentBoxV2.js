@@ -270,16 +270,26 @@ class CommentBoxV2 extends Component {
     }
 
     handleOpenCamera = () => {
-        this.props.openCamera((result) => {
-            this.props.newCommentOnMediaRefChange(result.uri, this.props.pageId)
-        })
+        this.bottomSheetRef.close()
+
+        setTimeout(() => {
+            this.props.openCamera((result) => {
+                this.props.newCommentOnMediaRefChange(
+                    result.uri,
+                    this.props.pageId
+                )
+            })
+        }, 500)
     }
 
     handleOpenCameraRoll = () => {
         const callback = R.curry((result) => {
             this.props.newCommentOnMediaRefChange(result.uri, this.props.pageId)
         })
-        this.props.openCameraRoll(callback, { disableEditing: true })
+        this.bottomSheetRef.close()
+        setTimeout(() => {
+            this.props.openCameraRoll(callback, { disableEditing: true })
+        }, 500)
     }
 
     /**
