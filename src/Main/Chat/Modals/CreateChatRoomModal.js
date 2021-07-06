@@ -48,6 +48,7 @@ class CreateChatroomModal extends React.Component {
         this.state = {
             mediaModal: false,
             missingGroupName: false,
+            membersAdded: 0,
         }
     }
     _keyExtractor = (item) => item._id
@@ -134,6 +135,10 @@ class CreateChatroomModal extends React.Component {
             })
             return
         }
+        if (this.state.membersAdded <= 0) {
+            Alert.alert('Members Limit cannot be 0')
+            return
+        }
         if (isEdit) {
             this.handleSubmit()
         } else if (this.props.modalPageNumber == 1) {
@@ -208,7 +213,10 @@ class CreateChatroomModal extends React.Component {
                 placeholder="Enter a number..."
                 keyboardType="number-pad"
                 style={styles.inputStyle}
-                onChangeText={(val) => this.props.change('memberLimit', val)}
+                onChangeText={(val) => {
+                    this.setState({ membersAdded: val })
+                    this.props.change('memberLimit', val)
+                }}
                 value={
                     this.props.memberLimit
                         ? `${this.props.memberLimit}`
@@ -318,6 +326,7 @@ class CreateChatroomModal extends React.Component {
     }
 
     render() {
+        console.log('THIS IS MEMBERSS LIMIT', this.state.membersLimit)
         const { user, self, uploading } = this.props
         if (!user) return null
         const { name, headline, profile } = user
@@ -328,7 +337,7 @@ class CreateChatroomModal extends React.Component {
             ? 'Next'
             : 'Create'
         const titleText = this.props.initializeFromState
-            ? 'Edit Group Conversation'
+            ? 'Edit Group Settings'
             : 'Group Conversation'
 
         return (

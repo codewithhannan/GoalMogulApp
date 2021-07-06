@@ -816,7 +816,7 @@ class ChatRoomConversation extends React.Component {
 
     renderAttachedImage = () => {
         const { messageMediaRef } = this.props
-        console.log('THIS IS MESSAGEMEDIA REF', messageMediaRef)
+        // console.log('THIS IS MESSAGEMEDIA REF', messageMediaRef)
 
         if (!messageMediaRef) return null
         const onPress = () => {}

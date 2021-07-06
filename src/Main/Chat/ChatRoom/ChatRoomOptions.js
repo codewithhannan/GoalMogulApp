@@ -378,7 +378,6 @@ class ChatRoomOptions extends React.Component {
                             checked={this.state.isMuted}
                             onCheckedChange={(val) =>
                                 this.setState({
-                                    ...this.state,
                                     isMuted: val,
                                 })
                             }
@@ -443,7 +442,7 @@ class ChatRoomOptions extends React.Component {
                     <MenuItem
                         title={() => (
                             <Text category="h6" style={styles.title}>
-                                Edit Group Chat
+                                Edit Group Settings
                             </Text>
                         )}
                         accessoryRight={ForwardIcon}
@@ -492,12 +491,12 @@ class ChatRoomOptions extends React.Component {
                         <ToggleField
                             {...props}
                             checked={this.state.isMuted}
-                            onCheckedChange={(val) =>
+                            onCheckedChange={(val) => {
+                                console.log('THIS IS MUTE CHAT', val)
                                 this.setState({
-                                    ...this.state,
                                     isMuted: val,
                                 })
-                            }
+                            }}
                             style={{ marginRight: 16 }}
                         />
                     )}
