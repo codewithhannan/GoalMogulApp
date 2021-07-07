@@ -502,7 +502,7 @@ class ActivityFeed extends Component {
                     </View>
                 )}
 
-                <FlatList
+                {/* <FlatList
                     keyExtractor={(item, index) => index.toString()}
                     keyboardShouldPersistTaps="handled"
                     scrollEnabled={false}
@@ -524,7 +524,7 @@ class ActivityFeed extends Component {
                     ListFooterComponent={this.renderListFooter()}
                     onEndReached={this.handleOnLoadMore}
                     onEndThreshold={2}
-                />
+                /> */}
                 <PopupFB
                     isVisible={this.state.showFbModal}
                     closeModal={() => {

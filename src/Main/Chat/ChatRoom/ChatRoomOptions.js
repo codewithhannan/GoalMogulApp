@@ -225,27 +225,32 @@ class ChatRoomOptions extends React.Component {
     openMessageSearch = () => Actions.push('chatRoomMessageSearch')
 
     deleteConversationMessages = () => {
-        const { chatRoom } = this.props
+        const { chatRoom, messages } = this.props
+
         if (!chatRoom) return
-        Alert.alert(
-            'Are you sure?',
-            "This will delete all your copies of this conversation's messages",
-            [
-                {
-                    text: 'Delete all',
-                    onPress: () =>
-                        this.props.deleteConversationMessages(chatRoom, []),
-                },
-                {
-                    text: 'Cancel',
-                    onPress: () => {
-                        /* let it close */
+        if (messages.length === 0) {
+            Alert.alert('No message Found to delete')
+        } else {
+            Alert.alert(
+                'Are you sure?',
+                "This will delete all your copies of this conversation's messages",
+                [
+                    {
+                        text: 'Delete all',
+                        onPress: () =>
+                            this.props.deleteConversationMessages(chatRoom, []),
                     },
-                    style: 'cancel',
-                },
-            ],
-            { cancelable: false }
-        )
+                    {
+                        text: 'Cancel',
+                        onPress: () => {
+                            /* let it close */
+                        },
+                        style: 'cancel',
+                    },
+                ],
+                { cancelable: false }
+            )
+        }
     }
 
     /**
@@ -687,7 +692,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     const { userId, user } = state.user
-    const { chatRoomsMap, activeChatRoomId } = state.chatRoom
+    const { chatRoomsMap, activeChatRoomId, messages } = state.chatRoom
 
     let chatRoom = chatRoomsMap[activeChatRoomId]
 
@@ -746,6 +751,7 @@ const mapStateToProps = (state) => {
         chatRoomName,
         chatRoomImage,
         otherUser,
+        messages,
         user,
         isMuted,
         isAdmin,

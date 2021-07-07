@@ -199,9 +199,11 @@ class GoalDetailSection extends React.PureComponent {
                 text: 'Custom',
                 onPress: () => {
                     // Show customized time picker
-                    this.setState({
-                        goalReminderDatePicker: true,
-                    })
+                    setTimeout(() => {
+                        this.setState({
+                            goalReminderDatePicker: true,
+                        })
+                    }, 500)
                 },
             },
         ]

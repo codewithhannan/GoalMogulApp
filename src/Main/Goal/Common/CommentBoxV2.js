@@ -672,7 +672,7 @@ class CommentBoxV2 extends Component {
     }
 
     render() {
-        const { pageId, newComment, comments } = this.props
+        const { pageId, newComment } = this.props
         if (!newComment || !newComment.parentRef) return null
         const { uploading } = newComment
 
@@ -734,7 +734,7 @@ class CommentBoxV2 extends Component {
                     horizontal={false} // defaut is true, change the orientation of the list
                     MaxVisibleRowCount={7} // this is required if horizontal={false}
                 />
-                {this.renderSuggestionRefBottomSheet()}
+                {/* {this.renderSuggestionRefBottomSheet()} */}
                 {/* <InviteFriendModal
                     isVisible={this.state.showInviteFriendModal}
                     closeModal={this.closeInviteFriendModal}
@@ -834,13 +834,11 @@ const styles = {
 }
 
 const mapStateToProps = (state, props) => {
-    const { comments, goalDetail } = state
-    const { title, owner } = goalDetail.goal.goal
-    const { name } = owner
-
+    const { goalDetail } = state
+    const title = goalDetail.goal.goal?.title
+    const name = goalDetail.goal.goal?.owner?.name
     return {
         newComment: getNewCommentByTab(state, props.pageId),
-        comments,
         title,
         name,
     }

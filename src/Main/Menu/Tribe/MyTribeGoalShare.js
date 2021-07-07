@@ -39,9 +39,9 @@ class UserGoalsView extends Component {
         this.props.tribeRefreshUserGoals(this.props.tribeId, this.props.pageId)
     }
 
-    handleRefresh = () => {
-        this.props.tribeRefreshUserGoals(this.props.tribeId, this.props.pageId)
-    }
+    // handleRefresh = () => {
+    //     this.props.tribeRefreshUserGoals(this.props.tribeId, this.props.pageId)
+    // }
 
     handleOnLoadMore = () => {
         this.props.tribeLoadMoreUserGoals(this.props.tribeId, this.props.pageId)
@@ -123,7 +123,7 @@ class UserGoalsView extends Component {
                         data={data}
                         renderItem={this.renderItem}
                         keyExtractor={(i) => i._id}
-                        onRefresh={this.handleRefresh}
+                        // onRefresh={this.handleRefresh}
                         onEndReached={this.handleOnLoadMore}
                         onEndReachedThreshold={2}
                         refreshing={false}

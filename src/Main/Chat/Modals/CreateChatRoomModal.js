@@ -209,7 +209,9 @@ class CreateChatroomModal extends React.Component {
         return (
             <Input
                 label="Member Limit"
-                disabled={this.props.uploading}
+                disabled={
+                    this.props.uploading || this.props.initializeFromState
+                }
                 placeholder="Enter a number..."
                 keyboardType="number-pad"
                 style={styles.inputStyle}
@@ -326,7 +328,6 @@ class CreateChatroomModal extends React.Component {
     }
 
     render() {
-        console.log('THIS IS MEMBERSS LIMIT', this.state.membersLimit)
         const { user, self, uploading } = this.props
         if (!user) return null
         const { name, headline, profile } = user

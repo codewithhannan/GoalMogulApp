@@ -268,7 +268,6 @@ class Home extends Component {
     }
 
     handleAppStateChange = async (nextAppState) => {
-        console.log('THIS IS APP STATE', this.state.appState)
         if (
             this.state.appState.match(/inactive|background/) &&
             nextAppState === 'active'
