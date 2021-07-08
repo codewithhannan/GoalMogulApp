@@ -1,7 +1,13 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, AppState, FlatList, ScrollView } from 'react-native'
+import {
+    View,
+    AppState,
+    FlatList,
+    TouchableWithoutFeedback,
+    Image,
+} from 'react-native'
 import { connect } from 'react-redux'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
@@ -22,6 +28,9 @@ import CreateContentButtons from '../Common/Button/CreateContentButtons'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 import { track, EVENT as E } from '../../monitoring/segment'
 import { getToastsData } from '../../actions/ToastActions'
+
+//video stroyline
+import VideoStoryLineCircle from './VideoStoryLineCircle'
 
 // Actions
 import {
@@ -61,7 +70,8 @@ import { saveRemoteMatches } from '../../actions/MeetActions'
 
 // Styles
 import { color } from '../../styles/basic'
-
+import { TEXT_FONT_SIZE, FONT_FAMILY } from '../../styles/basic/text'
+import video_icon from '../../asset/icons/video_icon.png'
 // Utils
 import { CreateGoalTooltip } from '../Tutorial/Tooltip'
 import { Text } from 'react-native-animatable'
@@ -71,6 +81,47 @@ import {
 } from '../../redux/modules/notification/NotificationTabActions'
 import { makeGetUserGoals } from '../../redux/modules/User/Selector'
 import { trackWithProperties } from 'expo-analytics-segment'
+
+const stories = [
+    {
+        profileImage: require('../../asset/image/Community_1.png'),
+
+        name: 'Test Name 1',
+        story: require('../../testStory.jpeg'),
+    },
+    {
+        profileImage: require('../../asset/image/Community_1.png'),
+
+        name: 'Test Name 1',
+        story: require('../../testStory2.png'),
+    },
+    {
+        profileImage: require('../../asset/image/Community_1.png'),
+
+        name: 'Test Name 1',
+        story: require('../../testStory3.jpg'),
+    },
+    {
+        profileImage: require('../../asset/image/Community_1.png'),
+
+        name: 'Test Name 2',
+        story: require('../../testStory2.png'),
+    },
+    {
+        profileImage: require('../../asset/image/Community_1.png'),
+
+        name: 'Test Name 2',
+        story: require('../../testStory.jpeg'),
+    },
+]
+
+const unique = stories.reduce((res, itm) => {
+    let result = res.find(
+        (item) => JSON.stringify(item.name) == JSON.stringify(itm.name)
+    )
+    if (!result) return res.concat(itm)
+    return res
+}, [])
 
 const DEBUG_KEY = '[ UI Home ]'
 
@@ -373,6 +424,35 @@ class Home extends Component {
         }
     }
 
+    _storyLineHeader = (props) => {
+        return (
+            <View
+                style={{
+                    width: 70,
+                    height: 70,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: color.GM_LIGHT_GRAY,
+                    borderRadius: 35,
+                    marginTop: 5,
+                }}
+            >
+                <TouchableWithoutFeedback
+                    onPress={() => console.log('Pressed')}
+                >
+                    <Image
+                        source={video_icon}
+                        resizeMode="contain"
+                        style={{
+                            height: 20,
+                            width: 20,
+                        }}
+                    />
+                </TouchableWithoutFeedback>
+            </View>
+        )
+    }
+
     render() {
         const { user, refreshing } = this.props
 
@@ -397,6 +477,44 @@ class Home extends Component {
                 />
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />
+
+                    <View
+                        style={{
+                            width: '100%',
+                            height: 150,
+                            backgroundColor: 'white',
+                            justifyContent: 'center',
+                            paddingVertical: 2,
+                            marginBottom: 10,
+                            paddingLeft: 10,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontSize: TEXT_FONT_SIZE.FONT_1,
+                                fontFamily: FONT_FAMILY.SEMI_BOLD,
+                                marginBottom: 12,
+                            }}
+                        >
+                            Trending Stories
+                        </Text>
+                        <FlatList
+                            keyExtractor={(index) => index.toString()}
+                            horizontal={true}
+                            ListHeaderComponent={this._storyLineHeader}
+                            data={unique}
+                            renderItem={({ item }) => {
+                                return (
+                                    <VideoStoryLineCircle
+                                        image={item.story}
+                                        profileImage={item.profileImage}
+                                        name={item.name}
+                                        arrayStory={stories}
+                                    />
+                                )
+                            }}
+                        />
+                    </View>
 
                     <FlatList
                         keyExtractor={(item, index) => index.toString()}
