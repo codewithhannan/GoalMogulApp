@@ -140,14 +140,14 @@ class RichText extends React.Component {
             <View style={this.props.textContainerStyle}>
                 <Text>{contentText}</Text>
 
-                <RNUrlPreview
+                {/* <RNUrlPreview
                     text={`${contentText}`}
                     containerStyle={{ width: '100%', marginTop: 10 }}
                     title={false}
                     descriptionStyle={{ width: '100%' }}
 
                     // titleStyle={{ fontSize: 12 }}s
-                />
+                /> */}
             </View>
         )
     }

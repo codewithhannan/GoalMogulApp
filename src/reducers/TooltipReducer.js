@@ -7,6 +7,7 @@ const initialState = {
     swipeToolTipStatus: true,
     profileGoalDetail: true,
     accountabilityTooltip: true,
+    suggestionTooltip: true,
 }
 
 const slice = createSlice({

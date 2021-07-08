@@ -36,10 +36,10 @@ function AccountabilityPopUp({ isVisible, name, onClose }) {
             >
                 <View
                     style={{
-                        width: MODAL_WIDTH * 0.9,
+                        width: '100%',
 
                         backgroundColor: color.GM_BACKGROUND,
-                        height: MODAL_HEIGHT * 0.15,
+                        height: 120,
 
                         borderRadius: 5,
                     }}
@@ -73,12 +73,13 @@ function AccountabilityPopUp({ isVisible, name, onClose }) {
                                 viewStyle={{
                                     position: 'absolute',
                                     zIndex: 1,
-                                    left: 13,
+                                    left: 3,
                                     top: 10,
                                 }}
                             />
                         ) : null}
                         <TouchableOpacity
+                            style={{ left: 120 }}
                             onPress={() => setToolTipVisible(true)}
                         >
                             <Text>Tooltip</Text>

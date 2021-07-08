@@ -46,6 +46,7 @@ import Badges from '../../asset/icons/badges.png'
 import Win from '../../asset/icons/win.png'
 import FB from '../../asset/icons/fb.png'
 import Feedback from '../../asset/icons/feedback.png'
+import Logout from '../../asset/icons/logout.png'
 
 import {
     IPHONE_MODELS,
@@ -197,8 +198,8 @@ class Menu extends React.PureComponent {
                     <Text style={styles.titleTextStyle}>Badges</Text>
                     <View style={{ position: 'absolute', right: 0 }}>
                         <Svg
-                            width={25}
-                            height={25}
+                            width={27}
+                            height={27}
                             viewBox="0 0 22 22"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -561,19 +562,14 @@ class Menu extends React.PureComponent {
                                 Log out
                             </Text>
                             <View style={{ position: 'absolute', right: 0 }}>
-                                <Svg
-                                    width={25}
-                                    height={25}
-                                    viewBox="0 0 12 18"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    {...this.props}
-                                >
-                                    <Path
-                                        d="M11.25 9.75a.75.75 0 00-.75.75v3a.75.75 0 01-.75.75H7.5V3c0-.64-.408-1.213-1.022-1.426L6.256 1.5H9.75a.75.75 0 01.75.75V4.5a.75.75 0 101.5 0V2.25C12 1.01 10.99 0 9.75 0H1.687c-.028 0-.052.013-.08.016C1.571.013 1.537 0 1.5 0 .673 0 0 .673 0 1.5V15c0 .64.408 1.212 1.021 1.425l4.514 1.505c.153.047.305.07.465.07.827 0 1.5-.673 1.5-1.5v-.75h2.25c1.24 0 2.25-1.01 2.25-2.25v-3a.75.75 0 00-.75-.75z"
-                                        fill="#42C0F5"
-                                    />
-                                </Svg>
+                                <Image
+                                    resizeMode="contain"
+                                    source={Logout}
+                                    style={[
+                                        styles.iconStyle,
+                                        { tintColor: '#42C0F5' },
+                                    ]}
+                                />
                             </View>
                         </DelayedButton>
                     </View>

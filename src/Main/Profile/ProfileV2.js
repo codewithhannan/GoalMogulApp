@@ -815,11 +815,11 @@ class ProfileV2 extends Component {
         return (
             <>
                 <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
-                    <ProfilePictureModal
+                    {/* <ProfilePictureModal
                         isVisible={this.state.profilePictureVisible}
                         onClose={this.closeProfileModal}
                         userId={userId}
-                    />
+                    /> */}
                     {/* <CommentVideoModal /> */}
 
                     <AccountabilityPopUp />

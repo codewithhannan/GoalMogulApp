@@ -24,6 +24,10 @@ export const setProgressTooltip = (type) => async (dispatch, getState) => {
             let accountability = getState().tooltip
             swiperDetail.accountabilityTooltip = false
             return dispatch(setTooltipStatus({ accountability }))
+        case 'commentSuggestion':
+            let suggestion = getState().tooltip
+            suggestion.suggestionTooltip = false
+            return dispatch(setTooltipStatus({ suggestion }))
 
         default:
             return null

@@ -21,6 +21,7 @@ import {
     Keyboard,
 } from 'react-native'
 import { connect } from 'react-redux'
+import { Actions } from 'react-native-router-flux'
 import _ from 'lodash'
 // import RNModal from 'react-native-modal'
 import RNModal from 'react-native-modalbox'
@@ -94,9 +95,9 @@ class SuggestionModal extends Component {
         // Sending request to fetch pre-populated data
         Logger.log(`${DEBUG_KEY}: [ componentDidMount ]`, {}, 2)
         this.props.refreshPreloadData('User')
-        this.props.refreshPreloadData('Event')
+        // this.props.refreshPreloadData('Event')
         this.props.refreshPreloadData('Tribe')
-        this.props.refreshPreloadData('ChatConvoRoom')
+        // this.props.refreshPreloadData('ChatConvoRoom')
     }
 
     handleExpand = () => {
@@ -154,6 +155,7 @@ class SuggestionModal extends Component {
             ...this.state,
             // iconMapRight: [...IconMapRight],
             iconMapLeft: [...IconMapLeft],
+            modalVisible: false,
         })
     }
 
@@ -171,13 +173,14 @@ class SuggestionModal extends Component {
         })
         if (suggestionType === 'User' || suggestionType === 'Tribe') {
             this.setState({ modalVisible: true })
+            // Actions.push('suggestionTest')
         }
         if (suggestionType === 'Contact') {
             this.setState({ showInviteFriendModal: true })
         }
 
         if (suggestionType === 'NewNeed' || suggestionType === 'NewStep') {
-            this.setState({ showNeedStepModal: true })
+            this.setState({ modalVisible: true })
         }
 
         // this.handleCollapse()
@@ -310,89 +313,92 @@ class SuggestionModal extends Component {
             suggestionType === 'ChatConvoRoom'
         ) {
             return (
-                <RNModal
-                    isOpen={this.state.modalVisible}
-                    onClosed={() => this.setState({ modalVisible: false })}
-                    coverScreen={true}
-                    swipeToClose={false}
-                    style={{ flex: 1, flexDirection: 'column' }}
-                >
-                    <View style={{ flex: 1, alignItems: 'center' }}>
-                        <View style={{ width: '100%', height: '100%' }}>
-                            <SearchBarHeader
-                                title={
-                                    suggestionType === 'User'
-                                        ? 'Friends'
-                                        : 'Tribes'
-                                }
-                                backButton
-                                onBackPress={() => {
-                                    this.resetIconMap()
-                                    this.setState({ modalVisible: false })
-                                    this.handleExpand()
-                                }}
-                            />
-                            <SearchSuggestion
-                                pageId={this.props.pageId}
-                                opacity={this.suggestionOpacity}
-                                onCancel={() => {
-                                    Keyboard.dismiss()
-                                }}
-                                onSelect={() => {
-                                    // Right now don't turn on this
-                                    // this.scrollview.props.scrollToPosition(0, 0);
-                                }}
-                                onFocus={() => {
-                                    this.scrollview.props.scrollToPosition(
-                                        0,
-                                        120
-                                    )
-                                }}
-                            />
-                            <TouchableOpacity
-                                style={{}}
-                                onPress={() => {
-                                    this.props.onAttach()
-                                    this.resetIconMap()
-                                    // this.handleExpand()
-                                    this.setState({ modalVisible: false })
-                                }}
-                            >
-                                <View style={styles.buttonContainer}>
-                                    <Text style={styles.buttonText}>Done</Text>
-                                </View>
-                            </TouchableOpacity>
+                <>
+                    {/* <SearchBarHeader
+                        title={suggestionType === 'User' ? 'Friends' : 'Tribes'}
+                        backButton
+                        onBackPress={() => {
+                            this.resetIconMap()
+                            this.setState({ modalVisible: false })
+                            this.handleExpand()
+                        }}
+                    /> */}
+                    <ModalHeader
+                        title={suggestionType === 'User' ? 'Friends' : 'Tribes'}
+                        back
+                        onCancel={() => {
+                            this.props.onCancel()
+                            this.resetIconMap()
+                            this.setState({ modalVisible: false })
+                        }}
+                    />
+                    <SearchSuggestion
+                        pageId={this.props.pageId}
+                        opacity={this.suggestionOpacity}
+                        onCancel={() => {
+                            Keyboard.dismiss()
+                        }}
+                        onSelect={() => {
+                            // Right now don't turn on this
+                            // this.scrollview.props.scrollToPosition(0, 0);
+                        }}
+                        onFocus={() => {
+                            this.scrollview.props.scrollToPosition(0, 120)
+                        }}
+                    />
+                    <TouchableOpacity
+                        style={{}}
+                        onPress={() => {
+                            this.props.onAttach()
+                            this.resetIconMap()
+                            // this.handleExpand()
+                            this.setState({ modalVisible: false })
+                        }}
+                    >
+                        <View style={styles.buttonContainer}>
+                            <Text style={styles.buttonText}>Done</Text>
                         </View>
-                    </View>
-                </RNModal>
+                    </TouchableOpacity>
+                </>
             )
         }
         if (suggestionType === 'NewNeed' || suggestionType === 'NewStep') {
             return (
-                <NeedStepSuggestion
-                    openModal={this.state.showNeedStepModal}
-                    onClose={() => this.setState({ showNeedStepModal: false })}
-                    onAction={() => this.props.onAttach()}
-                    pageId={this.props.pageId}
-                    opacity={this.suggestionOpacity}
-                />
+                <>
+                    <ModalHeader
+                        title={
+                            suggestionType === 'NewNeed'
+                                ? 'Suggest a Need'
+                                : 'Suggest a Step'
+                        }
+                        actionText="Attach"
+                        onCancel={() => {
+                            this.props.onCancel()
+                            this.resetIconMap()
+                            this.setState({ modalVisible: false })
+                        }}
+                        onAction={() => {
+                            this.props.onAttach()
+                            this.resetIconMap()
+                            this.setState({ modalVisible: false })
+                        }}
+                    />
+                    <NeedStepSuggestion
+                        item={this.props.item}
+                        pageId={this.props.pageId}
+                        goalId={this.props.goalId}
+                        opacity={this.suggestionOpacity}
+                    />
+                </>
             )
         }
-        if (suggestionType === 'Contact') {
-            return (
-                <InviteFriendModal
-                    pageId={this.props.pageId}
-                    isVisible={this.state.showInviteFriendModal}
-                    closeModal={this.closeInviteFriendModal}
-                    goalTosend={`My friend ${this.props.name} has the goal ${this.props.title} I thought you might be able to help. Please join us on GoalMogul so I can connect you!`}
-                    shouldOpenFromComments
-                />
-            )
-        }
+
         return null
     }
 
     closeInviteFriendModal = () => {
+        this.props.onCancel()
+        this.resetIconMap()
         this.setState({ ...this.state, showInviteFriendModal: false })
     }
 
@@ -401,78 +407,48 @@ class SuggestionModal extends Component {
         if (!newComment || !item) return null
         return (
             <RNModal
-                // animationType="slide"
-                // transparent={true}
                 isOpen={this.props.visible}
-                onClosed={this.resetIconMap}
-                swipeDirection="down"
-                swipeToClose={true}
-                coverScreen={true}
-                style={{ height: 100, position: 'absolute', bottom: 300 }}
-                useNativeDriver={true}
+                onClosed={this.props.onCancel}
+                style={{
+                    width: wp('100%'),
+                    height: hp(50),
+                    position: 'absolute',
+                    bottom: 160,
+                }}
             >
-                {/* <View
-                          style={{
-                              // opacity: 0.5,
-                              flex: 1,
-                              // flexDirection: 'column',
-                              // justifyContent: 'center',
-                              // alignItems: 'center',
-                              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                          }}
-                      > */}
-
                 <View
                     style={{
+                        marginVertical: 5,
+                        width: 30,
+                        height: 3,
+                        borderRadius: 5,
                         alignSelf: 'center',
-                        position: 'absolute',
-                        bottom: -20,
-                        height: hp(40),
-                        width: wp('100%'),
+                        backgroundColor: 'lightgray',
+                    }}
+                />
+                <View
+                    style={{
                         backgroundColor: 'white',
                     }}
                 >
-                    {/* <ModalHeader
-                              title="Suggestion"
-                              actionText="Attach"
-                              onCancel={this.props.onCancel}
-                              onAction={() => this.props.onAttach()}
-                          /> */}
-                    {/* <KeyboardAwareScrollView
-                        innerRef={(ref) => {
-                            this.scrollview = ref
-                        }}
-                        style={styles.scroll}
-                        extraScrollHeight={13}
-                        contentContainerStyle={{
-                            backgroundColor: 'white',
-                            // flexGrow: 1, // this will fix scrollview scroll issue by passing parent view width and height to it
-                        }}
-                        onKeyboardWillShow={() => {
-                            this.scrollview.props.scrollToPosition(0, 120)
-                        }}
-                        onKeyboardWillHide={() => {
-                            this.scrollview.props.scrollToPosition(0, 0)
-                        }}
-                    > */}
-                    <View
-                        style={{
-                            marginVertical: 5,
-                            width: 30,
-                            height: 3,
-                            borderRadius: 5,
-                            alignSelf: 'center',
-                            backgroundColor: 'lightgray',
-                        }}
-                    />
-                    <View style={{}}>
-                        {/* {this.renderGoalPreview(item)} */}
-                        {this.renderSuggestionFor(newComment, item)}
-                        {this.renderOptions(newComment)}
-                        {this.renderSuggestionBody(newComment)}
-                    </View>
-                    {/* </KeyboardAwareScrollView> */}
+                    {/* {this.renderGoalPreview(item)} */}
+                    {this.renderSuggestionFor(newComment, item)}
+                    {this.renderOptions(newComment)}
                 </View>
+                <Modal
+                    visible={this.state.modalVisible}
+                    isOpen={this.state.modalVisible}
+                    onClosed={() => this.setState({ modalVisible: false })}
+                >
+                    {this.renderSuggestionBody(newComment)}
+                </Modal>
+                <InviteFriendModal
+                    pageId={this.props.pageId}
+                    isVisible={this.state.showInviteFriendModal}
+                    closeModal={this.closeInviteFriendModal}
+                    goalTosend={`My friend ${this.props.name} has the goal ${this.props.title} I thought you might be able to help. Please join us on GoalMogul so I can connect you!`}
+                    shouldOpenFromComments
+                />
             </RNModal>
         )
     }
@@ -705,7 +681,6 @@ const Options = (props) => {
  */
 const SuggestedItem = (props) => {
     const { goal, type, suggestionForRef, stepRef, needRef } = props
-    console.log('SUGGESTEDITEM TYPE==>', type)
     let refToSearchFor = suggestionForRef
 
     let items = []
@@ -766,10 +741,15 @@ const SuggestedItem = (props) => {
 }
 
 const mapStateToProps = (state, props) => {
+    const { goalDetail } = state
+    const title = goalDetail.goal.goal?.title
+    const name = goalDetail.goal.goal?.owner?.name
     const newComment = getNewCommentByTab(state, props.pageId)
 
     return {
         newComment,
+        title,
+        name,
     }
 }
 

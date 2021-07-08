@@ -274,7 +274,7 @@ const SuggestionHeadlineV2 = (props) => {
                 <Timestamp time={timeago().format(timeStamp)} />
                 <View style={styles.caretContainer}>{menu}</View>
             </View>
-            <View style={styles.containerStyle}>
+            {/* <View style={styles.containerStyle}>
                 <Text
                     style={styles.suggestionTextStyle}
                     numberOfLines={1}
@@ -285,7 +285,7 @@ const SuggestionHeadlineV2 = (props) => {
                         {description}
                     </Text>
                 </Text>
-            </View>
+            </View> */}
         </View>
     )
 }

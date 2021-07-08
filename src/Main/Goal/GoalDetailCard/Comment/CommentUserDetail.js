@@ -105,7 +105,6 @@ class CommentUserDetail extends Component {
      * @param {commentObject} item
      */
     renderCommentMedia(item) {
-        console.log('THIS IS ITEMMMM', item)
         const { mediaRef } = item
         if (!mediaRef) return null
 
@@ -216,8 +215,14 @@ class CommentUserDetail extends Component {
         )
     }
 
-    renderCommentRef({ suggestion, owner }) {
-        return <CommentRef item={suggestion} owner={owner} />
+    renderCommentRef({ suggestion, owner }, index) {
+        return (
+            <CommentRef
+                item={suggestion}
+                owner={owner}
+                pageId={this.props.pageId}
+            />
+        )
     }
 
     // user basic information
