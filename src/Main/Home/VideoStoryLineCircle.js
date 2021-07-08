@@ -8,7 +8,13 @@ import StoryModal from '../Common/Modal/StoryModal'
 import { FONT_FAMILY, TEXT_FONT_SIZE } from '../../styles/basic/text'
 import { GM_BLUE } from '../../styles/basic/color'
 
-const VideoStoryLineCircle = ({ image, name, profileImage, arrayStory }) => {
+const VideoStoryLineCircle = ({
+    image,
+    name,
+    profileImage,
+    arrayStory,
+    stories,
+}) => {
     const [showModal, setShowModal] = useState(false)
     const [count, setCount] = useState(0)
 
@@ -26,14 +32,15 @@ const VideoStoryLineCircle = ({ image, name, profileImage, arrayStory }) => {
                 <StoryModal
                     isVisible={showModal}
                     setIsVisible={setShowModal}
-                    stories={arrayStory}
+                    storiesA={arrayStory}
                     count={count}
                     setCount={setCount}
+                    stories={stories}
                 />
             </View>
             <TouchableWithoutFeedback
                 onPress={() => {
-                    setCount(arrayStory.findIndex((item) => item.name === name))
+                    setCount(stories.findIndex((item) => item.name === name))
                     setTimeout(() => setShowModal(true), 200)
                 }}
             >

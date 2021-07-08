@@ -87,41 +87,54 @@ const stories = [
         profileImage: require('../../asset/image/Community_1.png'),
 
         name: 'Test Name 1',
-        story: require('../../testStory.jpeg'),
+        story: [
+            require('../../testStory.jpeg'),
+            require('../../testStory2.png'),
+            require('../../testStory3.jpg'),
+        ],
     },
-    {
-        profileImage: require('../../asset/image/Community_1.png'),
+    // {
+    //     profileImage: require('../../asset/image/Community_1.png'),
 
-        name: 'Test Name 1',
-        story: require('../../testStory2.png'),
-    },
-    {
-        profileImage: require('../../asset/image/Community_1.png'),
+    //     name: 'Test Name 1',
+    //     story: require('../../testStory2.png'),
+    // },
+    // {
+    //     profileImage: require('../../asset/image/Community_1.png'),
 
-        name: 'Test Name 1',
-        story: require('../../testStory3.jpg'),
-    },
+    //     name: 'Test Name 1',
+    //     story: require('../../testStory3.jpg'),
+    // },
     {
         profileImage: require('../../asset/image/Community_1.png'),
 
         name: 'Test Name 2',
-        story: require('../../testStory2.png'),
+        story: [
+            require('../../testStory2.png'),
+            require('../../testStory.jpeg'),
+        ],
     },
+    // {
+    //     profileImage: require('../../asset/image/Community_1.png'),
+
+    //     name: 'Test Name 2',
+    //     story: require('../../testStory.jpeg'),
+    // },
     {
         profileImage: require('../../asset/image/Community_1.png'),
 
-        name: 'Test Name 2',
-        story: require('../../testStory.jpeg'),
+        name: 'Test Name 3',
+        story: [require('../../testStory.jpeg')],
     },
 ]
 
-const unique = stories.reduce((res, itm) => {
-    let result = res.find(
-        (item) => JSON.stringify(item.name) == JSON.stringify(itm.name)
-    )
-    if (!result) return res.concat(itm)
-    return res
-}, [])
+// const unique = stories.reduce((res, itm) => {
+//     let result = res.find(
+//         (item) => JSON.stringify(item.name) == JSON.stringify(itm.name)
+//     )
+//     if (!result) return res.concat(itm)
+//     return res
+// }, [])
 
 const DEBUG_KEY = '[ UI Home ]'
 
@@ -502,14 +515,15 @@ class Home extends Component {
                             keyExtractor={(index) => index.toString()}
                             horizontal={true}
                             ListHeaderComponent={this._storyLineHeader}
-                            data={unique}
+                            data={stories}
                             renderItem={({ item }) => {
                                 return (
                                     <VideoStoryLineCircle
-                                        image={item.story}
+                                        image={item.story[0]}
                                         profileImage={item.profileImage}
                                         name={item.name}
-                                        arrayStory={stories}
+                                        arrayStory={item.story}
+                                        stories={stories}
                                     />
                                 )
                             }}
