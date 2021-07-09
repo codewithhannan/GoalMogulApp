@@ -7,6 +7,7 @@ import {
     FlatList,
     TouchableWithoutFeedback,
     Image,
+    TouchableOpacity,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuProvider } from 'react-native-popup-menu'
@@ -14,11 +15,13 @@ import { Actions } from 'react-native-router-flux'
 import _ from 'lodash'
 import { Notifications } from 'expo'
 import { copilot } from 'react-native-copilot-gm'
+import R from 'ramda'
 // import { copilot } from 'react-native-copilot'
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup'
 import SearchBarHeader from '../Common/Header/SearchBarHeader'
+import { openCamera, openCameraRoll } from '../../actions'
 
 import Mastermind from './Mastermind'
 import ActivityFeed from './ActivityFeed'
@@ -28,6 +31,7 @@ import CreateContentButtons from '../Common/Button/CreateContentButtons'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 import { track, EVENT as E } from '../../monitoring/segment'
 import { getToastsData } from '../../actions/ToastActions'
+import BottomButtonsSheet from '../Common/Modal/BottomButtonsSheet'
 
 //video stroyline
 import VideoStoryLineCircle from './VideoStoryLineCircle'
@@ -65,6 +69,7 @@ import {
     markUserAsOnboarded,
     resetTutorial,
 } from '../../redux/modules/User/TutorialActions'
+import * as ImagePicker from 'expo-image-picker'
 
 import { saveRemoteMatches } from '../../actions/MeetActions'
 
@@ -72,6 +77,8 @@ import { saveRemoteMatches } from '../../actions/MeetActions'
 import { color } from '../../styles/basic'
 import { TEXT_FONT_SIZE, FONT_FAMILY } from '../../styles/basic/text'
 import video_icon from '../../asset/icons/video_icon.png'
+import { getButtonBottomSheetHeight } from '../../styles'
+
 // Utils
 import { CreateGoalTooltip } from '../Tutorial/Tooltip'
 import { Text } from 'react-native-animatable'
@@ -88,9 +95,15 @@ const stories = [
 
         name: 'Test Name 1',
         story: [
-            require('../../testStory.jpeg'),
-            require('../../testStory2.png'),
-            require('../../testStory3.jpg'),
+            {
+                type: 'img',
+                uri: require('../../testStory3.jpg'),
+            },
+            {
+                type: 'vid',
+                uri:
+                    'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+            },
         ],
     },
     // {
@@ -110,8 +123,14 @@ const stories = [
 
         name: 'Test Name 2',
         story: [
-            require('../../testStory2.png'),
-            require('../../testStory.jpeg'),
+            {
+                type: 'img',
+                uri: require('../../testStory.jpeg'),
+            },
+            {
+                type: 'img',
+                uri: require('../../testStory2.png'),
+            },
         ],
     },
     // {
@@ -124,7 +143,12 @@ const stories = [
         profileImage: require('../../asset/image/Community_1.png'),
 
         name: 'Test Name 3',
-        story: [require('../../testStory.jpeg')],
+        story: [
+            {
+                type: 'img',
+                uri: require('../../testStory3.jpg'),
+            },
+        ],
     },
 ]
 
@@ -154,6 +178,7 @@ class Home extends Component {
             appState: AppState.currentState,
             showWelcomeScreen: false,
             showBadgeEarnModal: false,
+            pickedImage: null,
         }
         this.scrollToTop = this.scrollToTop.bind(this)
         this._renderScene = this._renderScene.bind(this)
@@ -331,6 +356,32 @@ class Home extends Component {
         this.props.handlePushNotification(notification)
     }
 
+    // pickImage = async () => {
+    //     if (Platform.OS !== 'web') {
+    //         const {
+    //             status,
+    //         } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    //         if (status !== 'granted') {
+    //             return alert(
+    //                 'Sorry, we need camera roll permissions to make this work!'
+    //             )
+    //         } else {
+    //             let result = await ImagePicker.launchImageLibraryAsync({
+    //                 mediaTypes: ImagePicker.MediaTypeOptions.All,
+    //                 allowsEditing: true,
+    //                 aspect: [4, 3],
+    //                 quality: 0.3,
+    //             })
+
+    //             console.log(result)
+
+    //             if (!result.cancelled) {
+    //                 this.setState({ pickedImage: result })
+    //             }
+    //         }
+    //     }
+    // }
+
     handleAppStateChange = async (nextAppState) => {
         if (
             this.state.appState.match(/inactive|background/) &&
@@ -438,32 +489,70 @@ class Home extends Component {
     }
 
     _storyLineHeader = (props) => {
+        const options = [
+            {
+                text: 'Open Gallery',
+                onPress: this.handleOpenCameraRoll,
+            },
+            {
+                text: 'Open Camera',
+                onPress: this.handleOpenCamera,
+            },
+        ]
         return (
-            <View
-                style={{
-                    width: 70,
-                    height: 70,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: color.GM_LIGHT_GRAY,
-                    borderRadius: 35,
-                    marginTop: 5,
-                }}
-            >
-                <TouchableWithoutFeedback
-                    onPress={() => console.log('Pressed')}
-                >
-                    <Image
-                        source={video_icon}
-                        resizeMode="contain"
+            <>
+                <TouchableOpacity onPress={this.handleImageIconOnClick}>
+                    <View
                         style={{
-                            height: 20,
-                            width: 20,
+                            width: 70,
+                            height: 70,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: color.GM_LIGHT_GRAY,
+                            borderRadius: 35,
+                            marginTop: 5,
                         }}
-                    />
-                </TouchableWithoutFeedback>
-            </View>
+                    >
+                        <Image
+                            source={video_icon}
+                            resizeMode="contain"
+                            style={{
+                                height: 20,
+                                width: 20,
+                            }}
+                        />
+                    </View>
+                </TouchableOpacity>
+                <BottomButtonsSheet
+                    ref={(r) => (this.bottomSheetRef = r)}
+                    buttons={options}
+                    height={getButtonBottomSheetHeight(options.length)}
+                />
+            </>
         )
+    }
+    handleImageIconOnClick = () => {
+        this.bottomSheetRef && this.bottomSheetRef.open()
+    }
+
+    handleOpenCameraRoll = () => {
+        // const callback = R.curry((result) => {
+        //     this.props.newCommentOnMediaRefChange(result.uri, this.props.pageId)
+        // })
+        this.bottomSheetRef.close()
+        setTimeout(() => {
+            this.props.openCameraRoll((result) => result, {
+                disableEditing: true,
+            })
+        }, 500)
+    }
+
+    handleOpenCamera = () => {
+        this.bottomSheetRef.close()
+
+        setTimeout(() => {
+            this.props.openCamera((result) => result, { mayBeVideoOpen: true })
+        }, 500)
     }
 
     render() {
@@ -519,7 +608,7 @@ class Home extends Component {
                             renderItem={({ item }) => {
                                 return (
                                     <VideoStoryLineCircle
-                                        image={item.story[0]}
+                                        image={item.story[0].uri}
                                         profileImage={item.profileImage}
                                         name={item.name}
                                         arrayStory={item.story}
@@ -616,6 +705,8 @@ const HomeExplained = copilot({
 export default connect(
     mapStateToProps,
     {
+        openCamera,
+        openCameraRoll,
         fetchAppUserProfile,
         homeSwitchTab,
         openCreateOverlay,
