@@ -251,6 +251,7 @@ class SectionCardV2 extends Component {
     render() {
         // console.log('item for props is: ', this.props.item);
         const { type, item, isActive, drag, isSelf } = this.props
+        console.log('sectioncard item ==>', item)
         const { isCreateCard } = item
 
         let itemToRender = item

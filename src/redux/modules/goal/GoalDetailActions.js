@@ -390,6 +390,8 @@ export const updateGoal = (itemId, type, updates, goal, pageId) => (
     dispatch,
     getState
 ) => {
+    console.log('function called======itemid=======>', itemId)
+    console.log('function called======updates=======>', updates)
     if (type !== 'step' && type !== 'need') return
     let { isCompleted, description } = updates
 

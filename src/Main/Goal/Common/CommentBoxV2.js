@@ -676,18 +676,6 @@ class CommentBoxV2 extends Component {
         if (!newComment || !newComment.parentRef) return null
         const { uploading } = newComment
 
-        const { contentText, commentType, mediaRef } = newComment
-        const isInValidComment =
-            (commentType === 'Comment' || commentType === 'Reply') &&
-            (!contentText || contentText === '' || contentText.trim() === '') &&
-            mediaRef === undefined
-
-        const isInValidSuggestion = !validSuggestion(newComment)
-
-        console.log('THIS IS COMMENT', uploading)
-        console.log('THIS IS COMMENT 2', isInValidComment)
-        console.log('THIS IS COMMENT 3', isInValidSuggestion)
-
         const inputStyle = uploading
             ? {
                   ...styles.inputStyle,

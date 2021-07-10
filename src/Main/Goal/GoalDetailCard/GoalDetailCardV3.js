@@ -221,7 +221,7 @@ export class GoalDetailCardV3 extends React.Component {
                 suggestionForRef: focusRef, // Need or Step ref
                 suggestionFor: focusType === 'need' ? 'Need' : 'Step',
             }
-
+            console.log('Focus type =====>', focusType)
             // Open Create Goal Modal for edition
             if (initialShowGoalModal) {
                 setTimeout(() => {
@@ -409,6 +409,7 @@ export class GoalDetailCardV3 extends React.Component {
     }
 
     handleReplyTo = (type) => {
+        console.log('handleReplyTo type', type)
         this.setState({
             keyboardDidShow: true,
         })
@@ -542,7 +543,7 @@ export class GoalDetailCardV3 extends React.Component {
                         <StepAndNeedCardV3
                             key={`mastermind-${index}`}
                             item={item}
-                            goalRef={goalDetail}
+                            // goalRef={goalDetail}
                             onCardPress={() => {
                                 // Use passed in function to handle tab switch with animation
                                 this._handleIndexChange(1, item.type, item._id)
@@ -807,6 +808,7 @@ export class GoalDetailCardV3 extends React.Component {
             initial,
             displayGoals,
         } = this.props
+        console.log('GOlaDetailcard data', data)
 
         const { focusType } = navigationState
 
@@ -896,6 +898,7 @@ export class GoalDetailCardV3 extends React.Component {
         if (!goalDetail || _.isEmpty(goalDetail)) return null
 
         const { focusType, focusRef } = navigationState
+        console.log('FOCUS TYPE NAVIGATION STATE', focusType)
 
         return (
             <>

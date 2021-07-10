@@ -28,13 +28,16 @@ class Tooltip extends Component {
             type,
             viewStyle,
         } = this.props
+
+        console.log('THIS IS TOOLTIP', tooltip)
         return (
             <>
                 {this.state.toolTipVisible &&
                 (tooltip.goalProgressTooltip ||
                     tooltip.swipeToolTipStatus ||
                     tooltip.profileGoalDetail ||
-                    tooltip.accountabilityTooltip) ? (
+                    tooltip.accountabilityTooltip ||
+                    tooltip.suggestionToolTip) ? (
                     <Animatable.View
                         animation="fadeIn"
                         delay={500}

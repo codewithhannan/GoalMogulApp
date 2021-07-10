@@ -201,7 +201,7 @@ const styles = {
         flex: 1,
         flexWrap: 'wrap',
         fontSize: 14,
-        color: '#00000',
+        color: 'black',
     },
     memberInfoTextStyle: {
         fontSize: 12,

@@ -95,7 +95,6 @@ import Contacts from './Registration/Contacts'
 import ContactSync from './Registration/ContactSync'
 import IntroForm from './Registration/IntroForm'
 import SendContactMessage from './Main/MeetTab/Modal/SendContactMessage'
-import FriendsList from './Main/Goal/GoalDetailCard/Suggestion/FriendsList'
 /* Registration */
 // import RegistrationAccount from './Registration/Account';
 // import RegistrationAccount from './Registration/RegistrationAccount';
@@ -145,7 +144,6 @@ function getCommonScenes(tab) {
             key={`${prefix}ContactMessage`}
             component={SendContactMessage}
         />,
-        <Scene key={`${prefix}FriendList`} component={FriendsList} />,
         <Scene key={`${prefix}ImagePicker`} component={MultipleImagePicker} />,
         <Scene key={`${prefix}sendFeedback`} component={SendFeedback} />,
         <Scene key={`${prefix}goal`} component={GoalDetailCard} />,
