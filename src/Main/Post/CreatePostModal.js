@@ -20,6 +20,8 @@ import { Icon } from '@ui-kitten/components'
 // assets
 import cancel from '../../asset/utils/cancel_no_background.png'
 import expand from '../../asset/utils/expand.png'
+import camera from '../../asset/icons/ChatCamera.png'
+import gallary from '../../asset/icons/ChatGallary.png'
 
 // Actions
 import { openCameraRoll, openCamera } from '../../actions'
@@ -318,16 +320,25 @@ class CreatePostModal extends Component {
     }
 
     handleOpenCamera = () => {
-        this.props.openCamera((result) => {
-            this.props.change('mediaRef', result.uri)
-        })
+        this.bottomSheetRef.close()
+        setTimeout(() => {
+            this.props.openCamera((result) => {
+                this.props.change('mediaRef', result.uri)
+            })
+        }, 500)
     }
 
     handleOpenCameraRoll = () => {
-        const callback = (result) => {
-            this.props.change('mediaRef', result.uri)
-        }
-        this.props.openCameraRoll(callback, { disableEditing: true })
+        // this.bottomSheetRef.setModalVisible(false)
+
+        setTimeout(() => {
+            const callback = (result) => {
+                this.props.change('mediaRef', result.uri)
+                console.log('imageuri result', result.uri)
+                // this.bottomSheetRef.setModalVisible(true)
+            }
+            this.props.openCameraRoll(callback, { disableEditing: true })
+        }, 600)
     }
 
     loadFromDraft = (selectedDraft, index) => {
@@ -405,7 +416,7 @@ class CreatePostModal extends Component {
             (initializeFromState &&
                 initialPost &&
                 initialPost.mediaRef !== mediaRef) ||
-            (!initializeFromState && mediaRef)
+            (initializeFromState && mediaRef)
         )
     }
 
@@ -745,19 +756,21 @@ class CreatePostModal extends Component {
 
     renderPost() {
         return (
-            <Field
-                name="post"
-                label="post"
-                component={this.renderInput}
-                editable={!this.props.uploading}
-                multiline
-                placeholder="Got new updates for your goal or things in general?"
-                loading={this.state.tagSearchData.loading}
-                tagData={this.state.tagSearchData.data}
-                keyword={this.state.keyword}
-                change={(type, val) => this.props.change(type, val)}
-                autoFocus={this.isAttachGoalRequirementSatisfied()}
-            />
+            <View style={{ marginVertical: 5 }}>
+                <Field
+                    name="post"
+                    label="post"
+                    component={this.renderInput}
+                    editable={!this.props.uploading}
+                    multiline
+                    placeholder="Got new updates for your goal?"
+                    loading={this.state.tagSearchData.loading}
+                    tagData={this.state.tagSearchData.data}
+                    keyword={this.state.keyword}
+                    change={(type, val) => this.props.change(type, val)}
+                    autoFocus={this.isAttachGoalRequirementSatisfied()}
+                />
+            </View>
         )
     }
 
@@ -921,6 +934,7 @@ class CreatePostModal extends Component {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
+                    marginHorizontal: 10,
                 }}
             >
                 <View style={{ flexDirection: 'row' }}>
@@ -934,7 +948,7 @@ class CreatePostModal extends Component {
                 </View>
                 <DelayedButton
                     activeOpacity={0.6}
-                    style={{ padding: 2 }}
+                    style={{ padding: 2, marginHorizontal: 15 }}
                     onPress={this.handleSaveDraft}
                     disabled={saveDraftDisabled}
                 >
@@ -969,41 +983,67 @@ class CreatePostModal extends Component {
         ]
 
         return (
-            <View
-                style={{
-                    flexDirection: 'row',
-                }}
-            >
-                {/* Camera Button */}
-                <DelayedButton
-                    touchableHighlight
-                    underlayColor="gray"
-                    style={actionIconWrapperStyle}
-                    onPress={this.handleOpenCamera}
-                    disabled={disabled}
+            <>
+                <View
+                    style={{
+                        width: '100%',
+                        height: 1,
+                        backgroundColor: 'lightgray',
+                    }}
+                />
+                <View
+                    style={{
+                        flexDirection: 'row',
+                    }}
                 >
-                    <Icon
-                        name="camera"
-                        pack="material-community"
-                        style={actionIconStyle}
-                    />
-                </DelayedButton>
-                {/* Media roll button */}
-                <DelayedButton
-                    touchableHighlight
-                    underlayColor="gray"
-                    style={actionIconWrapperStyle}
-                    onPress={this.handleOpenCameraRoll}
-                    disabled={disabled}
-                >
-                    <Icon
+                    <DelayedButton
+                        // touchableHighlight
+                        underlayColor="gray"
+                        style={actionIconWrapperStyle}
+                        onPress={this.handleOpenCameraRoll}
+                        disabled={disabled}
+                    >
+                        {/* <Icon
                         name="image-area"
                         pack="material-community"
                         style={actionIconStyle}
-                    />
-                </DelayedButton>
-                {this.renderMedia()}
-            </View>
+                    /> */}
+                        <Image
+                            source={gallary}
+                            style={{
+                                width: 25,
+                                height: 25,
+                                resizeMode: 'contain',
+                            }}
+                        />
+                    </DelayedButton>
+                    {/* Camera Button */}
+                    <DelayedButton
+                        // touchableHighlight
+                        underlayColor="gray"
+                        style={actionIconWrapperStyle}
+                        onPress={this.handleOpenCamera}
+                        disabled={disabled}
+                    >
+                        {/* <Icon
+                        name="camera"
+                        pack="material-community"
+                        style={actionIconStyle}
+                    /> */}
+                        <Image
+                            source={camera}
+                            style={{
+                                width: 25,
+                                height: 25,
+                                resizeMode: 'contain',
+                            }}
+                        />
+                    </DelayedButton>
+                    {/* Media roll button */}
+
+                    {this.renderMedia()}
+                </View>
+            </>
         )
     }
 
@@ -1121,14 +1161,16 @@ class CreatePostModal extends Component {
                 }}
                 sheetFooter={this.renderCreateButton(actionDisabled)}
             >
+                {/* <View style={{ marginHorizontal: 15 }}> */}
                 {showDraftHeader && this.renderDraftsHeader()}
+                {/* </View> */}
                 <View style={{ flexDirection: 'row', marginTop: 16 }}>
                     <ProfileImage
                         imageUrl={profile ? profile.image : undefined}
                     />
-                    {this.renderPost()}
+                    {this.renderActionIcons(actionDisabled)}
                 </View>
-                {this.renderActionIcons(actionDisabled)}
+                {this.renderPost()}
                 {this.renderMediaIcons()}
                 {this.renderImageModal()}
             </BottomSheet>
@@ -1162,13 +1204,13 @@ const styles = {
     },
     actionIconWrapperStyle: {
         flexDirection: 'row',
-        backgroundColor: '#4F4F4F',
-        height: 100,
-        width: 110,
+        // backgroundColor: '#4F4F4F',
+        // height: 100,
+        // width: 110,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 5,
-        marginRight: 8,
+        // borderRadius: 5,
+        marginRight: 15,
         marginTop: 12,
     },
     userImageContainerStyle: {

@@ -1,7 +1,14 @@
 /** @format */
 
 import React from 'react'
-import { View, Text, TouchableOpacity, Linking, Image } from 'react-native'
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    Linking,
+    Image,
+    Alert,
+} from 'react-native'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import Expo, { WebBrowser } from 'expo'
@@ -304,7 +311,7 @@ class CommentRef extends React.PureComponent {
                                 activeOpacity={0.6}
                                 onPress={() => {
                                     this.props.updateGoal(
-                                        suggestionForRef,
+                                        item._id,
                                         type,
                                         {
                                             description: suggestionText,
@@ -312,6 +319,12 @@ class CommentRef extends React.PureComponent {
                                         goalRef,
                                         pageId
                                     )
+                                    setTimeout(() => {
+                                        Alert.alert(
+                                            'Success',
+                                            'Your Step has been added'
+                                        )
+                                    }, 1000)
                                 }}
                                 style={{
                                     height: 31,
@@ -357,7 +370,7 @@ class CommentRef extends React.PureComponent {
                                 activeOpacity={0.6}
                                 onPress={() => {
                                     this.props.updateGoal(
-                                        suggestionForRef,
+                                        item._id,
                                         type,
                                         {
                                             description: suggestionText,
@@ -365,6 +378,12 @@ class CommentRef extends React.PureComponent {
                                         goalRef,
                                         pageId
                                     )
+                                    setTimeout(() => {
+                                        Alert.alert(
+                                            'Success',
+                                            'Your Need has been added'
+                                        )
+                                    }, 1000)
                                 }}
                                 style={{
                                     height: 31,

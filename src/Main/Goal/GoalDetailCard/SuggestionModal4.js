@@ -429,6 +429,8 @@ class SuggestionModal extends Component {
                 <View
                     style={{
                         backgroundColor: 'white',
+                        flex: 1,
+                        zIndex: 15,
                     }}
                 >
                     {/* {this.renderGoalPreview(item)} */}
