@@ -89,7 +89,7 @@ class AddPhoneNumberForm extends Component {
     /* Refactor error function out */
     renderError(error) {
         return error ? (
-            <View style={{ height: 15 }}>
+            <View style={{ paddingHorizontal: 20 }}>
                 <Text style={styles.errorStyle}>{error}</Text>
             </View>
         ) : null

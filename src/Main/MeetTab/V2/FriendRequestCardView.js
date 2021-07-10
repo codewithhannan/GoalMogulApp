@@ -257,7 +257,7 @@ class FriendRequestCardView extends React.PureComponent {
                     <Text
                         style={[default_style.buttonText_1, { fontSize: 12 }]}
                     >
-                        Unfriend
+                        Ignore
                     </Text>
                 </DelayedButton>
                 <View style={{ flex: 1 }} />

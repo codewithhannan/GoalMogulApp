@@ -26,11 +26,17 @@ class UserAgreement extends React.Component {
                 <OnboardingHeader />
                 <WebView
                     javaScriptEnabled={true}
+                    scalesPageToFit={true}
                     mixedContentMode={'always'}
-                    style={{ flex: 1, resizeMode: 'cover', width }}
-                    scalesPageToFit={false}
+                    style={{
+                        flex: 1,
+                        overflow: 'hidden',
+                        resizeMode: 'cover',
+                    }}
                     source={{ uri: TERMS_OF_SERVICE_URL }}
                     bounces={false}
+                    scrollEnabled
+                    showsHorizontalScrollIndicator={false}
                     onLoadEnd={(e) => {
                         if (!this.state.loaded) {
                             // Wait for WebView to be fully loaded and converted to transparent.

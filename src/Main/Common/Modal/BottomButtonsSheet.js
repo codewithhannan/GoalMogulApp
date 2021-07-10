@@ -29,16 +29,18 @@ class BottomButtonsSheet extends React.PureComponent {
                 imageStyle,
                 iconStyle,
                 icon,
-                closeSheetOnOptionPress,
                 ...otherProps
             } = item
+            const { closeSheetOnOptionPress } = this.props
 
             // context is passed into the onPress tot let it handle itself
             return (
                 <DelayedButton
                     onPress={() => {
-                        onPress && onPress()
                         if (closeSheetOnOptionPress) this.close()
+                        setTimeout(() => {
+                            onPress && onPress()
+                        }, 500)
                     }}
                     key={text}
                     style={{

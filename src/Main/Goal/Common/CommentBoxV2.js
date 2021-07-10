@@ -270,16 +270,26 @@ class CommentBoxV2 extends Component {
     }
 
     handleOpenCamera = () => {
-        this.props.openCamera((result) => {
-            this.props.newCommentOnMediaRefChange(result.uri, this.props.pageId)
-        })
+        this.bottomSheetRef.close()
+
+        setTimeout(() => {
+            this.props.openCamera((result) => {
+                this.props.newCommentOnMediaRefChange(
+                    result.uri,
+                    this.props.pageId
+                )
+            })
+        }, 500)
     }
 
     handleOpenCameraRoll = () => {
         const callback = R.curry((result) => {
             this.props.newCommentOnMediaRefChange(result.uri, this.props.pageId)
         })
-        this.props.openCameraRoll(callback, { disableEditing: true })
+        this.bottomSheetRef.close()
+        setTimeout(() => {
+            this.props.openCameraRoll(callback, { disableEditing: true })
+        }, 500)
     }
 
     /**
@@ -662,7 +672,7 @@ class CommentBoxV2 extends Component {
     }
 
     render() {
-        const { pageId, newComment, comments } = this.props
+        const { pageId, newComment } = this.props
         if (!newComment || !newComment.parentRef) return null
         const { uploading } = newComment
 
@@ -712,7 +722,7 @@ class CommentBoxV2 extends Component {
                     horizontal={false} // defaut is true, change the orientation of the list
                     MaxVisibleRowCount={7} // this is required if horizontal={false}
                 />
-                {this.renderSuggestionRefBottomSheet()}
+                {/* {this.renderSuggestionRefBottomSheet()} */}
                 {/* <InviteFriendModal
                     isVisible={this.state.showInviteFriendModal}
                     closeModal={this.closeInviteFriendModal}
@@ -812,13 +822,11 @@ const styles = {
 }
 
 const mapStateToProps = (state, props) => {
-    const { comments, goalDetail } = state
+    const { goalDetail } = state
     const title = goalDetail.goal.goal?.title
     const name = goalDetail.goal.goal?.owner?.name
-
     return {
         newComment: getNewCommentByTab(state, props.pageId),
-        comments,
         title,
         name,
     }

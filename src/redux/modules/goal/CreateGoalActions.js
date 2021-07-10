@@ -137,7 +137,10 @@ export const submitGoal = (
         dispatch({
             type: GOAL_CREATE_SUBMIT_FAIL,
         })
-        Alert.alert('Creating new goal failed', 'Please try again later')
+        Alert.alert(
+            'Creating new goal failed',
+            'Please enter valid information'
+        )
     }
 
     const onSuccess = () => {

@@ -222,18 +222,25 @@ renderOnShareBottomSheet = () => {
         {
             text: 'Publish to Home Feed',
             onPress: () => {
-                this.bottomSheetRef.close()
-                this.props.shareGoalToMastermind(_id, pageId)
+                this.shareGoalBottomSheet.close()
+                setTimeout(() => {
+                    this.props.shareGoalToMastermind(_id, pageId)
+                }, 500)
             },
         },
         {
             text: 'Share to a Tribe',
             onPress: () => {
-                this.bottomSheetRef.close()
-                if (privacy !== 'public') {
-                    return sharingPrivacyAlert(SHAREING_PRIVACY_ALERT_TYPE.goal)
-                }
-                this.props.chooseShareDest(shareType, _id, 'tribe', item)
+                this.shareGoalBottomSheet.close()
+
+                setTimeout(() => {
+                    if (privacy !== 'public') {
+                        return sharingPrivacyAlert(
+                            SHAREING_PRIVACY_ALERT_TYPE.goal
+                        )
+                    }
+                    this.props.chooseShareDest(shareType, _id, 'tribe', item)
+                }, 500)
             },
         },
     ]

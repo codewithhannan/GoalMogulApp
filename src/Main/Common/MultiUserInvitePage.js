@@ -417,7 +417,7 @@ class MultiUserInvitePage extends React.PureComponent {
                 {this.props.noHeader ? null : (
                     <ModalHeader
                         title={`Friends`}
-                        actionText={'Invite'}
+                        actionText={'Add'}
                         onCancel={this.handleClose}
                         onAction={this.handleSubmit}
                     />

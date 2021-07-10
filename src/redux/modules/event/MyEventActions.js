@@ -389,7 +389,7 @@ export const inviteMultipleUsersToEvent = (eventId, users, callback) => (
         }
 
         if (failedItems.length == 0) {
-            Alert.alert('Success', 'Your friends have been invited')
+            Alert.alert('Success', 'Your Friend(s) have been invited')
             // Use callback if there is one
             if (callback) {
                 callback()

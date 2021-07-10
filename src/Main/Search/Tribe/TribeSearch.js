@@ -33,7 +33,6 @@ class TribeSearch extends Component {
 
     componentDidMount() {
         if (this.props.shouldPreload) {
-            console.log('YAHAN ARAHA HA')
             this.props.refreshPreloadData(TYPE)
         }
         this.props.getAllAccounts()
@@ -95,6 +94,7 @@ class TribeSearch extends Component {
                 type={this.props.type}
                 callback={this.props.callback}
                 onItemSelect={this.props.onItemSelect}
+                hideJoinButton={this.props.hideJoinButton}
             />
         )
     }

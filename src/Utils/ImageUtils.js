@@ -327,7 +327,7 @@ const ImageUtils = {
         const requestStatus = await Promise.all(filteredPromises)
 
         if (requestStatus.some((value) => value.status !== 'granted')) {
-            alert('Please grant access to photos.')
+            alert('Please grant access to photos and camera.')
             return false
         }
         return true

@@ -28,13 +28,26 @@ import { Layout, Text, Toggle } from '@ui-kitten/components'
  */
 function ToggleField(props) {
     const { label, checked, children, onCheckedChange, style } = props
+
+    const renderCheckedValue = () => {
+        if (checked == undefined) {
+            return false
+        } else if (checked == false) {
+            return false
+        } else if (checked != undefined) {
+            return true
+        } else {
+            return false
+        }
+    }
+
     return (
         <Layout style={[styles.container, style]} {...props}>
             <Layout style={styles.label}>
                 {label}
                 {children}
             </Layout>
-            <Toggle checked={checked} onChange={onCheckedChange} />
+            <Toggle checked={renderCheckedValue()} onChange={onCheckedChange} />
         </Layout>
     )
 }

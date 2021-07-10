@@ -167,6 +167,14 @@ class InputBox extends React.Component {
                 <DateTimePicker
                     isVisible={this.state.isDatePickerVisible}
                     mode="date"
+                    // pickerStyleIOS={{
+                    //     height: 80,
+                    //     bottom: 60,
+                    //     marginHorizontal: 20,
+                    // }}
+                    // pickerContainerStyleIOS={{
+                    //     justifyContent: 'center',
+                    // }}
                     display="calendar"
                     titleIOS="Date of Birth"
                     maximumDate={moment()
@@ -357,8 +365,8 @@ class InputBox extends React.Component {
                         paddingVertical: 4,
                     }}
                 >
-                    {this.renderPill('Female', value, onChangeText)}
                     {this.renderPill('Male', value, onChangeText)}
+                    {this.renderPill('Female', value, onChangeText)}
                     {this.renderPill('Other', value, onChangeText)}
                     {this.renderPill('Prefer not to say', value, onChangeText)}
                 </ScrollView>

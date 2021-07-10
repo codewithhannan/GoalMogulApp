@@ -313,7 +313,7 @@ const doMyTribeAdminRemoveUser = (userId, tribeId) => (dispatch, getState) => {
                 updateType: MEMBER_UPDATE_TYPE.removeMember,
             },
         })
-        Alert.alert('Member is removed successfully')
+        Alert.alert('Invitation has been withdrawn')
         // refreshMyTribeDetail(tribeId)(dispatch, getState);
     }
     const onError = (err) => {
@@ -1125,7 +1125,7 @@ export const inviteMultipleUsersToTribe = (tribeId, users, callback) => (
         }
 
         if (failedItems.length == 0) {
-            Alert.alert('Success', 'Your friends have been invited')
+            Alert.alert('Success', 'Your Friend(s) have been invited')
             // Use callback if there is one
             if (callback) {
                 callback()
