@@ -551,7 +551,10 @@ class Home extends Component {
         this.bottomSheetRef.close()
 
         setTimeout(() => {
-            this.props.openCamera((result) => result, { mayBeVideoOpen: true })
+            this.props.openCamera(
+                (result) => console.log(result)
+                // (mayBeVideoOpen = true)
+            )
         }, 500)
     }
 
