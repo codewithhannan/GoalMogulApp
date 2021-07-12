@@ -6,6 +6,7 @@ import moment from 'moment'
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import CountryPicker from 'react-native-country-picker-modal'
 import DateTimePicker from 'react-native-modal-datetime-picker'
+import RNDatePicker from '@react-native-community/datetimepicker'
 import { text, color, default_style } from '../../../styles/basic'
 import OnboardingStyles from '../../../styles/Onboarding'
 
@@ -167,15 +168,20 @@ class InputBox extends React.Component {
                 <DateTimePicker
                     isVisible={this.state.isDatePickerVisible}
                     mode="date"
-                    // pickerStyleIOS={{
-                    //     height: 80,
-                    //     bottom: 60,
-                    //     marginHorizontal: 20,
-                    // }}
-                    // pickerContainerStyleIOS={{
-                    //     justifyContent: 'center',
-                    // }}
-                    display="calendar"
+                    customPickerIOS={(props) => (
+                        <RNDatePicker
+                            {...props}
+                            display={
+                                Platform.OS === 'ios' ? 'spinner' : 'default'
+                            }
+                            style={{
+                                height: 110,
+                                marginTop: 15,
+
+                                marginHorizontal: 15,
+                            }}
+                        />
+                    )}
                     titleIOS="Date of Birth"
                     maximumDate={moment()
                         .subtract(MIN_AGE_REQUIREMENT_YRS, 'year')
@@ -200,7 +206,7 @@ class InputBox extends React.Component {
                             isDatePickerVisible: false,
                         })
                     }
-                    isDarkModeEnabled={false}
+                    // isDarkModeEnabled={false}
                 />
                 {this.renderCaption(caption, status)}
             </View>

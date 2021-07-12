@@ -222,51 +222,52 @@ class ActivityFeed extends Component {
 
     renderInviteSomeFreindsCard() {
         return (
-            <View
-                style={{
-                    backgroundColor: color.GM_CARD_BACKGROUND,
-                    marginTop: 8,
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    paddingHorizontal: 96,
-                    paddingVertical: 24,
-                }}
-            >
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        width: 120,
-                    }}
-                >
-                    <Image
-                        source={LionMascot}
-                        style={{
-                            height: 136,
-                            width: 90,
-                            resizeMode: 'contain',
-                        }}
-                    />
-                </View>
-                <View style={{}}>
-                    <Text
-                        style={{
-                            ...default_style.titleText_1,
-                        }}
-                    >
-                        Your feed has no activity
-                    </Text>
-                    <Text
-                        style={{
-                            ...default_style.normalText_1,
-                            marginTop: 12,
-                        }}
-                    >
-                        Enjoy sharing your goals with friends to make your
-                        friendships more fulfilling!
-                    </Text>
-                    {this.renderInviteFreindsButton()}
-                </View>
-            </View>
+            // <View
+            //     style={{
+            //         backgroundColor: color.GM_CARD_BACKGROUND,
+            //         marginTop: 8,
+            //         flexDirection: 'row',
+            //         justifyContent: 'center',
+            //         paddingHorizontal: 96,
+            //         paddingVertical: 24,
+            //     }}
+            // >
+            //     <View
+            //         style={{
+            //             flexDirection: 'row',
+            //             width: 120,
+            //         }}
+            //     >
+            //         <Image
+            //             source={LionMascot}
+            //             style={{
+            //                 height: 136,
+            //                 width: 90,
+            //                 resizeMode: 'contain',
+            //             }}
+            //         />
+            //     </View>
+            //     <View style={{}}>
+            //         <Text
+            //             style={{
+            //                 ...default_style.titleText_1,
+            //             }}
+            //         >
+            //             Your feed has no activity
+            //         </Text>
+            //         <Text
+            //             style={{
+            //                 ...default_style.normalText_1,
+            //                 marginTop: 12,
+            //             }}
+            //         >
+            //             Enjoy sharing your goals with friends to make your
+            //             friendships more fulfilling!
+            //         </Text>
+            //         {this.renderInviteFreindsButton()}
+            //     </View>
+            // </View>
+            null
         )
     }
 
@@ -325,88 +326,89 @@ class ActivityFeed extends Component {
 
     renderJoinSomeTribesCard() {
         return (
-            <View
-                style={{
-                    backgroundColor: color.GM_CARD_BACKGROUND,
-                    marginTop: 8,
-                    justifyContent: 'center',
-                    paddingVertical: 8,
-                }}
-            >
-                <View
-                    style={{
-                        width: '100%',
-                        borderBottomColor: color.GM_LIGHT_GRAY,
-                        borderBottomWidth: 1,
-                        paddingHorizontal: 16,
-                        paddingVertical: 8,
-                    }}
-                >
-                    <Text
-                        style={{
-                            ...default_style.titleText_1,
-                        }}
-                    >
-                        Browse our Community
-                    </Text>
-                </View>
-                <View
-                    style={{
-                        paddingHorizontal: 16,
-                        justifyContent: 'center',
-                    }}
-                >
-                    <View
-                        style={{
-                            alignItems: 'center',
-                            paddingVertical: 24,
-                        }}
-                    >
-                        <Image
-                            source={TribeEmptyState}
-                            style={{
-                                height: 160,
-                                resizeMode: 'contain',
-                            }}
-                        />
-                    </View>
-                    <Text
-                        style={{
-                            ...default_style.titleText_2,
-                            textAlign: 'center',
-                            lineHeight: 24,
-                        }}
-                    >
-                        Join our encouraging community of achievers.{'\n'}
-                        Pay it forward and brighten someone’s day!{'\n'}
-                        Join a Tribe and help someone.{'\n'}
-                    </Text>
-                    <TouchableWithoutFeedback
-                        onPress={() => {
-                            Actions.push('tribeDiscover')
-                            track(E.DISCOVER_TRIBE_OPEN)
-                        }}
-                        style={{
-                            backgroundColor: color.GM_LIGHT_GRAY,
-                            paddingVertical: 12,
-                            paddingHorizontal: 16,
-                            borderRadius: 3,
-                            width: '100%',
-                            marginBottom: 24,
-                        }}
-                    >
-                        <Text
-                            style={{
-                                ...default_style.buttonText_1,
-                                color: color.TEXT_COLOR.DARK,
-                                textAlign: 'center',
-                            }}
-                        >
-                            Discover Tribes
-                        </Text>
-                    </TouchableWithoutFeedback>
-                </View>
-            </View>
+            // <View
+            //     style={{
+            //         backgroundColor: color.GM_CARD_BACKGROUND,
+            //         marginTop: 8,
+            //         justifyContent: 'center',
+            //         paddingVertical: 8,
+            //     }}
+            // >
+            //     <View
+            //         style={{
+            //             width: '100%',
+            //             borderBottomColor: color.GM_LIGHT_GRAY,
+            //             borderBottomWidth: 1,
+            //             paddingHorizontal: 16,
+            //             paddingVertical: 8,
+            //         }}
+            //     >
+            //         <Text
+            //             style={{
+            //                 ...default_style.titleText_1,
+            //             }}
+            //         >
+            //             Browse our Community
+            //         </Text>
+            //     </View>
+            //     <View
+            //         style={{
+            //             paddingHorizontal: 16,
+            //             justifyContent: 'center',
+            //         }}
+            //     >
+            //         <View
+            //             style={{
+            //                 alignItems: 'center',
+            //                 paddingVertical: 24,
+            //             }}
+            //         >
+            //             <Image
+            //                 source={TribeEmptyState}
+            //                 style={{
+            //                     height: 160,
+            //                     resizeMode: 'contain',
+            //                 }}
+            //             />
+            //         </View>
+            //         <Text
+            //             style={{
+            //                 ...default_style.titleText_2,
+            //                 textAlign: 'center',
+            //                 lineHeight: 24,
+            //             }}
+            //         >
+            //             Join our encouraging community of achievers.{'\n'}
+            //             Pay it forward and brighten someone’s day!{'\n'}
+            //             Join a Tribe and help someone.{'\n'}
+            //         </Text>
+            //         <TouchableWithoutFeedback
+            //             onPress={() => {
+            //                 Actions.push('tribeDiscover')
+            //                 track(E.DISCOVER_TRIBE_OPEN)
+            //             }}
+            //             style={{
+            //                 backgroundColor: color.GM_LIGHT_GRAY,
+            //                 paddingVertical: 12,
+            //                 paddingHorizontal: 16,
+            //                 borderRadius: 3,
+            //                 width: '100%',
+            //                 marginBottom: 24,
+            //             }}
+            //         >
+            //             <Text
+            //                 style={{
+            //                     ...default_style.buttonText_1,
+            //                     color: color.TEXT_COLOR.DARK,
+            //                     textAlign: 'center',
+            //                 }}
+            //             >
+            //                 Discover Tribes
+            //             </Text>
+            //         </TouchableWithoutFeedback>
+            //     </View>
+            // </View>
+            null
         )
     }
 

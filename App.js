@@ -36,6 +36,7 @@ import {
     track,
     trackWithProperties,
 } from './src/monitoring/segment'
+
 import { initSentry } from './src/monitoring/sentry'
 import * as Linking from 'expo-linking'
 import MultipleImagePicker from './src/Main/Menu/MutlipleImagePicker'
@@ -127,7 +128,6 @@ export default class App extends React.Component {
                     </PersistGate>
                 </ReduxProvider>
             </ThemeProvider>
-            // <TestVideo />
         )
     }
 }
