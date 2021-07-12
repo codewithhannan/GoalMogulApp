@@ -31,6 +31,7 @@ import EarnBadgeModal from '../../../Gamification/Badge/EarnBadgeModal'
 import InviteFriendModal from '../../../MeetTab/Modal/InviteFriendModal'
 import { sendMessage } from '../../../../redux/modules/chat/ChatRoomActions'
 import UUID from 'uuid/v4'
+import { Video, AVPlaybackStatus } from 'expo-av'
 import RNUrlPreview from 'react-native-url-preview'
 
 const { isSameDay } = utils
@@ -55,6 +56,7 @@ class Bubble extends React.Component {
             optionsAction: {},
             showBadgeModal: false,
             showInviteFriendModal: false,
+            status: {},
         }
     }
 
@@ -471,6 +473,7 @@ class Bubble extends React.Component {
                 wrapperStyle,
                 ...messageImageProps
             } = this.props
+
             if (this.props.renderMessageImage) {
                 return this.props.renderMessageImage(messageImageProps)
             }

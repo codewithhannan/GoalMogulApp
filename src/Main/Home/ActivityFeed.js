@@ -411,13 +411,13 @@ class ActivityFeed extends Component {
     }
 
     renderItem = ({ item }) => {
-        if (item.cardType == 'InviteSomeFriends') {
-            return this.renderInviteSomeFreindsCard()
-        } else if (item.cardType == 'JoinSomeTribes') {
-            return this.renderJoinSomeTribesCard()
-        } else if (item.cardType == 'GetYourSilverBadge') {
-            return null
-        }
+        // if (item.cardType == 'InviteSomeFriends') {
+        //     return this.renderInviteSomeFreindsCard()
+        // } else if (item.cardType == 'JoinSomeTribes') {
+        //     return this.renderJoinSomeTribesCard()
+        // } else if (item.cardType == 'GetYourSilverBadge') {
+        //     return null
+        // }
         // TODO: render item
         return (
             <ActivityCard
@@ -502,7 +502,7 @@ class ActivityFeed extends Component {
                     </View>
                 )}
 
-                {/* <FlatList
+                <FlatList
                     keyExtractor={(item, index) => index.toString()}
                     keyboardShouldPersistTaps="handled"
                     scrollEnabled={false}
@@ -524,7 +524,7 @@ class ActivityFeed extends Component {
                     ListFooterComponent={this.renderListFooter()}
                     onEndReached={this.handleOnLoadMore}
                     onEndThreshold={2}
-                /> */}
+                />
                 <PopupFB
                     isVisible={this.state.showFbModal}
                     closeModal={() => {

@@ -28,6 +28,7 @@ class Tooltip extends Component {
             type,
             viewStyle,
         } = this.props
+
         return (
             <>
                 {this.state.toolTipVisible &&
