@@ -19,7 +19,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { CopilotStep, walkthroughable } from 'react-native-copilot-gm'
 import DraggableFlatlist from 'react-native-draggable-flatlist'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
-import Swiper from 'react-native-swiper'
+import RNDatePicker from '@react-native-community/datetimepicker'
 import {
     Menu,
     MenuOption,
@@ -144,7 +144,7 @@ class NewGoalView extends Component {
 
                 'What life experience would make you feel truly alive?',
 
-                "What's a goal that would be easier to achieve with your friends' support or encouragement",
+                "What's a goal that would be easier to achieve with your friends' support or encouragement?",
                 'With more time and energy, what fun activity would you want to do with friends?',
                 'What future career accomplishment would you want to be respected for?',
 
@@ -821,8 +821,7 @@ class NewGoalView extends Component {
                         }}
                         placeholder="Make your goal as specific as possible"
                         autoCorrect
-                        // autoFocus={true}
-
+                        autoFocus={true}
                         autoCapitalize={'sentences'}
                         multiline
                         blurOnSubmit
@@ -1202,7 +1201,6 @@ class NewGoalView extends Component {
                     })
                 }}
                 mode="date"
-                pickerContainerStyleIOS={{ height: 100 }}
                 onCancel={() =>
                     this.props.change('endTime', {
                         date: this.props.endTime.date,
