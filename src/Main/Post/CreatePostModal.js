@@ -20,8 +20,6 @@ import { Icon } from '@ui-kitten/components'
 // assets
 import cancel from '../../asset/utils/cancel_no_background.png'
 import expand from '../../asset/utils/expand.png'
-import camera from '../../asset/icons/ChatCamera.png'
-import gallary from '../../asset/icons/ChatGallary.png'
 
 // Actions
 import { openCameraRoll, openCamera } from '../../actions'
@@ -320,25 +318,21 @@ class CreatePostModal extends Component {
     }
 
     handleOpenCamera = () => {
-        this.bottomSheetRef.close()
-        setTimeout(() => {
-            this.props.openCamera((result) => {
-                this.props.change('mediaRef', result.uri)
-            })
-        }, 500)
+        this.props.openCamera((result) => {
+            this.props.change('mediaRef', result.uri)
+        })
     }
 
     handleOpenCameraRoll = () => {
-        // this.bottomSheetRef.setModalVisible(false)
+        this.bottomSheetRef.close()
+        const callback = (result) => {
+            this.bottomSheetRef.open()
 
+            this.props.change('mediaRef', result.uri)
+        }
         setTimeout(() => {
-            const callback = (result) => {
-                this.props.change('mediaRef', result.uri)
-                console.log('imageuri result', result.uri)
-                // this.bottomSheetRef.setModalVisible(true)
-            }
             this.props.openCameraRoll(callback, { disableEditing: true })
-        }, 600)
+        }, 500)
     }
 
     loadFromDraft = (selectedDraft, index) => {
@@ -416,7 +410,7 @@ class CreatePostModal extends Component {
             (initializeFromState &&
                 initialPost &&
                 initialPost.mediaRef !== mediaRef) ||
-            (initializeFromState && mediaRef)
+            (!initializeFromState && mediaRef)
         )
     }
 
@@ -454,14 +448,13 @@ class CreatePostModal extends Component {
 
         const durationSec =
             (new Date().getTime() - this.startTime.getTime()) / 1000
-        // trackWithProperties(
-        //     initializeFromState ? E.POST_UPDATED : E.POST_CREATED,
-        //     {
-        //         ...this.props.formVals.values,
-        //         DurationSec: durationSec,
-        //     }
-        // )
-        // track(E.POST_UPDATED_N)
+        trackWithProperties(
+            initializeFromState ? E.POST_UPDATED : E.POST_CREATED,
+            {
+                ...this.props.formVals.values,
+                DurationSec: durationSec,
+            }
+        )
         const callback = (props) => {
             if (this.props.callBack) this.props.callBack(props)
             this.resetForm()
@@ -487,16 +480,16 @@ class CreatePostModal extends Component {
     handleCancel = (callback) => {
         const durationSec =
             (new Date().getTime() - this.startTime.getTime()) / 1000
-        // trackWithProperties(
-        //     this.props.initializeFromState
-        //         ? E.EDIT_POST_MODAL_CANCELLED
-        //         : E.CREATE_POST_MODAL_CANCELLED,
-        //     { DurationSec: durationSec }
-        // )
+        trackWithProperties(
+            this.props.initializeFromState
+                ? E.EDIT_POST_MODAL_CANCELLED
+                : E.CREATE_POST_MODAL_CANCELLED,
+            { DurationSec: durationSec }
+        )
         this.handleDraftCancel(() => {
             if (callback) callback()
             // reset form vals
-            this.resetForm()
+            // this.resetForm()
         })
     }
 
@@ -756,21 +749,19 @@ class CreatePostModal extends Component {
 
     renderPost() {
         return (
-            <View style={{ marginVertical: 5 }}>
-                <Field
-                    name="post"
-                    label="post"
-                    component={this.renderInput}
-                    editable={!this.props.uploading}
-                    multiline
-                    placeholder="Got new updates for your goal?"
-                    loading={this.state.tagSearchData.loading}
-                    tagData={this.state.tagSearchData.data}
-                    keyword={this.state.keyword}
-                    change={(type, val) => this.props.change(type, val)}
-                    autoFocus={this.isAttachGoalRequirementSatisfied()}
-                />
-            </View>
+            <Field
+                name="post"
+                label="post"
+                component={this.renderInput}
+                editable={!this.props.uploading}
+                multiline
+                placeholder="Got new updates for your goal or things in general?"
+                loading={this.state.tagSearchData.loading}
+                tagData={this.state.tagSearchData.data}
+                keyword={this.state.keyword}
+                change={(type, val) => this.props.change(type, val)}
+                autoFocus={this.isAttachGoalRequirementSatisfied()}
+            />
         )
     }
 
@@ -823,7 +814,6 @@ class CreatePostModal extends Component {
             uploading,
             attachGoalRequired,
         } = this.props
-
         const isGoalAttached =
             belongsToGoalStoryline && !!belongsToGoalStoryline.goalRef
         // Do not allow user to change the attached goal if editing this update
@@ -868,7 +858,7 @@ class CreatePostModal extends Component {
                     ]}
                     numberOfLines={1}
                 >
-                    {isGoalAttached
+                    {isGoalAttached || belongsToGoalStoryline
                         ? belongsToGoalStoryline.title
                         : 'Add to a Goal Storyline'}
                 </Text>
@@ -928,12 +918,14 @@ class CreatePostModal extends Component {
 
     renderActionIcons(actionDisabled) {
         const saveDraftDisabled = actionDisabled || !this.isDraftNotSaved()
+        const { belongsToGoalStoryline } = this.props
         return (
             <View
                 style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
+                    // marginVertical: 16,
                     marginHorizontal: 10,
                 }}
             >
@@ -948,7 +940,7 @@ class CreatePostModal extends Component {
                 </View>
                 <DelayedButton
                     activeOpacity={0.6}
-                    style={{ padding: 2, marginHorizontal: 15 }}
+                    style={{ padding: 2 }}
                     onPress={this.handleSaveDraft}
                     disabled={saveDraftDisabled}
                 >
@@ -983,67 +975,41 @@ class CreatePostModal extends Component {
         ]
 
         return (
-            <>
-                <View
-                    style={{
-                        width: '100%',
-                        height: 1,
-                        backgroundColor: 'lightgray',
-                    }}
-                />
-                <View
-                    style={{
-                        flexDirection: 'row',
-                    }}
+            <View
+                style={{
+                    flexDirection: 'row',
+                }}
+            >
+                {/* Camera Button */}
+                <DelayedButton
+                    touchableHighlight
+                    underlayColor="gray"
+                    style={actionIconWrapperStyle}
+                    onPress={this.handleOpenCamera}
+                    disabled={disabled}
                 >
-                    <DelayedButton
-                        // touchableHighlight
-                        underlayColor="gray"
-                        style={actionIconWrapperStyle}
-                        onPress={this.handleOpenCameraRoll}
-                        disabled={disabled}
-                    >
-                        {/* <Icon
-                        name="image-area"
-                        pack="material-community"
-                        style={actionIconStyle}
-                    /> */}
-                        <Image
-                            source={gallary}
-                            style={{
-                                width: 25,
-                                height: 25,
-                                resizeMode: 'contain',
-                            }}
-                        />
-                    </DelayedButton>
-                    {/* Camera Button */}
-                    <DelayedButton
-                        // touchableHighlight
-                        underlayColor="gray"
-                        style={actionIconWrapperStyle}
-                        onPress={this.handleOpenCamera}
-                        disabled={disabled}
-                    >
-                        {/* <Icon
+                    <Icon
                         name="camera"
                         pack="material-community"
                         style={actionIconStyle}
-                    /> */}
-                        <Image
-                            source={camera}
-                            style={{
-                                width: 25,
-                                height: 25,
-                                resizeMode: 'contain',
-                            }}
-                        />
-                    </DelayedButton>
-                    {/* Media roll button */}
-
-                    {this.renderMedia()}
-                </View>
-            </>
+                    />
+                </DelayedButton>
+                {/* Media roll button */}
+                <DelayedButton
+                    touchableHighlight
+                    underlayColor="gray"
+                    style={actionIconWrapperStyle}
+                    onPress={this.handleOpenCameraRoll}
+                    disabled={disabled}
+                >
+                    <Icon
+                        name="image-area"
+                        pack="material-community"
+                        style={actionIconStyle}
+                    />
+                </DelayedButton>
+                {this.renderMedia()}
+            </View>
         )
     }
 
@@ -1161,9 +1127,7 @@ class CreatePostModal extends Component {
                 }}
                 sheetFooter={this.renderCreateButton(actionDisabled)}
             >
-                {/* <View style={{ marginHorizontal: 15 }}> */}
                 {showDraftHeader && this.renderDraftsHeader()}
-                {/* </View> */}
                 <View style={{ flexDirection: 'row', marginTop: 16 }}>
                     <ProfileImage
                         imageUrl={profile ? profile.image : undefined}
@@ -1204,14 +1168,13 @@ const styles = {
     },
     actionIconWrapperStyle: {
         flexDirection: 'row',
-        // backgroundColor: '#4F4F4F',
-        // height: 100,
-        // width: 110,
+        backgroundColor: '#4F4F4F',
+        height: 74,
+        width: 74,
         justifyContent: 'center',
         alignItems: 'center',
-        // borderRadius: 5,
-        marginRight: 15,
-        marginTop: 12,
+        borderRadius: 5,
+        marginRight: 8,
     },
     userImageContainerStyle: {
         borderWidth: 0.5,
@@ -1246,12 +1209,7 @@ CreatePostModal = reduxForm({
 
 const mapStateToProps = (state, props) => {
     const selector = formValueSelector('createPostModal')
-
     const { user } = state.user
-    const { myGoals } = state.goals
-
-    const { data, refreshing, loading, filter } = myGoals
-
     const { profile } = user
 
     return {
@@ -1264,10 +1222,6 @@ const mapStateToProps = (state, props) => {
         mediaRef: selector(state, 'mediaRef'),
         formVals: state.form.createPostModal,
         uploading: state.posts.newPost.uploading,
-        data,
-        refreshing,
-        loading,
-        filter,
     }
 }
 

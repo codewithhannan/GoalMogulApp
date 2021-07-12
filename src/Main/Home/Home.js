@@ -179,6 +179,7 @@ class Home extends Component {
             showWelcomeScreen: false,
             showBadgeEarnModal: false,
             pickedImage: null,
+            shareModal: false,
         }
         this.scrollToTop = this.scrollToTop.bind(this)
         this._renderScene = this._renderScene.bind(this)
@@ -445,8 +446,10 @@ class Home extends Component {
                 }
             >
                 <CreateContentButtons
-                    onCreateUpdatePress={() =>
-                        this.createPostModal && this.createPostModal.open()
+                    onCreateUpdatePress={
+                        () =>
+                            this.createPostModal && this.createPostModal.open()
+                        // this.setState({ shareModal: true })
                     }
                     onCreateGoalPress={() =>
                         Actions.push('createGoalModal', { pageId: pageAb })
@@ -575,6 +578,7 @@ class Home extends Component {
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <CreatePostModal
                     attachGoalRequired
+                    // onModal={() => this.setState({ shareModal: true })}
                     onRef={(r) => (this.createPostModal = r)}
                 />
                 <View style={styles.homeContainerStyle}>
