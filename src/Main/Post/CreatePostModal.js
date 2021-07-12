@@ -20,6 +20,8 @@ import { Icon } from '@ui-kitten/components'
 // assets
 import cancel from '../../asset/utils/cancel_no_background.png'
 import expand from '../../asset/utils/expand.png'
+import camera from '../../asset/icons/ChatCamera.png'
+import gallary from '../../asset/icons/ChatGallary.png'
 
 // Actions
 import { openCameraRoll, openCamera } from '../../actions'
@@ -81,6 +83,8 @@ class CreatePostModal extends Component {
             textContentHeight: TEXT_INPUT_DEAFULT_HEIGHT,
             textInputHeight: TEXT_INPUT_DEAFULT_HEIGHT,
             draftHeaderHeight: 0,
+            mediaHeight: 0,
+            clickedButton: false,
         }
         this.onOpen = this.onOpen.bind(this)
         this.updateSearchRes = this.updateSearchRes.bind(this)
@@ -318,12 +322,20 @@ class CreatePostModal extends Component {
     }
 
     handleOpenCamera = () => {
-        this.props.openCamera((result) => {
+        this.setState({ clickedButton: true })
+        this.bottomSheetRef.close()
+        const callback = (result) => {
+            this.bottomSheetRef.open()
+
             this.props.change('mediaRef', result.uri)
-        })
+        }
+        setTimeout(() => {
+            this.props.openCamera(callback)
+        }, 500)
     }
 
     handleOpenCameraRoll = () => {
+        this.setState({ clickedButton: true })
         this.bottomSheetRef.close()
         const callback = (result) => {
             this.bottomSheetRef.open()
@@ -489,7 +501,8 @@ class CreatePostModal extends Component {
         this.handleDraftCancel(() => {
             if (callback) callback()
             // reset form vals
-            // this.resetForm()
+            // else
+            this.resetForm()
         })
     }
 
@@ -510,6 +523,7 @@ class CreatePostModal extends Component {
                     text: 'Cancel',
                     onPress: () => {
                         this.bottomSheetRef.open()
+                        this.setState({ mediaHeight: 0 })
                     },
                     style: 'cancel',
                 },
@@ -517,11 +531,15 @@ class CreatePostModal extends Component {
                     text: 'Discard',
                     onPress: () => {
                         if (callback) callback()
+                        this.setState({ mediaHeight: 0 })
                     },
                 },
                 {
                     text: 'Save Draft',
-                    onPress: () => this.handleSaveDraft().then(callback),
+                    onPress: () => {
+                        this.handleSaveDraft().then(callback)
+                        this.setState({ mediaHeight: 0 })
+                    },
                 },
             ],
             { cancelable: false }
@@ -682,54 +700,92 @@ class CreatePostModal extends Component {
         // Do not render cancel button if editing post since we
         // don't allow editing image
         const cancelButton = this.isEditMediaDisabled() ? null : (
+            // <View
+            //     style={{
+            //         width: 25,
+            //         height: 25,
+            //         borderRadius: 15,
+            //         backgroundColor: 'white',
+            //         position: 'absolute',
+            //         top: 0,
+            //         right: 0,
+            //     }}
+            // >
             <TouchableOpacity
-                activeOpacity={0.6}
-                onPress={() => this.props.change('mediaRef', false)}
-                style={{ position: 'absolute', top: 10, left: 15 }}
+                activeOpacity={0.8}
+                onPress={() => {
+                    this.props.change('mediaRef', false)
+                    this.setState({ mediaHeight: 0 })
+                }}
+                style={{
+                    width: 25,
+                    height: 25,
+                    top: -5,
+                    right: -5,
+                    borderRadius: 15,
+                    backgroundColor: 'white',
+                    position: 'absolute',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    elevation: 3,
+                    shadowColor: '#666',
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 3,
+                }}
                 disabled={uploading}
             >
                 <Image
                     source={cancel}
-                    style={{ width: 15, height: 15, tintColor: '#fafafa' }}
+                    style={{
+                        width: 15,
+                        height: 15,
+                        tintColor: 'gray',
+                    }}
                 />
             </TouchableOpacity>
+            // </View>
         )
 
         if (this.props.mediaRef) {
             return (
                 <View
+                    onLayout={(e) => {
+                        this.setState({
+                            mediaHeight: e.nativeEvent.layout.height,
+                        })
+                    }}
                     style={{
-                        backgroundColor: 'gray',
                         borderRadius: 5,
                         flex: 1,
                     }}
                 >
-                    <ImageBackground
-                        style={styles.mediaStyle}
-                        source={{ uri: imageUrl }}
-                        imageStyle={{
-                            borderRadius: 8,
-                            opacity: 0.7,
-                            resizeMode: 'cover',
-                        }}
+                    <TouchableOpacity
+                        activeOpacity={0.6}
+                        onPress={() => this.setState({ mediaModal: true })}
+                        // style={{ position: 'absolute', top: 10, right: 15 }}
+                        disabled={uploading}
                     >
-                        <TouchableOpacity
-                            activeOpacity={0.6}
-                            onPress={() => this.setState({ mediaModal: true })}
-                            style={{ position: 'absolute', top: 10, right: 15 }}
-                            disabled={uploading}
+                        <ImageBackground
+                            style={styles.mediaStyle}
+                            source={{ uri: imageUrl }}
+                            imageStyle={{
+                                borderRadius: 8,
+                                // opacity: 0.7,
+                                resizeMode: 'cover',
+                            }}
                         >
-                            <Image
+                            {/* <Image
                                 source={expand}
                                 style={{
                                     width: 15,
                                     height: 15,
                                     tintColor: '#fafafa',
                                 }}
-                            />
-                        </TouchableOpacity>
-                        {cancelButton}
-                    </ImageBackground>
+                            /> */}
+                            {cancelButton}
+                        </ImageBackground>
+                    </TouchableOpacity>
                 </View>
             )
         }
@@ -755,7 +811,7 @@ class CreatePostModal extends Component {
                 component={this.renderInput}
                 editable={!this.props.uploading}
                 multiline
-                placeholder="Got new updates for your goal or things in general?"
+                placeholder="Got new updates for your goal?"
                 loading={this.state.tagSearchData.loading}
                 tagData={this.state.tagSearchData.data}
                 keyword={this.state.keyword}
@@ -858,7 +914,7 @@ class CreatePostModal extends Component {
                     ]}
                     numberOfLines={1}
                 >
-                    {isGoalAttached || belongsToGoalStoryline
+                    {isGoalAttached
                         ? belongsToGoalStoryline.title
                         : 'Add to a Goal Storyline'}
                 </Text>
@@ -977,38 +1033,67 @@ class CreatePostModal extends Component {
         return (
             <View
                 style={{
-                    flexDirection: 'row',
+                    marginVertical: 30,
                 }}
             >
-                {/* Camera Button */}
-                <DelayedButton
-                    touchableHighlight
-                    underlayColor="gray"
-                    style={actionIconWrapperStyle}
-                    onPress={this.handleOpenCamera}
-                    disabled={disabled}
+                <View
+                    style={{
+                        width: '100%',
+                        height: 1,
+                        backgroundColor: 'lightgray',
+                    }}
+                />
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        marginVertical: 5,
+                    }}
                 >
-                    <Icon
-                        name="camera"
-                        pack="material-community"
-                        style={actionIconStyle}
-                    />
-                </DelayedButton>
-                {/* Media roll button */}
-                <DelayedButton
-                    touchableHighlight
-                    underlayColor="gray"
-                    style={actionIconWrapperStyle}
-                    onPress={this.handleOpenCameraRoll}
-                    disabled={disabled}
-                >
-                    <Icon
+                    {/* Media roll button */}
+                    <DelayedButton
+                        // touchableHighlight
+                        underlayColor="gray"
+                        style={actionIconWrapperStyle}
+                        onPress={this.handleOpenCameraRoll}
+                        disabled={disabled}
+                    >
+                        <Image
+                            source={gallary}
+                            style={{
+                                width: 25,
+                                height: 25,
+                                resizeMode: 'contain',
+                            }}
+                        />
+                        {/* <Icon
                         name="image-area"
                         pack="material-community"
                         style={actionIconStyle}
-                    />
-                </DelayedButton>
-                {this.renderMedia()}
+                    /> */}
+                    </DelayedButton>
+                    {/* Camera Button */}
+                    <DelayedButton
+                        touchableHighlight
+                        underlayColor="gray"
+                        style={actionIconWrapperStyle}
+                        onPress={this.handleOpenCamera}
+                        disabled={disabled}
+                    >
+                        <Image
+                            source={camera}
+                            style={{
+                                width: 25,
+                                height: 25,
+                                resizeMode: 'contain',
+                            }}
+                        />
+                        {/* <Icon
+                        name="camera"
+                        pack="material-community"
+                        style={actionIconStyle}
+                    /> */}
+                    </DelayedButton>
+                </View>
             </View>
         )
     }
@@ -1100,8 +1185,9 @@ class CreatePostModal extends Component {
             this.state.drafts.length > 0
 
         const modalHeight =
-            230 +
+            200 +
             this.state.textContentHeight +
+            this.state.mediaHeight +
             (showDraftHeader ? this.state.draftHeaderHeight : 0)
 
         return (
@@ -1122,7 +1208,7 @@ class CreatePostModal extends Component {
                     container: {
                         flex: 1,
                         paddingHorizontal: 16,
-                        paddingBotttom: 16,
+                        // paddingBotttom: 16,
                     },
                 }}
                 sheetFooter={this.renderCreateButton(actionDisabled)}
@@ -1135,6 +1221,7 @@ class CreatePostModal extends Component {
                     {this.renderActionIcons(actionDisabled)}
                 </View>
                 {this.renderPost()}
+                {this.renderMedia()}
                 {this.renderMediaIcons()}
                 {this.renderImageModal()}
             </BottomSheet>
@@ -1160,20 +1247,22 @@ const styles = {
     inputStyle: {
         ...default_style.subTitleText_1,
         marginRight: 32,
+        paddingVertical: 10,
     },
     mediaStyle: {
-        height: 74,
+        height: 150,
+        width: 120,
         alignItems: 'center',
         justifyContent: 'center',
     },
     actionIconWrapperStyle: {
         flexDirection: 'row',
-        backgroundColor: '#4F4F4F',
-        height: 74,
-        width: 74,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 5,
+        // backgroundColor: '#4F4F4F',
+        // height: 74,
+        // width: 74,
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        // borderRadius: 5,
         marginRight: 8,
     },
     userImageContainerStyle: {
