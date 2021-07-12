@@ -584,7 +584,7 @@ class Home extends Component {
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />
 
-                    <View
+                    {/* <View
                         style={{
                             width: '100%',
                             height: 150,
@@ -621,7 +621,7 @@ class Home extends Component {
                                 )
                             }}
                         />
-                    </View>
+                    </View> */}
 
                     <FlatList
                         keyExtractor={(item, index) => index.toString()}
