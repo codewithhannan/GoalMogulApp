@@ -239,7 +239,7 @@ class CommentRef extends React.PureComponent {
                         />
                     </TouchableOpacity>
 
-                    <Tooltip
+                    {/* <Tooltip
                         title={tooltipText}
                         imageSource={SWIPER_BACKGROUND}
                         type="commentSuggestion"
@@ -250,7 +250,7 @@ class CommentRef extends React.PureComponent {
                             // top: 0,
                             bottom: 15,
                         }}
-                    />
+                    /> */}
                 </>
             )
         }

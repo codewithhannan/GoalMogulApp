@@ -1,4 +1,8 @@
-/** @format */
+/**
+ * /* @format
+ *
+ * @format
+ */
 
 import React from 'react'
 import { View, Image, Text, TouchableOpacity } from 'react-native'
@@ -49,7 +53,7 @@ class BottomButtonsSheet extends React.PureComponent {
                     }}
                     {...otherProps}
                 >
-                    {/* First try to render image and then Icon */}
+                    {/* {/ First try to render image and then Icon /} */}
                     {image ? (
                         <Image
                             source={image}
@@ -62,7 +66,7 @@ class BottomButtonsSheet extends React.PureComponent {
                         />
                     ) : null}
 
-                    {/* <Image /> */}
+                    {/* {/ <Image /> /} */}
                     <Text style={[default_style.goalTitleText_1, textStyle]}>
                         {text}
                     </Text>

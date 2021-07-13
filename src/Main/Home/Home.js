@@ -104,6 +104,10 @@ const stories = [
                 uri:
                     'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
             },
+            {
+                type: 'img',
+                uri: require('../../testStory4.jpeg'),
+            },
         ],
     },
     // {
@@ -546,7 +550,7 @@ class Home extends Component {
         // })
         this.bottomSheetRef.close()
         setTimeout(() => {
-            this.props.openCameraRoll((result) => result, {
+            this.props.openCameraRoll((result) => console.log(result), {
                 disableEditing: true,
             })
         }, 500)
@@ -556,7 +560,12 @@ class Home extends Component {
         this.bottomSheetRef.close()
 
         setTimeout(() => {
-            this.props.openCamera((result) => result, { mayBeVideoOpen: true })
+            this.props.openCamera(
+                (result) => console.log(result),
+                null,
+                null,
+                true
+            )
         }, 500)
     }
 

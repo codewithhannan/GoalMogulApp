@@ -7,7 +7,7 @@ import {
     Dimensions,
     TouchableWithoutFeedback,
     Text,
-    TextInput,
+    ActivityIndicator,
 } from 'react-native'
 
 import Constant from 'expo-constants'
@@ -15,6 +15,7 @@ import Modal from 'react-native-modal'
 import Carousel from 'react-native-snap-carousel'
 import { Video, AVPlaybackStatus } from 'expo-av'
 import * as Progress from 'react-native-progress'
+import { GM_BLUE } from '../../../styles/basic/color'
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window')
 
@@ -29,10 +30,11 @@ const StoryModal = ({
     const carousel = useRef(null)
     const [internalCount, setInternalCount] = useState(0)
     const video = useRef(null)
-    const [status, setStatus] = useState({})
+    const [status, setStatus] = useState({ isLoaded: false })
     const [progress, setProgress] = useState(0)
 
     const nextItem = (item) => {
+        setStatus({ isLoaded: false })
         if (internalCount === item.story.length - 1) {
             if (count === stories.length - 1) {
                 setIsVisible(false)
@@ -52,6 +54,7 @@ const StoryModal = ({
     }
 
     const prevItem = (item) => {
+        setStatus({ isLoaded: false })
         if (internalCount !== 0) {
             setProgress(0)
 
@@ -108,10 +111,11 @@ const StoryModal = ({
         >
             <View
                 style={{
-                    width: screenWidth,
+                    width: screenWidth + 5,
                     height: screenHeight,
-                    left: '-5.5%',
+                    left: '-5.6%',
                     top: 0,
+                    backgroundColor: 'rgba(0,0,0,0.7)',
                     // position: 'absolute',
                     // backgroundColor: 'red',
                 }}
@@ -181,6 +185,7 @@ const StoryModal = ({
 
                                 {item.story[internalCount]?.type === 'img' ? (
                                     <Image
+                                        resizeMode="contain"
                                         source={item.story[internalCount]?.uri}
                                         style={{
                                             width: '100%',
@@ -190,25 +195,48 @@ const StoryModal = ({
                                         }}
                                     />
                                 ) : (
-                                    <Video
-                                        ref={video}
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            zIndex: 1,
-                                            position: 'absolute',
-                                            backgroundColor: 'black',
-                                        }}
-                                        source={{
-                                            uri: item.story[internalCount]?.uri,
-                                        }}
-                                        useNativeControls={false}
-                                        resizeMode="contain"
-                                        shouldPlay={status.isLoaded}
-                                        onPlaybackStatusUpdate={(status) => {
-                                            setStatus(() => status)
-                                        }}
-                                    />
+                                    <>
+                                        {status.isLoaded === false ? (
+                                            <ActivityIndicator
+                                                size="large"
+                                                color={GM_BLUE}
+                                                style={{
+                                                    top: '45%',
+                                                    position: 'absolute',
+                                                    zIndex: 1,
+                                                    alignSelf: 'center',
+                                                }}
+                                            />
+                                        ) : (
+                                            <></>
+                                        )}
+                                        <Video
+                                            ref={video}
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                zIndex: 1,
+                                                position: 'absolute',
+                                                backgroundColor:
+                                                    'rgba(0,0,0,0.7)',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                            }}
+                                            source={{
+                                                uri:
+                                                    item.story[internalCount]
+                                                        ?.uri,
+                                            }}
+                                            useNativeControls={false}
+                                            resizeMode="contain"
+                                            shouldPlay={status.isLoaded}
+                                            onPlaybackStatusUpdate={(
+                                                status
+                                            ) => {
+                                                setStatus(() => status)
+                                            }}
+                                        />
+                                    </>
                                 )}
 
                                 <View

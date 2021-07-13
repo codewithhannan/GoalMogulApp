@@ -19,6 +19,7 @@ import {
     Animated,
     Alert,
     Keyboard,
+    Dimensions,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
@@ -72,6 +73,7 @@ import { Logger } from '../../../redux/middleware/utils/Logger'
 const DEBUG_KEY = '[ UI SuggestionModal3 ]'
 const OPTIONS_HEIGHT = 120
 const OPTIONS_OPACITY = 0.001
+const { width, height } = Dimensions.get('window')
 
 class SuggestionModal extends Component {
     constructor(props) {
@@ -409,37 +411,43 @@ class SuggestionModal extends Component {
             <RNModal
                 isOpen={this.props.visible}
                 onClosed={this.props.onCancel}
+                useNativeDriver={false}
+                // coverScreen={true}
                 style={{
-                    width: wp('100%'),
-                    height: hp(50),
-                    position: 'absolute',
-                    bottom: 160,
+                    flex: 1,
+                    backgroundColor: 'transparent',
+                    // width: wp('100%'),
+                    // height: hp('100%'),
+                    // position: 'absolute',
+                    // bottom: 160,
                 }}
             >
                 <View
                     style={{
-                        marginVertical: 5,
-                        width: 30,
-                        height: 3,
-                        borderRadius: 5,
-                        alignSelf: 'center',
-                        backgroundColor: 'lightgray',
-                    }}
-                />
-                <View
-                    style={{
                         backgroundColor: 'white',
-                        flex: 1,
-                        zIndex: 15,
+                        width: '100%',
+                        height: 270,
+                        position: 'absolute',
+                        bottom: 80,
                     }}
                 >
+                    <View
+                        style={{
+                            marginVertical: 5,
+                            width: 30,
+                            height: 3,
+                            borderRadius: 5,
+                            alignSelf: 'center',
+                            backgroundColor: 'lightgray',
+                        }}
+                    />
                     {/* {this.renderGoalPreview(item)} */}
                     {this.renderSuggestionFor(newComment, item)}
                     {this.renderOptions(newComment)}
                 </View>
                 <Modal
                     visible={this.state.modalVisible}
-                    isOpen={this.state.modalVisible}
+                    // isOpen={this.state.modalVisible}
                     onClosed={() => this.setState({ modalVisible: false })}
                 >
                     {this.renderSuggestionBody(newComment)}

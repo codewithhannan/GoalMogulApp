@@ -939,8 +939,6 @@ export class GoalDetailCardV3 extends React.Component {
                             {this.renderFlatList()}
                         </KeyboardAvoidingView>
 
-                        {this.renderCommentBox(focusType, pageId)}
-
                         <SuggestionModal
                             visible={this.props.showSuggestionModal}
                             onCancel={() => {
@@ -962,6 +960,8 @@ export class GoalDetailCardV3 extends React.Component {
                             goalId={this.props.goalId}
                             item={goalDetail}
                         />
+                        {this.renderCommentBox(focusType, pageId)}
+
                         {/** <Report showing={this.props.showingModalInDetail} /> */}
                     </View>
                 </MenuProvider>

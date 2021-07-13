@@ -219,7 +219,7 @@ class ActivityCard extends React.PureComponent {
 
         let filteredReaction = []
 
-        reactions.map((reaction) => {
+        reactions?.map((reaction) => {
             if (reaction.count > 0) {
                 return filteredReaction.push(reaction)
             }
