@@ -127,7 +127,7 @@ class Bubble extends React.Component {
             goal,
             callback,
         }) */
-        Actions.push('createGoalModal')
+        Actions.push('createGoalModal', { title: 'THIS IS ALL DONE' })
     }
     openBadgeDetails() {
         this.setState({ ...this.state, showBadgeModal: true })

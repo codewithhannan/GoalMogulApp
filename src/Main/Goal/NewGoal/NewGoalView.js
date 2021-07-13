@@ -764,6 +764,7 @@ class NewGoalView extends Component {
 
     renderGoal() {
         const { title, isFirstTimeCreateGoal } = this.props
+        console.log('THIS IS FIRST TITEL', this.props.prefilledTitle)
         return (
             <CopilotStep
                 text={this.props.tutorialText[1]}
@@ -825,6 +826,7 @@ class NewGoalView extends Component {
                         autoCapitalize={'sentences'}
                         multiline
                         blurOnSubmit
+                        props={{ prefilled: this.props.prefilledTitle }}
                         // onEndEditing={() =>
                         //     trackWithProperties(EVENT.GOAL_CREATED, {
                         //         goal_title: this.props.title,

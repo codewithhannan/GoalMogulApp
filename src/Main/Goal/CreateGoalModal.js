@@ -683,6 +683,7 @@ class CreateGoalModal extends React.Component {
                                 actionDisabled={
                                     !this.props.uploading || !hasValidFormVals
                                 }
+                                prefilledTitle={this.props.preffiled}
                             />
                         </View>
                     </MenuProvider>

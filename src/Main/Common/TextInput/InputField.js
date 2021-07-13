@@ -125,8 +125,12 @@ class InputField extends Component {
             blurOnSubmit,
             inputContainerStyle,
 
+            prefilled,
+
             ...custom
         } = this.props
+
+        console.log('THIS IS PREFFILEEEDD', this.props.prefilled)
 
         const gestureHandler = canDrag ? (
             <TouchableOpacity
@@ -163,7 +167,13 @@ class InputField extends Component {
                     placeholder={placeholder}
                     onEndEditing={this.props.onEndEditing}
                     style={{ ...style }}
-                    value={_.isEmpty(value) ? '' : value}
+                    value={
+                        prefilled != undefined
+                            ? prefilled
+                            : value
+                            ? _.isEmpty(value)
+                            : ''
+                    }
                     {...custom}
                 />
                 {iconSource ? (

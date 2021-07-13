@@ -639,7 +639,7 @@ const styles = {
     logOutButtonStyle: {
         // backgroundColor: '#F2F2F2',
         // paddingLeft: 28,
-        marginBottom: marginBottom,
+        marginBottom,
         marginHorizontal: 26,
         top: 15,
     },

@@ -33,12 +33,8 @@ import { getData } from '../../../store/storage'
 import { api as API } from '../../../redux/middleware/api'
 import * as _ from 'underscore'
 import { Actions } from 'react-native-router-flux'
-import { PG_BACKGROUND } from '../../../styles/basic/color'
 
 import { Image } from 'react-native-animatable'
-
-import { Platform } from 'react-native'
-import Constants from 'expo-constants'
 
 const screenHeight = Dimensions.get('screen').height
 

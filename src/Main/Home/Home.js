@@ -452,7 +452,9 @@ class Home extends Component {
                         // this.setState({ shareModal: true })
                     }
                     onCreateGoalPress={() =>
-                        Actions.push('createGoalModal', { pageId: pageAb })
+                        Actions.push('createGoalModal', {
+                            pageId: pageAb,
+                        })
                     }
                 />
                 {/* Hid switching tabs to clean up the main view to just friend's Goals and Updates */}
