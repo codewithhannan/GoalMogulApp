@@ -33,11 +33,12 @@ const UPDATES_BAKCGROUND_OPACITIES = [
     0.075,
     0.05,
 ]
-const CONTAINER_WIDTH = 33
+const CONTAINER_WIDTH = 130
 const CONTAINER_MARGIN = 12
 const MAX_UPDATES_CONTAINERS = Math.floor(
     // (width - margin - add button width) / Space required by each update
-    (Dimensions.get('window').width - 32) / (CONTAINER_WIDTH + CONTAINER_MARGIN)
+    (Dimensions.get('window').width - 32) /
+        (CONTAINER_WIDTH - 50 + CONTAINER_MARGIN)
 )
 
 class GoalCardBody extends React.Component {
@@ -104,13 +105,35 @@ class GoalCardBody extends React.Component {
     renderAddUpdateButton() {
         const { goalRef, pageId } = this.props
         return [
-            <DelayedButton
-                style={styles.buttonContainer}
-                onPress={() =>
-                    this.createPostModal && this.createPostModal.open()
-                }
+            <View
+                style={{
+                    height: 130,
+                    width: 80,
+                    borderStyle: 'dashed',
+                    borderColor: '#A0A0A2',
+                    borderWidth: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 3,
+                }}
             >
-                <Icon
+                <DelayedButton
+                    style={styles.buttonContainer}
+                    onPress={() =>
+                        this.createPostModal && this.createPostModal.open()
+                    }
+                >
+                    <Icon
+                        pack="material-community"
+                        name="plus"
+                        style={{
+                            height: 33 - 9,
+                            width: 33 - 9,
+                            color: '#A0A0A2',
+                            backgroundColor: 'white',
+                        }}
+                    />
+                    {/* <Icon
                     pack="material-community"
                     name="plus"
                     style={{
@@ -118,8 +141,9 @@ class GoalCardBody extends React.Component {
                         width: CONTAINER_WIDTH - 9,
                         color: 'black',
                     }}
-                />
-            </DelayedButton>,
+                /> */}
+                </DelayedButton>
+            </View>,
             <CreatePostModal
                 onRef={(r) => (this.createPostModal = r)}
                 initializeFromGoal
@@ -155,9 +179,9 @@ class GoalCardBody extends React.Component {
                             flexDirection: 'row',
                             width:
                                 numOfUpdates *
-                                    (CONTAINER_MARGIN + CONTAINER_WIDTH) +
+                                    (CONTAINER_MARGIN + CONTAINER_WIDTH - 50) +
                                 // account for button width if self
-                                (isSelf ? CONTAINER_WIDTH : 0),
+                                (isSelf ? CONTAINER_WIDTH - 50 : 0),
                         }}
                     >
                         {
@@ -217,29 +241,27 @@ class GoalCardBody extends React.Component {
 const styles = {
     buttonContainer: {
         height: CONTAINER_WIDTH,
-        width: CONTAINER_WIDTH,
-        borderRadius: 100,
-        backgroundColor: '#E9E9E9',
+        width: CONTAINER_WIDTH - 50,
         alignItems: 'center',
         justifyContent: 'center',
     },
     updatesContainer: {
         height: CONTAINER_WIDTH,
-        width: CONTAINER_WIDTH,
-        borderRadius: 100,
+        width: CONTAINER_WIDTH - 50,
         backgroundColor: '#E9E9E9',
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
         borderStyle: 'dashed',
         borderColor: color.GM_MID_GREY,
-        marginLeft: CONTAINER_MARGIN,
+        borderRadius: 3,
+        marginLeft: 10,
     },
     updatesImageStyle: {
         height: CONTAINER_WIDTH,
-        width: CONTAINER_WIDTH,
-        borderRadius: 100,
+        width: CONTAINER_WIDTH - 50,
         borderColor: color.GM_MID_GREY,
+        borderRadius: 3,
     },
 }
 
