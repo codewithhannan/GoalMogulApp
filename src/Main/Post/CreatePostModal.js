@@ -332,7 +332,7 @@ class CreatePostModal extends Component {
             this.setState({ clickedButton: false })
         }
         setTimeout(() => {
-            this.props.openCamera(callback)
+            this.props.openCamera(callback, null, null, true)
         }, 500)
     }
 
@@ -1004,7 +1004,7 @@ class CreatePostModal extends Component {
                     />
                     {this.renderAttachGoalButton()}
                 </View>
-                <DelayedButton
+                {/* <DelayedButton
                     activeOpacity={0.6}
                     style={{ padding: 2 }}
                     onPress={this.handleSaveDraft}
@@ -1020,7 +1020,7 @@ class CreatePostModal extends Component {
                     >
                         Save Draft
                     </Text>
-                </DelayedButton>
+                </DelayedButton> */}
             </View>
         )
     }
@@ -1083,7 +1083,7 @@ class CreatePostModal extends Component {
                     </DelayedButton>
                     {/* Camera Button */}
                     <DelayedButton
-                        touchableHighlight
+                        // touchableHighlight
                         underlayColor="gray"
                         style={actionIconWrapperStyle}
                         onPress={this.handleOpenCamera}
@@ -1174,7 +1174,6 @@ class CreatePostModal extends Component {
     close = () => this.bottomSheetRef && this.bottomSheetRef.close()
 
     render() {
-        console.log('This is CHANGE TEXXXXT', this.state.clickedButton)
         const {
             initializeFromState,
             initializeFromGoal,

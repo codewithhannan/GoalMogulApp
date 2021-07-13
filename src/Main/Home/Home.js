@@ -559,8 +559,10 @@ class Home extends Component {
 
         setTimeout(() => {
             this.props.openCamera(
-                (result) => console.log(result)
-                // (mayBeVideoOpen = true)
+                (result) => console.log(result),
+                null,
+                null,
+                true
             )
         }, 500)
     }
