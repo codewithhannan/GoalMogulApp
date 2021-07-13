@@ -85,6 +85,7 @@ class CreatePostModal extends Component {
             draftHeaderHeight: 0,
             mediaHeight: 0,
             clickedButton: false,
+            postText: '',
         }
         this.onOpen = this.onOpen.bind(this)
         this.updateSearchRes = this.updateSearchRes.bind(this)
@@ -271,7 +272,7 @@ class CreatePostModal extends Component {
         const defaulVals = {
             privacy: PRIVACY_FRIENDS,
             mediaRef: undefined,
-            post: '',
+            post: '' || this.props.post,
             tags: [],
             belongsToTribe,
             belongsToGoalStoryline,
@@ -328,6 +329,7 @@ class CreatePostModal extends Component {
             this.bottomSheetRef.open()
 
             this.props.change('mediaRef', result.uri)
+            this.setState({ clickedButton: false })
         }
         setTimeout(() => {
             this.props.openCamera(callback)
@@ -341,6 +343,7 @@ class CreatePostModal extends Component {
             this.bottomSheetRef.open()
 
             this.props.change('mediaRef', result.uri)
+            this.setState({ clickedButton: false })
         }
         setTimeout(() => {
             this.props.openCameraRoll(callback, { disableEditing: true })
@@ -490,19 +493,21 @@ class CreatePostModal extends Component {
     }
 
     handleCancel = (callback) => {
-        const durationSec =
-            (new Date().getTime() - this.startTime.getTime()) / 1000
-        trackWithProperties(
-            this.props.initializeFromState
-                ? E.EDIT_POST_MODAL_CANCELLED
-                : E.CREATE_POST_MODAL_CANCELLED,
-            { DurationSec: durationSec }
-        )
-        this.handleDraftCancel(() => {
+        // const durationSec =
+        //     (new Date().getTime() - this.startTime.getTime()) / 1000
+        // trackWithProperties(
+        //     this.props.initializeFromState
+        //         ? E.EDIT_POST_MODAL_CANCELLED
+        //         : E.CREATE_POST_MODAL_CANCELLED,
+        //     { DurationSec: durationSec }
+        // )
+        if (this.props.post && this.state.clickedButton) return
+        return this.handleDraftCancel(() => {
             if (callback) callback()
             // reset form vals
             // else
-            this.resetForm()
+            if (this.state.clickedButton === true) return
+            else this.resetForm()
         })
     }
 
@@ -531,7 +536,9 @@ class CreatePostModal extends Component {
                     text: 'Discard',
                     onPress: () => {
                         if (callback) callback()
-                        this.setState({ mediaHeight: 0 })
+                        this.setState({ mediaHeight: 0, postText: '' })
+
+                        this.resetForm()
                     },
                 },
                 {
@@ -628,7 +635,10 @@ class CreatePostModal extends Component {
                     }}
                     onContentSizeChange={this.handleTextInputSizeChange}
                     placeholder={placeholder}
-                    onChangeText={(val) => onChange(val)}
+                    onChangeText={(val) => {
+                        onChange(val)
+                        this.setState({ postText: val })
+                    }}
                     editable={editable}
                     value={_.isEmpty(value) ? '' : value}
                     contentTags={tags || []}
@@ -1164,6 +1174,7 @@ class CreatePostModal extends Component {
     close = () => this.bottomSheetRef && this.bottomSheetRef.close()
 
     render() {
+        console.log('This is CHANGE TEXXXXT', this.state.clickedButton)
         const {
             initializeFromState,
             initializeFromGoal,

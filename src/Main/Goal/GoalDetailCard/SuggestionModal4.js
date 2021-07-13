@@ -409,30 +409,39 @@ class SuggestionModal extends Component {
             <RNModal
                 isOpen={this.props.visible}
                 onClosed={this.props.onCancel}
+                useNativeDriver={true}
                 style={{
-                    width: wp('100%'),
-                    height: hp(50),
-                    position: 'absolute',
-                    bottom: 160,
+                    flex: 1,
+                    backgroundColor: 'transparent',
+                    // width: wp('100%'),
+                    // height: hp('100%'),
+                    // position: 'absolute',
+                    // bottom: 160,
+                    zIndex: 5,
                 }}
             >
                 <View
                     style={{
-                        marginVertical: 5,
-                        width: 30,
-                        height: 3,
-                        borderRadius: 5,
-                        alignSelf: 'center',
-                        backgroundColor: 'lightgray',
-                    }}
-                />
-                <View
-                    style={{
                         backgroundColor: 'white',
-                        flex: 1,
-                        zIndex: 15,
+                        // flex: 1,
+                        // zIndex: 15,
+                        width: wp('100%'),
+                        height: hp(56),
+                        position: 'absolute',
+                        bottom: 0,
+                        overflow: 'hidden',
                     }}
                 >
+                    <View
+                        style={{
+                            marginVertical: 5,
+                            width: 30,
+                            height: 3,
+                            borderRadius: 5,
+                            alignSelf: 'center',
+                            backgroundColor: 'lightgray',
+                        }}
+                    />
                     {/* {this.renderGoalPreview(item)} */}
                     {this.renderSuggestionFor(newComment, item)}
                     {this.renderOptions(newComment)}
