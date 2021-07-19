@@ -110,7 +110,7 @@ class InputBox extends React.Component {
                     >
                         *
                     </Text>
-                    <Text style={styles.labelStyle}>{inputTitle}</Text>
+                    <Text style={styles.labelStyle}> {inputTitle}</Text>
                 </View>
                 <TouchableOpacity
                     activeOpacity={0.6}
@@ -261,6 +261,7 @@ class InputBox extends React.Component {
                             fontFamily: text.FONT_FAMILY.SEMI_BOLD,
                         }}
                     >
+                        {' '}
                         {inputTitle}
                     </Text>
                 </Text>
@@ -360,7 +361,7 @@ class InputBox extends React.Component {
                     >
                         *
                     </Text>
-                    <Text style={styles.labelStyle}>{inputTitle}</Text>
+                    <Text style={styles.labelStyle}> {inputTitle}</Text>
                 </View>
                 <ScrollView
                     horizontal
@@ -589,7 +590,7 @@ const styles = {
         fontSize: 15,
         fontFamily: FONT_FAMILY.SEMI_BOLD,
         color: '#828282',
-        marginHorizontal: 5,
+        // marginHorizontal: 5,
     },
     captionStyle: {
         fontSize: 12,

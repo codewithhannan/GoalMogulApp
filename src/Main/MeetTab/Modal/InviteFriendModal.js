@@ -509,9 +509,11 @@ class InviteFriendModal extends React.PureComponent {
                                                 lineHeight: 24,
                                                 padding: 0,
                                                 width: width - 72,
+                                                height: height - 650,
                                             },
                                         ]}
                                         multiline
+                                        numberOfLines={15}
                                     />
                                     <Text
                                         numberOfLines={1}
