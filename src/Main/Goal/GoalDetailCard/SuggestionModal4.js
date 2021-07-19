@@ -90,6 +90,7 @@ class SuggestionModal extends Component {
             modalVisible: false,
             showInviteFriendModal: false,
             showNeedStepModal: false,
+            isSelected: false,
         }
     }
 
@@ -157,7 +158,7 @@ class SuggestionModal extends Component {
             ...this.state,
             // iconMapRight: [...IconMapRight],
             iconMapLeft: [...IconMapLeft],
-            modalVisible: false,
+            // modalVisible: false,
         })
     }
 
@@ -175,7 +176,6 @@ class SuggestionModal extends Component {
         })
         if (suggestionType === 'User' || suggestionType === 'Tribe') {
             this.setState({ modalVisible: true })
-            // Actions.push('suggestionTest')
         }
         if (suggestionType === 'Contact') {
             this.setState({ showInviteFriendModal: true })
@@ -304,8 +304,16 @@ class SuggestionModal extends Component {
         )
     }
 
+    setSelected(val) {
+        // if (val) this.setState({ isSelected: true })
+    }
+
     renderSuggestionBody(newComment) {
-        const { suggestionType } = newComment.tmpSuggestion
+        const {
+            suggestionType,
+            selectedItem,
+            suggestionText,
+        } = newComment.tmpSuggestion
         // if (!this.state.optionsCollapsed) return null
         if (
             suggestionType === 'User' ||
@@ -316,15 +324,6 @@ class SuggestionModal extends Component {
         ) {
             return (
                 <>
-                    {/* <SearchBarHeader
-                        title={suggestionType === 'User' ? 'Friends' : 'Tribes'}
-                        backButton
-                        onBackPress={() => {
-                            this.resetIconMap()
-                            this.setState({ modalVisible: false })
-                            this.handleExpand()
-                        }}
-                    /> */}
                     <ModalHeader
                         title={suggestionType === 'User' ? 'Friends' : 'Tribes'}
                         back
@@ -354,7 +353,11 @@ class SuggestionModal extends Component {
                             this.props.onAttach()
                             this.resetIconMap()
                             // this.handleExpand()
-                            this.setState({ modalVisible: false })
+                            if (!selectedItem) {
+                                this.setState({ modalVisible: true })
+                            } else {
+                                this.setState({ modalVisible: false })
+                            }
                         }}
                     >
                         <View style={styles.buttonContainer}>
@@ -382,7 +385,11 @@ class SuggestionModal extends Component {
                         onAction={() => {
                             this.props.onAttach()
                             this.resetIconMap()
-                            this.setState({ modalVisible: false })
+                            if (!suggestionText) {
+                                this.setState({ modalVisible: true })
+                            } else {
+                                this.setState({ modalVisible: false })
+                            }
                         }}
                     />
                     <NeedStepSuggestion
@@ -405,7 +412,7 @@ class SuggestionModal extends Component {
     }
 
     render() {
-        const { newComment, item } = this.props
+        const { newComment, item, setSubSuggestionModal } = this.props
         if (!newComment || !item) return null
         return (
             <RNModal
@@ -426,9 +433,9 @@ class SuggestionModal extends Component {
                     style={{
                         backgroundColor: 'white',
                         width: '100%',
-                        height: 270,
+                        height: 350,
                         position: 'absolute',
-                        bottom: 80,
+                        bottom: 0,
                     }}
                 >
                     <View
@@ -448,7 +455,7 @@ class SuggestionModal extends Component {
                 <Modal
                     visible={this.state.modalVisible}
                     // isOpen={this.state.modalVisible}
-                    onClosed={() => this.setState({ modalVisible: false })}
+                    onClosed={() => setSubSuggestionModal(false)}
                 >
                     {this.renderSuggestionBody(newComment)}
                 </Modal>

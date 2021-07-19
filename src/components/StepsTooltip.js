@@ -26,8 +26,8 @@ class StepsTooltip extends Component {
                         style={{
                             position: 'absolute',
                             zIndex: 1,
-                            bottom: 78,
-                            right: 25,
+                            bottom: 118,
+                            right: 140,
                         }}
                     >
                         <ImageBackground
@@ -50,8 +50,10 @@ class StepsTooltip extends Component {
                                         fontFamily: 'SFProDisplay-Semibold',
                                     }}
                                 >
-                                    This horizontal bar shows how much goal
-                                    progress has been made.
+                                    {/* This horizontal bar shows how much goal
+                                    progress has been made. */}
+                                    Tap goal for details; OR swipe left and
+                                    right to reveal more cool ways to interact!
                                 </Text>
                             </View>
                             <TouchableOpacity

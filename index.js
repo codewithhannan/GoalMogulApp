@@ -10,4 +10,4 @@ import App from './App'
  * link: https://docs.expo.io/versions/latest/sdk/register-root-component/
  */
 registerRootComponent(App)
-// AppRegistry.registerComponent('GoalMoguliOS', () => App);
+// AppRegistry.registerComponent('GoalMoguliOS', () => App)

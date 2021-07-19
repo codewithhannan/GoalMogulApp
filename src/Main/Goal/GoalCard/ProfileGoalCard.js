@@ -27,7 +27,7 @@ import ShareIcon from '../../../asset/utils/forward.png'
 import RECORDING from '../../../asset/utils/Recording.png'
 import VIDEO from '../../../asset/utils/Video.png'
 import ACCOUNTABILITY from '../../../asset/utils/Accountability.png'
-import SWIPER_BACKGROUND from '../../../asset/image/messageUI1.png'
+import SWIPER_BACKGROUND from '../../../asset/image/tooltip2.png'
 
 // Selector
 
@@ -535,11 +535,12 @@ class ProfileGoalCard extends React.Component {
                         title={swiperText}
                         imageSource={SWIPER_BACKGROUND}
                         type="swiperDetail"
+                        bgStyle={{ width: 200, height: 87 }}
                         viewStyle={{
                             position: 'absolute',
                             zIndex: 1,
-                            left: 13,
-                            top: 10,
+                            left: 95,
+                            top: 0,
                         }}
                     />
                 ) : null}

@@ -41,12 +41,12 @@ import { initSentry } from './src/monitoring/sentry'
 import * as Linking from 'expo-linking'
 import MultipleImagePicker from './src/Main/Menu/MutlipleImagePicker'
 import AudioModal from './src/components/AudioModal'
+import DateTimePicker from './src/Main/Accountability/CalenderModel'
 
 import { setJSExceptionHandler } from 'react-native-exception-handler' // If an error occurs or app crashes these functions are called we used them to send sengments
 
 // UI theme provider
 import ThemeProvider from './theme/ThemeProvider'
-
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
 Text.defaultProps.allowFontScaling = false
@@ -119,6 +119,7 @@ export default class App extends React.Component {
                     <PersistGate persistor={persistor}>
                         <View style={styles.container}>
                             <Router />
+                            {/* <DateTimePicker /> */}
                         </View>
                         <DropdownAlert
                             ref={(ref) => DropDownHolder.setDropDown(ref)}

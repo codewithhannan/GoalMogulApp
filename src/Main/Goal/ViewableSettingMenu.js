@@ -139,6 +139,8 @@ const styles = {
     },
     caretStyle: {
         marginLeft: 3,
+        width: 10,
+        height: 10,
         tintColor: '#9A9A9A',
     },
 }

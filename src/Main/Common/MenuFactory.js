@@ -51,7 +51,13 @@ export const MenuFactory = (
             >
                 <View style={triggerContainerStyle}>
                     {triggerTextView}
-                    <Image source={dropDown} />
+                    <Image
+                        source={dropDown}
+                        style={{
+                            width: 10,
+                            height: 10,
+                        }}
+                    />
                 </View>
             </MenuTrigger>
             <MenuOptions customStyles={styles.menuOptionsStyles}>

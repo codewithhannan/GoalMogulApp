@@ -409,7 +409,6 @@ export class GoalDetailCardV3 extends React.Component {
     }
 
     handleReplyTo = (type) => {
-        console.log('handleReplyTo type', type)
         this.setState({
             keyboardDidShow: true,
         })
@@ -898,7 +897,7 @@ export class GoalDetailCardV3 extends React.Component {
         if (!goalDetail || _.isEmpty(goalDetail)) return null
 
         const { focusType, focusRef } = navigationState
-        console.log('FOCUS TYPE NAVIGATION STATE', focusType)
+        console.log('SUGGESTION FOCUSREF====>', focusType)
 
         return (
             <>
