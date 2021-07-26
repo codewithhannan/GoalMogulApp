@@ -14,6 +14,11 @@ import { TextField } from 'react-native-material-textfield-gm'
 import { connect } from 'react-redux'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { DotIndicator } from 'react-native-indicators'
+import {
+    EVENT as E,
+    track,
+    trackWithProperties,
+} from '../../../monitoring/segment'
 
 /* Component */
 import FormHeader from '../../Common/Header/FormHeader'
@@ -71,6 +76,7 @@ class ProfileDetailEditForm extends Component {
             { values, hasImageModified },
             this.props.pageId
         )
+        track(E.PROFILE_UPDATED)
     }
 
     _scrollToInput(reactNode) {

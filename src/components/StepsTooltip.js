@@ -6,7 +6,7 @@ import { View, Text, TouchableOpacity, ImageBackground } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { connect } from 'react-redux'
 import { Entypo } from '@expo/vector-icons'
-import { setGoalProgressTooltip } from '../actions'
+import { setProgressTooltip } from '../actions'
 
 class StepsTooltip extends Component {
     constructor(props) {
@@ -18,7 +18,7 @@ class StepsTooltip extends Component {
     }
 
     render() {
-        const { tooltip, setGoalProgressTooltip } = this.props
+        const { tooltip, setProgressTooltip } = this.props
         return (
             <>
                 {this.state.toolTipVisible && tooltip.goalProgressTooltip ? (
@@ -26,8 +26,8 @@ class StepsTooltip extends Component {
                         style={{
                             position: 'absolute',
                             zIndex: 1,
-                            bottom: 78,
-                            right: 25,
+                            bottom: 118,
+                            right: 140,
                         }}
                     >
                         <ImageBackground
@@ -50,14 +50,16 @@ class StepsTooltip extends Component {
                                         fontFamily: 'SFProDisplay-Semibold',
                                     }}
                                 >
-                                    This horizontal bar shows how much goal
-                                    progress has been made.
+                                    {/* This horizontal bar shows how much goal
+                                    progress has been made. */}
+                                    Tap goal for details; OR swipe left and
+                                    right to reveal more cool ways to interact!
                                 </Text>
                             </View>
                             <TouchableOpacity
                                 onPress={() => {
                                     this.state.checked &&
-                                        setGoalProgressTooltip()
+                                        setProgressTooltip('goal')
                                     this.setState({ toolTipVisible: false })
                                 }}
                                 style={{
@@ -136,6 +138,4 @@ const mapStateToProps = (state, ownProps) => {
     }
 }
 
-export default connect(mapStateToProps, { setGoalProgressTooltip })(
-    StepsTooltip
-)
+export default connect(mapStateToProps, { setProgressTooltip })(StepsTooltip)

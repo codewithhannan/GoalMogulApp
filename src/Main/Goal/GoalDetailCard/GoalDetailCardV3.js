@@ -78,7 +78,7 @@ import Tooltip from '../../Tutorial/Tooltip'
 import CommentBox from '../Common/CommentBoxV2'
 import SectionCardV2 from '../Common/SectionCardV2'
 import GoalDetailSection from './GoalDetailSection'
-import SuggestionModal from './SuggestionModal3'
+import SuggestionModal from './SuggestionModal4'
 import CommentCard from './Comment/CommentCard'
 import LikeListModal from '../../Common/Modal/LikeListModal'
 import EmptyResult from '../../Common/Text/EmptyResult'
@@ -221,7 +221,7 @@ export class GoalDetailCardV3 extends React.Component {
                 suggestionForRef: focusRef, // Need or Step ref
                 suggestionFor: focusType === 'need' ? 'Need' : 'Step',
             }
-
+            console.log('Focus type =====>', focusType)
             // Open Create Goal Modal for edition
             if (initialShowGoalModal) {
                 setTimeout(() => {
@@ -542,7 +542,7 @@ export class GoalDetailCardV3 extends React.Component {
                         <StepAndNeedCardV3
                             key={`mastermind-${index}`}
                             item={item}
-                            goalRef={goalDetail}
+                            // goalRef={goalDetail}
                             onCardPress={() => {
                                 // Use passed in function to handle tab switch with animation
                                 this._handleIndexChange(1, item.type, item._id)
@@ -807,6 +807,7 @@ export class GoalDetailCardV3 extends React.Component {
             initial,
             displayGoals,
         } = this.props
+        console.log('GOlaDetailcard data', data)
 
         const { focusType } = navigationState
 
@@ -892,9 +893,11 @@ export class GoalDetailCardV3 extends React.Component {
             goalId,
             displayGoals,
         } = this.props
+
         if (!goalDetail || _.isEmpty(goalDetail)) return null
 
         const { focusType, focusRef } = navigationState
+        console.log('SUGGESTION FOCUSREF====>', focusType)
 
         return (
             <>
@@ -935,8 +938,6 @@ export class GoalDetailCardV3 extends React.Component {
                             {this.renderFlatList()}
                         </KeyboardAvoidingView>
 
-                        {this.renderCommentBox(focusType, pageId)}
-
                         <SuggestionModal
                             visible={this.props.showSuggestionModal}
                             onCancel={() => {
@@ -958,6 +959,8 @@ export class GoalDetailCardV3 extends React.Component {
                             goalId={this.props.goalId}
                             item={goalDetail}
                         />
+                        {this.renderCommentBox(focusType, pageId)}
+
                         {/** <Report showing={this.props.showingModalInDetail} /> */}
                     </View>
                 </MenuProvider>
@@ -1017,6 +1020,7 @@ const makeMapStateToProps = () => {
         const isSelf = userId === _.get(goal, 'owner._id', '')
 
         const comments = getCommentByEntityId(state, goalId, pageId)
+
         const { data, transformedComments, loading } = comments || {
             transformedComments: [],
             loading: false,

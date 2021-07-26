@@ -31,11 +31,12 @@ class SearchTribeCard extends Component {
      * @param item: search result item
      */
     onButtonClicked = (item, type) => {
+        console.log('tribesearchcard', item)
         const { onItemSelect, selectTribe, tribeDetailOpen } = this.props
-        trackWithProperties(EVENT.SEARCH_RESULT_CLICKED, {
-            Type: 'tribe',
-            Id: item._id,
-        })
+        // trackWithProperties(EVENT.SEARCH_RESULT_CLICKED, {
+        //     Type: 'tribe',
+        //     Id: item._id,
+        // })
         if (!type || type === 'SearchSuggestion') {
             console.log(`${DEBUG_KEY} select tribe: `, item)
 
@@ -75,35 +76,39 @@ class SearchTribeCard extends Component {
     }
 
     renderButton(item, type) {
-        return (
-            <View style={styles.iconContainerStyle}>
-                <DelayedButton
-                    activeOpacity={0.6}
-                    onPress={() => this.onButtonClicked(item, type)}
-                    style={{
-                        height: 31,
-                        width: 65,
-                        backgroundColor: color.GM_BLUE,
-                        borderRadius: 3,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: 3,
-                    }}
-                >
-                    <Text
+        if (!this.props.hideJoinButton) {
+            return (
+                <View style={styles.iconContainerStyle}>
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        onPress={() => this.onButtonClicked(item, type)}
                         style={{
-                            color: 'white',
-                            fontSize: 12,
-                            fontWeight: '600',
-                            lineHeight: 14,
-                            fontFamily: 'SFProDisplay-Semibold',
+                            height: 31,
+                            width: 65,
+                            backgroundColor: color.GM_BLUE,
+                            borderRadius: 3,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 3,
                         }}
                     >
-                        Join
-                    </Text>
-                </DelayedButton>
-            </View>
-        )
+                        <Text
+                            style={{
+                                color: 'white',
+                                fontSize: 12,
+                                fontWeight: '600',
+                                lineHeight: 14,
+                                fontFamily: 'SFProDisplay-Semibold',
+                            }}
+                        >
+                            Join
+                        </Text>
+                    </DelayedButton>
+                </View>
+            )
+        } else {
+            return null
+        }
     }
 
     renderTitle(item) {
@@ -251,7 +256,7 @@ const styles = {
     iconContainerStyle: {
         marginLeft: 8,
         flexDirection: 'row',
-        justifyContent: 'flex-',
+        // justifyContent: 'center',
     },
     iconStyle: {
         height: 25,

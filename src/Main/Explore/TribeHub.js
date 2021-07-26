@@ -37,6 +37,11 @@ import { MenuProvider } from 'react-native-popup-menu'
 import EmptyTribe from '../../asset/image/empty_tribe.png'
 import LionMascot from '../../asset/image/LionMascot_shadow.png'
 import FeedToast from '../../components/FeedToast'
+import {
+    trackWithProperties,
+    EVENT as E,
+    track,
+} from '../../monitoring/segment'
 
 let pageAb = ''
 
@@ -113,7 +118,10 @@ class TribeHub extends Component {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             style={styles.emptyTribeButtonStyle}
-                            onPress={() => Actions.push('tribeDiscover')}
+                            onPress={() => {
+                                Actions.push('tribeDiscover')
+                                track(E.DISCOVER_TRIBE_OPEN)
+                            }}
                         >
                             <Text
                                 style={[

@@ -39,9 +39,9 @@ class UserGoalsView extends Component {
         this.props.tribeRefreshUserGoals(this.props.tribeId, this.props.pageId)
     }
 
-    handleRefresh = () => {
-        this.props.tribeRefreshUserGoals(this.props.tribeId, this.props.pageId)
-    }
+    // handleRefresh = () => {
+    //     this.props.tribeRefreshUserGoals(this.props.tribeId, this.props.pageId)
+    // }
 
     handleOnLoadMore = () => {
         this.props.tribeLoadMoreUserGoals(this.props.tribeId, this.props.pageId)
@@ -124,8 +124,12 @@ class UserGoalsView extends Component {
                         renderItem={this.renderItem}
                         keyExtractor={(i) => i._id}
                         onRefresh={this.handleRefresh}
-                        onEndReached={this.handleOnLoadMore}
-                        onEndReachedThreshold={2}
+                        onEndReachedThreshold={0.5}
+                        onEndReached={({ distanceFromEnd }) => {
+                            if (distanceFromEnd >= 0) {
+                                this.handleOnLoadMore
+                            }
+                        }}
                         refreshing={false}
                         ListEmptyComponent={this.renderListEmptyState()}
                         ListFooterComponent={this.renderListFooter()}

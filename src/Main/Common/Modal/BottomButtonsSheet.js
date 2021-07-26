@@ -1,4 +1,8 @@
-/** @format */
+/**
+ * /* @format
+ *
+ * @format
+ */
 
 import React from 'react'
 import { View, Image, Text, TouchableOpacity } from 'react-native'
@@ -8,6 +12,7 @@ import BottomSheet from './BottomSheet'
 import { Icon } from '@ui-kitten/components'
 import ChatGallery from '../../../asset/background/FeedbackScreenShot.png'
 import ChatCamera from '../../../asset/background/ChatCamera.png'
+import AudioModal from '../../../components/AudioModal'
 
 /**
  * This bottom sheet uses https://github.com/nysamnang/react-native-raw-bottom-sheet#readme
@@ -36,8 +41,10 @@ class BottomButtonsSheet extends React.PureComponent {
             return (
                 <DelayedButton
                     onPress={() => {
-                        onPress && onPress()
-                        if (closeSheetOnOptionPress) this.close()
+                        this.close()
+                        setTimeout(() => {
+                            onPress && onPress()
+                        }, 500)
                     }}
                     key={text}
                     style={{
@@ -48,7 +55,7 @@ class BottomButtonsSheet extends React.PureComponent {
                     }}
                     {...otherProps}
                 >
-                    {/* First try to render image and then Icon */}
+                    {/* {/ First try to render image and then Icon /} */}
                     {image ? (
                         <Image
                             source={image}
@@ -61,7 +68,7 @@ class BottomButtonsSheet extends React.PureComponent {
                         />
                     ) : null}
 
-                    {/* <Image /> */}
+                    {/* {/ <Image /> /} */}
                     <Text style={[default_style.goalTitleText_1, textStyle]}>
                         {text}
                     </Text>
@@ -138,7 +145,7 @@ class BottomButtonsSheet extends React.PureComponent {
                 </View>
             )
         } else if (this.props.chatRecordingPress) {
-            return <Text>Hannan</Text>
+            return <AudioModal />
         } else {
             return (
                 <View
@@ -155,6 +162,7 @@ class BottomButtonsSheet extends React.PureComponent {
     }
 
     render() {
+        // console.log("THIS IS ITEM SHARE",this.props.closeSheetOnOptionPress);
         const { buttons, ...otherProps } = this.props
         if (!buttons || buttons.length === 0) return null
 

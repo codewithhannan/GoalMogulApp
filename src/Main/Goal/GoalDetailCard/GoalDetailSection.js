@@ -89,6 +89,7 @@ import {
     LOTTIE_DATA,
     renderUnitText,
 } from '../../Common/ContentCards/LikeSheetData'
+import ClarifyModal from '../../Common/Modal/ClarifyModal'
 
 const { width } = Dimensions.get('window')
 const TOOLTIP_WIDTH = Dimensions.get('screen').width
@@ -115,6 +116,7 @@ class GoalDetailSection extends React.PureComponent {
             showSuggestionPopup: false,
             showNudgePopup: false,
             toolTipVisible: false,
+            showClarifyPopup: false,
             unitText: '',
         }
         this.handleGoalReminder = this.handleGoalReminder.bind(this)
@@ -124,6 +126,13 @@ class GoalDetailSection extends React.PureComponent {
     componentDidMount() {
         if (this.props.onRef !== null) {
             this.props.onRef(this)
+        }
+        const { goalDetail } = this.props
+        const { steps, needs } = goalDetail
+        if (steps.length === 0 && needs.length === 0) {
+            setTimeout(() => {
+                this.setState({ showSuggestionPopup: true })
+            }, 2000)
         }
 
         if (this.props.initialProps) {
@@ -199,9 +208,11 @@ class GoalDetailSection extends React.PureComponent {
                 text: 'Custom',
                 onPress: () => {
                     // Show customized time picker
-                    this.setState({
-                        goalReminderDatePicker: true,
-                    })
+                    setTimeout(() => {
+                        this.setState({
+                            goalReminderDatePicker: true,
+                        })
+                    }, 500)
                 },
             },
         ]
@@ -464,7 +475,9 @@ class GoalDetailSection extends React.PureComponent {
                             goalReminderDatePicker: false,
                         },
                         () => {
-                            this.props.scheduleNotification(date, goal)
+                            setTimeout(() => {
+                                this.props.scheduleNotification(date, goal)
+                            }, 500)
                         }
                     )
                 }}
@@ -751,7 +764,7 @@ class GoalDetailSection extends React.PureComponent {
                         this.props.onSuggestion()
                     }}
                     onClarifyButtonPress={() => {
-                        this.setState({ showSuggestionPopup: true })
+                        this.setState({ showClarifyPopup: true })
                     }}
                 />
             </Tooltip>
@@ -764,6 +777,9 @@ class GoalDetailSection extends React.PureComponent {
                 this.setState({ showNudgePopup: true })
             }, 500)
         })
+    }
+    closeClarifyPopup = () => {
+        this.setState({ showClarifyPopup: false })
     }
 
     showSuggestionModal = () => {
@@ -783,11 +799,18 @@ class GoalDetailSection extends React.PureComponent {
 
         return (
             <>
-                <SuggestionPopup
-                    isVisible={this.state.showSuggestionPopup}
+                {!isOwnGoal && (
+                    <SuggestionPopup
+                        isVisible={this.state.showSuggestionPopup}
+                        name={goalDetail.owner.name}
+                        closeModal={this.closeSuggestionPopup}
+                        showSuggestion={this.showSuggestionModal}
+                    />
+                )}
+                <ClarifyModal
+                    isVisible={this.state.showClarifyPopup}
                     name={goalDetail.owner.name}
-                    closeModal={this.closeSuggestionPopup}
-                    showSuggestion={this.showSuggestionModal}
+                    closeModal={this.closeClarifyPopup}
                 />
                 <NudgePopup
                     isVisible={this.state.showNudgePopup}
@@ -895,6 +918,7 @@ const mapStateToProps = (state, props) => {
     const getGoalPageDetailByPageId = makeGetGoalPageDetailByPageId()
     const { pageId, goalId } = props
     const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId)
+
     const { goal, goalPage } = goalDetail
     const { userId } = state.user
     const { tutorialText } = state.tutorials.goal_detail.goal_detail_page

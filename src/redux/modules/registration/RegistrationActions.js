@@ -113,12 +113,12 @@ export const uploadSurvey = () => async (dispatch, getState) => {
     const contents = getSurveyFromTargets(targets)
 
     try {
-        trackWithProperties(E.REG_SURVEY_SELECTED, {
-            NumOptionSelected: targets.filter((i) => i.selected).length,
-            OtherSelected: targets.filter((i) => i.title === 'Other')[0]
-                .selected,
-            UserId: userId,
-        })
+        // trackWithProperties(E.REG_SURVEY_SELECTED, {
+        //     NumOptionSelected: targets.filter((i) => i.selected).length,
+        //     OtherSelected: targets.filter((i) => i.title === 'Other')[0]
+        //         .selected,
+        //     UserId: userId,
+        // })
 
         const res = await API.post(
             'secure/user/survey/create',
@@ -301,6 +301,10 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
     try {
         const res = await API.post('pub/user/', { ...data })
 
+        if (res.status == 200) {
+            track(E.REG_FIELDS_FILL)
+        }
+
         Logger.log(
             '[RegistrationActions] [registerAccount] registration response is: ',
             res,
@@ -354,10 +358,6 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
                 onSuccess()
             }
 
-            trackWithProperties(E.REG_ACCOUNT_CREATED, {
-                UserId: res.userId,
-            })
-
             // set up chat listeners
             LiveChatService.mountUser({
                 userId: res.userId,
@@ -367,6 +367,7 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
                 userId: res.userId,
                 authToken: res.token,
             })
+
             return
         } else {
             // fail to register account
@@ -477,9 +478,9 @@ export const registrationAddProfilePhoto = (maybeOnSuccess) => async (
                 console.log('profile picture error: ', err)
             })
 
-        trackWithProperties(E.REG_ADD_PHOTO_UPLOADED, {
-            UserId: userId,
-        })
+        // trackWithProperties(E.REG_ADD_PHOTO_UPLOADED, {
+        //     UserId: userId,
+        // })
         // After profile image is uploaded, async refresh profile
         fetchAppUserProfile()(dispatch, getState)
     }

@@ -82,8 +82,8 @@ class OnboardingPeopleKnow extends React.Component {
 
     onNotNow = () => {
         trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
-            onboardingStep: 'add_friends',
-            // friends_added: 0,
+            onboardingStep: 'add_friend',
+            friends_added: this.state.requestsSent,
         })
         const screenTransitionCallback = () => {
             Actions.push('registration_community_guideline')
@@ -231,9 +231,9 @@ class OnboardingPeopleKnow extends React.Component {
      * 3. If found, go to invite page with 2 tabs
      */
     onSyncContact = () => {
-        trackWithProperties(E.REG_CONTACT_SYNC, {
-            UserId: this.props.userId,
-        })
+        // trackWithProperties(E.REG_CONTACT_SYNC, {
+        //     UserId: this.props.userId,
+        // })
 
         this.openModal()
 
@@ -277,8 +277,6 @@ class OnboardingPeopleKnow extends React.Component {
      */
 
     render() {
-        console.log('THESE ARE THE FRIENDS', this.state.requestsSent)
-
         return (
             <View
                 style={[
@@ -318,6 +316,19 @@ class OnboardingPeopleKnow extends React.Component {
                                     ItemSeparatorComponent={
                                         this.renderItemSeparator
                                     }
+                                    ListEmptyComponent={() => {
+                                        return (
+                                            <View
+                                                style={{
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    marginTop: 100,
+                                                }}
+                                            >
+                                                <Text>No People Found</Text>
+                                            </View>
+                                        )
+                                    }}
                                 />
                             </View>
                         </View>

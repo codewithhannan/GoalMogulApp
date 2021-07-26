@@ -88,7 +88,7 @@ class ChatRoomMembers extends React.Component {
                     style={styles.memberCardBodyContainerStyle}
                 >
                     <ProfileImage
-                        imageStyle={{ height: 35, width: 35, borderRadius: 4 }}
+                        imageStyle={{ height: 35, width: 35, borderRadius: 50 }}
                         imageUrl={userDoc.profile && userDoc.profile.image}
                         defaultImageContainerStyle={{
                             ...styles.imageContainerStyle,

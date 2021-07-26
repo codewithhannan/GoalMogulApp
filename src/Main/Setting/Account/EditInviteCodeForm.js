@@ -64,7 +64,7 @@ class EditInviteCodeForm extends Component {
     renderError(error) {
         return error ? (
             <View style={{ marginTop: 16, paddingHorizontal: 20 }}>
-                <Text style={styles.errorStyle}>{error}</Text>
+                <Text style={styles.errorStyle}>hannan</Text>
             </View>
         ) : null
     }
@@ -93,7 +93,7 @@ class EditInviteCodeForm extends Component {
                         onChange(text)
                     }}
                     value={value}
-                    disabled={this.props.updatingInviteCode}
+                    // disabled={this.props.updatingInviteCode}
                     returnKeyType="done"
                     caption={caption}
                     status={status}
@@ -106,8 +106,9 @@ class EditInviteCodeForm extends Component {
     render() {
         const { handleSubmit, error } = this.props
 
+        console.log('THIS IS ERROR', error)
+
         const isButtonDisabled =
-            this.props.updatingInviteCode ||
             this.state.inviteCodeValidationError ||
             this.props.initialVal === this.props.inviteCode ||
             !this.props.inviteCode ||
@@ -165,9 +166,12 @@ class EditInviteCodeForm extends Component {
                     <DelayedButton
                         activeOpacity={0.6}
                         onPress={handleSubmit(this.handleOnSubmitPress)}
-                        disabled={isButtonDisabled}
+                        // disabled={isButtonDisabled}
                     >
-                        <Button text="Update" disabled={isButtonDisabled} />
+                        <Button
+                            text="Update"
+                            //  disabled={isButtonDisabled}
+                        />
                     </DelayedButton>
                 </ScrollView>
             </KeyboardAvoidingView>

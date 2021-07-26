@@ -43,7 +43,7 @@ class SuggestionPopup extends Component {
 
     render() {
         return (
-            <Modal isVisible={this.props.isVisible}>
+            <Modal isVisible={this.props.isVisible} backdropOpacity={0.4}>
                 <View style={styles.container}>
                     <View>
                         <Text style={styles.title}>{`Make a Suggestion?`}</Text>
@@ -81,8 +81,6 @@ const styles = StyleSheet.create({
         height: hp(48.49),
         width: wp(91.46),
         borderRadius: wp(2),
-        bottom: 20,
-        position: 'absolute',
     },
     btnContainer1: {
         backgroundColor: GM_BLUE,

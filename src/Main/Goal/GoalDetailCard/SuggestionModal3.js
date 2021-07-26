@@ -310,43 +310,45 @@ class SuggestionModal extends Component {
         if (!newComment || !item) return null
 
         return (
-            <Modal
-                animationType="slide"
-                transparent={false}
-                visible={this.props.visible}
-                onDismiss={this.resetIconMap}
-            >
-                <ModalHeader
-                    title="Suggestion"
-                    actionText="Attach"
-                    onCancel={this.props.onCancel}
-                    onAction={() => this.props.onAttach()}
-                />
-                <KeyboardAwareScrollView
-                    innerRef={(ref) => {
-                        this.scrollview = ref
-                    }}
-                    style={styles.scroll}
-                    extraScrollHeight={13}
-                    contentContainerStyle={{
-                        backgroundColor: 'white',
-                        flexGrow: 1, // this will fix scrollview scroll issue by passing parent view width and height to it
-                    }}
-                    onKeyboardWillShow={() => {
-                        this.scrollview.props.scrollToPosition(0, 120)
-                    }}
-                    onKeyboardWillHide={() => {
-                        this.scrollview.props.scrollToPosition(0, 0)
-                    }}
+            <View style={{ height: 30 }}>
+                <Modal
+                    animationType="slide"
+                    transparent={false}
+                    visible={this.props.visible}
+                    onDismiss={this.resetIconMap}
                 >
-                    <View style={{ flex: 1 }}>
-                        {this.renderGoalPreview(item)}
-                        {this.renderSuggestionFor(newComment, item)}
-                        {this.renderOptions(newComment)}
-                        {this.renderSuggestionBody(newComment)}
-                    </View>
-                </KeyboardAwareScrollView>
-            </Modal>
+                    <ModalHeader
+                        title="Suggestion"
+                        actionText="Attach"
+                        onCancel={this.props.onCancel}
+                        onAction={() => this.props.onAttach()}
+                    />
+                    <KeyboardAwareScrollView
+                        innerRef={(ref) => {
+                            this.scrollview = ref
+                        }}
+                        style={styles.scroll}
+                        extraScrollHeight={13}
+                        contentContainerStyle={{
+                            backgroundColor: 'white',
+                            // flexGrow: 1, // this will fix scrollview scroll issue by passing parent view width and height to it
+                        }}
+                        onKeyboardWillShow={() => {
+                            this.scrollview.props.scrollToPosition(0, 120)
+                        }}
+                        onKeyboardWillHide={() => {
+                            this.scrollview.props.scrollToPosition(0, 0)
+                        }}
+                    >
+                        <View style={{}}>
+                            {/* {this.renderGoalPreview(item)} */}
+                            {this.renderSuggestionFor(newComment, item)}
+                            {this.renderOptions(newComment)}
+                            {this.renderSuggestionBody(newComment)}
+                        </View>
+                    </KeyboardAwareScrollView>
+                </Modal>
+            </View>
         )
     }
 }

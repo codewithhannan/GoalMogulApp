@@ -45,7 +45,12 @@ import {
 
 import LiveChatService from '../socketio/services/LiveChatService'
 import MessageStorageService from '../services/chat/MessageStorageService'
-import { feedbackImagesSelected } from '../reducers/FeedbackReducers'
+
+import {
+    setVideoFromCameraUri,
+    setVideoUri,
+    setVoiceUri,
+} from '../reducers/ProfileGoalSwipeReducer'
 
 const DEBUG_KEY = '[ Action Registration ]'
 export const registrationLogin = () => {
@@ -340,6 +345,62 @@ export const openCamera = (
     console.log('user took image fail with result: ', result)
 }
 
+export const openCameraForVideo = (showModal) => async (dispatch, getState) => {
+    var result
+    const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
+
+    const permissionGranted = await ImageUtils.checkPermission(permissions)
+    console.log(`${DEBUG_KEY}: permissionGranted is: ${permissionGranted}`)
+
+    if (!permissionGranted) {
+        return
+    }
+
+    result = await ImagePicker.launchCameraAsync({
+        mediaTypes: 'Videos',
+        quality: 0.5,
+        videoMaxDuration: 10,
+    }).catch((error) =>
+        console.log('THIS IS ERROR OF OPENING CAMERA FOR VIDEO', error)
+    )
+    console.log('user took video with result ', result)
+
+    if (!result.cancelled) {
+        return (
+            dispatch(setVideoUri(result.uri)),
+            setTimeout(() => {
+                showModal()
+            }, 500)
+        )
+    }
+
+    console.log('user took video fail with result: ', result)
+}
+
+export const openCameraRollForVideo = (showModal) => async (dispatch) => {
+    const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
+
+    const permissionGranted = await ImageUtils.checkPermission(permissions)
+    if (!permissionGranted) {
+        // TODO: fire event to say permission not granted
+        return
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: 'Videos',
+    })
+
+    setTimeout(() => {
+        showModal()
+    }, 1000)
+
+    if (!result.cancelled) {
+        return dispatch(setVideoUri(result.uri))
+    }
+
+    console.log('user choosing from camera roll fail with result: ', result)
+}
+
 export const getPhotosAsync = async () => {
     const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
     const permissionGranted = await ImageUtils.checkPermission(permissions)
@@ -548,7 +609,7 @@ export const registrationNextContactSync = ({ skip }) => {
     const type = skip
         ? REGISTRATION_CONTACT_SYNC_SKIP
         : REGISTRATION_CONTACT_SYNC
-    track(skip ? E.REG_CONTACT_SYNC_SKIP : E.REG_CONTACT_SYNC)
+    // track(skip ? E.REG_CONTACT_SYNC_SKIP : E.REG_CONTACT_SYNC)
 
     if (skip) {
         return (dispatch, getState) => {

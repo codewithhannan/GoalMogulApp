@@ -68,6 +68,7 @@ class PostDetailCard extends React.PureComponent {
             tab,
             userId,
         } = this.props
+
         console.log(
             `${DEBUG_KEY}: [ componentDidMount ]: initialProps:`,
             initialProps

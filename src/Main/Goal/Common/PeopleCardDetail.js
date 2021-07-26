@@ -103,6 +103,7 @@ class ContactDetail extends Component {
 
     render() {
         const { item } = this.props
+        console.log('PEOPLE CARD DETAIL ITEM======>', item)
         if (!item) return null
         const { name, headline } = item
         return (
@@ -116,14 +117,14 @@ class ContactDetail extends Component {
                     >
                         {name}
                     </Text>
-                    <Image style={styles.imageStyle} source={badge} />
-                    <Text
+                    {/* <Image style={styles.imageStyle} source={badge} /> */}
+                    {/* <Text
                         style={styles.titleTextStyle}
                         numberOfLines={1}
                         ellipsizeMode="tail"
                     >
                         {headline}
-                    </Text>
+                    </Text> */}
                 </View>
             </View>
         )

@@ -36,7 +36,11 @@ import MyTribeFilterBar from './MyTribeFilterBar'
 import TabButtonGroup from '../../Common/TabButtonGroup'
 import EmptyResult from '../../Common/Text/EmptyResult'
 import EarnBadgeModal from '../../Gamification/Badge/EarnBadgeModal'
-
+import {
+    trackWithProperties,
+    EVENT as E,
+    track,
+} from '../../../monitoring/segment'
 // Assets
 import plus from '../../../asset/utils/plus.png'
 
@@ -149,7 +153,10 @@ class MyTribeTab extends React.Component {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         style={[styles.emptyTribeButtonStyle]}
-                        onPress={() => Actions.push('tribeDiscover')}
+                        onPress={() => {
+                            Actions.push('tribeDiscover')
+                            track(E.DISCOVER_TRIBE_OPEN)
+                        }}
                     >
                         <Text
                             style={[

@@ -1,7 +1,7 @@
 /** @format */
 
 import CLAP_LOTTIE from '../../../asset/emojis/clap.json'
-import HEART_LOTTIE from '../../../asset/emojis/heart.json'
+import HEART_LOTTIE from '../../../asset/emojis/HeartWithHand.json'
 import SALUTE_LOTTIE from '../../../asset/emojis/salute.json'
 import METOO_LOTTIE from '../../../asset/emojis/metoo.json'
 import WOO_LOTTIE from '../../../asset/emojis/ohh.json'
@@ -20,8 +20,8 @@ import { color } from '../../../styles/basic'
 
 export const LOTTIE_DATA = [
     {
-        name: `    Love`,
-        lottieSource: ROCKON_LOTTIE,
+        name: ` Love`,
+        lottieSource: HEART_LOTTIE,
         value: 'Hearthand',
         title: 'Love',
     },
@@ -44,7 +44,7 @@ export const LOTTIE_DATA = [
         title: 'Rock-on',
     },
     {
-        name: '   Salute',
+        name: '    Salute',
         lottieSource: SALUTE_LOTTIE,
         value: 'Salute',
         title: 'Salute',
@@ -125,12 +125,14 @@ export const renderTextStyle = (unitText) => {
 }
 
 export const updateLikeIcon = (reactions, liketype) => {
-    const filteredReactions = reactions.filter((reaction) => {
-        console.log('THIS IS REACTIONSS', reaction)
-        console.log('THIS IS REACTIONSS 1', liketype)
-        if (reaction.value == liketype) {
-            return filteredReactions
-        }
+    console.log('THIS IS REACTIONSSS', reactions)
+    console.log('THIS IS LIKE TYPEEE', liketype)
+
+    const filteredReactions = reactions.find((reaction) => {
+        return reaction.type == liketype
     })
-    console.log('UPDATEDDD REACTION', filteredReactions)
+    filteredReactions.count += 1
+    console.log('THIS IS FILTEREDDD REACTIONNN 1', filteredReactions.count)
+
+    console.log('THIS IS FILTEREDDD REACTIONNN', filteredReactions)
 }

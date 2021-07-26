@@ -1,18 +1,27 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, AppState, FlatList, ScrollView } from 'react-native'
+import {
+    View,
+    AppState,
+    FlatList,
+    TouchableWithoutFeedback,
+    Image,
+    TouchableOpacity,
+} from 'react-native'
 import { connect } from 'react-redux'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import _ from 'lodash'
 import { Notifications } from 'expo'
 import { copilot } from 'react-native-copilot-gm'
+import R from 'ramda'
 // import { copilot } from 'react-native-copilot'
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup'
 import SearchBarHeader from '../Common/Header/SearchBarHeader'
+import { openCamera, openCameraRoll } from '../../actions'
 
 import Mastermind from './Mastermind'
 import ActivityFeed from './ActivityFeed'
@@ -22,6 +31,10 @@ import CreateContentButtons from '../Common/Button/CreateContentButtons'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 import { track, EVENT as E } from '../../monitoring/segment'
 import { getToastsData } from '../../actions/ToastActions'
+import BottomButtonsSheet from '../Common/Modal/BottomButtonsSheet'
+
+//video stroyline
+import VideoStoryLineCircle from './VideoStoryLineCircle'
 
 // Actions
 import {
@@ -56,11 +69,15 @@ import {
     markUserAsOnboarded,
     resetTutorial,
 } from '../../redux/modules/User/TutorialActions'
+import * as ImagePicker from 'expo-image-picker'
 
 import { saveRemoteMatches } from '../../actions/MeetActions'
 
 // Styles
 import { color } from '../../styles/basic'
+import { TEXT_FONT_SIZE, FONT_FAMILY } from '../../styles/basic/text'
+import video_icon from '../../asset/icons/video_icon.png'
+import { getButtonBottomSheetHeight } from '../../styles'
 
 // Utils
 import { CreateGoalTooltip } from '../Tutorial/Tooltip'
@@ -71,6 +88,81 @@ import {
 } from '../../redux/modules/notification/NotificationTabActions'
 import { makeGetUserGoals } from '../../redux/modules/User/Selector'
 import { trackWithProperties } from 'expo-analytics-segment'
+
+const stories = [
+    {
+        profileImage: require('../../asset/image/Community_1.png'),
+
+        name: 'Test Name 1',
+        story: [
+            {
+                type: 'img',
+                uri: require('../../testStory3.jpg'),
+            },
+            {
+                type: 'vid',
+                uri:
+                    'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+            },
+            {
+                type: 'img',
+                uri: require('../../testStory4.jpeg'),
+            },
+        ],
+    },
+    // {
+    //     profileImage: require('../../asset/image/Community_1.png'),
+
+    //     name: 'Test Name 1',
+    //     story: require('../../testStory2.png'),
+    // },
+    // {
+    //     profileImage: require('../../asset/image/Community_1.png'),
+
+    //     name: 'Test Name 1',
+    //     story: require('../../testStory3.jpg'),
+    // },
+    {
+        profileImage: require('../../asset/image/Community_1.png'),
+
+        name: 'Test Name 2',
+        story: [
+            {
+                type: 'img',
+                uri: require('../../testStory.jpeg'),
+            },
+            {
+                type: 'img',
+                uri: require('../../testStory2.png'),
+            },
+        ],
+    },
+    // {
+    //     profileImage: require('../../asset/image/Community_1.png'),
+
+    //     name: 'Test Name 2',
+    //     story: require('../../testStory.jpeg'),
+    // },
+    {
+        profileImage: require('../../asset/image/Community_1.png'),
+
+        name: 'Test Name 3',
+        story: [
+            {
+                type: 'img',
+                uri: require('../../testStory3.jpg'),
+            },
+        ],
+    },
+]
+
+// const unique = stories.reduce((res, itm) => {
+//     let result = res.find(
+//         (item) => JSON.stringify(item.name) == JSON.stringify(itm.name)
+//     )
+//     if (!result) return res.concat(itm)
+//     return res
+// }, [])
 
 const DEBUG_KEY = '[ UI Home ]'
 
@@ -90,6 +182,8 @@ class Home extends Component {
             appState: AppState.currentState,
             showWelcomeScreen: false,
             showBadgeEarnModal: false,
+            pickedImage: null,
+            shareModal: false,
         }
         this.scrollToTop = this.scrollToTop.bind(this)
         this._renderScene = this._renderScene.bind(this)
@@ -267,6 +361,32 @@ class Home extends Component {
         this.props.handlePushNotification(notification)
     }
 
+    // pickImage = async () => {
+    //     if (Platform.OS !== 'web') {
+    //         const {
+    //             status,
+    //         } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    //         if (status !== 'granted') {
+    //             return alert(
+    //                 'Sorry, we need camera roll permissions to make this work!'
+    //             )
+    //         } else {
+    //             let result = await ImagePicker.launchImageLibraryAsync({
+    //                 mediaTypes: ImagePicker.MediaTypeOptions.All,
+    //                 allowsEditing: true,
+    //                 aspect: [4, 3],
+    //                 quality: 0.3,
+    //             })
+
+    //             console.log(result)
+
+    //             if (!result.cancelled) {
+    //                 this.setState({ pickedImage: result })
+    //             }
+    //         }
+    //     }
+    // }
+
     handleAppStateChange = async (nextAppState) => {
         if (
             this.state.appState.match(/inactive|background/) &&
@@ -302,9 +422,7 @@ class Home extends Component {
             console.log(
                 `${DEBUG_KEY}: [handleAppStateChange] App has become inactive!`
             )
-            trackWithProperties(E.APP_ACTIVE, {
-                source: 'direct',
-            })
+            track(E.APP_INACTIVE)
             await this.props.saveUnreadNotification()
             await this.props.saveTutorialState()
         }
@@ -332,11 +450,15 @@ class Home extends Component {
                 }
             >
                 <CreateContentButtons
-                    onCreateUpdatePress={() =>
-                        this.createPostModal && this.createPostModal.open()
+                    onCreateUpdatePress={
+                        () =>
+                            this.createPostModal && this.createPostModal.open()
+                        // this.setState({ shareModal: true })
                     }
                     onCreateGoalPress={() =>
-                        Actions.push('createGoalModal', { pageId: pageAb })
+                        Actions.push('createGoalModal', {
+                            pageId: pageAb,
+                        })
                     }
                 />
                 {/* Hid switching tabs to clean up the main view to just friend's Goals and Updates */}
@@ -375,6 +497,78 @@ class Home extends Component {
         }
     }
 
+    _storyLineHeader = (props) => {
+        const options = [
+            {
+                text: 'Open Gallery',
+                onPress: this.handleOpenCameraRoll,
+            },
+            {
+                text: 'Open Camera',
+                onPress: this.handleOpenCamera,
+            },
+        ]
+        return (
+            <>
+                <TouchableOpacity onPress={this.handleImageIconOnClick}>
+                    <View
+                        style={{
+                            width: 70,
+                            height: 70,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: color.GM_LIGHT_GRAY,
+                            borderRadius: 35,
+                            marginTop: 5,
+                        }}
+                    >
+                        <Image
+                            source={video_icon}
+                            resizeMode="contain"
+                            style={{
+                                height: 20,
+                                width: 20,
+                            }}
+                        />
+                    </View>
+                </TouchableOpacity>
+                <BottomButtonsSheet
+                    ref={(r) => (this.bottomSheetRef = r)}
+                    buttons={options}
+                    height={getButtonBottomSheetHeight(options.length)}
+                />
+            </>
+        )
+    }
+    handleImageIconOnClick = () => {
+        this.bottomSheetRef && this.bottomSheetRef.open()
+    }
+
+    handleOpenCameraRoll = () => {
+        // const callback = R.curry((result) => {
+        //     this.props.newCommentOnMediaRefChange(result.uri, this.props.pageId)
+        // })
+        this.bottomSheetRef.close()
+        setTimeout(() => {
+            this.props.openCameraRoll((result) => console.log(result), {
+                disableEditing: true,
+            })
+        }, 500)
+    }
+
+    handleOpenCamera = () => {
+        this.bottomSheetRef.close()
+
+        setTimeout(() => {
+            this.props.openCamera(
+                (result) => console.log(result),
+                null,
+                null,
+                true
+            )
+        }, 500)
+    }
+
     render() {
         const { user, refreshing } = this.props
 
@@ -395,10 +589,50 @@ class Home extends Component {
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <CreatePostModal
                     attachGoalRequired
+                    // onModal={() => this.setState({ shareModal: true })}
                     onRef={(r) => (this.createPostModal = r)}
                 />
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />
+
+                    {/* <View
+                        style={{
+                            width: '100%',
+                            height: 150,
+                            backgroundColor: 'white',
+                            justifyContent: 'center',
+                            paddingVertical: 2,
+                            marginBottom: 10,
+                            paddingLeft: 10,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontSize: TEXT_FONT_SIZE.FONT_1,
+                                fontFamily: FONT_FAMILY.SEMI_BOLD,
+                                marginBottom: 12,
+                            }}
+                        >
+                            Trending Stories
+                        </Text>
+                        <FlatList
+                            keyExtractor={(index) => index.toString()}
+                            horizontal={true}
+                            ListHeaderComponent={this._storyLineHeader}
+                            data={stories}
+                            renderItem={({ item }) => {
+                                return (
+                                    <VideoStoryLineCircle
+                                        image={item.story[0].uri}
+                                        profileImage={item.profileImage}
+                                        name={item.name}
+                                        arrayStory={item.story}
+                                        stories={stories}
+                                    />
+                                )
+                            }}
+                        />
+                    </View> */}
 
                     <FlatList
                         keyExtractor={(item, index) => index.toString()}
@@ -486,6 +720,8 @@ const HomeExplained = copilot({
 export default connect(
     mapStateToProps,
     {
+        openCamera,
+        openCameraRoll,
         fetchAppUserProfile,
         homeSwitchTab,
         openCreateOverlay,

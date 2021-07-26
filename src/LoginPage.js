@@ -17,7 +17,7 @@ import { registerUser, loginUser } from './actions'
 
 import { RESET_PASSWORD_URL } from './Utils/Constants'
 import Recaptcha from './Main/Common/Recaptcha'
-import { SCREENS, wrapAnalytics } from './monitoring/segment'
+import { SCREENS, track, wrapAnalytics, EVENT as E } from './monitoring/segment'
 import InputBox from './Main/Onboarding/Common/InputBox'
 import { default_style, color, text } from './styles/basic'
 import OnboardingStyles from './styles/Onboarding'
@@ -192,6 +192,7 @@ class LoginPage extends Component {
 
     handleSignUp = () => {
         this.props.registerUser()
+        track(E.SPLASH_SCREEN_SIGN_UP)
     }
 
     handleLoginPressed = (values) => {

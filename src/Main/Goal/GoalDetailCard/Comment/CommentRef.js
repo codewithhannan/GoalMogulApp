@@ -1,7 +1,14 @@
 /** @format */
 
 import React from 'react'
-import { View, Text, TouchableOpacity, Linking } from 'react-native'
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    Linking,
+    Image,
+    Alert,
+} from 'react-native'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import Expo, { WebBrowser } from 'expo'
@@ -10,30 +17,44 @@ import { Actions } from 'react-native-router-flux'
 // Components
 import ProfileImage from '../../../Common/ProfileImage'
 import RichText from '../../../Common/Text/RichText'
+import Tooltip from '../../../../Main/Common/Tooltip'
 
 // Assets
-import stepIcon from '../../../../asset/utils/steps.png'
-import needIcon from '../../../../asset/utils/help.png'
+import stepIcon from '../../../../asset/suggestion/step.png'
+import needIcon from '../../../../asset/suggestion/need.png'
 import eventIcon from '../../../../asset/suggestion/event.png'
-import tribeIcon from '../../../../asset/suggestion/flag.png'
-import userIcon from '../../../../asset/suggestion/friend.png'
+import tribeIcon from '../../../../asset/suggestion/tribe.png'
+import userIcon from '../../../../asset/suggestion/user.png'
 import friendIcon from '../../../../asset/suggestion/group.png'
 import linkIcon from '../../../../asset/suggestion/link.png'
 import customIcon from '../../../../asset/suggestion/other.png'
-import chatIcon from '../../../../asset/suggestion/chat.png'
+// import chatIcon from '../../../../asset/suggestion/chat.png'
 import readingIcon from '../../../../asset/suggestion/book.png'
+import chatIcon from '../../../../asset/suggestion/chat.png'
+import SWIPER_BACKGROUND from '../../../../asset/image/messageUI.png'
 
 // Utils
 import {
     switchCaseFWithVal,
     componentKeyByTab,
 } from '../../../../redux/middleware/utils'
-
+import { colors } from 'react-native-elements'
+import { color } from '../../../../styles/basic'
 // Actions
 import { openProfile, UserBanner } from '../../../../actions'
 
 import { myTribeDetailOpenWithId } from '../../../../redux/modules/tribe/MyTribeActions'
 
+// Actions
+import { updateGoal } from '../../../../redux/modules/goal/GoalDetailActions'
+import {
+    tribeDetailOpen,
+    requestJoinTribe,
+    acceptTribeInvit,
+    declineTribeInvit,
+} from '../../../../redux/modules/tribe/MyTribeActions'
+import { selectTribe } from '../../../../redux/modules/feed/post/ShareActions'
+import { createOrGetDirectMessage } from '../../../../actions/'
 import { myEventDetailOpenWithId } from '../../../../redux/modules/event/MyEventActions'
 import DelayedButton from '../../../Common/Button/DelayedButton'
 import SuggestionDetailModal from './SuggestionDetailModal'
@@ -149,24 +170,248 @@ class CommentRef extends React.PureComponent {
         }
     }
 
+    handleMessageButtonOnPress = (userRef) => {
+        this.props.createOrGetDirectMessage(userRef._id, (err, chatRoom) => {
+            // TODO: @Jia re-enable the 'Message' button
+            if (err || !chatRoom) {
+                return Alert.alert(
+                    'Error',
+                    'Could not start the conversation. Please try again later.'
+                )
+            }
+            Actions.push('chatRoomConversation', {
+                chatRoomId: chatRoom._id,
+            })
+        })
+    }
+
     // Render badge
     renderEndImage(item) {
-        const { suggestionType, userRef } = item
-        if (
-            (suggestionType === 'User' || suggestionType === 'Friend') &&
-            userRef !== null &&
-            userRef !== undefined
-        ) {
+        const {
+            suggestionType,
+            userRef,
+            tribeRef,
+            goalRef,
+            suggestionText,
+            suggestionForRef,
+        } = item
+        const { pageId } = this.props
+        // if (
+        //     (suggestionType === 'User' || suggestionType === 'Friend') &&
+        //     userRef !== null &&
+        //     userRef !== undefined
+        // ) {
+        //     return (
+        //         <View style={styles.iconContainerStyle}>
+        //             <UserBanner
+        //                 user={userRef}
+        //                 iconStyle={{ height: 24, width: 22 }}
+        //             />
+        //         </View>
+        //     )
+        // }
+        // return null
+        const tooltipText = `Tap here to introduce Shunsuke to ${userRef?.name} in chat`
+        if (suggestionType === 'User') {
             return (
-                <View style={styles.iconContainerStyle}>
-                    <UserBanner
-                        user={userRef}
-                        iconStyle={{ height: 24, width: 22 }}
-                    />
+                <>
+                    <TouchableOpacity
+                        style={{
+                            width: 30,
+                            height: 30,
+                            backgroundColor: '#42C0F5',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 5,
+                            marginTop: 10,
+                            marginRight: 10,
+                        }}
+                        onPress={() => this.handleMessageButtonOnPress(userRef)}
+                    >
+                        <Image
+                            source={chatIcon}
+                            style={{
+                                width: 20,
+                                height: 20,
+                                resizeMode: 'contain',
+                                tintColor: 'white',
+                            }}
+                        />
+                    </TouchableOpacity>
+
+                    {/* <Tooltip
+                        title={tooltipText}
+                        imageSource={SWIPER_BACKGROUND}
+                        type="commentSuggestion"
+                        viewStyle={{
+                            position: 'absolute',
+                            zIndex: 1,
+                            left: -10,
+                            // top: 0,
+                            bottom: 15,
+                        }}
+                    /> */}
+                </>
+            )
+        }
+        if (suggestionType === 'Tribe') {
+            return (
+                <View
+                    style={{
+                        marginHorizontal: 8,
+                        marginVertical: 5,
+                        flexDirection: 'row',
+                    }}
+                >
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        onPress={() =>
+                            this.props.tribeDetailOpen(item.tribeRef)
+                        }
+                        style={{
+                            height: 31,
+                            width: 45,
+                            backgroundColor: color.GM_BLUE,
+                            borderRadius: 3,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 3,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                color: 'white',
+                                fontSize: 12,
+                                fontWeight: '600',
+                                lineHeight: 14,
+                                fontFamily: 'SFProDisplay-Semibold',
+                            }}
+                        >
+                            Join
+                        </Text>
+                    </DelayedButton>
                 </View>
             )
         }
-        return null
+
+        if (suggestionType === 'NewStep') {
+            const type = suggestionType === 'NewStep' ? 'step' : null
+            return (
+                <>
+                    {this.props.isSelf ? (
+                        <View
+                            style={{
+                                marginHorizontal: 8,
+                                marginVertical: 5,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <DelayedButton
+                                activeOpacity={0.6}
+                                onPress={() => {
+                                    this.props.updateGoal(
+                                        item._id,
+                                        type,
+                                        {
+                                            description: suggestionText,
+                                        },
+                                        goalRef,
+                                        pageId
+                                    )
+                                    setTimeout(() => {
+                                        Alert.alert(
+                                            'Success',
+                                            'Your Step has been added'
+                                        )
+                                    }, 1000)
+                                }}
+                                style={{
+                                    height: 31,
+                                    width: 65,
+                                    backgroundColor: color.GM_BLUE,
+                                    borderRadius: 3,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: 3,
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: 'white',
+                                        fontSize: 12,
+                                        fontWeight: '600',
+                                        lineHeight: 14,
+                                        fontFamily: 'SFProDisplay-Semibold',
+                                    }}
+                                >
+                                    Add Step
+                                </Text>
+                            </DelayedButton>
+                        </View>
+                    ) : null}
+                </>
+            )
+        }
+        if (suggestionType === 'NewNeed') {
+            const type = suggestionType === 'NewNeed' ? 'need' : null
+            return (
+                <>
+                    {this.props.isSelf ? (
+                        <View
+                            style={{
+                                marginHorizontal: 8,
+                                marginVertical: 5,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <DelayedButton
+                                activeOpacity={0.6}
+                                onPress={() => {
+                                    this.props.updateGoal(
+                                        item._id,
+                                        type,
+                                        {
+                                            description: suggestionText,
+                                        },
+                                        goalRef,
+                                        pageId
+                                    )
+                                    setTimeout(() => {
+                                        Alert.alert(
+                                            'Success',
+                                            'Your Need has been added'
+                                        )
+                                    }, 1000)
+                                }}
+                                style={{
+                                    height: 31,
+                                    width: 105,
+                                    backgroundColor: color.GM_BLUE,
+                                    borderRadius: 3,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: 3,
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: 'white',
+                                        fontSize: 12,
+                                        fontWeight: '600',
+                                        lineHeight: 14,
+                                        fontFamily: 'SFProDisplay-Semibold',
+                                    }}
+                                >
+                                    Add to My Needs
+                                </Text>
+                            </DelayedButton>
+                        </View>
+                    ) : null}
+                </>
+            )
+        }
     }
 
     renderTextContent(item) {
@@ -187,24 +432,40 @@ class CommentRef extends React.PureComponent {
                     paddingVertical: 4,
                 }}
             >
-                <Text
-                    style={styles.titleTextStyle}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                >
-                    {title}
-                </Text>
+                {suggestionType === 'NewNeed' ||
+                suggestionType === 'NewStep' ? null : (
+                    <Text
+                        style={styles.titleTextStyle}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    >
+                        {title}
+                    </Text>
+                )}
                 <RichText
-                    contentText={content}
+                    contentText={
+                        suggestionType === 'NewNeed' ||
+                        suggestionType === 'NewStep' ||
+                        suggestionType === 'Tribe'
+                            ? content
+                            : null
+                    }
                     textStyle={{
                         ...styles.headingTextStyle,
-                        flex: 1,
-                        flexWrap: 'wrap',
+                        // flex: 1,
+                        // flexWrap: 'wrap',
                         color: 'black',
                         fontSize: 10,
                     }}
                     numberOfLines={2}
-                    textContainerStyle={{ flexDirection: 'row' }}
+                    textContainerStyle={{
+                        flexDirection: 'row',
+                        marginHorizontal:
+                            suggestionType === 'NewNeed' ||
+                            suggestionType === 'NewStep'
+                                ? 10
+                                : 0,
+                    }}
                     ellipsizeMode="tail"
                     handleUrlPress={this.handleSuggestionLinkOnPress}
                     onUserTagPressed={() =>
@@ -227,10 +488,10 @@ class CommentRef extends React.PureComponent {
         return (
             <ProfileImage
                 imageStyle={{
-                    width: 54,
-                    height: 54,
+                    width: 40,
+                    height: 40,
                     ...style,
-                    borderRadius: 4,
+                    borderRadius: suggestionType === 'Tribe' ? 0 : 20,
                 }}
                 defaultImageSource={source}
                 defaultImageStyle={{
@@ -242,8 +503,10 @@ class CommentRef extends React.PureComponent {
                 imageContainerStyle={{
                     alignItems: 'center',
                     justifyContent: 'center',
-                    width: 54,
-                    height: 54,
+                    marginHorizontal: 5,
+                    marginVertical: 5,
+                    width: 40,
+                    height: 40,
                     padding: 10,
                 }}
             />
@@ -259,6 +522,13 @@ class CommentRef extends React.PureComponent {
                 owner={this.props.owner}
             />
         )
+    }
+
+    renderSuggestedIcon = (suggestionType) => {
+        if (suggestionType === 'User') return userIcon
+        else if (suggestionType === 'Tribe') return tribeIcon
+        else if (suggestionType === 'NewStep') return stepIcon
+        else if (suggestionType === 'NewNeed') return needIcon
     }
 
     // Currently this is a dummy component
@@ -282,16 +552,58 @@ class CommentRef extends React.PureComponent {
         }
 
         return (
-            <DelayedButton
-                activeOpacity={0.6}
-                style={[styles.containerStyle, containerStyles || {}]}
-                onPress={() => this.handleOnRefPress(item, userId, tab)}
-            >
-                {this.renderSuggestionModal(item)}
-                {this.renderImage(item)}
-                {this.renderTextContent(item)}
-                {this.renderEndImage(item)}
-            </DelayedButton>
+            <>
+                <View
+                    style={{
+                        backgroundColor: 'white',
+                        elevation: 1,
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 1.5 },
+                        shadowOpacity: 0.2,
+                        shadowRadius: 1,
+                        borderRadius: 5,
+                        borderWidth: 0.5,
+                        borderColor: colors.grey4,
+                    }}
+                >
+                    <View
+                        style={{
+                            marginHorizontal: 10,
+                            flexDirection: 'row',
+                            marginTop: 5,
+                        }}
+                    >
+                        <Image
+                            source={this.renderSuggestedIcon(suggestionType)}
+                            style={{
+                                width: 15,
+                                height: 15,
+                                resizeMode: 'contain',
+                                marginRight: 7,
+                            }}
+                        />
+                        <Text style={{ color: '#828282' }}>
+                            {suggestionType === 'User' ? 'USER' : null}
+                            {suggestionType === 'Tribe' ? 'TRIBE' : null}
+                            {suggestionType === 'NewNeed' ? 'NEED' : null}
+                            {suggestionType === 'NewStep' ? 'STEP' : null}
+                        </Text>
+                    </View>
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        style={[styles.containerStyle, containerStyles || {}]}
+                        onPress={() => this.handleOnRefPress(item, userId, tab)}
+                    >
+                        {this.renderSuggestionModal(item)}
+                        {suggestionType === 'NewNeed' ||
+                        suggestionType === 'NewStep'
+                            ? null
+                            : this.renderImage(item)}
+                        {this.renderTextContent(item)}
+                        {this.renderEndImage(item)}
+                    </DelayedButton>
+                </View>
+            </>
         )
     }
 }
@@ -405,7 +717,7 @@ const getTextContent = (item) => {
     if (suggestionType === 'Tribe' && tribeRef) {
         ret = {
             title: tribeRef.name,
-            content: tribeRef.description,
+            content: `${tribeRef.description.slice(0, 125)}...`,
         }
     }
     if (suggestionType === 'Event' && eventRef) {
@@ -447,7 +759,9 @@ const getTextContent = (item) => {
 const styles = {
     containerStyle: {
         flexDirection: 'row',
-        minHeight: 50,
+        // alignItems: 'center',
+        // justifyContent: 'center',
+        minHeight: 55,
         marginTop: 12,
         marginBottom: 8,
         borderWidth: 0.5,
@@ -461,6 +775,7 @@ const styles = {
         shadowOpacity: 0.2,
         shadowRadius: 1,
         elevation: 1,
+        marginHorizontal: 10,
     },
     titleTextStyle: {
         fontSize: 13,
@@ -479,17 +794,25 @@ const styles = {
 }
 
 const mapStateToProps = (state) => {
+    const ownerGoalId = state.goalDetail.goal.goal?.owner?._id
     const { userId } = state.user
     const { tab } = state.navigation
+    const isSelf = userId === ownerGoalId
 
     return {
         tab,
         userId,
+        isSelf,
     }
 }
 
 export default connect(mapStateToProps, {
     openProfile,
+    updateGoal,
+    tribeDetailOpen,
+    selectTribe,
+    createOrGetDirectMessage,
     myTribeDetailOpenWithId,
     myEventDetailOpenWithId,
+    requestJoinTribe,
 })(CommentRef)

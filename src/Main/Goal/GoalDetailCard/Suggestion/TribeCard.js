@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 
 // Assets
 import TribeIcon from '../../../../asset/suggestion/flag.png'
+import GroupProfile from '../../../../asset/icons/group_profile.png'
 
 // Components
 import Check from '../../../Common/Check'
@@ -88,10 +89,16 @@ class TribeCard extends React.Component {
     renderDescription() {
         const { description } = this.props.item
         return (
-            <View style={{ flexDirection: 'row' }}>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    marginVertical: 5,
+                    // width: '99%',
+                }}
+            >
                 <Text
                     style={styles.descriptionTextStyle}
-                    numberOfLines={1}
+                    numberOfLines={2}
                     ellipsizeMode="tail"
                 >
                     {description}
@@ -103,10 +110,14 @@ class TribeCard extends React.Component {
     // Info includes memeber count for now
     renderTribeInfo() {
         const { memberCount } = this.props.item
-        const member = ' Member'
+        const member = ' members'
 
         return (
-            <View>
+            <View style={{ flexDirection: 'row', marginVertical: 5 }}>
+                <Image
+                    source={GroupProfile}
+                    style={{ width: 13, height: 13, marginRight: 5 }}
+                />
                 <Text style={styles.memberInfoTextStyle}>
                     <Text>{memberCount}</Text>
                     {member}
@@ -126,11 +137,11 @@ class TribeCard extends React.Component {
                 <View style={styles.containerStyle}>
                     {this.renderCheck()}
                     {this.renderTribeImage()}
-                    {this.renderTimeStamp()}
+                    {/* {this.renderTimeStamp()} */}
                     <View style={styles.detailContainerStyle}>
                         {this.renderTribeTitle()}
-                        {this.renderDescription()}
                         {this.renderTribeInfo()}
+                        {this.renderDescription()}
                     </View>
                 </View>
             </DelayedButton>
@@ -182,19 +193,19 @@ const styles = {
     titleTextStyle: {
         flex: 1,
         flexWrap: 'wrap',
-        fontSize: 13,
+        fontSize: 14,
         fontWeight: '700',
         marginRight: 80,
     },
     descriptionTextStyle: {
         flex: 1,
         flexWrap: 'wrap',
-        fontSize: 13,
-        color: '#859199',
+        fontSize: 14,
+        color: 'black',
     },
     memberInfoTextStyle: {
-        fontSize: 10,
-        color: '#b3b8b9',
+        fontSize: 12,
+        color: '#737475',
     },
 }
 

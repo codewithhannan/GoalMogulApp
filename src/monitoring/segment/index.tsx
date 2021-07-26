@@ -5,7 +5,7 @@ import getEnvVars from '../../../environment'
 import React from 'react'
 import LRUCache from 'lru-cache'
 
-const DEBUG = getEnvVars().segmentDebug;
+const DEBUG = getEnvVars().segmentDebug
 const TAG = '[Segment]'
 
 /**
@@ -35,6 +35,7 @@ const EVENT = {
     GOAL_UNFOLLOWED: 'Goal Unfollowed', //
 
     // Post
+    POST_UPDATED_N: 'update_shared',
     CREATE_POST_MODAL_OPENED: 'share_update_clicked',
     CREATE_POST_MODAL_CANCELLED: 'CreatePostModal Cancelled',
     POST_CREATED: 'Post Created',
@@ -109,14 +110,12 @@ const EVENT = {
     PROFILE_OPENED: 'Profile Opened',
     PROFILE_REFRESHED: 'Profile Refreshed',
     PROFILE_PHOTO_UPDATED: 'profilePhoto',
-    PROFILE_EDIT_PRESSED:"profile_edit_started",
+    PROFILE_EDIT_PRESSED: 'profile_edit_started',
 
+    /** Registration */
 
-    /** Registration */ 
     REG_ACCOUNT_CREATED: 'signup_completed', //ok
-    REG_FIELDS_FILL :"signup_continue",
-    REG_INVITE_CODE:"signup_invitecode_submitted", 
-
+    REG_FIELDS_FILL: 'signup_continue',
 
     // add profile photo
     REG_ADD_PHOTO_SKIPPED: 'Registration AddPhoto Skipped',
@@ -144,10 +143,9 @@ const EVENT = {
     REG_CONTACT_SKIP: 'Registration Contact Skiped', // no longer needs this event
     REG_CONTACT: 'Registration ContactSync Opened', // replaced by screen impression
 
-
-    //waitlist 
+    //waitlist
     REG_WAITLIST_SKIP: 'Registration Waitlist Skiped',
-
+    REG_INVITE_CODE: 'signup_invitecode_submitted',
 
     //phoneVerification
     REG_PHONE_VERIFICATION_SKIP: 'Registration Phone Verification Skiped',
@@ -156,22 +154,21 @@ const EVENT = {
 
     //Bottom Tab
 
-    BOTTOM_HOME_CLICKED:"home_button_clicked",
-    BOTTOM_TRIBE_CLICKED:"tribe_button_clicked",
-    BOTTOM_PROFILE_CLICKED:"profile_button_clicked",
-    BOTTOM_NOTIFICATION_CLICKED:"notification_button_clicked",
-    BOTTOM_CHAT_CLICKED:"chat_button_clicked",
+    BOTTOM_HOME_CLICKED: 'home_button_clicked',
+    BOTTOM_TRIBE_CLICKED: 'tribe_button_clicked',
+    BOTTOM_PROFILE_CLICKED: 'profile_button_clicked',
+    BOTTOM_NOTIFICATION_CLICKED: 'notification_button_clicked',
+    BOTTOM_CHAT_CLICKED: 'chat_button_clicked',
 
-    //Onboarding 
+    //Onboarding
 
-    ONBOARDING_STEP_COMPLETED:"onboarding_step_completed",
+    ONBOARDING_STEP_COMPLETED: 'onboarding_step_completed',
     ONBOARDING_DONE: 'onboarding_completed',
-  
 
-    //Login 
+    //Login
 
-    LOGIN_STARTED:"login_started",
-    LOGIN_COMPLETED:"login_complete",
+    LOGIN_STARTED: 'login_started',
+    LOGIN_COMPLETED: 'login_complete',
 
     // Search
     SEARCH_OPENED: 'search_started',
@@ -180,16 +177,15 @@ const EVENT = {
     SEARCH_QUERY_SENT: 'Search Query Sent',
     TRIBE_MEMBER_SEARCHED: 'Tribe Member Searched',
     SEARCH_RESULT_CLICKED: 'Search Result Clicked',
-    SEARCH_COMPLETED:"search_completed",
+    SEARCH_COMPLETED: 'search_completed',
 
     //home
 
-    INVITE_FRIENDS_OPEN :"invite_friends_clicked",
+    INVITE_FRIENDS_OPEN: 'invite_friends_clicked',
 
     //discover tribe
 
-    DISCOVER_TRIBE_OPEN:"discover_tribes_clicked",
-
+    DISCOVER_TRIBE_OPEN: 'discover_tribes_clicked',
 
     // Report
     USER_REPORTED: 'User Reported',
@@ -200,6 +196,8 @@ const EVENT = {
     COMMENT_REPORTED: 'Comment Reported',
     GENERAL_REPORT_CREATED: 'General Report Created',
 
+    SPLASH_SCREEN: 'onboarding_page_viewed',
+
     // App
     APP_ACTIVE: 'app_opened',
     APP_INACTIVE: 'app_closed',
@@ -207,15 +205,14 @@ const EVENT = {
     TUTORIAL_STARTED: 'Tutorial Started',
     TUTORIAL_PAGE_VIEWED: 'Tutorial Page Viewed',
     TUTORIAL_DONE: 'Tutorial Done',
-    SPLASH_SCREEN_SIGN_UP:"signup_started",
-    ERROR_OCCURED:'error_encountered',
+    SPLASH_SCREEN_SIGN_UP: 'signup_started',
+    ERROR_OCCURED: 'error_encountered',
     NOTIFICATION_SELECTED: 'app_opened',
     NOTIFICATION_DETAIL_OPENED: 'Notification Detail Opened',
-    NOTIFICATION_ENABLED:"notification_enabled"
+    NOTIFICATION_ENABLED: 'notification_enabled',
 }
 
 const SCREENS = {
-    SPLASH_SCREEN: 'onboarding_page_viewed',
     LOGIN_PAGE: 'login_started',
     HOME: 'Home',
     HOME_GOAL: 'HomeGoalTab',
@@ -288,7 +285,10 @@ const { SEGMENT_CONFIG } = getEnvVars()
  * Calls to initialize segment library. Must call when app starts.
  */
 function initSegment() {
-    Segment.initialize({ iosWriteKey: SEGMENT_CONFIG.IOS_WRITE_KEY, androidWriteKey: SEGMENT_CONFIG.ANDROID_WRITE_KEY })
+    Segment.initialize({
+        iosWriteKey: SEGMENT_CONFIG.IOS_WRITE_KEY,
+        androidWriteKey: SEGMENT_CONFIG.ANDROID_WRITE_KEY,
+    })
     allEventNames.clear()
     for (const prop in EVENT) {
         if (EVENT.hasOwnProperty(prop)) {
@@ -320,7 +320,9 @@ function identifyWithTraits(userId: string, trait: Record<string, unknown>) {
 function validateEventTracking(eventName: string): boolean {
     if (!allEventNames.has(eventName)) {
         if (DEBUG) {
-            console.warn(`${TAG} Don't use customized event name '${eventName}'. Define it first in src/monitoring/segment`)
+            console.warn(
+                `${TAG} Don't use customized event name '${eventName}'. Define it first in src/monitoring/segment`
+            )
         }
         return false
     }
@@ -328,7 +330,9 @@ function validateEventTracking(eventName: string): boolean {
     const nowMs = new Date().getTime()
     if (nowMs - lastMs < 200) {
         if (DEBUG) {
-            console.warn(`${TAG} '${eventName}' fired too frequent. Likely duplicate`)
+            console.warn(
+                `${TAG} '${eventName}' fired too frequent. Likely duplicate`
+            )
         }
         return false
     }
@@ -339,7 +343,9 @@ function validateEventTracking(eventName: string): boolean {
 function validateScreenTracking(screenName: string): boolean {
     if (!allScreenNames.has(screenName)) {
         if (DEBUG) {
-            console.warn(`${TAG} Don't use customized screen name '${screenName}'. Define it first in src/monitoring/segment`)
+            console.warn(
+                `${TAG} Don't use customized screen name '${screenName}'. Define it first in src/monitoring/segment`
+            )
         }
         return false
     }
@@ -347,7 +353,9 @@ function validateScreenTracking(screenName: string): boolean {
     const nowMs = new Date().getTime()
     if (nowMs - lastMs < 200) {
         if (DEBUG) {
-            console.warn(`${TAG} '${screenName}' fired too frequent. Likely duplicate`)
+            console.warn(
+                `${TAG} '${screenName}' fired too frequent. Likely duplicate`
+            )
         }
         return false
     }
@@ -355,65 +363,104 @@ function validateScreenTracking(screenName: string): boolean {
     return true
 }
 
-/** 
- * Sends a tracking event with the supplied name to Segment. 
- * 
+/**
+ * Sends a tracking event with the supplied name to Segment.
+ *
  * @param eventName name of the event defined in `EVENT`
  */
 function track(eventName: string) {
-    if (!validateEventTracking(eventName)) { return }
+    if (!validateEventTracking(eventName)) {
+        return
+    }
     if (DEBUG) {
         console.log(`${TAG} track: ${eventName}`)
     }
     Segment.track(eventName)
 }
 
-/** 
- * Sends a tracking event with the supplied name and a list of properties to Segment. 
- * 
+/**
+ * Sends a tracking event with the supplied name and a list of properties to Segment.
+ *
  * @param eventName name of the event defined in `EVENT`
  */
-function trackWithProperties(eventName: string, properties: Record<string, unknown>) {
-    if (!validateEventTracking(eventName)) { return }
-    if (DEBUG) { console.log(`${TAG} trackWithProperties: ${eventName}:\n${JSON.stringify(properties)}`) }
+function trackWithProperties(
+    eventName: string,
+    properties: Record<string, unknown>
+) {
+    if (!validateEventTracking(eventName)) {
+        return
+    }
+    if (DEBUG) {
+        console.log(
+            `${TAG} trackWithProperties: ${eventName}:\n${JSON.stringify(
+                properties
+            )}`
+        )
+    }
     Segment.trackWithProperties(eventName, properties)
 }
 
-/** 
+/**
  * Tracks when user views a screen, aka. impression. It should be called when the new component initializes.
- * 
+ *
  * @param screenName name of the screen defined in `SCREENS`
  */
 function trackViewScreen(screenName: string) {
-    if (!validateScreenTracking(screenName)) { return }
-    if (DEBUG) { console.log(`${TAG} trackViewScreen: ${screenName}`) }
+    if (!validateScreenTracking(screenName)) {
+        return
+    }
+    if (DEBUG) {
+        console.log(`${TAG} trackViewScreen: ${screenName}`)
+    }
     Segment.track(`ScreenView ${screenName}`)
 }
 
-/** 
+/**
  * Tracks when user views a screen, aka. impression with a list of properties.
- * 
+ *
  * @param screenName name of the screen defined in `SCREENS`
  */
-function trackScreenWithProps(screenName: string, properties: Record<string, unknown>) {
-    if (!validateScreenTracking(screenName)) { return }
-    if (DEBUG) { console.log(`${TAG} trackScreenWithProps: ${screenName}\n${JSON.stringify(properties)}`) }
+function trackScreenWithProps(
+    screenName: string,
+    properties: Record<string, unknown>
+) {
+    if (!validateScreenTracking(screenName)) {
+        return
+    }
+    if (DEBUG) {
+        console.log(
+            `${TAG} trackScreenWithProps: ${screenName}\n${JSON.stringify(
+                properties
+            )}`
+        )
+    }
     // Segment.screenWithProperties does not seem to work properly
     Segment.trackWithProperties(`ScreenView ${screenName}`, properties)
 }
 
-/** 
- * Tracks when user leaves a screen. 
- * 
+/**
+ * Tracks when user leaves a screen.
+ *
  * Together with `trackViewScreen`, we can track when user enters / leaves
  * a specific component / page, and how long they spend in that page. So usually, `trackViewScreen` and
  * `trackScreenCloseWithProps` come in pairs.
- * 
+ *
  * @param screenName name of the screen defined in `SCREENS`
  */
-function trackScreenCloseWithProps(screenName: string, properties: Record<string, unknown>) {
-    if (!validateScreenTracking(screenName)) { return }
-    if (DEBUG) { console.log(`${TAG} trackScreenCloseWithProps: ${screenName}\n${JSON.stringify(properties)}`) }
+function trackScreenCloseWithProps(
+    screenName: string,
+    properties: Record<string, unknown>
+) {
+    if (!validateScreenTracking(screenName)) {
+        return
+    }
+    if (DEBUG) {
+        console.log(
+            `${TAG} trackScreenCloseWithProps: ${screenName}\n${JSON.stringify(
+                properties
+            )}`
+        )
+    }
     // Segment.screenWithProperties does not seem to work properly
     Segment.trackWithProperties(`ScreenClose ${screenName}`, properties)
 }
@@ -427,26 +474,28 @@ function resetUser() {
 
 /**
  * Empowers the given component with predefined analytics tracking.
- * 
+ *
  * Currently, it adds screen enter and leave tracking, as well as how long a user stays there.
  */
 function wrapAnalytics(Comp: React.ComponentType<unknown>, screenName: string) {
     class AnalyticsWrapper extends React.Component {
         readonly _analyticsVars = {
             startTime: new Date(),
-        };
+        }
 
         componentDidMount() {
             this._analyticsVars.startTime = new Date()
-            trackViewScreen(screenName)
+            // trackViewScreen(screenName)
         }
 
         componentWillUnmount() {
             const duration =
-                (new Date().getTime() - this._analyticsVars.startTime.getTime()) / 1000
-            trackScreenCloseWithProps(screenName, {
-                DurationSec: duration,
-            })
+                (new Date().getTime() -
+                    this._analyticsVars.startTime.getTime()) /
+                1000
+            // trackScreenCloseWithProps(screenName, {
+            //     DurationSec: duration,
+            // })
         }
 
         render() {

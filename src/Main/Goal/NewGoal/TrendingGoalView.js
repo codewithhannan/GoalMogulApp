@@ -29,6 +29,7 @@ const { width } = Dimensions.get('window')
 class TrendingGoalView extends React.PureComponent {
     componentDidMount() {
         console.log(`${DEBUG_KEY}: component did mount`)
+        this.handleOnRefresh()
     }
 
     keyExtractor = (item) => item.title

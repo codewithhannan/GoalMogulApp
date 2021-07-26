@@ -37,7 +37,7 @@ import {
 } from '../../../redux/middleware/utils'
 
 import { storeData } from '../../../store/storage'
-
+import { cancelSuggestion } from '../../../redux/modules/feed/comment/CommentActions'
 import { getAllContacts } from '../../../actions/ContactActions'
 import { FONT_FAMILY } from '../../../styles/basic/text'
 import { DEFAULT_CARDS } from './modalSvg'
@@ -53,7 +53,10 @@ const DEFAULT_STATE = {
         "I'd love for us to keep each other inspired and motivated on our journeys. Add me on GoalMogul?",
     editEnabled: false,
 }
+
 const DESCRIPTIONS_TOP3 = [
+    // this.props.shouldOpenFromComments
+    //     ? this.props.goalTosend
     `I’d love to grow closer with you by keeping up with each others’ goals and helping. GoalMogul makes it fun and easy. Please join and check out my goals.`,
     `We barely have time to catch up these days. Can you join me on GoalMogul? It will help us keep up with each others’ life goals so we don't lose touch.`,
     `I joined GoalMogul to share my goals with trusted friends. Can you have a look and provide feedback?`,
@@ -96,8 +99,13 @@ class InviteFriendModal extends React.PureComponent {
     }
 
     makeDescriptionsArray = () => {
-        this.shuffleArray(DESCRIPTIONS_REMAINING)
-        return [...DESCRIPTIONS_TOP3, ...DESCRIPTIONS_REMAINING]
+        if (this.props.shouldOpenFromComments) {
+            this.shuffleArray(DESCRIPTIONS_REMAINING)
+            return [this.props.goalTosend, ...DESCRIPTIONS_REMAINING]
+        } else {
+            this.shuffleArray(DESCRIPTIONS_REMAINING)
+            return [...DESCRIPTIONS_TOP3, ...DESCRIPTIONS_REMAINING]
+        }
     }
 
     descriptionsArray = this.makeDescriptionsArray()
@@ -242,6 +250,7 @@ class InviteFriendModal extends React.PureComponent {
 
         if (type == 'contacts') {
             return (
+                this.props.cancelSuggestion(this.props.pageId),
                 Actions.push('ContactMessage'),
                 this.closeModal(),
                 await storeData('INVITEMESSAGE', this.state.description)
@@ -601,12 +610,12 @@ class InviteFriendModal extends React.PureComponent {
                                             paddingHorizontal: 16,
                                         },
                                     ]}
-                                    onPress={() =>
+                                    onPress={() => {
                                         this.inviteNative(
                                             this.state.description,
                                             inviteLink
                                         )
-                                    }
+                                    }}
                                 >
                                     <View
                                         style={[
@@ -680,4 +689,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
     getAllContacts,
+    cancelSuggestion,
 })(InviteFriendModal)

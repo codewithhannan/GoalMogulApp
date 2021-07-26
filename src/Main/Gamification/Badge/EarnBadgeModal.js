@@ -194,8 +194,9 @@ class EarnBadgeModal extends React.PureComponent {
                 onSwipeComplete={() => this.closeModal()}
                 swipeDirection={hasModalOverlay ? null : 'down'}
                 style={{
-                    marginTop: Constants.statusBarHeight + 15,
+                    marginTop: Constants.statusBarHeight + 10,
                     borderRadius: 15,
+                    height: 150,
                 }}
             >
                 <GoldBadgeRewardModal
@@ -319,7 +320,13 @@ class EarnBadgeModal extends React.PureComponent {
                                 )
                             })}
 
-                            <View style={{ flexDirection: 'row' }}>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    // backgroundColor: 'red',
+                                    height: 30,
+                                }}
+                            >
                                 <Animated.Text
                                     style={{
                                         color: 'rgb(209, 163, 16)',
@@ -380,8 +387,7 @@ const BadgeInfoCard = (props) => {
                 shadowOpacity: 0.1,
                 borderColor,
                 borderRadius: 8,
-                minHeight: 95,
-
+                minHeight: 70,
                 width: '100%',
             }}
         >
@@ -426,7 +432,12 @@ const BadgeInfoCard = (props) => {
                 />
 
                 {/* Right title and text info */}
-                <View style={{ justifyContent: 'center' }}>
+                <View
+                    style={{
+                        justifyContent: 'center',
+                        width: '80%',
+                    }}
+                >
                     <Text
                         style={{
                             color: titleColor,
@@ -445,7 +456,8 @@ const BadgeInfoCard = (props) => {
                                         key={index}
                                         style={{
                                             flexDirection: 'row',
-                                            marginTop: 3,
+                                            // marginTop: 3,
+                                            width: '80%',
                                         }}
                                     >
                                         <Image
@@ -462,6 +474,7 @@ const BadgeInfoCard = (props) => {
                                                 color: 'rgb(85, 85, 85)',
                                                 fontSize: 12,
                                                 left: 7,
+                                                flexWrap: 'wrap',
                                             }}
                                         >
                                             {`${text}`}
@@ -602,10 +615,10 @@ const BadgeInfo = [
         infoTextList: [
             { text: 'Set 7 Goals', hasBulletPoint: true },
             {
-                text: "Invite 7 friends who've earned their",
+                text: "Invite 7 friends who've earned their Green Badges",
                 hasBulletPoint: true,
             },
-            { text: ' Green Badges', hasBulletPoint: false },
+            // { text: ' Green Badges', hasBulletPoint: false },
         ],
         badgeIcon: SilverBadgeNew,
         badgeIconStyle: DefaultBadgeIconStyle,
@@ -635,13 +648,14 @@ const BadgeInfo = [
         title: 'Gold',
         infoTextList: [
             {
-                text: "Invite 10 friends who've earned their",
+                text:
+                    "Invite 10 friends who've earned their Silver Badge or higher",
                 hasBulletPoint: true,
             },
-            {
-                text: ' Silver Badge or higher',
-                hasBulletPoint: false,
-            },
+            // {
+            //     text: ' Silver Badge or higher',
+            //     hasBulletPoint: false,
+            // },
         ],
         badgeIcon: GoldBadgeNew,
         badgeIconStyle: DefaultBadgeIconStyle,

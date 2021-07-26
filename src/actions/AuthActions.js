@@ -445,6 +445,13 @@ export const authenticateInvitorCode = (value, onError) => async (
                 ...value,
             }
         )
+        console.log('post invite code', postInviteCode)
+
+        if (postInviteCode.status === 200) {
+            trackWithProperties(E.REG_INVITE_CODE, {
+                result: 'signed_up',
+            })
+        }
 
         authToken = await TokenService.getAuthToken(false)
     } catch (err) {

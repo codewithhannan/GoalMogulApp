@@ -3,7 +3,7 @@
 // This component provides search for suggestion for Tribe, Event, User, Friend,
 // and Chat room
 import React from 'react'
-import { View, FlatList, Animated } from 'react-native'
+import { View, FlatList, Text, Animated } from 'react-native'
 import { connect } from 'react-redux'
 import { SearchBar } from 'react-native-elements'
 import _ from 'lodash'
@@ -101,32 +101,59 @@ class SearchSuggestion extends React.Component {
 
     renderItem = ({ item }) => {
         const { selectedItem, pageId } = this.props
+        console.log('THIS IS SELECTED', selectedItem)
         const selected = selectedItem && selectedItem._id === item._id
 
         return switchCaseF({
             User: (
-                <UserCard
-                    item={item}
-                    onCardPress={(val) => {
-                        this.props.onSuggestionItemSelect(val, pageId)
-                        if (this.props.onSelect) {
-                            this.props.onSelect()
-                        }
-                    }}
-                    selected={selected}
-                />
+                <>
+                    <UserCard
+                        item={item}
+                        onCardPress={(val) => {
+                            this.props.onSuggestionItemSelect(val, pageId)
+                            if (this.props.onSelect) {
+                                this.props.onSelect()
+                            }
+                        }}
+                        selected={selected}
+                    />
+                    <View
+                        style={{
+                            width: '82%',
+                            height: 1,
+                            alignSelf: 'flex-end',
+                            marginRight: 15,
+                            backgroundColor: 'lightgray',
+                        }}
+                    />
+                </>
             ),
             Tribe: (
-                <TribeCard
-                    item={item}
-                    onCardPress={(val) => {
-                        this.props.onSuggestionItemSelect(val, pageId)
-                        if (this.props.onSelect) {
-                            this.props.onSelect()
-                        }
-                    }}
-                    selected={selected}
-                />
+                <>
+                    <TribeCard
+                        item={item}
+                        onCardPress={(val) => {
+                            this.props.onSuggestionItemSelect(val, pageId)
+                            if (this.props.onSelect) {
+                                this.props.onSelect()
+                            }
+                        }}
+                        selected={selected}
+                    />
+                    <View
+                        style={{
+                            // marginVertical: 5,
+                            position: 'absolute',
+                            bottom: -25,
+                            width: '90%',
+                            height: 1,
+                            alignSelf: 'flex-end',
+                            // marginRight: 15,
+                            alignSelf: 'center',
+                            backgroundColor: 'lightgray',
+                        }}
+                    />
+                </>
             ),
             Event: (
                 <EventCard
@@ -169,42 +196,48 @@ class SearchSuggestion extends React.Component {
     }
 
     renderSearch() {
-        const { suggestionType } = this.props
-        const placeholder =
-            suggestionType === 'ChatConvoRoom'
-                ? 'Search Chat Room'
-                : `Search ${this.props.suggestionType}`
+        // const { suggestionType } = this.props
+        // const placeholder =
+        //     suggestionType === 'ChatConvoRoom'
+        //         ? 'Search Chat Room'
+        //         : `Search ${this.props.suggestionType}`
         return (
-            <SearchBar
-                ref={(ref) => {
-                    this.searchBar = ref
-                }}
-                platform="ios"
-                round
-                autoFocus={false}
-                inputStyle={styles.searchInputStyle}
-                inputContainerStyle={styles.searchInputContainerStyle}
-                containerStyle={styles.searchContainerStyle}
-                placeholder={placeholder}
-                cancelButtonTitle="Cancel"
-                onCancel={this.handleSearchCancel}
-                onChangeText={this.handleQueryChange}
-                cancelButtonProps={{ color: '#17B3EC' }}
-                showLoading={this.props.loading}
-                onClear={this.handleSearchClear}
-                clearIcon={null}
-                searchIcon={() => (
-                    <SearchIcon
-                        iconContainerStyle={{ marginBottom: 3, marginTop: 1 }}
-                        iconStyle={{
-                            tintColor: '#4ec9f3',
-                            height: 15,
-                            width: 15,
-                        }}
-                    />
-                )}
-                value={this.state.query}
-            />
+            <View style={{}}>
+                <SearchBar
+                    ref={(ref) => {
+                        this.searchBar = ref
+                    }}
+                    platform="ios"
+                    round
+                    autoFocus={false}
+                    inputStyle={styles.searchInputStyle}
+                    inputContainerStyle={styles.searchInputContainerStyle}
+                    containerStyle={styles.searchContainerStyle}
+                    placeholder={'Search'}
+                    placeholderTextColor={'lightgray'}
+                    cancelButtonTitle="Cancel"
+                    onCancel={this.handleSearchCancel}
+                    onChangeText={this.handleQueryChange}
+                    cancelButtonProps={{ color: '#17B3EC' }}
+                    showLoading={this.props.loading}
+                    onClear={this.handleSearchClear}
+                    clearIcon={null}
+                    searchIcon={() => (
+                        <SearchIcon
+                            iconContainerStyle={{
+                                marginBottom: 3,
+                                marginTop: 1,
+                            }}
+                            iconStyle={{
+                                tintColor: 'gray',
+                                height: 15,
+                                width: 15,
+                            }}
+                        />
+                    )}
+                    value={this.state.query}
+                />
+            </View>
         )
     }
 
@@ -227,35 +260,62 @@ class SearchSuggestion extends React.Component {
     render() {
         const { opacity, searchType } = this.props
         return (
-            <Animated.View style={{ opacity }}>
+            // <Animated.View style={{ opacity }}>
+
+            <View
+                style={{
+                    flex: 1,
+                    marginTop: 0.5,
+                    backgroundColor: 'white',
+                }}
+            >
                 {this.renderSearch()}
                 <View
                     style={{
-                        flex: 1,
-                        marginTop: 0.5,
-                        backgroundColor: 'white',
+                        height: 10,
+                        width: '100%',
+                        marginVertical: 10,
+                        backgroundColor: '#E5E5E5',
                     }}
-                >
-                    <FlatList
-                        data={this.props.data}
-                        renderItem={this.renderItem}
-                        keyExtractor={(item) => item._id}
-                        onEndReached={() => this.handleLoadMore()}
-                        onEndReachedThreshold={0}
-                        onRefresh={() => this.handleRefresh()}
-                        refreshing={this.props.refreshing}
-                        ListFooterComponent={this.renderListFooter()}
-                        ListEmptyComponent={
-                            this.props.refreshing ? null : (
-                                <EmptyResult
-                                    text={switchEmptyText(searchType)}
-                                    textStyle={{ paddingTop: 130 }}
-                                />
-                            )
-                        }
-                    />
-                </View>
-            </Animated.View>
+                />
+                {this.props.suggestionType === 'User' ? (
+                    <>
+                        <View
+                            style={{ marginHorizontal: 10, marginVertical: 10 }}
+                        >
+                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+                                All Others
+                            </Text>
+                        </View>
+                        <View
+                            style={{
+                                width: '100%',
+                                height: 1,
+                                backgroundColor: 'lightgray',
+                            }}
+                        />
+                    </>
+                ) : null}
+                <FlatList
+                    data={this.props.data}
+                    renderItem={this.renderItem}
+                    keyExtractor={(item) => item._id}
+                    onEndReached={() => this.handleLoadMore()}
+                    onEndReachedThreshold={0}
+                    onRefresh={() => this.handleRefresh()}
+                    refreshing={this.props.refreshing}
+                    ListFooterComponent={this.renderListFooter()}
+                    ListEmptyComponent={
+                        this.props.refreshing ? null : (
+                            <EmptyResult
+                                text={switchEmptyText(searchType)}
+                                textStyle={{ paddingTop: 130 }}
+                            />
+                        )
+                    }
+                />
+            </View>
+            // </Animated.View>
         )
     }
 }
@@ -271,23 +331,29 @@ const switchEmptyText = (searchType) =>
 const styles = {
     // search related styles
     searchContainerStyle: {
+        marginVertical: 10,
+        width: '90%',
         padding: 0,
-        marginRight: 3,
-        marginTop: 0.5,
-        backgroundColor: '#ffffff',
+        marginTop: 15,
+        // backgroundColor: 'gray',
         // backgroundColor: '#17B3EC',
-        borderTopColor: '#ffffff',
-        borderBottomColor: '#ffffff',
-        alignItems: 'center',
+        // borderTopColor: 'gray',
+        // borderBottomColor: 'gray',
+        borderWidth: 0.5,
+        borderColor: 'lightgray',
+        borderRadius: 5,
+        alignSelf: 'center',
     },
     searchInputContainerStyle: {
-        backgroundColor: '#f3f4f6',
-        // backgroundColor: 'white',
+        // backgroundColor: '#f3f4f6',
+        backgroundColor: 'white',
+        height: 10,
         alignItems: 'center',
+
         justifyContent: 'center',
     },
     searchInputStyle: {
-        fontSize: 15,
+        fontSize: 16,
     },
     searchIconStyle: {
         top: 15,

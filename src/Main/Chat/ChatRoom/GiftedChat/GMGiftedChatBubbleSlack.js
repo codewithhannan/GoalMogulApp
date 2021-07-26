@@ -31,6 +31,7 @@ import EarnBadgeModal from '../../../Gamification/Badge/EarnBadgeModal'
 import InviteFriendModal from '../../../MeetTab/Modal/InviteFriendModal'
 import { sendMessage } from '../../../../redux/modules/chat/ChatRoomActions'
 import UUID from 'uuid/v4'
+import { Video, AVPlaybackStatus } from 'expo-av'
 import RNUrlPreview from 'react-native-url-preview'
 
 const { isSameDay } = utils
@@ -46,6 +47,9 @@ function isSameUser(currentMessage = {}, diffMessage = {}) {
 class Bubble extends React.Component {
     constructor(props) {
         super(props)
+
+        this.splittedText = ''
+
         this.state = {
             isExpanded: false,
             wrapperOpacityAnim: new Animated.Value(1),
@@ -55,6 +59,8 @@ class Bubble extends React.Component {
             optionsAction: {},
             showBadgeModal: false,
             showInviteFriendModal: false,
+            status: {},
+            preffiled: '',
         }
     }
 
@@ -125,7 +131,8 @@ class Bubble extends React.Component {
             goal,
             callback,
         }) */
-        Actions.push('createGoalModal')
+
+        Actions.push('createGoalModal', { preffiled: this.splittedText })
     }
     openBadgeDetails() {
         this.setState({ ...this.state, showBadgeModal: true })
@@ -182,10 +189,15 @@ class Bubble extends React.Component {
     }
 
     renderGoalOptions() {
-        const { options } = this.props.currentMessage
+        const { options, text } = this.props.currentMessage
         const { user, chatRoom, messages } = this.props
 
-        // console.log('this is props of chat', this.props)
+        // console.log('this is props of chat', this.props.currentMessage)
+
+        if (text.includes('It looks like your goal is to')) {
+            this.splittedText = text.slice(30)
+        }
+        // console.log('THIS IS SPLITTTED TEXTTT', this.splittedText)
 
         if (_.isEmpty(options)) return null
         let optionsArray = []
@@ -261,8 +273,9 @@ class Bubble extends React.Component {
                                     style={{
                                         color: '#fff',
                                         fontSize: 14,
+                                        width: '99.8%',
                                         fontWeight: '600',
-                                        fontFamily: text.FONT_FAMILY.REGULAR,
+                                        fontFamily: text.FONT_FAMILY,
                                         color: color.GM_BLUE,
                                         textAlign: 'center',
                                     }}
@@ -470,6 +483,7 @@ class Bubble extends React.Component {
                 wrapperStyle,
                 ...messageImageProps
             } = this.props
+
             if (this.props.renderMessageImage) {
                 return this.props.renderMessageImage(messageImageProps)
             }

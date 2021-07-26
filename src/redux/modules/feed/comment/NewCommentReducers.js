@@ -525,6 +525,7 @@ export default (state = INITIAL_STATE, action) => {
             const { tab, text, pageId } = action.payload
             const page = pageId ? `${pageId}` : 'default'
             const path = !tab ? `homeTab.${page}` : `${tab}.${page}`
+
             return _.set(newState, `${path}.tmpSuggestion.suggestionText`, text)
         }
 
@@ -534,6 +535,10 @@ export default (state = INITIAL_STATE, action) => {
             const { tab, suggestionLink, pageId } = action.payload
             const page = pageId ? `${pageId}` : 'default'
             const path = !tab ? `homeTab.${page}` : `${tab}.${page}`
+            console.log('SUGGESTION LINK NEW STATE=>', newstate)
+            console.log(
+                `Tab =>${tab} suggestionLink =>${suggestionLink} pageId =>${pageId}`
+            )
             return _.set(
                 newState,
                 `${path}.tmpSuggestion.suggestionLink`,

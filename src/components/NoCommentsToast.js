@@ -19,7 +19,7 @@ class PrivateGoalsToast extends Component {
     }
 
     render() {
-        const name = getFirstName(this.props.name)
+        // const name = getFirstName(this.props.name)
         return (
             <>
                 <View
@@ -78,7 +78,8 @@ class PrivateGoalsToast extends Component {
                                 fontFamily: 'SFProDisplay-Bold',
                             }}
                         >
-                            Help {name} to get the first comment on his goal.
+                            Help {this.props.name} to get the first comment on
+                            his goal.
                         </Text>
 
                         <Text
@@ -87,10 +88,12 @@ class PrivateGoalsToast extends Component {
                                 lineHeight: 19,
 
                                 fontFamily: 'SFProDisplay-Regular',
+                                width: '99%',
                             }}
                         >
-                            Oh no! No one has commented on {name}'s goal yet! Be
-                            the first to leave a suggestion or encouragement!
+                            Oh no! No one has commented on {this.props.name}'s
+                            goal yet! Be the first to leave a suggestion or
+                            encouragement!
                         </Text>
                     </View>
                 </View>

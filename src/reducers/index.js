@@ -62,6 +62,8 @@ import FeedBackReducers from './FeedbackReducers'
 
 import VisitedUsers from './UserVisited'
 
+import ProfileGoalSwipe from './ProfileGoalSwipeReducer'
+
 //Nudge Reducers
 
 import NudgeReducers from './NudgesReducer'
@@ -142,6 +144,7 @@ export const reducers = combineReducers({
     toasts: ToastsReducers,
     friendsRequest: FriendsRequests,
     feedback: FeedBackReducers,
+    goalSwiper: ProfileGoalSwipe,
 })
 
 export default persistReducer(rootPersistConfig, reducers)

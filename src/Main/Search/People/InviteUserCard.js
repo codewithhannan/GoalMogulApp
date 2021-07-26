@@ -26,10 +26,10 @@ const DEBUG_KEY = '[ UI InviteUserCard ]'
 
 class InviteUserCard extends React.PureComponent {
     onPress = (_id) => {
-        trackWithProperties(EVENT.SEARCH_RESULT_CLICKED, {
-            Type: 'people',
-            Id: _id,
-        })
+        // trackWithProperties(EVENT.SEARCH_RESULT_CLICKED, {
+        //     Type: 'people',
+        //     Id: _id,
+        // })
         if (this.props.onSelect && this.props.onSelect instanceof Function) {
             return this.props.onSelect(_id, this.props.item)
         }

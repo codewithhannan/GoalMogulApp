@@ -110,6 +110,9 @@ export const updateInviteCode = (inviteCode) => async (dispatch, getState) => {
     let res
     try {
         res = await API.put('secure/user/account', { inviteCode }, undefined)
+        if (res.status != 200) {
+            Alert.alert('That invite code is unavailable. Please try another.')
+        }
     } catch (err) {
         Alert.alert('Edit failed', 'Please try again later.')
         return
@@ -123,7 +126,19 @@ export const updateInviteCode = (inviteCode) => async (dispatch, getState) => {
                 inviteCode,
             },
         })
-        Alert.alert('Success', 'You have successfully updated your invite code')
+        Alert.alert(
+            'Success',
+            'You have successfully updated your invite code',
+            [
+                {
+                    text: 'Ok',
+                    onPress: () => {
+                        Actions.pop()
+                    },
+                },
+            ],
+            { cancelable: false }
+        )
         return
     }
 

@@ -27,6 +27,7 @@ import { Formik } from 'formik'
 import {
     wrapAnalytics,
     SCREENS,
+    track,
     trackWithProperties,
     EVENT as E,
 } from '../../monitoring/segment'
@@ -120,6 +121,7 @@ class OnboardingPhoneVerification extends React.Component {
                                 Actions.push('registration_verify_phone')
                                 Keyboard.dismiss()
                                 setSubmitting(false)
+                                track(E.REG_FIELDS_FILL)
                             }}
                             validateOnBlur={true}
                         >
@@ -307,7 +309,7 @@ class OnboardingPhoneVerification extends React.Component {
                                                     Submit
                                                 </Text>
                                             </DelayedButton>
-                                            <DelayedButton
+                                            {/* <DelayedButton
                                                 onPress={this.onNotNow}
                                                 style={[
                                                     buttonStyle
@@ -325,7 +327,7 @@ class OnboardingPhoneVerification extends React.Component {
                                                 >
                                                     Skip
                                                 </Text>
-                                            </DelayedButton>
+                                            </DelayedButton> */}
                                         </View>
                                     </View>
                                 </>

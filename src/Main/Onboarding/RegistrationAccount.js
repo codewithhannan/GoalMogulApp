@@ -36,7 +36,9 @@ import {
     validatePhoneCode,
     cancelRegistration,
 } from '../../redux/modules/registration/RegistrationActions'
-PhoneVerificationMoal
+
+// import CustomDropDown from '../../../CustomDropDown'
+
 import UserAgreementCheckBox from './UserAgreementCheckBox'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { DEVICE_PLATFORM } from '../../Utils/Constants'
@@ -47,8 +49,6 @@ import {
     track,
     EVENT as E,
 } from '../../monitoring/segment'
-import { trackWithProperties } from 'expo-analytics-segment'
-import PhoneVerificationMoal from './PhoneVerificationModal'
 
 const NEXT_STEP = 'registration'
 const FIELD_REQUIREMENTS = {
@@ -157,6 +157,7 @@ class RegistrationAccount extends React.Component {
             this.nextStep()
         }
         return this.props.registerAccount(onSuccess)
+        // track(E.REG_FIELDS_FILL)
     }
 
     /**
@@ -247,16 +248,16 @@ class RegistrationAccount extends React.Component {
         }
     }
 
-    profileFilledTrack = () => {
-        if (
-            this.state.nameStatus == FIELD_REQUIREMENTS.done &&
-            this.state.emailStatus == FIELD_REQUIREMENTS.done &&
-            this.props.dateOfBirth &&
-            this.props.gender
-        ) {
-            return track(E.REG_FIELDS_FILL)
-        }
-    }
+    // profileFilledTrack = () => {
+    //     if (
+    //         this.state.nameStatus == FIELD_REQUIREMENTS.done &&
+    //         this.state.emailStatus == FIELD_REQUIREMENTS.done &&
+    //         this.props.dateOfBirth &&
+    //         this.props.gender
+    //     ) {
+    //         return track(E.REG_FIELDS_FILL)
+    //     }
+    // }
 
     renderLogin() {
         return (
@@ -429,6 +430,9 @@ class RegistrationAccount extends React.Component {
                     caption={`We won't share this information with anyone`}
                     disabled={this.props.loading}
                 />
+
+                {/* <CustomDropDown /> */}
+
                 <InputBox
                     key="inviterCode"
                     inputTitle="Invite Code"
@@ -492,7 +496,7 @@ class RegistrationAccount extends React.Component {
     render() {
         return (
             <View style={[OnboardingStyles.container.page, { zIndex: 1 }]}>
-                {this.profileFilledTrack()}
+                {/* {this.profileFilledTrack()} */}
                 <KeyboardAwareScrollView
                     bounces={false}
                     enableOnAndroid={true}

@@ -72,7 +72,10 @@ export default (state = INITIAL_STATE, action) => {
             if (messages) {
                 newState = _.set(newState, 'messages', messages)
                 newState = _.set(newState, 'skip', messages.length)
-                newState = _.set(newState, 'hasNextPage', !!messages.length)
+
+                if (messages.length > 5) {
+                    newState = _.set(newState, 'hasNextPage', !!messages.length)
+                }
             }
             if (chatRoom) {
                 let chatRoomsMap = _.get(newState, 'chatRoomsMap')

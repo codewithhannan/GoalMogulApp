@@ -47,7 +47,13 @@ function FeedbackModal(props) {
                         </Text>
                     </View>
 
-                    <View style={{ position: 'absolute', right: 15, top: 5 }}>
+                    <View
+                        style={{
+                            position: 'absolute',
+                            right: 15,
+                            top: 5,
+                        }}
+                    >
                         <TouchableOpacity onPress={() => props.isClose()}>
                             <Entypo
                                 name="cross"

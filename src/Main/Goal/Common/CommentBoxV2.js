@@ -5,6 +5,7 @@ import _ from 'lodash'
 import R from 'ramda'
 import React, { Component } from 'react'
 import { Icon } from '@ui-kitten/components'
+import { Actions } from 'react-native-router-flux'
 import {
     ActivityIndicator,
     Dimensions,
@@ -50,6 +51,14 @@ import DelayedButton from '../../Common/Button/DelayedButton'
 import ProfileImage from '../../Common/ProfileImage'
 import { getButtonBottomSheetHeight } from '../../../styles'
 import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
+import InviteFriendModal from '../../MeetTab/Modal/InviteFriendModal'
+
+//icons
+import user from '../../../asset/suggestion/user.png'
+import contact from '../../../asset/suggestion/contact.png'
+import step from '../../../asset/suggestion/step.png'
+import need from '../../../asset/suggestion/need.png'
+import tribe from '../../../asset/suggestion/tribe.png'
 
 // Consts
 const maxHeight = 120
@@ -74,6 +83,7 @@ class CommentBoxV2 extends Component {
             defaultValue: DEFAULT_WRITE_COMMENT_PLACEHOLDER,
             keyword: '',
             tagSearchData: INITIAL_TAG_SEARCH,
+            showInviteFriendModal: false,
         }
         this.updateSearchRes = this.updateSearchRes.bind(this)
         this.focus = this.focus.bind(this)
@@ -106,7 +116,15 @@ class CommentBoxV2 extends Component {
         }
     }
 
-    onTaggingSuggestionTap(item, hidePanel, cursorPosition) {
+    openInviteFriendModal = () => {
+        this.setState({ ...this.state, showInviteFriendModal: true })
+    }
+
+    closeInviteFriendModal = () => {
+        this.setState({ ...this.state, showInviteFriendModal: false })
+    }
+
+    onTaggingSuggestionTap = (item, hidePanel, cursorPosition) => {
         hidePanel()
         const { name } = item
         const { pageId, newComment } = this.props
@@ -186,7 +204,7 @@ class CommentBoxV2 extends Component {
         this.props.newCommentOnTagsChange(newContentTags, pageId)
     }
 
-    updateSearchRes(res, searchContent) {
+    updateSearchRes = (res, searchContent) => {
         if (searchContent !== this.state.keyword) return
         this.setState({
             // keyword,
@@ -199,7 +217,7 @@ class CommentBoxV2 extends Component {
         })
     }
 
-    callback(keyword) {
+    callback = (keyword) => {
         if (this.reqTimer) {
             clearTimeout(this.reqTimer)
         }
@@ -252,16 +270,26 @@ class CommentBoxV2 extends Component {
     }
 
     handleOpenCamera = () => {
-        this.props.openCamera((result) => {
-            this.props.newCommentOnMediaRefChange(result.uri, this.props.pageId)
-        })
+        this.bottomSheetRef.close()
+
+        setTimeout(() => {
+            this.props.openCamera((result) => {
+                this.props.newCommentOnMediaRefChange(
+                    result.uri,
+                    this.props.pageId
+                )
+            })
+        }, 500)
     }
 
     handleOpenCameraRoll = () => {
         const callback = R.curry((result) => {
             this.props.newCommentOnMediaRefChange(result.uri, this.props.pageId)
         })
-        this.props.openCameraRoll(callback, { disableEditing: true })
+        this.bottomSheetRef.close()
+        setTimeout(() => {
+            this.props.openCameraRoll(callback, { disableEditing: true })
+        }, 500)
     }
 
     /**
@@ -313,42 +341,115 @@ class CommentBoxV2 extends Component {
         })
     }
 
-    renderSuggestionIcon() {
+    openSuggestionBottomSheet = () => this.suggestionRefBottomSheetRef.open()
+    closeSuggestionBottomSheet = () => this.suggestionRefBottomSheetRef.close()
+
+    makeSuggestionRefOptions = () => {
+        return [
+            {
+                title: 'Suggest a:',
+            },
+            {
+                text: 'User',
+                image: user,
+                onPress: () => {
+                    this.closeSuggestionBottomSheet()
+                    setTimeout(() => {
+                        Actions.push('FriendList')
+                    }, 500)
+                },
+            },
+            {
+                text: 'Contact',
+                image: contact,
+                onPress: () => {
+                    this.closeSuggestionBottomSheet()
+                    setTimeout(() => {
+                        this.openInviteFriendModal()
+                    }, 500)
+                },
+            },
+            {
+                text: 'Step',
+                image: step,
+                onPress: () => {
+                    this.closeSuggestionBottomSheet()
+                    setTimeout(() => {}, 500)
+                },
+            },
+            {
+                text: 'Need',
+                image: need,
+                onPress: () => {
+                    this.closeSuggestionBottomSheet()
+                    setTimeout(() => {}, 500)
+                },
+            },
+            {
+                text: 'Tribe',
+                image: tribe,
+                onPress: () => {
+                    this.closeSuggestionBottomSheet()
+                    setTimeout(() => {}, 500)
+                },
+            },
+        ]
+    }
+
+    renderSuggestionRefBottomSheet = () => {
+        const options = this.makeSuggestionRefOptions()
+
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.suggestionRefBottomSheetRef = r)}
+                title="Suggest a:"
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
+    }
+
+    renderSuggestionIcon = () => {
         const { newComment, pageId, goalId } = this.props
         const { mediaRef, commentType } = newComment
         const disableButton = mediaRef !== undefined && mediaRef !== ''
         if (commentType === 'Reply') return null
-
+        const options = this.makeSuggestionRefOptions()
         return (
-            <DelayedButton
-                activeOpacity={0.6}
-                onPress={() => {
-                    Keyboard.dismiss()
-                    this.props.createSuggestion(goalId, pageId)
-                }}
-                disabled={disableButton}
-                style={{
-                    paddingTop: 12,
-                    paddingBottom: 4,
-                }}
-            >
-                <Icon
-                    name="lightbulb-on-outline"
-                    pack="material-community"
-                    style={[
-                        styles.iconStyle,
-                        {
-                            position: 'relative',
-                            bottom: 2,
-                            tintColor: '#F2C94C',
-                        },
-                    ]}
-                />
-            </DelayedButton>
+            <View>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    onPress={() => {
+                        Keyboard.dismiss()
+                        this.props.createSuggestion(goalId, pageId)
+                        // this.openSuggestionBottomSheet()
+                    }}
+                    disabled={disableButton}
+                    style={{
+                        paddingTop: 12,
+                        paddingBottom: 4,
+                    }}
+                >
+                    <Icon
+                        name="lightbulb-on-outline"
+                        pack="material-community"
+                        style={[
+                            styles.iconStyle,
+                            {
+                                position: 'relative',
+                                bottom: 2,
+                                tintColor: '#F2C94C',
+                            },
+                        ]}
+                    />
+                </DelayedButton>
+            </View>
         )
     }
 
-    renderLeftIcons() {
+    renderLeftIcons = () => {
         const { newComment, pageId, hasSuggestion, goalId } = this.props
         const suggestionIcon = hasSuggestion
             ? this.renderSuggestionIcon(newComment, pageId, goalId)
@@ -368,7 +469,7 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderImageIcon() {
+    renderImageIcon = () => {
         const { newComment } = this.props
         const { commentType } = newComment
         // Disable image icon if there is a valid suggestion
@@ -415,7 +516,7 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderMedia() {
+    renderMedia = () => {
         const { newComment } = this.props
         const { mediaRef } = newComment
         if (!mediaRef) return null
@@ -458,7 +559,7 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderPost() {
+    renderPost = () => {
         const { newComment } = this.props
         const { uploading, contentText, commentType, mediaRef } = newComment
         const isInValidComment =
@@ -519,7 +620,7 @@ class CommentBoxV2 extends Component {
      * @param hidePanel: lib passed in funct to close suggestion panel
      * @param item: suggestion item to render
      */
-    renderSuggestionsRow({ item }, hidePanel, cursorPosition) {
+    renderSuggestionsRow = ({ item }, hidePanel, cursorPosition) => {
         const { name } = item
         return (
             <TouchableOpacity
@@ -546,7 +647,7 @@ class CommentBoxV2 extends Component {
         )
     }
 
-    renderLoadingComponent() {
+    renderLoadingComponent = () => {
         if (this.state.tagSearchData.loading) {
             return (
                 <View
@@ -571,7 +672,7 @@ class CommentBoxV2 extends Component {
     }
 
     render() {
-        const { pageId, newComment, comments } = this.props
+        const { pageId, newComment } = this.props
         if (!newComment || !newComment.parentRef) return null
         const { uploading } = newComment
 
@@ -582,44 +683,53 @@ class CommentBoxV2 extends Component {
               }
             : styles.inputStyle
         return (
-            <MentionsTextInput
-                ref={(r) => (this.textInput = r)}
-                placeholder={this.state.defaultValue}
-                onChangeText={(val) =>
-                    this.props.newCommentOnTextChange(val, pageId)
-                }
-                editable={!uploading}
-                maxHeight={maxHeight}
-                multiline
-                value={newComment.contentText}
-                contentTags={newComment.contentTags}
-                contentTagsReg={newComment.contentTags.map((t) => t.tagReg)}
-                tagSearchRes={this.state.tagSearchData.data}
-                defaultValue={this.state.defaultValue}
-                onBlur={this.handleOnBlur}
-                onSubmitEditing={this.handleOnSubmitEditing}
-                renderSuggestionPreview={this.renderSuggestionPreview}
-                renderMedia={this.renderMedia}
-                renderLeftIcons={this.renderLeftIcons}
-                renderPost={this.renderPost}
-                textInputContainerStyle={styles.inputContainerStyle}
-                textInputStyle={inputStyle}
-                validateTags={this.validateContentTags}
-                suggestionsPanelStyle={{
-                    backgroundColor: 'rgba(100,100,100,0.1)',
-                }}
-                loadingComponent={this.renderLoadingComponent}
-                trigger={'@'}
-                triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
-                triggerCallback={this.callback}
-                triggerLoadMore={this.handleTagSearchLoadMore}
-                renderSuggestionsRow={this.renderSuggestionsRow}
-                suggestionsData={this.state.tagSearchData.data} // array of objects
-                keyExtractor={(item) => item._id}
-                suggestionRowHeight={50}
-                horizontal={false} // defaut is true, change the orientation of the list
-                MaxVisibleRowCount={7} // this is required if horizontal={false}
-            />
+            <>
+                <MentionsTextInput
+                    ref={(r) => (this.textInput = r)}
+                    placeholder={this.state.defaultValue}
+                    onChangeText={(val) =>
+                        this.props.newCommentOnTextChange(val, pageId)
+                    }
+                    editable={!uploading}
+                    maxHeight={maxHeight}
+                    multiline
+                    value={newComment.contentText}
+                    contentTags={newComment.contentTags}
+                    contentTagsReg={newComment.contentTags.map((t) => t.tagReg)}
+                    tagSearchRes={this.state.tagSearchData.data}
+                    defaultValue={this.state.defaultValue}
+                    onBlur={this.handleOnBlur}
+                    onSubmitEditing={this.handleOnSubmitEditing}
+                    renderSuggestionPreview={this.renderSuggestionPreview}
+                    renderMedia={this.renderMedia}
+                    renderLeftIcons={this.renderLeftIcons}
+                    renderPost={this.renderPost}
+                    textInputContainerStyle={styles.inputContainerStyle}
+                    textInputStyle={inputStyle}
+                    validateTags={this.validateContentTags}
+                    suggestionsPanelStyle={{
+                        backgroundColor: 'rgba(100,100,100,0.1)',
+                    }}
+                    loadingComponent={this.renderLoadingComponent}
+                    trigger={'@'}
+                    triggerLocation={'new-word-only'} // 'new-word-only', 'anywhere'
+                    triggerCallback={this.callback}
+                    triggerLoadMore={this.handleTagSearchLoadMore}
+                    renderSuggestionsRow={this.renderSuggestionsRow}
+                    suggestionsData={this.state.tagSearchData.data} // array of objects
+                    keyExtractor={(item) => item._id}
+                    suggestionRowHeight={50}
+                    horizontal={false} // defaut is true, change the orientation of the list
+                    MaxVisibleRowCount={7} // this is required if horizontal={false}
+                />
+                {/* {this.renderSuggestionRefBottomSheet()} */}
+                {/* <InviteFriendModal
+                    isVisible={this.state.showInviteFriendModal}
+                    closeModal={this.closeInviteFriendModal}
+                    goalTosend={`My friend ${this.props.name} has the goal ${this.props.title} I thought you might be able to help. Please join us on GoalMogul so I can connect you!`}
+                    shouldOpenFromComments
+                /> */}
+            </>
         )
     }
 }
@@ -627,7 +737,6 @@ class CommentBoxV2 extends Component {
 const validSuggestion = (newComment) => {
     const { commentType, suggestion } = newComment
     if (commentType === 'Comment' || commentType === 'Reply') return true
-
     if (isInvalidObject(suggestion)) {
         return false
     }
@@ -713,10 +822,13 @@ const styles = {
 }
 
 const mapStateToProps = (state, props) => {
-    const { comments } = state
+    const { goalDetail } = state
+    const title = goalDetail.goal.goal?.title
+    const name = goalDetail.goal.goal?.owner?.name
     return {
         newComment: getNewCommentByTab(state, props.pageId),
-        comments,
+        title,
+        name,
     }
 }
 

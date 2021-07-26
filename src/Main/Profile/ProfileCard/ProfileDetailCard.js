@@ -49,19 +49,14 @@ import {
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 
 import { Actions } from 'react-native-router-flux'
-import { storeData } from '../../../store/storage'
+
 import RichText from '../../Common/Text/RichText'
 import _ from 'lodash'
 import { getButtonBottomSheetHeight } from '../../../styles'
 import ProfileImage from '../../Common/ProfileImage'
 import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
-import {
-    EVENT as E,
-    track,
-    trackWithProperties,
-} from '../../../monitoring/segment'
+import { EVENT as E, track } from '../../../monitoring/segment'
 
-const { InfoIcon } = Icons
 const { width } = Dimensions.get('window')
 const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]'
 
@@ -602,6 +597,15 @@ class ProfileDetailCard extends Component {
         adminActionSheet()
     }
 
+    renderImageSource = () => {
+        const { imageUrl } = this.state
+        if (this.state.imageUrl === '') {
+            return require('../../../asset/utils/defaultUserProfile.png')
+        } else {
+            return { uri: imageUrl }
+        }
+    }
+
     renderImage = () => {
         return (
             <View activeOpacity={0.6} style={styles.imageContainerStyle}>
@@ -623,9 +627,7 @@ class ProfileDetailCard extends Component {
                         onPress={() => this.props.profilePictureVisible()}
                     >
                         <Image
-                            source={{
-                                uri: this.state.imageUrl,
-                            }}
+                            source={this.renderImageSource()}
                             style={{
                                 width: 110,
                                 height: 110,

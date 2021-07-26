@@ -150,6 +150,7 @@ class TribeSearchOverlay extends Component {
                             />
                         </View>
                         <TribeSearch
+                            hideJoinButton={true}
                             callback={this.props.callback}
                             onItemSelect={this.props.onItemSelect}
                             shouldPreload={this.props.shouldPreload}

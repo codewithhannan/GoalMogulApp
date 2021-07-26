@@ -21,6 +21,7 @@ import {
     wrapAnalytics,
     SCREENS,
     EVENT as E,
+    track,
     trackWithProperties,
 } from '../../monitoring/segment'
 import { Button } from 'react-native-paper'
@@ -46,12 +47,16 @@ class OnboardingCommunity extends React.Component {
             Actions.push('registration_welcome')
         }
         screenTransitionCallback()
+        // track(E.REG_ACCOUNT_CREATED)
     }
 
     onSwipedAll = (index) => {
         trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
             step_number: index,
         })
+        if (index === 3) {
+            track(E.REG_ACCOUNT_CREATED)
+        }
 
         if (index == this.props.communityGuidelines.length - 1) {
             this.setState({ ...this.state, swipeAll: true })
@@ -73,6 +78,7 @@ class OnboardingCommunity extends React.Component {
 
     renderCard = ({ index, item }) => {
         const { title, subTitle, picture } = item
+        console.log('Text onboarding=======>', item)
         const width = this.getImageWidth()
         return (
             <View
@@ -82,7 +88,7 @@ class OnboardingCommunity extends React.Component {
                     paddingTop: 0,
                     paddingBottom: 30,
                     alignItems: 'center',
-                    margin: 8,
+                    margin: 5,
                     borderWidth: 1,
                     borderColor: color.GM_CARD_BACKGROUND,
                     borderRadius: 10,
@@ -90,7 +96,9 @@ class OnboardingCommunity extends React.Component {
                 }}
                 key={index}
             >
-                <View style={{ paddingTop: 12 }}>
+                <View
+                    style={{ paddingTop: 0, position: 'absolute', bottom: 100 }}
+                >
                     {picture ? (
                         <Image
                             style={{
@@ -114,7 +122,13 @@ class OnboardingCommunity extends React.Component {
                 </View>
 
                 <View
-                    style={{ width: '90%', justifyContent: 'center', flex: 1 }}
+                    style={{
+                        // width: '90%',
+                        bottom: 15,
+                        position: 'absolute',
+                        justifyContent: 'center',
+                        // backgroundColor: 'red',
+                    }}
                 >
                     <Text
                         style={[

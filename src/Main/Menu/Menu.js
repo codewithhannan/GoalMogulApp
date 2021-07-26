@@ -27,6 +27,8 @@ import { openMyTribeTab } from '../../redux/modules/tribe/MyTribeTabActions'
 
 import { openMeet, openSetting, logout, openChallenges } from '../../actions'
 import InviteFriendModal from '../MeetTab/Modal/InviteFriendModal'
+import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
+import WincashModal from '../Common/Modal/WincashModal'
 
 import {
     showNextTutorialPage,
@@ -36,8 +38,15 @@ import {
 
 // Assets
 import Icons from '../../asset/base64/Icons'
-import Silver from '../../asset/banner/silver.png'
-import Gold from '../../asset/banner/gold.png'
+import Silver from '../../asset/banner/silver_cup.png'
+import Gold from '../../asset/banner/gold_cup.png'
+import Winner from '../../asset/banner/winner.png'
+import Trending from '../../asset/icons/trending.png'
+import Badges from '../../asset/icons/badges.png'
+import Win from '../../asset/icons/win.png'
+import FB from '../../asset/icons/fb.png'
+import Feedback from '../../asset/icons/Feedback.png'
+import Logout from '../../asset/icons/LogOut.png'
 
 import {
     IPHONE_MODELS,
@@ -50,6 +59,7 @@ import { IS_SMALL_PHONE } from '../../styles'
 
 import Popup from '../Journey/Popup'
 import { openPopup } from '../../actions/PopupActions'
+import { track, EVENT as E } from '../../monitoring/segment'
 
 const GOLD_CHALLENGE_URL = 'https://new5reactpages.web.app/page5'
 const SILVER_CHALLENGE_URL = 'https://new5reactpages.web.app/page4'
@@ -65,6 +75,8 @@ class Menu extends React.PureComponent {
         this.state = {
             showInviteFriendModal: false,
             toolTipVisible: false,
+            showBadgeModal: false,
+            showWincashModal: false,
         }
     }
 
@@ -102,18 +114,29 @@ class Menu extends React.PureComponent {
                 ? 30
                 : 40
 
+        const pageID = 391422631718856
+        const scheme = Platform.select({
+            ios: 'fb://profile/',
+            android: 'fb://page/',
+        })
+
+        const url = `${scheme}${pageID}`
+
         return (
             <View style={{ flex: 1 }}>
                 <View style={{ ...styles.headerStyle, paddingTop }}>
-                    <View style={{ height: 15 }} />
+                    {/* <View style={{ height: 15 }} /> */}
                 </View>
 
                 <DelayedButton
                     activeOpacity={0.6}
-                    onPress={() => this.openInviteFriendModal()}
+                    onPress={() => {
+                        this.openInviteFriendModal()
+                        track(E.INVITE_FRIENDS_OPEN)
+                    }}
                     style={styles.buttonStyle}
                 >
-                    <Text style={styles.titleTextStyle}>Invite a friend</Text>
+                    <Text style={styles.titleTextStyle}>Invite Friends</Text>
                     <View style={{ position: 'absolute', right: 0 }}>
                         <Svg
                             width={25}
@@ -135,7 +158,7 @@ class Menu extends React.PureComponent {
                     onPress={() => this.props.openMeet()}
                     style={styles.buttonStyle}
                 >
-                    <Text style={styles.titleTextStyle}>My friends</Text>
+                    <Text style={styles.titleTextStyle}>People & Friends</Text>
                     <View style={{ position: 'absolute', right: 0 }}>
                         <Svg
                             width={25}
@@ -153,17 +176,230 @@ class Menu extends React.PureComponent {
                     </View>
                 </DelayedButton>
                 {/* Trending goals - this is unavailable for now, so commented out. */}
-                {/* <DelayedButton
+                <DelayedButton
                     activeOpacity={0.6}
-                    onPress={() => this.props.openMeet()}
+                    onPress={() => Actions.push('trendingGoalView')}
                     style={styles.buttonStyle}
                 >
-                    <Image
-                        source={AccountMultiple}
-                        style={[styles.iconStyle, { tintColor: '#828282' }]}
-                    />
                     <Text style={styles.titleTextStyle}>Trending goals</Text>
-                </DelayedButton> */}
+                    <View style={{ position: 'absolute', right: 0 }}>
+                        <Image
+                            resizeMode="contain"
+                            source={Trending}
+                            style={[styles.iconStyle, { tintColor: '#828282' }]}
+                        />
+                    </View>
+                </DelayedButton>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    onPress={() => this.setState({ showBadgeModal: true })}
+                    style={styles.buttonStyle}
+                >
+                    <Text style={styles.titleTextStyle}>Badges</Text>
+                    <View style={{ position: 'absolute', right: 0 }}>
+                        <Svg
+                            width={27}
+                            height={27}
+                            viewBox="0 0 22 22"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            {...this.props}
+                        >
+                            <Path
+                                d="M11 2H4v15.417L11 20l7-2.583V2h-7z"
+                                fill="#828282"
+                            />
+                            <Path
+                                d="M15.16 9.49l-3.293-.294L10.58 6 9.293 9.196 6 9.49l2.496 2.28-.746 3.39 2.83-1.798 2.83 1.798-.75-3.39 2.5-2.28z"
+                                fill="#fff"
+                            />
+                            <Path
+                                d="M11 1H4v17.13L11 21l7-2.87V1h-7z"
+                                fill="#828282"
+                            />
+                            <Path
+                                d="M16 8.81l-3.595-.32L11 5 9.595 8.49 6 8.81l2.725 2.49L7.91 15 11 13.037 14.09 15l-.82-3.7L16 8.81z"
+                                fill="#fff"
+                            />
+                        </Svg>
+                    </View>
+                </DelayedButton>
+                {/**
+                 * This is the button to handle challenges
+                 * */}
+
+                <Tooltip
+                    animated={true}
+                    showChildInTooltip={false}
+                    // arrowSize={{ width: 16, height: 11 }}
+                    backgroundColor="rgba(0,0,0,0.12)"
+                    isVisible={this.state.toolTipVisible}
+                    contentStyle={{
+                        backgroundColor: 'white',
+                        width: 220,
+                        // right: 2,
+                        // position: 'absolute',
+
+                        // marginBottom: 100,
+                        // bottom: 430,
+                        marginHorizontal: -20,
+                        marginVertical: -15,
+                        borderRadius: 5,
+                    }}
+                    content={
+                        <>
+                            <View
+                                style={{
+                                    flex: 1,
+                                    flexDirection: 'column',
+                                }}
+                            >
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.setState({ toolTipVisible: false })
+                                        this.props.openChallenges(
+                                            SILVER_CHALLENGE_URL
+                                        )
+                                    }}
+                                    style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <View style={{ top: 5, marginRight: 10 }}>
+                                        <Image
+                                            source={Silver}
+                                            style={{
+                                                height: 20,
+                                                width: 22,
+                                            }}
+                                        />
+                                    </View>
+                                    <View
+                                        style={{
+                                            marginTop: 10,
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-evenly',
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: 21,
+                                                fontWeight: '400',
+                                            }}
+                                        >
+                                            Silver
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.setState({ toolTipVisible: false })
+                                        this.props.openChallenges(
+                                            GOLD_CHALLENGE_URL
+                                        )
+                                    }}
+                                    style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <View style={{ top: 5, marginRight: 10 }}>
+                                        <Image
+                                            source={Gold}
+                                            style={{
+                                                height: 20,
+                                                width: 22,
+                                            }}
+                                        />
+                                    </View>
+                                    <View
+                                        style={{
+                                            marginTop: 10,
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-evenly',
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: 21,
+                                                fontWeight: '400',
+                                            }}
+                                        >
+                                            Gold
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.setState({ toolTipVisible: false })
+                                    }}
+                                    style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <View style={{ top: 5, marginRight: 10 }}>
+                                        <Image
+                                            source={Winner}
+                                            style={{
+                                                height: 20,
+                                                width: 22,
+                                            }}
+                                        />
+                                    </View>
+                                    <View
+                                        style={{
+                                            marginTop: 10,
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-evenly',
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: 21,
+                                                fontWeight: '400',
+                                            }}
+                                        >
+                                            Winners List
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </>
+                    }
+                    placement="bottom"
+                    onClose={() => this.setState({ toolTipVisible: false })}
+                >
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        onPress={() =>
+                            // this.props.openChallenges(
+                            //     'https://new5reactpages.web.app/page4'
+                            // )
+                            this.setState({ toolTipVisible: true })
+                        }
+                        style={styles.buttonStyle}
+                    >
+                        <Text style={styles.titleTextStyle}>Challenges</Text>
+                        <View style={{ position: 'absolute', right: 0 }}>
+                            <Svg
+                                width={25}
+                                height={25}
+                                viewBox="0 0 22 22"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                {...this.props}
+                            >
+                                <Path
+                                    d="M20.9 1.1h-3.3V0H4.4v1.1H1.1C.44 1.1 0 1.54 0 2.2v2.64c0 2.53 1.87 4.62 4.4 4.95v.11c0 3.19 2.2 5.83 5.17 6.49L8.8 18.7H6.27c-.44 0-.88.33-.99.77L4.4 22h13.2l-.88-2.53c-.11-.44-.55-.77-.99-.77H13.2l-.77-2.31c2.97-.66 5.17-3.3 5.17-6.49v-.11c2.53-.33 4.4-2.42 4.4-4.95V2.2c0-.66-.44-1.1-1.1-1.1zM4.4 7.59c-1.21-.33-2.2-1.43-2.2-2.75V3.3h2.2v4.29zM13.2 11L11 9.79 8.8 11l.55-2.2L7.7 6.6h2.31L11 4.4l.99 2.2h2.31l-1.65 2.2.55 2.2zm6.6-6.16c0 1.32-.99 2.53-2.2 2.75V3.3h2.2v1.54z"
+                                    fill="#828282"
+                                />
+                            </Svg>
+                        </View>
+                    </DelayedButton>
+                </Tooltip>
                 <DelayedButton
                     activeOpacity={0.6}
                     onPress={() => this.props.openSetting()}
@@ -186,137 +422,60 @@ class Menu extends React.PureComponent {
                         </Svg>
                     </View>
                 </DelayedButton>
-
-                {/**
-                 * This is the button to handle challenges
-                 * */}
-
-                <Tooltip
-                    animated={true}
-                    arrowSize={{ width: 16, height: 11 }}
-                    backgroundColor="rgba(0,0,0,0.12)"
-                    isVisible={this.state.toolTipVisible}
-                    contentStyle={{
-                        backgroundColor: '#EFEFEF',
-                        width: 220,
-                        // right: 2,
-                        position: 'absolute',
-
-                        // marginBottom: 100,
-                        bottom: 430,
-                        marginHorizontal: 40,
-
-                        borderRadius: 15,
-                    }}
-                    content={
-                        <>
-                            <View
-                                style={{
-                                    flex: 1,
-                                    flexDirection: 'column',
-                                }}
-                            >
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.setState({ toolTipVisible: false })
-                                        this.props.openChallenges(
-                                            SILVER_CHALLENGE_URL
-                                        )
-                                    }}
-                                >
-                                    <View
-                                        style={{
-                                            marginTop: 10,
-                                            flexDirection: 'row',
-                                            justifyContent: 'space-evenly',
-                                        }}
-                                    >
-                                        <Text
-                                            style={{
-                                                fontSize: 21,
-                                                fontWeight: '400',
-                                            }}
-                                        >
-                                            Silver Challenges
-                                        </Text>
-                                        <View style={{ top: 5 }}>
-                                            <Image
-                                                source={Silver}
-                                                style={{
-                                                    height: 20,
-                                                    width: 22,
-                                                }}
-                                            />
-                                        </View>
-                                    </View>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.setState({ toolTipVisible: false })
-                                        this.props.openChallenges(
-                                            GOLD_CHALLENGE_URL
-                                        )
-                                    }}
-                                >
-                                    <View
-                                        style={{
-                                            marginTop: 10,
-                                            flexDirection: 'row',
-                                            justifyContent: 'space-evenly',
-                                        }}
-                                    >
-                                        <Text
-                                            style={{
-                                                fontSize: 21,
-                                                fontWeight: '400',
-                                            }}
-                                        >
-                                            Gold Challenges
-                                        </Text>
-                                        <View style={{ top: 2, left: 2 }}>
-                                            <Image
-                                                source={Gold}
-                                                style={{
-                                                    height: 20,
-                                                    width: 22,
-                                                }}
-                                            />
-                                        </View>
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                        </>
-                    }
-                    placement="bottom"
-                    onClose={() => this.setState({ toolTipVisible: false })}
-                />
-
                 <DelayedButton
                     activeOpacity={0.6}
-                    onPress={() =>
-                        // this.props.openChallenges(
-                        //     'https://new5reactpages.web.app/page4'
-                        // )
-                        this.setState({ toolTipVisible: true })
-                    }
-                    style={styles.buttonStyle}
+                    onPress={() => Linking.openURL(url)}
+                    style={{
+                        width: '100%',
+                        height: 50,
+                        backgroundColor: '#F6FCFF',
+                        justifyContent: 'center',
+                    }}
                 >
-                    <Text style={styles.titleTextStyle}>Challenges</Text>
-                    <View style={{ position: 'absolute', right: 0 }}>
-                        <Svg
-                            width={25}
-                            height={25}
-                            viewBox="0 0 22 22"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            {...this.props}
+                    <View style={{ marginHorizontal: 24 }}>
+                        <Text
+                            style={[
+                                styles.titleTextStyle,
+                                { color: '#475993' },
+                            ]}
                         >
-                            <Path
-                                d="M20.9 1.1h-3.3V0H4.4v1.1H1.1C.44 1.1 0 1.54 0 2.2v2.64c0 2.53 1.87 4.62 4.4 4.95v.11c0 3.19 2.2 5.83 5.17 6.49L8.8 18.7H6.27c-.44 0-.88.33-.99.77L4.4 22h13.2l-.88-2.53c-.11-.44-.55-.77-.99-.77H13.2l-.77-2.31c2.97-.66 5.17-3.3 5.17-6.49v-.11c2.53-.33 4.4-2.42 4.4-4.95V2.2c0-.66-.44-1.1-1.1-1.1zM4.4 7.59c-1.21-.33-2.2-1.43-2.2-2.75V3.3h2.2v4.29zM13.2 11L11 9.79 8.8 11l.55-2.2L7.7 6.6h2.31L11 4.4l.99 2.2h2.31l-1.65 2.2.55 2.2zm6.6-6.16c0 1.32-.99 2.53-2.2 2.75V3.3h2.2v1.54z"
-                                fill="#828282"
+                            Like us on Facebook!
+                        </Text>
+                        <View style={{ position: 'absolute', right: 0 }}>
+                            <Image
+                                resizeMode="center"
+                                source={FB}
+                                style={[styles.iconStyle]}
                             />
-                        </Svg>
+                        </View>
+                    </View>
+                </DelayedButton>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    onPress={() => this.setState({ showWincashModal: true })}
+                    style={{
+                        width: '100%',
+                        height: 50,
+                        backgroundColor: 'rgba(46, 125, 50, 0.16)',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <View style={{ marginHorizontal: 24 }}>
+                        <Text
+                            style={[
+                                styles.titleTextStyle,
+                                { color: '#2E7D32', fontWeight: 'bold' },
+                            ]}
+                        >
+                            $$ Win Cash $$
+                        </Text>
+                        <View style={{ position: 'absolute', right: 0 }}>
+                            <Image
+                                resizeMode="center"
+                                source={Win}
+                                style={[styles.iconStyle]}
+                            />
+                        </View>
                     </View>
                 </DelayedButton>
 
@@ -337,19 +496,14 @@ class Menu extends React.PureComponent {
                                 Give us feedback
                             </Text>
                             <View style={{ position: 'absolute', right: 0 }}>
-                                <Svg
-                                    width={25}
-                                    height={25}
-                                    viewBox="0 0 18 18"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    {...this.props}
-                                >
-                                    <Path
-                                        d="M17.974 6.934a.527.527 0 00-.425-.359l-5.58-.81L9.473.707a.527.527 0 00-.946 0L6.032 5.764l-5.58.811a.527.527 0 00-.293.9l4.038 3.936-.953 5.557a.527.527 0 00.765.556L9 14.9l4.99 2.624a.527.527 0 00.766-.556l-.953-5.557 4.038-3.936a.527.527 0 00.133-.54z"
-                                        fill="#828282"
-                                    />
-                                </Svg>
+                                <Image
+                                    resizeMode="contain"
+                                    source={Feedback}
+                                    style={[
+                                        styles.iconStyle,
+                                        { tintColor: '#828282' },
+                                    ]}
+                                />
                             </View>
                         </DelayedButton>
                         <DelayedButton
@@ -362,8 +516,8 @@ class Menu extends React.PureComponent {
                             </Text>
                             <View style={{ position: 'absolute', right: 0 }}>
                                 <Svg
-                                    width={24}
-                                    height={24}
+                                    width={25}
+                                    height={25}
                                     viewBox="0 0 18 18"
                                     fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -401,26 +555,21 @@ class Menu extends React.PureComponent {
                         >
                             <Text
                                 style={[
-                                    styles.titleTextStyle,
+                                    styles.bottomText,
                                     { color: '#42C0F5', fontWeight: '600' },
                                 ]}
                             >
                                 Log out
                             </Text>
                             <View style={{ position: 'absolute', right: 0 }}>
-                                <Svg
-                                    width={25}
-                                    height={25}
-                                    viewBox="0 0 12 18"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    {...this.props}
-                                >
-                                    <Path
-                                        d="M11.25 9.75a.75.75 0 00-.75.75v3a.75.75 0 01-.75.75H7.5V3c0-.64-.408-1.213-1.022-1.426L6.256 1.5H9.75a.75.75 0 01.75.75V4.5a.75.75 0 101.5 0V2.25C12 1.01 10.99 0 9.75 0H1.687c-.028 0-.052.013-.08.016C1.571.013 1.537 0 1.5 0 .673 0 0 .673 0 1.5V15c0 .64.408 1.212 1.021 1.425l4.514 1.505c.153.047.305.07.465.07.827 0 1.5-.673 1.5-1.5v-.75h2.25c1.24 0 2.25-1.01 2.25-2.25v-3a.75.75 0 00-.75-.75z"
-                                        fill="#42C0F5"
-                                    />
-                                </Svg>
+                                <Image
+                                    resizeMode="contain"
+                                    source={Logout}
+                                    style={[
+                                        styles.iconStyle,
+                                        { tintColor: '#42C0F5' },
+                                    ]}
+                                />
                             </View>
                         </DelayedButton>
                     </View>
@@ -428,6 +577,23 @@ class Menu extends React.PureComponent {
                 <InviteFriendModal
                     isVisible={this.state.showInviteFriendModal}
                     closeModal={this.closeInviteFriendModal}
+                />
+                <EarnBadgeModal
+                    isVisible={this.state.showBadgeModal}
+                    closeModal={() => {
+                        this.setState({
+                            showBadgeModal: false,
+                        })
+                    }}
+                    user={this.props.user}
+                />
+                <WincashModal
+                    isVisible={this.state.showWincashModal}
+                    closeModal={() => {
+                        this.setState({
+                            showWincashModal: false,
+                        })
+                    }}
                 />
             </View>
         )
@@ -446,18 +612,18 @@ const styles = {
     buttonStyle: {
         paddingTop: 15,
         paddingBottom: 10,
-        // justifyContent: 'space-around',
+        justifyContent: 'space-around',
         flexDirection: 'row',
-
+        // width: '100%',
         alignItems: 'center',
-        marginHorizontal: 25,
+        marginHorizontal: 23,
         justifyContent: 'flex-start',
     },
     iconStyle: {
-        marginLeft: 15,
-        marginRight: 15,
-        height: 20,
-        width: 22,
+        // marginLeft: 15,
+        // marginRight: 15,
+        height: 25,
+        width: 25,
     },
     titleTextStyle: {
         color: 'black',
@@ -474,7 +640,7 @@ const styles = {
         // backgroundColor: '#F2F2F2',
         // paddingLeft: 28,
         marginBottom: marginBottom,
-        marginHorizontal: 26,
+        marginHorizontal: 22,
         top: 15,
     },
 }
