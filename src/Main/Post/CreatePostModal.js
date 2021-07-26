@@ -493,22 +493,24 @@ class CreatePostModal extends Component {
     }
 
     handleCancel = (callback) => {
-        // const durationSec =
-        //     (new Date().getTime() - this.startTime.getTime()) / 1000
-        // trackWithProperties(
-        //     this.props.initializeFromState
-        //         ? E.EDIT_POST_MODAL_CANCELLED
-        //         : E.CREATE_POST_MODAL_CANCELLED,
-        //     { DurationSec: durationSec }
-        // )
+        const durationSec =
+            (new Date().getTime() - this.startTime.getTime()) / 1000
+        trackWithProperties(
+            this.props.initializeFromState
+                ? E.EDIT_POST_MODAL_CANCELLED
+                : E.CREATE_POST_MODAL_CANCELLED,
+            { DurationSec: durationSec }
+        )
         if (this.props.post && this.state.clickedButton) return
-        return this.handleDraftCancel(() => {
-            if (callback) callback()
-            // reset form vals
-            // else
-            if (this.state.clickedButton === true) return
-            else this.resetForm()
-        })
+        else {
+            this.handleDraftCancel(() => {
+                if (callback) callback()
+                // reset form vals
+                // else
+                if (this.state.clickedButton === true) return
+                else this.resetForm()
+            })
+        }
     }
 
     handleDraftCancel = (callback) => {

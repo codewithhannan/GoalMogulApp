@@ -449,7 +449,7 @@ export const openCameraRoll = (
               }
     )
 
-    if (!result.cancelled) {
+    if (!result.cancelled || result.cancelled) {
         if (callback) {
             return callback(result)
         }
