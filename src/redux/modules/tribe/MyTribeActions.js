@@ -161,11 +161,10 @@ export const tribeDetailOpen = (tribe) => (dispatch, getState) => {
             })
             return Alert.alert('Tribe not found')
         }
-
+        const componentToOpen = componentKeyByTab(tab, 'myTribeDetail')
+        Actions.push(componentToOpen, { pageId, tribeId })
         // Only if status is 200, we open the detail
         if (res.status === 200) {
-            const componentToOpen = componentKeyByTab(tab, 'myTribeDetail')
-            Actions.push(componentToOpen, { pageId, tribeId })
             dispatch({
                 type: MYTRIBE_DETAIL_LOAD_SUCCESS,
                 payload: {

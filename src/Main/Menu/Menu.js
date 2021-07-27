@@ -25,7 +25,13 @@ import { openMyEventTab } from '../../redux/modules/event/MyEventTabActions'
 
 import { openMyTribeTab } from '../../redux/modules/tribe/MyTribeTabActions'
 
-import { openMeet, openSetting, logout, openChallenges } from '../../actions'
+import {
+    openMeet,
+    openSetting,
+    logout,
+    openChallenges,
+    removeNotificationToken,
+} from '../../actions'
 import InviteFriendModal from '../MeetTab/Modal/InviteFriendModal'
 import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
 import WincashModal from '../Common/Modal/WincashModal'
@@ -546,7 +552,10 @@ class Menu extends React.PureComponent {
                                         },
                                         {
                                             text: 'Confirm',
-                                            onPress: () => this.props.logout(),
+                                            onPress: () => {
+                                                this.props.logout()
+                                                this.props.removeNotificationToken()
+                                            },
                                         },
                                     ]
                                 )
@@ -666,4 +675,5 @@ export default connect(mapStateToProps, {
     startTutorial,
     updateNextStepNumber,
     openPopup,
+    removeNotificationToken,
 })(Menu)
