@@ -265,7 +265,7 @@ class ActivityCard extends React.PureComponent {
                             duration={500}
                             easing="ease-in-out-expo"
                         >
-                            {LOTTIE_DATA.map((lottie) => {
+                            {LOTTIE_DATA.map((lottie, index) => {
                                 return (
                                     <>
                                         <TouchableOpacity

@@ -765,7 +765,6 @@ class NewGoalView extends Component {
 
     renderGoal() {
         const { title, isFirstTimeCreateGoal } = this.props
-
         return (
             <CopilotStep
                 text={this.props.tutorialText[1]}

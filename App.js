@@ -30,17 +30,23 @@ import Router from './src/Router'
 import SocketIOManager from './src/socketio/SocketIOManager'
 import LiveChatService from './src/socketio/services/LiveChatService'
 import MessageStorageService from './src/services/chat/MessageStorageService'
-import { initSegment, EVENT as E, track } from './src/monitoring/segment'
+import {
+    initSegment,
+    EVENT as E,
+    track,
+    trackWithProperties,
+} from './src/monitoring/segment'
+
 import { initSentry } from './src/monitoring/sentry'
 import * as Linking from 'expo-linking'
 import MultipleImagePicker from './src/Main/Menu/MutlipleImagePicker'
+import AudioModal from './src/components/AudioModal'
+import DateTimePicker from './src/Main/Accountability/CalenderModel'
 
 import { setJSExceptionHandler } from 'react-native-exception-handler' // If an error occurs or app crashes these functions are called we used them to send sengments
 
 // UI theme provider
 import ThemeProvider from './theme/ThemeProvider'
-import SwipeLeft from './src/Main/Common/SwipeLeft'
-
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
 Text.defaultProps.allowFontScaling = false
@@ -54,10 +60,10 @@ initSegment()
 initSentry()
 
 setJSExceptionHandler((error, isFatal) => {
-    if (isFatal) {
-        track(E.ERROR_OCCURED)
-        console.log(`${DEBUG_KEY} Error while doing the action`, error)
-    }
+    console.log(`${DEBUG_KEY} Error while doing the action`, error)
+    trackWithProperties(E.ERROR_OCCURED, {
+        error_name: error,
+    })
 }, true)
 
 // setNativeExceptionHandler((errorString) => {
@@ -113,6 +119,7 @@ export default class App extends React.Component {
                     <PersistGate persistor={persistor}>
                         <View style={styles.container}>
                             <Router />
+                            {/* <DateTimePicker /> */}
                         </View>
                         <DropdownAlert
                             ref={(ref) => DropDownHolder.setDropDown(ref)}
