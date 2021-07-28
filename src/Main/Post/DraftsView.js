@@ -119,7 +119,7 @@ class DraftsView extends Component {
                             textDecorationLine: 'underline',
                         }}
                     >
-                        View Drafts
+                        View all Drafts
                     </Text>
                 </MenuTrigger>
                 <MenuOptions>

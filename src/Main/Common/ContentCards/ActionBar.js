@@ -105,6 +105,7 @@ class ActionBar extends React.Component {
             onCommentSummaryPress,
             //ClarifyButton
             onClarifyButtonPress,
+            actionButtonVisible,
         } = this.props
 
         const { likeCount, shareCount, commentCount } = actionSummaries || {}
@@ -140,73 +141,75 @@ class ActionBar extends React.Component {
                         reactions,
                         updateReaction
                     )}
-                    <ActionButtonGroup>
-                        <ActionButton
-                            onLongPress={() =>
-                                this.setState({ toolTipVisible: true })
-                            }
-                            iconSource={
-                                !isContentLiked
-                                    ? LoveOutlineIcon
-                                    : renderTextIcon(unitText)
-                            }
-                            count={0}
-                            unitText={!isContentLiked ? 'Like' : unitText}
-                            textStyle={{
-                                color: isContentLiked
-                                    ? renderTextStyle(unitText)
-                                    : color.GM_MID_GREY,
-                            }}
-                            iconStyle={{
-                                tintColor: !isContentLiked
-                                    ? color.GM_MID_GREY
-                                    : null,
-                                height: 25,
-                                width: 25,
-                            }}
-                            onPress={onLikeButtonPress}
-                            onLayout={onLikeButtonLayout}
-                            onLongPress={onLikeLongPress}
-                        />
-
-                        <ActionButton
-                            iconSource={ShareIcon}
-                            count={0}
-                            unitText="Share"
-                            textStyle={{ color: color.GM_MID_GREY }}
-                            iconStyle={{ tintColor: color.GM_MID_GREY }}
-                            onPress={
-                                onShareButtonPress ||
-                                (() =>
-                                    this.shareGoalBottomSheet &&
-                                    this.shareGoalBottomSheet.open())
-                            }
-                            hidden={isShareContent}
-                        />
-                        {this.props.showClarifyButton ? (
+                    {actionButtonVisible ? null : (
+                        <ActionButtonGroup>
                             <ActionButton
-                                iconSource={ClarifyIcon}
+                                onLongPress={() =>
+                                    this.setState({ toolTipVisible: true })
+                                }
+                                iconSource={
+                                    !isContentLiked
+                                        ? LoveOutlineIcon
+                                        : renderTextIcon(unitText)
+                                }
                                 count={0}
-                                unitText="Clarify"
-                                textStyle={{ color: color.GM_MID_GREY }}
-                                iconStyle={{
-                                    tintColor: color.GM_MID_GREY,
-                                    height: 20,
-                                    width: 20,
+                                unitText={!isContentLiked ? 'Like' : unitText}
+                                textStyle={{
+                                    color: isContentLiked
+                                        ? renderTextStyle(unitText)
+                                        : color.GM_MID_GREY,
                                 }}
-                                onPress={onClarifyButtonPress}
+                                iconStyle={{
+                                    tintColor: !isContentLiked
+                                        ? color.GM_MID_GREY
+                                        : null,
+                                    height: 25,
+                                    width: 25,
+                                }}
+                                onPress={onLikeButtonPress}
+                                onLayout={onLikeButtonLayout}
+                                onLongPress={onLikeLongPress}
                             />
-                        ) : (
+
                             <ActionButton
-                                iconSource={CommentIcon}
+                                iconSource={ShareIcon}
                                 count={0}
-                                unitText="Reply"
+                                unitText="Share"
                                 textStyle={{ color: color.GM_MID_GREY }}
                                 iconStyle={{ tintColor: color.GM_MID_GREY }}
-                                onPress={onCommentButtonPress}
+                                onPress={
+                                    onShareButtonPress ||
+                                    (() =>
+                                        this.shareGoalBottomSheet &&
+                                        this.shareGoalBottomSheet.open())
+                                }
+                                hidden={isShareContent}
                             />
-                        )}
-                    </ActionButtonGroup>
+                            {this.props.showClarifyButton ? (
+                                <ActionButton
+                                    iconSource={ClarifyIcon}
+                                    count={0}
+                                    unitText="Clarify"
+                                    textStyle={{ color: color.GM_MID_GREY }}
+                                    iconStyle={{
+                                        tintColor: color.GM_MID_GREY,
+                                        height: 20,
+                                        width: 20,
+                                    }}
+                                    onPress={onClarifyButtonPress}
+                                />
+                            ) : (
+                                <ActionButton
+                                    iconSource={CommentIcon}
+                                    count={0}
+                                    unitText="Reply"
+                                    textStyle={{ color: color.GM_MID_GREY }}
+                                    iconStyle={{ tintColor: color.GM_MID_GREY }}
+                                    onPress={onCommentButtonPress}
+                                />
+                            )}
+                        </ActionButtonGroup>
+                    )}
                 </View>
             </View>
         )

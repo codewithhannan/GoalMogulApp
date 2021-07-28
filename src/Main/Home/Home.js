@@ -589,7 +589,6 @@ class Home extends Component {
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <CreatePostModal
                     attachGoalRequired
-                    // onModal={() => this.setState({ shareModal: true })}
                     onRef={(r) => (this.createPostModal = r)}
                 />
                 <View style={styles.homeContainerStyle}>

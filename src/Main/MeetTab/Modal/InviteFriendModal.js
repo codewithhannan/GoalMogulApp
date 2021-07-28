@@ -250,7 +250,7 @@ class InviteFriendModal extends React.PureComponent {
 
         if (type == 'contacts') {
             return (
-                this.props.cancelSuggestion(this.props.pageId),
+                // this.props.cancelSuggestion(this.props.pageId),
                 Actions.push('ContactMessage'),
                 this.closeModal(),
                 await storeData('INVITEMESSAGE', this.state.description)

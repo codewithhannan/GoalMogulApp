@@ -328,7 +328,7 @@ class SuggestionModal extends Component {
                         title={suggestionType === 'User' ? 'Friends' : 'Tribes'}
                         back
                         onCancel={() => {
-                            this.props.onCancel()
+                            // this.props.onCancel()
                             this.resetIconMap()
                             this.setState({ modalVisible: false })
                         }}
@@ -376,28 +376,36 @@ class SuggestionModal extends Component {
                                 ? 'Suggest a Need'
                                 : 'Suggest a Step'
                         }
-                        actionText="Attach"
+                        back
                         onCancel={() => {
-                            this.props.onCancel()
+                            // this.props.onCancel()
                             this.resetIconMap()
                             this.setState({ modalVisible: false })
                         }}
-                        onAction={() => {
+                    />
+                    <View style={{ flex: 1 }}>
+                        <NeedStepSuggestion
+                            item={this.props.item}
+                            pageId={this.props.pageId}
+                            goalId={this.props.goalId}
+                            opacity={this.suggestionOpacity}
+                        />
+                    </View>
+                    <TouchableOpacity
+                        style={styles.buttonContainer}
+                        onPress={() => {
                             this.props.onAttach()
                             this.resetIconMap()
+                            // this.handleExpand()
                             if (!suggestionText) {
                                 this.setState({ modalVisible: true })
                             } else {
                                 this.setState({ modalVisible: false })
                             }
                         }}
-                    />
-                    <NeedStepSuggestion
-                        item={this.props.item}
-                        pageId={this.props.pageId}
-                        goalId={this.props.goalId}
-                        opacity={this.suggestionOpacity}
-                    />
+                    >
+                        <Text style={styles.buttonText}>Done</Text>
+                    </TouchableOpacity>
                 </>
             )
         }
@@ -406,7 +414,7 @@ class SuggestionModal extends Component {
     }
 
     closeInviteFriendModal = () => {
-        this.props.onCancel()
+        // this.props.onCancel()
         this.resetIconMap()
         this.setState({ ...this.state, showInviteFriendModal: false })
     }
@@ -419,14 +427,9 @@ class SuggestionModal extends Component {
                 isOpen={this.props.visible}
                 onClosed={this.props.onCancel}
                 useNativeDriver={false}
-                // coverScreen={true}
                 style={{
                     flex: 1,
                     backgroundColor: 'transparent',
-                    // width: wp('100%'),
-                    // height: hp('100%'),
-                    // position: 'absolute',
-                    // bottom: 160,
                 }}
             >
                 <View
@@ -454,8 +457,8 @@ class SuggestionModal extends Component {
                 </View>
                 <Modal
                     visible={this.state.modalVisible}
-                    // isOpen={this.state.modalVisible}
                     onClosed={() => setSubSuggestionModal(false)}
+                    animationType="slide"
                 >
                     {this.renderSuggestionBody(newComment)}
                 </Modal>
@@ -490,11 +493,11 @@ const styles = {
     selectedSuggestionTextStyle: {
         color: '#535353',
         fontSize: 14,
-        fontWeight: '500',
+        fontWeight: '700',
         marginLeft: 15,
     },
     suggestionTextStyle: {
-        color: '#b8c7cb',
+        color: '#535353',
         fontSize: 14,
         fontWeight: '700',
         marginLeft: 15,

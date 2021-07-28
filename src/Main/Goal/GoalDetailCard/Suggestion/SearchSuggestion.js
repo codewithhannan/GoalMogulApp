@@ -3,7 +3,7 @@
 // This component provides search for suggestion for Tribe, Event, User, Friend,
 // and Chat room
 import React from 'react'
-import { View, FlatList, Text, Animated } from 'react-native'
+import { View, FlatList, Text, Animated, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import { SearchBar } from 'react-native-elements'
 import _ from 'lodash'
@@ -143,11 +143,11 @@ class SearchSuggestion extends React.Component {
                     <View
                         style={{
                             // marginVertical: 5,
-                            position: 'absolute',
-                            bottom: -25,
-                            width: '90%',
+                            // position: 'absolute',
+                            // bottom: -25,
+                            width: '95%',
                             height: 1,
-                            alignSelf: 'flex-end',
+                            // alignSelf: 'flex-end',
                             // marginRight: 15,
                             alignSelf: 'center',
                             backgroundColor: 'lightgray',
