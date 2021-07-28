@@ -210,6 +210,8 @@ export default class AudioModal extends React.Component<Props, State> {
         )
 
         this.recording = recording
+        console.log("THISS IS RECORDINGGGG",this.recording);
+        
         this.setState({
             record: recording._uri,
         })
@@ -571,6 +573,8 @@ export default class AudioModal extends React.Component<Props, State> {
                             </DelayedButton>
                             <View style={{ width: 20 }} />
                             <DelayedButton
+                            onPress={()=>console.log("SENDDDDDD RECORDD",this.state.record)
+                            }
                                 style={[
                                     buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
                                         .containerStyle,

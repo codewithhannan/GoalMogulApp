@@ -49,33 +49,6 @@ const ImageUtils = {
         })
     },
 
-    getPresignedMultipleUrl(file, token, dispatch, type) {
-        return new Promise(async (resolve, reject) => {
-            const url = getImageUrl(type)
-            const authToken = await TokenService.getAuthToken()
-            const param = {
-                url,
-                method: 'post',
-                data: {
-                    fileType: 'image/jpeg',
-                    token: authToken,
-                },
-            }
-            axios(param)
-                .then((res) => {
-                    const { objectKey, signedRequest } = res.data
-                    if (dispatch) {
-                        dispatch(objectKey)
-                    }
-                    resolve({ signedRequest, file, objectKey })
-                })
-                .catch((err) => {
-                    console.log('error uploading: ', err)
-                    reject(err)
-                })
-        })
-    },
-
     uploadImage(file, presignedUrl, objectKey) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest()
