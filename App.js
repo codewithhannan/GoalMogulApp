@@ -41,7 +41,7 @@ import { initSentry } from './src/monitoring/sentry'
 import * as Linking from 'expo-linking'
 import MultipleImagePicker from './src/Main/Menu/MutlipleImagePicker'
 import AudioModal from './src/components/AudioModal'
-import DateTimePicker from './src/Main/Accountability/CalenderModel'
+// import DateTimePicker from './src/Main/Accountability/CalenderModel'
 
 import { setJSExceptionHandler } from 'react-native-exception-handler' // If an error occurs or app crashes these functions are called we used them to send sengments
 
@@ -57,7 +57,7 @@ const DEBUG_KEY = '[APP ROOT]'
 initSegment()
 
 // Initialize Sentry
-initSentry()
+// initSentry()
 
 setJSExceptionHandler((error, isFatal) => {
     console.log(`${DEBUG_KEY} Error while doing the action`, error)
