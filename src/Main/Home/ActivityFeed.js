@@ -48,6 +48,7 @@ import {
     trackWithProperties,
     EVENT as E,
     track,
+    identifyWithTraits,
 } from '../../monitoring/segment'
 
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
@@ -56,7 +57,6 @@ import { Actions } from 'react-native-router-flux'
 import PopupFB from '../Journey/FbPopup'
 
 import { getToastsData } from '../../actions/ToastActions'
-import { identifyWithTraits } from 'expo-analytics-segment'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
@@ -117,7 +117,7 @@ class ActivityFeed extends Component {
         // }
         identifyWithTraits(this.props.userId, {
             lastLoginDate: this.props.userLastActive,
-            country: this.props.userLogedIn.user.profile.ipLocation.country,
+            country: this.props.userLogedIn.user.profile.ipLocation?.country,
             age: moment(this.props.userLogedIn.user.dateOfBirth)
                 .fromNow()
                 .slice(0, 2),
@@ -145,7 +145,7 @@ class ActivityFeed extends Component {
             this.props.loadUserInvitedFriendsCount()
         }
 
-        if (this.props.goals.length >= 1) {
+        if (this.props.myGoals.data >= 1) {
             this.setState({ getBronzeBadgeGoals: true })
         } else {
             this.setState({ getBronzeBadgeGoals: false })
@@ -412,7 +412,7 @@ class ActivityFeed extends Component {
         )
     }
 
-    renderItem = ({ item }) => {
+    renderItem = ({ item, index }) => {
         if (item.cardType == 'InviteSomeFriends') {
             return this.renderInviteSomeFreindsCard()
         } else if (item.cardType == 'JoinSomeTribes') {
@@ -424,6 +424,7 @@ class ActivityFeed extends Component {
         return (
             <ActivityCard
                 item={item}
+                index={index}
                 onPress={(curItem, isGoal, options = {}) => {
                     const { shouldNotFocusCommentBox } = options
                     if (isGoal) {

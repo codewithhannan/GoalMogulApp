@@ -20,7 +20,7 @@ import { EVENT, trackWithProperties } from '../../../monitoring/segment'
 class FormHeader extends Component {
     onSavePress = () => {
         if (this.props.segmants) {
-            trackWithProperties(EVENT.PROFILE_UPDATED, 'save')
+            // trackWithProperties(EVENT.PROFILE_UPDATED, 'save')
             this.props.onSubmit()
         } else {
             this.props.onSubmit()
@@ -29,7 +29,7 @@ class FormHeader extends Component {
 
     onCancelPress = () => {
         if (this.props.segmants) {
-            trackWithProperties(EVENT.PROFILE_UPDATED, 'cancel')
+            // trackWithProperties(EVENT.PROFILE_UPDATED, 'cancel')
             this.props.back()
         } else {
             this.props.back()

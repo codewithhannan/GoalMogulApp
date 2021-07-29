@@ -78,7 +78,7 @@ class OnboardingCommunity extends React.Component {
 
     renderCard = ({ index, item }) => {
         const { title, subTitle, picture } = item
-        console.log('Text onboarding=======>', item)
+
         const width = this.getImageWidth()
         return (
             <View
@@ -134,12 +134,13 @@ class OnboardingCommunity extends React.Component {
                         style={[
                             default_style.titleText_1,
                             {
-                                fontSize: text.TEXT_FONT_SIZE.FONT_4,
+                                fontSize: 22,
                                 lineHeight: text.TEXT_LINE_HEIGHT.FONT_4 + 4,
-                                fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                                fontFamily: text.FONT_FAMILY.REGULAR,
                                 marginTop: 14,
                                 marginBottom: 14,
                                 textAlign: 'center',
+                                fontWeight: '300',
                             },
                         ]}
                     >

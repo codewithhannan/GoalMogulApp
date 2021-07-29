@@ -92,24 +92,24 @@ export const REGISTRATION_DEFAULT_TRIBES = [
 
 export const REGISTRATION_COMMUNITY_GUIDELINE = [
     {
-        title: "We're a positive, safe & judgement-free community",
-        subTitle: '(NO NEGATIVITY AND NO TROLLING)',
-        picture: Community1,
-    },
-    {
-        title: 'Give & get suggestions achieve more together!',
+        title: 'Give and get suggestions',
         subTitle: '',
-        picture: Community2,
+        picture: Tribes,
     },
     {
-        title: 'Inspire others with supportive comments',
+        title: 'Inspire others with encouraging comments',
         subTitle: '',
         picture: Community3,
     },
     {
-        title: 'Give & get suggestions, achieve more together!',
+        title: "We're a positive, safe & judgment-free community ",
+        subTitle: '(NO NEGATIVITY AND NO TROLLING)',
+        picture: Community1,
+    },
+    {
+        title: `Spread H.O.P.E: Help Other People Everyday`,
         subTitle: '',
-        picture: Tribes,
+        picture: Community2,
     },
 ]
 
