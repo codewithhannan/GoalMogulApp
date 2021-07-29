@@ -88,6 +88,7 @@ class PrivateGoalsToast extends Component {
                                 lineHeight: 19,
 
                                 fontFamily: 'SFProDisplay-Regular',
+                                width: '99%',
                             }}
                         >
                             Oh no! No one has commented on {this.props.name}'s

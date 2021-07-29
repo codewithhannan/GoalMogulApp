@@ -111,7 +111,7 @@ export const updateInviteCode = (inviteCode) => async (dispatch, getState) => {
     try {
         res = await API.put('secure/user/account', { inviteCode }, undefined)
         if (res.status != 200) {
-            Alert.alert('Please enter a valid invite code')
+            Alert.alert('That invite code is unavailable. Please try another.')
         }
     } catch (err) {
         Alert.alert('Edit failed', 'Please try again later.')

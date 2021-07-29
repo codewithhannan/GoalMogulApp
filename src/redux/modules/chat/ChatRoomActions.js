@@ -574,6 +574,7 @@ export async function _transformMessagesForGiftedChat(
                 sharedEntity,
                 goalRecommendation,
             } = messageDoc
+            // console.log('THIS IS MESSAGE DOC 1', content)
 
             //--- populate message content ---//
 
@@ -634,7 +635,7 @@ export async function _transformMessagesForGiftedChat(
                 image: media && `${IMAGE_BASE_URL}${media}`,
                 options: content && content.options,
                 text: content && decode(content.message),
-                options: content && content.options,
+                actions: content.actions && content.actions,
                 system: !!isSystemMessage,
             }
         })

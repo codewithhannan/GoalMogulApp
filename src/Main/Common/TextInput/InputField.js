@@ -73,7 +73,6 @@ class InputField extends Component {
 
     onChange(event) {
         const { onChange } = this.props
-        // console.log('something happens');
         if ('function' === typeof onChange) {
             onChange(event)
         }
@@ -125,8 +124,19 @@ class InputField extends Component {
             blurOnSubmit,
             inputContainerStyle,
 
+            prefilled,
+
             ...custom
         } = this.props
+        // let {
+        //     input: { value },
+        // } = this.props
+
+        // if (this.props.prefilled) {
+        //     value = prefilled
+        // }
+
+        console.log('THIS IS PREFFILEEEDD', this.props.prefilled)
 
         const gestureHandler = canDrag ? (
             <TouchableOpacity
@@ -163,7 +173,8 @@ class InputField extends Component {
                     placeholder={placeholder}
                     onEndEditing={this.props.onEndEditing}
                     style={{ ...style }}
-                    value={_.isEmpty(value) ? '' : value}
+                    value={_.isEmpty(value) ? undefined : value}
+                    defaultValue={prefilled ? prefilled : ''}
                     {...custom}
                 />
                 {iconSource ? (

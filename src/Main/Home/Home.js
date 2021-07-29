@@ -183,6 +183,7 @@ class Home extends Component {
             showWelcomeScreen: false,
             showBadgeEarnModal: false,
             pickedImage: null,
+            shareModal: false,
         }
         this.scrollToTop = this.scrollToTop.bind(this)
         this._renderScene = this._renderScene.bind(this)
@@ -449,11 +450,15 @@ class Home extends Component {
                 }
             >
                 <CreateContentButtons
-                    onCreateUpdatePress={() =>
-                        this.createPostModal && this.createPostModal.open()
+                    onCreateUpdatePress={
+                        () =>
+                            this.createPostModal && this.createPostModal.open()
+                        // this.setState({ shareModal: true })
                     }
                     onCreateGoalPress={() =>
-                        Actions.push('createGoalModal', { pageId: pageAb })
+                        Actions.push('createGoalModal', {
+                            pageId: pageAb,
+                        })
                     }
                 />
                 {/* Hid switching tabs to clean up the main view to just friend's Goals and Updates */}
@@ -556,8 +561,10 @@ class Home extends Component {
 
         setTimeout(() => {
             this.props.openCamera(
-                (result) => console.log(result)
-                // (mayBeVideoOpen = true)
+                (result) => console.log(result),
+                null,
+                null,
+                true
             )
         }, 500)
     }
@@ -582,12 +589,13 @@ class Home extends Component {
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <CreatePostModal
                     attachGoalRequired
+                    // onModal={() => this.setState({ shareModal: true })}
                     onRef={(r) => (this.createPostModal = r)}
                 />
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />
 
-                    <View
+                    {/* <View
                         style={{
                             width: '100%',
                             height: 150,
@@ -624,7 +632,7 @@ class Home extends Component {
                                 )
                             }}
                         />
-                    </View>
+                    </View> */}
 
                     <FlatList
                         keyExtractor={(item, index) => index.toString()}

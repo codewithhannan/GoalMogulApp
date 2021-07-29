@@ -5,8 +5,6 @@ import { View, ViewPropTypes, Text, Linking } from 'react-native'
 import { connect } from 'react-redux'
 import ParsedText from 'react-native-parsed-text'
 import PropTypes from 'prop-types'
-import RNUrlPreview from 'react-native-url-preview'
-
 // import Decode from 'unescape'; TODO: removed once new decode is good to go
 import _ from 'lodash'
 
@@ -22,9 +20,6 @@ class RichText extends React.Component {
     constructor(props) {
         super(props)
         this.handleUrlPress = this.handleUrlPress.bind(this)
-        this.state = {
-            parsedLink: '',
-        }
         // this.constructParsedUserTags = this.constructParsedUserTags.bind(this);
     }
 
@@ -115,19 +110,17 @@ class RichText extends React.Component {
 
     render() {
         const { contentText, contentTags, contentLinks } = this.props
-        // const { parsedLink } = this.state
 
         if (!contentText) return null
 
         // console.log(`${DEBUG_KEY}: render contentText: ${contentText.substring(0, 5)}`);
 
-        // const parsedTags = this.constructParsedUserTags(
-        //     contentTags,
-        //     contentText
-        // )
-        // const parsedLink = this.constructParsedLink(contentLinks)
-
-        // const convertedText = decode(contentText)
+        const parsedTags = this.constructParsedUserTags(
+            contentTags,
+            contentText
+        )
+        const parsedLink = this.constructParsedLink(contentLinks)
+        const convertedText = decode(contentText)
 
         // Following is the original url detection for ParsedText. After we added HyperLink, this is no longer needed.
         // { type: 'url', style: styles.url, onPress: this.handleUrlPress },
@@ -138,16 +131,29 @@ class RichText extends React.Component {
         // },
         return (
             <View style={this.props.textContainerStyle}>
-                <Text>{contentText}</Text>
-
-                {/* <RNUrlPreview
-                    text={`${contentText}`}
-                    containerStyle={{ width: '100%', marginTop: 10 }}
-                    title={false}
-                    descriptionStyle={{ width: '100%' }}
-
-                    // titleStyle={{ fontSize: 12 }}s
-                /> */}
+                {/* <Hyperlink linkStyle={styles.url} onPress={(url, text) => this.handleUrlPress(url)}> */}
+                <ParsedText
+                    {...this.props}
+                    style={this.props.textStyle}
+                    parse={[
+                        // { type: 'url', style: styles.url, onPress: this.handleUrlPress },
+                        // { type: 'phone', style: styles.phone, onPress: this.handlePhonePress },
+                        // { type: 'email', style: styles.email, onPress: this.handleEmailPress },
+                        ...parsedTags,
+                        ...parsedLink,
+                        // {
+                        //   pattern: URL_REGEX, // Additional regex to match without HTTP protocal
+                        //   style: styles.url,
+                        //   onPress: this.handleUrlPress
+                        // },
+                    ]}
+                    childrenProps={{ allowFontScaling: false }}
+                    selectable
+                >
+                    {/* <Hyperlink linkStyle={styles.url} onPress={(url, text) => this.handleUrlPress(url)}>{convertedText}</Hyperlink> */}
+                    {convertedText}
+                </ParsedText>
+                {/* </Hyperlink> */}
             </View>
         )
     }
@@ -159,7 +165,6 @@ const styles = {
     },
     userTag: {
         color: color.GM_BLUE,
-
         // textDecorationLine: 'underline',
     },
 }

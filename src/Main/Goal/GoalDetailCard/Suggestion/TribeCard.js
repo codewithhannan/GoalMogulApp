@@ -92,7 +92,7 @@ class TribeCard extends React.Component {
             <View
                 style={{
                     flexDirection: 'row',
-                    marginVertical: 5,
+                    // marginVertical: 5,
                     // width: '99%',
                 }}
             >
@@ -150,7 +150,7 @@ class TribeCard extends React.Component {
 }
 
 const ProfileImageWidth = 56
-const CardHeight = 80
+const CardHeight = 120
 const styles = {
     containerStyle: {
         flexDirection: 'row',

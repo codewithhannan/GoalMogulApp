@@ -681,7 +681,11 @@ class PostDetailSection extends React.PureComponent {
                                 item,
                                 'belongsToGoalStoryline.goalRef.title'
                             ),
+                            owner: item.owner,
+                            category: item.category,
+                            priority: item.priority,
                         },
+                        privacy: item.privacy,
                     }}
                     pageId={pageId}
                 />

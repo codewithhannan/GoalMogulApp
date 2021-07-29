@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import {
     View,
+    Image,
     StyleSheet,
     Dimensions,
     TouchableOpacity,
@@ -12,7 +13,8 @@ import { Text } from 'react-native-animatable'
 import Modal from 'react-native-modal'
 import { color } from '../../../styles/basic'
 import Tooltip from '../Tooltip'
-import SWIPER_BACKGROUND from '../../../asset/image/messageUI1.png'
+import SWIPER_BACKGROUND from '../../../asset/image/tooltip.png'
+import tooltipIcon from '../../../asset/icons/question.png'
 
 function AccountabilityPopUp({ isVisible, name, onClose }) {
     const MODAL_WIDTH = Dimensions.get('screen').width
@@ -56,12 +58,30 @@ function AccountabilityPopUp({ isVisible, name, onClose }) {
                         >
                             {`Request to hold ${name} accountable for his goal?`}
                         </Text>
+                        <TouchableOpacity
+                            style={{
+                                position: 'absolute',
+                                bottom: 20,
+                                left: 135,
+                            }}
+                            onPress={() => setToolTipVisible(true)}
+                        >
+                            <Image
+                                source={tooltipIcon}
+                                style={{
+                                    width: 16,
+                                    height: 16,
+                                    resizeMode: 'contain',
+                                }}
+                            />
+                        </TouchableOpacity>
                     </View>
 
                     <View
                         style={{
                             position: 'absolute',
-                            top: 45,
+                            top: 58,
+                            zIndex: 5,
                             left: 135,
                         }}
                     >
@@ -70,6 +90,7 @@ function AccountabilityPopUp({ isVisible, name, onClose }) {
                                 title={swiperText}
                                 imageSource={SWIPER_BACKGROUND}
                                 type="swiperDetail"
+                                bgStyle={{ width: 246, height: 123 }}
                                 viewStyle={{
                                     position: 'absolute',
                                     zIndex: 1,
@@ -78,12 +99,6 @@ function AccountabilityPopUp({ isVisible, name, onClose }) {
                                 }}
                             />
                         ) : null}
-                        <TouchableOpacity
-                            style={{ left: 120 }}
-                            onPress={() => setToolTipVisible(true)}
-                        >
-                            <Text>Tooltip</Text>
-                        </TouchableOpacity>
                     </View>
 
                     <View

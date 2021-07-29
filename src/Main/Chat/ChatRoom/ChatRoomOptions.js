@@ -229,7 +229,7 @@ class ChatRoomOptions extends React.Component {
 
         if (!chatRoom) return
         if (messages.length === 0) {
-            Alert.alert('No message Found to delete')
+            Alert.alert('No message found to delete')
         } else {
             Alert.alert(
                 'Are you sure?',

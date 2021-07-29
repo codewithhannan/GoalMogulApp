@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     goalProgressTooltip: true,
-    swipeToolTipStatus: true,
+    // swipeToolTipStatus: true,
     profileGoalDetail: true,
     accountabilityTooltip: true,
     suggestionTooltip: true,

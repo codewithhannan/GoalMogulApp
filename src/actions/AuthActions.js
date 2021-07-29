@@ -987,6 +987,19 @@ export const registerUser = () => (dispatch) => {
     Actions.registrationAccount()
 }
 
+export const removeNotificationToken = () => async (dispatch, getState) => {
+    const { token } = getState().user
+    try {
+        const res = await API.post('secure/user/account/logout', token)
+        console.log(`${DEBUG_KEY} Response of removing notification token`, res)
+    } catch (error) {
+        console.log(
+            `${DEBUG_KEY} Error of removing notification token`,
+            error.message
+        )
+    }
+}
+
 export const logout = () => async (dispatch, getState) => {
     track(E.USER_LOGOUT)
     // Reset user on logout

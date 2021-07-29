@@ -27,7 +27,7 @@ import ShareIcon from '../../../asset/utils/forward.png'
 import RECORDING from '../../../asset/utils/Recording.png'
 import VIDEO from '../../../asset/utils/Video.png'
 import ACCOUNTABILITY from '../../../asset/utils/Accountability.png'
-import SWIPER_BACKGROUND from '../../../asset/image/messageUI1.png'
+import SWIPER_BACKGROUND from '../../../asset/image/tooltip2.png'
 
 // Selector
 
@@ -147,6 +147,16 @@ class ProfileGoalCard extends React.Component {
     makeCameraRefOptions = () => {
         return [
             {
+                text: 'Record a Video',
+                onPress: () => {
+                    prevOpenedRow.close()
+                    this.closeNotificationBottomSheet(),
+                        setTimeout(() => {
+                            this.onVideoPress()
+                        }, 500)
+                },
+            },
+            {
                 text: 'Open Camera Roll',
                 onPress: () => {
                     prevOpenedRow.close()
@@ -154,16 +164,6 @@ class ProfileGoalCard extends React.Component {
                     setTimeout(() => {
                         this.onVideoSelect()
                     }, 500)
-                },
-            },
-            {
-                text: 'Take Video',
-                onPress: () => {
-                    prevOpenedRow.close()
-                    this.closeNotificationBottomSheet(),
-                        setTimeout(() => {
-                            this.onVideoPress()
-                        }, 500)
                 },
             },
         ]
@@ -535,38 +535,38 @@ class ProfileGoalCard extends React.Component {
                         title={swiperText}
                         imageSource={SWIPER_BACKGROUND}
                         type="swiperDetail"
+                        bgStyle={{ width: 200, height: 87 }}
                         viewStyle={{
                             position: 'absolute',
                             zIndex: 1,
-                            left: 13,
-                            top: 10,
+                            left: 95,
+                            top: 0,
                         }}
                     />
                 ) : null}
 
                 {this.SWIPED_DATA.map((item, index) => {
                     return (
-                        <Animatable.View
+                        <TouchableOpacity
+                            onPress={item.onPress}
+                            key={index}
+                            activeOpacity={0.7}
                             style={{
                                 backgroundColor: item.backgroundColor,
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 width: 100,
-                                height: '95%',
+                                height: '97%',
                             }}
                         >
-                            <TouchableOpacity
-                                onPress={item.onPress}
-                                key={index}
-                                activeOpacity={0.7}
-                            >
+                            <Animatable.View>
                                 <Image
                                     source={item.source}
                                     resizeMode="contain"
                                     style={{ height: 40, width: 40 }}
                                 />
-                            </TouchableOpacity>
-                        </Animatable.View>
+                            </Animatable.View>
+                        </TouchableOpacity>
                     )
                 })}
             </>

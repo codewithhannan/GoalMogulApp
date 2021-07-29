@@ -19,6 +19,7 @@ import {
     Animated,
     Alert,
     Keyboard,
+    Dimensions,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
@@ -72,6 +73,7 @@ import { Logger } from '../../../redux/middleware/utils/Logger'
 const DEBUG_KEY = '[ UI SuggestionModal3 ]'
 const OPTIONS_HEIGHT = 120
 const OPTIONS_OPACITY = 0.001
+const { width, height } = Dimensions.get('window')
 
 class SuggestionModal extends Component {
     constructor(props) {
@@ -88,6 +90,7 @@ class SuggestionModal extends Component {
             modalVisible: false,
             showInviteFriendModal: false,
             showNeedStepModal: false,
+            isSelected: false,
         }
     }
 
@@ -155,7 +158,7 @@ class SuggestionModal extends Component {
             ...this.state,
             // iconMapRight: [...IconMapRight],
             iconMapLeft: [...IconMapLeft],
-            modalVisible: false,
+            // modalVisible: false,
         })
     }
 
@@ -173,7 +176,6 @@ class SuggestionModal extends Component {
         })
         if (suggestionType === 'User' || suggestionType === 'Tribe') {
             this.setState({ modalVisible: true })
-            // Actions.push('suggestionTest')
         }
         if (suggestionType === 'Contact') {
             this.setState({ showInviteFriendModal: true })
@@ -302,8 +304,16 @@ class SuggestionModal extends Component {
         )
     }
 
+    setSelected(val) {
+        // if (val) this.setState({ isSelected: true })
+    }
+
     renderSuggestionBody(newComment) {
-        const { suggestionType } = newComment.tmpSuggestion
+        const {
+            suggestionType,
+            selectedItem,
+            suggestionText,
+        } = newComment.tmpSuggestion
         // if (!this.state.optionsCollapsed) return null
         if (
             suggestionType === 'User' ||
@@ -314,20 +324,11 @@ class SuggestionModal extends Component {
         ) {
             return (
                 <>
-                    {/* <SearchBarHeader
-                        title={suggestionType === 'User' ? 'Friends' : 'Tribes'}
-                        backButton
-                        onBackPress={() => {
-                            this.resetIconMap()
-                            this.setState({ modalVisible: false })
-                            this.handleExpand()
-                        }}
-                    /> */}
                     <ModalHeader
                         title={suggestionType === 'User' ? 'Friends' : 'Tribes'}
                         back
                         onCancel={() => {
-                            this.props.onCancel()
+                            // this.props.onCancel()
                             this.resetIconMap()
                             this.setState({ modalVisible: false })
                         }}
@@ -352,7 +353,11 @@ class SuggestionModal extends Component {
                             this.props.onAttach()
                             this.resetIconMap()
                             // this.handleExpand()
-                            this.setState({ modalVisible: false })
+                            if (!selectedItem) {
+                                this.setState({ modalVisible: true })
+                            } else {
+                                this.setState({ modalVisible: false })
+                            }
                         }}
                     >
                         <View style={styles.buttonContainer}>
@@ -371,24 +376,36 @@ class SuggestionModal extends Component {
                                 ? 'Suggest a Need'
                                 : 'Suggest a Step'
                         }
-                        actionText="Attach"
+                        back
                         onCancel={() => {
-                            this.props.onCancel()
+                            // this.props.onCancel()
                             this.resetIconMap()
                             this.setState({ modalVisible: false })
                         }}
-                        onAction={() => {
+                    />
+                    <View style={{ flex: 1 }}>
+                        <NeedStepSuggestion
+                            item={this.props.item}
+                            pageId={this.props.pageId}
+                            goalId={this.props.goalId}
+                            opacity={this.suggestionOpacity}
+                        />
+                    </View>
+                    <TouchableOpacity
+                        style={styles.buttonContainer}
+                        onPress={() => {
                             this.props.onAttach()
                             this.resetIconMap()
-                            this.setState({ modalVisible: false })
+                            // this.handleExpand()
+                            if (!suggestionText) {
+                                this.setState({ modalVisible: true })
+                            } else {
+                                this.setState({ modalVisible: false })
+                            }
                         }}
-                    />
-                    <NeedStepSuggestion
-                        item={this.props.item}
-                        pageId={this.props.pageId}
-                        goalId={this.props.goalId}
-                        opacity={this.suggestionOpacity}
-                    />
+                    >
+                        <Text style={styles.buttonText}>Done</Text>
+                    </TouchableOpacity>
                 </>
             )
         }
@@ -397,50 +414,51 @@ class SuggestionModal extends Component {
     }
 
     closeInviteFriendModal = () => {
-        this.props.onCancel()
+        // this.props.onCancel()
         this.resetIconMap()
         this.setState({ ...this.state, showInviteFriendModal: false })
     }
 
     render() {
-        const { newComment, item } = this.props
+        const { newComment, item, setSubSuggestionModal } = this.props
         if (!newComment || !item) return null
         return (
             <RNModal
                 isOpen={this.props.visible}
                 onClosed={this.props.onCancel}
+                useNativeDriver={false}
                 style={{
-                    width: wp('100%'),
-                    height: hp(50),
-                    position: 'absolute',
-                    bottom: 160,
+                    flex: 1,
+                    backgroundColor: 'transparent',
                 }}
             >
                 <View
                     style={{
-                        marginVertical: 5,
-                        width: 30,
-                        height: 3,
-                        borderRadius: 5,
-                        alignSelf: 'center',
-                        backgroundColor: 'lightgray',
-                    }}
-                />
-                <View
-                    style={{
                         backgroundColor: 'white',
-                        flex: 1,
-                        zIndex: 15,
+                        width: '100%',
+                        height: 350,
+                        position: 'absolute',
+                        bottom: 0,
                     }}
                 >
+                    <View
+                        style={{
+                            marginVertical: 5,
+                            width: 30,
+                            height: 3,
+                            borderRadius: 5,
+                            alignSelf: 'center',
+                            backgroundColor: 'lightgray',
+                        }}
+                    />
                     {/* {this.renderGoalPreview(item)} */}
                     {this.renderSuggestionFor(newComment, item)}
                     {this.renderOptions(newComment)}
                 </View>
                 <Modal
                     visible={this.state.modalVisible}
-                    isOpen={this.state.modalVisible}
-                    onClosed={() => this.setState({ modalVisible: false })}
+                    onClosed={() => setSubSuggestionModal(false)}
+                    animationType="slide"
                 >
                     {this.renderSuggestionBody(newComment)}
                 </Modal>
@@ -475,11 +493,11 @@ const styles = {
     selectedSuggestionTextStyle: {
         color: '#535353',
         fontSize: 14,
-        fontWeight: '500',
+        fontWeight: '700',
         marginLeft: 15,
     },
     suggestionTextStyle: {
-        color: '#b8c7cb',
+        color: '#535353',
         fontSize: 14,
         fontWeight: '700',
         marginLeft: 15,

@@ -102,7 +102,7 @@ class OnboardingAddPhotos extends Component {
 
     render() {
         const { openCamera, openCameraRoll, profilePic } = this.props
-
+        console.log('THIS IS PROFILE PICCC', profilePic)
         return (
             <View
                 style={[

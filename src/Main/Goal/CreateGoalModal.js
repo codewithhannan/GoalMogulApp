@@ -407,7 +407,6 @@ class CreateGoalModal extends React.Component {
     handleModalYes = (scheduleNotificationCallback) => {
         this.setState({ goalModalVisible: false })
 
-        console.log('YE CHAL RAHA HA')
         Keyboard.dismiss()
         const errors = validate(this.props.formVals.values)
         console.log(
@@ -683,6 +682,7 @@ class CreateGoalModal extends React.Component {
                                 actionDisabled={
                                     !this.props.uploading || !hasValidFormVals
                                 }
+                                prefilledTitle={this.props.preffiled}
                             />
                         </View>
                     </MenuProvider>

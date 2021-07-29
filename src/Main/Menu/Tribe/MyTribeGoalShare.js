@@ -123,9 +123,13 @@ class UserGoalsView extends Component {
                         data={data}
                         renderItem={this.renderItem}
                         keyExtractor={(i) => i._id}
-                        // onRefresh={this.handleRefresh}
-                        onEndReached={this.handleOnLoadMore}
-                        onEndReachedThreshold={2}
+                        onRefresh={this.handleRefresh}
+                        onEndReachedThreshold={0.5}
+                        onEndReached={({ distanceFromEnd }) => {
+                            if (distanceFromEnd >= 0) {
+                                this.handleOnLoadMore
+                            }
+                        }}
                         refreshing={false}
                         ListEmptyComponent={this.renderListEmptyState()}
                         ListFooterComponent={this.renderListFooter()}

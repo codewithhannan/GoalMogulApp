@@ -1,4 +1,8 @@
-/** @format */
+/**
+ * /* @format
+ *
+ * @format
+ */
 
 import React from 'react'
 import { View, Image, Text, TouchableOpacity } from 'react-native'
@@ -29,15 +33,15 @@ class BottomButtonsSheet extends React.PureComponent {
                 imageStyle,
                 iconStyle,
                 icon,
+                closeSheetOnOptionPress,
                 ...otherProps
             } = item
-            const { closeSheetOnOptionPress } = this.props
 
             // context is passed into the onPress tot let it handle itself
             return (
                 <DelayedButton
                     onPress={() => {
-                        if (closeSheetOnOptionPress) this.close()
+                        this.close()
                         setTimeout(() => {
                             onPress && onPress()
                         }, 500)
@@ -51,7 +55,7 @@ class BottomButtonsSheet extends React.PureComponent {
                     }}
                     {...otherProps}
                 >
-                    {/* First try to render image and then Icon */}
+                    {/* {/ First try to render image and then Icon /} */}
                     {image ? (
                         <Image
                             source={image}
@@ -64,7 +68,7 @@ class BottomButtonsSheet extends React.PureComponent {
                         />
                     ) : null}
 
-                    {/* <Image /> */}
+                    {/* {/ <Image /> /} */}
                     <Text style={[default_style.goalTitleText_1, textStyle]}>
                         {text}
                     </Text>
@@ -158,6 +162,7 @@ class BottomButtonsSheet extends React.PureComponent {
     }
 
     render() {
+        // console.log("THIS IS ITEM SHARE",this.props.closeSheetOnOptionPress);
         const { buttons, ...otherProps } = this.props
         if (!buttons || buttons.length === 0) return null
 

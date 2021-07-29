@@ -128,7 +128,7 @@ class CompactGoalCard extends React.Component {
                     flex: 1,
                     flexWrap: 'wrap',
                 }}
-                numberOfLines={1}
+                numberOfLines={3}
                 ellipsizeMode="tail"
             >
                 {title}

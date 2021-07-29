@@ -25,7 +25,13 @@ import { openMyEventTab } from '../../redux/modules/event/MyEventTabActions'
 
 import { openMyTribeTab } from '../../redux/modules/tribe/MyTribeTabActions'
 
-import { openMeet, openSetting, logout, openChallenges } from '../../actions'
+import {
+    openMeet,
+    openSetting,
+    logout,
+    openChallenges,
+    removeNotificationToken,
+} from '../../actions'
 import InviteFriendModal from '../MeetTab/Modal/InviteFriendModal'
 import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
 import WincashModal from '../Common/Modal/WincashModal'
@@ -432,7 +438,7 @@ class Menu extends React.PureComponent {
                         justifyContent: 'center',
                     }}
                 >
-                    <View style={{ marginHorizontal: 25 }}>
+                    <View style={{ marginHorizontal: 24 }}>
                         <Text
                             style={[
                                 styles.titleTextStyle,
@@ -460,7 +466,7 @@ class Menu extends React.PureComponent {
                         justifyContent: 'center',
                     }}
                 >
-                    <View style={{ marginHorizontal: 25 }}>
+                    <View style={{ marginHorizontal: 24 }}>
                         <Text
                             style={[
                                 styles.titleTextStyle,
@@ -516,8 +522,8 @@ class Menu extends React.PureComponent {
                             </Text>
                             <View style={{ position: 'absolute', right: 0 }}>
                                 <Svg
-                                    width={24}
-                                    height={24}
+                                    width={25}
+                                    height={25}
                                     viewBox="0 0 18 18"
                                     fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -546,7 +552,10 @@ class Menu extends React.PureComponent {
                                         },
                                         {
                                             text: 'Confirm',
-                                            onPress: () => this.props.logout(),
+                                            onPress: () => {
+                                                this.props.logout()
+                                                this.props.removeNotificationToken()
+                                            },
                                         },
                                     ]
                                 )
@@ -555,7 +564,7 @@ class Menu extends React.PureComponent {
                         >
                             <Text
                                 style={[
-                                    styles.titleTextStyle,
+                                    styles.bottomText,
                                     { color: '#42C0F5', fontWeight: '600' },
                                 ]}
                             >
@@ -612,11 +621,11 @@ const styles = {
     buttonStyle: {
         paddingTop: 15,
         paddingBottom: 10,
-        // justifyContent: 'space-around',
+        justifyContent: 'space-around',
         flexDirection: 'row',
         // width: '100%',
         alignItems: 'center',
-        marginHorizontal: 25,
+        marginHorizontal: 23,
         justifyContent: 'flex-start',
     },
     iconStyle: {
@@ -640,7 +649,7 @@ const styles = {
         // backgroundColor: '#F2F2F2',
         // paddingLeft: 28,
         marginBottom: marginBottom,
-        marginHorizontal: 26,
+        marginHorizontal: 22,
         top: 15,
     },
 }
@@ -666,4 +675,5 @@ export default connect(mapStateToProps, {
     startTutorial,
     updateNextStepNumber,
     openPopup,
+    removeNotificationToken,
 })(Menu)

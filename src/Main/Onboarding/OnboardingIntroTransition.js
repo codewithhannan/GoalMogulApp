@@ -92,15 +92,8 @@ class OnboardingIntroTransition extends React.Component {
                                 { marginVertical: 24, textAlign: 'center' },
                             ]}
                         >
-                            We are going to ask you {''}
-                            <Text
-                                style={{
-                                    fontFamily: text.FONT_FAMILY.SEMI_BOLD,
-                                }}
-                            >
-                                three {''}
-                            </Text>
-                            questions to personalize your experience!
+                            Please answer this one question so we can tailor
+                            your experience. Thank you
                         </Text>
                     </View>
                     <DelayedButton

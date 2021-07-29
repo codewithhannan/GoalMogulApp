@@ -61,7 +61,18 @@ class CreateGoalToast extends Component {
                             flex: 1,
                         }}
                     >
-                        <Text style={{}}>{item}</Text>
+                        <Text
+                            style={{
+                                color: '#4F4F4F',
+                                fontSize: 14,
+                                lineHeight: 17,
+                                letterSpacing: 0.3,
+
+                                fontFamily: 'SFProDisplay-Regular',
+                            }}
+                        >
+                            {item}
+                        </Text>
                     </View>
                 </View>
             </View>

@@ -78,7 +78,7 @@ class NudgePopup extends Component {
 
     render() {
         return (
-            <Modal isVisible={this.props.isVisible}>
+            <Modal isVisible={this.props.isVisible} backdropOpacity={0.4}>
                 <View style={styles.container}>
                     <View>
                         <Text

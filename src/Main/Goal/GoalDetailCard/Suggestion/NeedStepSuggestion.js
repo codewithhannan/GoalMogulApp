@@ -106,6 +106,7 @@ import {
     LOTTIE_DATA,
     renderUnitText,
 } from '../../../Common/ContentCards/LikeSheetData'
+import ClarifyModal from '../../../Common/Modal/ClarifyModal'
 
 const { width } = Dimensions.get('window')
 const TOOLTIP_WIDTH = Dimensions.get('screen').width
@@ -130,6 +131,7 @@ class NeedStepSuggestion extends React.Component {
             floatingHeartCount: 0,
             likeButtonLeftOffset: 0,
             showSuggestionPopup: false,
+            showClarifyPopup: false,
             showNudgePopup: false,
             toolTipVisible: false,
             unitText: '',
@@ -142,6 +144,14 @@ class NeedStepSuggestion extends React.Component {
         // if (this.props.onRef !== null) {
         //     this.props.onRef(this)
         // }
+
+        const { goalDetail } = this.props
+        const { steps, needs } = goalDetail
+        if (steps.length === 0 && needs.length === 0) {
+            setTimeout(() => {
+                this.setState({ showSuggestionPopup: true })
+            }, 2000)
+        }
 
         if (this.props.initialProps) {
             const { initialShowPostModal } = this.props.initialProps
@@ -826,7 +836,7 @@ class NeedStepSuggestion extends React.Component {
                         this.props.onSuggestion()
                     }}
                     onClarifyButtonPress={() => {
-                        this.setState({ showSuggestionPopup: true })
+                        this.setState({ showClarifyPopup: true })
                     }}
                 />
             </Tooltip>
@@ -839,6 +849,10 @@ class NeedStepSuggestion extends React.Component {
                 this.setState({ showNudgePopup: true })
             }, 500)
         })
+    }
+
+    closeClarifyPopup = () => {
+        this.setState({ showClarifyPopup: false })
     }
 
     showSuggestionModal = () => {
@@ -864,6 +878,11 @@ class NeedStepSuggestion extends React.Component {
                     name={goalDetail.owner.name}
                     closeModal={this.closeSuggestionPopup}
                     showSuggestion={this.showSuggestionModal}
+                />
+                <ClarifyModal
+                    isVisible={this.state.showClarifyPopup}
+                    name={goalDetail.owner.name}
+                    closeModal={this.closeClarifyPopup}
                 />
                 <NudgePopup
                     isVisible={this.state.showNudgePopup}

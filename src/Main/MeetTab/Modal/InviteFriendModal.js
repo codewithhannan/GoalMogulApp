@@ -250,7 +250,7 @@ class InviteFriendModal extends React.PureComponent {
 
         if (type == 'contacts') {
             return (
-                this.props.cancelSuggestion(this.props.pageId),
+                // this.props.cancelSuggestion(this.props.pageId),
                 Actions.push('ContactMessage'),
                 this.closeModal(),
                 await storeData('INVITEMESSAGE', this.state.description)
@@ -509,9 +509,11 @@ class InviteFriendModal extends React.PureComponent {
                                                 lineHeight: 24,
                                                 padding: 0,
                                                 width: width - 72,
+                                                height: height - 650,
                                             },
                                         ]}
                                         multiline
+                                        numberOfLines={15}
                                     />
                                     <Text
                                         numberOfLines={1}

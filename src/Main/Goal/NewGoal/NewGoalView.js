@@ -19,7 +19,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { CopilotStep, walkthroughable } from 'react-native-copilot-gm'
 import DraggableFlatlist from 'react-native-draggable-flatlist'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
-import Swiper from 'react-native-swiper'
+import RNDatePicker from '@react-native-community/datetimepicker'
 import {
     Menu,
     MenuOption,
@@ -79,15 +79,16 @@ const TYPE_MAP = {
     step: {
         title: 'Steps',
         segmentsValue: 'steps',
-        placeholder: 'Whats the first thing you should do?',
-        buttonText: 'Add a Step',
+        placeholder: `What's the 1st thing you should do?`,
+        buttonText: 'Add Steps',
         text: 'Break your goals into steps that are easier to achieve',
     },
     need: {
         title: 'Needs',
         segmentsValue: 'needs',
-        placeholder: 'Something your friends might be able to help with',
-        buttonText: 'Add a Need',
+        placeholder:
+            'List the things that others might be able to help you with',
+        buttonText: 'Add Needs',
         text: 'Something you are specifically looking for help with',
     },
 }
@@ -144,7 +145,7 @@ class NewGoalView extends Component {
 
                 'What life experience would make you feel truly alive?',
 
-                "What's a goal that would be easier to achieve with your friends' support or encouragement",
+                "What's a goal that would be easier to achieve with your friends' support or encouragement?",
                 'With more time and energy, what fun activity would you want to do with friends?',
                 'What future career accomplishment would you want to be respected for?',
 
@@ -821,11 +822,11 @@ class NewGoalView extends Component {
                         }}
                         placeholder="Make your goal as specific as possible"
                         autoCorrect
-                        // autoFocus={true}
-
+                        autoFocus={true}
                         autoCapitalize={'sentences'}
                         multiline
                         blurOnSubmit
+                        props={{ prefilled: this.props.prefilledTitle }}
                         // onEndEditing={() =>
                         //     trackWithProperties(EVENT.GOAL_CREATED, {
                         //         goal_title: this.props.title,
@@ -1202,7 +1203,6 @@ class NewGoalView extends Component {
                     })
                 }}
                 mode="date"
-                pickerContainerStyleIOS={{ height: 100 }}
                 onCancel={() =>
                     this.props.change('endTime', {
                         date: this.props.endTime.date,

@@ -13,6 +13,7 @@ import {
 import { color, default_style } from '../../styles/basic'
 import { Formik, Field, ErrorMessage } from 'formik'
 import InputBox from './Common/InputBox'
+import * as yup from 'yup'
 
 import OnboardingHeader from './Common/OnboardingHeader'
 
@@ -57,6 +58,10 @@ class OnboardingInviteCode extends Component {
         })
     }
 
+    ReviewSchema = yup.object({
+        inviterCode: yup.string().required(),
+    })
+
     onNext = (value) => {
         // User attempts to click next when no fields have been set
 
@@ -79,8 +84,8 @@ class OnboardingInviteCode extends Component {
                             initialValues={{
                                 inviterCode: '',
                             }}
+                            validationSchema={this.ReviewSchema}
                             onSubmit={async (value, { setSubmitting }) => {
-                                console.log('this isi value', value)
                                 Keyboard.dismiss()
                                 this.onNext(value)
 
@@ -93,6 +98,9 @@ class OnboardingInviteCode extends Component {
                                 handleBlur,
                                 handleSubmit,
                                 values,
+                                isSubmitting,
+                                isValid,
+                                dirty,
                             }) => (
                                 <>
                                     <View
@@ -211,9 +219,17 @@ class OnboardingInviteCode extends Component {
                                                     {
                                                         marginBottom: 8,
                                                         backgroundColor:
-                                                            color.GM_BLUE,
+                                                            !(
+                                                                isValid && dirty
+                                                            ) || isSubmitting
+                                                                ? '#DBDADA'
+                                                                : color.GM_BLUE,
                                                     },
                                                 ]}
+                                                disabled={
+                                                    !(isValid && dirty) ||
+                                                    isSubmitting
+                                                }
                                                 onPress={handleSubmit}
                                             >
                                                 <Text

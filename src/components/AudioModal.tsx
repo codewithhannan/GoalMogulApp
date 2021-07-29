@@ -7,25 +7,54 @@ import {
     Slider,
     StyleSheet,
     Text,
+    Modal,
     TouchableHighlight,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
     View,
 } from 'react-native'
 import { Audio, AVPlaybackStatus } from 'expo-av'
+import { Icon } from '@ui-kitten/components'
 import * as FileSystem from 'expo-file-system'
 import * as Font from 'expo-font'
 import * as Permissions from 'expo-permissions'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 // import * as Icons from "./components/Icons";
 
 import DelayedButton from '../Main/Common/Button/DelayedButton'
 import OnboardingStyles, { getCardBottomOffset } from '../styles/Onboarding'
 const { text: textStyle, button: buttonStyle } = OnboardingStyles
+import { GM_BLUE } from '../styles/basic/color'
+import { GOALS_STYLE } from '../styles/Goal'
+import * as text from '../styles/basic/text'
 const play = require('../../src/asset/icons/play.png')
+const crossIcon = require('../asset/icons/cross.png')
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const BACKGROUND_COLOR = '#FFF8ED'
 const LIVE_COLOR = '#FF0000'
 const DISABLED_OPACITY = 0.5
 const RATE_SCALE = 3.0
+
+const privacyOptions = [
+    {
+        id: 1,
+        text: 'Public',
+        title: 'Public',
+        iconName: 'earth',
+        value: 'public',
+    },
+    {
+        id: 2,
+        text: 'Only Me',
+        title: 'Private',
+        iconName: 'lock',
+        value: 'self',
+    },
+]
 
 type Props = {}
 
@@ -45,6 +74,8 @@ type State = {
     shouldCorrectPitch: boolean
     volume: number
     rate: number
+    reRecordModal: boolean
+    selected: number | null
 }
 
 export default class AudioModal extends React.Component<Props, State> {
@@ -76,6 +107,8 @@ export default class AudioModal extends React.Component<Props, State> {
             shouldCorrectPitch: true,
             volume: 1.0,
             rate: 1.0,
+            reRecordModal: false,
+            selected: null,
         }
         this.recordingSettings = Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY
 
@@ -350,9 +383,7 @@ export default class AudioModal extends React.Component<Props, State> {
             this.state.soundPosition != null &&
             this.state.soundDuration != null
         ) {
-            return `${this._getMMSSFromMillis(
-                this.state.soundPosition
-            )} / ${this._getMMSSFromMillis(this.state.soundDuration)}`
+            return `${this._getMMSSFromMillis(this.state.soundPosition)} `
         }
         return ''
     }
@@ -364,15 +395,112 @@ export default class AudioModal extends React.Component<Props, State> {
         return `${this._getMMSSFromMillis(0)}`
     }
 
+    private _closeModal = () => {
+        this.setState({ reRecordModal: false })
+    }
+
+    private _changeColor = (id: number) => {
+        this.setState({ selected: id })
+    }
+
     render() {
         return (
             <View style={styles.emptyContainer}>
-                <Text style={{ color: 'gray', fontSize: 70 }}>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        // alignItems: 'center',
+                        justifyContent: 'space-evenly',
+                    }}
+                >
+                    {privacyOptions.map((options, index) => {
+                        return (
+                            <>
+                                <TouchableOpacity
+                                    key={options.title + index}
+                                    onPress={() => {
+                                        this._changeColor(options.id)
+                                    }}
+                                    disabled={
+                                        this.state.selected === options.id
+                                    }
+                                >
+                                    <View
+                                        style={[
+                                            GOALS_STYLE.commonPillContainer,
+                                            {
+                                                height: 35,
+                                                borderColor:
+                                                    this.state.selected ===
+                                                    options.id
+                                                        ? '#828282'
+                                                        : 'lightgray',
+                                                borderWidth: 0.3,
+                                                left: 10,
+                                                width: 80,
+                                                marginHorizontal: 3,
+                                                backgroundColor: 'white',
+                                            },
+                                        ]}
+                                    >
+                                        <Icon
+                                            pack="material-community"
+                                            name={options.iconName}
+                                            style={{
+                                                height: 12,
+                                                width: 12,
+                                                tintColor: '#828282',
+                                                opacity:
+                                                    this.state.selected ===
+                                                    options.id
+                                                        ? 1
+                                                        : 0.3,
+                                            }}
+                                        />
+
+                                        <Text
+                                            style={{
+                                                fontFamily:
+                                                    text.FONT_FAMILY.SEMI_BOLD,
+                                                fontSize: 14,
+                                                color: '#828282',
+                                                marginLeft: 5,
+                                                opacity:
+                                                    this.state.selected ===
+                                                    options.id
+                                                        ? 1
+                                                        : 0.3,
+                                            }}
+                                        >
+                                            {options.title}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </>
+                        )
+                    })}
+                    <TouchableOpacity>
+                        <Image
+                            source={crossIcon}
+                            style={{
+                                width: 25,
+                                height: 25,
+                                resizeMode: 'contain',
+                                marginLeft: 150,
+                            }}
+                        />
+                    </TouchableOpacity>
+                </View>
+
+                <Text
+                    style={{ color: 'gray', fontSize: 70, marginVertical: 5 }}
+                >
                     {this._getRecordingTimestamp()}
                 </Text>
                 {this.state.isPlaybackAllowed ? (
                     <View style={styles.playerContainer}>
-                        <TouchableHighlight
+                        <TouchableOpacity
+                            activeOpacity={0.6}
                             onPress={
                                 this.state.isPlaying
                                     ? this._onPausePressed
@@ -381,10 +509,10 @@ export default class AudioModal extends React.Component<Props, State> {
                         >
                             <Image
                                 source={play}
-                                resizeMode="center"
+                                resizeMode="contain"
                                 style={styles.image}
                             />
-                        </TouchableHighlight>
+                        </TouchableOpacity>
                         <Slider
                             style={styles.playbackSlider}
                             value={this._getSeekSliderPosition()}
@@ -418,24 +546,6 @@ export default class AudioModal extends React.Component<Props, State> {
                                 </Text>
                             </DelayedButton>
                             <View style={{ width: 20 }} />
-                            {/* <DelayedButton
-                                style={[
-                                    buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
-                                        .containerStyle,
-                                    ,
-                                    { width: 150 },
-                                ]}
-                                // onPress={this._onRecordPressed}
-                            >
-                                <Text
-                                    style={[
-                                        buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
-                                            .textStyle,
-                                    ]}
-                                >
-                                    Send
-                                </Text>
-                            </DelayedButton> */}
                         </View>
                     ) : this.state.soundDuration ? (
                         <View style={{ flexDirection: 'row' }}>
@@ -446,7 +556,9 @@ export default class AudioModal extends React.Component<Props, State> {
                                     ,
                                     { width: 150 },
                                 ]}
-                                onPress={this._onRecordPressed}
+                                onPress={() =>
+                                    this.setState({ reRecordModal: true })
+                                }
                             >
                                 <Text
                                     style={[
@@ -454,7 +566,7 @@ export default class AudioModal extends React.Component<Props, State> {
                                             .textStyle,
                                     ]}
                                 >
-                                    Record
+                                    Re-Record
                                 </Text>
                             </DelayedButton>
                             <View style={{ width: 20 }} />
@@ -498,6 +610,82 @@ export default class AudioModal extends React.Component<Props, State> {
                         </DelayedButton>
                     )}
                 </View>
+                <Modal
+                    transparent={true}
+                    visible={this.state.reRecordModal}
+                    onDismiss={() => this.setState({ reRecordModal: false })}
+                >
+                    <View
+                        style={{
+                            flex: 1,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        }}
+                    >
+                        <View
+                            style={{
+                                height: 150,
+                                width: '90%',
+                                backgroundColor: 'white',
+                                padding: 15,
+                                borderRadius: 5,
+                            }}
+                        >
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text
+                                    style={{
+                                        fontSize: 20,
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    Record a new clip
+                                </Text>
+                                <TouchableOpacity onPress={this._closeModal}>
+                                    <Image
+                                        source={crossIcon}
+                                        style={{
+                                            width: 25,
+                                            height: 25,
+                                            resizeMode: 'contain',
+                                            marginLeft: 120,
+                                        }}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{ marginVertical: 10 }}>
+                                <Text>
+                                    This will overwrite the recording you just
+                                    made. Are you sure?
+                                </Text>
+                            </View>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <TouchableWithoutFeedback
+                                    onPress={() => {
+                                        this._closeModal()
+                                        this._onRecordPressed()
+                                    }}
+                                >
+                                    <View style={styles.btnContainer2}>
+                                        <Text style={styles.btnText2}>YES</Text>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback
+                                    onPress={this._closeModal}
+                                >
+                                    <View style={styles.btnContainer1}>
+                                        <Text style={styles.btnText1}>NO</Text>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
             </View>
         )
     }
@@ -510,25 +698,63 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     playerContainer: {
+        // marginLeft: 30,
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        // backgroundColor: 'gray'
+        // alignItems: 'center',
+        // alignSelf: 'center',
+        // justifyContent: 'center',
+        width: '90%',
     },
     playbackSlider: {
-        width: 250,
+        width: '80%',
+        alignSelf: 'center',
     },
     playbackTimestamp: {
-        left: -40,
+        position: 'absolute',
+        right: 25,
         top: 25,
     },
     image: {
-        // marginHorizontal: 5
+        width: 30,
+        height: 30,
+        marginHorizontal: 5,
     },
     playStopContainer: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
+    },
+    btnContainer1: {
+        backgroundColor: GM_BLUE,
+        width: wp(25.33),
+        height: hp(5.09),
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        borderRadius: wp(1),
+        marginHorizontal: wp(1.5),
+    },
+    btnContainer2: {
+        backgroundColor: '#ffffff',
+        width: wp(25.33),
+        height: hp(5.09),
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        borderRadius: wp(1),
+        borderColor: GM_BLUE,
+        borderWidth: wp(0.3),
+        marginHorizontal: wp(1.5),
+    },
+    btnText1: {
+        color: '#ffffff',
+        fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+        fontSize: hp(1.95),
+    },
+    btnText2: {
+        color: GM_BLUE,
+        fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+        fontSize: hp(1.95),
     },
 })

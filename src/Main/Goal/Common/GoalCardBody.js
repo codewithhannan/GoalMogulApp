@@ -151,6 +151,9 @@ class GoalCardBody extends React.Component {
                     belongsToGoalStoryline: {
                         goalRef: goalRef._id,
                         title: goalRef.title,
+                        owner: goalRef.owner,
+                        category: goalRef.category,
+                        priority: goalRef.priority,
                     },
                     privacy: goalRef.privacy,
                 }}

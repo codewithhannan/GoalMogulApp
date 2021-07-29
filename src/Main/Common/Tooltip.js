@@ -27,9 +27,9 @@ class Tooltip extends Component {
             imageSource,
             type,
             viewStyle,
+            bgStyle,
         } = this.props
 
-        console.log('THIS IS TOOLTIP', tooltip)
         return (
             <>
                 {this.state.toolTipVisible &&
@@ -47,12 +47,17 @@ class Tooltip extends Component {
                         <ImageBackground
                             resizeMode="cover"
                             source={imageSource}
-                            style={{
-                                width: 217,
-                                height: 95,
-                            }}
+                            style={
+                                ([
+                                    {
+                                        width: 217,
+                                        height: 95,
+                                    },
+                                ],
+                                { ...bgStyle })
+                            }
                         >
-                            <View>
+                            <View style={{ padding: 5 }}>
                                 <Text
                                     style={{
                                         fontSize: 12,

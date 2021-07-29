@@ -110,15 +110,20 @@ export const CATEGORY_OPTIONS = [
         value: 'General',
     },
     {
-        text: 'Learning/Education',
-        value: 'Learning/Education',
-    },
-    {
         text: 'Career/Business',
         value: 'Career/Business',
     },
     {
-        text: 'Financial',
+        text: 'Charity/Philanthropy',
+        value: 'Charity/Philanthropy',
+    },
+    {
+        text: 'Learning/Mindset',
+        value: 'Learning/Education',
+    },
+
+    {
+        text: 'Financial/Wealth',
         value: 'Financial',
     },
     {
@@ -126,23 +131,20 @@ export const CATEGORY_OPTIONS = [
         value: 'Spiritual',
     },
     {
-        text: 'Family/Personal',
+        text: 'Personal/Relationships',
         value: 'Family/Personal',
     },
     {
-        text: 'Physical',
+        text: 'Health/Wellness',
         value: 'Physical',
     },
-    {
-        text: 'Charity/Philanthropy',
-        value: 'Charity/Philanthropy',
-    },
+
     {
         text: 'Travel',
         value: 'Travel',
     },
     {
-        text: 'Things',
+        text: 'Things to Buy',
         value: 'Things',
     },
 ]
@@ -159,14 +161,14 @@ export const PRIVACY_OPTIONS = [
         materialCommunityIconName: 'account-multiple',
     },
     {
-        text: 'Public',
-        value: PRIVACY_PUBLIC,
-        materialCommunityIconName: 'earth',
-    },
-    {
         text: 'Close Friends',
         value: PRIVACY_CLOSEFRIENDS,
         materialCommunityIconName: 'heart',
+    },
+    {
+        text: 'Public',
+        value: PRIVACY_PUBLIC,
+        materialCommunityIconName: 'earth',
     },
 
     {

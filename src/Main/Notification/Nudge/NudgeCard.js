@@ -37,6 +37,7 @@ import { Icon } from '@ui-kitten/components'
 import { color, text, default_style } from '../../../styles/basic'
 import { UI_SCALE } from '../../../styles'
 import { Actions } from 'react-native-router-flux'
+import { deleteSelectedNudge } from '../../../reducers/NudgesReducer'
 
 // Constants
 const DEBUG_KEY = '[ UI NudgeCard ]'
@@ -52,16 +53,21 @@ class NudgeCard extends React.PureComponent {
             !item.isDeleted &&
             item.type === 'inviteeGoalCheck'
         ) {
-            return Actions.replace('no_goal_conversation', { item })
+            return (
+                Actions.replace('no_goal_conversation', { item }),
+                this.props.deleteSelectedNudge(_id)
+            )
         } else if (!item.hasResponded && !item.isDeleted) {
             return (
                 this.props.openProfile(userId),
-                this.props.handleNudgeResponsed(_id)
+                this.props.handleNudgeResponsed(_id),
+                this.props.deleteSelectedNudge(_id)
             )
         } else {
             return (
                 this.props.openProfile(receiver._id),
-                this.props.handleNudgeResponsed(_id)
+                this.props.handleNudgeResponsed(_id),
+                this.props.deleteSelectedNudge(_id)
             )
         }
     }
@@ -324,4 +330,5 @@ export default connect(mapStateToProps, {
     getAllNudges,
     handleNudgeResponsed,
     openProfile,
+    deleteSelectedNudge,
 })(NudgeCard)

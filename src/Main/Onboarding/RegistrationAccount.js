@@ -36,7 +36,9 @@ import {
     validatePhoneCode,
     cancelRegistration,
 } from '../../redux/modules/registration/RegistrationActions'
-PhoneVerificationMoal
+
+// import CustomDropDown from '../../../CustomDropDown'
+
 import UserAgreementCheckBox from './UserAgreementCheckBox'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { DEVICE_PLATFORM } from '../../Utils/Constants'
@@ -47,8 +49,6 @@ import {
     track,
     EVENT as E,
 } from '../../monitoring/segment'
-import { trackWithProperties } from 'expo-analytics-segment'
-import PhoneVerificationMoal from './PhoneVerificationModal'
 
 const NEXT_STEP = 'registration'
 const FIELD_REQUIREMENTS = {
@@ -430,6 +430,9 @@ class RegistrationAccount extends React.Component {
                     caption={`We won't share this information with anyone`}
                     disabled={this.props.loading}
                 />
+
+                {/* <CustomDropDown /> */}
+
                 <InputBox
                     key="inviterCode"
                     inputTitle="Invite Code"

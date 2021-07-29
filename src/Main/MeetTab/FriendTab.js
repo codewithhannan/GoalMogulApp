@@ -172,7 +172,7 @@ class FriendTab extends React.Component {
                                 },
                             ]}
                         >
-                            Show all ({`${requestCount}`} Invites)
+                            Show all ({`${requestCount}`} Requests)
                         </Text>
                     </DelayedButton>
                 )}
