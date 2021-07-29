@@ -330,6 +330,7 @@ class CreatePostModal extends Component {
 
     handleOpenCameraRoll = () => {
         // this.bottomSheetRef.setModalVisible(false)
+        this.bottomSheetRef.close()
 
         setTimeout(() => {
             const callback = (result) => {
