@@ -75,7 +75,7 @@ type State = {
     volume: number
     rate: number
     reRecordModal: boolean
-    selected: number | null
+    selected: string | null
 }
 
 export default class AudioModal extends React.Component<Props, State> {
@@ -399,8 +399,8 @@ export default class AudioModal extends React.Component<Props, State> {
         this.setState({ reRecordModal: false })
     }
 
-    private _changeColor = (id: number) => {
-        this.setState({ selected: id })
+    private _changeColor = (value: string) => {
+        this.setState({ selected: value })
     }
 
     render() {
@@ -419,10 +419,10 @@ export default class AudioModal extends React.Component<Props, State> {
                                 <TouchableOpacity
                                     key={options.title + index}
                                     onPress={() => {
-                                        this._changeColor(options.id)
+                                        this._changeColor(options.value)
                                     }}
                                     disabled={
-                                        this.state.selected === options.id
+                                        this.state.selected === options.value
                                     }
                                 >
                                     <View
@@ -432,7 +432,7 @@ export default class AudioModal extends React.Component<Props, State> {
                                                 height: 35,
                                                 borderColor:
                                                     this.state.selected ===
-                                                    options.id
+                                                    options.value
                                                         ? '#828282'
                                                         : 'lightgray',
                                                 borderWidth: 0.3,
@@ -452,7 +452,7 @@ export default class AudioModal extends React.Component<Props, State> {
                                                 tintColor: '#828282',
                                                 opacity:
                                                     this.state.selected ===
-                                                    options.id
+                                                    options.value
                                                         ? 1
                                                         : 0.3,
                                             }}
@@ -467,7 +467,7 @@ export default class AudioModal extends React.Component<Props, State> {
                                                 marginLeft: 5,
                                                 opacity:
                                                     this.state.selected ===
-                                                    options.id
+                                                    options.value
                                                         ? 1
                                                         : 0.3,
                                             }}
@@ -498,30 +498,32 @@ export default class AudioModal extends React.Component<Props, State> {
                     {this._getRecordingTimestamp()}
                 </Text>
                 {this.state.isPlaybackAllowed ? (
-                    <View style={styles.playerContainer}>
-                        <TouchableOpacity
-                            activeOpacity={0.6}
-                            onPress={
-                                this.state.isPlaying
-                                    ? this._onPausePressed
-                                    : this._onPlayPausePressed
-                            }
-                        >
-                            <Image
-                                source={play}
-                                resizeMode="contain"
-                                style={styles.image}
+                    <View style={{ flex: 1 }}>
+                        <View style={styles.playerContainer}>
+                            <TouchableOpacity
+                                activeOpacity={0.6}
+                                onPress={
+                                    this.state.isPlaying
+                                        ? this._onPausePressed
+                                        : this._onPlayPausePressed
+                                }
+                            >
+                                <Image
+                                    source={play}
+                                    resizeMode="contain"
+                                    style={styles.image}
+                                />
+                            </TouchableOpacity>
+                            <Slider
+                                style={styles.playbackSlider}
+                                value={this._getSeekSliderPosition()}
+                                onValueChange={this._onSeekSliderValueChange}
+                                // onSlidingComplete={ this._onSeekSliderSlidingComplete}
                             />
-                        </TouchableOpacity>
-                        <Slider
-                            style={styles.playbackSlider}
-                            value={this._getSeekSliderPosition()}
-                            onValueChange={this._onSeekSliderValueChange}
-                            // onSlidingComplete={ this._onSeekSliderSlidingComplete}
-                        />
-                        <Text style={[styles.playbackTimestamp]}>
-                            {this._getPlaybackTimestamp()}
-                        </Text>
+                        </View>
+                        <View style={styles.playbackTimestamp}>
+                            <Text>{this._getPlaybackTimestamp()}</Text>
+                        </View>
                     </View>
                 ) : null}
                 <View style={{ paddingVertical: 25 }}>
@@ -632,7 +634,12 @@ export default class AudioModal extends React.Component<Props, State> {
                                 borderRadius: 5,
                             }}
                         >
-                            <View style={{ flexDirection: 'row' }}>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                }}
+                            >
                                 <Text
                                     style={{
                                         fontSize: 20,
@@ -648,7 +655,7 @@ export default class AudioModal extends React.Component<Props, State> {
                                             width: 25,
                                             height: 25,
                                             resizeMode: 'contain',
-                                            marginLeft: 120,
+                                            // marginLeft: 120,
                                         }}
                                     />
                                 </TouchableOpacity>
@@ -698,11 +705,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     playerContainer: {
-        // marginLeft: 30,
         flexDirection: 'row',
-        // alignItems: 'center',
-        // alignSelf: 'center',
-        // justifyContent: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
         width: '90%',
     },
     playbackSlider: {
@@ -710,9 +715,11 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     playbackTimestamp: {
-        position: 'absolute',
-        right: 25,
-        top: 25,
+        // position: 'absolute',
+        // right: 25,
+        // top: 25,
+        alignItems: 'flex-end',
+        justifyContent: 'flex-end',
     },
     image: {
         width: 30,
