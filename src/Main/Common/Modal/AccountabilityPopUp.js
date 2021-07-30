@@ -46,7 +46,11 @@ function AccountabilityPopUp({ isVisible, name, onClose }) {
                         borderRadius: 5,
                     }}
                 >
-                    <View style={{ flexDirection: 'row' }}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                        }}
+                    >
                         <Text
                             style={{
                                 fontSize: 20,
@@ -61,8 +65,9 @@ function AccountabilityPopUp({ isVisible, name, onClose }) {
                         <TouchableOpacity
                             style={{
                                 position: 'absolute',
-                                bottom: 20,
-                                left: 135,
+                                bottom: 19,
+                                right: 65,
+                                justifyContent: 'flex-end',
                             }}
                             onPress={() => setToolTipVisible(true)}
                         >
@@ -90,11 +95,9 @@ function AccountabilityPopUp({ isVisible, name, onClose }) {
                                 title={swiperText}
                                 imageSource={SWIPER_BACKGROUND}
                                 type="swiperDetail"
-                                bgStyle={{ width: 246, height: 123 }}
+                                bgStyle={{ width: 250, height: 130 }}
                                 viewStyle={{
-                                    position: 'absolute',
-                                    zIndex: 1,
-                                    left: 3,
+                                    right: 40,
                                     top: 10,
                                 }}
                             />

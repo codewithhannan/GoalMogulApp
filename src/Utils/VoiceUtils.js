@@ -1,10 +1,6 @@
 /** @format */
 
 import axios from 'axios'
-import { Image } from 'react-native'
-import * as ImageManipulator from 'expo-image-manipulator'
-import * as Permissions from 'expo-permissions'
-import _ from 'lodash'
 import TokenService from '../services/token/TokenService'
 
 const VoiceTypes = ['CommentAudio', 'ChatRoomAudio']
@@ -25,24 +21,17 @@ const VoiceUtils = {
     getPresignedUrl(file, token, dispatch, type) {
         let uriParts = file.split('.')
         let fileType = uriParts[uriParts.length - 1]
+
         return new Promise(async (resolve, reject) => {
             const url = getVoiceUrl(type)
             const authToken = await TokenService.getAuthToken()
 
-            const formData = new FormData()
-            formData.append('audio', {
-                uri: file,
-                name: `recording.${fileType}`,
-                fileType: `audio/x-${fileType}`,
-            })
             const param = {
                 url,
                 method: 'post',
-                data: formData,
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                    'x-access-token': token,
+                data: {
+                    fileType: `audio/x-${fileType}`,
+                    token: authToken,
                 },
             }
             axios(param)
@@ -60,7 +49,7 @@ const VoiceUtils = {
         })
     },
 
-    uploadImage(file, presignedUrl, objectKey) {
+    uploadVoice(file, presignedUrl, objectKey) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest()
             xhr.onreadystatechange = function () {
@@ -81,158 +70,9 @@ const VoiceUtils = {
             }
             xhr.open('PUT', presignedUrl)
             xhr.setRequestHeader('X-Amz-ACL', 'public-read')
-            xhr.setRequestHeader('Content-Type', 'image/jpeg')
-            xhr.send({ uri: file, type: 'image/jpeg' })
+            xhr.setRequestHeader('Content-Type', 'audio/x-m4a')
+            xhr.send({ uri: file, type: 'audio/x-m4a' })
         })
-    },
-
-    getImageSize(file) {
-        return new Promise((resolve) => {
-            Image.getSize(file, (width, height) => {
-                resolve({ width, height })
-            })
-        })
-    },
-
-    async getMultipleImageSize(file) {
-        return await new Promise((resolve, reject) => {
-            let imageUri = []
-            file.map((url) => {
-                return Image.getSize(url, (width, height) => {
-                    imageUri.push({ width, height })
-                    resolve(imageUri)
-                })
-            })
-        })
-    },
-
-    /**
-     *
-     * @param {*} file
-     * @param {*} width
-     * @param {*} height
-     * @param {object} capDimensions: { capHeight, capWidth }
-     */
-    resizeImage(file, width, height, capDimensions) {
-        console.log('file to resize is: ', file)
-        const widthCap =
-            capDimensions && capDimensions.capWidth
-                ? capDimensions.capWidth
-                : 500
-        const heightCap =
-            capDimensions && capDimensions.capHeight
-                ? capDimensions.capHeight
-                : 500
-
-        const cropData = {
-            offset: { x: 0, y: 0 },
-            size: {
-                width,
-                height,
-            },
-            displaySize: {
-                width: widthCap * (width > height ? 1 : width / height),
-                height: heightCap * (height > width ? 1 : height / width),
-            },
-            resizeMode: 'cover',
-        }
-
-        // get info for original image
-        const fileType = 'jpeg'
-        const actions = [
-            {
-                resize: {
-                    width: widthCap * (width > height ? 1 : width / height),
-                    height: heightCap * (height > width ? 1 : height / width),
-                },
-            },
-        ]
-        const saveOptions = {
-            compress: 1, // no compress since we resize the image
-            format: ImageManipulator.SaveFormat.JPEG,
-        }
-
-        const promise = new Promise(async (resolve, reject) => {
-            try {
-                const editedImage = await ImageManipulator.manipulateAsync(
-                    file,
-                    actions,
-                    saveOptions
-                )
-
-                resolve({
-                    uri: editedImage.uri,
-                    name: `photo.${fileType}`,
-                    type: `image/${fileType}`,
-                })
-            } catch (error) {
-                console.log('edited err: ', err)
-                reject(err)
-            }
-        })
-
-        return promise
-    },
-
-    resizeMultipleImage(file, width, height, capDimensions) {
-        console.log('file to resize is: ', file)
-        const widthCap =
-            capDimensions && capDimensions.capWidth
-                ? capDimensions.capWidth
-                : 500
-        const heightCap =
-            capDimensions && capDimensions.capHeight
-                ? capDimensions.capHeight
-                : 500
-
-        const cropData = {
-            offset: { x: 0, y: 0 },
-            size: {
-                width,
-                height,
-            },
-            displaySize: {
-                width: widthCap * (width > height ? 1 : width / height),
-                height: heightCap * (height > width ? 1 : height / width),
-            },
-            resizeMode: 'cover',
-        }
-
-        // get info for original image
-        const fileType = 'jpeg'
-        const actions = [
-            {
-                resize: {
-                    width: widthCap * (width > height ? 1 : width / height),
-                    height: heightCap * (height > width ? 1 : height / width),
-                },
-            },
-        ]
-        const saveOptions = {
-            compress: 1, // no compress since we resize the image
-            format: ImageManipulator.SaveFormat.JPEG,
-        }
-
-        const promise = new Promise(async (resolve, reject) => {
-            try {
-                const editedImage = await ImageManipulator.manipulateAsync(
-                    file,
-                    actions,
-                    saveOptions
-                )
-
-                resolve({
-                    uri: editedImage.uri,
-                    name: `photo.${fileType}`,
-                    type: `image/${fileType}`,
-                })
-            } catch (error) {
-                console.log('edited err: ', err)
-                reject(err)
-            }
-        })
-
-        return promise
     },
 
     /**
