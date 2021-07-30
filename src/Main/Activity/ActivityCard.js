@@ -68,6 +68,7 @@ import {
 } from '../Common/ContentCards/LikeSheetData'
 import Tooltip from 'react-native-walkthrough-tooltip'
 import LottieView from 'lottie-react-native'
+import GoalSwiper from '../Goal/GoalSwiper'
 
 const DEBUG_KEY = '[ UI ActivityCard ]'
 
@@ -562,66 +563,76 @@ class ActivityCard extends React.PureComponent {
 
     render() {
         const { item, userId } = this.props
+        const { goalRef } = item
+
+        console.log('THIS IS ITEMMM', item)
         if (!item || _.isEmpty(item) || !isValidActivity(item)) return null
 
         return (
-            <View
-                style={styles.containerStyle}
-                onLayout={({ nativeEvent }) =>
-                    this.setState({
-                        cardHeight: nativeEvent.layout.height,
-                    })
-                }
+            <GoalSwiper
+                index={this.props.index}
+                // ownerName={goalRef?.owner.name}
+                margin={8}
             >
-                <FloatingHearts
-                    count={this.state.floatingHeartCount}
-                    color={'#EB5757'}
-                    style={{
-                        zIndex: 5,
-                        bottom:
-                            this.state.cardHeight -
-                            this.state.actionBarOffsetY -
-                            ACTION_BUTTON_GROUP_HEIGHT,
-                    }}
-                    leftOffset={this.state.likeButtonLeftOffset}
-                />
-                {item.goalRef && item.goalRef.isCompleted ? (
-                    <Image
-                        source={ConfettiFadedBackgroundTopHalf}
-                        style={{
-                            height: WINDOW_WIDTH * 0.6,
-                            width: WINDOW_WIDTH,
-                            position: 'absolute',
-                            resizeMode: 'cover',
-                            opacity: 0.55,
-                        }}
-                    />
-                ) : null}
-                <ActivitySummary item={item} />
                 <View
-                    style={{
-                        marginTop: 12,
-                        marginBottom: 12,
-                        marginHorizontal: 16,
-                    }}
+                    style={styles.containerStyle}
+                    onLayout={({ nativeEvent }) =>
+                        this.setState({
+                            cardHeight: nativeEvent.layout.height,
+                        })
+                    }
                 >
-                    <DelayedButton
-                        activeOpacity={1}
-                        onPress={() => this.handleCardOnPress(item)}
-                    >
-                        <ActivityHeader item={item} />
-                    </DelayedButton>
-                    <ActivityBody
-                        item={item}
-                        openCardContent={() => this.handleCardOnPress(item)}
+                    <FloatingHearts
+                        count={this.state.floatingHeartCount}
+                        color={'#EB5757'}
+                        style={{
+                            zIndex: 5,
+                            bottom:
+                                this.state.cardHeight -
+                                this.state.actionBarOffsetY -
+                                ACTION_BUTTON_GROUP_HEIGHT,
+                        }}
+                        leftOffset={this.state.likeButtonLeftOffset}
                     />
+                    {item.goalRef && item.goalRef.isCompleted ? (
+                        <Image
+                            source={ConfettiFadedBackgroundTopHalf}
+                            style={{
+                                height: WINDOW_WIDTH * 0.6,
+                                width: WINDOW_WIDTH,
+                                position: 'absolute',
+                                resizeMode: 'cover',
+                                opacity: 0.55,
+                            }}
+                        />
+                    ) : null}
+                    <ActivitySummary item={item} />
+
+                    <View
+                        style={{
+                            marginTop: 12,
+                            marginBottom: 12,
+                            marginHorizontal: 16,
+                        }}
+                    >
+                        <DelayedButton
+                            activeOpacity={1}
+                            onPress={() => this.handleCardOnPress(item)}
+                        >
+                            <ActivityHeader item={item} />
+                        </DelayedButton>
+                        <ActivityBody
+                            item={item}
+                            openCardContent={() => this.handleCardOnPress(item)}
+                        />
+                    </View>
+                    {!(
+                        item.actedUponEntityType === 'Post' &&
+                        item.postRef.postType === 'ShareGoal'
+                    ) && this.renderActionButtons(item, userId)}
+                    {this.renderComment(item)}
                 </View>
-                {!(
-                    item.actedUponEntityType === 'Post' &&
-                    item.postRef.postType === 'ShareGoal'
-                ) && this.renderActionButtons(item, userId)}
-                {this.renderComment(item)}
-            </View>
+            </GoalSwiper>
         )
     }
 }
@@ -630,6 +641,7 @@ const styles = {
     containerStyle: {
         backgroundColor: color.GM_CARD_BACKGROUND,
         marginTop: 8,
+        zIndex: 2,
     },
     imageContainerStyle: {
         marginTop: 4,

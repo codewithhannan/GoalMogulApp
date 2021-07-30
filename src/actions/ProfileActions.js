@@ -337,73 +337,85 @@ export const refreshProfileData = (userId) => (dispatch, getState) => {
     const { token } = getState().user
     const self = userId.toString() === getState().user.userId.toString()
 
-    const profilePromise = self
-        ? API.get(`secure/user/profile?userId=${userId}`, token)
-        : API.get(
-              `secure/user/profile?userId=${userId}&isProfileView=true`,
-              token
-          )
+    try {
+        const profilePromise = self
+            ? API.get(`secure/user/profile?userId=${userId}`, token)
+            : API.get(
+                  `secure/user/profile?userId=${userId}&isProfileView=true`,
+                  token
+              )
 
-    // If self, fetch friend list. Otherwise, fetch mutual friends
-    const friendsCountPromise = self
-        ? API.get(`secure/user/friendship/count?userId=${userId}`, token)
-        : API.get(
-              `secure/user/friendship/mutual-friends/count?userId=${userId}`,
-              token
-          )
+        // If self, fetch friend list. Otherwise, fetch mutual friends
+        const friendsCountPromise = self
+            ? API.get(`secure/user/friendship/count?userId=${userId}`, token)
+            : API.get(
+                  `secure/user/friendship/mutual-friends/count?userId=${userId}`,
+                  token
+              )
 
-    // If self, fetch nothing. Otherwise, fetch friendship with userId
-    const friendshipPromise = self
-        ? new Promise((resolve, reject) => resolve({ data: [] }))
-        : API.get(`secure/user/friendship/friendship?userId=${userId}`, token)
+        // If self, fetch nothing. Otherwise, fetch friendship with userId
+        const friendshipPromise = self
+            ? new Promise((resolve, reject) => resolve({ data: [] }))
+            : API.get(
+                  `secure/user/friendship/friendship?userId=${userId}`,
+                  token
+              )
 
-    Promise.all([profilePromise, friendsCountPromise, friendshipPromise])
-        .then((res) => {
-            const [profileRes, friendsCountRes, friendshipRes] = res
-            if (profileRes.message || profileRes.status !== 200) {
-                /* TODO: error handling */
-                return fetchProfileFail(pageId, userId, profileRes, dispatch)
-            }
-            fetchProfileSucceed(pageId, profileRes, dispatch)
-            handleCurrentTabRefresh({ userId, pageId })(dispatch, getState)
-            // Prefetch profile image
-            prefetchImage(profileRes.data.profile.image)
+        Promise.all([profilePromise, friendsCountPromise, friendshipPromise])
+            .then((res) => {
+                const [profileRes, friendsCountRes, friendshipRes] = res
+                if (profileRes.message || profileRes.status !== 200) {
+                    /* TODO: error handling */
+                    return fetchProfileFail(
+                        pageId,
+                        userId,
+                        profileRes,
+                        dispatch
+                    )
+                }
+                fetchProfileSucceed(pageId, profileRes, dispatch)
+                handleCurrentTabRefresh({ userId, pageId })(dispatch, getState)
+                // Prefetch profile image
+                prefetchImage(profileRes.data.profile.image)
 
-            if (friendsCountRes.message) {
-                /* TODO: error handling for failing to fetch friends */
-                console.log(
-                    `${DEBUG_KEY} fetch friends count fails: `,
-                    friendsCountRes.message
-                )
-            } else {
-                fetchFriendsCountSucceed(
-                    userId,
-                    friendsCountRes,
-                    self,
-                    dispatch
-                )
-            }
+                if (friendsCountRes.message) {
+                    /* TODO: error handling for failing to fetch friends */
+                    console.log(
+                        `${DEBUG_KEY} fetch friends count fails: `,
+                        friendsCountRes.message
+                    )
+                } else {
+                    fetchFriendsCountSucceed(
+                        userId,
+                        friendsCountRes,
+                        self,
+                        dispatch
+                    )
+                }
 
-            if (friendshipRes.message) {
-                /* TODO: error handling for failing to fetch friends */
-                console.log(
-                    `${DEBUG_KEY} fetch friendship fails: `,
-                    friendshipRes
-                )
-            } else {
-                fetchFriendshipSucceed(userId, friendshipRes, dispatch)
-            }
-        })
-        .catch((err) => {
-            console.log(`${DEBUG_KEY}: err in loading user profile`, err)
-            dispatch({
-                type: PROFILE_FETCHING_FAIL,
-                payload: `Error loading user profile: ${err}`,
+                if (friendshipRes.message) {
+                    /* TODO: error handling for failing to fetch friends */
+                    console.log(
+                        `${DEBUG_KEY} fetch friendship fails: `,
+                        friendshipRes
+                    )
+                } else {
+                    fetchFriendshipSucceed(userId, friendshipRes, dispatch)
+                }
             })
-            // TODO: show toaster saying loading fail
-        })
+            .catch((err) => {
+                console.log(`${DEBUG_KEY}: err in loading user profile`, err)
+                dispatch({
+                    type: PROFILE_FETCHING_FAIL,
+                    payload: `Error loading user profile: ${err}`,
+                })
+                // TODO: show toaster saying loading fail
+            })
 
-    return pageId
+        return pageId
+    } catch (error) {
+        console.log('ERRORR ARAH HA PROFILE ME', error.message)
+    }
 }
 
 /**
@@ -640,7 +652,7 @@ export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
                 //     ...user,
                 //     UserId: userId,
                 // })
-                track(E.PROFILE_UPDATED)
+                // track(E.PROFILE_UPDATED)
 
                 dispatch({
                     type: PROFILE_UPDATE_SUCCESS,

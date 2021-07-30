@@ -88,6 +88,7 @@ const variableMethods = {
      * @returns first name of the user
      */
     getFirstName(name) {
+        console.log('THIS IS NAMEEEEEEE', name)
         let path = name.split(/(\s+)/).filter(function (e) {
             return e.trim().length > 0
         })

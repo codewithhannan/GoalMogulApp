@@ -186,23 +186,44 @@ class InviteFriendModal extends React.PureComponent {
     }
 
     leftArrowClickHandler = () => {
-        this.state.descriptionIndex > 0 &&
+        if (this.state.descriptionIndex === 0) {
+            this.setState({
+                descriptionIndex: 23 - this.state.descriptionIndex,
+                description: this.descriptionsArray[
+                    23 - this.state.descriptionIndex
+                ],
+            })
+        } else if (this.state.descriptionIndex > 0) {
             this.setState({
                 descriptionIndex: this.state.descriptionIndex - 1,
                 description: this.descriptionsArray[
                     this.state.descriptionIndex - 1
                 ],
             })
+        } else {
+            return null
+        }
     }
 
     rightArrowClickHandler = () => {
-        this.state.descriptionIndex < this.descriptionsArray.length - 1 &&
+        if (this.state.descriptionIndex == 23) {
+            this.setState({
+                descriptionIndex: 0,
+                description: this.descriptionsArray[0 + 1],
+            })
+        } else if (
+            this.state.descriptionIndex <
+            this.descriptionsArray.length - 1
+        ) {
             this.setState({
                 descriptionIndex: this.state.descriptionIndex + 1,
                 description: this.descriptionsArray[
                     this.state.descriptionIndex + 1
                 ],
             })
+        } else {
+            return null
+        }
     }
 
     inviteSms = async (message, url) => {
@@ -439,7 +460,7 @@ class InviteFriendModal extends React.PureComponent {
                             ]}
                         >
                             <Text style={[default_style.titleText_1]}>
-                                Share
+                                Invite Friends
                             </Text>
                             <View style={{ flex: 1, alignItems: 'center' }} />
                             <DelayedButton

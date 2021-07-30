@@ -44,7 +44,7 @@ class OnboardingPhoneVerification extends React.Component {
             syncContactInfoModalVisible: false,
             loading: true, // test loading param
             errMessage: undefined,
-            checked: false,
+            checked: true,
             cca2: 'US',
             countryCode: {
                 cca2: 'US',
@@ -309,7 +309,7 @@ class OnboardingPhoneVerification extends React.Component {
                                                     Submit
                                                 </Text>
                                             </DelayedButton>
-                                            {/* <DelayedButton
+                                            <DelayedButton
                                                 onPress={this.onNotNow}
                                                 style={[
                                                     buttonStyle
@@ -327,7 +327,7 @@ class OnboardingPhoneVerification extends React.Component {
                                                 >
                                                     Skip
                                                 </Text>
-                                            </DelayedButton> */}
+                                            </DelayedButton>
                                         </View>
                                     </View>
                                 </>
