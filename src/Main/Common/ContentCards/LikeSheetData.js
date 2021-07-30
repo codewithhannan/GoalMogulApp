@@ -125,14 +125,14 @@ export const renderTextStyle = (unitText) => {
 }
 
 export const updateLikeIcon = (reactions, liketype) => {
-    console.log('THIS IS REACTIONSSS', reactions)
-    console.log('THIS IS LIKE TYPEEE', liketype)
+    // console.log('THIS IS REACTIONSSS', reactions)
+    // console.log('THIS IS LIKE TYPEEE', liketype)
 
     const filteredReactions = reactions.find((reaction) => {
         return reaction.type == liketype
     })
     filteredReactions.count += 1
-    console.log('THIS IS FILTEREDDD REACTIONNN 1', filteredReactions.count)
+    // console.log('THIS IS FILTEREDDD REACTIONNN 1', filteredReactions.count)
 
-    console.log('THIS IS FILTEREDDD REACTIONNN', filteredReactions)
+    // console.log('THIS IS FILTEREDDD REACTIONNN', filteredReactions)
 }
