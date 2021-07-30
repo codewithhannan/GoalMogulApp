@@ -17,48 +17,32 @@ const getVoiceUrl = (type) => {
     } else {
         throw new Error(`Image type: ${type} is not included`)
     }
-    return `https://api.goalmogul.com/api/secure/s3/${voiceType}/signature`
-    // return `http:/192.168.1.3:8081/api/secure/s3/${imageType}/signature`
+    // return `https://api.goalmogul.com/api/secure/s3/${voiceType}/signature`
+    return `http:/192.168.1.8:8081/api/secure/s3/${voiceType}/signature`
 }
 
-const ImageUtils = {
+const VoiceUtils = {
     getPresignedUrl(file, token, dispatch, type) {
+        let uriParts = file.split('.')
+        let fileType = uriParts[uriParts.length - 1]
         return new Promise(async (resolve, reject) => {
             const url = getVoiceUrl(type)
             const authToken = await TokenService.getAuthToken()
-            const param = {
-                url,
-                method: 'post',
-                data: {
-                    fileType: 'image/jpeg',
-                    token: authToken,
-                },
-            }
-            axios(param)
-                .then((res) => {
-                    const { objectKey, signedRequest } = res.data
-                    if (dispatch) {
-                        dispatch(objectKey)
-                    }
-                    resolve({ signedRequest, file, objectKey })
-                })
-                .catch((err) => {
-                    console.log('error uploading: ', err)
-                    reject(err)
-                })
-        })
-    },
 
-    getPresignedMultipleUrl(file, token, dispatch, type) {
-        return new Promise(async (resolve, reject) => {
-            const url = getImageUrl(type)
-            const authToken = await TokenService.getAuthToken()
+            const formData = new FormData()
+            formData.append('audio', {
+                uri: file,
+                name: `recording.${fileType}`,
+                fileType: `audio/x-${fileType}`,
+            })
             const param = {
                 url,
                 method: 'post',
-                data: {
-                    fileType: 'image/jpeg',
-                    token: authToken,
+                data: formData,
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'x-access-token': token,
                 },
             }
             axios(param)
@@ -263,17 +247,17 @@ const ImageUtils = {
             if (!hasImageModified) {
                 return resolve()
             }
-            ImageUtils.getImageSize(imageUri)
+            VoiceUtils.getImageSize(imageUri)
                 .then(({ width, height }) => {
                     // Resize image
-                    return ImageUtils.resizeImage(imageUri, width, height)
+                    return VoiceUtils.resizeImage(imageUri, width, height)
                 })
                 .then((image) => {
                     // Upload image to S3 server
                     console.log(
-                        '[ ImageUtils ]: Finish resizing and start to getPresignedUrl'
+                        '[ VoiceUtils ]: Finish resizing and start to getPresignedUrl'
                     )
-                    return ImageUtils.getPresignedUrl(
+                    return VoiceUtils.getPresignedUrl(
                         image.uri,
                         undefined, // token is extracted from TokenService now instead of storing it in redux state
                         (objectKey) => {
@@ -288,8 +272,8 @@ const ImageUtils = {
                     )
                 })
                 .then(({ signedRequest, file }) => {
-                    console.log('[ ImageUtils ]: Uploading image')
-                    return ImageUtils.uploadImage(file, signedRequest)
+                    console.log('[ VoiceUtils ]: Uploading image')
+                    return VoiceUtils.uploadImage(file, signedRequest)
                 })
                 .then((res) => {
                     if (res instanceof Error) {
@@ -304,40 +288,6 @@ const ImageUtils = {
                 })
         })
     },
-
-    async checkPermission(permissions) {
-        const promises = permissions.map((value) => Permissions.getAsync(value))
-        const status = await Promise.all(promises)
-
-        const requestPromises = status.map((value, index) => {
-            if (value.status !== 'granted') {
-                return Permissions.askAsync(permissions[index])
-            }
-            return ''
-        })
-
-        const filteredPromises = _.compact(requestPromises)
-        const requestStatus = await Promise.all(filteredPromises)
-
-        if (requestStatus.some((value) => value.status !== 'granted')) {
-            alert('Please grant access to photos and camera.')
-            return false
-        }
-        return true
-    },
 }
 
-export default ImageUtils
-
-export const toHashCode = function (str) {
-    var hash = 0,
-        i,
-        chr
-    if (str.length === 0) return hash
-    for (i = 0; i < str.length; i++) {
-        chr = str.charCodeAt(i)
-        hash = (hash << 5) - hash + chr
-        hash |= 0 // Convert to 32bit integer
-    }
-    return hash
-}
+export default VoiceUtils

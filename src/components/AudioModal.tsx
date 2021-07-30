@@ -22,6 +22,7 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen'
+import { connect } from 'react-redux'
 // import * as Icons from "./components/Icons";
 
 import DelayedButton from '../Main/Common/Button/DelayedButton'
@@ -32,6 +33,10 @@ import { GOALS_STYLE } from '../styles/Goal'
 import * as text from '../styles/basic/text'
 const play = require('../../src/asset/icons/play.png')
 const crossIcon = require('../asset/icons/cross.png')
+
+//Utils
+import { sendVoiceMessage } from '../actions/VoiceActions'
+import VoiceUtils from '../Utils/VoiceUtils'
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const BACKGROUND_COLOR = '#FFF8ED'
@@ -56,7 +61,9 @@ const privacyOptions = [
     },
 ]
 
-type Props = {}
+type Props = {
+    sendVoiceMessage: (voiceUri: string | null) => void
+}
 
 type State = {
     haveRecordingPermissions: boolean
@@ -78,7 +85,7 @@ type State = {
     selected: string | null
 }
 
-export default class AudioModal extends React.Component<Props, State> {
+class AudioModal extends React.Component<Props, State> {
     private recording: Audio.Recording | null
     private sound: Audio.Sound | null
     private isSeeking: boolean
@@ -110,16 +117,37 @@ export default class AudioModal extends React.Component<Props, State> {
             reRecordModal: false,
             selected: null,
         }
-        this.recordingSettings = Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY
+        this.recordingSettings = {
+            android: {
+                extension: '.m4a',
+                outputFormat:
+                    Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
+                audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
+                sampleRate: 44100,
+                numberOfChannels: 2,
+                bitRate: 128000,
+            },
+            ios: {
+                extension: '.m4a',
+                outputFormat: Audio.RECORDING_OPTION_IOS_OUTPUT_FORMAT_MPEG4AAC,
+                audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_MEDIUM,
+                sampleRate: 44100,
+                numberOfChannels: 2,
+                bitRate: 128000,
+                linearPCMBitDepth: 16,
+                linearPCMIsBigEndian: false,
+                linearPCMIsFloat: false,
+            },
+        }
 
         // UNCOMMENT THIS TO TEST maxFileSize:
-        /* this.recordingSettings = {
-      ...this.recordingSettings,
-      android: {
-        ...this.recordingSettings.android,
-        maxFileSize: 12000,
-      },
-    };*/
+        //      this.recordingSettings = {
+        //   ...this.recordingSettings,
+        //   android: {
+        //     ...this.recordingSettings.android,
+        //     maxFileSize: 12000,
+        //   },
+        // };
     }
 
     componentDidMount() {
@@ -210,6 +238,7 @@ export default class AudioModal extends React.Component<Props, State> {
         )
 
         this.recording = recording
+
         this.setState({
             record: recording._uri,
         })
@@ -292,24 +321,6 @@ export default class AudioModal extends React.Component<Props, State> {
                     console.warn(`Player.js onPlayPress error: ${err}`)
                 })
             }
-        }
-    }
-
-    private _onStopPressed = () => {
-        if (this.sound != null) {
-            this.sound.stopAsync()
-        }
-    }
-
-    private _onMutePressed = () => {
-        if (this.sound != null) {
-            this.sound.setIsMutedAsync(!this.state.muted)
-        }
-    }
-
-    private _onVolumeSliderValueChange = (value: number) => {
-        if (this.sound != null) {
-            this.sound.setVolumeAsync(value)
         }
     }
 
@@ -573,6 +584,14 @@ export default class AudioModal extends React.Component<Props, State> {
                             </DelayedButton>
                             <View style={{ width: 20 }} />
                             <DelayedButton
+                                onPress={() => {
+                                    const voiceUri = this.state.record
+                                    // const voiceObj = {
+                                    //     uri: voiceUri,
+                                    //     privacy: this.state.selected,
+                                    // }
+                                    this.props.sendVoiceMessage(voiceUri)
+                                }}
                                 style={[
                                     buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
                                         .containerStyle,
@@ -697,6 +716,9 @@ export default class AudioModal extends React.Component<Props, State> {
         )
     }
 }
+export default connect(null, {
+    sendVoiceMessage,
+})(AudioModal)
 
 const styles = StyleSheet.create({
     emptyContainer: {
