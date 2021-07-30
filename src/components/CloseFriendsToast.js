@@ -40,7 +40,7 @@ class GreenBadgeToast extends Component {
                                 fontSize: 16,
                             }}
                         >
-                            View his Profile
+                            View Profile
                         </Text>
                     </View>
                 </TouchableWithoutFeedback>
