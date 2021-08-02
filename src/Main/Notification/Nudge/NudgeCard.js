@@ -55,19 +55,22 @@ class NudgeCard extends React.PureComponent {
         ) {
             return (
                 Actions.replace('no_goal_conversation', { item }),
-                this.props.deleteSelectedNudge(_id)
+                this.props.deleteSelectedNudge(_id),
+                this.props.deleteNudge(_id)
             )
         } else if (!item.hasResponded && !item.isDeleted) {
             return (
                 this.props.openProfile(userId),
                 this.props.handleNudgeResponsed(_id),
-                this.props.deleteSelectedNudge(_id)
+                this.props.deleteSelectedNudge(_id),
+                this.props.deleteNudge(_id)
             )
         } else {
             return (
                 this.props.openProfile(receiver._id),
                 this.props.handleNudgeResponsed(_id),
-                this.props.deleteSelectedNudge(_id)
+                this.props.deleteSelectedNudge(_id),
+                this.props.deleteNudge(_id)
             )
         }
     }

@@ -33,6 +33,7 @@ function FeedbackModal(props) {
                         backgroundColor: color.GV_MODAL,
 
                         width: '100%',
+                        height: '60%',
                     }}
                 >
                     <View
@@ -83,10 +84,10 @@ function FeedbackModal(props) {
                             lineHeight: 23,
                             width: '90%',
                             marginBottom: 20,
-                            top: 8,
+                            marginTop: 10,
                         }}
                     >
-                        {`Thanks for your feedback! A GoalMogul represetiative will be in touch.`}
+                        {`Thanks for your feedback! We will be in touch.`}
                     </Text>
                 </View>
             </View>

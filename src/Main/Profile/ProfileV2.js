@@ -751,10 +751,7 @@ class ProfileV2 extends Component {
         ) {
             //Nudge friends to make their goals public
             return (
-                <PrivateGoalsNudge
-                    name={getFirstName(this.props.user.name)}
-                    token={this.props.token}
-                />
+                <PrivateGoalsNudge name={getFirstName(this.props.user.name)} />
             )
         } else if (currentTabName === 'goals' && isSelf && noGoals) {
             return <NoGoalToast pageId={this.props.pageId} />

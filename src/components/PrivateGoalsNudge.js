@@ -6,6 +6,7 @@ import {
     Image,
     Text,
     TouchableWithoutFeedback,
+    TouchableOpacity,
     Dimensions,
 } from 'react-native'
 
@@ -19,28 +20,36 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen'
+import { Actions } from 'react-native-router-flux'
 
 const windowHeight = Dimensions.get('window').height
 
 class PrivateGoalsNudge extends Component {
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = {
+            showNudge: true,
+        }
     }
 
     renderNudgeButton() {
         const { visitedUser, token } = this.props
+
         return (
             <>
                 <TouchableWithoutFeedback
-                    onPress={() => {
-                        this.props.addNudge(
-                            visitedUser,
-                            token,
-                            NUDGE_TYPES.makeGoalsPublic
-                        )
-                        this.props.onClose()
-                    }}
+                    onPress={
+                        () => {
+                            this.props.addNudge(
+                                visitedUser,
+                                token,
+                                NUDGE_TYPES.makeGoalsPublic
+                            )
+                            this.setState({ showNudge: false })
+                        }
+
+                        // console.log('THIS IS PRESSED')
+                    }
                 >
                     <View
                         style={{
@@ -71,57 +80,59 @@ class PrivateGoalsNudge extends Component {
     }
 
     render() {
-        const { hideNudge } = this.state
+        const { showNudge } = this.state
         return (
             <>
-                <View
-                    style={{
-                        backgroundColor: 'white',
-                        flexDirection: 'column',
-
-                        alignItems: 'center',
-                        borderRadius: 5,
-                        width: '100%',
-                        height: windowHeight * 0.4,
-                    }}
-                >
+                {showNudge ? (
                     <View
                         style={{
-                            justifyContent: 'center',
+                            backgroundColor: 'white',
+                            flexDirection: 'column',
+
                             alignItems: 'center',
-                            marginTop: 10,
+                            borderRadius: 5,
+                            width: '100%',
+                            height: windowHeight * 0.4,
                         }}
                     >
-                        <LottieView
-                            style={{ height: hp(15) }}
-                            source={NO_GOAL_LOTTIE}
-                            autoPlay
-                            loop
-                        />
-
                         <View
                             style={{
-                                width: '70%',
+                                justifyContent: 'center',
+                                alignItems: 'center',
                                 marginTop: 10,
                             }}
                         >
-                            <Text
+                            <LottieView
+                                style={{ height: hp(15) }}
+                                source={NO_GOAL_LOTTIE}
+                                autoPlay
+                                loop
+                            />
+
+                            <View
                                 style={{
-                                    fontFamily: text.FONT_FAMILY.REGULAR,
-                                    fontWeight: '600',
-                                    fontSize: 18,
-                                    textAlign: 'center',
+                                    width: '70%',
+                                    marginTop: 10,
                                 }}
                             >
-                                {this.props.name}'s goals are all set to
-                                Private. Nudge him to make some goals visible to
-                                Friends.
-                            </Text>
+                                <Text
+                                    style={{
+                                        fontFamily: text.FONT_FAMILY.REGULAR,
+                                        fontWeight: '600',
+                                        fontSize: 18,
+                                        textAlign: 'center',
+                                    }}
+                                >
+                                    {this.props.name}'s goals are all set to
+                                    Private. Nudge him to make some goals
+                                    visible to Friends.
+                                </Text>
+                            </View>
                         </View>
-                    </View>
 
-                    {this.renderNudgeButton()}
-                </View>
+                        {this.renderNudgeButton()}
+                    </View>
+                ) : null}
             </>
         )
     }

@@ -119,6 +119,7 @@ class TokenService {
             1
         )
         const key = TokenService.getCredentialKey(type)
+
         try {
             await SecureStore.deleteItemAsync(key)
         } catch (err) {
@@ -324,7 +325,6 @@ class TokenService {
         // remove cache
         this._authTokenObject = { ...EMPTY_TOKEN_OBJECT }
         this._refreshTokenObject = { ...EMPTY_TOKEN_OBJECT }
-
         Logger.log(
             '[TokenService] [unmountUser] refreshTokenObject in cache is now',
             this._refreshTokenObject,

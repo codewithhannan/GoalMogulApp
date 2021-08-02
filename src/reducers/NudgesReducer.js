@@ -29,6 +29,7 @@ const slice = createSlice({
 
             state.nudgesData = filtered
         },
+        clearNudgeData: () => initialState,
     },
 })
 
@@ -38,4 +39,5 @@ export const {
     getNudgesData,
     errorNudgesData,
     deleteSelectedNudge,
+    clearNudgeData,
 } = slice.actions

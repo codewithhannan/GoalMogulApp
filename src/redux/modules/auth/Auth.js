@@ -106,7 +106,9 @@ export const auth = {
         try {
             await SecureStore.deleteItemAsync(USERNAME)
             await SecureStore.deleteItemAsync(PASSWORD)
-            await SecureStore.deleteItemAsync(AUTH_TOKEN_OBJECT)
+            const USERTOKENASYNC = await SecureStore.deleteItemAsync(
+                AUTH_TOKEN_OBJECT
+            )
 
             if (callback) {
                 callback(true)

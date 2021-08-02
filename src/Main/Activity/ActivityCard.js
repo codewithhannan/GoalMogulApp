@@ -565,7 +565,7 @@ class ActivityCard extends React.PureComponent {
         const { item, userId } = this.props
         const { goalRef } = item
 
-        console.log('THIS IS ITEMMM', item)
+        // console.log('THIS IS ITEMMM', item)
         if (!item || _.isEmpty(item) || !isValidActivity(item)) return null
 
         return (

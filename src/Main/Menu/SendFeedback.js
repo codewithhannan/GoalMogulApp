@@ -203,52 +203,55 @@ class SendFeedback extends Component {
                             listKey={(item, index) => 'D' + index.toString()}
                             onEndReachedThreshold={0}
                             ItemSeparatorComponent={this.itemSeperatorComponent}
-                            ListEmptyComponent={() => {
-                                return (
-                                    <EmptyResult
-                                        text="No Screenshot Attached"
-                                        textStyle={{
-                                            paddingTop: 65,
-                                        }}
-                                    />
-                                )
-                            }}
+                            // ListEmptyComponent={() => {
+                            //     return (
+                            //         <EmptyResult
+                            //             text="No Screenshot Attached"
+                            //             textStyle={{
+                            //                 paddingTop: 65,
+                            //             }}
+                            //         />
+                            //     )
+                            // }}
                         />
-                        {this.props.feedback.length > 0 ? (
-                            <DelayedButton
-                                disabled={this.state.disable}
-                                style={[
-                                    buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
-                                        .containerStyle,
-                                    {
-                                        marginTop: 6,
-                                        marginBottom: 5,
-                                        backgroundColor: this.state.disable
+
+                        <DelayedButton
+                            disabled={
+                                this.state.description == '' ||
+                                this.state.disable
+                            }
+                            style={[
+                                buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
+                                    .containerStyle,
+                                {
+                                    // marginBottom: 5,
+                                    backgroundColor:
+                                        this.state.description == '' ||
+                                        this.state.disable
                                             ? color.GM_BLUE_LIGHT
                                             : color.GM_BLUE,
-                                        width: '90%',
-                                        height: 35,
-                                        alignSelf: 'center',
-                                    },
-                                ]}
-                                onPress={() => {
-                                    return this.onNext(this.state.description)
-                                }}
+                                    width: '90%',
+                                    height: 35,
+                                    alignSelf: 'center',
+                                },
+                            ]}
+                            onPress={() => {
+                                return this.onNext(this.state.description)
+                            }}
+                        >
+                            <Text
+                                style={
+                                    (buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
+                                        .textStyle,
+                                    {
+                                        fontWeight: 'normal',
+                                        color: 'white',
+                                    })
+                                }
                             >
-                                <Text
-                                    style={
-                                        (buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
-                                            .textStyle,
-                                        {
-                                            fontWeight: 'normal',
-                                            color: 'white',
-                                        })
-                                    }
-                                >
-                                    Send
-                                </Text>
-                            </DelayedButton>
-                        ) : null}
+                                Send
+                            </Text>
+                        </DelayedButton>
                     </KeyboardAwareScrollView>
                 </View>
             </>

@@ -10,6 +10,8 @@ import {
     deleteSelectedNudge,
 } from '../reducers/NudgesReducer'
 import { setBadgeNumberAsyncByPlatform } from '../redux/modules/notification/NotificationTabActions'
+import { Alert } from 'react-native'
+import { Actions } from 'react-native-router-flux'
 
 const DEBUG_KEY = '[ NudgeActions ]'
 export const NUDGE_TYPES = {
@@ -36,11 +38,15 @@ export const addNudge = (visitedId, token, nudgeType, question) => {
         }
         try {
             const res = await API.post('secure/nudge/send-nudge', obj, token)
-            const response = res.result
+            const response = res
+
             console.log(
                 `${DEBUG_KEY} This is the response of addNudge`,
-                response
+                response.result
             )
+            if (res.status === 200) {
+                Alert.alert('You have nudged successfully!')
+            }
         } catch (err) {
             console.log(`${DEBUG_KEY} This is the error of addNudge`, err)
         }

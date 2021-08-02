@@ -187,7 +187,7 @@ class NoGoalPrompt extends Component {
                                 width: MODAL_WIDTH * 0.9,
 
                                 backgroundColor: color.GV_MODAL,
-                                height: MODAL_HEIGHT * 0.55,
+                                height: '63%',
                                 backgroundColor: '#FAFAFA',
                                 borderRadius: 5,
                             }}

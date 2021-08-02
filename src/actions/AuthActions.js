@@ -78,6 +78,7 @@ import { TUTORIAL_MARK_USER_ONBOARDED } from '../redux/modules/User/Tutorials'
 import { getVisitedTime, userLogout } from '../reducers/UserVisited'
 import { resetToastData } from '../reducers/ToastReducers'
 import { clearPopupData } from '../reducers/PopupReducers'
+import { clearNudgeData } from '../reducers/NudgesReducer'
 
 const DEBUG_KEY = '[ Action Auth ]'
 
@@ -1039,6 +1040,7 @@ export const logout = () => async (dispatch, getState) => {
     dispatch(userLogout())
     dispatch(resetToastData())
     dispatch(clearPopupData())
+    dispatch(clearNudgeData())
 }
 
 const TOAST_IMAGE_STYLE = {
