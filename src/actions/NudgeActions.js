@@ -61,7 +61,7 @@ export const getAllNudges = (token) => {
             res = await API.get('secure/nudge/nudgesToRender', token)
 
             dispatch(getNudgesData(res.result))
-            setBadgeNumberAsyncByPlatform(res.result.length)
+            // setBadgeNumberAsyncByPlatform(res.result.length)
             dispatch(loadNudgesData(false))
             console.log(`${DEBUG_KEY} This is the response of nudge data`, res)
         } catch (err) {

@@ -25,6 +25,7 @@ import { getAllNudges } from '../../../actions/NudgeActions'
 
 // Styles
 import { color } from '../../../styles/basic'
+import _ from 'lodash'
 
 class NudgeListView extends React.PureComponent {
     // handleRefresh = () => {

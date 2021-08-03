@@ -88,6 +88,7 @@ import {
 } from '../../redux/modules/notification/NotificationTabActions'
 import { makeGetUserGoals } from '../../redux/modules/User/Selector'
 import { trackWithProperties } from 'expo-analytics-segment'
+import { getAllNudges } from '../../actions/NudgeActions'
 
 const stories = [
     {
@@ -474,6 +475,7 @@ class Home extends Component {
         routes[index].key === 'activity'
             ? this.props.refreshActivityFeed()
             : this.props.refreshGoalFeed()
+        this.props.getAllNudges()
     }
 
     _renderScene() {
@@ -752,6 +754,7 @@ export default connect(
         getUserVisitedNumber,
 
         getToastsData,
+        getAllNudges,
     },
     null,
     { withRef: true }

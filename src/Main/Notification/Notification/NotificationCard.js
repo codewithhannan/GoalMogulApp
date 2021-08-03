@@ -220,10 +220,10 @@ class NotificationCard extends React.PureComponent {
         const isInvalidCommentNotif = item.commentRef === null
 
         if (item.parsedNoti.error && !isInvalidCommentNotif) {
-            console.warn(
-                `${DEBUG_KEY}: invalid notification with error: `,
-                item.parsedNoti.error
-            )
+            // console.warn(
+            //     `${DEBUG_KEY}: invalid notification with error: `,
+            //     item.parsedNoti.error
+            // )
             return null
         }
         // If read, backgroundColor is: '#eef8fb'
