@@ -50,12 +50,12 @@ class GoalSwiper extends React.Component {
                 },
                 backgroundColor: '#D7F3FF',
             },
-            {
-                id: 2,
-                source: VIDEO,
-                onPress: () => this.openCameraRollBottomSheet(),
-                backgroundColor: '#E5F7FF',
-            },
+            // {
+            //     id: 2,
+            //     source: VIDEO,
+            //     onPress: () => this.openCameraRollBottomSheet(),
+            //     backgroundColor: '#E5F7FF',
+            // },
         ]
     }
 
@@ -130,10 +130,10 @@ class GoalSwiper extends React.Component {
         )
     }
     rightSwipeActions = () => {
-        const { margin } = this.props
+        const { marginTop, marginBottom } = this.props
         return (
             <>
-                {this.state.swiperToolTipVisible && this.props.index == 0 ? (
+                {/* {this.state.swiperToolTipVisible && this.props.index == 0 ? (
                     <SwiperTooltip
                         title={swiperText}
                         imageSource={SWIPER_BACKGROUND}
@@ -146,7 +146,7 @@ class GoalSwiper extends React.Component {
                             top: 0,
                         }}
                     />
-                ) : null}
+                ) : null} */}
 
                 {this.SWIPED_DATA.map((item, index) => {
                     return (
@@ -159,8 +159,10 @@ class GoalSwiper extends React.Component {
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 width: 100,
-                                height: '98%',
-                                marginTop: margin,
+                                marginBottom: marginBottom,
+                                padding: 16,
+                                marginTop: marginTop,
+                                zIndex: 2,
                             }}
                         >
                             <Animatable.View>

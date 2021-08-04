@@ -110,8 +110,6 @@ class ActivityFeed extends Component {
             this.props.loadUserInvitedFriendsCount()
         }
 
-        console.log('USERRRRR', this.props.myGoals)
-
         // if (this.props.userLastActive) {
 
         // }

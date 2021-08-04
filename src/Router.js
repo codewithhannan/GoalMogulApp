@@ -582,10 +582,6 @@ class RouterComponent extends Component {
                                             hideNavBar
                                             transitionConfig={() => ({
                                                 screenInterpolator: (props) => {
-                                                    console.log(
-                                                        'THIS IS PROPSSS',
-                                                        props
-                                                    )
                                                     const { scene } = props
                                                     switch (
                                                         scene.route.routeName

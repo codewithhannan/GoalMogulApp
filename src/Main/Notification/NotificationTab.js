@@ -45,11 +45,12 @@ class NotificationTab extends Component {
     }
 
     componentDidMount() {
+        const { token } = this.props
         // Refresh notification tab
         console.log(`${DEBUG_KEY}: component did mount`)
         if (!this.props.data || _.isEmpty(this.props.data.length)) {
             this.props.refreshNotificationTab()
-            this.props.getAllNudges()
+            this.props.getAllNudges(token)
         }
     }
 
