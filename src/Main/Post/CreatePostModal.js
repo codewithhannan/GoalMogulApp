@@ -478,6 +478,7 @@ class CreatePostModal extends Component {
             if (this.props.callBack) this.props.callBack(props)
             this.resetForm()
             this.close()
+            this.setState({ mediaHeight: 0 })
         }
 
         return this.props.submitCreatingPost(
@@ -505,7 +506,12 @@ class CreatePostModal extends Component {
                 : E.CREATE_POST_MODAL_CANCELLED,
             { DurationSec: durationSec }
         )
-        if (this.props.post && this.state.clickedButton) return
+        this.setState({ mediaHeight: 0 })
+        if (
+            (this.props.post && this.state.clickedButton) ||
+            this.state.clickedButton
+        )
+            return
         else {
             this.handleDraftCancel(() => {
                 if (callback) callback()
@@ -786,7 +792,8 @@ class CreatePostModal extends Component {
                     }}
                     style={{
                         borderRadius: 5,
-                        flex: 1,
+                        // flex: 1,
+                        width: 120,
                     }}
                 >
                     <TouchableOpacity
