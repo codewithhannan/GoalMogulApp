@@ -67,7 +67,7 @@ export const IS_ZOOMED =
 
 // Base url for image location. Should concat with the mediaRef or image to form the
 // full image location
-export const WEB_APP_URL = 'https://web.goalmogul.com'
+export const WEB_APP_URL = 'https://join.goalmogul.com'
 export const IMAGE_BASE_URL = 'https://s3.us-west-2.amazonaws.com/goalmogul-v1/'
 export const BUG_REPORT_URL = 'https://goo.gl/forms/zfhrCXeLPz3QCKi03'
 export const RESET_PASSWORD_URL = `${WEB_APP_URL}/password-reset`

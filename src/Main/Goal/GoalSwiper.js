@@ -105,7 +105,7 @@ class GoalSwiper extends React.Component {
     }
 
     renderBottomVoiceRecording = () => {
-        const sheetHeight = getButtonBottomSheetHeight(5)
+        const sheetHeight = getButtonBottomSheetHeight(5.35)
         return (
             <BottomButtonsSheet
                 ref={(r) => (this.bottomRecodingSheet = r)}

@@ -610,7 +610,7 @@ class NewGoalView extends Component {
             hasTimeline: false,
             startTime: { date: undefined, picker: false },
             endTime: { date: undefined, picker: false },
-            title: '',
+            title: '' || this.props.title,
             tags: [],
         }
 
@@ -1898,7 +1898,7 @@ const styles = {
             padding: 5,
             height: height * 0.45,
             bottom: 50,
-            left: 50,
+            // left: 50,
         },
         optionWrapper: {
             flex: 1,

@@ -12,6 +12,8 @@ import {
     Dimensions,
 } from 'react-native'
 import Modal from 'react-native-modal'
+import R from 'ramda'
+import * as ImagePicker from 'expo-image-picker'
 import { Icon } from '@ui-kitten/components'
 import { Entypo } from '@expo/vector-icons'
 import Constants from 'expo-constants'
@@ -23,6 +25,11 @@ import { connect } from 'react-redux'
 
 import { getUserData } from '../redux/modules/User/Selector'
 import { getData } from '../store/storage'
+import {
+    actionSheet,
+    switchByButtonIndex,
+} from '../Main/Common/ActionSheetFactory'
+import { updateProfilePic } from '../actions'
 
 import defaultUserProfile from '../asset/utils/defaultUserProfile.png'
 
@@ -87,6 +94,56 @@ class ProfilePictureModal extends Component {
         }
     }
 
+    pickImage = () => {
+        let res
+        try {
+            this.props.onClose()
+            setTimeout(async () => {
+                res = await ImagePicker.launchImageLibraryAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                    allowsEditing: true,
+                    aspect: [1, 1],
+                    quality: 1,
+                })
+                this.props.updateProfilePic(res.uri, this.props.pageId)
+            }, 500)
+        } catch (err) {
+            console.log(
+                '\nError while selecting image from device: ',
+                err.message
+            )
+        }
+        if (!res.cancelled) {
+            this.setState({ imageUrl: res.uri })
+        }
+    }
+
+    handleOptionsOnPress() {
+        const options = switchByButtonIndex([
+            [
+                R.equals(0),
+                () => {
+                    console.log(
+                        ` User chooses to change profile pitrue`,
+                        '',
+                        this.pickImage()
+                    )
+                },
+            ],
+        ])
+
+        const requestOptions = ['Update Profile Picture', 'Cancel']
+
+        const cancelIndex = 1
+
+        const adminActionSheet = actionSheet(
+            requestOptions,
+            cancelIndex,
+            options
+        )
+        adminActionSheet()
+    }
+
     render() {
         const { image } = this.props
 
@@ -111,8 +168,8 @@ class ProfilePictureModal extends Component {
                             style={{
                                 width: MODAL_WIDTH,
 
-                                backgroundColor: color.GV_MODAL,
-                                height: MODAL_HEIGHT * 0.7,
+                                // backgroundColor: color.GV_MODAL,
+                                height: MODAL_HEIGHT * 0.9,
                                 backgroundColor: 'transparent',
                             }}
                         >
@@ -121,6 +178,7 @@ class ProfilePictureModal extends Component {
                                     justifyContent: 'space-between',
                                     flexDirection: 'row',
                                     padding: 13,
+                                    // paddingVertical: 10,
                                 }}
                             >
                                 <TouchableOpacity
@@ -149,6 +207,7 @@ class ProfilePictureModal extends Component {
                                         alignSelf: 'center',
                                         justifyContent: 'center',
                                     }}
+                                    onPress={() => this.handleOptionsOnPress()}
                                 >
                                     <Icon
                                         name="dots-horizontal"
@@ -166,7 +225,7 @@ class ProfilePictureModal extends Component {
                             <View
                                 style={{
                                     width: '100%',
-                                    bottom: 15,
+                                    // bottom: 15,
                                 }}
                             >
                                 <Image
@@ -203,4 +262,6 @@ const mapStateToProps = (state, props) => {
     }
 }
 
-export default connect(mapStateToProps, {})(ProfilePictureModal)
+export default connect(mapStateToProps, { updateProfilePic })(
+    ProfilePictureModal
+)

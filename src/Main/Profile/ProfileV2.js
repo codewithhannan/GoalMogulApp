@@ -816,6 +816,7 @@ class ProfileV2 extends Component {
                         isVisible={this.state.profilePictureVisible}
                         onClose={this.closeProfileModal}
                         userId={userId}
+                        pageId={pageId}
                     />
                     {/* <CommentVideoModal /> */}
 

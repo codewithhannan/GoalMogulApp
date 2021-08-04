@@ -548,7 +548,7 @@ export const createGoalSwitchTab = (index) => (dispatch) =>
  */
 export const selectTrendingGoals = (title) => (dispatch) => {
     dispatch(change('createGoalModal', 'title', title))
-    Actions.pop()
+    // Actions.pop()
 }
 
 export const selectTrendingGoalsCategory = (category) => (
