@@ -15,6 +15,8 @@ import {
     TouchableOpacity,
     TextInput,
     Alert,
+    KeyboardAvoidingView,
+    Keyboard,
 } from 'react-native'
 import Constants from 'expo-constants'
 import Modal from 'react-native-modal'
@@ -38,6 +40,7 @@ class ClarifyModal extends React.Component {
             opt1: false,
             opt2: false,
             opt3: false,
+            increaseHeight: false,
         }
     }
 
@@ -136,107 +139,140 @@ class ClarifyModal extends React.Component {
 
     render() {
         const { name } = this.props
+
         return (
-            <Modal
-                backdropColor={'black'}
-                backdropOpacity={0.5}
-                isVisible={this.props.isVisible}
-                onModalShow={this.onModalShow}
-                onBackdropPress={() => this.closeModal()}
-                onSwipeComplete={() => this.closeModal()}
-                swipeDirection={'down'}
-                style={{
-                    marginTop: Constants.statusBarHeight + 15,
-                    borderRadius: 15,
-                    margin: 0,
-                }}
-            >
-                <View
+            <>
+                <Modal
+                    backdropColor={'black'}
+                    backdropOpacity={0.5}
+                    isVisible={this.props.isVisible}
+                    onModalShow={this.onModalShow}
+                    onBackdropPress={() => this.closeModal()}
+                    onSwipeComplete={() => this.closeModal()}
+                    swipeDirection={'down'}
                     style={{
-                        backgroundColor: 'white',
-                        width: '100%',
-                        position: 'absolute',
-                        bottom: 0,
-                        borderRadius: 5,
+                        marginTop: Constants.statusBarHeight + 15,
+                        borderRadius: 15,
+                        margin: 0,
                     }}
                 >
                     <View
                         style={{
-                            ...styles.modalContainerStyle,
-                            height: hp(50),
+                            backgroundColor: 'white',
+                            width: '100%',
+                            position: !this.state.increaseHeight
+                                ? 'absolute'
+                                : null,
+                            bottom: !this.state.increaseHeight ? 0 : null,
+                            borderRadius: 5,
+
+                            height: this.state.increaseHeight ? '95%' : null,
+                            justifyContent: this.state.increaseHeight
+                                ? 'center'
+                                : null,
                         }}
                     >
                         <View
                             style={{
-                                borderBottomColor: '#C4C4C4',
-                                borderBottomWidth: hp(0.4),
-                                borderRadius: wp(1),
-                                marginVertical: hp(0.65),
-                                width: wp(10.66),
-                                alignSelf: 'center',
-                            }}
-                        />
-                        <Text style={styles.title}>
-                            {`Ask ${name} to clarify his goals:`}
-                        </Text>
-                        <Text style={styles.text}>
-                            {`${name}, are you able to..`}
-                        </Text>
-
-                        <Formik
-                            initialValues={{
-                                opt0: '',
-                                opt1: '',
-                                opt2: '',
-                                opt3: '',
-                            }}
-                            onSubmit={async (value, { setSubmitting }) => {
-                                Alert.alert(
-                                    'Thank you',
-                                    'Your message has been submitted!',
-                                    [
-                                        {
-                                            text: 'Ok',
-                                            onPress: () =>
-                                                this.props.closeModal(
-                                                    true,
-                                                    value
-                                                ),
-                                        },
-                                    ],
-                                    { cancelable: false }
-                                )
+                                ...styles.modalContainerStyle,
+                                height: hp(50),
                             }}
                         >
-                            {({
-                                handleChange,
-                                handleBlur,
-                                handleSubmit,
-                                values,
-                                setFieldValue,
-                            }) => (
-                                <>
-                                    {this.renderOptions(
-                                        this.options,
-                                        setFieldValue
-                                    )}
-                                    <View style={styles.inputContainer}>
-                                        <TextInput
-                                            placeholder={`Anything else you want to add?`}
-                                            multiline={true}
-                                            style={styles.inputText}
-                                            onChangeText={handleChange('opt4')}
-                                        />
-                                    </View>
-                                    {this.renderButton(handleSubmit)}
-                                </>
-                            )}
-                        </Formik>
+                            <View
+                                style={{
+                                    borderBottomColor: '#C4C4C4',
+                                    borderBottomWidth: hp(0.4),
+                                    borderRadius: wp(1),
+                                    marginVertical: hp(0.65),
+                                    width: wp(10.66),
+                                    alignSelf: 'center',
+                                }}
+                            />
+                            <Text style={styles.title}>
+                                {`Ask ${name} to clarify his goals:`}
+                            </Text>
+                            <Text style={styles.text}>
+                                {`${name}, are you able to..`}
+                            </Text>
 
-                        {this.renderCancelButton()}
+                            <Formik
+                                initialValues={{
+                                    opt0: '',
+                                    opt1: '',
+                                    opt2: '',
+                                    opt3: '',
+                                }}
+                                onSubmit={async (value, { setSubmitting }) => {
+                                    Alert.alert(
+                                        'Thank you',
+                                        'Your message has been submitted!',
+                                        [
+                                            {
+                                                text: 'Ok',
+                                                onPress: () =>
+                                                    this.props.closeModal(
+                                                        true,
+                                                        value
+                                                    ),
+                                            },
+                                        ],
+                                        { cancelable: false }
+                                    )
+                                }}
+                            >
+                                {({
+                                    handleChange,
+                                    handleBlur,
+                                    handleSubmit,
+                                    values,
+                                    setFieldValue,
+                                }) => (
+                                    <>
+                                        {this.renderOptions(
+                                            this.options,
+                                            setFieldValue
+                                        )}
+
+                                        <View style={styles.inputContainer}>
+                                            <TextInput
+                                                placeholder={`Anything else you want to add?`}
+                                                multiline={true}
+                                                style={styles.inputText}
+                                                onChangeText={handleChange(
+                                                    'opt4'
+                                                )}
+                                                onFocus={() =>
+                                                    this.setState({
+                                                        increaseHeight: true,
+                                                    })
+                                                }
+                                                onEndEditing={() =>
+                                                    this.setState({
+                                                        increaseHeight: false,
+                                                    })
+                                                }
+                                                ref={(c) => {
+                                                    this.textInputRef = c
+                                                }}
+                                                onSubmitEditing={() => {
+                                                    this.textInputRef.blur()
+                                                    this.setState({
+                                                        increaseHeight: false,
+                                                    })
+                                                }}
+                                            />
+                                        </View>
+
+                                        {this.renderButton(handleSubmit)}
+                                    </>
+                                )}
+                            </Formik>
+
+                            {this.renderCancelButton()}
+                        </View>
                     </View>
-                </View>
-            </Modal>
+                </Modal>
+            </>
         )
     }
 }

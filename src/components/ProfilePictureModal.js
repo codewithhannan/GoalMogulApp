@@ -152,7 +152,7 @@ class ProfilePictureModal extends Component {
         return (
             <>
                 <Modal
-                    backdropOpacity={0.8}
+                    backdropOpacity={1}
                     isVisible={this.props.isVisible}
                     animationIn="zoomInUp"
                     animationInTiming={400}

@@ -84,7 +84,7 @@ class OnboardingIntroTransition extends React.Component {
                                 },
                             ]}
                         >
-                            Hi{name ? `, ${name}` : ''}!
+                            Hi {name}
                         </Text>
                         <Text
                             style={[

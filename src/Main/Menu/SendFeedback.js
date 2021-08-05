@@ -137,7 +137,7 @@ class SendFeedback extends Component {
                     <KeyboardAwareScrollView
                         bounces={false}
                         enableOnAndroid={true}
-                        enableAutomaticScroll={DEVICE_PLATFORM === 'ios'}
+                        // enableAutomaticScroll={DEVICE_PLATFORM === 'ios'}
                         contentContainerStyle={[
                             {
                                 paddingBottom: getBottomSpace(),

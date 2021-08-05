@@ -162,14 +162,17 @@ class ModalTester extends Component {
                                 style={{
                                     fontWeight: '400',
                                     fontSize: 15,
-                                    textAlign: 'center',
+
                                     marginTop: 12,
+                                    lineHeight: 25,
+                                    width: '90%',
+                                    alignSelf: 'center',
                                 }}
                             >
-                                Your friend {name} has not set any goals yet.
+                                {`Your friend ${name} has not set any goals yet. Do you want to send a nudge?`}
                             </Text>
 
-                            <View
+                            {/* <View
                                 style={{
                                     marginTop: 8,
 
@@ -181,7 +184,7 @@ class ModalTester extends Component {
                                 >
                                     Do you want to send a nudge?
                                 </Text>
-                            </View>
+                            </View> */}
 
                             <View
                                 style={{

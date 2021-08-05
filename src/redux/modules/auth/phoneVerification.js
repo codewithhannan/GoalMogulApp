@@ -57,7 +57,6 @@ export const phoneNumberVerify = (value, onError) => {
                 trackWithProperties(E.REG_MOBILE_VERIFICATION_SUBMIT, {
                     result: 'failure',
                 })
-            } else {
                 onError()
             }
 

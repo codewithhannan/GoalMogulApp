@@ -107,7 +107,7 @@ export const REGISTRATION_COMMUNITY_GUIDELINE = [
         picture: Community1,
     },
     {
-        title: `Spread H.O.P.E: Help Other People Everyday`,
+        title: `Spread H.O.P.E:\nHelp Other People Everyday`,
         subTitle: '',
         picture: Community2,
     },
