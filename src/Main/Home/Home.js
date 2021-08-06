@@ -471,6 +471,7 @@ class Home extends Component {
     }
 
     handleOnRefresh = () => {
+        console.log('THIS IS HAPPENINGGG')
         const { routes, index } = this.state.navigationState
         const { token } = this.props
         routes[index].key === 'activity'

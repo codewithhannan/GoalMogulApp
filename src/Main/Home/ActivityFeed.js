@@ -494,14 +494,13 @@ class ActivityFeed extends Component {
                 cardType: 'GetYourSilverBadge',
             })
         }
-
         return (
             <>
-                {this.props.loading ? null : (
+                {!this.props.loading && !this.props.refreshing ? (
                     <View style={{ backgroundColor: 'white', marginTop: 8 }}>
                         <HomeFeedToast />
                     </View>
-                )}
+                ) : null}
 
                 <FlatList
                     keyExtractor={(item, index) => index.toString()}
