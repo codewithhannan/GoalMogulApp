@@ -21,7 +21,7 @@ class Account extends Component {
             <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
                 <ScrollView>
                     <SettingCard
-                        title="Email address"
+                        title="Change Email address"
                         key="emailaddress"
                         explanation="Add or remove email addresses"
                         onPress={() => {
