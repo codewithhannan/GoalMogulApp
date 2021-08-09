@@ -109,7 +109,7 @@ class GreenBadgeToast extends Component {
                                 marginTop: 4,
                             }}
                         >
-                            How about leaving him a memorable comment?
+                            How about leaving a memorable comment?
                         </Text>
 
                         {this.renderOpenProfileButton()}

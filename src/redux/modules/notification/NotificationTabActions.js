@@ -65,7 +65,7 @@ export const refreshNotificationTab = () => (dispatch, getState) => {
 
 export const setBadgeNumberAsyncByPlatform = Platform.select({
     ios: async (number) => {
-        console.log('THIS IS NUMBER OF NOTIFICATION', number)
+        // console.log('THIS IS NUMBER OF NOTIFICATION', number)
         Notifications.setBadgeNumberAsync(number)
     },
 
@@ -415,8 +415,6 @@ export const fetchUnreadCount = () => (dispatch, getState) => {
         )
         // refresh data quietly
         if (res.count > preUnreadCount) {
-            console.log('YAHAN ARAHA HA')
-
             Logger.log(`${DEBUG_KEY}: refresh notification quietly`, null, 4)
             refreshNotifications({
                 showIndicator: false,

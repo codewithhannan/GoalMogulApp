@@ -45,10 +45,12 @@ class NotificationTab extends Component {
     }
 
     componentDidMount() {
+        const { token } = this.props
         // Refresh notification tab
         console.log(`${DEBUG_KEY}: component did mount`)
         if (!this.props.data || _.isEmpty(this.props.data.length)) {
             this.props.refreshNotificationTab()
+            this.props.getAllNudges(token)
         }
     }
 
@@ -72,6 +74,7 @@ class NotificationTab extends Component {
     handleRefresh = () => {
         this.props.refreshNotificationTab()
         this.props.refreshNeeds()
+        this.props.getAllNudges()
     }
 
     handleOnLoadMore = () => {
@@ -100,7 +103,7 @@ class NotificationTab extends Component {
     // }
 
     handleNudgeHeader = () => {
-        if (this.props.nudgesData.length > 0 && !this.props.refreshing) {
+        if (this.props.nudgesData.length > 0) {
             return (
                 this.renderSectionTitle({
                     text: "You've been nudged",

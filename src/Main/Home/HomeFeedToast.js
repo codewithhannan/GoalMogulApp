@@ -276,13 +276,13 @@ class HomeFeedToast extends Component {
             },
             smallHeading: {
                 fontSize: UI_SCALE * 15,
-                title: 'How about leaving him a memorable comment?',
+                title: 'How about leaving a memorable comment?',
                 lineheight: 17,
             },
             renderButton: true,
             marginButtonTop: undefined,
             thirdText: undefined,
-            buttonText: 'View his profile',
+            buttonText: 'View profile',
             handleButtonPress: () =>
                 this.props.openProfile(this.props.friendsProfileToVisit[0]._id),
         },
@@ -315,7 +315,7 @@ class HomeFeedToast extends Component {
             renderButton: true,
             marginButtonTop: undefined,
             thirdText: undefined,
-            buttonText: 'View his profile',
+            buttonText: 'View profile',
             handleButtonPress: () =>
                 this.props.openProfile(this.props.closeFriendsToVisit[0]._id),
         },
@@ -362,7 +362,10 @@ class HomeFeedToast extends Component {
                     }
                 }
                 case 6: {
-                    if (this.props.showGetGoldBadge.toShow) {
+                    if (
+                        this.props.showGetGoldBadge.toShow &&
+                        this.props.friendsWithBronzeBadge < 10
+                    ) {
                         toast.thirdText = `You only need ${
                             10 - this.props.friendsWithBronzeBadge
                         } more friends with Bronze Badges to earn your Gold Badge.`

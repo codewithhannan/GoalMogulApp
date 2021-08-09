@@ -47,7 +47,15 @@ class TrendingGoalView extends React.PureComponent {
     }
 
     renderItem = ({ item, index }) => {
-        return <TrendingGoalCardView index={index + 1} item={item} />
+        return this.props.hamburger ? (
+            <TrendingGoalCardView
+                index={index + 1}
+                item={item}
+                maybeOpenModal
+            />
+        ) : (
+            <TrendingGoalCardView index={index + 1} item={item} />
+        )
     }
 
     render() {

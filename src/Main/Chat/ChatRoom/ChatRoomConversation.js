@@ -839,7 +839,7 @@ class ChatRoomConversation extends React.Component {
                     }}
                     onPress={onPress}
                 >
-                    <Video
+                    {/* <Video
                         ref={this.state.video}
                         source={{ uri: messageMediaRef }}
                         style={{
@@ -853,6 +853,11 @@ class ChatRoomConversation extends React.Component {
                         onPlaybackStatusUpdate={(status) =>
                             this.setState({ status })
                         }
+                    /> */}
+                    <Image
+                        source={{ uri: messageMediaRef }}
+                        style={{ height: 75, width: 65, borderRadius: 5 }}
+                        resizeMode="cover"
                     />
                     <RemoveAttachedImageButton onRemove={onRemove} />
                 </TouchableOpacity>
@@ -1033,7 +1038,7 @@ class ChatRoomConversation extends React.Component {
     renderBottomVoiceRecording = () => {
         const options = this.handleCamraIcon()
         // Options height + bottom space + bottom sheet handler height
-        const sheetHeight = getButtonBottomSheetHeight(5)
+        const sheetHeight = getButtonBottomSheetHeight(5.35)
         return (
             <BottomButtonsSheet
                 ref={(r) => (this.bottomRecodingSheet = r)}

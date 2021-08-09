@@ -123,7 +123,7 @@ class OnboardingPeopleKnow extends React.Component {
                     }}
                 >
                     <Text style={[default_style.titleText_1]}>
-                        People you May Know
+                        People You May Know
                     </Text>
                     <View style={{ flex: 1 }} />
                     <DelayedButton

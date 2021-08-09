@@ -40,7 +40,7 @@ class GreenBadgeToast extends Component {
                                 fontSize: 16,
                             }}
                         >
-                            View his Profile
+                            View Profile
                         </Text>
                     </View>
                 </TouchableWithoutFeedback>
@@ -109,7 +109,7 @@ class GreenBadgeToast extends Component {
                                 marginTop: 4,
                             }}
                         >
-                            How about leaving him a memorable comment?
+                            How about leaving a memorable comment?
                         </Text>
 
                         {this.renderOpenProfileButton()}

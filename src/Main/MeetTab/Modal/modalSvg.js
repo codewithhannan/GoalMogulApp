@@ -1,13 +1,14 @@
 /** @format */
 import { color, default_style } from '../../../styles/basic'
 import NewMail from '../../../asset/icons/NewMail.png'
+import Contact from '../../../asset/icons/contact.png'
 
 export const DEFAULT_CARDS = [
     // currently disabled as linking to messenger / whatsapp requires ejection
 
     {
         text: 'Find Friends in your Contacts',
-        image: undefined,
+        image: Contact,
         type: 'contacts',
         deepLink: 'fb-messenger://',
         deepLinkFormat: (text, url) => {

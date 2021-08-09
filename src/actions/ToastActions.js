@@ -12,7 +12,7 @@ const DEBUG_KEY = '[ ToastActions ]'
 
 export const getToastsData = (refresh) => {
     return async (dispatch, getState) => {
-        const { token } = getState().user
+        const { token } = getState().auth
 
         try {
             dispatch(loadToastData())

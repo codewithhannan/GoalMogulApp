@@ -273,11 +273,12 @@ class OnboardingSelectionTarget extends React.Component {
                     {this.renderOtherTextInput()}
                 </KeyboardAwareScrollView>
                 <OnboardingFooter
-                    totalStep={3}
-                    currentStep={1}
+                    // totalStep={3}
+                    // currentStep={1}
                     onNext={this.onNext}
                     onPrev={this.onBack}
                     nextDisabled={disabled}
+                    hideProgressDots={true}
                 />
             </View>
         )

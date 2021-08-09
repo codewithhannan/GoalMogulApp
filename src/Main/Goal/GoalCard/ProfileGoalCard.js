@@ -6,13 +6,17 @@
  */
 
 import React from 'react'
-import { View, Text, Image, TouchableOpacity } from 'react-native'
+import { View, Text, Image, TouchableOpacity, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import timeago from 'timeago.js'
 import _ from 'lodash'
 import Tooltip from 'react-native-walkthrough-tooltip'
 
 import SwiperTooltip from '../../../Main/Common/Tooltip'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 
 // Components
 import Timestamp from '../Common/Timestamp'
@@ -24,17 +28,17 @@ import LoveIcon from '../../../asset/utils/love.png'
 import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
 import CommentIcon from '../../../asset/utils/comment.png'
 import ShareIcon from '../../../asset/utils/forward.png'
-import RECORDING from '../../../asset/utils/Recording.png'
-import VIDEO from '../../../asset/utils/Video.png'
-import ACCOUNTABILITY from '../../../asset/utils/Accountability.png'
-import SWIPER_BACKGROUND from '../../../asset/image/tooltip2.png'
+// import RECORDING from '../../../asset/utils/Recording.png'
+// import VIDEO from '../../../asset/utils/Video.png'
+// import ACCOUNTABILITY from '../../../asset/utils/Accountability.png'
+// import SWIPER_BACKGROUND from '../../../asset/image/tooltip2.png'
 
 // Selector
 
-import { getUserData } from '../../../redux/modules/User/Selector'
+// import { getUserData } from '../../../redux/modules/User/Selector'
 
-import Swipeable from 'react-native-gesture-handler/Swipeable'
-import * as Animatable from 'react-native-animatable'
+// import Swipeable from 'react-native-gesture-handler/Swipeable'
+// import * as Animatable from 'react-native-animatable'
 
 // Actions
 import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions'
@@ -45,11 +49,12 @@ import { PRIORTY_PILL_STYLES, GOALS_STYLE } from '../../../styles/Goal'
 import { Icon } from '@ui-kitten/components'
 import { submitGoalPrivacy } from '../../../redux/modules/goal/CreateGoalActions'
 import { openCameraForVideo, openCameraRollForVideo } from '../../../actions'
-import { getButtonBottomSheetHeight } from '../../../styles'
-import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
-import CommentVideoModal from '../../Common/Modal/CommentVideoModal'
-import AccountabilityPopUp from '../../Common/Modal/AccountabilityPopUp'
-import { getFirstName } from '../../../Utils/HelperMethods'
+// import { getButtonBottomSheetHeight } from '../../../styles'
+// import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
+// import CommentVideoModal from '../../Common/Modal/CommentVideoModal'
+// import AccountabilityPopUp from '../../Common/Modal/AccountabilityPopUp'
+// import { getFirstName } from '../../../Utils/HelperMethods'
+import GoalSwiper from '../GoalSwiper'
 
 let privacyName = ''
 let row = []
@@ -95,105 +100,105 @@ class ProfileGoalCard extends React.Component {
             accountPopUpVisible: false,
         }
         this.refsArray = [] // add this
-        this.SWIPED_DATA = [
-            {
-                id: 1,
-                source: ACCOUNTABILITY,
-                onPress: () => {
-                    prevOpenedRow.close()
-                    this.setState({ accountPopUpVisible: true })
-                },
-                backgroundColor: '#CEFFBC',
-            },
+        // this.SWIPED_DATA = [
+        //     {
+        //         id: 1,
+        //         source: ACCOUNTABILITY,
+        //         onPress: () => {
+        //             prevOpenedRow.close()
+        //             this.setState({ accountPopUpVisible: true })
+        //         },
+        //         backgroundColor: '#CEFFBC',
+        //     },
 
-            {
-                id: 3,
-                source: RECORDING,
-                onPress: () => {
-                    prevOpenedRow.close()
-                    this.openRecordingModal()
-                },
-                backgroundColor: '#D7F3FF',
-            },
-            {
-                id: 2,
-                source: VIDEO,
-                onPress: () => this.openCameraRollBottomSheet(),
-                backgroundColor: '#E5F7FF',
-            },
-        ]
+        //     {
+        //         id: 3,
+        //         source: RECORDING,
+        //         onPress: () => {
+        //             prevOpenedRow.close()
+        //             this.openRecordingModal()
+        //         },
+        //         backgroundColor: '#D7F3FF',
+        //     },
+        //     {
+        //         id: 2,
+        //         source: VIDEO,
+        //         onPress: () => this.openCameraRollBottomSheet(),
+        //         backgroundColor: '#E5F7FF',
+        //     },
+        // ]
     }
 
-    showVideoModal = () => this.setState({ videoModalVisible: true })
-    openCameraRollBottomSheet = () => this.CameraRefBottomSheetRef.open()
-    closeNotificationBottomSheet = () => this.CameraRefBottomSheetRef.close()
-    openRecordingModal = () => this.bottomRecodingSheet.open()
-    closeRecordingnModal = () => this.bottomRecodingSheet.close()
+    // showVideoModal = () => this.setState({ videoModalVisible: true })
+    // openCameraRollBottomSheet = () => this.CameraRefBottomSheetRef.open()
+    // closeNotificationBottomSheet = () => this.CameraRefBottomSheetRef.close()
+    // openRecordingModal = () => this.bottomRecodingSheet.open()
+    // closeRecordingnModal = () => this.bottomRecodingSheet.close()
 
-    onVideoPress = () => {
-        const showModal = () => {
-            this.showVideoModal()
-        }
-        return this.props.openCameraForVideo(showModal)
-    }
+    // onVideoPress = () => {
+    //     const showModal = () => {
+    //         this.showVideoModal()
+    //     }
+    //     return this.props.openCameraForVideo(showModal)
+    // }
 
-    onVideoSelect = () => {
-        const showModal = () => {
-            this.showVideoModal()
-        }
-        return this.props.openCameraRollForVideo(showModal)
-    }
+    // onVideoSelect = () => {
+    //     const showModal = () => {
+    //         this.showVideoModal()
+    //     }
+    //     return this.props.openCameraRollForVideo(showModal)
+    // }
 
-    makeCameraRefOptions = () => {
-        return [
-            {
-                text: 'Record a Video',
-                onPress: () => {
-                    prevOpenedRow.close()
-                    this.closeNotificationBottomSheet(),
-                        setTimeout(() => {
-                            this.onVideoPress()
-                        }, 500)
-                },
-            },
-            {
-                text: 'Open Camera Roll',
-                onPress: () => {
-                    prevOpenedRow.close()
-                    this.closeNotificationBottomSheet()
-                    setTimeout(() => {
-                        this.onVideoSelect()
-                    }, 500)
-                },
-            },
-        ]
-    }
+    // makeCameraRefOptions = () => {
+    //     return [
+    //         {
+    //             text: 'Record a Video',
+    //             onPress: () => {
+    //                 prevOpenedRow.close()
+    //                 this.closeNotificationBottomSheet(),
+    //                     setTimeout(() => {
+    //                         this.onVideoPress()
+    //                     }, 500)
+    //             },
+    //         },
+    //         {
+    //             text: 'Open Camera Roll',
+    //             onPress: () => {
+    //                 prevOpenedRow.close()
+    //                 this.closeNotificationBottomSheet()
+    //                 setTimeout(() => {
+    //                     this.onVideoSelect()
+    //                 }, 500)
+    //             },
+    //         },
+    //     ]
+    // }
 
-    renderBottomVoiceRecording = () => {
-        const sheetHeight = getButtonBottomSheetHeight(5)
-        return (
-            <BottomButtonsSheet
-                ref={(r) => (this.bottomRecodingSheet = r)}
-                buttons={[{}]}
-                height={sheetHeight}
-                chatRecordingPress
-            />
-        )
-    }
+    // renderBottomVoiceRecording = () => {
+    //     const sheetHeight = getButtonBottomSheetHeight(5)
+    //     return (
+    //         <BottomButtonsSheet
+    //             ref={(r) => (this.bottomRecodingSheet = r)}
+    //             buttons={[{}]}
+    //             height={sheetHeight}
+    //             chatRecordingPress
+    //         />
+    //     )
+    // }
 
-    renderCameraRollBottomSheet = () => {
-        const options = this.makeCameraRefOptions()
+    // renderCameraRollBottomSheet = () => {
+    //     const options = this.makeCameraRefOptions()
 
-        const sheetHeight = getButtonBottomSheetHeight(options.length)
+    //     const sheetHeight = getButtonBottomSheetHeight(options.length)
 
-        return (
-            <BottomButtonsSheet
-                ref={(r) => (this.CameraRefBottomSheetRef = r)}
-                buttons={options}
-                height={sheetHeight}
-            />
-        )
-    }
+    //     return (
+    //         <BottomButtonsSheet
+    //             ref={(r) => (this.CameraRefBottomSheetRef = r)}
+    //             buttons={options}
+    //             height={sheetHeight}
+    //         />
+    //     )
+    // }
 
     /* Handler functions for actions */
 
@@ -255,139 +260,121 @@ class ProfileGoalCard extends React.Component {
                         {this.props.self ? (
                             <Tooltip
                                 animated={true}
-                                //(Optional) When true, tooltip will animate in/out when showing/hiding
                                 arrowSize={{ width: 16, height: 8 }}
-                                //(Optional) Dimensions of arrow bubble pointing to the highlighted element
                                 backgroundColor="rgba(0,0,0,0.5)"
-                                //(Optional) Color of the fullscreen background beneath the tooltip.
                                 isVisible={this.state.toolTipVisible}
                                 contentStyle={{
                                     backgroundColor: '#EFEFEF',
-                                    width: 395,
-                                    right: 10,
+                                    width: wp('90%'),
                                 }}
-                                //(Must) When true, tooltip is displayed
+                                //
                                 content={
                                     <>
-                                        <View
-                                            style={{
-                                                width: 900,
-                                                height: 75,
-
-                                                // backgroundColor: '#E5E5E5',
-                                                // marginBottom: 10,
-                                            }}
-                                        >
-                                            <View style={{ margin: 7 }}>
-                                                <Text
-                                                    style={{
-                                                        fontSize: 15,
-                                                        fontWeight: '600',
-                                                        color: '#535353',
-                                                    }}
-                                                >
-                                                    Privacy:
-                                                </Text>
-                                            </View>
-
-                                            <View
+                                        <View style={{ margin: 7 }}>
+                                            <Text
                                                 style={{
-                                                    flexDirection: 'row',
-                                                    alignItems: 'center',
+                                                    fontSize: 15,
+                                                    fontWeight: '600',
+                                                    color: '#535353',
                                                 }}
                                             >
-                                                {/* Privacy pill */}
+                                                Privacy:
+                                            </Text>
+                                        </View>
 
-                                                {privacyOptions.map(
-                                                    (options, index) => {
-                                                        return (
-                                                            <>
-                                                                <TouchableOpacity
-                                                                    key={
-                                                                        options.title +
-                                                                        index
-                                                                    }
-                                                                    onPress={() => {
-                                                                        this.props.submitGoalPrivacy(
-                                                                            goalId,
-                                                                            options.value,
-                                                                            token
-                                                                        )
-                                                                        this.setState(
-                                                                            {
-                                                                                toolTipVisible: false,
-                                                                            }
-                                                                        )
-                                                                    }}
+                                        <View
+                                            style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center',
+                                            }}
+                                        >
+                                            {privacyOptions.map(
+                                                (options, index) => {
+                                                    return (
+                                                        <>
+                                                            <TouchableOpacity
+                                                                key={
+                                                                    options.title +
+                                                                    index
+                                                                }
+                                                                onPress={() => {
+                                                                    this.props.submitGoalPrivacy(
+                                                                        goalId,
+                                                                        options.value,
+                                                                        token
+                                                                    )
+                                                                    this.setState(
+                                                                        {
+                                                                            toolTipVisible: false,
+                                                                        }
+                                                                    )
+                                                                }}
+                                                            >
+                                                                <View
+                                                                    style={[
+                                                                        GOALS_STYLE.commonPillContainer,
+                                                                        {
+                                                                            height: 35,
+                                                                            borderColor:
+                                                                                '#828282',
+                                                                            borderWidth:
+                                                                                options.text ==
+                                                                                privacyName
+                                                                                    ? 1
+                                                                                    : 0.3,
+
+                                                                            marginHorizontal: 3,
+                                                                            marginBottom: 5,
+                                                                            backgroundColor:
+                                                                                options.text ==
+                                                                                privacyName
+                                                                                    ? '#EFEFEF'
+                                                                                    : 'white',
+                                                                        },
+                                                                    ]}
                                                                 >
-                                                                    <View
-                                                                        style={[
-                                                                            GOALS_STYLE.commonPillContainer,
-                                                                            {
-                                                                                height: 35,
-                                                                                borderColor:
-                                                                                    '#828282',
-                                                                                borderWidth:
-                                                                                    options.text ==
-                                                                                    privacyName
-                                                                                        ? 1
-                                                                                        : 0.3,
-                                                                                left: 10,
-                                                                                marginHorizontal: 3,
-                                                                                backgroundColor:
-                                                                                    options.text ==
-                                                                                    privacyName
-                                                                                        ? '#EFEFEF'
-                                                                                        : 'white',
-                                                                            },
-                                                                        ]}
-                                                                    >
-                                                                        <Icon
-                                                                            pack="material-community"
-                                                                            name={
-                                                                                options.iconName
-                                                                            }
-                                                                            style={{
-                                                                                height: 12,
-                                                                                width: 12,
-                                                                                tintColor:
-                                                                                    '#828282',
-                                                                            }}
-                                                                        />
+                                                                    <Icon
+                                                                        pack="material-community"
+                                                                        name={
+                                                                            options.iconName
+                                                                        }
+                                                                        style={{
+                                                                            height: 12,
+                                                                            width: 12,
+                                                                            tintColor:
+                                                                                '#828282',
+                                                                        }}
+                                                                    />
 
-                                                                        <Text
-                                                                            style={{
-                                                                                fontFamily:
-                                                                                    text
-                                                                                        .FONT_FAMILY
-                                                                                        .SEMI_BOLD,
-                                                                                fontSize: 14,
-                                                                                color:
-                                                                                    '#828282',
-                                                                                marginLeft: 5,
-                                                                            }}
-                                                                        >
-                                                                            {
-                                                                                options.title
-                                                                            }
-                                                                        </Text>
-                                                                    </View>
-                                                                </TouchableOpacity>
-                                                            </>
-                                                        )
-                                                    }
-                                                )}
-                                            </View>
+                                                                    <Text
+                                                                        style={{
+                                                                            fontFamily:
+                                                                                text
+                                                                                    .FONT_FAMILY
+                                                                                    .SEMI_BOLD,
+                                                                            fontSize: 11,
+                                                                            color:
+                                                                                '#828282',
+                                                                            marginLeft: 5,
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            options.title
+                                                                        }
+                                                                    </Text>
+                                                                </View>
+                                                            </TouchableOpacity>
+                                                        </>
+                                                    )
+                                                }
+                                            )}
                                         </View>
                                     </>
                                 }
-                                //(Must) This is the view displayed in the tooltip
                                 placement="bottom"
-                                //(Must) top, bottom, left, right, auto.
                                 onClose={() =>
                                     this.setState({ toolTipVisible: false })
                                 }
-                                //(Optional) Callback fired when the user taps the tooltip
                             >
                                 <TouchableOpacity
                                     onPress={() =>
@@ -527,58 +514,58 @@ class ProfileGoalCard extends React.Component {
         )
     }
 
-    rightSwipeActions = () => {
-        return (
-            <>
-                {this.state.swiperToolTipVisible && this.props.index == 0 ? (
-                    <SwiperTooltip
-                        title={swiperText}
-                        imageSource={SWIPER_BACKGROUND}
-                        type="swiperDetail"
-                        bgStyle={{ width: 200, height: 87 }}
-                        viewStyle={{
-                            position: 'absolute',
-                            zIndex: 1,
-                            left: 95,
-                            top: 0,
-                        }}
-                    />
-                ) : null}
+    // rightSwipeActions = () => {
+    //     return (
+    //         <>
+    //             {this.state.swiperToolTipVisible && this.props.index == 0 ? (
+    //                 <SwiperTooltip
+    //                     title={swiperText}
+    //                     imageSource={SWIPER_BACKGROUND}
+    //                     type="swiperDetail"
+    //                     bgStyle={{ width: 200, height: 87 }}
+    //                     viewStyle={{
+    //                         position: 'absolute',
+    //                         zIndex: 1,
+    //                         left: 95,
+    //                         top: 0,
+    //                     }}
+    //                 />
+    //             ) : null}
 
-                {this.SWIPED_DATA.map((item, index) => {
-                    return (
-                        <TouchableOpacity
-                            onPress={item.onPress}
-                            key={index}
-                            activeOpacity={0.7}
-                            style={{
-                                backgroundColor: item.backgroundColor,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                width: 100,
-                                height: '97%',
-                            }}
-                        >
-                            <Animatable.View>
-                                <Image
-                                    source={item.source}
-                                    resizeMode="contain"
-                                    style={{ height: 40, width: 40 }}
-                                />
-                            </Animatable.View>
-                        </TouchableOpacity>
-                    )
-                })}
-            </>
-        )
-    }
+    //             {this.SWIPED_DATA.map((item, index) => {
+    //                 return (
+    //                     <TouchableOpacity
+    //                         onPress={item.onPress}
+    //                         key={index}
+    //                         activeOpacity={0.7}
+    //                         style={{
+    //                             backgroundColor: item.backgroundColor,
+    //                             justifyContent: 'center',
+    //                             alignItems: 'center',
+    //                             width: 100,
+    //                             height: '97%',
+    //                         }}
+    //                     >
+    //                         <Animatable.View>
+    //                             <Image
+    //                                 source={item.source}
+    //                                 resizeMode="contain"
+    //                                 style={{ height: 40, width: 40 }}
+    //                             />
+    //                         </Animatable.View>
+    //                     </TouchableOpacity>
+    //                 )
+    //             })}
+    //         </>
+    //     )
+    // }
 
-    closeRow = (index) => {
-        if (prevOpenedRow && prevOpenedRow !== row[index]) {
-            prevOpenedRow.close()
-        }
-        prevOpenedRow = row[index]
-    }
+    // closeRow = (index) => {
+    //     if (prevOpenedRow && prevOpenedRow !== row[index]) {
+    //         prevOpenedRow.close()
+    //     }
+    //     prevOpenedRow = row[index]
+    // }
 
     render() {
         const { item, index, visitedUserName } = this.props
@@ -592,14 +579,14 @@ class ProfileGoalCard extends React.Component {
             <>
                 {!this.props.isSelf && this.props.friendShip ? (
                     <>
-                        <CommentVideoModal
+                        {/* <CommentVideoModal
                             isVisible={this.state.videoModalVisible}
                             onClose={() =>
                                 this.setState({ videoModalVisible: false })
                             }
                             onRecordPress={this.openCameraRollBottomSheet}
-                        />
-                        <Swipeable
+                        /> */}
+                        {/* <Swipeable
                             renderRightActions={this.rightSwipeActions}
                             friction={2}
                             ref={(ref) => (row[index] = ref)}
@@ -609,7 +596,8 @@ class ProfileGoalCard extends React.Component {
                                 this.setState({ swiperToolTipVisible: true })
                             }
                             onSwipeableOpen={this.closeRow(index)}
-                        >
+                        > */}
+                        <GoalSwiper index={index} marginBottom={8}>
                             <DelayedButton
                                 index={index}
                                 activeOpacity={1}
@@ -624,16 +612,17 @@ class ProfileGoalCard extends React.Component {
                                 {this.renderProgressBar(item)}
                                 {this.renderStats(item)}
                             </DelayedButton>
-                        </Swipeable>
-                        {this.renderCameraRollBottomSheet()}
-                        {this.renderBottomVoiceRecording()}
-                        <AccountabilityPopUp
+                        </GoalSwiper>
+                        {/* </Swipeable> */}
+                        {/* {this.renderCameraRollBottomSheet()}
+                        {this.renderBottomVoiceRecording()} */}
+                        {/* <AccountabilityPopUp
                             isVisible={this.state.accountPopUpVisible}
                             onClose={() =>
                                 this.setState({ accountPopUpVisible: false })
                             }
                             name={getFirstName(visitedUserName)}
-                        />
+                        /> */}
                     </>
                 ) : (
                     <DelayedButton

@@ -16,10 +16,17 @@ import { nFormatter } from '../../../redux/middleware/utils'
 
 // Styles
 import { color, default_style } from '../../../styles/basic'
+import { Actions } from 'react-native-router-flux'
 
 class TrendingGoalCard extends React.PureComponent {
     onPress = (title) => {
-        this.props.selectTrendingGoals(title)
+        if (this.props.maybeOpenModal) {
+            Actions.push('createGoalModal')
+            this.props.selectTrendingGoals(title)
+        } else {
+            this.props.selectTrendingGoals(title)
+            Actions.pop()
+        }
     }
 
     renderStats(item) {

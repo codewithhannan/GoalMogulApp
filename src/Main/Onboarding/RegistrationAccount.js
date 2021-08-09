@@ -437,7 +437,7 @@ class RegistrationAccount extends React.Component {
                     key="inviterCode"
                     inputTitle="Invite Code"
                     ref="inviterCode"
-                    placeholder={`Enter you referral code here`}
+                    placeholder={`Enter your referral code here`}
                     value={inviterCode}
                     returnKeyType="inviterCode"
                     onSubmitEditing={() => {

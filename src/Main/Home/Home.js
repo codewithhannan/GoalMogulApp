@@ -88,6 +88,7 @@ import {
 } from '../../redux/modules/notification/NotificationTabActions'
 import { makeGetUserGoals } from '../../redux/modules/User/Selector'
 import { trackWithProperties } from 'expo-analytics-segment'
+import { getAllNudges } from '../../actions/NudgeActions'
 
 const stories = [
     {
@@ -470,10 +471,13 @@ class Home extends Component {
     }
 
     handleOnRefresh = () => {
+        console.log('THIS IS HAPPENINGGG')
         const { routes, index } = this.state.navigationState
+        const { token } = this.props
         routes[index].key === 'activity'
             ? this.props.refreshActivityFeed()
             : this.props.refreshGoalFeed()
+        this.props.getAllNudges(token)
     }
 
     _renderScene() {
@@ -664,6 +668,7 @@ class Home extends Component {
 
 const mapStateToProps = (state) => {
     const { popup } = state
+    const { token } = state.auth.user
     const { userId } = state.user
     const refreshing = state.home.activityfeed.refreshing
     // || state.home.mastermind.refreshing
@@ -678,6 +683,7 @@ const mapStateToProps = (state) => {
 
     return {
         refreshing,
+        token,
         user,
         needRefreshActivity,
         needRefreshMastermind,
@@ -752,6 +758,7 @@ export default connect(
         getUserVisitedNumber,
 
         getToastsData,
+        getAllNudges,
     },
     null,
     { withRef: true }

@@ -81,16 +81,16 @@ class ProfileDetailCard extends Component {
             this.prefetchImage(image)
         }
 
-        if (Platform.OS !== 'web') {
-            const {
-                status,
-            } = await ImagePicker.requestMediaLibraryPermissionsAsync()
-            if (status !== 'granted') {
-                alert(
-                    'Sorry, we need camera roll permissions to make this work!'
-                )
-            }
-        }
+        // if (Platform.OS !== 'web') {
+        //     const {
+        //         status,
+        //     } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+        //     if (status !== 'granted') {
+        //         alert(
+        //             'Sorry, we need camera roll permissions to make this work!'
+        //         )
+        //     }
+        // }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -144,6 +144,8 @@ class ProfileDetailCard extends Component {
 
     openOptionModal = () => this.bottomSheetRef.open()
     closeOptionModal = () => this.bottomSheetRef.close()
+    openCameraRollBottomSheet = () => this.CameraRefBottomSheetRef.open()
+    closeNotificationBottomSheet = () => this.CameraRefBottomSheetRef.close()
     openFriendRequestOptionModal = () => this.friendRequestBottomSheetRef.open()
     closeFriendRequestOptionModal = () =>
         this.friendRequestBottomSheetRef.close()
@@ -639,7 +641,7 @@ class ProfileDetailCard extends Component {
                     </TouchableOpacity>
                 )}
 
-                <TouchableOpacity onPress={() => this.handleOptionsOnPress()}>
+                <TouchableOpacity onPress={this.openCameraRollBottomSheet}>
                     <View style={styles.iconContainerStyle}>
                         <Entypo name="camera" size={11} color="#FFFF" />
                     </View>
@@ -870,6 +872,39 @@ class ProfileDetailCard extends Component {
             />
         )
     }
+    makeCameraRefOptions = () => {
+        return [
+            {
+                text: 'Update Profile Picture',
+                onPress: () => {
+                    this.closeNotificationBottomSheet(),
+                        setTimeout(() => {
+                            this.pickImage()
+                        }, 500)
+                },
+            },
+            {
+                text: 'Cancel',
+                onPress: () => {
+                    this.closeNotificationBottomSheet()
+                },
+            },
+        ]
+    }
+
+    renderCameraRollBottomSheet = () => {
+        const options = this.makeCameraRefOptions()
+
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.CameraRefBottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
+    }
 
     render() {
         const { user, self } = this.props
@@ -905,6 +940,7 @@ class ProfileDetailCard extends Component {
                             {this.renderBottomSheet()}
                             {this.renderFriendshipStatusBottomSheet()}
                             {this.renderFriendshipTypeBottomSheet()}
+                            {this.renderCameraRollBottomSheet()}
                         </View>
                     </View>
                     <View style={styles.containerStyle}>

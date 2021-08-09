@@ -184,7 +184,11 @@ class Menu extends React.PureComponent {
                 {/* Trending goals - this is unavailable for now, so commented out. */}
                 <DelayedButton
                     activeOpacity={0.6}
-                    onPress={() => Actions.push('trendingGoalView')}
+                    onPress={() =>
+                        Actions.push('trendingGoalView', {
+                            hamburger: 'hamburger',
+                        })
+                    }
                     style={styles.buttonStyle}
                 >
                     <Text style={styles.titleTextStyle}>Trending goals</Text>

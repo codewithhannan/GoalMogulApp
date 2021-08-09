@@ -42,15 +42,14 @@ class ModalTester extends Component {
                 <TouchableWithoutFeedback onPress={this.props.onClose}>
                     <View
                         style={{
-                            width: '26%',
+                            width: '27%',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            height: 40,
+                            height: 36,
                             borderColor: '#42C0F5',
                             borderWidth: 2,
                             borderRadius: 3,
-                            right: 20,
-                            marginTop: 6,
+                            marginTop: 2,
                         }}
                     >
                         <Text
@@ -82,14 +81,7 @@ class ModalTester extends Component {
                         this.props.onClose()
                     }}
                 >
-                    <View
-                        style={{
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            bottom: 3,
-                            left: 13,
-                        }}
-                    >
+                    <View style={{}}>
                         <LottieView
                             style={{ height: hp(5) }}
                             source={YES_LOTTIE}
@@ -130,7 +122,7 @@ class ModalTester extends Component {
 
                                 borderRadius: 8,
                                 backgroundColor: color.GV_MODAL,
-                                height: MODAL_HEIGHT * 0.357,
+                                height: '40%',
                             }}
                         >
                             <View
@@ -170,14 +162,17 @@ class ModalTester extends Component {
                                 style={{
                                     fontWeight: '400',
                                     fontSize: 15,
-                                    textAlign: 'center',
+
                                     marginTop: 12,
+                                    lineHeight: 25,
+                                    width: '90%',
+                                    alignSelf: 'center',
                                 }}
                             >
-                                Your friend {name} has not set any goals yet.
+                                {`Your friend ${name} has not set any goals yet. Do you want to send a nudge?`}
                             </Text>
 
-                            <View
+                            {/* <View
                                 style={{
                                     marginTop: 8,
 
@@ -189,21 +184,18 @@ class ModalTester extends Component {
                                 >
                                     Do you want to send a nudge?
                                 </Text>
-                            </View>
+                            </View> */}
 
                             <View
                                 style={{
-                                    flex: 1,
                                     flexDirection: 'row',
-                                    justifyContent: 'space-evenly',
+                                    justifyContent: 'center',
+                                    // justifyContent: 'space-evenly',
                                     marginTop: 20,
-
-                                    // paddingleft: 10,
-                                    // padding: 15,
-                                    // marginLeft: 20,
                                 }}
                             >
                                 {this.renderNoButton()}
+                                <View style={{ width: 10 }} />
                                 {this.renderYesButton()}
                             </View>
                         </View>

@@ -26,7 +26,20 @@ const { button: buttonStyle } = OnboardingStyles
 
 class OnboardingFooter extends React.Component {
     renderProgressBar() {
-        const { totalStep, currentStep } = this.props
+        const { totalStep, currentStep, hideProgressDots } = this.props
+        if (hideProgressDots)
+            return (
+                <>
+                    <View
+                        style={{
+                            flex: 1,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexDirection: 'row',
+                        }}
+                    ></View>
+                </>
+            )
         return (
             <View
                 style={{

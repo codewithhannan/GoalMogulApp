@@ -232,6 +232,7 @@ class RouterComponent extends Component {
             default:
                 return null
         }
+        console.log('ALLLLLLL', all)
 
         // Back to initial for homeTab
         if (state.key === 'homeTab' && isFocused() && state.routes.length > 1) {
@@ -272,12 +273,23 @@ class RouterComponent extends Component {
 
         if (state.key === 'notificationTab') {
             if (Actions.refs.notification !== undefined) {
+                console.log(
+                    'THIS IS ACTIONSS REFF',
+                    Actions.refs.notification.getWrappedInstance()
+                )
                 Actions.refs.notification.getWrappedInstance().handleRefresh()
             }
         }
 
         if (state.key === 'homeTab' && isFocused()) {
             if (Actions.refs.home !== undefined) {
+                // console.log(
+                //     'THIS IS HAPPENINGGG 1',
+                //     Actions.refs.home.getWrappedInstance().props.getToastsData()
+                // )
+                Actions.refs.home
+                    .getWrappedInstance()
+                    .props.refreshActivityFeed()
                 Actions.refs.home
                     .getWrappedInstance()
                     .innerComponent.scrollToTop()
@@ -582,10 +594,6 @@ class RouterComponent extends Component {
                                             hideNavBar
                                             transitionConfig={() => ({
                                                 screenInterpolator: (props) => {
-                                                    console.log(
-                                                        'THIS IS PROPSSS',
-                                                        props
-                                                    )
                                                     const { scene } = props
                                                     switch (
                                                         scene.route.routeName

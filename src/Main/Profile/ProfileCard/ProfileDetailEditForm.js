@@ -45,6 +45,8 @@ import {
     getProfileImageOrDefault,
     getProfileImageOrDefaultFromUser,
 } from '../../../redux/middleware/utils'
+import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
+import { getButtonBottomSheetHeight } from '../../../styles'
 
 const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel']
 const TAKING_PICTURE_INDEX = 0
@@ -115,6 +117,48 @@ class ProfileDetailEditForm extends Component {
         )
     }
 
+    renderCameraRollBottomSheet = () => {
+        const options = this.makeCameraRefOptions()
+
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.CameraRefBottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
+    }
+    openCameraRollBottomSheet = () => this.CameraRefBottomSheetRef.open()
+    closeNotificationBottomSheet = () => this.CameraRefBottomSheetRef.close()
+    makeCameraRefOptions = () => {
+        return [
+            {
+                text: 'Take a Picture',
+                onPress: () => {
+                    this.closeNotificationBottomSheet(),
+                        setTimeout(() => {
+                            this.props.openCamera((result) => {
+                                this.props.change('profile.image', result.uri)
+                            })
+                        }, 500)
+                },
+            },
+            {
+                text: 'Camera Roll',
+                onPress: () => {
+                    this.closeNotificationBottomSheet()
+                    setTimeout(() => {
+                        this.props.openCameraRoll((result) => {
+                            this.props.change('profile.image', result.uri)
+                        })
+                    }, 500)
+                },
+            },
+        ]
+    }
+
     renderImage = ({ input: { value } }) => {
         return (
             <View style={{ width: '100%' }}>
@@ -126,7 +170,7 @@ class ProfileDetailEditForm extends Component {
                 />
                 <TouchableOpacity
                     activeOpacity={0.6}
-                    onPress={this.chooseImage}
+                    onPress={this.openCameraRollBottomSheet}
                 >
                     <View style={styles.imageContainerStyle}>
                         <View style={styles.imageWrapperStyle}>
@@ -310,6 +354,7 @@ class ProfileDetailEditForm extends Component {
                             autoCorrect
                             returnKeyType="Enter"
                         />
+                        {this.renderCameraRollBottomSheet()}
                     </KeyboardAwareScrollView>
                 </SafeAreaView>
             </View>

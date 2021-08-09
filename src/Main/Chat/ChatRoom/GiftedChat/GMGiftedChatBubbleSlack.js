@@ -153,13 +153,15 @@ class Bubble extends React.Component {
         let gomoExist = false
         let chatroomId = this.props.chatRooms.filter((chatroom) => {
             for (let member of chatroom.members) {
-                if (member.memberRef.name == 'GoMoBo') {
+                console.log('THIS IS MEMBERRRSSS', member)
+                if (member.memberRef.name == 'GoalMogul Planner (GoMo)') {
                     gomoExist = true
                     break
                 }
             }
             if (gomoExist) return chatroom
         })
+
         Actions.push('chatRoomConversation', {
             chatRoomId: chatroomId[0]._id,
         })
