@@ -47,6 +47,7 @@ import { setJSExceptionHandler } from 'react-native-exception-handler' // If an 
 
 // UI theme provider
 import ThemeProvider from './theme/ThemeProvider'
+import CelebrateVictoryModel from './src/Main/Accountability/components/YesNoComponent'
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
 Text.defaultProps.allowFontScaling = false
@@ -118,8 +119,18 @@ export default class App extends React.Component {
                 <ReduxProvider store={store}>
                     <PersistGate persistor={persistor}>
                         <View style={styles.container}>
-                            <Router />
+                            {/* <Router /> */}
                             {/* <DateTimePicker /> */}
+                            <View
+                                style={{
+                                    height: '100%',
+                                    width: '100%',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <CelebrateVictoryModel />
+                            </View>
                         </View>
                         <DropdownAlert
                             ref={(ref) => DropDownHolder.setDropDown(ref)}

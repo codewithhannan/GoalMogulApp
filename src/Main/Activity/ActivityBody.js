@@ -181,7 +181,7 @@ class ActivityBody extends React.Component {
         const showGoalRefCard = _.get(belongsToGoalStoryline, 'goalRef', false)
         return (
             <View>
-                {this.renderPostVideo(mediaRef)}
+                {this.renderPostImage(mediaRef)}
                 {showGoalRefCard && [
                     <Text
                         style={[

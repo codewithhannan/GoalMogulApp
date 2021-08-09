@@ -170,8 +170,16 @@ class InviteFriendModal extends React.PureComponent {
             })
     }
 
-    shareOnMessanger = (message, link) => {
-        Linking.openURL(`fb-messenger://share?link=${message}\n\n${link}`)
+    shareOnMessanger = async (message, link) => {
+        try {
+            await Linking.openURL(
+                `fb-messenger://share?link=${message}\n\n${link}`
+            )
+        } catch (error) {
+            alert(
+                'Unable to Open Messenger, Please make sure the app is installed.'
+            )
+        }
     }
 
     openEditInviteCodeForm = () => {
@@ -261,8 +269,17 @@ class InviteFriendModal extends React.PureComponent {
         )
     }
 
-    shareToWhatsApp = (text, link) => {
-        Linking.openURL(`whatsapp://send?text=${text}\n\n${link}`)
+    shareToWhatsApp = async (text, link) => {
+        try {
+            const test = await Linking.openURL(
+                `whatsapp://send?text=${text}\n\n${link}`
+            )
+            console.log(test)
+        } catch (error) {
+            alert(
+                'Unable to Open Whatsapp, Please make sure the app is installed.'
+            )
+        }
     }
 
     handleDeepLink = async (item) => {
