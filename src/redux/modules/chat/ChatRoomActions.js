@@ -624,6 +624,8 @@ export async function _transformMessagesForGiftedChat(
                 )
             }
 
+            // console.log('THIS IS CHATROOM CONTENTTT', content)
+
             // return transformed message
             return {
                 _id,
@@ -635,6 +637,7 @@ export async function _transformMessagesForGiftedChat(
                 image: media && `${IMAGE_BASE_URL}${media}`,
                 options: content && content.options,
                 text: content && decode(content.message),
+                question: content.question && content.question,
                 actions: content.actions && content.actions,
                 system: !!isSystemMessage,
             }

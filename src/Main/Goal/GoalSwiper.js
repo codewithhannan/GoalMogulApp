@@ -187,7 +187,15 @@ class GoalSwiper extends React.Component {
     }
 
     render() {
-        const { index, visitedUserName, ownerName } = this.props
+        const {
+            index,
+            visitedUserName,
+            ownerName,
+            homeFeedGoal,
+            children,
+            goalId,
+        } = this.props
+
         return (
             <>
                 <CommentVideoModal
@@ -206,7 +214,7 @@ class GoalSwiper extends React.Component {
                     }
                     onSwipeableOpen={this.closeRow(index)}
                 >
-                    {this.props.children}
+                    {children}
                 </Swipeable>
                 {this.renderCameraRollBottomSheet()}
                 {this.renderBottomVoiceRecording()}
@@ -215,11 +223,10 @@ class GoalSwiper extends React.Component {
                     onClose={() =>
                         this.setState({ accountPopUpVisible: false })
                     }
-                    // name={getFirstName(
-                    //     visitedUserName == undefined
-                    //         ? ownerName
-                    //         : visitedUserName
-                    // )}
+                    name={getFirstName(
+                        homeFeedGoal ? ownerName : visitedUserName
+                    )}
+                    goalId={goalId}
                 />
             </>
         )

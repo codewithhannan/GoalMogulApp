@@ -146,8 +146,8 @@ class NeedStepSuggestion extends React.Component {
         // }
 
         const { goalDetail } = this.props
-        const { steps, needs } = goalDetail
-        if (steps.length === 0 && needs.length === 0) {
+        const { steps, needs, isOwnGoal } = goalDetail
+        if (steps.length === 0 && needs.length === 0 && !isOwnGoal) {
             setTimeout(() => {
                 this.setState({ showSuggestionPopup: true })
             }, 2000)
