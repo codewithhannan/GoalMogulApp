@@ -578,7 +578,7 @@ class ActivityCard extends React.PureComponent {
                     <GoalSwiper
                         index={this.props.index}
                         goalRef={item}
-                        // ownerName={goalRef?.owner.name}
+                        ownerName={goalRef?.owner.name}
                         marginTop={8}
                         homeFeedGoal
                         goalId={goalRef._id}
