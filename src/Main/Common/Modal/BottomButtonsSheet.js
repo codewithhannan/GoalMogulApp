@@ -4,8 +4,9 @@
  * @format
  */
 
-import React from 'react'
+import React, { Component } from 'react'
 import { View, Image, Text, TouchableOpacity } from 'react-native'
+
 import { default_style, color } from '../../../styles/basic'
 import DelayedButton from '../Button/DelayedButton'
 import BottomSheet from './BottomSheet'
@@ -18,7 +19,8 @@ import AudioModal from '../../../components/AudioModal'
  * This bottom sheet uses https://github.com/nysamnang/react-native-raw-bottom-sheet#readme
  * and follows the pattern https://developer.apple.com/design/human-interface-guidelines/ios/app-architecture/modality/
  */
-class BottomButtonsSheet extends React.PureComponent {
+
+class BottomButtonsSheet extends Component {
     open = () => this.bottomSheetRef.open()
 
     close = () => this.bottomSheetRef.close()
@@ -144,8 +146,17 @@ class BottomButtonsSheet extends React.PureComponent {
                     </TouchableOpacity>
                 </View>
             )
+        } else if (this.props.commentRecordingPress) {
+            return (
+                <AudioModal
+                    onClose={this.close}
+                    pageId={this.props.pageId}
+                    goalDetail={this.props.item}
+                    commentType
+                />
+            )
         } else if (this.props.chatRecordingPress) {
-            return <AudioModal />
+            return <AudioModal onClose={this.close} chatType />
         } else {
             return (
                 <View

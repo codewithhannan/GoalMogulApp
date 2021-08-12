@@ -65,7 +65,14 @@
         "android": {
             "package": "com.goalmogul.goalmogulbeta",
             "googleServicesFile": "./config/google-services.json",
-            "versionCode": 100
+            "versionCode": 100,
+            "permissions": [
+                "ACCESS_COARSE_LOCATION",
+                "ACCESS_FINE_LOCATION",
+                "ACCESS_NETWORK_STATE",
+                "ACCESS_WIFI_STATE",
+                "CAMERA"
+            ]
         }
     }
 }

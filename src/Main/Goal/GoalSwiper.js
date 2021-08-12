@@ -16,11 +16,13 @@ import { getButtonBottomSheetHeight } from '../../styles'
 import { getFirstName } from '../../Utils/HelperMethods'
 import { connect } from 'react-redux'
 import SwiperTooltip from '../Common/Tooltip'
+import { refreshProfileData } from '../../actions'
+import { getNewCommentByTab } from '../../redux/modules/feed/comment/CommentSelector'
+import { constructPageId } from '../../redux/middleware/utils'
 
 const swiperText = 'You can leave a video or voice comment! 😃'
 let row = []
 let prevOpenedRow
-
 class GoalSwiper extends React.Component {
     constructor(props) {
         super(props)
@@ -111,7 +113,9 @@ class GoalSwiper extends React.Component {
                 ref={(r) => (this.bottomRecodingSheet = r)}
                 buttons={[{}]}
                 height={sheetHeight}
-                chatRecordingPress
+                commentRecordingPress
+                pageId={this.props.pageId}
+                item={this.props.goalRef}
             />
         )
     }
@@ -228,13 +232,19 @@ class GoalSwiper extends React.Component {
 
 const mapStateToProps = (state, props) => {
     const visitedUserName = state.profile.user.name
+    const { userId } = state.user
+    const pageId = constructPageId('goal')
 
     return {
         visitedUserName,
+        userId,
+        newComment: getNewCommentByTab(state, pageId),
+        pageId,
     }
 }
 
 export default connect(mapStateToProps, {
     openCameraForVideo,
     openCameraRollForVideo,
+    refreshProfileData,
 })(GoalSwiper)

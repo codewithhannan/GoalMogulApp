@@ -817,6 +817,7 @@ class ProfileV2 extends Component {
                         onClose={this.closeProfileModal}
                         userId={userId}
                         pageId={pageId}
+                        isSelf={this.props.isSelf}
                     />
                     {/* <CommentVideoModal /> */}
 

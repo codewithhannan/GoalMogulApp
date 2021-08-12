@@ -1,95 +1,97 @@
 /** @format */
 
-import React, { useState, useEffect } from 'react'
-import {
-    Button,
-    Text,
-    View,
-    Image,
-    TouchableOpacity,
-    Dimensions,
-} from 'react-native'
-import Modal from 'react-native-modal'
-import Patricia from './Patricia'
+// /** @format */
 
-// const windowWidth = Dimensions.get("window").width;
-// const height = Dimensions.get("screen").height;
+// import React, { useState, useEffect } from 'react'
+// import {
+//     Button,
+//     Text,
+//     View,
+//     Image,
+//     TouchableOpacity,
+//     Dimensions,
+// } from 'react-native'
+// import Modal from 'react-native-modal'
+// import Patricia from './Patricia'
 
-function PatriciaModal() {
-    const [isModalVisible, setModalVisible] = useState(false)
-    // const [isVisible, setIsVisible] = useState(true);
+// // const windowWidth = Dimensions.get("window").width;
+// // const height = Dimensions.get("screen").height;
 
-    const toggleModal = (props) => {
-        setModalVisible(!isModalVisible)
-    }
+// function PatriciaModal() {
+//     const [isModalVisible, setModalVisible] = useState(false)
+//     // const [isVisible, setIsVisible] = useState(true);
 
-    return (
-        <View
-            style={{
-                // marginRight: 30,
-                backgroundColor: 'gray',
-                flex: 1,
-                backgroundColor: 'white',
-                // opacity: 0.7,
+//     const toggleModal = (props) => {
+//         setModalVisible(!isModalVisible)
+//     }
 
-                // backgroundColor: "transparent",
-                justifyContent: 'center',
-            }}
-        >
-            <Button title="Show modal" onPress={toggleModal} />
+//     return (
+//         <View
+//             style={{
+//                 // marginRight: 30,
+//                 backgroundColor: 'gray',
+//                 flex: 1,
+//                 backgroundColor: 'white',
+//                 // opacity: 0.7,
 
-            <Modal
-                transparent
-                isVisible={isModalVisible}
-                animationType="slide"
-                swipeDirection="down"
-                onSwipeComplete={() => setModalVisible(false)}
-                style={{
-                    marginRight: 0.1,
-                    marginLeft: 0.1,
-                    backgroundColor: 'transparent',
-                }}
-            >
-                <View
-                    style={{
-                        flex: 1,
-                        backgroundColor: 'white',
-                        marginTop: 100,
-                        // width: 200,
-                        height: '30%',
-                        // aspectRatio: 1 / 2,
+//                 // backgroundColor: "transparent",
+//                 justifyContent: 'center',
+//             }}
+//         >
+//             <Button title="Show modal" onPress={toggleModal} />
 
-                        // height: height * 0.6,
-                    }}
-                >
-                    <TouchableOpacity
-                        style={{
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}
-                        onPress={toggleModal}
-                    >
-                        <Image
-                            style={{
-                                width: 40,
-                                height: 10,
-                            }}
-                            source={require('../assets/line.jpg')}
-                        />
-                        <Image
-                            style={{
-                                width: 40,
-                                height: 10,
-                                marginLeft: 330,
-                            }}
-                            source={require('../assets/download.png')}
-                        />
-                    </TouchableOpacity>
+//             <Modal
+//                 transparent
+//                 isVisible={isModalVisible}
+//                 animationType="slide"
+//                 swipeDirection="down"
+//                 onSwipeComplete={() => setModalVisible(false)}
+//                 style={{
+//                     marginRight: 0.1,
+//                     marginLeft: 0.1,
+//                     backgroundColor: 'transparent',
+//                 }}
+//             >
+//                 <View
+//                     style={{
+//                         flex: 1,
+//                         backgroundColor: 'white',
+//                         marginTop: 100,
+//                         // width: 200,
+//                         height: '30%',
+//                         // aspectRatio: 1 / 2,
 
-                    <Patricia />
-                </View>
-            </Modal>
-        </View>
-    )
-}
-export default PatriciaModal
+//                         // height: height * 0.6,
+//                     }}
+//                 >
+//                     <TouchableOpacity
+//                         style={{
+//                             justifyContent: 'center',
+//                             alignItems: 'center',
+//                         }}
+//                         onPress={toggleModal}
+//                     >
+//                         <Image
+//                             style={{
+//                                 width: 40,
+//                                 height: 10,
+//                             }}
+//                             source={require('../assets/line.jpg')}
+//                         />
+//                         <Image
+//                             style={{
+//                                 width: 40,
+//                                 height: 10,
+//                                 marginLeft: 330,
+//                             }}
+//                             source={require('../assets/download.png')}
+//                         />
+//                     </TouchableOpacity>
+
+//                     <Patricia />
+//                 </View>
+//             </Modal>
+//         </View>
+//     )
+// }
+// export default PatriciaModal

@@ -1897,6 +1897,8 @@ const styles = {
         optionsContainer: {
             padding: 5,
             height: height * 0.45,
+            width: width * 0.9,
+            // width: '100%',
             bottom: 50,
             // left: 50,
         },
@@ -2004,7 +2006,7 @@ const MenuFactory = (
                         <MenuOption value={item} text={item} />
                     )}
                     keyExtractor={(item, index) => index.toString()}
-                    style={{ height: 200 }}
+                    // style={{ height: 200, }}
                 />
             </MenuOptions>
         </Menu>

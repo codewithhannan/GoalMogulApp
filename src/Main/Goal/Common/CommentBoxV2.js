@@ -340,83 +340,11 @@ class CommentBoxV2 extends Component {
             height: Math.min(height, maxHeight),
         })
     }
-
-    openSuggestionBottomSheet = () => this.suggestionRefBottomSheetRef.open()
-    closeSuggestionBottomSheet = () => this.suggestionRefBottomSheetRef.close()
-
-    makeSuggestionRefOptions = () => {
-        return [
-            {
-                title: 'Suggest a:',
-            },
-            {
-                text: 'User',
-                image: user,
-                onPress: () => {
-                    this.closeSuggestionBottomSheet()
-                    setTimeout(() => {
-                        Actions.push('FriendList')
-                    }, 500)
-                },
-            },
-            {
-                text: 'Contact',
-                image: contact,
-                onPress: () => {
-                    this.closeSuggestionBottomSheet()
-                    setTimeout(() => {
-                        this.openInviteFriendModal()
-                    }, 500)
-                },
-            },
-            {
-                text: 'Step',
-                image: step,
-                onPress: () => {
-                    this.closeSuggestionBottomSheet()
-                    setTimeout(() => {}, 500)
-                },
-            },
-            {
-                text: 'Need',
-                image: need,
-                onPress: () => {
-                    this.closeSuggestionBottomSheet()
-                    setTimeout(() => {}, 500)
-                },
-            },
-            {
-                text: 'Tribe',
-                image: tribe,
-                onPress: () => {
-                    this.closeSuggestionBottomSheet()
-                    setTimeout(() => {}, 500)
-                },
-            },
-        ]
-    }
-
-    renderSuggestionRefBottomSheet = () => {
-        const options = this.makeSuggestionRefOptions()
-
-        const sheetHeight = getButtonBottomSheetHeight(options.length)
-
-        return (
-            <BottomButtonsSheet
-                ref={(r) => (this.suggestionRefBottomSheetRef = r)}
-                title="Suggest a:"
-                buttons={options}
-                height={sheetHeight}
-            />
-        )
-    }
-
     renderSuggestionIcon = () => {
         const { newComment, pageId, goalId } = this.props
         const { mediaRef, commentType } = newComment
         const disableButton = mediaRef !== undefined && mediaRef !== ''
         if (commentType === 'Reply') return null
-        const options = this.makeSuggestionRefOptions()
         return (
             <View>
                 <DelayedButton
@@ -424,7 +352,6 @@ class CommentBoxV2 extends Component {
                     onPress={() => {
                         Keyboard.dismiss()
                         this.props.createSuggestion(goalId, pageId)
-                        // this.openSuggestionBottomSheet()
                     }}
                     disabled={disableButton}
                     style={{
@@ -722,7 +649,7 @@ class CommentBoxV2 extends Component {
                     horizontal={false} // defaut is true, change the orientation of the list
                     MaxVisibleRowCount={7} // this is required if horizontal={false}
                 />
-                {/* {this.renderSuggestionRefBottomSheet()} */}
+
                 {/* <InviteFriendModal
                     isVisible={this.state.showInviteFriendModal}
                     closeModal={this.closeInviteFriendModal}
