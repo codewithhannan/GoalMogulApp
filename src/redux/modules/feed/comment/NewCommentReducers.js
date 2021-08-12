@@ -117,6 +117,8 @@ export const COMMENT_NEW_POST_FAIL = 'comment_new_post_fail'
 export const COMMENT_NEW_SELECT_IMAGE = 'comment_new_select_image'
 export const COMMENT_NEW_UPLOAD_PICTURE_SUCCESS =
     'comment_new_upload_picture_success'
+export const COMMENT_NEW_UPLOAD_VOICE_SUCCESS =
+    'comment_new_upload_voice_success'
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
@@ -570,6 +572,14 @@ export default (state = INITIAL_STATE, action) => {
 
         // Update the field with presignedUrl
         case COMMENT_NEW_UPLOAD_PICTURE_SUCCESS: {
+            const { tab, pageId, objectKey } = action.payload
+            const newState = _.cloneDeep(state)
+            const page = pageId ? `${pageId}` : 'default'
+            const path = !tab ? `homeTab.${page}` : `${tab}.${page}`
+            return _.set(newState, `${path}.mediaPresignedUrl`, objectKey)
+        }
+
+        case COMMENT_NEW_UPLOAD_VOICE_SUCCESS: {
             const { tab, pageId, objectKey } = action.payload
             const newState = _.cloneDeep(state)
             const page = pageId ? `${pageId}` : 'default'

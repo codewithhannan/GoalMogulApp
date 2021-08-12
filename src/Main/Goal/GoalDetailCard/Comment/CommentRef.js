@@ -173,7 +173,6 @@ class CommentRef extends React.PureComponent {
 
     handleMessageButtonOnPress = (userRef) => {
         this.props.createOrGetDirectMessage(userRef._id, (err, chatRoom) => {
-            // TODO: @Jia re-enable the 'Message' button
             if (err || !chatRoom) {
                 return Alert.alert(
                     'Error',

@@ -600,7 +600,7 @@ class ProfileGoalCard extends React.Component {
                         <GoalSwiper
                             index={index}
                             marginBottom={8}
-                            goalId={item._id}
+                            goalRef={item}
                         >
                             <DelayedButton
                                 index={index}

@@ -1129,7 +1129,7 @@ class CreatePostModal extends Component {
                         style={actionIconStyle}
                     /> */}
                     </DelayedButton>
-                    <View style={{ left: 205 }}>
+                    <View style={{ position: 'absolute', right: 0 }}>
                         {saveDraftDisabled ? null : (
                             <DelayedButton
                                 activeOpacity={0.6}
@@ -1258,7 +1258,8 @@ class CreatePostModal extends Component {
                             style={[
                                 GOALS_STYLE.commonPillContainer,
                                 {
-                                    width: 70,
+                                    width: 60,
+                                    alignSelf: 'center',
                                     // borderWidth: isCompleted ? 0.25 : 0,
                                     borderColor: color.GM_MID_GREY,
                                 },

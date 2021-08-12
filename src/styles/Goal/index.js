@@ -76,7 +76,7 @@ export const GOALS_STYLE = {
         fontFamily: text.FONT_FAMILY.SEMI_BOLD,
         fontSize: 9 * UI_SCALE,
         color: color.TEXT_COLOR.DARK,
-        marginLeft: 4,
+        marginLeft: 3,
     },
     commonPillContainer: {
         flexDirection: 'row',

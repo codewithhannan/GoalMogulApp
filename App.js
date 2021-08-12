@@ -40,8 +40,7 @@ import {
 import { initSentry } from './src/monitoring/sentry'
 import * as Linking from 'expo-linking'
 import MultipleImagePicker from './src/Main/Menu/MutlipleImagePicker'
-import AudioModal from './src/components/AudioModal'
-import DateTimePicker from './src/Main/Accountability/CalenderModel'
+import EditModal from './src/Main/Accountability/EditModal'
 
 import { setJSExceptionHandler } from 'react-native-exception-handler' // If an error occurs or app crashes these functions are called we used them to send sengments
 
@@ -119,7 +118,7 @@ export default class App extends React.Component {
                     <PersistGate persistor={persistor}>
                         <View style={styles.container}>
                             <Router />
-                            {/* <DateTimePicker /> */}
+                            {/* <EditModal /> */}
                         </View>
                         <DropdownAlert
                             ref={(ref) => DropDownHolder.setDropDown(ref)}

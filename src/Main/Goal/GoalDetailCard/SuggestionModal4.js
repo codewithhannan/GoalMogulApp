@@ -383,14 +383,14 @@ class SuggestionModal extends Component {
                             this.setState({ modalVisible: false })
                         }}
                     />
-                    <View style={{ flex: 1 }}>
-                        <NeedStepSuggestion
-                            item={this.props.item}
-                            pageId={this.props.pageId}
-                            goalId={this.props.goalId}
-                            opacity={this.suggestionOpacity}
-                        />
-                    </View>
+                    {/* <View style={{ flex: 1 }}> */}
+                    <NeedStepSuggestion
+                        item={this.props.item}
+                        pageId={this.props.pageId}
+                        goalId={this.props.goalId}
+                        opacity={this.suggestionOpacity}
+                    />
+                    {/* </View> */}
                     <TouchableOpacity
                         style={styles.buttonContainer}
                         onPress={() => {

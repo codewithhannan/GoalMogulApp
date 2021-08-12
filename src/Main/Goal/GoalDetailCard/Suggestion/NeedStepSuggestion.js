@@ -11,6 +11,8 @@ import {
     Dimensions,
     Image,
     TouchableOpacity,
+    KeyboardAvoidingView,
+    ScrollView,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { CheckBox } from 'react-native-elements'
@@ -165,6 +167,7 @@ class NeedStepSuggestion extends React.Component {
             }
         }
     }
+
     renderCheckBox() {
         const { suggestionType, pageId } = this.props
         return (
@@ -685,161 +688,15 @@ class NeedStepSuggestion extends React.Component {
         ]
 
         return (
-            <Tooltip
-                isVisible={this.state.toolTipVisible}
-                arrowSize={{
-                    height: 2,
-                    width: 2,
+            <ActionBar
+                isContentLiked={selfLiked}
+                actionSummaries={{
+                    likeCount,
+                    shareCount,
+                    commentCount,
                 }}
-                contentStyle={{
-                    // backgroundColor: '#F9F9F9',
-                    borderRadius: 40,
-                    width: TOOLTIP_WIDTH * 0.85,
-                    flex: 1,
-                }}
-                content={
-                    <>
-                        <Animatable.View
-                            style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                width: TOOLTIP_WIDTH * 0.8,
-                            }}
-                            animation="fadeInLeft"
-                            delay={150}
-                            duration={500}
-                            easing="ease-in-out-expo"
-                        >
-                            {LOTTIE_DATA.map((lottie) => {
-                                return (
-                                    <>
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                if (selfLiked) {
-                                                    return (
-                                                        this.props.unLikeGoal(
-                                                            'goal',
-                                                            _id,
-                                                            maybeLikeRef
-                                                        ),
-                                                        setTimeout(() => {
-                                                            this.props.likeGoal(
-                                                                'goal',
-                                                                _id,
-                                                                '',
-                                                                '',
-                                                                lottie.value
-                                                            )
-                                                        }, 1000),
-                                                        this.setState({
-                                                            unitText:
-                                                                lottie.title,
-                                                            toolTipVisible: false,
-                                                        })
-                                                    )
-                                                }
-                                                this.incrementFloatingHeartCount()
-                                                this.props.likeGoal(
-                                                    'goal',
-                                                    _id,
-                                                    '',
-                                                    '',
-                                                    lottie.value
-                                                )
-                                                this.setState({
-                                                    unitText: lottie.title,
-                                                    toolTipVisible: false,
-                                                })
-                                            }}
-                                        >
-                                            <LottieView
-                                                style={{
-                                                    height: hp(5),
-                                                }}
-                                                source={lottie.lottieSource}
-                                                autoPlay
-                                                loop
-                                            />
-                                            <Text
-                                                style={{
-                                                    fontSize: 8,
-                                                    color: '#818181',
-                                                    alignSelf: 'center',
-                                                }}
-                                            >
-                                                {lottie.name}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    </>
-                                )
-                            })}
-                        </Animatable.View>
-                    </>
-                }
-                disableShadow={false}
-                topAdjustment={2}
-                placement="top"
-                showChildInTooltip={false}
-                backgroundColor="transparent"
-                onClose={() => this.setState({ toolTipVisible: false })}
-            >
-                <ActionBar
-                    isContentLiked={selfLiked}
-                    actionSummaries={{
-                        likeCount,
-                        shareCount,
-                        commentCount,
-                    }}
-                    // Use this flag to hide share button
-                    // if not own goal, then hide the button
-                    isShareContent={!isOwnGoal}
-                    unitText={
-                        this.state.unitText == ''
-                            ? renderUnitText(likeType)
-                            : this.state.unitText
-                    }
-                    showClarifyButton={noStepsAndNeeds && !isOwnGoal}
-                    onLikeSummaryPress={() =>
-                        this.setState({ showlikeListModal: true })
-                    }
-                    onLikeButtonPress={() => {
-                        if (selfLiked) {
-                            return (
-                                this.props.unLikeGoal(
-                                    'goal',
-                                    _id,
-                                    maybeLikeRef
-                                ),
-                                this.setState({ unitText: 'Like' })
-                            )
-                        }
-                        this.incrementFloatingHeartCount()
-                        this.props.likeGoal('goal', _id, '', '', 'Thumbsup')
-                        this.setState({ unitText: 'Like' })
-                    }}
-                    onLikeButtonLayout={({ nativeEvent }) =>
-                        this.setState({
-                            likeButtonLeftOffset: nativeEvent.layout.x,
-                        })
-                    }
-                    onLikeLongPress={() => {
-                        this.setState({ toolTipVisible: true })
-                    }}
-                    onShareSummaryPress={() =>
-                        this.setState({ showShareListModal: true })
-                    }
-                    onShareButtonOptions={options}
-                    onCommentSummaryPress={() => {
-                        // TODO scroll down to comments section
-                    }}
-                    onCommentButtonPress={() => {
-                        this.props.onSuggestion()
-                    }}
-                    onClarifyButtonPress={() => {
-                        this.setState({ showClarifyPopup: true })
-                    }}
-                />
-            </Tooltip>
+                actionButtonVisible
+            />
         )
     }
 
@@ -872,90 +729,93 @@ class NeedStepSuggestion extends React.Component {
         const goalReminderOptions = this.getOnGoalReminderOptions()
 
         return (
-            <>
-                <SuggestionPopup
-                    isVisible={this.state.showSuggestionPopup}
-                    name={goalDetail.owner.name}
-                    closeModal={this.closeSuggestionPopup}
-                    showSuggestion={this.showSuggestionModal}
-                />
-                <ClarifyModal
-                    isVisible={this.state.showClarifyPopup}
-                    name={goalDetail.owner.name}
-                    closeModal={this.closeClarifyPopup}
-                />
-                <NudgePopup
-                    isVisible={this.state.showNudgePopup}
-                    name={goalDetail.owner.name}
-                    closeModal={() => {
-                        this.setState({ showNudgePopup: false })
-                    }}
-                />
-                <View onLayout={this.handleOnLayout}>
-                    <View style={{ paddingHorizontal: 16 }}>
-                        <LikeListModal
-                            testID="like-list-modal"
-                            isVisible={this.state.showlikeListModal}
-                            closeModal={() => {
-                                this.setState({
-                                    showlikeListModal: false,
-                                })
-                            }}
-                            parentId={item._id}
-                            parentType="Goal"
-                        />
-                        <ShareListModal
-                            testID="share-list-modal"
-                            isVisible={this.state.showShareListModal}
-                            closeModal={() => {
-                                this.setState({
-                                    showShareListModal: false,
-                                })
-                            }}
-                            entityId={item._id}
-                            entityType="Goal"
-                        />
-                        <BottomButtonsSheet
-                            ref={(r) => (this.bottomSheetRef = r)}
-                            buttons={goalReminderOptions}
-                            height={getButtonBottomSheetHeight(
-                                goalReminderOptions.length
-                            )}
-                            closeSheetOnOptionPress
-                        />
-                        <View style={styles.containerStyle}>
-                            {item.isCompleted ? (
-                                <Image
-                                    source={ConfettiFadedBackgroundTopHalf}
-                                    style={{
-                                        height: WINDOW_WIDTH * 0.6,
-                                        width: WINDOW_WIDTH,
-                                        position: 'absolute',
-                                        resizeMode: 'cover',
-                                        opacity: 0.55,
-                                    }}
-                                />
-                            ) : null}
-                            <View style={{ marginTop: 16 }}>
-                                {this.renderUserDetail(item)}
-                                {this.renderCardContent(item)}
+            <ScrollView>
+                <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+                    {/* <SuggestionPopup
+                        isVisible={this.state.showSuggestionPopup}
+                        name={goalDetail.owner.name}
+                        closeModal={this.closeSuggestionPopup}
+                        showSuggestion={this.showSuggestionModal}
+                    />
+                    <ClarifyModal
+                        isVisible={this.state.showClarifyPopup}
+                        name={goalDetail.owner.name}
+                        closeModal={this.closeClarifyPopup}
+                    />
+                    <NudgePopup
+                        isVisible={this.state.showNudgePopup}
+                        name={goalDetail.owner.name}
+                        closeModal={() => {
+                            this.setState({ showNudgePopup: false })
+                        }}
+                    /> */}
+                    <View onLayout={this.handleOnLayout}>
+                        <View style={{ paddingHorizontal: 16 }}>
+                            <LikeListModal
+                                testID="like-list-modal"
+                                isVisible={this.state.showlikeListModal}
+                                closeModal={() => {
+                                    this.setState({
+                                        showlikeListModal: false,
+                                    })
+                                }}
+                                parentId={item._id}
+                                parentType="Goal"
+                            />
+                            <ShareListModal
+                                testID="share-list-modal"
+                                isVisible={this.state.showShareListModal}
+                                closeModal={() => {
+                                    this.setState({
+                                        showShareListModal: false,
+                                    })
+                                }}
+                                entityId={item._id}
+                                entityType="Goal"
+                            />
+                            <BottomButtonsSheet
+                                ref={(r) => (this.bottomSheetRef = r)}
+                                buttons={goalReminderOptions}
+                                height={getButtonBottomSheetHeight(
+                                    goalReminderOptions.length
+                                )}
+                                closeSheetOnOptionPress
+                            />
+                            <View style={styles.containerStyle}>
+                                {item.isCompleted ? (
+                                    <Image
+                                        source={ConfettiFadedBackgroundTopHalf}
+                                        style={{
+                                            height: WINDOW_WIDTH * 0.6,
+                                            width: WINDOW_WIDTH,
+                                            position: 'absolute',
+                                            resizeMode: 'cover',
+                                            opacity: 0.55,
+                                        }}
+                                    />
+                                ) : null}
+                                <View style={{ marginTop: 16 }}>
+                                    {this.renderUserDetail(item)}
+                                    {this.renderCardContent(item)}
+                                </View>
                             </View>
                         </View>
+                        <FloatingHearts
+                            count={this.state.floatingHeartCount}
+                            color={'#EB5757'}
+                            style={{
+                                zIndex: 5,
+                            }}
+                            leftOffset={this.state.likeButtonLeftOffset}
+                        />
+                        {this.renderActionButtons(item, isOwnGoal)}
+                        {this.renderGoalReminderDatePicker()}
+                        {/* {this.renderCheckBox()} */}
+
+                        {this.renderInputField()}
                     </View>
-                    <FloatingHearts
-                        count={this.state.floatingHeartCount}
-                        color={'#EB5757'}
-                        style={{
-                            zIndex: 5,
-                        }}
-                        leftOffset={this.state.likeButtonLeftOffset}
-                    />
-                    {this.renderActionButtons(item, isOwnGoal)}
-                    {this.renderGoalReminderDatePicker()}
-                    {/* {this.renderCheckBox()} */}
-                    {this.renderInputField()}
-                </View>
-            </>
+                </KeyboardAvoidingView>
+            </ScrollView>
         )
     }
 }
