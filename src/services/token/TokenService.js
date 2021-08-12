@@ -11,9 +11,11 @@
 import _ from 'lodash'
 import getEnvVars from '../../../environment'
 import * as SecureStore from 'expo-secure-store'
+
 import { Logger } from '../../redux/middleware/utils/Logger'
 import { store } from '../../store'
 import { logout } from '../../actions'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const config = getEnvVars()
 const EMPTY_TOKEN_OBJECT = {
@@ -73,7 +75,8 @@ class TokenService {
         const key = TokenService.getCredentialKey(type)
 
         try {
-            const credentialJsonString = await SecureStore.getItemAsync(key)
+            // const credentialJsonString = await SecureStore.getItemAsync(key)
+            const credentialJsonString = await AsyncStorage.getItem(key)
 
             return JSON.parse(credentialJsonString)
         } catch (err) {
@@ -97,7 +100,8 @@ class TokenService {
         })
 
         try {
-            await SecureStore.setItemAsync(key, value, {})
+            // await SecureStore.setItemAsync(key, value, {})
+            await AsyncStorage.setItem(key, value)
         } catch (err) {
             // Best effort. Worst case scenario user needs to re-login
             // TODO: sentry error logging
@@ -121,7 +125,8 @@ class TokenService {
         const key = TokenService.getCredentialKey(type)
 
         try {
-            await SecureStore.deleteItemAsync(key)
+            // await SecureStore.deleteItemAsync(key)
+            await AsyncStorage.removeItem(key)
         } catch (err) {
             // Best effort. Worst case scenario user needs to re-login
             // TODO: sentry error logging

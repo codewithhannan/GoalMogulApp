@@ -63,6 +63,7 @@ import MessageStorageService from '../../../services/chat/MessageStorageService'
 import { auth as Auth } from '../auth/Auth'
 import { is2xxRespose } from '../../middleware/utils'
 import { Actions } from 'react-native-router-flux'
+import { storeData } from '../../../store/storage'
 
 const DEBUG_KEY = '[ Action RegistrationActions ]'
 /**

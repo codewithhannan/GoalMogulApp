@@ -24,14 +24,16 @@ export const requestAccountability = (goalId, type) => {
                         'Request sent!',
                         makeMessage()
                     )
-                }, 1000)
+                }, 500)
             }
-
-            console.log(
-                `${DEBUG_KEY} This is the response of sending accountability request`,
-                res
-            )
         } catch (err) {
+            setTimeout(() => {
+                DropDownHolder.alert(
+                    'error',
+                    'Error',
+                    "We're sorry that some error happened. Please try again later."
+                )
+            }, 500)
             console.log(
                 `${DEBUG_KEY} This is error of sending accountability request`,
                 err

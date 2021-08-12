@@ -34,6 +34,7 @@ import { Logger } from '../../middleware/utils/Logger'
 import { api as API } from '../../middleware/api'
 import { track, EVENT as E } from '../../../monitoring/segment'
 import TokenService from '../../../services/token/TokenService'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const DEBUG_KEY = '[ Actions StepTutorials ]'
 /**
@@ -92,7 +93,8 @@ export const showNextTutorialPage = (flow, page) => (dispatch, getState) => {
 export const loadTutorialState = (userId) => async (dispatch, getState) => {
     const tutorialStateKey = `${TUTORIAL_STATE_KEY}_${userId}`
 
-    const tutorialState = await SecureStore.getItemAsync(tutorialStateKey, {})
+    // const tutorialState = await SecureStore.getItemAsync(tutorialStateKey, {})
+    const tutorialState = await AsyncStorage.getItem(tutorialStateKey)
 
     // Deserialize the json serialized object
     let parsedTutorialState
@@ -161,11 +163,12 @@ export const saveTutorialState = () => async (dispatch, getState) => {
         dataToStore,
         3
     )
-    const res = await SecureStore.setItemAsync(
-        tutorialStateKey,
-        dataToStore,
-        {}
-    )
+    // const res = await SecureStore.setItemAsync(
+    //     tutorialStateKey,
+    //     dataToStore,
+    //     {}
+    // )
+    const res = await AsyncStorage.setItem(tutorialStateKey, dataToStore)
     Logger.log(`${DEBUG_KEY}: [saveTutorialState] done with res: `, res, 1)
     return
 }

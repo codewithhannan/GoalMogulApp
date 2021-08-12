@@ -33,6 +33,7 @@ import { sendMessage } from '../../../../redux/modules/chat/ChatRoomActions'
 import UUID from 'uuid/v4'
 import { Video, AVPlaybackStatus } from 'expo-av'
 import RNUrlPreview from 'react-native-url-preview'
+import { getFirstName } from '../../../../Utils/HelperMethods'
 
 const { isSameDay } = utils
 
@@ -600,11 +601,19 @@ class Bubble extends React.Component {
     }
 
     renderAccountabilityRequest = () => {
-        const { currentMessage } = this.props
+        const { currentMessage, user } = this.props
+        const userId = user._id
+
+        let userName = this.props.chatRoom.members.find((member) => {
+            if (member.memberRef._id != userId) {
+                return member
+            }
+        })
+
         if (currentMessage.question?.request)
             return (
                 <>
-                    <View style={{ padding: 5 }}>
+                    <View style={{ padding: 10 }}>
                         <Text
                             style={{
                                 color: '#000000',
@@ -612,7 +621,9 @@ class Bubble extends React.Component {
                                 fontFamily: 'SFProDisplay-Bold',
                             }}
                         >
-                            Do you want to accept Mike’s request?
+                            {`Do you want to accept ${getFirstName(
+                                userName.memberRef.name
+                            )}'s request?`}
                         </Text>
                         <View style={{ flexDirection: 'row' }}>
                             <TouchableOpacity style={{ padding: 12 }}>
@@ -669,7 +680,7 @@ class Bubble extends React.Component {
 
     renderAccountabilityquestion = () => {
         const { currentMessage } = this.props
-
+        if (_.isEmpty(currentMessage.question)) return null
         if (currentMessage.question) {
             return (
                 <>
@@ -702,7 +713,7 @@ class Bubble extends React.Component {
         if (this.props.currentMessage.question) {
             console.log(
                 'THIS ISSSSSS CURRRENT MESSAGE',
-                this.props.currentMessage.question
+                this.props.currentMessage
             )
         }
 
