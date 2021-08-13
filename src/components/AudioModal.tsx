@@ -87,6 +87,9 @@ type Props = {
     ) => void
     commentType: string | null
     chatType: string | null
+    chatUser: {}
+    chatRoom: {}
+    chatMessages: []
 }
 
 type State = {
@@ -440,6 +443,8 @@ class AudioModal extends React.Component<Props, State> {
     }
 
     render() {
+        const { chatMessages } = this.props
+
         return (
             <View style={styles.emptyContainer}>
                 <View
@@ -617,6 +622,7 @@ class AudioModal extends React.Component<Props, State> {
                                             goalRef,
                                             commentRef,
                                         } = this.props.goalDetail
+
                                         this.props.sendVoiceMessage(
                                             this.state.record,
                                             this.props.pageId,

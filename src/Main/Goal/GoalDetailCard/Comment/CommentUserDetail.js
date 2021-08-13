@@ -74,8 +74,16 @@ class CommentUserDetail extends Component {
         this.state = {
             layout: {},
             mediaModal: false,
+            soundObj: {},
         }
         this.openReplyThread = this.openReplyThread.bind(this)
+    }
+
+    componentWillUnmount() {
+        const unMoundSound = async () => {
+            this.state.soundObj && (await this.state.soundObj.unloadAsync())
+        }
+        unMoundSound()
     }
 
     onLayout = (e) => {
@@ -101,11 +109,11 @@ class CommentUserDetail extends Component {
     }
 
     playSound = async (uri) => {
-        console.log('uri===>', uri)
         try {
             const { sound } = await Audio.Sound.createAsync({
                 uri: uri,
             })
+            this.setState({ soundObj: sound })
             if (sound) {
                 // await sound.loadAsync()
                 await sound.playAsync()
@@ -129,7 +137,6 @@ class CommentUserDetail extends Component {
         }`
         const url = mediaRef
         const imageUrl = `${IMAGE_BASE_URL}${url}`
-        console.log('imageurl=====>', imageUrl)
         return (
             <>
                 {type === 'CommentAudio' ? (
@@ -320,7 +327,7 @@ class CommentUserDetail extends Component {
                     {this.renderCardContent()}
                 </View>
                 {this.renderCommentMedia(item)}
-                {/* {this.renderCommentRef(item)} */}
+                {this.renderCommentRef(item)}
             </View>
         )
     }

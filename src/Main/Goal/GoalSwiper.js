@@ -198,8 +198,11 @@ class GoalSwiper extends React.Component {
             homeFeedGoal,
             children,
             goalId,
+            goalRef,
         } = this.props
-
+        // console.log('====================================')
+        // console.log('goalswiper goalref', goalRef)
+        // console.log('====================================')
         return (
             <>
                 <CommentVideoModal

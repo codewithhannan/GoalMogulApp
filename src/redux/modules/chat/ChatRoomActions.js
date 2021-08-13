@@ -373,6 +373,7 @@ export const sendMessage = (
                 ImageUtils.uploadImage(file, signedRequest)
             )
             .then((res) => {
+                console.log('uploadedMediaRef', uploadedMediaRef)
                 if (res instanceof Error) {
                     console.log('error uploading image to s3 with res: ', res)
                     Alert.alert(

@@ -136,7 +136,7 @@ class ModalTester extends Component {
                                 <Text style={{ ...default_style.titleText_1 }}>
                                     Help {name}
                                 </Text>
-                                <TouchableOpacity
+                                {/* <TouchableOpacity
                                     onPress={this.props.onClose}
                                     style={{ bottom: 5 }}
                                 >
@@ -145,7 +145,7 @@ class ModalTester extends Component {
                                         size={27}
                                         color="#4F4F4F"
                                     />
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
                             </View>
                             <LottieView
                                 style={{
@@ -190,6 +190,7 @@ class ModalTester extends Component {
                                 style={{
                                     flexDirection: 'row',
                                     justifyContent: 'center',
+                                    alignItems: 'center',
                                     // justifyContent: 'space-evenly',
                                     marginTop: 20,
                                 }}
