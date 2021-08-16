@@ -270,7 +270,10 @@ export const cancelRegistration = () => (dispatch) => {
  *
  * @param {Function} screenTransitionCallback required. When account registration succeeded.
  */
-export const registerAccount = (onSuccess) => async (dispatch, getState) => {
+export const registerAccount = (onSuccess, dateToSend) => async (
+    dispatch,
+    getState
+) => {
     const {
         name,
         password,
@@ -289,7 +292,8 @@ export const registerAccount = (onSuccess) => async (dispatch, getState) => {
         email,
         phone: phoneNumber,
         gender: gender === 'Prefer not to say' ? undefined : gender,
-        dateOfBirth,
+        // dateOfBirth,
+        dateOfBirth: dateToSend,
         inviterCode,
     }
 

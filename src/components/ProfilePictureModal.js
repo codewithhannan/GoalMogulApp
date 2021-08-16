@@ -202,7 +202,7 @@ class ProfilePictureModal extends Component {
                                         color="#001D29"
                                     />
                                 </TouchableOpacity>
-                                {this.props.isSelf ? (
+                                {/* {this.props.isSelf ? (
                                     <TouchableOpacity
                                         activeOpacity={0.6}
                                         style={{
@@ -225,7 +225,7 @@ class ProfilePictureModal extends Component {
                                             ]}
                                         />
                                     </TouchableOpacity>
-                                ) : null}
+                                ) : null} */}
                             </View>
                             <View
                                 style={{

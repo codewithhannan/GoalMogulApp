@@ -31,7 +31,7 @@ class AccountabilityPopUp extends Component {
     }
     render() {
         const { name, goalId } = this.props
-        console.log('THIS IS GOALL ID', goalId)
+        // console.log('THIS IS GOALL ID', goalId)
 
         return (
             <>
