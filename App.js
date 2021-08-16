@@ -119,9 +119,9 @@ export default class App extends React.Component {
                 <ReduxProvider store={store}>
                     <PersistGate persistor={persistor}>
                         <View style={styles.container}>
-                            {/* <Router /> */}
+                            <Router />
                             {/* <DateTimePicker /> */}
-                            <View
+                            {/* <View
                                 style={{
                                     height: '100%',
                                     width: '100%',
@@ -130,7 +130,7 @@ export default class App extends React.Component {
                                 }}
                             >
                                 <CelebrateVictoryModel />
-                            </View>
+                            </View> */}
                         </View>
                         <DropdownAlert
                             ref={(ref) => DropDownHolder.setDropDown(ref)}
