@@ -422,7 +422,7 @@ class RegistrationAccount extends React.Component {
                     disabled={this.props.loading}
                     caption="This is used to customize your experience"
                 />
-                {/* <InputBox
+                <InputBox
                     key="dateOfBirth"
                     inputTitle="Date of birth"
                     ref="dateOfBirth"
@@ -437,12 +437,12 @@ class RegistrationAccount extends React.Component {
                     returnKeyType="done"
                     caption={`We won't share this information with anyone`}
                     disabled={this.props.loading}
-                /> */}
+                />
 
-                <CustomDropDown
+                {/* <CustomDropDown
                     dateOfBirth={dateOfBirth}
                     change={this.handleFilterUpdate}
-                />
+                /> */}
 
                 <InputBox
                     key="inviterCode"
@@ -533,9 +533,8 @@ class RegistrationAccount extends React.Component {
                                     FIELD_REQUIREMENTS.done ||
                                 this.state.emailStatus !==
                                     FIELD_REQUIREMENTS.done ||
-                                // !this.props.dateOfBirth ||
-                                !this.props.gender ||
-                                !dateToSend
+                                !this.props.dateOfBirth ||
+                                !this.props.gender
                             }
                         />
                         <DelayedButton

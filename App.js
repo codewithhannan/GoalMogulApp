@@ -46,6 +46,7 @@ import { setJSExceptionHandler } from 'react-native-exception-handler' // If an 
 
 // UI theme provider
 import ThemeProvider from './theme/ThemeProvider'
+
 // import CustomDropDown from './src/Main/Onboarding/Common/CustomDropdown'
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
@@ -119,8 +120,6 @@ export default class App extends React.Component {
                     <PersistGate persistor={persistor}>
                         <View style={styles.container}>
                             <Router />
-                            {/* <EditModal /> */}
-                            {/* <CustomDropDown /> */}
                         </View>
                         <DropdownAlert
                             ref={(ref) => DropDownHolder.setDropDown(ref)}
