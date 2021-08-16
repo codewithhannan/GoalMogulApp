@@ -16,11 +16,13 @@ import { getButtonBottomSheetHeight } from '../../styles'
 import { getFirstName } from '../../Utils/HelperMethods'
 import { connect } from 'react-redux'
 import SwiperTooltip from '../Common/Tooltip'
+import { refreshProfileData } from '../../actions'
+import { getNewCommentByTab } from '../../redux/modules/feed/comment/CommentSelector'
+import { constructPageId } from '../../redux/middleware/utils'
 
 const swiperText = 'You can leave a video or voice comment! 😃'
 let row = []
 let prevOpenedRow
-
 class GoalSwiper extends React.Component {
     constructor(props) {
         super(props)
@@ -35,7 +37,7 @@ class GoalSwiper extends React.Component {
                 id: 1,
                 source: ACCOUNTABILITY,
                 onPress: () => {
-                    prevOpenedRow.close()
+                    // prevOpenedRow.close()
                     this.setState({ accountPopUpVisible: true })
                 },
                 backgroundColor: '#CEFFBC',
@@ -45,7 +47,7 @@ class GoalSwiper extends React.Component {
                 id: 3,
                 source: RECORDING,
                 onPress: () => {
-                    prevOpenedRow.close()
+                    // prevOpenedRow.close()
                     this.openRecordingModal()
                 },
                 backgroundColor: '#D7F3FF',
@@ -111,7 +113,9 @@ class GoalSwiper extends React.Component {
                 ref={(r) => (this.bottomRecodingSheet = r)}
                 buttons={[{}]}
                 height={sheetHeight}
-                chatRecordingPress
+                commentRecordingPress
+                pageId={this.props.pageId}
+                item={this.props.goalRef}
             />
         )
     }
@@ -187,7 +191,15 @@ class GoalSwiper extends React.Component {
     }
 
     render() {
-        const { index, visitedUserName, ownerName } = this.props
+        const {
+            index,
+            visitedUserName,
+            ownerName,
+            homeFeedGoal,
+            children,
+            goalId,
+        } = this.props
+
         return (
             <>
                 <CommentVideoModal
@@ -206,7 +218,7 @@ class GoalSwiper extends React.Component {
                     }
                     onSwipeableOpen={this.closeRow(index)}
                 >
-                    {this.props.children}
+                    {children}
                 </Swipeable>
                 {this.renderCameraRollBottomSheet()}
                 {this.renderBottomVoiceRecording()}
@@ -215,11 +227,10 @@ class GoalSwiper extends React.Component {
                     onClose={() =>
                         this.setState({ accountPopUpVisible: false })
                     }
-                    // name={getFirstName(
-                    //     visitedUserName == undefined
-                    //         ? ownerName
-                    //         : visitedUserName
-                    // )}
+                    name={getFirstName(
+                        homeFeedGoal ? ownerName : visitedUserName
+                    )}
+                    goalId={goalId}
                 />
             </>
         )
@@ -228,13 +239,20 @@ class GoalSwiper extends React.Component {
 
 const mapStateToProps = (state, props) => {
     const visitedUserName = state.profile.user.name
+    const { userId } = state.user
+    const pageId = constructPageId('goal')
+    // console.log('THIS IS PAGE IDDD', pageId)
 
     return {
         visitedUserName,
+        userId,
+        // newComment: getNewCommentByTab(state, pageId),
+        // pageId,
     }
 }
 
 export default connect(mapStateToProps, {
     openCameraForVideo,
     openCameraRollForVideo,
+    refreshProfileData,
 })(GoalSwiper)

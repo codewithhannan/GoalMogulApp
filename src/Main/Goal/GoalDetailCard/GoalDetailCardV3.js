@@ -221,7 +221,6 @@ export class GoalDetailCardV3 extends React.Component {
                 suggestionForRef: focusRef, // Need or Step ref
                 suggestionFor: focusType === 'need' ? 'Need' : 'Step',
             }
-            console.log('Focus type =====>', focusType)
             // Open Create Goal Modal for edition
             if (initialShowGoalModal) {
                 setTimeout(() => {
@@ -893,11 +892,9 @@ export class GoalDetailCardV3 extends React.Component {
             goalId,
             displayGoals,
         } = this.props
-
         if (!goalDetail || _.isEmpty(goalDetail)) return null
 
         const { focusType, focusRef } = navigationState
-        console.log('SUGGESTION FOCUSREF====>', focusType)
 
         return (
             <>

@@ -44,6 +44,7 @@ import {
     COMMENT_NEW_POST_SUGGESTION_SUCCESS,
     COMMENT_NEW_SELECT_IMAGE,
     COMMENT_NEW_UPLOAD_PICTURE_SUCCESS,
+    COMMENT_NEW_UPLOAD_VOICE_SUCCESS,
 } from './NewCommentReducers'
 
 import { SUGGESTION_SEARCH_CLEAR_STATE } from './SuggestionSearchReducers'
@@ -57,6 +58,8 @@ import {
     sanitizeTags,
 } from '../../../middleware/utils'
 import ImageUtils from '../../../../Utils/ImageUtils'
+import VoiceUtils from '../../../../Utils/VoiceUtils'
+import { openGoalDetail } from '../../../modules/home/mastermind/actions'
 import { trackWithProperties, EVENT as E } from '../../../../monitoring/segment'
 
 const DEBUG_KEY = '[ Action Comment ]'
@@ -331,6 +334,7 @@ export const updateNewComment = (newComment, pageId) => (
 export const postComment = (pageId, callback) => (dispatch, getState) => {
     const { token, user } = getState().user
     const { tab } = getState().navigation
+    console.log(`pageid:${pageId}  tab: ${tab}`)
     const newComment = commentAdapter(getState(), pageId, tab)
     const { suggestion, mediaRef } = newComment
     console.log(`${DEBUG_KEY}: new comment to submit is: `, newComment)
@@ -445,6 +449,7 @@ export const postComment = (pageId, callback) => (dispatch, getState) => {
             ImageUtils.uploadImage(file, signedRequest)
         )
         .then((res) => {
+            console.log('comment res', res)
             if (res instanceof Error) {
                 // uploading to s3 failed
                 console.log(
@@ -485,6 +490,140 @@ export const postComment = (pageId, callback) => (dispatch, getState) => {
         })
 }
 
+/**
+ * comment voice request
+ */
+export const sendVoiceMessage = (uri, pageId, _id, callback) => async (
+    dispatch,
+    getState
+) => {
+    const { token, user } = getState().user
+    const { tab } = getState().navigation
+    // const newComment = commentAdapter(getState(), pageId, tab)
+    // const { suggestion, mediaRef } = newComment
+    // console.log(`${DEBUG_KEY}: new comment to submit is: `, newComment)
+    const newComment = {
+        commentType: 'Comment',
+        parentRef: _id,
+        parentType: 'Goal',
+        contentText: '',
+        contentTags: [],
+        content: undefined,
+        mediaPresignedUrl: undefined,
+        mediaRef: uri,
+        replyToRef: undefined,
+    }
+
+    // const uriPath = uri.substring(uri.lastIndexOf('/') + 1, uri.length)
+
+    dispatch({
+        type: COMMENT_NEW_POST_START,
+        payload: {
+            tab,
+            pageId,
+            entityId: newComment.parentRef, // This is for post/share/goal to set the loading indicator
+        },
+    })
+
+    const onError = (err) => {
+        Keyboard.dismiss()
+        // dispatch({
+        //     type: COMMENT_NEW_POST_FAIL,
+        //     payload: {
+        //         pageId,
+        //         tab,
+        //         entityId: newComment.parentRef, // This is for post/share/goal to remove the loading indicator
+        //     },
+        // })
+        // Alert.alert(
+        //     'Error',
+        //     'Failed to submit comment. Please try again later.'
+        // )
+        console.log(`${DEBUG_KEY}: error submitting comment: `, err)
+    }
+
+    const onSuccess = (data) => {
+        trackWithProperties(E.COMMENT_ADDED, {
+            CommentDetail: newComment,
+            UserId: user.userId,
+        })
+        // dispatch({
+        //     type: COMMENT_NEW_POST_SUCCESS,
+        //     payload: {
+        //         comment: {
+        //             ...data,
+        //             owner: {
+        //                 ...user,
+        //             },
+        //         },
+        //         tab,
+
+        //         entityId: newComment.parentRef, // This is for post/share/goal to remove the loading indicator
+        //     },
+        // })
+
+        console.log(
+            `${DEBUG_KEY}: comment posted successfully with res: `,
+            data
+        )
+        if (callback) callback()
+        // Alert.alert('Success', 'You have successfully created a comment.');
+    }
+
+    VoiceUtils.getPresignedUrl(
+        uri,
+        token,
+        (objectKey) => {
+            dispatch({
+                type: COMMENT_NEW_UPLOAD_VOICE_SUCCESS,
+                payload: {
+                    tab,
+                    pageId,
+                    objectKey,
+                },
+            })
+        },
+        'CommentAudio'
+    )
+        .then(({ file, signedRequest }) => {
+            return VoiceUtils.uploadVoice(file, signedRequest)
+        })
+        .then((res) => {
+            console.log('s3 voice response ===>', res)
+            if (res instanceof Error) {
+                // uploading to s3 failed
+                console.log('error uploading voice to s3 with res: ', res)
+                throw res
+            }
+            const page = pageId ? `${pageId}` : 'default'
+            const path = !tab ? `homeTab.${page}` : `${tab}.${page}`
+            const voiceUrl = _.get(
+                getState().newComment,
+                `${path}.mediaPresignedUrl`
+            )
+            // Use the presignedUrl as media string
+            console.log(`${BASE_ROUTE}: presigned url sent is: `, voiceUrl)
+            let newCommentObject = {
+                ...newComment,
+                mediaRef: voiceUrl,
+            }
+
+            return sendPostCommentRequest(
+                newCommentObject,
+                token,
+                onError,
+                onSuccess
+            )
+        })
+        .catch((err) => {
+            /*
+        Error Type:
+          voice upload to S3
+        */
+            onError(err)
+        })
+}
+
 // Send creating comment request
 export const sendPostCommentRequest = (
     newComment,
@@ -497,6 +636,7 @@ export const sendPostCommentRequest = (
             if (!res.message && res.data) {
                 return onSuccess(res.data)
             }
+
             onError(res)
         })
         .catch((err) => {

@@ -106,6 +106,7 @@ class ProfilePictureModal extends Component {
                     quality: 1,
                 })
                 this.props.updateProfilePic(res.uri, this.props.pageId)
+                this.props.isVisible()
             }, 500)
         } catch (err) {
             console.log(
@@ -201,26 +202,30 @@ class ProfilePictureModal extends Component {
                                         color="#001D29"
                                     />
                                 </TouchableOpacity>
-                                <TouchableOpacity
-                                    activeOpacity={0.6}
-                                    style={{
-                                        alignSelf: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                    onPress={() => this.handleOptionsOnPress()}
-                                >
-                                    <Icon
-                                        name="dots-horizontal"
-                                        pack="material-community"
-                                        style={[
-                                            {
-                                                tintColor: 'white',
-                                                width: 33,
-                                                height: 33,
-                                            },
-                                        ]}
-                                    />
-                                </TouchableOpacity>
+                                {/* {this.props.isSelf ? (
+                                    <TouchableOpacity
+                                        activeOpacity={0.6}
+                                        style={{
+                                            alignSelf: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                        onPress={() =>
+                                            this.handleOptionsOnPress()
+                                        }
+                                    >
+                                        <Icon
+                                            name="dots-horizontal"
+                                            pack="material-community"
+                                            style={[
+                                                {
+                                                    tintColor: 'white',
+                                                    width: 33,
+                                                    height: 33,
+                                                },
+                                            ]}
+                                        />
+                                    </TouchableOpacity>
+                                ) : null} */}
                             </View>
                             <View
                                 style={{

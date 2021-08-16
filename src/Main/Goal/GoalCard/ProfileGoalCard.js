@@ -597,7 +597,11 @@ class ProfileGoalCard extends React.Component {
                             }
                             onSwipeableOpen={this.closeRow(index)}
                         > */}
-                        <GoalSwiper index={index} marginBottom={8}>
+                        <GoalSwiper
+                            index={index}
+                            marginBottom={8}
+                            goalRef={item}
+                        >
                             <DelayedButton
                                 index={index}
                                 activeOpacity={1}

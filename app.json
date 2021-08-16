@@ -4,7 +4,7 @@
         "name": "GoalMogul",
         "icon": "./assets/logo.png",
         "sdkVersion": "38.0.0",
-        "version": "1.0.12",
+        "version": "1.0.15",
         "slug": "goalmogul",
         "orientation": "portrait",
         "ios": {
@@ -65,7 +65,7 @@
         "android": {
             "package": "com.goalmogul.goalmogulbeta",
             "googleServicesFile": "./config/google-services.json",
-            "versionCode": 101,
+            "versionCode": 1000,
             "permissions": [
                 "ACCESS_NETWORK_STATE",
                 "ACCESS_WIFI_STATE",
@@ -94,7 +94,6 @@
                 "WRITE_SETTINGS",
                 "UPDATE_COUNT",
                 "INSTALL_SHORTCUT",
-                "C2D_MESSAGE",
                 "RECEIVE",
                 "BIND_GET_INSTALL_REFERRER_SERVICE",
                 "ACTIVITY_RECOGNITION",

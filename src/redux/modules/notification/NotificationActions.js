@@ -446,15 +446,20 @@ export const subscribeNotification = () => async (dispatch, getState) => {
             // we use AsyncStorage so that we can clear SecureStore every time the app is reinstalled (otherwise SecureStore persists on the keychain forever)
             if (!(await AsyncStorage.getItem(HAS_RUN_BEFORE))) {
                 AsyncStorage.setItem(HAS_RUN_BEFORE, 'true')
-                await SecureStore.setItemAsync(
-                    USER_NOTIFICATION_ALERT_SHOWN,
-                    `0`,
-                    {}
-                )
+                // await SecureStore.setItemAsync(
+                //     USER_NOTIFICATION_ALERT_SHOWN,
+                //     `0`,
+                //     {}
+                // )
+                await AsyncStorage.setItem(USER_NOTIFICATION_ALERT_SHOWN, `0`)
             }
 
             // try and let the user know to update their settings
-            const hasShown = await SecureStore.getItemAsync(
+            // const hasShown = await SecureStore.getItemAsync(
+            //     USER_NOTIFICATION_ALERT_SHOWN,
+            //     {}
+            // )
+            const hasShown = await AsyncStorage.getItem(
                 USER_NOTIFICATION_ALERT_SHOWN,
                 {}
             )
@@ -496,10 +501,14 @@ export const subscribeNotification = () => async (dispatch, getState) => {
                 ]
             )
             // Update alert count
-            await SecureStore.setItemAsync(
+            // await SecureStore.setItemAsync(
+            //     USER_NOTIFICATION_ALERT_SHOWN,
+            //     `${hasShownNumber + 1}`,
+            //     {}
+            // )
+            await AsyncStorage.setItem(
                 USER_NOTIFICATION_ALERT_SHOWN,
-                `${hasShownNumber + 1}`,
-                {}
+                `${hasShownNumber + 1}`
             )
             return
         }
@@ -509,7 +518,8 @@ export const subscribeNotification = () => async (dispatch, getState) => {
     const notificationToken = await Notifications.getExpoPushTokenAsync()
 
     // Get the token that an user has on this device
-    const hasToken = await SecureStore.getItemAsync(NOTIFICATION_TOKEN_KEY, {})
+    // const hasToken = await SecureStore.getItemAsync(NOTIFICATION_TOKEN_KEY, {})
+    const hasToken = await AsyncStorage.getItem(NOTIFICATION_TOKEN_KEY)
 
     if (hasToken && hasToken !== '' && _.isEqual(hasToken, notificationToken)) {
         // Only if user has a token stored and cuurent fetched token is the same as the previous one
@@ -522,11 +532,12 @@ export const subscribeNotification = () => async (dispatch, getState) => {
     }
 
     const onSuccess = async (res) => {
-        await SecureStore.setItemAsync(
-            NOTIFICATION_TOKEN_KEY,
-            notificationToken,
-            {}
-        )
+        // await SecureStore.setItemAsync(
+        //     NOTIFICATION_TOKEN_KEY,
+        //     notificationToken,
+        //     {}
+        // )
+        await AsyncStorage.setItem(NOTIFICATION_TOKEN_KEY, notificationToken)
 
         console.log(
             `${DEBUG_KEY}: register notification succeed success with res: `,
@@ -575,12 +586,14 @@ export const unsubscribeNotifications = () => async (dispatch, getState) => {
     const { token } = getState().user
 
     // Get the token that uniquely identifies this device
-    const notificationToken = await SecureStore.getItemAsync(
-        NOTIFICATION_TOKEN_KEY
-    )
+    // const notificationToken = await SecureStore.getItemAsync(
+    //     NOTIFICATION_TOKEN_KEY
+    // )
+    const notificationToken = await AsyncStorage.getItem(NOTIFICATION_TOKEN_KEY)
 
     const onSuccess = async (res) => {
-        await SecureStore.deleteItemAsync(NOTIFICATION_TOKEN_KEY)
+        // await SecureStore.deleteItemAsync(NOTIFICATION_TOKEN_KEY)
+        await AsyncStorage.removeItem(NOTIFICATION_TOKEN_KEY)
         console.log(
             `${DEBUG_KEY}: register notification succeed success with res: `,
             res

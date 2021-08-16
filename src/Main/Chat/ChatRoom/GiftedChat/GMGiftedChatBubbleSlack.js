@@ -33,6 +33,7 @@ import { sendMessage } from '../../../../redux/modules/chat/ChatRoomActions'
 import UUID from 'uuid/v4'
 import { Video, AVPlaybackStatus } from 'expo-av'
 import RNUrlPreview from 'react-native-url-preview'
+import { getFirstName } from '../../../../Utils/HelperMethods'
 
 const { isSameDay } = utils
 
@@ -192,6 +193,7 @@ class Bubble extends React.Component {
 
     renderGoalOptions() {
         const { options, text } = this.props.currentMessage
+
         const { user, chatRoom, messages } = this.props
 
         // console.log('this is props of chat', this.props.currentMessage)
@@ -598,6 +600,105 @@ class Bubble extends React.Component {
         return null
     }
 
+    renderAccountabilityRequest = () => {
+        const { currentMessage, user } = this.props
+        const userId = user._id
+
+        let userName = this.props.chatRoom.members.find((member) => {
+            if (member.memberRef._id != userId) {
+                return member
+            }
+        })
+
+        if (currentMessage.question?.request)
+            return (
+                <>
+                    <View style={{ padding: 10 }}>
+                        <Text
+                            style={{
+                                color: '#000000',
+                                fontSize: 16,
+                                fontFamily: 'SFProDisplay-Bold',
+                            }}
+                        >
+                            {`Do you want to accept ${getFirstName(
+                                userName.memberRef.name
+                            )}'s request?`}
+                        </Text>
+                        <View style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity style={{ padding: 12 }}>
+                                <View
+                                    style={{
+                                        width: 100,
+                                        height: 32,
+                                        borderRadius: 3,
+                                        backgroundColor: '#42C0F5',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            color: 'white',
+                                            fontSize: 14,
+                                            fontFamily: 'SFProDisplay-Regular',
+                                            fontWeight: '400',
+                                        }}
+                                    >
+                                        Accept
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{ padding: 12 }}>
+                                <View
+                                    style={{
+                                        width: 100,
+                                        height: 32,
+                                        borderRadius: 3,
+                                        backgroundColor: '#E3E3E3',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            color: '#505050',
+                                            fontSize: 14,
+                                            fontFamily: 'SFProDisplay-Regular',
+                                            fontWeight: '400',
+                                        }}
+                                    >
+                                        Decline
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </>
+            )
+    }
+
+    renderAccountabilityquestion = () => {
+        const { currentMessage } = this.props
+        if (_.isEmpty(currentMessage.question)) return null
+        if (currentMessage.question) {
+            return (
+                <>
+                    <Text
+                        style={{
+                            fontSize: 15,
+                            fontFamily: 'SFProDisplay-Semibold',
+
+                            color: '#42C0F5',
+                        }}
+                    >
+                        {`${currentMessage.question.title}`}
+                    </Text>
+                </>
+            )
+        }
+    }
+
     // Render customized view
     renderCustomView() {
         if (this.props.renderCustomView) {
@@ -607,6 +708,15 @@ class Bubble extends React.Component {
     }
 
     render() {
+        const { user, chatRoom, messages } = this.props
+
+        if (this.props.currentMessage.question) {
+            console.log(
+                'THIS ISSSSSS CURRRENT MESSAGE',
+                this.props.currentMessage
+            )
+        }
+
         const isSameThread =
             isSameUser(this.props.currentMessage, this.props.previousMessage) &&
             isSameDay(this.props.currentMessage, this.props.previousMessage)
@@ -628,6 +738,8 @@ class Bubble extends React.Component {
                             {this.renderMessageImage()}
                             {this.renderSharedContent()}
                             {this.renderMessageText()}
+                            {this.renderAccountabilityquestion()}
+                            {this.renderAccountabilityRequest()}
                             {this.renderGoalRecommendation()}
                             {this.renderGoalOptions()}
                         </View>

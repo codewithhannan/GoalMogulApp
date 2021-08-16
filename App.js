@@ -40,14 +40,13 @@ import {
 import { initSentry } from './src/monitoring/sentry'
 import * as Linking from 'expo-linking'
 import MultipleImagePicker from './src/Main/Menu/MutlipleImagePicker'
-import AudioModal from './src/components/AudioModal'
-// import DateTimePicker from './src/Main/Accountability/CalenderModel'
+import EditModal from './src/Main/Accountability/EditModal'
 
 import { setJSExceptionHandler } from 'react-native-exception-handler' // If an error occurs or app crashes these functions are called we used them to send sengments
 
 // UI theme provider
 import ThemeProvider from './theme/ThemeProvider'
-import CelebrateVictoryModel from './src/Main/Accountability/components/YesNoComponent'
+// import CustomDropDown from './src/Main/Onboarding/Common/CustomDropdown'
 // Disable font scaling at the start of the App
 Text.defaultProps = Text.defaultProps || {}
 Text.defaultProps.allowFontScaling = false
@@ -120,17 +119,8 @@ export default class App extends React.Component {
                     <PersistGate persistor={persistor}>
                         <View style={styles.container}>
                             <Router />
-                            {/* <DateTimePicker /> */}
-                            {/* <View
-                                style={{
-                                    height: '100%',
-                                    width: '100%',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                }}
-                            >
-                                <CelebrateVictoryModel />
-                            </View> */}
+                            {/* <EditModal /> */}
+                            {/* <CustomDropDown /> */}
                         </View>
                         <DropdownAlert
                             ref={(ref) => DropDownHolder.setDropDown(ref)}

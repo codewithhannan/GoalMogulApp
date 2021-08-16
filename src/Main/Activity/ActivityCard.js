@@ -114,7 +114,6 @@ class ActivityCard extends React.PureComponent {
                 return this.props.openPostDetail(postRef, propsToPass)
             }
         }
-
         if (actedUponEntityType === 'Goal') {
             return this.props.openGoalDetail(goalRef, propsToPass)
         }
@@ -563,7 +562,11 @@ class ActivityCard extends React.PureComponent {
 
     render() {
         const { item, userId } = this.props
+
         const { goalRef } = item
+        if (goalRef) {
+            // console.log('THIS IS ITEMMM', goalRef)
+        }
         const ownerId = goalRef?.owner._id
         let isSelf = userId == ownerId
 
@@ -574,8 +577,11 @@ class ActivityCard extends React.PureComponent {
                 {!isSelf && goalRef ? (
                     <GoalSwiper
                         index={this.props.index}
-                        // ownerName={goalRef?.owner.name}
+                        goalRef={item}
+                        ownerName={goalRef?.owner.name}
                         marginTop={8}
+                        homeFeedGoal
+                        goalId={goalRef._id}
                     >
                         <View
                             style={styles.containerStyle}

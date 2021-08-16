@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState } from 'react'
+import React, { useState, Component } from 'react'
 import {
     View,
     Image,
@@ -15,140 +15,169 @@ import { color } from '../../../styles/basic'
 import Tooltip from '../Tooltip'
 import SWIPER_BACKGROUND from '../../../asset/image/tooltip.png'
 import tooltipIcon from '../../../asset/icons/question.png'
+import { requestAccountability } from '../../../actions/AccountableActions'
+import { connect } from 'react-redux'
 
-function AccountabilityPopUp({ isVisible, name, onClose }) {
-    const MODAL_WIDTH = Dimensions.get('screen').width
-    const MODAL_HEIGHT = Dimensions.get('screen').height
-    const swiperText = `The accountability feature lets you schedule checkups for your friend's goals or habits, and reward or punish them based on their performance!`
-    const [toolTipVisible, setToolTipVisible] = useState(false)
+const MODAL_WIDTH = Dimensions.get('screen').width
+const MODAL_HEIGHT = Dimensions.get('screen').height
+const swiperText = `The accountability feature lets you schedule checkups for your friend's goals or habits, and reward or punish them based on their performance!`
 
-    return (
-        <Modal
-            backdropOpacity={0.4}
-            isVisible={isVisible}
-            animationIn="zoomInUp"
-            animationInTiming={400}
-        >
-            <View
-                style={{
-                    flex: 1,
-                    position: 'absolute',
-                    top: 220,
-                }}
-            >
-                <View
-                    style={{
-                        width: '100%',
+class AccountabilityPopUp extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            toolTipVisible: false,
+        }
+    }
+    render() {
+        const { name, goalId } = this.props
+        // console.log('THIS IS GOALL ID', goalId)
 
-                        backgroundColor: color.GM_BACKGROUND,
-                        height: 120,
-
-                        borderRadius: 5,
-                    }}
+        return (
+            <>
+                <Modal
+                    backdropOpacity={0.4}
+                    isVisible={this.props.isVisible}
+                    animationIn="zoomInUp"
+                    animationInTiming={400}
                 >
                     <View
                         style={{
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontSize: 20,
-                                fontWeight: '600',
-                                padding: 15,
-                                width: '100%',
-                                lineHeight: 25,
-                            }}
-                        >
-                            {`Request to hold ${name} accountable for his goal?`}
-                        </Text>
-                        <TouchableOpacity
-                            style={{
-                                position: 'absolute',
-                                bottom: 19,
-                                right: 65,
-                                justifyContent: 'flex-end',
-                            }}
-                            onPress={() => setToolTipVisible(true)}
-                        >
-                            <Image
-                                source={tooltipIcon}
-                                style={{
-                                    width: 16,
-                                    height: 16,
-                                    resizeMode: 'contain',
-                                }}
-                            />
-                        </TouchableOpacity>
-                    </View>
-
-                    <View
-                        style={{
+                            flex: 1,
                             position: 'absolute',
-                            top: 58,
-                            zIndex: 5,
-                            left: 135,
+                            top: 220,
                         }}
                     >
-                        {toolTipVisible ? (
-                            <Tooltip
-                                title={swiperText}
-                                imageSource={SWIPER_BACKGROUND}
-                                type="swiperDetail"
-                                bgStyle={{ width: 250, height: 130 }}
-                                viewStyle={{
-                                    right: 40,
-                                    top: 10,
-                                }}
-                            />
-                        ) : null}
-                    </View>
+                        <View
+                            style={{
+                                width: '100%',
 
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            marginTop: 10,
-                            justifyContent: 'flex-end',
-                        }}
-                    >
-                        <View style={{ width: 50 }}>
-                            <TouchableOpacity>
-                                <Text
-                                    style={{
-                                        fontSize: 19,
-                                        color: color.GM_BLUE,
-                                        fontWeight: '600',
-                                    }}
-                                >
-                                    YES
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{ width: 50 }}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    onClose()
-                                    setToolTipVisible(false)
+                                backgroundColor: color.GM_BACKGROUND,
+                                height: 120,
+
+                                borderRadius: 5,
+                            }}
+                        >
+                            <View
+                                style={{
+                                    flexDirection: 'row',
                                 }}
                             >
                                 <Text
                                     style={{
-                                        fontSize: 19,
-                                        color: color.GM_BLUE,
+                                        fontSize: 20,
                                         fontWeight: '600',
+                                        padding: 15,
+                                        width: '100%',
+                                        lineHeight: 25,
                                     }}
                                 >
-                                    NO
+                                    {`Request to hold ${name} accountable for his goal?`}
                                 </Text>
-                            </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: 19,
+                                        right: 65,
+                                        justifyContent: 'flex-end',
+                                    }}
+                                    onPress={() =>
+                                        this.setState({ toolTipVisible: true })
+                                    }
+                                >
+                                    <Image
+                                        source={tooltipIcon}
+                                        style={{
+                                            width: 16,
+                                            height: 16,
+                                            resizeMode: 'contain',
+                                        }}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+
+                            <View
+                                style={{
+                                    position: 'absolute',
+                                    top: 58,
+                                    zIndex: 5,
+                                    left: 135,
+                                }}
+                            >
+                                {this.state.toolTipVisible ? (
+                                    <Tooltip
+                                        title={swiperText}
+                                        imageSource={SWIPER_BACKGROUND}
+                                        type="swiperDetail"
+                                        bgStyle={{ width: 250, height: 130 }}
+                                        viewStyle={{
+                                            right: 40,
+                                            top: 10,
+                                        }}
+                                    />
+                                ) : null}
+                            </View>
+
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    marginTop: 10,
+                                    justifyContent: 'flex-end',
+                                }}
+                            >
+                                <View style={{ width: 50 }}>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.props.requestAccountability(
+                                                goalId
+                                            )
+                                            this.props.onClose()
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: 19,
+                                                color: color.GM_BLUE,
+                                                fontWeight: '600',
+                                            }}
+                                        >
+                                            YES
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ width: 50 }}>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.props.onClose()
+                                            this.setState({
+                                                toolTipVisible: false,
+                                            })
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: 19,
+                                                color: color.GM_BLUE,
+                                                fontWeight: '600',
+                                            }}
+                                        >
+                                            NO
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
                         </View>
                     </View>
-                </View>
-            </View>
-        </Modal>
-    )
+                </Modal>
+            </>
+        )
+    }
 }
 
-const styles = StyleSheet.create({})
+const mapStateToProps = (state, props) => {
+    return {}
+}
 
-export default AccountabilityPopUp
+export default connect(mapStateToProps, {
+    requestAccountability,
+})(AccountabilityPopUp)

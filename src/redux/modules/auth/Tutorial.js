@@ -1,6 +1,7 @@
 /** @format */
 
 // Tutorial actions
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as SecureStore from 'expo-secure-store'
 import { Logger } from '../../middleware/utils/Logger'
 
@@ -9,7 +10,9 @@ const DEBUG_KEY = '[ Action Tutorial ]'
 export const tutorial = {
     async getTutorialShown(userId) {
         try {
-            const status = await SecureStore.getItemAsync(TUTORIAL_KEY)
+            // const status = await SecureStore.getItemAsync(TUTORIAL_KEY)
+            const status = await AsyncStorage.getItem(TUTORIAL_KEY)
+
             if (status === '' || status === null) {
                 return false
             }
@@ -24,7 +27,9 @@ export const tutorial = {
 
     async setTutorialShown(userId, onSuccess, onError) {
         try {
-            const status = await SecureStore.getItemAsync(TUTORIAL_KEY)
+            // const status = await SecureStore.getItemAsync(TUTORIAL_KEY)
+            const status = await AsyncStorage.getItem(TUTORIAL_KEY)
+
             let ret = []
             if (status && status !== null) {
                 ret = status.split(',')
@@ -34,7 +39,8 @@ export const tutorial = {
             ret = [...ret, userId]
             ret = ret.join(',')
 
-            await SecureStore.setItemAsync(TUTORIAL_KEY, ret, {})
+            // await SecureStore.setItemAsync(TUTORIAL_KEY, ret, {})
+            await AsyncStorage.setItem(TUTORIAL_KEY, ret)
             onSuccess(true)
         } catch (err) {
             if (onError(err)) {
@@ -45,13 +51,15 @@ export const tutorial = {
 
     async removeTutorialShown(userId, onSuccess, onError) {
         try {
-            const status = await SecureStore.getItemAsync(TUTORIAL_KEY)
+            // const status = await SecureStore.getItemAsync(TUTORIAL_KEY)
+            const status = await AsyncStorage.getItem(TUTORIAL_KEY)
             if (!status || status === null) return onSuccess(false)
             let ret = status.split(',')
             if (!ret.includes(userId)) return onSuccess(false)
             ret = ret.filter((s) => s !== userId)
 
-            await SecureStore.setItemAsync(TUTORIAL_KEY, ret, {})
+            // await SecureStore.setItemAsync(TUTORIAL_KEY, ret, {})
+            await AsyncStorage.setItem(TUTORIAL_KEY, ret)
         } catch (err) {
             if (onError(err)) {
                 onError(err)
@@ -61,7 +69,8 @@ export const tutorial = {
 
     async reset(callback) {
         try {
-            await SecureStore.deleteItemAsync(TUTORIAL_KEY)
+            // await SecureStore.deleteItemAsync(TUTORIAL_KEY)
+            await AsyncStorage.removeItem(TUTORIAL_KEY)
             // await resetGenericPassword();
             if (callback) {
                 callback(true)

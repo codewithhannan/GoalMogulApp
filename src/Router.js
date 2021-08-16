@@ -232,7 +232,6 @@ class RouterComponent extends Component {
             default:
                 return null
         }
-        console.log('ALLLLLLL', all)
 
         // Back to initial for homeTab
         if (state.key === 'homeTab' && isFocused() && state.routes.length > 1) {

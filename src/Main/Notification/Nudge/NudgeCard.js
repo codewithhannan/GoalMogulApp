@@ -22,16 +22,12 @@ import DelayedButton from '../../Common/Button/DelayedButton'
 
 // Actions
 import {
-    openNotificationDetail,
-    removeNotification,
-} from '../../../redux/modules/notification/NotificationActions'
-import {
     deleteNudge,
     getAllNudges,
     handleNudgeResponsed,
 } from '../../../actions/NudgeActions'
 
-import { openProfile } from '../../../actions'
+import { createOrGetDirectMessage, openProfile } from '../../../actions'
 import { Logger } from '../../../redux/middleware/utils/Logger'
 import { Icon } from '@ui-kitten/components'
 import { color, text, default_style } from '../../../styles/basic'
@@ -56,6 +52,32 @@ class NudgeCard extends React.PureComponent {
             return (
                 Actions.replace('no_goal_conversation', { item }),
                 this.props.deleteSelectedNudge(_id),
+                this.props.deleteNudge(_id)
+            )
+        } else if (
+            !item.hasResponded &&
+            !item.isDeleted &&
+            item.type === 'accountability'
+        ) {
+            return (
+                this.props.createOrGetDirectMessage(
+                    sender._id,
+                    (err, chatRoom) => {
+                        if (err || !chatRoom) {
+                            return Alert.alert(
+                                'Error',
+                                'Could not start the conversation. Please try again later.'
+                            )
+                        }
+                        Actions.push('chatRoomConversation', {
+                            chatRoomId: chatRoom._id,
+                        })
+                    }
+                ),
+                this.props.handleNudgeResponsed(_id),
+                setTimeout(() => {
+                    this.props.deleteSelectedNudge(_id)
+                }, 3000),
                 this.props.deleteNudge(_id)
             )
         } else if (!item.hasResponded && !item.isDeleted) {
@@ -201,6 +223,12 @@ class NudgeCard extends React.PureComponent {
             item.type === 'inviteeGoalCheck'
         ) {
             return 'Tap here to see question'
+        } else if (
+            !item.hasResponded &&
+            !item.isDeleted &&
+            item.type === 'accountability'
+        ) {
+            return item.goalRef.title
         } else {
             return 'Tap here to view his goal.'
         }
@@ -225,6 +253,12 @@ class NudgeCard extends React.PureComponent {
             item.type === 'inviteeGoalCheck'
         ) {
             return 'is curious about your goals!'
+        } else if (
+            !item.hasResponded &&
+            !item.isDeleted &&
+            item.type === 'accountability'
+        ) {
+            return 'wants to hold you accountable for your goal:'
         } else {
             return 'has responded to your nudge.'
         }
@@ -334,4 +368,5 @@ export default connect(mapStateToProps, {
     handleNudgeResponsed,
     openProfile,
     deleteSelectedNudge,
+    createOrGetDirectMessage,
 })(NudgeCard)

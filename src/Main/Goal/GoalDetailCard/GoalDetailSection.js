@@ -127,9 +127,9 @@ class GoalDetailSection extends React.PureComponent {
         if (this.props.onRef !== null) {
             this.props.onRef(this)
         }
-        const { goalDetail } = this.props
+        const { goalDetail, isOwnGoal } = this.props
         const { steps, needs } = goalDetail
-        if (steps.length === 0 && needs.length === 0) {
+        if (steps.length === 0 && needs.length === 0 && !isOwnGoal) {
             setTimeout(() => {
                 this.setState({ showSuggestionPopup: true })
             }, 2000)

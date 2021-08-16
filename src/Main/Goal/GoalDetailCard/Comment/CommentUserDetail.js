@@ -11,6 +11,7 @@ import {
     Text,
 } from 'react-native'
 import { connect } from 'react-redux'
+import { Audio } from 'expo-av'
 
 // Assets
 import LoveOutlineIcon from '../../../../asset/utils/love-outline.png'
@@ -99,6 +100,21 @@ class CommentUserDetail extends Component {
         )
     }
 
+    playSound = async (uri) => {
+        console.log('uri===>', uri)
+        try {
+            const { sound } = await Audio.Sound.createAsync({
+                uri: uri,
+            })
+            if (sound) {
+                // await sound.loadAsync()
+                await sound.playAsync()
+            }
+        } catch (error) {
+            console.log('Comment Audio Play Failed : ', error)
+        }
+    }
+
     /**
      * Render Image user attached to the comment.
      * Comment type should be "commentType": "Comment"
@@ -107,62 +123,78 @@ class CommentUserDetail extends Component {
     renderCommentMedia(item) {
         const { mediaRef } = item
         if (!mediaRef) return null
-
+        const type = mediaRef.split('/')[0]
+        const voiceUri = `https://goalmogul-v1.s3.us-west-2.amazonaws.com/CommentAudio/${
+            mediaRef.split('/')[1]
+        }`
         const url = mediaRef
         const imageUrl = `${IMAGE_BASE_URL}${url}`
+        console.log('imageurl=====>', imageUrl)
         return (
-            <TouchableWithoutFeedback
-                onPress={() => this.setState({ mediaModal: true })}
-            >
-                <View style={{ marginTop: 10 }}>
-                    <ImageBackground
-                        style={{
-                            ...styles.mediaStyle,
-                            ...imagePreviewContainerStyle,
-                            borderRadius: 8,
-                            backgroundColor: 'black',
-                        }}
-                        source={{ uri: imageUrl }}
-                        imageStyle={{
-                            borderRadius: 8,
-                            opacity: 0.8,
-                            resizeMode: 'cover',
-                        }}
+            <>
+                {type === 'CommentAudio' ? (
+                    <TouchableOpacity onPress={() => this.playSound(voiceUri)}>
+                        <Text>Play Sound</Text>
+                    </TouchableOpacity>
+                ) : (
+                    <TouchableWithoutFeedback
+                        onPress={() => this.setState({ mediaModal: true })}
                     >
-                        <TouchableOpacity
-                            activeOpacity={0.6}
-                            onPress={() => this.setState({ mediaModal: true })}
-                            style={{
-                                position: 'absolute',
-                                top: 10,
-                                right: 15,
-                                width: 24,
-                                height: 24,
-                                borderRadius: 12,
-                                padding: 2,
-                                backgroundColor: 'rgba(0,0,0,0.3)',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <Image
-                                source={expand}
+                        <View style={{ marginTop: 10 }}>
+                            <ImageBackground
                                 style={{
-                                    width: 16,
-                                    height: 16,
-                                    tintColor: '#fafafa',
-                                    borderRadius: 4,
+                                    ...styles.mediaStyle,
+                                    ...imagePreviewContainerStyle,
+                                    borderRadius: 8,
+                                    backgroundColor: 'black',
                                 }}
+                                source={{ uri: imageUrl }}
+                                imageStyle={{
+                                    borderRadius: 8,
+                                    opacity: 0.8,
+                                    resizeMode: 'cover',
+                                }}
+                            >
+                                <TouchableOpacity
+                                    activeOpacity={0.6}
+                                    onPress={() =>
+                                        this.setState({ mediaModal: true })
+                                    }
+                                    style={{
+                                        position: 'absolute',
+                                        top: 10,
+                                        right: 15,
+                                        width: 24,
+                                        height: 24,
+                                        borderRadius: 12,
+                                        padding: 2,
+                                        backgroundColor: 'rgba(0,0,0,0.3)',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <Image
+                                        source={expand}
+                                        style={{
+                                            width: 16,
+                                            height: 16,
+                                            tintColor: '#fafafa',
+                                            borderRadius: 4,
+                                        }}
+                                    />
+                                </TouchableOpacity>
+                            </ImageBackground>
+                            <ImageModal
+                                mediaRef={imageUrl}
+                                mediaModal={this.state.mediaModal}
+                                closeModal={() =>
+                                    this.setState({ mediaModal: false })
+                                }
                             />
-                        </TouchableOpacity>
-                    </ImageBackground>
-                    <ImageModal
-                        mediaRef={imageUrl}
-                        mediaModal={this.state.mediaModal}
-                        closeModal={() => this.setState({ mediaModal: false })}
-                    />
-                </View>
-            </TouchableWithoutFeedback>
+                        </View>
+                    </TouchableWithoutFeedback>
+                )}
+            </>
         )
     }
 
@@ -288,7 +320,7 @@ class CommentUserDetail extends Component {
                     {this.renderCardContent()}
                 </View>
                 {this.renderCommentMedia(item)}
-                {this.renderCommentRef(item)}
+                {/* {this.renderCommentRef(item)} */}
             </View>
         )
     }

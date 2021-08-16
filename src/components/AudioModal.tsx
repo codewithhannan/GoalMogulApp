@@ -15,15 +15,12 @@ import {
 } from 'react-native'
 import { Audio, AVPlaybackStatus } from 'expo-av'
 import { Icon } from '@ui-kitten/components'
-import * as FileSystem from 'expo-file-system'
-import * as Font from 'expo-font'
 import * as Permissions from 'expo-permissions'
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen'
 import { connect } from 'react-redux'
-// import * as Icons from "./components/Icons";
 
 import DelayedButton from '../Main/Common/Button/DelayedButton'
 import OnboardingStyles, { getCardBottomOffset } from '../styles/Onboarding'
@@ -35,8 +32,20 @@ const play = require('../../src/asset/icons/play.png')
 const crossIcon = require('../asset/icons/cross.png')
 
 //Utils
-import { sendVoiceMessage } from '../actions/VoiceActions'
-import VoiceUtils from '../Utils/VoiceUtils'
+
+import { sendVoiceMessage } from '../redux/modules/feed/comment/CommentActions'
+import { openGoalDetail } from '../redux/modules/home/mastermind/actions'
+import {
+    createComment,
+    createSuggestion,
+    newCommentOnMediaRefChange,
+    newCommentOnTagsChange,
+    newCommentOnTagsRegChange,
+    newCommentOnTextChange,
+    openCurrentSuggestion,
+    postComment,
+    removeSuggestion,
+} from '../redux/modules/feed/comment/CommentActions'
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const BACKGROUND_COLOR = '#FFF8ED'
@@ -62,7 +71,22 @@ const privacyOptions = [
 ]
 
 type Props = {
-    sendVoiceMessage: (voiceUri: string | null) => void
+    pageId: string
+    goalDetail: {
+        goalRef: { _id: string | null }
+        commentRef: { _id: string | null }
+    }
+    newCommentDetail: {}
+    onClose: () => void
+    openGoalDetail: (goalRef: {}, propsToPass: {}) => void
+    sendVoiceMessage: (
+        voiceUri: string | null,
+        pageId: string | null,
+        _id: string | null,
+        callback: (res: {}) => void
+    ) => void
+    commentType: string | null
+    chatType: string | null
 }
 
 type State = {
@@ -242,6 +266,7 @@ class AudioModal extends React.Component<Props, State> {
         this.setState({
             record: recording._uri,
         })
+
         await this.recording.startAsync() // Will call this._updateScreenForRecordingStatus to update the screen.
         this.setState({
             isLoading: false,
@@ -490,7 +515,7 @@ class AudioModal extends React.Component<Props, State> {
                             </>
                         )
                     })}
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={this.props.onClose}>
                         <Image
                             source={crossIcon}
                             style={{
@@ -585,12 +610,32 @@ class AudioModal extends React.Component<Props, State> {
                             <View style={{ width: 20 }} />
                             <DelayedButton
                                 onPress={() => {
-                                    const voiceUri = this.state.record
-                                    // const voiceObj = {
-                                    //     uri: voiceUri,
-                                    //     privacy: this.state.selected,
-                                    // }
-                                    this.props.sendVoiceMessage(voiceUri)
+                                    this.props.onClose()
+
+                                    if (this.props.commentType) {
+                                        const {
+                                            goalRef,
+                                            commentRef,
+                                        } = this.props.goalDetail
+                                        this.props.sendVoiceMessage(
+                                            this.state.record,
+                                            this.props.pageId,
+                                            goalRef._id,
+                                            () => {
+                                                this.props.openGoalDetail(
+                                                    goalRef,
+                                                    {
+                                                        focusType: 'comment',
+                                                        initialShowSuggestionModal: false,
+                                                        initialFocusCommentBox: false,
+                                                    }
+                                                )
+                                            }
+                                        )
+                                    }
+                                    if (this.props.chatType) {
+                                        console.log('chat voice pressed')
+                                    }
                                 }}
                                 style={[
                                     buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
@@ -598,7 +643,6 @@ class AudioModal extends React.Component<Props, State> {
                                     ,
                                     { width: 150 },
                                 ]}
-                                // onPress={}
                             >
                                 <Text
                                     style={[
@@ -716,8 +760,11 @@ class AudioModal extends React.Component<Props, State> {
         )
     }
 }
+
 export default connect(null, {
     sendVoiceMessage,
+    openGoalDetail,
+    newCommentOnMediaRefChange,
 })(AudioModal)
 
 const styles = StyleSheet.create({

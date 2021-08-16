@@ -9,6 +9,7 @@ import {
     Dimensions,
     TouchableOpacity,
     ActivityIndicator,
+    Platform,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from '@ui-kitten/components'
@@ -641,7 +642,13 @@ class ProfileDetailCard extends Component {
                     </TouchableOpacity>
                 )}
 
-                <TouchableOpacity onPress={this.openCameraRollBottomSheet}>
+                <TouchableOpacity
+                    onPress={
+                        Platform.OS == 'ios'
+                            ? () => this.handleOptionsOnPress()
+                            : this.openCameraRollBottomSheet
+                    }
+                >
                     <View style={styles.iconContainerStyle}>
                         <Entypo name="camera" size={11} color="#FFFF" />
                     </View>
