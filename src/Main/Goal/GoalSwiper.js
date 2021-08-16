@@ -241,12 +241,13 @@ const mapStateToProps = (state, props) => {
     const visitedUserName = state.profile.user.name
     const { userId } = state.user
     const pageId = constructPageId('goal')
+    // console.log('THIS IS PAGE IDDD', pageId)
 
     return {
         visitedUserName,
         userId,
-        newComment: getNewCommentByTab(state, pageId),
-        pageId,
+        // newComment: getNewCommentByTab(state, pageId),
+        // pageId,
     }
 }
 
