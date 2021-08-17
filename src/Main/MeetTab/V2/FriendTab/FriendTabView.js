@@ -16,6 +16,7 @@ import {
     Dimensions,
 } from 'react-native'
 import { TextInput } from 'react-native-paper'
+import Constants from 'expo-constants'
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view'
 import { connect } from 'react-redux'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -39,11 +40,12 @@ import DelayedButton from '../../../Common/Button/DelayedButton'
 import { Actions } from 'react-native-router-flux'
 import { componentKeyByTab } from '../../../../redux/middleware/utils'
 import { SCREENS, wrapAnalytics } from '../../../../monitoring/segment'
+import { DEVICE_MODEL } from '../../../../Utils/Constants'
 
 const KEY = 'friends'
 const DEBUG_KEY = '[ UI FriendTabView ]'
 
-const windowHeight = Dimensions.get('window').height
+const windowHeight = Dimensions.get('screen').height
 
 class FriendTabView extends React.Component {
     state = {
@@ -125,6 +127,7 @@ class FriendTabView extends React.Component {
 
     //this is the tab bar for the tabview
     renderTabBar = (props) => {
+        console.log('THIS IS DEVICE MODAL', DEVICE_MODEL)
         const { routes } = this.state
         return (
             <TabBar

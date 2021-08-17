@@ -214,7 +214,7 @@ class OnBoardingComfirmPhone extends React.Component {
                                         <Text
                                             style={{
                                                 fontFamily:
-                                                    'SFProDisplay-Regular',
+                                                    'SFProDisplay-Semibold',
                                                 fontSize: 12,
                                             }}
                                         >

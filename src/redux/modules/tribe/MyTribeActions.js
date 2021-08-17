@@ -761,17 +761,17 @@ export const requestJoinTribe = (
     if (join) {
         startActionType = MYTRIBE_REQUEST_JOIN
         endActionErrorType = MYTRIBE_REQUEST_JOIN_ERROR
-        trackWithProperties(E.TRIBE_JOIN_REQUESTED, {
-            TribeId: tribeId,
-            UserId: userId,
-        })
+        //    trackWithProperties (E.TRIBE_JOIN_REQUESTED, {
+        //         TribeId: tribeId,
+        //         UserId: userId,
+        //     })
     } else {
         startActionType = MYTRIBE_REQUEST_CANCEL_JOIN
         endActionErrorType = MYTRIBE_REQUEST_CANCEL_JOIN_ERROR
-        trackWithProperties(E.TRIBE_JOIN_CANCELLED, {
-            TribeId: tribeId,
-            UserId: userId,
-        })
+        // trackWithProperties(E.TRIBE_JOIN_CANCELLED, {
+        //     TribeId: tribeId,
+        //     UserId: userId,
+        // })
     }
 
     console.log(

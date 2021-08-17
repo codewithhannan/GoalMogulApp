@@ -25,7 +25,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen'
 
 const MIN_AGE_REQUIREMENT_YRS = 13
 const MODAL_WIDTH = Dimensions.get('window').width
-const MODAL_HEIGHT = Dimensions.get('window').height
+const MODAL_HEIGHT = Dimensions.get('screen').height
 
 class CountryFlagButton extends React.Component {
     // TODO: improve the flag reloading
@@ -260,13 +260,15 @@ class InputBox extends React.Component {
                         style={{
                             alignItems: 'center',
                             justifyContent: 'center',
+                            height: MODAL_HEIGHT * 0.35,
+
+                            alignSelf: 'center',
                         }}
                     >
                         <View
                             style={{
-                                width: '100%',
                                 // backgroundColor: color.GV_MODAL,
-                                height: MODAL_HEIGHT * 0.38,
+
                                 backgroundColor: 'white',
                                 borderRadius: 5,
                                 padding: 10,
@@ -282,10 +284,6 @@ class InputBox extends React.Component {
                                 <CalendarPicker
                                     width={370}
                                     onDateChange={(date) => {
-                                        console.log(
-                                            'THIS IS DATEEE',
-                                            date.toDate()
-                                        )
                                         this.setState(
                                             {
                                                 ...this.state,

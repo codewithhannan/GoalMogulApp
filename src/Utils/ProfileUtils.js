@@ -59,12 +59,10 @@ const ProfileUtils = {
             }
         })
 
-        console.log('YEEE CALLL HORAHI HAA')
-
         const authToken = await TokenService.getAuthToken()
 
         const url =
-            'http://goalmogul-api-dev.herokuapp.com/api/secure/user/profile'
+            'https://goalmogul-api-dev.herokuapp.com/api/secure/user/profile'
         const headers = {
             method: 'PUT',
             headers: {

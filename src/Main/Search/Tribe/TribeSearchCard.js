@@ -13,14 +13,21 @@ import next from '../../../asset/utils/next.png'
 
 // Actions
 import { selectTribe } from '../../../redux/modules/feed/post/ShareActions'
-import { tribeDetailOpen } from '../../../redux/modules/tribe/MyTribeActions'
+import {
+    requestJoinTribe,
+    tribeDetailOpen,
+} from '../../../redux/modules/tribe/MyTribeActions'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import ProfileImage from '../../Common/ProfileImage'
 import { trackWithProperties, EVENT } from '../../../monitoring/segment'
 import { color } from '../../../styles/basic'
+import { constructPageId } from '../../../redux/middleware/utils'
+import { getMyTribeUserStatus } from '../../../redux/modules/tribe/TribeSelector'
+import { refreshProfileData } from '../../../actions'
 
 const DEBUG_KEY = '[ Component SearchTribeCard ]'
 
+let pageAb
 class SearchTribeCard extends Component {
     state = {
         imageLoading: false,
@@ -57,6 +64,13 @@ class SearchTribeCard extends Component {
         }
     }
 
+    componentDidMount() {
+        const pageId = this.props.refreshProfileData(this.props.userId)
+
+        pageAb = pageId
+        console.log('PAGE IDDDD', pageAb)
+    }
+
     renderTribeImage() {
         const { picture } = this.props.item
         return (
@@ -81,7 +95,16 @@ class SearchTribeCard extends Component {
                 <View style={styles.iconContainerStyle}>
                     <DelayedButton
                         activeOpacity={0.6}
-                        onPress={() => this.onButtonClicked(item, type)}
+                        onPress={
+                            () => this.onButtonClicked(item, type)
+
+                            // this.props.requestJoinTribe(
+                            //     item._id,
+                            //     true,
+                            //     pageAb,
+                            //     item.isAutoAcceptEnabled
+                            // )
+                        }
                         style={{
                             height: 31,
                             width: 65,
@@ -272,7 +295,19 @@ const styles = {
     },
 }
 
-export default connect(null, {
+const mapStateToProps = (state, props) => {
+    // const pageId = constructPageId('tribe')
+    const { userId } = state.user
+
+    return {
+        // pageId,
+        userId,
+    }
+}
+
+export default connect(mapStateToProps, {
     selectTribe,
     tribeDetailOpen,
+    requestJoinTribe,
+    refreshProfileData,
 })(SearchTribeCard)

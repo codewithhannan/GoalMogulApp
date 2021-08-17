@@ -103,7 +103,7 @@ class OnboardingCommunity extends React.Component {
                         <Image
                             style={{
                                 width,
-                                height: width,
+                                height: Dimensions.get('screen').height * 0.39,
                                 backgroundColor: color.GM_CARD_BACKGROUND,
                             }}
                             source={picture}
@@ -198,7 +198,7 @@ class OnboardingCommunity extends React.Component {
                                 { fontWeight: '700', fontSize: 23 })
                             }
                         >
-                            your goals with others
+                            your goals with others.
                         </Text>
                     </View>
                     <View
