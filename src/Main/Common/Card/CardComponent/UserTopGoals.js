@@ -32,6 +32,20 @@ class UserTopGoals extends React.PureComponent {
         }
     }
 
+    getNeeds = (user) => {
+        const { topNeeds } = user
+        let Needs_title
+        let Needs_text
+        if (topNeeds && topNeeds.length) {
+            Needs_text = topNeeds[0]
+            Needs_title = 'Top Needs: '
+        }
+        return {
+            Needs_title,
+            Needs_text,
+        }
+    }
+
     render() {
         const { user } = this.props
         if (!user) {
@@ -42,6 +56,11 @@ class UserTopGoals extends React.PureComponent {
         if (!title && !text) {
             return null
         }
+
+        const { Needs_text, Needs_title } = this.getNeeds(user)
+        // if (!Needs_title && !Needs_text) {
+        //     return null
+        // }
 
         return (
             <>
@@ -62,7 +81,7 @@ class UserTopGoals extends React.PureComponent {
                         {text}
                     </Text>
                 </View>
-                {this.props.user.topNeeds.length === 0 ? null : (
+                {Needs_text !== undefined ? (
                     <View style={[styles.goalContainerStyle, this.props.style]}>
                         <Text
                             numberOfLines={2}
@@ -75,12 +94,12 @@ class UserTopGoals extends React.PureComponent {
                                     { color: color.GM_BLUE },
                                 ]}
                             >
-                                Needs:{' '}
+                                {Needs_title}
                             </Text>
-                            {this.props.user.topNeeds[0]}
+                            {Needs_text}
                         </Text>
                     </View>
-                )}
+                ) : null}
             </>
         )
     }
