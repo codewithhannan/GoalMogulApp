@@ -95,15 +95,15 @@ class SearchTribeCard extends Component {
                 <View style={styles.iconContainerStyle}>
                     <DelayedButton
                         activeOpacity={0.6}
-                        onPress={
-                            () => this.onButtonClicked(item, type)
+                        onPress={() =>
+                            // this.onButtonClicked(item, type)
 
-                            // this.props.requestJoinTribe(
-                            //     item._id,
-                            //     true,
-                            //     pageAb,
-                            //     item.isAutoAcceptEnabled
-                            // )
+                            this.props.requestJoinTribe(
+                                item._id,
+                                true,
+                                pageAb,
+                                item.isAutoAcceptEnabled
+                            )
                         }
                         style={{
                             height: 31,
@@ -247,6 +247,7 @@ class SearchTribeCard extends Component {
 
     render() {
         const { item, type } = this.props
+
         return (
             <DelayedButton
                 activeOpacity={0.6}

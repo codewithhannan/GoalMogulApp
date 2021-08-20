@@ -143,7 +143,9 @@ class SearchOverlay extends Component {
                 type="GeneralSearch"
             />
         ),
-        tribes: () => <TribeSearch type="GeneralSearch" shouldPreload={true} />,
+        tribes: () => (
+            <TribeSearch type="GeneralSearch" shouldPreload={false} />
+        ),
         chatRooms: () => <ChatSearch type="GeneralSearch" />,
     })
 
