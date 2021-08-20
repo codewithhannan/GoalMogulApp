@@ -92,6 +92,7 @@ class OnboardingPeopleKnow extends React.Component {
     }
 
     renderPYMK = ({ item, index }) => {
+        console.log('PYMK ITEM', item)
         return (
             <PYMKCard
                 user={item}

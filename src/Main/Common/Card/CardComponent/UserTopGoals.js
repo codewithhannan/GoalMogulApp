@@ -44,23 +44,44 @@ class UserTopGoals extends React.PureComponent {
         }
 
         return (
-            <View style={[styles.goalContainerStyle, this.props.style]}>
-                <Text
-                    numberOfLines={2}
-                    ellipsizeMode="tail"
-                    style={[default_style.normalText_1]}
-                >
+            <>
+                <View style={[styles.goalContainerStyle, this.props.style]}>
                     <Text
-                        style={[
-                            default_style.titleText_2,
-                            { color: color.GM_BLUE },
-                        ]}
+                        numberOfLines={2}
+                        ellipsizeMode="tail"
+                        style={[default_style.normalText_1]}
                     >
-                        {title}
+                        <Text
+                            style={[
+                                default_style.titleText_2,
+                                { color: color.GM_BLUE },
+                            ]}
+                        >
+                            {title}
+                        </Text>
+                        {text}
                     </Text>
-                    {text}
-                </Text>
-            </View>
+                </View>
+                {this.props.user.topNeeds.length === 0 ? null : (
+                    <View style={[styles.goalContainerStyle, this.props.style]}>
+                        <Text
+                            numberOfLines={2}
+                            ellipsizeMode="tail"
+                            style={[default_style.normalText_1]}
+                        >
+                            <Text
+                                style={[
+                                    default_style.titleText_2,
+                                    { color: color.GM_BLUE },
+                                ]}
+                            >
+                                Needs:{' '}
+                            </Text>
+                            {this.props.user.topNeeds[0]}
+                        </Text>
+                    </View>
+                )}
+            </>
         )
     }
 }
