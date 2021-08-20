@@ -406,8 +406,26 @@ class ProfileDetailCard extends Component {
         }
 
         const status = this.props.friendship.status
-
         switch (status) {
+            case undefined:
+                return (
+                    <View style={{ marginRight: 10 }}>
+                        <ProfileActionButton
+                            text={ADD_FRIEND}
+                            iconName="account-plus"
+                            onPress={this.handleButtonOnPress.bind(
+                                this,
+                                'requestFriend'
+                            )}
+                            iconStyle={iconStyle}
+                            textStyle={textStyle}
+                            containerStyle={{
+                                ...containerStyle,
+                            }}
+                        />
+                    </View>
+                )
+
             case undefined:
                 return (
                     <View style={{ marginRight: 10 }}>
@@ -575,6 +593,7 @@ class ProfileDetailCard extends Component {
     }
 
     handleOptionsOnPress() {
+        console.log('YAHAN ARAHA HAAA')
         const options = switchByButtonIndex([
             [
                 R.equals(0),

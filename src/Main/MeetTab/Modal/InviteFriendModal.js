@@ -27,6 +27,7 @@ import Svg, {
     Use,
     Image as SvgImage,
 } from 'react-native-svg'
+
 import Modal from 'react-native-modalbox'
 import { color, default_style } from '../../../styles/basic'
 import cancel from '../../../asset/utils/cancel_no_background.png'
@@ -46,6 +47,7 @@ import { getUserData } from '../../../redux/modules/User/Selector'
 import { parseExpressionAndEval } from '../../../Utils/HelperMethods'
 import ArrowRight from '../../../asset/svgs/ArrowRightCircle'
 import ArrowLeft from '../../../asset/svgs/ArrowLeftCircle'
+import { DropDownHolder } from '../../Common/Modal/DropDownModal'
 
 const DEBUG_KEY = '[UI InviteFriendModal]'
 const DEFAULT_STATE = {
@@ -163,23 +165,25 @@ class InviteFriendModal extends React.PureComponent {
 
         Linking.openURL(url)
             .then((data) => {
-                alert('Facebook Opened')
+                console.log('FACEBOOK OPENED', data)
             })
             .catch(() => {
-                alert('Something went wrong')
+                setTimeout(() => {
+                    Alert.alert('Error!', 'App is not installed!')
+                }, 500)
             })
     }
 
-    shareOnMessanger = async (message, link) => {
-        try {
-            await Linking.openURL(
-                `fb-messenger://share?link=${message}\n\n${link}`
-            )
-        } catch (error) {
-            alert(
-                'Unable to Open Messenger, Please make sure the app is installed.'
-            )
-        }
+    shareOnMessanger = (message, link) => {
+        Linking.openURL(`fb-messenger://share?link=${message}\n\n${link}`)
+            .then((data) => {
+                console.log('Messanger OPENED', data)
+            })
+            .catch(() => {
+                setTimeout(() => {
+                    Alert.alert('Error!', 'App is not installed!')
+                }, 500)
+            })
     }
 
     openEditInviteCodeForm = () => {
@@ -269,17 +273,16 @@ class InviteFriendModal extends React.PureComponent {
         )
     }
 
-    shareToWhatsApp = async (text, link) => {
-        try {
-            const test = await Linking.openURL(
-                `whatsapp://send?text=${text}\n\n${link}`
-            )
-            console.log(test)
-        } catch (error) {
-            alert(
-                'Unable to Open Whatsapp, Please make sure the app is installed.'
-            )
-        }
+    shareToWhatsApp = (text, link) => {
+        Linking.openURL(`whatsapp://send?text=${text}\n\n${link}`)
+            .then((data) => {
+                console.log('WHATSAPP OPENED', data)
+            })
+            .catch(() => {
+                setTimeout(() => {
+                    Alert.alert('Error!', 'App is not installed!')
+                }, 500)
+            })
     }
 
     handleDeepLink = async (item) => {

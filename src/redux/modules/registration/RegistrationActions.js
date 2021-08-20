@@ -292,8 +292,8 @@ export const registerAccount = (onSuccess, dateToSend) => async (
         email,
         phone: phoneNumber,
         gender: gender === 'Prefer not to say' ? undefined : gender,
-        // dateOfBirth,
-        dateOfBirth: dateToSend,
+        dateOfBirth,
+        // dateOfBirth: dateToSend,
         inviterCode,
     }
 

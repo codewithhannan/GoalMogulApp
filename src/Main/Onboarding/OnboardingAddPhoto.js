@@ -102,7 +102,7 @@ class OnboardingAddPhotos extends Component {
 
     render() {
         const { openCamera, openCameraRoll, profilePic } = this.props
-        console.log('THIS IS PROFILE PICCC', profilePic)
+
         return (
             <View
                 style={[
@@ -142,7 +142,7 @@ class OnboardingAddPhotos extends Component {
                                 { textAlign: 'center' },
                             ]}
                         >
-                            This way people will recognize you
+                            This way friends will recognize you
                         </Text>
                     </View>
                     <DelayedButton

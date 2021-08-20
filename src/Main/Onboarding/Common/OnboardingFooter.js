@@ -27,6 +27,7 @@ const { button: buttonStyle } = OnboardingStyles
 class OnboardingFooter extends React.Component {
     renderProgressBar() {
         const { totalStep, currentStep, hideProgressDots } = this.props
+        console.log('THIS IS TOTAL STEPP', totalStep)
         if (hideProgressDots)
             return (
                 <>

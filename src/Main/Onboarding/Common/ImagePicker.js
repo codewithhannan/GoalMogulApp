@@ -118,7 +118,11 @@ class ImagePicker extends Component {
         if (!imageSource) {
             // render default image icon
             return (
-                <Icon name="add-a-photo" pack="material" style={imageStyle} />
+                // <Icon name="add-a-photo" pack="material" style={imageStyle} />
+                <Image
+                    source={TAKE_PIC_ICON}
+                    style={{ height: 40, width: 40, resizeMode: 'contain' }}
+                />
             )
         }
 
@@ -156,6 +160,7 @@ const styles = StyleSheet.create({
     },
     roundedButtonStyles: {
         borderRadius: 180,
+        backgroundColor: '#F2F2F2',
     },
     borderedButtonStyles: {
         borderWidth: 2,

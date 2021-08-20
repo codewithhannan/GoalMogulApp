@@ -113,7 +113,7 @@ function CustomDropdown({ dateOfBirth, change }) {
                     setOpen={setMonthOpen}
                     setValue={setMonthValue}
                     setItems={setMonths}
-                    placeholder="MONTH"
+                    placeholder="Month"
                     dropDownContainerStyle={{
                         backgroundColor: 'white',
                         borderColor: 'grey',
@@ -144,7 +144,7 @@ function CustomDropdown({ dateOfBirth, change }) {
                     setOpen={setDateOpen}
                     setValue={setDateValue}
                     setItems={setDates}
-                    placeholder="DATE"
+                    placeholder="Date"
                     onChangeValue={(value) => {
                         change(`${monthValue}-${value}-${yearValue}`)
                     }}
@@ -180,7 +180,7 @@ function CustomDropdown({ dateOfBirth, change }) {
                         change(`${monthValue}-${dateValue}-${value}`)
                     }}
                     va
-                    placeholder="YEAR"
+                    placeholder="Year"
                     dropDownContainerStyle={{
                         backgroundColor: 'white',
                         borderColor: 'grey',
