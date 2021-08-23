@@ -13,6 +13,8 @@ import { setBadgeNumberAsyncByPlatform } from '../redux/modules/notification/Not
 import { Alert } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 
+const makeMessage = () => 'You have nudged successfully!'
+
 const DEBUG_KEY = '[ NudgeActions ]'
 export const NUDGE_TYPES = {
     makeGoalsPublic: 'makeGoalsPublic',
@@ -45,9 +47,22 @@ export const addNudge = (visitedId, token, nudgeType, question) => {
                 response.result
             )
             if (res.status === 200) {
-                Alert.alert('You have nudged successfully!')
+                setTimeout(() => {
+                    DropDownHolder.alert(
+                        'success',
+                        'Request sent!',
+                        makeMessage()
+                    )
+                }, 500)
             }
         } catch (err) {
+            setTimeout(() => {
+                DropDownHolder.alert(
+                    'error',
+                    'Error',
+                    "We're sorry that some error happened. Please try again later."
+                )
+            }, 500)
             console.log(`${DEBUG_KEY} This is the error of addNudge`, err)
         }
     }

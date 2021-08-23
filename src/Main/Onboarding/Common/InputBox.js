@@ -250,12 +250,6 @@ class InputBox extends React.Component {
                     }
                     // isDarkModeEnabled={false}
                 /> */}
-
-                {/* <CalendarPicker onDateChange={this.onDateChange} />
-
-                <View>
-                    <Text>SELECTED DATE:{startDate}</Text>
-                </View> */}
                 <Modal
                     backdropColor={'black'}
                     backdropOpacity={0.5}
@@ -263,7 +257,6 @@ class InputBox extends React.Component {
                     swipeDirection={'down'}
                     animationInTiming={400}
                     style={{
-                        marginTop: Constants.statusBarHeight + 15,
                         borderRadius: 15,
                         margin: 0,
                     }}
@@ -276,27 +269,19 @@ class InputBox extends React.Component {
                             backgroundColor: 'white',
                             width: '100%',
                             position: 'absolute',
-
+                            height: 400,
                             bottom: 0,
                             borderRadius: 5,
                         }}
                     >
                         <View
                             style={{
-                                // backgroundColor: color.GV_MODAL,
-
                                 backgroundColor: 'white',
                                 borderRadius: 5,
                                 padding: 10,
                             }}
                         >
-                            <View
-                                style={
-                                    {
-                                        // paddingVertical: 10,
-                                    }
-                                }
-                            >
+                            <View>
                                 <CalendarPicker
                                     width={370}
                                     onDateChange={(date) => {
@@ -331,6 +316,7 @@ class InputBox extends React.Component {
                                     monthTitleStyle={{
                                         color: 'rgba(66, 192, 245, 1)',
                                         fontFamily: 'SFProDisplay-Semibold',
+                                        fontSize: 17,
                                     }}
                                     textStyle={{
                                         color: 'rgba(0, 141, 200, 1)',
@@ -338,6 +324,7 @@ class InputBox extends React.Component {
                                     yearTitleStyle={{
                                         color: 'rgba(66, 192, 245, 1)',
                                         fontFamily: 'SFProDisplay-Semibold',
+                                        fontSize: 17,
                                     }}
                                     dayLabelsWrapper={{
                                         borderColor: 'transparent',
@@ -369,29 +356,25 @@ class InputBox extends React.Component {
                                         }
                                     }}
                                     previousComponent={
-                                        <View style={{ left: 70 }}>
+                                        <View style={{}}>
                                             <Image
                                                 source={calendarLeft}
                                                 style={{
                                                     resizeMode: 'contain',
-                                                    height: 12,
-                                                    width: 12,
+                                                    height: 15,
+                                                    width: 15,
                                                 }}
                                             />
                                         </View>
                                     }
                                     nextComponent={
-                                        <View
-                                            style={{
-                                                right: 71,
-                                            }}
-                                        >
+                                        <View style={{}}>
                                             <Image
                                                 source={calendarRight}
                                                 style={{
                                                     resizeMode: 'contain',
-                                                    height: 12,
-                                                    width: 12,
+                                                    height: 15,
+                                                    width: 15,
                                                 }}
                                             />
                                         </View>
@@ -420,6 +403,7 @@ class InputBox extends React.Component {
                                         width: '90%',
                                         alignSelf: 'center',
                                         height: 35,
+                                        marginBottom: 10,
                                     },
                                 ]}
                                 onPress={() =>
@@ -434,7 +418,7 @@ class InputBox extends React.Component {
                                             .textStyle
                                     }
                                 >
-                                    Comfirm
+                                    Confirm
                                 </Text>
                             </DelayedButton>
                         </SafeAreaView>
@@ -811,7 +795,6 @@ const styles = {
         borderColor: color.GM_DOT_GRAY,
         borderWidth: 0.5,
         borderRadius: 50,
-
         flexWrap: 'wrap',
         flexDirection: 'row',
     },
