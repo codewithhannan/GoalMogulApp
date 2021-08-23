@@ -13,7 +13,7 @@ import DelayedButton from '../Common/Button/DelayedButton'
 
 const UserAgreementCheckBox = ({ checked, onPress, isAutoAccepted }) => {
     const leadingText = isAutoAccepted
-        ? `By continuing you agree to the`
+        ? `By signing up agree to the`
         : `I agree to the`
     return (
         <DelayedButton

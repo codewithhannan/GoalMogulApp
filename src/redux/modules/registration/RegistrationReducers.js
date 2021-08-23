@@ -97,7 +97,7 @@ export const REGISTRATION_COMMUNITY_GUIDELINE = [
         picture: Tribes,
     },
     {
-        title: 'Inspire others with encouraging comments',
+        title: 'Inspire others\nwith encouraging comments',
         subTitle: '',
         picture: Community3,
     },

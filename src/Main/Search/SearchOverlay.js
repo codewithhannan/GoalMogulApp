@@ -40,7 +40,9 @@ import {
 import { HEADER_STYLES } from '../../styles/Header'
 import { TEXT_COLOR } from '../../styles/basic/color'
 import { api } from '../../redux/middleware/api'
-import { getAllAccounts } from '../../actions'
+import { getAllAccounts, refreshProfileData } from '../../actions'
+refreshProfileData
+let pageAb
 
 const DEBUG_KEY = '[ Component Search ]'
 
@@ -141,7 +143,9 @@ class SearchOverlay extends Component {
                 type="GeneralSearch"
             />
         ),
-        tribes: () => <TribeSearch type="GeneralSearch" shouldPreload={true} />,
+        tribes: () => (
+            <TribeSearch type="GeneralSearch" shouldPreload={false} />
+        ),
         chatRooms: () => <ChatSearch type="GeneralSearch" />,
     })
 
@@ -231,12 +235,14 @@ const styles = {
 const mapStateToProps = (state) => {
     const { selectedTab, navigationState, searchContent } = state.search
     const { loading } = state.search[selectedTab]
+    const { userId } = state.user
 
     return {
         selectedTab,
         navigationState,
         loading,
         searchContent,
+        userId,
     }
 }
 
@@ -251,6 +257,7 @@ const mapDispatchToProps = (dispatch) => {
         // searchSwitchTab: searchSwitchTab(dispatch),
         searchSwitchTab: (index) => dispatch(searchSwitchTab(index)),
         clearSearchState: clearSearchState(dispatch),
+        refreshProfileData,
     }
 }
 

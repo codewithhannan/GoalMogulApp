@@ -8,6 +8,7 @@ import {
     Dimensions,
     SafeAreaView,
     Keyboard,
+    Platform,
 } from 'react-native'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
 import { TextField } from 'react-native-material-textfield-gm'
@@ -170,7 +171,11 @@ class ProfileDetailEditForm extends Component {
                 />
                 <TouchableOpacity
                     activeOpacity={0.6}
-                    onPress={this.openCameraRollBottomSheet}
+                    onPress={
+                        Platform.OS == 'ios'
+                            ? this.chooseImage
+                            : this.openCameraRollBottomSheet
+                    }
                 >
                     <View style={styles.imageContainerStyle}>
                         <View style={styles.imageWrapperStyle}>

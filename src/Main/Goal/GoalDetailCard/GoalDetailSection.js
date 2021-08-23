@@ -127,13 +127,10 @@ class GoalDetailSection extends React.PureComponent {
         if (this.props.onRef !== null) {
             this.props.onRef(this)
         }
-        const { goalDetail, isOwnGoal } = this.props
-        const { steps, needs } = goalDetail
-        if (steps.length === 0 && needs.length === 0 && !isOwnGoal) {
-            setTimeout(() => {
-                this.setState({ showSuggestionPopup: true })
-            }, 2000)
-        }
+
+        setTimeout(() => {
+            this.handleSuggestionPopup()
+        }, 2000)
 
         if (this.props.initialProps) {
             const { initialShowPostModal } = this.props.initialProps
@@ -145,6 +142,19 @@ class GoalDetailSection extends React.PureComponent {
                 }, 750)
                 return
             }
+        }
+    }
+
+    handleSuggestionPopup = () => {
+        const { goalDetail, isOwnGoal, focusType } = this.props
+        const { steps, needs } = goalDetail
+        if (
+            steps.length === 0 &&
+            needs.length === 0 &&
+            !isOwnGoal &&
+            !focusType
+        ) {
+            this.setState({ showSuggestionPopup: true })
         }
     }
 
@@ -793,6 +803,7 @@ class GoalDetailSection extends React.PureComponent {
 
     render() {
         const { item, isOwnGoal, goalDetail } = this.props
+        console.log('YAHAN ARAHA HA 1', this.props.focusType)
         if (!item || _.isEmpty(item)) return null
 
         const goalReminderOptions = this.getOnGoalReminderOptions()
@@ -918,7 +929,7 @@ const mapStateToProps = (state, props) => {
     const getGoalPageDetailByPageId = makeGetGoalPageDetailByPageId()
     const { pageId, goalId } = props
     const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId)
-
+    const { focusType } = goalDetail.goalPage.navigationStateV2
     const { goal, goalPage } = goalDetail
     const { userId } = state.user
     const { tutorialText } = state.tutorials.goal_detail.goal_detail_page
@@ -933,6 +944,7 @@ const mapStateToProps = (state, props) => {
         tutorialText,
         isOwnGoal,
         goalDetail: goal,
+        focusType,
     }
 }
 

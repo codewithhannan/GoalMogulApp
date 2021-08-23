@@ -168,7 +168,7 @@ class TribeSearch extends Component {
         const { height } = Dimensions.get('window')
         return (
             <View style={{ flex: 1, height: height }}>
-                {this.props.data.length === 0 &&
+                {/* {this.props.data.length === 0 &&
                 this.props.searchContent &&
                 !this.props.loading ? (
                     <EmptyResult text={'No Results'} />
@@ -183,7 +183,8 @@ class TribeSearch extends Component {
                         refreshing={this.props.loading}
                         keyboardShouldPersistTaps="always"
                     />
-                )}
+                )} */}
+                {this.renderFlatList()}
             </View>
         )
     }

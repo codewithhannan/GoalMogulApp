@@ -35,6 +35,15 @@ class PeopleSearch extends Component {
     async componentDidMount() {
         this.props.getAllAccounts()
     }
+    componentDidUpdate(prevProps, prevState) {
+        // if (
+        //     this.props.data.length === 0 &&
+        //     !this.props.searchContent &&
+        //     !this.props.loading
+        // ) {
+        //     this.props.getAllAccounts()
+        // }
+    }
 
     handleRefresh = () => {
         console.log(`${DEBUG_KEY} Refreshing tab: `, key)

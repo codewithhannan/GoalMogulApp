@@ -37,7 +37,7 @@ class GoalSwiper extends React.Component {
                 id: 1,
                 source: ACCOUNTABILITY,
                 onPress: () => {
-                    prevOpenedRow.close()
+                    // prevOpenedRow.close()
                     this.setState({ accountPopUpVisible: true })
                 },
                 backgroundColor: '#CEFFBC',
@@ -47,7 +47,7 @@ class GoalSwiper extends React.Component {
                 id: 3,
                 source: RECORDING,
                 onPress: () => {
-                    prevOpenedRow.close()
+                    // prevOpenedRow.close()
                     this.openRecordingModal()
                 },
                 backgroundColor: '#D7F3FF',
@@ -244,12 +244,13 @@ const mapStateToProps = (state, props) => {
     const visitedUserName = state.profile.user.name
     const { userId } = state.user
     const pageId = constructPageId('goal')
+    // console.log('THIS IS PAGE IDDD', pageId)
 
     return {
         visitedUserName,
         userId,
-        newComment: getNewCommentByTab(state, pageId),
-        pageId,
+        // newComment: getNewCommentByTab(state, pageId),
+        // pageId,
     }
 }
 

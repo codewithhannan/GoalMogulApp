@@ -37,8 +37,6 @@ import {
     cancelRegistration,
 } from '../../redux/modules/registration/RegistrationActions'
 
-// import CustomDropDown from '../../../CustomDropDown'
-
 import UserAgreementCheckBox from './UserAgreementCheckBox'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { DEVICE_PLATFORM } from '../../Utils/Constants'
@@ -49,6 +47,9 @@ import {
     track,
     EVENT as E,
 } from '../../monitoring/segment'
+import CustomDropDown from './Common/CustomDropdown'
+
+let dateToSend = undefined
 
 const NEXT_STEP = 'registration'
 const FIELD_REQUIREMENTS = {
@@ -63,6 +64,7 @@ const FIELD_REQUIREMENTS = {
     inviteCode: {
         require_code: 'Invite Code is required',
     },
+    testname: '',
 }
 
 class RegistrationAccount extends React.Component {
@@ -76,6 +78,7 @@ class RegistrationAccount extends React.Component {
             passwordStatus: undefined,
             inviteCodeStatus: undefined,
             userAgreementChecked: true,
+            validateDate: undefined,
         }
     }
 
@@ -156,7 +159,7 @@ class RegistrationAccount extends React.Component {
             // Right now we only register the phone number
             this.nextStep()
         }
-        return this.props.registerAccount(onSuccess)
+        return this.props.registerAccount(onSuccess, dateToSend)
         // track(E.REG_FIELDS_FILL)
     }
 
@@ -289,6 +292,10 @@ class RegistrationAccount extends React.Component {
         )
     }
 
+    handleFilterUpdate(filterValue) {
+        dateToSend = new Date(filterValue)
+    }
+
     renderInputs = () => {
         const {
             gender,
@@ -299,6 +306,7 @@ class RegistrationAccount extends React.Component {
             registerErrMsg,
             inviterCode,
         } = this.props
+
         return (
             <View
                 style={{
@@ -431,7 +439,10 @@ class RegistrationAccount extends React.Component {
                     disabled={this.props.loading}
                 />
 
-                {/* <CustomDropDown /> */}
+                {/* <CustomDropDown
+                    dateOfBirth={dateOfBirth}
+                    change={this.handleFilterUpdate}
+                /> */}
 
                 <InputBox
                     key="inviterCode"
