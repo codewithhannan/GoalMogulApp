@@ -26,6 +26,7 @@ import CommentRef from './CommentRef'
 import ProfileImage from '../../../Common/ProfileImage'
 import ImageModal from '../../../Common/ImageModal'
 import RichText from '../../../Common/Text/RichText'
+import AudioPlayer from '../../../../components/AudioPlayer'
 
 // Actions
 import {
@@ -79,12 +80,12 @@ class CommentUserDetail extends Component {
         this.openReplyThread = this.openReplyThread.bind(this)
     }
 
-    componentWillUnmount() {
-        const unMoundSound = async () => {
-            this.state.soundObj && (await this.state.soundObj.unloadAsync())
-        }
-        unMoundSound()
-    }
+    // componentWillUnmount() {
+    //     const unMoundSound = async () => {
+    //         this.state.soundObj && (await this.state.soundObj.unloadAsync())
+    //     }
+    //     unMoundSound()
+    // }
 
     onLayout = (e) => {
         const layout = {
@@ -140,9 +141,10 @@ class CommentUserDetail extends Component {
         return (
             <>
                 {type === 'CommentAudio' ? (
-                    <TouchableOpacity onPress={() => this.playSound(voiceUri)}>
-                        <Text>Play Sound</Text>
-                    </TouchableOpacity>
+                    // <TouchableOpacity onPress={() => this.playSound(voiceUri)}>
+                    //     <Text>Play Sound</Text>
+                    // </TouchableOpacity>
+                    <AudioPlayer audio={{ uri: voiceUri }} />
                 ) : (
                     <TouchableWithoutFeedback
                         onPress={() => this.setState({ mediaModal: true })}
