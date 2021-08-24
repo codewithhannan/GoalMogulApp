@@ -205,8 +205,7 @@ class InputBox extends React.Component {
                         {value ? moment(value).format('ll') : 'Date of Birth'}
                     </Text>
                 </TouchableOpacity>
-
-                {/* * Date time picker on date touchable is clicked
+                {/* Date time picker on date touchable is clicked */}
                 <DateTimePicker
                     isVisible={this.state.isDatePickerVisible}
                     mode="date"
@@ -216,12 +215,6 @@ class InputBox extends React.Component {
                             display={
                                 Platform.OS === 'ios' ? 'spinner' : 'default'
                             }
-                            style={{
-                                height: 110,
-                                marginTop: 15,
-
-                                marginHorizontal: 15,
-                            }}
                         />
                     )}
                     titleIOS="Date of Birth"
@@ -249,8 +242,8 @@ class InputBox extends React.Component {
                         })
                     }
                     // isDarkModeEnabled={false}
-                /> */}
-                <Modal
+                />
+                {/* <Modal
                     backdropColor={'black'}
                     backdropOpacity={0.5}
                     isVisible={this.state.isDatePickerVisible}
@@ -423,8 +416,7 @@ class InputBox extends React.Component {
                             </DelayedButton>
                         </SafeAreaView>
                     </View>
-                </Modal>
-
+                </Modal> */}
                 {/* {this.renderCaption(caption, status)} */}
             </View>
         )
