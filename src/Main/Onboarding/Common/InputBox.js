@@ -2,38 +2,39 @@
 
 import React from 'react'
 import _ from 'lodash'
-import moment from 'moment'
+// import moment from 'moment'
 import {
     View,
     Text,
     ScrollView,
-    TouchableOpacity,
+    // TouchableOpacity,
     Dimensions,
-    Image,
-    SafeAreaView,
+    // Image,
+    // SafeAreaView,
 } from 'react-native'
 import CountryPicker from 'react-native-country-picker-modal'
-import DateTimePicker from 'react-native-modal-datetime-picker'
-import calendarLeft from '../../../asset/utils/calendarLeft.png'
-import calendarRight from '../../../asset/utils/calendarRight.png'
+// import DateTimePicker from 'react-native-modal-datetime-picker'
+import { TextInputMask } from 'react-native-masked-text'
+// import calendarLeft from '../../../asset/utils/calendarLeft.png'
+// import calendarRight from '../../../asset/utils/calendarRight.png'
 
-import RNDatePicker from '@react-native-community/datetimepicker'
+// import RNDateTimePicker from '@react-native-community/datetimepicker'
 import { text, color, default_style } from '../../../styles/basic'
 import OnboardingStyles from '../../../styles/Onboarding'
-import CalendarPicker from 'react-native-calendar-picker'
+// import CalendarPicker from 'react-native-calendar-picker'
 
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { Input, Icon } from '@ui-kitten/components'
 import { FONT_FAMILY } from '../../../styles/basic/text'
-import Modal from 'react-native-modal'
-import { Colors } from 'react-native/Libraries/NewAppScreen'
-import Constants from 'expo-constants'
+// import Modal from 'react-native-modal'
+// import { Colors } from 'react-native/Libraries/NewAppScreen'
+// import Constants from 'expo-constants'
 
-const { text: textStyle, button: buttonStyle } = OnboardingStyles
+// const { text: textStyle, button: buttonStyle } = OnboardingStyles
 
-const MIN_AGE_REQUIREMENT_YRS = 13
-const MODAL_WIDTH = Dimensions.get('window').width
-const MODAL_HEIGHT = Dimensions.get('screen').height
+// const MIN_AGE_REQUIREMENT_YRS = 13
+// const MODAL_WIDTH = Dimensions.get('window').width
+// const MODAL_HEIGHT = Dimensions.get('screen').height
 
 class CountryFlagButton extends React.Component {
     // TODO: improve the flag reloading
@@ -123,17 +124,20 @@ class InputBox extends React.Component {
             onChangeText,
             containerStyle,
             status,
+            onBlur,
         } = this.props
-        // console.log('THIS IS VALUEEE', value)
+        console.log('Value', value)
 
         const { selectedStartDate } = this.state
         // const startDate = selectedStartDate ? selectedStartDate.toString() : ''
         // console.log('THIS IS SELECTED DATE', new Date(Date.now()))
 
-        let oneYearFromNow = new Date()
-        let newDate = oneYearFromNow.setFullYear(
-            oneYearFromNow.getFullYear() - 13
-        )
+        // let oneYearFromNow = new Date()
+        // let newDate = oneYearFromNow.setFullYear(
+        //     oneYearFromNow.getFullYear() - 13
+        // )
+        // var date = new Date(newDate)
+        // console.log(date.toUTCString())
 
         return (
             <View style={[{ marginTop: 20 }, containerStyle || {}]}>
@@ -154,7 +158,7 @@ class InputBox extends React.Component {
                     </Text>
                     <Text style={styles.labelStyle}> {inputTitle}</Text>
                 </View>
-                <TouchableOpacity
+                <View
                     activeOpacity={0.6}
                     style={{
                         // height: 40 * default_style.uiScale,
@@ -165,12 +169,12 @@ class InputBox extends React.Component {
                         borderColor: '#E0E0E0',
                         marginTop: 4,
                     }}
-                    onPress={() =>
-                        this.setState({
-                            ...this.state,
-                            isDatePickerVisible: true,
-                        })
-                    }
+                    // onPress={() =>
+                    //     this.setState({
+                    //         ...this.state,
+                    //         isDatePickerVisible: true,
+                    //     })
+                    // }
                 >
                     <View
                         style={{
@@ -192,7 +196,25 @@ class InputBox extends React.Component {
                             ]}
                         />
                     </View>
-                    <Text
+
+                    <TextInputMask
+                        type={'datetime'}
+                        options={{
+                            format: 'MM/DD/YYYY',
+                        }}
+                        value={value}
+                        onChangeText={(text) => {
+                            onChangeText(text)
+                        }}
+                        placeholder="MM/DD/YYYY"
+                        style={{ marginHorizontal: 8 }}
+                        fontSize={16}
+                        ref={(ref) => {
+                            this.datetimeField = ref
+                        }}
+                        onEndEditing={() => onBlur(value)}
+                    />
+                    {/* <Text
                         style={[
                             default_style.subTitleText_1,
                             {
@@ -203,21 +225,23 @@ class InputBox extends React.Component {
                         ]}
                     >
                         {value ? moment(value).format('ll') : 'Date of Birth'}
-                    </Text>
-                </TouchableOpacity>
+                    </Text> */}
+                </View>
                 {/* Date time picker on date touchable is clicked */}
-                <DateTimePicker
+                {/* <DateTimePicker
                     isVisible={this.state.isDatePickerVisible}
                     mode="date"
-                    customPickerIOS={(props) => (
-                        <RNDatePicker
-                            {...props}
-                            display={
-                                Platform.OS === 'ios' ? 'spinner' : 'default'
-                            }
-                        />
-                    )}
-                    titleIOS="Date of Birth"
+                    // customPickerIOS={(props) => {
+                    //     console.log('THIS IS PROPSS', props)
+                    //     return (
+                    //         <RNDateTimePicker
+                    //             {...props}
+
+                    //         />
+                    //     )
+                    // }}
+                    isHeaderVisibleIOS
+                    headerTextIOS="Date of Birth"
                     maximumDate={moment()
                         .subtract(MIN_AGE_REQUIREMENT_YRS, 'year')
                         .toDate()} // maximum is set to 13 years from now to cap age at least 13 years old
@@ -242,7 +266,8 @@ class InputBox extends React.Component {
                         })
                     }
                     // isDarkModeEnabled={false}
-                />
+                /> */}
+
                 {/* <Modal
                     backdropColor={'black'}
                     backdropOpacity={0.5}

@@ -14,6 +14,8 @@ import {
 } from 'react-native'
 import DropdownAlert from 'react-native-dropdownalert-jia'
 
+import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
+
 // State management
 import { Provider as ReduxProvider } from 'react-redux'
 import { PersistGate } from 'redux-persist/lib/integration/react'
@@ -46,6 +48,8 @@ import { setJSExceptionHandler } from 'react-native-exception-handler' // If an 
 
 // UI theme provider
 import ThemeProvider from './theme/ThemeProvider'
+import CustomDropdown from './CustomDropDown'
+import { color } from './src/styles/basic'
 
 // import CustomDropDown from './src/Main/Onboarding/Common/CustomDropdown'
 // Disable font scaling at the start of the App
@@ -72,6 +76,17 @@ setJSExceptionHandler((error, isFatal) => {
 // })
 
 const prefix = Linking.makeUrl('/')
+
+const theme = {
+    ...DefaultTheme,
+    dark: true,
+    colors: {
+        ...DefaultTheme.colors,
+        primary: color.GM_BLUE,
+        accent: 'red',
+        text: 'rgba(0, 141, 200, 1)',
+    },
+}
 
 export default class App extends React.Component {
     constructor(props) {
@@ -120,6 +135,9 @@ export default class App extends React.Component {
                     <PersistGate persistor={persistor}>
                         <View style={styles.container}>
                             <Router />
+                            {/* <PaperProvider theme={theme}>
+                                <CustomDropdown />
+                            </PaperProvider> */}
                         </View>
                         <DropdownAlert
                             ref={(ref) => DropDownHolder.setDropDown(ref)}
