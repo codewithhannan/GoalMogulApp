@@ -335,8 +335,11 @@ class CreatePostModal extends Component {
             this.props.change('mediaRef', result.uri)
             this.setState({ clickedButton: false })
         }
+        const maybeTrackCameraOpen = () => {
+            this.bottomSheetRef.open()
+        }
         setTimeout(() => {
-            this.props.openCamera(callback, null, null, true)
+            this.props.openCamera(callback, maybeTrackCameraOpen)
         }, 500)
     }
 

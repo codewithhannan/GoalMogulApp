@@ -454,6 +454,7 @@ class AudioModal extends React.Component<Props, State> {
                     <ActivityIndicator
                         animating
                         size="large"
+                        color="gray"
                         style={{
                             bottom: '15%',
                             position: 'absolute',

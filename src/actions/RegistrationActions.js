@@ -341,6 +341,9 @@ export const openCamera = (
             payload: result.uri,
         })
     }
+    if (result.cancelled) {
+        maybeTrackCameraOpen()
+    }
 
     console.log('user took image fail with result: ', result)
 }
