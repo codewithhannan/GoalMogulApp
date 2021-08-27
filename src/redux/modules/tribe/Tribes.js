@@ -338,9 +338,9 @@ export default (state = INITIAL_STATE, action) => {
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
                     .send()
-                console.error(
-                    `${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: ${action.type}`
-                )
+                // console.error(
+                //     `${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: ${action.type}`
+                // )
                 return newState
             }
 
@@ -370,9 +370,9 @@ export default (state = INITIAL_STATE, action) => {
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
                     .send()
-                console.error(
-                    `${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: ${action.type}`
-                )
+                // console.error(
+                //     `${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: ${action.type}`
+                // )
                 return newState
             }
 
@@ -398,9 +398,9 @@ export default (state = INITIAL_STATE, action) => {
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
                     .send()
-                console.error(
-                    `${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: ${action.type}`
-                )
+                // console.error(
+                //     `${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: ${action.type}`
+                // )
                 return newState
             }
 
@@ -461,9 +461,9 @@ export default (state = INITIAL_STATE, action) => {
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
                     .send()
-                console.error(
-                    `${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: ${action.type}`
-                )
+                // console.error(
+                //     `${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: ${action.type}`
+                // )
                 return newState
             }
 
@@ -531,10 +531,10 @@ export default (state = INITIAL_STATE, action) => {
                         updateType
                     )
                     .send()
-                console.error(
-                    `${DEBUG_KEY}: tribeId: ${tribeId} doesn't exist in redux for action: `,
-                    action
-                )
+                // console.error(
+                //     `${DEBUG_KEY}: tribeId: ${tribeId} doesn't exist in redux for action: `,
+                //     action
+                // )
                 return newState
             }
 
@@ -599,10 +599,10 @@ export default (state = INITIAL_STATE, action) => {
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
                     .send()
-                console.error(
-                    `${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: `,
-                    action
-                )
+                // console.error(
+                //     `${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: `,
+                //     action
+                // )
                 return newState
             }
 
@@ -649,10 +649,10 @@ export default (state = INITIAL_STATE, action) => {
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
                     .send()
-                console.error(
-                    `${DEBUG_KEY}: tribeId: ${tribeId} or pageId: ${pageId} is not in redux for action`,
-                    action
-                )
+                // console.error(
+                //     `${DEBUG_KEY}: tribeId: ${tribeId} or pageId: ${pageId} is not in redux for action`,
+                //     action
+                // )
                 return newState
             }
 
@@ -700,10 +700,10 @@ export default (state = INITIAL_STATE, action) => {
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
                     .send()
-                console.error(
-                    `${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: `,
-                    action
-                )
+                // console.error(
+                //     `${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: `,
+                //     action
+                // )
                 return newState
             }
 
@@ -727,10 +727,10 @@ export default (state = INITIAL_STATE, action) => {
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
                     .send()
-                console.error(
-                    `${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: `,
-                    action
-                )
+                // console.error(
+                //     `${DEBUG_KEY}: tribeId ${tribeId} or pageId ${pageId} not exist for action: `,
+                //     action
+                // )
                 return newState
             }
 
@@ -756,10 +756,10 @@ export default (state = INITIAL_STATE, action) => {
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
                     .send()
-                console.error(
-                    `${DEBUG_KEY}: tribeId: ${tribeId} or pageID ${pageId} is not in redux for action`,
-                    action
-                )
+                // console.error(
+                //     `${DEBUG_KEY}: tribeId: ${tribeId} or pageID ${pageId} is not in redux for action`,
+                //     action
+                // )
                 return newState
             }
 
@@ -802,10 +802,10 @@ export default (state = INITIAL_STATE, action) => {
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
                     .send()
-                console.error(
-                    `${DEBUG_KEY}: tribeId: ${tribeId} is not in redux for action`,
-                    action
-                )
+                // console.error(
+                //     `${DEBUG_KEY}: tribeId: ${tribeId} is not in redux for action`,
+                //     action
+                // )
                 return newState
             }
 
@@ -836,10 +836,10 @@ export default (state = INITIAL_STATE, action) => {
                     .withTag(SENTRY_TAGS.TRIBE.REDUCER, MYTRIBE_EDIT_SUCCESS)
                     .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
                     .send()
-                console.error(
-                    `${DEBUG_KEY}: tribeId: ${tribeId} is not in redux for action`,
-                    action
-                )
+                // console.error(
+                //     `${DEBUG_KEY}: tribeId: ${tribeId} is not in redux for action`,
+                //     action
+                // )
                 return newState
             }
 

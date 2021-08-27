@@ -1,7 +1,13 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import {
+    View,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    ImageBackground,
+} from 'react-native'
 import LottieView from 'lottie-react-native'
 import {
     widthPercentageToDP as wp,
@@ -22,6 +28,7 @@ import FIRST_GOAL from '../../asset/popup_animation/p1.json'
 import SEVEN_GOALS from '../../asset/popup_animation/p4-v2.json'
 import STREAK from '../../asset/popup_animation/p7.json'
 import STREAK_MISSED from '../../asset/popup_animation/p8.json'
+import POPUP_BLUE from '../../asset/popup_animation/popupBlue.png'
 
 import * as Helper from '../../Utils/HelperMethods'
 
@@ -115,18 +122,20 @@ class Popup extends Component {
                             style={styles.img}
                             source={POPUP_DETAILS[popupName].img}
                         /> */}
-                        <Text style={styles.d1}>
-                            {Helper.parseExpressionAndEval(
-                                POPUP_DETAILS[popupName].d1,
-                                this.props.user
-                            )}
-                        </Text>
-                        <Text style={styles.d2}>
-                            {POPUP_DETAILS[popupName].d2}
-                        </Text>
-                        <Text style={styles.d3}>
-                            {POPUP_DETAILS[popupName].d3}
-                        </Text>
+                        <ImageBackground source={POPUP_BLUE}>
+                            <Text style={styles.d1}>
+                                {Helper.parseExpressionAndEval(
+                                    POPUP_DETAILS[popupName].d1,
+                                    this.props.user
+                                )}
+                            </Text>
+                            <Text style={styles.d2}>
+                                {POPUP_DETAILS[popupName].d2}
+                            </Text>
+                            <Text style={styles.d3}>
+                                {POPUP_DETAILS[popupName].d3}
+                            </Text>
+                        </ImageBackground>
                     </View>
                 </Modal>
             )

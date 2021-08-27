@@ -95,6 +95,13 @@ class TabIcon extends React.PureComponent {
             this.props.fetchUnreadCount()
         }, NOTIFICATION_COUNT_UPDATE_INTERVAL)
     }
+    startLottieAnim(anim) {
+        console.log('THIS IS ANIMM', anim)
+        this.lottieAnim = anim
+        if (anim) {
+            this.lottieAnim.play()
+        }
+    }
 
     render() {
         const {
@@ -156,8 +163,10 @@ class TabIcon extends React.PureComponent {
                                 style={{
                                     height: hp(3.5),
                                 }}
-                                source={NOTIFICATION_LOTTIE}
+                                loop={false}
                                 autoPlay
+                                autoSize
+                                source={NOTIFICATION_LOTTIE}
                             />
                         ) : (
                             <Icon

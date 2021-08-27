@@ -355,12 +355,12 @@ class Home extends Component {
     }
 
     scrollToTop = () => {
-        if (this.flatList)
-            this.flatList.scrollToIndex({
-                animated: true,
-                index: 0,
-                viewOffset: this.topTabBarHeight || 80,
-            })
+        if (this.flatList) console.log('THIS IS FLATLISTTT', this.flatList)
+        this.flatList.scrollToIndex({
+            animated: true,
+            index: 0,
+            viewOffset: this.topTabBarHeight || 80,
+        })
     }
 
     _handleNotification(notification) {

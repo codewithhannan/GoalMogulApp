@@ -67,8 +67,8 @@ import Popup from '../Journey/Popup'
 import { openPopup } from '../../actions/PopupActions'
 import { track, EVENT as E } from '../../monitoring/segment'
 
-const GOLD_CHALLENGE_URL = 'https://new5reactpages.web.app/page5'
-const SILVER_CHALLENGE_URL = 'https://new5reactpages.web.app/page4'
+const GOLD_CHALLENGE_URL = 'https://new5reactpages.web.app/goldBadge'
+const SILVER_CHALLENGE_URL = 'https://new5reactpages.web.app/silverBadge'
 
 const DEBUG_KEY = '[ UI Menu ]'
 const { AccountMultiple, MessageIcon } = Icons

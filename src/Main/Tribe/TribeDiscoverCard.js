@@ -10,14 +10,30 @@ import tribe_default_icon from '../../asset/utils/tribeIcon.png'
 import { View, Image, Dimensions, Text } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { color, default_style, text } from '../../styles/basic'
-import { tribeDetailOpen } from '../../redux/modules/tribe/MyTribeActions'
+import MEMBERS from '../../asset/utils/mutualFriends.png'
+import TRIBE_FRIENDS from '../../asset/utils/tribeFriends.png'
+
+import {
+    requestJoinTribe,
+    tribeDetailOpen,
+} from '../../redux/modules/tribe/MyTribeActions'
 import ProfileImage from '../Common/ProfileImage'
+
 import members from '../../asset/icons/2.png'
+import { refreshProfileData } from '../../actions'
 
 const { width } = Dimensions.get('window')
+let pageAb
 class TribeDiscoverCard extends React.PureComponent {
     state = {
         requested: false,
+        joined: false,
+    }
+
+    componentDidMount() {
+        const pageId = this.props.refreshProfileData(this.props.userId)
+
+        pageAb = pageId
     }
 
     renderTitle(item) {
@@ -41,26 +57,49 @@ class TribeDiscoverCard extends React.PureComponent {
             </View>
         )
     }
+
+    renderButtonText = (item) => {
+        if (this.state.requested) {
+            return 'Requested'
+        } else if (this.state.joined) {
+            return 'Joined'
+        } else {
+            return 'Join'
+        }
+    }
+
     renderButton(item, type) {
+        const { onPress } = this.props
+        const { requested, joined } = this.state
         return (
             <View style={styles.iconContainerStyle}>
                 <DelayedButton
                     activeOpacity={0.6}
-                    onPress={() =>
+                    onPress={
+                        () => {
+                            if (item.isAutoAcceptEnabled) {
+                                this.setState({ joined: true })
+                            } else {
+                                this.setState({ requested: true })
+                            }
+                            if (requested || joined) {
+                                onPress(item)
+                                this.props.requestJoinTribe(
+                                    item._id,
+                                    true,
+                                    pageAb,
+                                    item.isAutoAcceptEnabled
+                                )
+                            }
+                        }
                         // this.onButtonClicked(item, type)
-
-                        // this.props.requestJoinTribe(
-                        //     item._id,
-                        //     true,
-                        //     pageAb,
-                        //     item.isAutoAcceptEnabled
-                        // ),
-                        this.setState({ requested: true })
                     }
                     style={{
                         height: 31,
                         width: this.state.requested ? 100 : 65,
-                        backgroundColor: color.GM_BLUE,
+                        backgroundColor: this.state.requested
+                            ? '#BDBDBD'
+                            : color.GM_BLUE,
                         borderRadius: 3,
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -76,7 +115,7 @@ class TribeDiscoverCard extends React.PureComponent {
                             fontFamily: 'SFProDisplay-Semibold',
                         }}
                     >
-                        {this.state.requested ? 'Requested' : 'Join'}
+                        {this.renderButtonText()}
                     </Text>
                 </DelayedButton>
             </View>
@@ -84,8 +123,13 @@ class TribeDiscoverCard extends React.PureComponent {
     }
     renderInformation(item) {
         let count = item.memberCount
+        let friendCount = item.friendsCount
+
         if (count > 999) {
             count = '1k+'
+        }
+        if (friendCount > 999) {
+            friendCount = '1k+'
         }
         const defaultTextStyle = { color: '#abb1b0', fontSize: 10 }
 
@@ -100,7 +144,7 @@ class TribeDiscoverCard extends React.PureComponent {
                 {/* <Text style={defaultTextStyle}>{category}</Text> */}
                 {/* <Dot /> */}
                 <Image
-                    source={members}
+                    source={MEMBERS}
                     style={{ height: 12, width: 12, marginHorizontal: 1 }}
                     resizeMode="contain"
                 />
@@ -127,6 +171,48 @@ class TribeDiscoverCard extends React.PureComponent {
                             &nbsp;{item.memberCount > 1 ? 'members' : 'member'}
                         </Text>
                     </View>
+                ) : null}
+
+                {friendCount > 0 ? (
+                    <>
+                        <Image
+                            source={TRIBE_FRIENDS}
+                            style={{
+                                height: 12,
+                                width: 12,
+                                marginHorizontal: 1,
+                            }}
+                            resizeMode="contain"
+                        />
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                marginHorizontal: 3,
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    ...defaultTextStyle,
+                                    color: '#737475',
+                                    fontSize: 12,
+                                    fontWeight: '500',
+                                }}
+                            >
+                                {friendCount}
+                            </Text>
+                            <Text
+                                style={{
+                                    ...defaultTextStyle,
+                                    color: '#737475',
+                                    fontSize: 12,
+                                    fontWeight: '500',
+                                }}
+                            >
+                                &nbsp;
+                                {item.friendsCount > 1 ? 'friends' : 'friend'}
+                            </Text>
+                        </View>
+                    </>
                 ) : null}
             </View>
         )
@@ -362,6 +448,18 @@ const styles = {
     },
 }
 
-export default connect(null, {
+const mapStateToProps = (state, props) => {
+    // const pageId = constructPageId('tribe')
+    const { userId } = state.user
+
+    return {
+        // pageId,
+        userId,
+    }
+}
+
+export default connect(mapStateToProps, {
     tribeDetailOpen,
+    requestJoinTribe,
+    refreshProfileData,
 })(TribeDiscoverCard)

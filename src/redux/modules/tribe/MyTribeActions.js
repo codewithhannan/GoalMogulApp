@@ -577,9 +577,9 @@ export const refreshTribeFeed = (
             .withExtraContext(SENTRY_CONTEXT.TRIBE.TRIBE_ID, tribeId)
             .withExtraContext(SENTRY_CONTEXT.TRIBE.PAGE.PAGE_ID, pageId)
             .send()
-        console.error(
-            `${DEBUG_KEY}: pageId: ${pageId} or tribeId: ${tribeId} is not in tribes`
-        )
+        // console.error(
+        //     `${DEBUG_KEY}: pageId: ${pageId} or tribeId: ${tribeId} is not in tribes`
+        // )
         return
     }
     const { limit, feedRefreshing } = _.get(tribes, `${tribeId}.${pageId}`)
