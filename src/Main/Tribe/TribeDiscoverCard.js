@@ -5,11 +5,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import DelayedButton from '../Common/Button/DelayedButton'
-import { getImageOrDefault, decode } from '../../redux/middleware/utils'
+// import { getImageOrDefault, decode } from '../../redux/middleware/utils'
 import tribe_default_icon from '../../asset/utils/tribeIcon.png'
-import { View, Image, Dimensions, Text } from 'react-native'
-import { Icon } from '@ui-kitten/components'
-import { color, default_style, text } from '../../styles/basic'
+import { View, Image, Text } from 'react-native'
+// import { Icon } from '@ui-kitten/components'
+import { color } from '../../styles/basic'
 import MEMBERS from '../../asset/utils/mutualFriends.png'
 import TRIBE_FRIENDS from '../../asset/utils/tribeFriends.png'
 
@@ -19,10 +19,8 @@ import {
 } from '../../redux/modules/tribe/MyTribeActions'
 import ProfileImage from '../Common/ProfileImage'
 
-import members from '../../asset/icons/2.png'
 import { refreshProfileData } from '../../actions'
 
-const { width } = Dimensions.get('window')
 let pageAb
 class TribeDiscoverCard extends React.PureComponent {
     state = {
@@ -32,13 +30,11 @@ class TribeDiscoverCard extends React.PureComponent {
 
     componentDidMount() {
         const pageId = this.props.refreshProfileData(this.props.userId)
-
         pageAb = pageId
     }
 
     renderTitle(item) {
         let title = item.name
-
         return (
             <View
                 style={{
@@ -58,7 +54,7 @@ class TribeDiscoverCard extends React.PureComponent {
         )
     }
 
-    renderButtonText = (item) => {
+    renderButtonText = () => {
         if (this.state.requested) {
             return 'Requested'
         } else if (this.state.joined) {
@@ -68,38 +64,42 @@ class TribeDiscoverCard extends React.PureComponent {
         }
     }
 
-    renderButton(item, type) {
+    handleJoinButton = (item) => {
         const { onPress } = this.props
         const { requested, joined } = this.state
+
+        if (item.isAutoAcceptEnabled && !this.state.joined) {
+            this.setState({ joined: true })
+            this.props.requestJoinTribe(
+                item._id,
+                true,
+                pageAb,
+                item.isAutoAcceptEnabled
+            )
+        } else if (requested || joined) {
+            onPress(item)
+        } else {
+            this.setState({ requested: true })
+            this.props.requestJoinTribe(
+                item._id,
+                true,
+                pageAb,
+                item.isAutoAcceptEnabled
+            )
+        }
+    }
+
+    renderButton(item) {
+        const { requested } = this.state
         return (
             <View style={styles.iconContainerStyle}>
                 <DelayedButton
                     activeOpacity={0.6}
-                    onPress={
-                        () => {
-                            if (item.isAutoAcceptEnabled) {
-                                this.setState({ joined: true })
-                            } else {
-                                this.setState({ requested: true })
-                            }
-                            if (requested || joined) {
-                                onPress(item)
-                                this.props.requestJoinTribe(
-                                    item._id,
-                                    true,
-                                    pageAb,
-                                    item.isAutoAcceptEnabled
-                                )
-                            }
-                        }
-                        // this.onButtonClicked(item, type)
-                    }
+                    onPress={() => this.handleJoinButton(item)}
                     style={{
                         height: 31,
-                        width: this.state.requested ? 100 : 65,
-                        backgroundColor: this.state.requested
-                            ? '#BDBDBD'
-                            : color.GM_BLUE,
+                        width: requested ? 100 : 65,
+                        backgroundColor: requested ? '#BDBDBD' : color.GM_BLUE,
                         borderRadius: 3,
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -260,6 +260,8 @@ class TribeDiscoverCard extends React.PureComponent {
         const containerStyle = selected
             ? styles.tribeCardSelectedContainerStyle
             : styles.tribeCardContainerStyle
+
+        console.log('THIS IS TRIBE TO DISCOVER', item)
 
         return (
             <DelayedButton
@@ -449,11 +451,9 @@ const styles = {
 }
 
 const mapStateToProps = (state, props) => {
-    // const pageId = constructPageId('tribe')
     const { userId } = state.user
 
     return {
-        // pageId,
         userId,
     }
 }
