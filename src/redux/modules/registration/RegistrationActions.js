@@ -292,7 +292,7 @@ export const registerAccount = (onSuccess, dateToSend) => async (
         email,
         phone: phoneNumber,
         gender: gender === 'Prefer not to say' ? undefined : gender,
-        dateOfBirth,
+        dateOfBirth: new Date(dateOfBirth),
         // dateOfBirth: dateToSend,
         inviterCode,
     }

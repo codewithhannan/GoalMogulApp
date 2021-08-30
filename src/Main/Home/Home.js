@@ -183,6 +183,7 @@ class Home extends Component {
             appState: AppState.currentState,
             showWelcomeScreen: false,
             showBadgeEarnModal: false,
+            shouldRenderBadgeModal: false,
             pickedImage: null,
             shareModal: false,
         }
@@ -256,6 +257,10 @@ class Home extends Component {
         const pageId = this.props.refreshProfileData(this.props.userId)
 
         pageAb = pageId
+
+        setTimeout(() => {
+            this.handleEarnBadgeModal()
+        }, 2000)
 
         this.props.refreshNotificationTab()
         // this.props.fetchUnreadCount()
@@ -471,7 +476,6 @@ class Home extends Component {
     }
 
     handleOnRefresh = () => {
-        console.log('THIS IS HAPPENINGGG')
         const { routes, index } = this.state.navigationState
         const { token } = this.props
         routes[index].key === 'activity'
@@ -546,6 +550,10 @@ class Home extends Component {
     }
     handleImageIconOnClick = () => {
         this.bottomSheetRef && this.bottomSheetRef.open()
+    }
+
+    handleEarnBadgeModal = () => {
+        this.setState({ shouldRenderBadgeModal: true })
     }
 
     handleOpenCameraRoll = () => {
@@ -651,15 +659,17 @@ class Home extends Component {
                         refreshing={showRefreshing}
                         onRefresh={this.handleOnRefresh}
                     />
-                    {/* <EarnBadgeModal
-                        isVisible={this.state.showBadgeEarnModal}
-                        closeModal={() => {
-                            this.setState({
-                                showBadgeEarnModal: false,
-                            })
-                        }}
-                        user={this.props.user}
-                    /> */}
+                    {/* {this.state.shouldRenderBadgeModal ? (
+                        <EarnBadgeModal
+                            isVisible={this.state.showBadgeEarnModal}
+                            closeModal={() => {
+                                this.setState({
+                                    showBadgeEarnModal: false,
+                                })
+                            }}
+                            user={this.props.user}
+                        />
+                    ) : null} */}
                 </View>
             </MenuProvider>
         )

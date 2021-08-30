@@ -482,7 +482,6 @@ class ActivityFeed extends Component {
         // console.log('POPP UPP OBJECT', popup)
         // console.log('\nThis is popup', profile)
         if (!popup['FIRST_GOAL'].status && myGoals.length === 1) {
-            console.log('ISME ARAHA HA')
             this.props.uploadPopupData('FIRST_GOAL')
             this.setState({ showPopupModal: true, popupName: 'FIRST_GOAL' })
         } else if (

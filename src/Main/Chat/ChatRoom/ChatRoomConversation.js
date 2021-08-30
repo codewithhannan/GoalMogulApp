@@ -432,13 +432,6 @@ class ChatRoomConversation extends React.Component {
     }
     sendMessage = (messagesToSend) => {
         const { chatRoom, messages, messageMediaRef } = this.props
-        console.log('messages====================================', messages)
-        console.log('chatRoom====>', chatRoom)
-        console.log('messageTosend=====>', messagesToSend)
-        console.log(
-            'mediaRef====================================',
-            messageMediaRef
-        )
 
         const messageText = _.get(messagesToSend, '[0].text', '')
         if (!messageText.trim().length && !messageMediaRef) return

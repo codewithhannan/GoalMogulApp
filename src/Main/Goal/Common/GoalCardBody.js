@@ -165,8 +165,7 @@ class GoalCardBody extends React.Component {
     renderUpdates() {
         const { data, isSelf } = this.props
         const numOfUpdates = (data && data.length) || 0
-        this.emptyContainersToDisplay =
-            MAX_UPDATES_CONTAINERS - numOfUpdates - (isSelf ? 1 : 0)
+        this.emptyContainersToDisplay = 0
 
         return (
             <View>

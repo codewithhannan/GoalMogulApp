@@ -16,6 +16,10 @@ import members from '../../asset/icons/2.png'
 
 const { width } = Dimensions.get('window')
 class TribeDiscoverCard extends React.PureComponent {
+    state = {
+        requested: false,
+    }
+
     renderTitle(item) {
         let title = item.name
 
@@ -34,6 +38,47 @@ class TribeDiscoverCard extends React.PureComponent {
                 >
                     {title}
                 </Text>
+            </View>
+        )
+    }
+    renderButton(item, type) {
+        return (
+            <View style={styles.iconContainerStyle}>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    onPress={() =>
+                        // this.onButtonClicked(item, type)
+
+                        // this.props.requestJoinTribe(
+                        //     item._id,
+                        //     true,
+                        //     pageAb,
+                        //     item.isAutoAcceptEnabled
+                        // ),
+                        this.setState({ requested: true })
+                    }
+                    style={{
+                        height: 31,
+                        width: this.state.requested ? 100 : 65,
+                        backgroundColor: color.GM_BLUE,
+                        borderRadius: 3,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 3,
+                    }}
+                >
+                    <Text
+                        style={{
+                            color: 'white',
+                            fontSize: 12,
+                            fontWeight: '600',
+                            lineHeight: 14,
+                            fontFamily: 'SFProDisplay-Semibold',
+                        }}
+                    >
+                        {this.state.requested ? 'Requested' : 'Join'}
+                    </Text>
+                </DelayedButton>
             </View>
         )
     }
@@ -124,7 +169,7 @@ class TribeDiscoverCard extends React.PureComponent {
     }
 
     render() {
-        const { onPress, item, canSelect } = this.props
+        const { onPress, item, canSelect, type } = this.props
         const { selected, name, picture, description, memberCount } = item
         const containerStyle = selected
             ? styles.tribeCardSelectedContainerStyle
@@ -132,7 +177,7 @@ class TribeDiscoverCard extends React.PureComponent {
 
         return (
             <DelayedButton
-                style={containerStyle}
+                // style={containerStyle}
                 onPress={() => onPress(item)}
                 activeOpacity={0.9}
             >
@@ -164,6 +209,7 @@ class TribeDiscoverCard extends React.PureComponent {
                         defaultUserProfile={tribe_default_icon}
                     />
                     {this.renderCardContent(item)}
+                    {this.renderButton(item, type)}
 
                     {/* {canSelect && (
                         <View

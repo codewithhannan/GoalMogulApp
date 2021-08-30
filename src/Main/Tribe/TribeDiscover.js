@@ -51,6 +51,8 @@ class TribeDiscover extends React.Component {
         this.state = {
             scroll: new Animated.Value(1),
             searchContent: '',
+            tribesSearchText: '',
+            tribesFilteredData: [],
         }
     }
 
@@ -189,12 +191,27 @@ class TribeDiscover extends React.Component {
     getTribesToRender = () => {
         const { tribesToRender, data, useTribesToRender } = this.props
 
-        console.log('THIS IS TRIBES TO RENDER', data)
         return useTribesToRender ? tribesToRender : data
+    }
+    searchTribes = (input) => {
+        const { tribesSearchText } = this.state
+
+        const tribesToRender = this.getTribesToRender()
+        console.log('TRIBES TO RENDER 1', tribesToRender)
+        this.setState({ tribesSearchText: input })
+        // this.setState({ input })
+
+        let tribesFilteredData = tribesToRender.filter((item) => {
+            console.log('TRIBES TO RENDER 1', item.name)
+            return item.name.includes(input)
+        })
+
+        this.setState({ tribesFilteredData })
     }
 
     render() {
         const tribesToRender = this.getTribesToRender()
+        console.log('TRIBES TO RENDER', this.state.tribesFilteredData)
         return (
             <View
                 style={[
@@ -209,28 +226,31 @@ class TribeDiscover extends React.Component {
                 {this.renderHeader()}
                 {this.renderHeaderText()}
                 {this.renderCategorySelector()}
-                {/* <SearchBar
-                    round
-                    placeholder="Search"
-                    placeholderTextColor="#D3D3D3"
-                    containerStyle={[
-                        styles.searchBar.container,
-                        { margin: 8, marginTop: 8 },
-                    ]}
-                    inputContainerStyle={styles.searchBar.inputContainer}
-                    searchIcon={() => (
-                        <SearchIcon
-                            iconContainerStyle={styles.searchBar.icon.container}
-                            iconStyle={styles.searchBar.icon.style}
-                        />
-                    )}
-                    inputStyle={default_style.subTitleText_1}
-                    onChangeText={(text) =>
-                        this.setState({ searchContent: text })
-                    }
-                    onCancel={() => this.setState({ searchContent: '' })}
-                    value={this.state.searchContent}
-                /> */}
+                <View style={{ backgroundColor: 'white' }}>
+                    <SearchBar
+                        round
+                        placeholder="Search"
+                        placeholderTextColor="#D3D3D3"
+                        containerStyle={[
+                            styles.searchBar.container,
+                            { margin: 8, marginTop: 8 },
+                        ]}
+                        inputContainerStyle={styles.searchBar.inputContainer}
+                        searchIcon={() => (
+                            <SearchIcon
+                                iconContainerStyle={
+                                    styles.searchBar.icon.container
+                                }
+                                iconStyle={styles.searchBar.icon.style}
+                            />
+                        )}
+                        inputStyle={default_style.subTitleText_1}
+                        onChangeText={this.searchTribes}
+                        onCancel={() => this.setState({ tribesSearchText: '' })}
+                        value={this.state.tribesSearchText}
+                    />
+                </View>
+
                 <AnimatedFlatList
                     onScroll={Animated.event(
                         [
@@ -245,7 +265,12 @@ class TribeDiscover extends React.Component {
                     onRefresh={this.handleRefresh}
                     onEndReached={this.handleLoadMore}
                     refreshing={this.props.refreshing}
-                    data={tribesToRender}
+                    data={
+                        this.state.tribesFilteredData &&
+                        this.state.tribesFilteredData.length > 0
+                            ? this.state.tribesFilteredData
+                            : tribesToRender
+                    }
                     renderItem={(item, index) => this.renderItem(item, index)}
                     keyExtractor={this.keyExtractor}
                     numColumns={1}
@@ -272,7 +297,7 @@ const styles = {
             borderTopColor: '#E0E0E0',
             borderBottomColor: '#E0E0E0',
             borderColor: '#E0E0E0',
-            borderRadius: 3,
+            borderRadius: 5,
         },
         inputContainer: {
             backgroundColor: 'white',

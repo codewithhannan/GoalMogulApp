@@ -14,6 +14,7 @@ import {
     Alert,
     TouchableWithoutFeedback,
     Keyboard,
+    Platform,
 } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
@@ -97,7 +98,7 @@ class ReportModal extends Component {
         const { title, details, loading } = this.props
         return (
             <KeyboardAvoidingView
-                behavior="padding"
+                behavior={Platform.OS === 'ios' ? 'padding' : ''}
                 style={{ flex: 1, backgroundColor: '#ffffff' }}
             >
                 <LoadingModal

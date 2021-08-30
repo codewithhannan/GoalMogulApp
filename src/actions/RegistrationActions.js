@@ -329,7 +329,7 @@ export const openCamera = (
         }).catch((error) => console.log('THIS IS ERROR OF IMAGE', error))
     }
 
-    if (!result.cancelled) {
+    if (!result.cancelled || result.cancelled) {
         if (callback) {
             return callback(result)
         }
@@ -340,9 +340,6 @@ export const openCamera = (
             type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
             payload: result.uri,
         })
-    }
-    if (result.cancelled) {
-        maybeTrackCameraOpen()
     }
 
     console.log('user took image fail with result: ', result)
