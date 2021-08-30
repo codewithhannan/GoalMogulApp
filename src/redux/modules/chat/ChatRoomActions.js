@@ -641,6 +641,7 @@ export async function _transformMessagesForGiftedChat(
                 question: content.question && content.question,
                 actions: content.actions && content.actions,
                 system: !!isSystemMessage,
+                lottie: content.lottie,
             }
         })
     )
