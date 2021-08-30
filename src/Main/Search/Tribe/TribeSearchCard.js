@@ -31,6 +31,7 @@ let pageAb
 class SearchTribeCard extends Component {
     state = {
         imageLoading: false,
+        requested: false,
     }
 
     /**
@@ -65,10 +66,15 @@ class SearchTribeCard extends Component {
     }
 
     componentDidMount() {
+        const { item } = this.props
         const pageId = this.props.refreshProfileData(this.props.userId)
-
         pageAb = pageId
-        console.log('PAGE IDDDD', pageAb)
+
+        // if (item.isMember) {
+        //     this.setState({ joined: true })
+        // } else if (item.isRequester) {
+        //     this.setState({ requested: true })
+        // }
     }
 
     renderTribeImage() {
@@ -90,45 +96,74 @@ class SearchTribeCard extends Component {
     }
 
     renderButton(item, type) {
+        const { requested, joined } = this.state
         if (!this.props.hideJoinButton) {
-            return (
-                <View style={styles.iconContainerStyle}>
-                    <DelayedButton
-                        activeOpacity={0.6}
-                        onPress={() =>
-                            // this.onButtonClicked(item, type)
-
-                            this.props.requestJoinTribe(
-                                item._id,
-                                true,
-                                pageAb,
-                                item.isAutoAcceptEnabled
-                            )
-                        }
-                        style={{
-                            height: 31,
-                            width: 65,
-                            backgroundColor: color.GM_BLUE,
-                            borderRadius: 3,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            borderRadius: 3,
-                        }}
-                    >
-                        <Text
+            if (!item.isAdmin) {
+                return (
+                    <View style={styles.iconContainerStyle}>
+                        <DelayedButton
+                            activeOpacity={0.6}
+                            onPress={() => {
+                                if (
+                                    item.isRequester ||
+                                    item.isMember ||
+                                    requested ||
+                                    joined
+                                ) {
+                                    this.onButtonClicked(item, type)
+                                } else if (item.isAutoAcceptEnabled) {
+                                    this.setState({ joined: true })
+                                    this.props.requestJoinTribe(
+                                        item._id,
+                                        true,
+                                        pageAb,
+                                        item.isAutoAcceptEnabled
+                                    )
+                                } else {
+                                    this.setState({ requested: true })
+                                    this.props.requestJoinTribe(
+                                        item._id,
+                                        true,
+                                        pageAb,
+                                        item.isAutoAcceptEnabled
+                                    )
+                                }
+                            }}
                             style={{
-                                color: 'white',
-                                fontSize: 12,
-                                fontWeight: '600',
-                                lineHeight: 14,
-                                fontFamily: 'SFProDisplay-Semibold',
+                                height: 31,
+                                width:
+                                    item.isRequester || this.state.requested
+                                        ? 85
+                                        : 65,
+                                backgroundColor:
+                                    item.isRequester || this.state.requested
+                                        ? '#BDBDBD'
+                                        : color.GM_BLUE,
+                                borderRadius: 3,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: 3,
                             }}
                         >
-                            Join
-                        </Text>
-                    </DelayedButton>
-                </View>
-            )
+                            <Text
+                                style={{
+                                    color: 'white',
+                                    fontSize: 12,
+                                    fontWeight: '600',
+                                    lineHeight: 14,
+                                    fontFamily: 'SFProDisplay-Semibold',
+                                }}
+                            >
+                                {item.isMember || joined
+                                    ? 'Joined'
+                                    : item.isRequester || requested
+                                    ? 'Requested'
+                                    : 'Join'}
+                            </Text>
+                        </DelayedButton>
+                    </View>
+                )
+            }
         } else {
             return null
         }

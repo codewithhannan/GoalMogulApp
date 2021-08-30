@@ -193,7 +193,6 @@ class Bubble extends React.Component {
 
     renderGoalOptions() {
         const { options, text } = this.props.currentMessage
-
         const { user, chatRoom, messages } = this.props
 
         // console.log('this is props of chat', this.props.currentMessage)
@@ -710,12 +709,7 @@ class Bubble extends React.Component {
     render() {
         const { user, chatRoom, messages } = this.props
 
-        if (this.props.currentMessage.question) {
-            console.log(
-                'THIS ISSSSSS CURRRENT MESSAGE',
-                this.props.currentMessage
-            )
-        }
+        // console.log('THIS ISSSSSS CURRRENT MESSAGE', this.props.currentMessage)
 
         const isSameThread =
             isSameUser(this.props.currentMessage, this.props.previousMessage) &&
