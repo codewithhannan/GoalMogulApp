@@ -15,18 +15,31 @@ import {
 } from '../../redux/middleware/utils'
 
 // Actions
-import { openProfile } from '../../actions'
-import { default_style } from '../../styles/basic'
+import { updateFriendship, openProfile } from '../../actions'
+import { text, color, default_style } from '../../styles/basic'
+
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
 // Components
 import Name from '../Common/Name'
 import ProfileImage from '../Common/ProfileImage'
 import UserTopGoals from '../Common/Card/CardComponent/UserTopGoals'
+import DelayedButton from '../Common/Button/DelayedButton'
+
+// import { updateFriendship, openProfile, blockUser } from '../../actions'
 
 // Constants
 const DEBUG_KEY = '[ UI MemberListCard ]'
 
 class MemberListCard extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            // When this card is initially displayed, there is no friendship request.
+            // If friendship is sent, then in the next refresh, the card won't exist.
+            invited: false,
+            invitedCount: 0,
+        }
+    }
     handleAdminUpdateUserStatus() {
         const {
             onAcceptUser,
@@ -144,6 +157,90 @@ class MemberListCard extends Component {
         adminActionSheet()
     }
 
+    renderButton = (userId) => {
+        let button
+        if (this.state.invited) {
+            button = this.renderInvitedButton(userId)
+        } else {
+            button = this.renderInviteButton(userId)
+        }
+
+        return (
+            <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                {button}
+                <View style={{ flex: 1 }} />
+            </View>
+        )
+    }
+
+    handleRequestFriend = (userId) => {
+        this.setState(
+            {
+                ...this.state,
+                invited: true,
+            },
+            () =>
+                this.props.updateFriendship(
+                    userId,
+                    '',
+                    'requestFriend',
+                    'requests.outgoing',
+                    undefined
+                )
+        )
+    }
+
+    renderInvitedButton = (userId) => {
+        const text = 'Request Sent'
+        return (
+            <DelayedButton
+                style={[
+                    styles.buttonTextContainerStyle,
+                    { backgroundColor: '#BDBDBD' },
+                ]}
+                onPress={() => {}}
+                disabled
+            >
+                <Text
+                    style={[
+                        default_style.buttonText_1,
+                        { color: 'white', fontSize: 12 },
+                    ]}
+                >
+                    {text}
+                </Text>
+            </DelayedButton>
+        )
+    }
+
+    renderInviteButton = (userId) => {
+        const text = 'Add Friend'
+
+        const { index } = this.props
+
+        return (
+            <DelayedButton
+                style={[
+                    styles.buttonTextContainerStyle,
+                    { backgroundColor: color.GM_BLUE },
+                ]}
+                onPress={() => {
+                    this.handleRequestFriend(userId)
+                }}
+                activeOpacity={0.6}
+            >
+                <Text
+                    style={[
+                        default_style.buttonText_1,
+                        { color: 'white', fontSize: 12 },
+                    ]}
+                >
+                    {text}
+                </Text>
+            </DelayedButton>
+        )
+    }
+
     renderProfileImage(item) {
         return (
             <ProfileImage
@@ -218,6 +315,28 @@ class MemberListCard extends Component {
                         user={item}
                         style={{ marginLeft: 0, marginTop: 4 }}
                     />
+                    {this.renderButton(_id)}
+                    {/* <TouchableOpacity
+                        style={{
+                            height: 30,
+                            width: 100,
+                            backgroundColor: '#42C0F5',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginTop: 5,
+                            borderRadius: 3,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontSize: 12,
+                                color: 'white',
+                                fontWeight: '600',
+                            }}
+                        >
+                            Add Friend
+                        </Text>
+                    </TouchableOpacity> */}
                 </TouchableOpacity>
                 {this.renderSettingIcon()}
             </View>
@@ -248,6 +367,16 @@ const styles = {
         marginLeft: 8,
         flexDirection: 'row',
     },
+    buttonTextContainerStyle: {
+        marginRight: 8,
+        paddingTop: 8,
+        paddingBottom: 8,
+        paddingLeft: 15,
+        paddingRight: 15,
+        borderRadius: 3,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 }
 
 const switchSettingOptions = (category) =>
@@ -272,4 +401,5 @@ const switchSettingOptions = (category) =>
 
 export default connect(null, {
     openProfile,
+    updateFriendship,
 })(MemberListCard)

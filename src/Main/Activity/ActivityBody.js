@@ -6,9 +6,12 @@ import {
     Dimensions,
     ImageBackground,
     TouchableWithoutFeedback,
+    TouchableOpacity,
     Text,
+    Image,
 } from 'react-native'
 import _ from 'lodash'
+import { Video, AVPlaybackStatus } from 'expo-av'
 
 // Components
 import GoalCardBody from '../Goal/Common/GoalCardBody'
@@ -17,6 +20,7 @@ import RefPreview from '../Common/RefPreview'
 
 // Styles
 import { imagePreviewContainerStyle } from '../../styles'
+import playVideo from '../../asset/icons/playVideo.png'
 
 // Constants
 import { IMAGE_BASE_URL, IS_ZOOMED } from '../../Utils/Constants'
@@ -31,8 +35,13 @@ const DEBUG_KEY = '[ UI ActivityCard.ActivityBody ]'
 const { width } = Dimensions.get('window')
 
 class ActivityBody extends React.Component {
+    constructor(props) {
+        super(props)
+        this.player = React.createRef()
+    }
     state = {
         mediaModal: false,
+        status: {},
     }
 
     renderGoalBody(goalRef) {
@@ -84,6 +93,68 @@ class ActivityBody extends React.Component {
         )
     }
 
+    renderPostVideo(url) {
+        // TODO: update this to be able to load image
+        if (!url) {
+            return null
+        }
+        return (
+            <View
+                style={{
+                    marginTop: 8,
+                }}
+            >
+                <View
+                    style={{
+                        zIndex: 2,
+                        position: 'absolute',
+                        alignSelf: 'center',
+                        top: width / 5,
+                    }}
+                >
+                    <TouchableOpacity
+                        onPress={() => {
+                            if (this.status === undefined) {
+                                this.player.current.playAsync()
+                            } else {
+                                this.player.current.pauseAsync()
+                            }
+                            // this.status.isPlaying
+                            //     ? this.player.current.pauseAsync()
+                            //     : this.player.current.playAsync()
+                        }}
+                    >
+                        <Image
+                            source={playVideo}
+                            style={{ width: 50, height: 50 }}
+                        />
+                    </TouchableOpacity>
+                </View>
+                <Video
+                    ref={this.player}
+                    style={{
+                        ...styles.mediaStyle,
+                        ...imagePreviewContainerStyle,
+                        borderRadius: 8,
+                        backgroundColor: 'black',
+                        zIndex: 1,
+                    }}
+                    source={{
+                        uri:
+                            'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+                    }}
+                    useNativeControls={false}
+                    resizeMode="cover"
+                    isLooping
+                    onPlaybackStatusUpdate={(status) => {
+                        console.log(status)
+                        this.setState({ status: status })
+                    }}
+                />
+            </View>
+        )
+    }
+
     renderBadgeEarnImage(milestoneIdentifier) {
         return (
             <SparkleBadgeView
@@ -106,6 +177,7 @@ class ActivityBody extends React.Component {
 
     renderUpdateAttachments(item) {
         const { belongsToGoalStoryline, mediaRef } = item
+        console.log('Media red', item)
         const showGoalRefCard = _.get(belongsToGoalStoryline, 'goalRef', false)
         return (
             <View>

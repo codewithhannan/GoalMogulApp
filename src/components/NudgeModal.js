@@ -42,14 +42,14 @@ class ModalTester extends Component {
                 <TouchableWithoutFeedback onPress={this.props.onClose}>
                     <View
                         style={{
-                            width: '27%',
+                            width: '25%',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            height: 36,
+                            height: hp(4.5),
                             borderColor: '#42C0F5',
                             borderWidth: 2,
                             borderRadius: 3,
-                            marginTop: 2,
+                            marginTop: 0,
                         }}
                     >
                         <Text
@@ -192,7 +192,8 @@ class ModalTester extends Component {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     // justifyContent: 'space-evenly',
-                                    marginTop: 20,
+                                    marginTop: 15,
+                                    alignItems: 'center',
                                 }}
                             >
                                 {this.renderNoButton()}
