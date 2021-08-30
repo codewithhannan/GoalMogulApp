@@ -180,39 +180,42 @@ class GoalCardBody extends React.Component {
                     ]}
                 />
                 <View style={{ flexDirection: 'row' }}>
-                    <View
+                    {/* <View
                         style={{
                             flexDirection: 'row',
-                            width:
-                                numOfUpdates *
-                                    (CONTAINER_MARGIN + CONTAINER_WIDTH - 50) +
-                                // account for button width if self
-                                (isSelf ? CONTAINER_WIDTH - 50 : 0),
+                            // width:
+                            //     numOfUpdates *
+                            //         (CONTAINER_MARGIN + CONTAINER_WIDTH - 50) +
+                            //     // account for button width if self
+                            //     (isSelf ? CONTAINER_WIDTH - 50 : 0),
                         }}
-                    >
-                        {
-                            /* Add a update button */
-                            isSelf && this.renderAddUpdateButton()
-                        }
-                        {/* updates content */}
-                        <FlatList
-                            data={data}
-                            keyExtractor={this.keyExtractor}
-                            renderItem={this.renderItem}
-                            horizontal
-                            scrollEnabled={
-                                numOfUpdates > MAX_UPDATES_CONTAINERS
-                            }
-                            onEndReached={this.handleLoadMore}
-                            onEndReachedThreshold={2}
-                        />
-                    </View>
+                    > */}
                     {
-                        /* empty container if needed to fill empty space */
-                        UPDATES_BAKCGROUND_OPACITIES.map(
-                            this.renderEmptyUpdateContainer
-                        )
+                        /* Add a update button */
+                        isSelf && this.renderAddUpdateButton()
                     }
+                    {/* updates content */}
+                    <FlatList
+                        data={data}
+                        showsHorizontalScrollIndicator={false}
+                        keyExtractor={this.keyExtractor}
+                        renderItem={this.renderItem}
+                        horizontal
+                        scrollEnabled={
+                            numOfUpdates > MAX_UPDATES_CONTAINERS - 1
+                        }
+                        onEndReached={this.handleLoadMore}
+                        onEndReachedThreshold={2}
+                    />
+                    {/* </View> */}
+                    <View style={{ flexDirection: 'row', left: -20 }}>
+                        {
+                            /* empty container if needed to fill empty space */
+                            UPDATES_BAKCGROUND_OPACITIES.map(
+                                this.renderEmptyUpdateContainer
+                            )
+                        }
+                    </View>
                 </View>
                 <View
                     style={[

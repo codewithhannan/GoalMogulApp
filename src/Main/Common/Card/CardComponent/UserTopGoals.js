@@ -32,6 +32,20 @@ class UserTopGoals extends React.PureComponent {
         }
     }
 
+    getNeeds = (user) => {
+        const { topNeeds } = user
+        let Needs_title
+        let Needs_text
+        if (topNeeds && topNeeds.length) {
+            Needs_text = topNeeds[0]
+            Needs_title = 'Top Needs: '
+        }
+        return {
+            Needs_title,
+            Needs_text,
+        }
+    }
+
     render() {
         const { user } = this.props
         if (!user) {
@@ -43,24 +57,50 @@ class UserTopGoals extends React.PureComponent {
             return null
         }
 
+        const { Needs_text, Needs_title } = this.getNeeds(user)
+        // if (!Needs_title && !Needs_text) {
+        //     return null
+        // }
+
         return (
-            <View style={[styles.goalContainerStyle, this.props.style]}>
-                <Text
-                    numberOfLines={2}
-                    ellipsizeMode="tail"
-                    style={[default_style.normalText_1]}
-                >
+            <>
+                <View style={[styles.goalContainerStyle, this.props.style]}>
                     <Text
-                        style={[
-                            default_style.titleText_2,
-                            { color: color.GM_BLUE },
-                        ]}
+                        numberOfLines={2}
+                        ellipsizeMode="tail"
+                        style={[default_style.normalText_1]}
                     >
-                        {title}
+                        <Text
+                            style={[
+                                default_style.titleText_2,
+                                { color: color.GM_BLUE },
+                            ]}
+                        >
+                            {title}
+                        </Text>
+                        {text}
                     </Text>
-                    {text}
-                </Text>
-            </View>
+                </View>
+                {Needs_text !== undefined ? (
+                    <View style={[styles.goalContainerStyle, this.props.style]}>
+                        <Text
+                            numberOfLines={2}
+                            ellipsizeMode="tail"
+                            style={[default_style.normalText_1]}
+                        >
+                            <Text
+                                style={[
+                                    default_style.titleText_2,
+                                    { color: color.GM_BLUE },
+                                ]}
+                            >
+                                {Needs_title}
+                            </Text>
+                            {Needs_text}
+                        </Text>
+                    </View>
+                ) : null}
+            </>
         )
     }
 }

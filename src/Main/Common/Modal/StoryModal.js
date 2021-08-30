@@ -115,7 +115,7 @@ const StoryModal = ({
                     height: screenHeight,
                     left: '-5.6%',
                     top: 0,
-                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    backgroundColor: 'rgba(0,0,0,1)',
                     // position: 'absolute',
                     // backgroundColor: 'red',
                 }}

@@ -422,6 +422,7 @@ export const openCameraRoll = (
     maybeTrackCamRollOpen,
     maybeTrackImageSelected
 ) => async (dispatch) => {
+    console.log('MAYBE OPTION', maybeOptions)
     const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
 
     const permissionGranted = await ImageUtils.checkPermission(permissions)
