@@ -1045,6 +1045,9 @@ class ChatRoomConversation extends React.Component {
                 buttons={[{}]}
                 height={sheetHeight}
                 chatRecordingPress
+                chatRoom={this.props.chatRoom}
+                user={this.props.user}
+                messages={this.props.messages}
             />
         )
     }
@@ -1173,7 +1176,7 @@ class ChatRoomConversation extends React.Component {
                     />
 
                     {this.renderBottomButtonSheet()}
-                    {this.renderAttachGoal()}
+                    {/* {this.renderAttachGoal()} */}
                     {this.renderBottomVoiceRecording()}
                     {this.renderAddMediaRefBottomSheet()}
                 </Layout>

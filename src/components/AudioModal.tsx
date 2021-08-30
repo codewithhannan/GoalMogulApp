@@ -12,6 +12,7 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
     View,
+    ActivityIndicator,
 } from 'react-native'
 import { Audio, AVPlaybackStatus } from 'expo-av'
 import { Icon } from '@ui-kitten/components'
@@ -35,17 +36,7 @@ const crossIcon = require('../asset/icons/cross.png')
 
 import { sendVoiceMessage } from '../redux/modules/feed/comment/CommentActions'
 import { openGoalDetail } from '../redux/modules/home/mastermind/actions'
-import {
-    createComment,
-    createSuggestion,
-    newCommentOnMediaRefChange,
-    newCommentOnTagsChange,
-    newCommentOnTagsRegChange,
-    newCommentOnTextChange,
-    openCurrentSuggestion,
-    postComment,
-    removeSuggestion,
-} from '../redux/modules/feed/comment/CommentActions'
+import { changeMessageMediaRef } from '../redux/modules/chat/ChatRoomActions'
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const BACKGROUND_COLOR = '#FFF8ED'
@@ -87,11 +78,17 @@ type Props = {
     ) => void
     commentType: string | null
     chatType: string | null
+    chatUser: {}
+    chatRoom: {}
+    chatMessages: []
+    changeMessageMediaRef: (voiceUri: string | null) => void
 }
 
 type State = {
     haveRecordingPermissions: boolean
+    loading: boolean
     isLoading: boolean
+    loadingModal: boolean
     record: string | null
     isPlaybackAllowed: boolean
     muted: boolean
@@ -124,7 +121,9 @@ class AudioModal extends React.Component<Props, State> {
         this.shouldPlayAtEndOfSeek = false
         this.state = {
             haveRecordingPermissions: false,
+            loading: false,
             isLoading: false,
+            loadingModal: false,
             record: null,
             isPlaybackAllowed: false,
             muted: false,
@@ -440,209 +439,274 @@ class AudioModal extends React.Component<Props, State> {
     }
 
     render() {
+        const { chatMessages } = this.props
+
         return (
-            <View style={styles.emptyContainer}>
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        // alignItems: 'center',
-                        justifyContent: 'space-evenly',
-                    }}
-                >
-                    {privacyOptions.map((options, index) => {
-                        return (
+            <>
+                <View style={styles.emptyContainer}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            // alignItems: 'center',
+                            justifyContent: 'space-evenly',
+                        }}
+                    >
+                        {this.props.chatType ? null : (
                             <>
-                                <TouchableOpacity
-                                    key={options.title + index}
-                                    onPress={() => {
-                                        this._changeColor(options.value)
-                                    }}
-                                    disabled={
-                                        this.state.selected === options.value
-                                    }
-                                >
-                                    <View
-                                        style={[
-                                            GOALS_STYLE.commonPillContainer,
-                                            {
-                                                height: 35,
-                                                borderColor:
+                                {privacyOptions.map((options, index) => {
+                                    return (
+                                        <>
+                                            <TouchableOpacity
+                                                key={options.title + index}
+                                                onPress={() => {
+                                                    this._changeColor(
+                                                        options.value
+                                                    )
+                                                }}
+                                                disabled={
                                                     this.state.selected ===
                                                     options.value
-                                                        ? '#828282'
-                                                        : 'lightgray',
-                                                borderWidth: 0.3,
-                                                left: 10,
-                                                width: 80,
-                                                marginHorizontal: 3,
-                                                backgroundColor: 'white',
-                                            },
+                                                }
+                                            >
+                                                <View
+                                                    style={[
+                                                        GOALS_STYLE.commonPillContainer,
+                                                        {
+                                                            height: 35,
+                                                            borderColor:
+                                                                this.state
+                                                                    .selected ===
+                                                                options.value
+                                                                    ? '#828282'
+                                                                    : 'lightgray',
+                                                            borderWidth: 0.3,
+                                                            left: 10,
+                                                            width: 80,
+                                                            marginHorizontal: 3,
+                                                            backgroundColor:
+                                                                'white',
+                                                        },
+                                                    ]}
+                                                >
+                                                    <Icon
+                                                        pack="material-community"
+                                                        name={options.iconName}
+                                                        style={{
+                                                            height: 12,
+                                                            width: 12,
+                                                            tintColor:
+                                                                '#828282',
+                                                            opacity:
+                                                                this.state
+                                                                    .selected ===
+                                                                options.value
+                                                                    ? 1
+                                                                    : 0.3,
+                                                        }}
+                                                    />
+
+                                                    <Text
+                                                        style={{
+                                                            fontFamily:
+                                                                text.FONT_FAMILY
+                                                                    .SEMI_BOLD,
+                                                            fontSize: 14,
+                                                            color: '#828282',
+                                                            marginLeft: 5,
+                                                            opacity:
+                                                                this.state
+                                                                    .selected ===
+                                                                options.value
+                                                                    ? 1
+                                                                    : 0.3,
+                                                        }}
+                                                    >
+                                                        {options.title}
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </>
+                                    )
+                                })}
+                            </>
+                        )}
+                        <TouchableOpacity onPress={this.props.onClose}>
+                            <Image
+                                source={crossIcon}
+                                style={{
+                                    width: 25,
+                                    height: 25,
+                                    resizeMode: 'contain',
+                                    marginLeft: 150,
+                                }}
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                    <Text
+                        style={{
+                            color: 'gray',
+                            fontSize: 70,
+                            marginVertical: 5,
+                        }}
+                    >
+                        {this._getRecordingTimestamp()}
+                    </Text>
+                    {this.state.isPlaybackAllowed ? (
+                        <View style={{ flex: 1 }}>
+                            <View style={styles.playerContainer}>
+                                <TouchableOpacity
+                                    activeOpacity={0.6}
+                                    onPress={
+                                        this.state.isPlaying
+                                            ? this._onPausePressed
+                                            : this._onPlayPausePressed
+                                    }
+                                >
+                                    <Image
+                                        source={play}
+                                        resizeMode="contain"
+                                        style={styles.image}
+                                    />
+                                </TouchableOpacity>
+                                <Slider
+                                    style={styles.playbackSlider}
+                                    value={this._getSeekSliderPosition()}
+                                    onValueChange={
+                                        this._onSeekSliderValueChange
+                                    }
+                                    // onSlidingComplete={ this._onSeekSliderSlidingComplete}
+                                />
+                            </View>
+                            <View style={styles.playbackTimestamp}>
+                                <Text>{this._getPlaybackTimestamp()}</Text>
+                            </View>
+                        </View>
+                    ) : null}
+                    <View style={{ paddingVertical: 25 }}>
+                        {this.state.isRecording ? (
+                            <View style={{ flexDirection: 'row' }}>
+                                <DelayedButton
+                                    style={[
+                                        buttonStyle.GM_WHITE_BG_BLUE_TEXT
+                                            .containerStyle,
+                                        ,
+                                        { width: 150 },
+                                    ]}
+                                    onPress={this._onRecordPressed}
+                                >
+                                    <Text
+                                        style={[
+                                            buttonStyle.GM_WHITE_BG_GRAY_TEXT
+                                                .textStyle,
                                         ]}
                                     >
-                                        <Icon
-                                            pack="material-community"
-                                            name={options.iconName}
-                                            style={{
-                                                height: 12,
-                                                width: 12,
-                                                tintColor: '#828282',
-                                                opacity:
-                                                    this.state.selected ===
-                                                    options.value
-                                                        ? 1
-                                                        : 0.3,
-                                            }}
-                                        />
-
-                                        <Text
-                                            style={{
-                                                fontFamily:
-                                                    text.FONT_FAMILY.SEMI_BOLD,
-                                                fontSize: 14,
-                                                color: '#828282',
-                                                marginLeft: 5,
-                                                opacity:
-                                                    this.state.selected ===
-                                                    options.value
-                                                        ? 1
-                                                        : 0.3,
-                                            }}
-                                        >
-                                            {options.title}
-                                        </Text>
-                                    </View>
-                                </TouchableOpacity>
-                            </>
-                        )
-                    })}
-                    <TouchableOpacity onPress={this.props.onClose}>
-                        <Image
-                            source={crossIcon}
-                            style={{
-                                width: 25,
-                                height: 25,
-                                resizeMode: 'contain',
-                                marginLeft: 150,
-                            }}
-                        />
-                    </TouchableOpacity>
-                </View>
-
-                <Text
-                    style={{ color: 'gray', fontSize: 70, marginVertical: 5 }}
-                >
-                    {this._getRecordingTimestamp()}
-                </Text>
-                {this.state.isPlaybackAllowed ? (
-                    <View style={{ flex: 1 }}>
-                        <View style={styles.playerContainer}>
-                            <TouchableOpacity
-                                activeOpacity={0.6}
-                                onPress={
-                                    this.state.isPlaying
-                                        ? this._onPausePressed
-                                        : this._onPlayPausePressed
-                                }
-                            >
-                                <Image
-                                    source={play}
-                                    resizeMode="contain"
-                                    style={styles.image}
-                                />
-                            </TouchableOpacity>
-                            <Slider
-                                style={styles.playbackSlider}
-                                value={this._getSeekSliderPosition()}
-                                onValueChange={this._onSeekSliderValueChange}
-                                // onSlidingComplete={ this._onSeekSliderSlidingComplete}
-                            />
-                        </View>
-                        <View style={styles.playbackTimestamp}>
-                            <Text>{this._getPlaybackTimestamp()}</Text>
-                        </View>
-                    </View>
-                ) : null}
-                <View style={{ paddingVertical: 25 }}>
-                    {this.state.isRecording ? (
-                        <View style={{ flexDirection: 'row' }}>
-                            <DelayedButton
-                                style={[
-                                    buttonStyle.GM_WHITE_BG_BLUE_TEXT
-                                        .containerStyle,
-                                    ,
-                                    { width: 150 },
-                                ]}
-                                onPress={this._onRecordPressed}
-                            >
-                                <Text
+                                        Stop
+                                    </Text>
+                                </DelayedButton>
+                                <View style={{ width: 20 }} />
+                            </View>
+                        ) : this.state.soundDuration ? (
+                            <View style={{ flexDirection: 'row' }}>
+                                <DelayedButton
                                     style={[
-                                        buttonStyle.GM_WHITE_BG_GRAY_TEXT
-                                            .textStyle,
+                                        buttonStyle.GM_WHITE_BG_BLUE_TEXT
+                                            .containerStyle,
+                                        ,
+                                        { width: 150 },
+                                    ]}
+                                    onPress={() =>
+                                        this.setState({
+                                            reRecordModal: true,
+                                        })
+                                    }
+                                >
+                                    <Text
+                                        style={[
+                                            buttonStyle.GM_WHITE_BG_GRAY_TEXT
+                                                .textStyle,
+                                        ]}
+                                    >
+                                        Re-Record
+                                    </Text>
+                                </DelayedButton>
+                                <View style={{ width: 20 }} />
+                                <DelayedButton
+                                    onPress={() => {
+                                        // this.props.onClose()
+                                        this.setState({ loadingModal: true })
+                                        this.setState({ loading: true })
+                                        if (this.props.commentType) {
+                                            const {
+                                                goalRef,
+                                                commentRef,
+                                            } = this.props.goalDetail
+
+                                            this.props.sendVoiceMessage(
+                                                this.state.record,
+                                                this.props.pageId,
+                                                goalRef._id,
+                                                () => {
+                                                    this.setState({
+                                                        loadingModal: false,
+                                                    })
+                                                    this.props.onClose()
+                                                    this.setState({
+                                                        loading: false,
+                                                    })
+                                                    this.props.openGoalDetail(
+                                                        goalRef,
+                                                        {
+                                                            focusType:
+                                                                'comment',
+                                                            initialShowSuggestionModal: false,
+                                                            initialFocusCommentBox: false,
+                                                        }
+                                                    )
+                                                }
+                                            )
+                                        }
+                                        if (this.props.chatType) {
+                                            console.log('chat voice pressed')
+                                            this.props.changeMessageMediaRef(
+                                                this.state.record
+                                            )
+                                            this.setState({
+                                                loadingModal: false,
+                                            })
+                                            this.props.onClose()
+                                            this.setState({
+                                                loading: false,
+                                            })
+                                        }
+                                    }}
+                                    style={[
+                                        buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
+                                            .containerStyle,
+                                        ,
+                                        { width: 150 },
                                     ]}
                                 >
-                                    Stop
-                                </Text>
-                            </DelayedButton>
-                            <View style={{ width: 20 }} />
-                        </View>
-                    ) : this.state.soundDuration ? (
-                        <View style={{ flexDirection: 'row' }}>
+                                    <Text
+                                        style={[
+                                            buttonStyle
+                                                .GM_BLUE_BG_WHITE_BOLD_TEXT
+                                                .textStyle,
+                                        ]}
+                                    >
+                                        Send
+                                    </Text>
+                                </DelayedButton>
+                            </View>
+                        ) : (
                             <DelayedButton
-                                style={[
-                                    buttonStyle.GM_WHITE_BG_BLUE_TEXT
-                                        .containerStyle,
-                                    ,
-                                    { width: 150 },
-                                ]}
-                                onPress={() =>
-                                    this.setState({ reRecordModal: true })
-                                }
-                            >
-                                <Text
-                                    style={[
-                                        buttonStyle.GM_WHITE_BG_GRAY_TEXT
-                                            .textStyle,
-                                    ]}
-                                >
-                                    Re-Record
-                                </Text>
-                            </DelayedButton>
-                            <View style={{ width: 20 }} />
-                            <DelayedButton
-                                onPress={() => {
-                                    this.props.onClose()
-
-                                    if (this.props.commentType) {
-                                        const {
-                                            goalRef,
-                                            commentRef,
-                                        } = this.props.goalDetail
-                                        this.props.sendVoiceMessage(
-                                            this.state.record,
-                                            this.props.pageId,
-                                            goalRef._id,
-                                            () => {
-                                                this.props.openGoalDetail(
-                                                    goalRef,
-                                                    {
-                                                        focusType: 'comment',
-                                                        initialShowSuggestionModal: false,
-                                                        initialFocusCommentBox: false,
-                                                    }
-                                                )
-                                            }
-                                        )
-                                    }
-                                    if (this.props.chatType) {
-                                        console.log('chat voice pressed')
-                                    }
-                                }}
                                 style={[
                                     buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
                                         .containerStyle,
                                     ,
-                                    { width: 150 },
+                                    { width: 330 },
                                 ]}
+                                onPress={this._onRecordPressed}
                             >
                                 <Text
                                     style={[
@@ -650,113 +714,125 @@ class AudioModal extends React.Component<Props, State> {
                                             .textStyle,
                                     ]}
                                 >
-                                    Send
+                                    Record
                                 </Text>
                             </DelayedButton>
-                        </View>
-                    ) : (
-                        <DelayedButton
-                            style={[
-                                buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
-                                    .containerStyle,
-                                ,
-                                { width: 330 },
-                            ]}
-                            onPress={this._onRecordPressed}
-                        >
-                            <Text
-                                style={[
-                                    buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
-                                        .textStyle,
-                                ]}
-                            >
-                                Record
-                            </Text>
-                        </DelayedButton>
-                    )}
-                </View>
-                <Modal
-                    transparent={true}
-                    visible={this.state.reRecordModal}
-                    onDismiss={() => this.setState({ reRecordModal: false })}
-                >
-                    <View
-                        style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        }}
+                        )}
+                    </View>
+                    <Modal
+                        transparent={true}
+                        visible={this.state.reRecordModal}
+                        onDismiss={() =>
+                            this.setState({ reRecordModal: false })
+                        }
                     >
                         <View
                             style={{
-                                height: 150,
-                                width: '90%',
-                                backgroundColor: 'white',
-                                padding: 15,
-                                borderRadius: 5,
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: 'rgba(0, 0, 0, 0.5)',
                             }}
                         >
                             <View
                                 style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
+                                    height: 150,
+                                    width: '90%',
+                                    backgroundColor: 'white',
+                                    padding: 15,
+                                    borderRadius: 5,
                                 }}
                             >
-                                <Text
+                                <View
                                     style={{
-                                        fontSize: 20,
-                                        fontWeight: 'bold',
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
                                     }}
                                 >
-                                    Record a new clip
-                                </Text>
-                                <TouchableOpacity onPress={this._closeModal}>
-                                    <Image
-                                        source={crossIcon}
+                                    <Text
                                         style={{
-                                            width: 25,
-                                            height: 25,
-                                            resizeMode: 'contain',
-                                            // marginLeft: 120,
+                                            fontSize: 20,
+                                            fontWeight: 'bold',
                                         }}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View style={{ marginVertical: 10 }}>
-                                <Text>
-                                    This will overwrite the recording you just
-                                    made. Are you sure?
-                                </Text>
-                            </View>
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                <TouchableWithoutFeedback
-                                    onPress={() => {
-                                        this._closeModal()
-                                        this._onRecordPressed()
+                                    >
+                                        Record a new clip
+                                    </Text>
+                                    <TouchableOpacity
+                                        onPress={this._closeModal}
+                                    >
+                                        <Image
+                                            source={crossIcon}
+                                            style={{
+                                                width: 25,
+                                                height: 25,
+                                                resizeMode: 'contain',
+                                                // marginLeft: 120,
+                                            }}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ marginVertical: 10 }}>
+                                    <Text>
+                                        This will overwrite the recording you
+                                        just made. Are you sure?
+                                    </Text>
+                                </View>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
                                     }}
                                 >
-                                    <View style={styles.btnContainer2}>
-                                        <Text style={styles.btnText2}>YES</Text>
-                                    </View>
-                                </TouchableWithoutFeedback>
-                                <TouchableWithoutFeedback
-                                    onPress={this._closeModal}
-                                >
-                                    <View style={styles.btnContainer1}>
-                                        <Text style={styles.btnText1}>NO</Text>
-                                    </View>
-                                </TouchableWithoutFeedback>
+                                    <TouchableWithoutFeedback
+                                        onPress={() => {
+                                            this._closeModal()
+                                            this._onRecordPressed()
+                                        }}
+                                    >
+                                        <View style={styles.btnContainer2}>
+                                            <Text style={styles.btnText2}>
+                                                YES
+                                            </Text>
+                                        </View>
+                                    </TouchableWithoutFeedback>
+                                    <TouchableWithoutFeedback
+                                        onPress={this._closeModal}
+                                    >
+                                        <View style={styles.btnContainer1}>
+                                            <Text style={styles.btnText1}>
+                                                NO
+                                            </Text>
+                                        </View>
+                                    </TouchableWithoutFeedback>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                </Modal>
-            </View>
+                    </Modal>
+                    <Modal visible={this.state.loadingModal} transparent={true}>
+                        <View
+                            style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                // justifyContent: 'center',
+                                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            }}
+                        >
+                            {this.state.loading && (
+                                <ActivityIndicator
+                                    animating
+                                    size="large"
+                                    color="white"
+                                    style={{
+                                        top: '45%',
+                                        position: 'absolute',
+                                        alignSelf: 'center',
+                                    }}
+                                />
+                            )}
+                        </View>
+                    </Modal>
+                </View>
+            </>
         )
     }
 }
@@ -764,7 +840,7 @@ class AudioModal extends React.Component<Props, State> {
 export default connect(null, {
     sendVoiceMessage,
     openGoalDetail,
-    newCommentOnMediaRefChange,
+    changeMessageMediaRef,
 })(AudioModal)
 
 const styles = StyleSheet.create({

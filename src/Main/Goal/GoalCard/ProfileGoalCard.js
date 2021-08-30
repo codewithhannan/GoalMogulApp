@@ -569,6 +569,7 @@ class ProfileGoalCard extends React.Component {
 
     render() {
         const { item, index, visitedUserName } = this.props
+        const goalRef = { goalRef: item }
 
         if (!item || _.isEmpty(item)) return null
 
@@ -600,7 +601,7 @@ class ProfileGoalCard extends React.Component {
                         <GoalSwiper
                             index={index}
                             marginBottom={8}
-                            goalRef={item}
+                            goalRef={goalRef}
                         >
                             <DelayedButton
                                 index={index}

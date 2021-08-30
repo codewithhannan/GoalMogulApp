@@ -59,7 +59,7 @@ const styles = {
         marginRight: 18,
         height: 41,
         justifyContent: 'center',
-        backgroundColor: '#34c0dd',
+        backgroundColor: '#45C9F6',
     },
     textStyle: {
         fontSize: 15,

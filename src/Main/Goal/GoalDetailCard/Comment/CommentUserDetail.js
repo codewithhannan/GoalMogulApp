@@ -26,6 +26,7 @@ import CommentRef from './CommentRef'
 import ProfileImage from '../../../Common/ProfileImage'
 import ImageModal from '../../../Common/ImageModal'
 import RichText from '../../../Common/Text/RichText'
+import AudioPlayer from '../../../../components/AudioPlayer'
 
 // Actions
 import {
@@ -74,9 +75,17 @@ class CommentUserDetail extends Component {
         this.state = {
             layout: {},
             mediaModal: false,
+            soundObj: {},
         }
         this.openReplyThread = this.openReplyThread.bind(this)
     }
+
+    // componentWillUnmount() {
+    //     const unMoundSound = async () => {
+    //         this.state.soundObj && (await this.state.soundObj.unloadAsync())
+    //     }
+    //     unMoundSound()
+    // }
 
     onLayout = (e) => {
         const layout = {
@@ -101,11 +110,11 @@ class CommentUserDetail extends Component {
     }
 
     playSound = async (uri) => {
-        console.log('uri===>', uri)
         try {
             const { sound } = await Audio.Sound.createAsync({
                 uri: uri,
             })
+            this.setState({ soundObj: sound })
             if (sound) {
                 // await sound.loadAsync()
                 await sound.playAsync()
@@ -129,13 +138,13 @@ class CommentUserDetail extends Component {
         }`
         const url = mediaRef
         const imageUrl = `${IMAGE_BASE_URL}${url}`
-        console.log('imageurl=====>', imageUrl)
         return (
             <>
                 {type === 'CommentAudio' ? (
-                    <TouchableOpacity onPress={() => this.playSound(voiceUri)}>
-                        <Text>Play Sound</Text>
-                    </TouchableOpacity>
+                    // <TouchableOpacity onPress={() => this.playSound(voiceUri)}>
+                    //     <Text>Play Sound</Text>
+                    // </TouchableOpacity>
+                    <AudioPlayer audio={{ uri: voiceUri }} />
                 ) : (
                     <TouchableWithoutFeedback
                         onPress={() => this.setState({ mediaModal: true })}
@@ -320,7 +329,7 @@ class CommentUserDetail extends Component {
                     {this.renderCardContent()}
                 </View>
                 {this.renderCommentMedia(item)}
-                {/* {this.renderCommentRef(item)} */}
+                {this.renderCommentRef(item)}
             </View>
         )
     }

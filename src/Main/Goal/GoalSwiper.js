@@ -37,7 +37,7 @@ class GoalSwiper extends React.Component {
                 id: 1,
                 source: ACCOUNTABILITY,
                 onPress: () => {
-                    // prevOpenedRow.close()
+                    prevOpenedRow.close()
                     this.setState({ accountPopUpVisible: true })
                 },
                 backgroundColor: '#CEFFBC',
@@ -47,7 +47,7 @@ class GoalSwiper extends React.Component {
                 id: 3,
                 source: RECORDING,
                 onPress: () => {
-                    // prevOpenedRow.close()
+                    prevOpenedRow.close()
                     this.openRecordingModal()
                 },
                 backgroundColor: '#D7F3FF',
@@ -198,8 +198,11 @@ class GoalSwiper extends React.Component {
             homeFeedGoal,
             children,
             goalId,
+            goalRef,
         } = this.props
-
+        // console.log('====================================')
+        // console.log('goalswiper goalref', goalRef)
+        // console.log('====================================')
         return (
             <>
                 <CommentVideoModal

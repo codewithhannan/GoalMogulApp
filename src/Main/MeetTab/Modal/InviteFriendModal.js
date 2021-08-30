@@ -362,7 +362,7 @@ class InviteFriendModal extends React.PureComponent {
                 style={[
                     {
                         width: '100%',
-                        paddingVertical: 24,
+                        paddingVertical: 15,
                         paddingHorizontal: 16,
                     },
                 ]}
@@ -456,14 +456,18 @@ class InviteFriendModal extends React.PureComponent {
                         borderTopLeftRadius: 10,
                         borderTopRightRadius: 10,
                         flex: 1,
-                        marginTop: 50,
+                        // marginTop: 50,
+                        backgroundColor: 'transparent',
                     }}
                     useNativeDriver={true}
                 >
                     <View
                         style={{
                             backgroundColor: '#F2F2F2',
-                            flex: 1,
+                            // flex: 1,
+                            height: height * 0.85,
+                            position: 'absolute',
+                            bottom: 0,
                             borderTopLeftRadius: 10,
                             borderTopRightRadius: 10,
                         }}
@@ -648,7 +652,7 @@ class InviteFriendModal extends React.PureComponent {
                                     style={[
                                         {
                                             width: '100%',
-                                            paddingVertical: 24,
+                                            paddingVertical: 15,
                                             paddingHorizontal: 16,
                                         },
                                     ]}

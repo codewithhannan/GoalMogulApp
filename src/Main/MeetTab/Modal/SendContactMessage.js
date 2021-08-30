@@ -247,7 +247,10 @@ class MessageToContactsModal extends Component {
                                             fontSize: 18,
                                         }}
                                     >
-                                        {item.value}
+                                        {/* {item.value} */}
+                                        {item.value.length < 27
+                                            ? `${item.value}`
+                                            : `${item.substring(0, 26)}...`}
                                     </Text>
                                 </View>
 
@@ -354,7 +357,7 @@ class MessageToContactsModal extends Component {
                                 <TextInput
                                     theme={{
                                         colors: {
-                                            primary: 'grey',
+                                            primary: color.GM_BLUE,
                                             underlineColor: 'transparent',
                                         },
                                     }}

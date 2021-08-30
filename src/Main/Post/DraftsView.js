@@ -38,7 +38,7 @@ class DraftsView extends Component {
     renderItem({ item: { post, mediaRef }, index }) {
         const deleteIconStyle = {
             ...default_style.smallIcon_1,
-            tintColor: color.GM_RED,
+            tintColor: color.GM_BLUE,
         }
         const textWidth = width - 3 * 16 - deleteIconStyle.width - 30
 
@@ -154,7 +154,7 @@ const styles = {
         margin: 10,
     },
     cancelWrapper: {
-        backgroundColor: '#F2F2F2',
+        backgroundColor: '#D6F1FD',
         borderRadius: 100,
         padding: 10,
     },

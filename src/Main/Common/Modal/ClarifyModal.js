@@ -293,7 +293,7 @@ const styles = {
         borderRadius: 15,
         padding: 5,
         flex: 1,
-        alignItems: 'left',
+        // alignItems: 'left',
         height: hp(52.74),
     },
 
