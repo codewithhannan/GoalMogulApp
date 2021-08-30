@@ -213,6 +213,8 @@ class NotificationCard extends React.PureComponent {
     render() {
         const { item } = this.props
 
+        // console.log('THIS IS NOTIFICATION ITEM', item)
+
         if (!item) return null
         if (!item.parsedNoti) return null
 

@@ -175,7 +175,7 @@ class GoalCardBody extends React.Component {
             <View>
                 <View
                     style={[
-                        default_style.cardHorizontalSeparator,
+                        // default_style.cardHorizontalSeparator,
                         { width: '100%', marginBottom: 12 },
                     ]}
                 />
@@ -216,7 +216,7 @@ class GoalCardBody extends React.Component {
                 </View>
                 <View
                     style={[
-                        default_style.cardHorizontalSeparator,
+                        // default_style.cardHorizontalSeparator,
                         { width: '100%', marginVertical: 12 },
                     ]}
                 />
