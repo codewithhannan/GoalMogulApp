@@ -743,14 +743,12 @@ class Bubble extends React.Component {
 
     renderMessageLottie = () => {
         const { currentMessage } = this.props
-        console.log('THIS IS CURRENT LOTTIE MESSAGE'.currentMessage)
         if (_.isEmpty(currentMessage.lottie)) return null
         if (currentMessage?.lottie) {
             return (
                 <LottieView
                     style={{
-                        height: hp(20),
-                        marginTop: 2,
+                        height: hp(30),
                         alignSelf: 'center',
                     }}
                     source={this.renderLottieImage(currentMessage.lottie)}
