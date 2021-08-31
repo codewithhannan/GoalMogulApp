@@ -88,9 +88,12 @@ class MyTribeMembers extends React.PureComponent {
     }
 
     renderItem = (member) => {
+        console.log('MEMBERSSS', member)
         return (
             <MemberListCard
                 item={member.memberRef}
+                isFriend={member.isFriend}
+                isRequested={member.isRequested}
                 category={member.category}
                 isSelf={this.props.userId === member.memberRef._id}
                 isAdmin={this.props.isAdmin}
