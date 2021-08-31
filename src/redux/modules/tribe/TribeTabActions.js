@@ -53,12 +53,9 @@ export const refreshTribe = () => (dispatch, getState) => {
         limit,
         token,
         sortBy,
-        { refresh: true },
+        { refresh: false },
         (data) => {
-            console.log(
-                `${DEBUG_KEY}: [ refreshTribe ] with res: `,
-                data.length
-            )
+            console.log(`${DEBUG_KEY}: [ refreshTribe ] with res: `, data)
             dispatch({
                 type: TRIBETAB_REFRESH_DONE,
                 payload: {

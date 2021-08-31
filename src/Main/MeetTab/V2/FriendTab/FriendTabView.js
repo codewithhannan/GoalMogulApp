@@ -94,7 +94,7 @@ class FriendTabView extends React.Component {
     renderListFooter() {
         const { loading, data } = this.props
         // console.log(`${DEBUG_KEY}: loading is: ${loadingMore}, data length is: ${data.length}`);
-        if (loading && data.length >= MEET_REQUEST_LIMIT) {
+        if (loading) {
             return (
                 <View style={{ paddingVertical: 20 }}>
                     <ActivityIndicator size="small" />
@@ -127,7 +127,6 @@ class FriendTabView extends React.Component {
 
     //this is the tab bar for the tabview
     renderTabBar = (props) => {
-        console.log('THIS IS DEVICE MODAL', DEVICE_MODEL)
         const { routes } = this.state
         return (
             <TabBar

@@ -283,8 +283,8 @@ class HomeFeedToast extends Component {
             marginButtonTop: undefined,
             thirdText: undefined,
             buttonText: 'View profile',
-            handleButtonPress: () =>
-                this.props.openProfile(this.props.friendsProfileToVisit[0]._id),
+            handleButtonPress: () => {},
+            // this.props.openProfile(this.props.friendsProfileToVisit[0]._id),
         },
 
         {
@@ -316,8 +316,8 @@ class HomeFeedToast extends Component {
             marginButtonTop: undefined,
             thirdText: undefined,
             buttonText: 'View profile',
-            handleButtonPress: () =>
-                this.props.openProfile(this.props.closeFriendsToVisit[0]._id),
+            handleButtonPress: () => {},
+            // this.props.openProfile(this.props.closeFriendsToVisit[0]._id),
         },
     ]
 
@@ -381,6 +381,10 @@ class HomeFeedToast extends Component {
                                 ? null
                                 : this.props.friendsProfileToVisit[0]?.name
                         }’s profile yet.`
+                        toast.handleButtonPress = () =>
+                            this.props.openProfile(
+                                this.props.friendsProfileToVisit[0]._id
+                            )
                         return toast
                     } else {
                         return null
@@ -393,6 +397,10 @@ class HomeFeedToast extends Component {
                                 ? null
                                 : this.props.closeFriendsToVisit[0].name
                         }’s goals in while.`
+                        toast.handleButtonPress = () =>
+                            this.props.openProfile(
+                                this.props.closeFriendsToVisit[0]._id
+                            )
                         return toast
                     }
                 }

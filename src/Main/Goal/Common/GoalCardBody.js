@@ -107,14 +107,16 @@ class GoalCardBody extends React.Component {
         return [
             <View
                 style={{
-                    height: 130,
-                    width: 80,
+                    height: 40,
+                    width: 40,
                     borderStyle: 'dashed',
                     borderColor: '#A0A0A2',
                     borderWidth: 1,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    borderRadius: 3,
+                    borderRadius: 50,
+                    marginHorizontal: 20,
+                    alignSelf: 'center',
                 }}
             >
                 <DelayedButton
@@ -165,13 +167,15 @@ class GoalCardBody extends React.Component {
     renderUpdates() {
         const { data, isSelf } = this.props
         const numOfUpdates = (data && data.length) || 0
+        // this.emptyContainersToDisplay =
+        //     MAX_UPDATES_CONTAINERS - numOfUpdates - (isSelf ? 0 : 0)
         this.emptyContainersToDisplay = 0
 
         return (
             <View>
                 <View
                     style={[
-                        default_style.cardHorizontalSeparator,
+                        // default_style.cardHorizontalSeparator,
                         { width: '100%', marginBottom: 12 },
                     ]}
                 />
@@ -215,7 +219,7 @@ class GoalCardBody extends React.Component {
                 </View>
                 <View
                     style={[
-                        default_style.cardHorizontalSeparator,
+                        // default_style.cardHorizontalSeparator,
                         { width: '100%', marginVertical: 12 },
                     ]}
                 />
@@ -245,10 +249,10 @@ class GoalCardBody extends React.Component {
 
 const styles = {
     buttonContainer: {
-        height: CONTAINER_WIDTH,
-        width: CONTAINER_WIDTH - 50,
-        alignItems: 'center',
-        justifyContent: 'center',
+        // height: CONTAINER_WIDTH,
+        // width: CONTAINER_WIDTH - 50,
+        // alignItems: 'center',
+        // justifyContent: 'center',
     },
     updatesContainer: {
         height: CONTAINER_WIDTH,

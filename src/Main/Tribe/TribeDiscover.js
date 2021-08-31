@@ -197,12 +197,11 @@ class TribeDiscover extends React.Component {
         const { tribesSearchText } = this.state
 
         const tribesToRender = this.getTribesToRender()
-        console.log('TRIBES TO RENDER 1', tribesToRender)
+
         this.setState({ tribesSearchText: input })
         // this.setState({ input })
 
         let tribesFilteredData = tribesToRender.filter((item) => {
-            console.log('TRIBES TO RENDER 1', item.name)
             return item.name.includes(input)
         })
 
@@ -211,7 +210,8 @@ class TribeDiscover extends React.Component {
 
     render() {
         const tribesToRender = this.getTribesToRender()
-        console.log('TRIBES TO RENDER', this.state.tribesFilteredData)
+        console.log('THIS IS TRIBE TO RENDER', tribesToRender)
+
         return (
             <View
                 style={[

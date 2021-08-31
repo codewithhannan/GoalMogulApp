@@ -5,24 +5,36 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import DelayedButton from '../Common/Button/DelayedButton'
-import { getImageOrDefault, decode } from '../../redux/middleware/utils'
+// import { getImageOrDefault, decode } from '../../redux/middleware/utils'
 import tribe_default_icon from '../../asset/utils/tribeIcon.png'
-import { View, Image, Dimensions, Text } from 'react-native'
-import { Icon } from '@ui-kitten/components'
-import { color, default_style, text } from '../../styles/basic'
-import { tribeDetailOpen } from '../../redux/modules/tribe/MyTribeActions'
-import ProfileImage from '../Common/ProfileImage'
-import members from '../../asset/icons/2.png'
+import { View, Image, Text } from 'react-native'
+// import { Icon } from '@ui-kitten/components'
+import { color } from '../../styles/basic'
+import MEMBERS from '../../asset/utils/mutualFriends.png'
+import TRIBE_FRIENDS from '../../asset/utils/tribeFriends.png'
 
-const { width } = Dimensions.get('window')
+import {
+    requestJoinTribe,
+    tribeDetailOpen,
+} from '../../redux/modules/tribe/MyTribeActions'
+import ProfileImage from '../Common/ProfileImage'
+
+import { refreshProfileData } from '../../actions'
+
+let pageAb
 class TribeDiscoverCard extends React.PureComponent {
     state = {
         requested: false,
+        joined: false,
+    }
+
+    componentDidMount() {
+        const pageId = this.props.refreshProfileData(this.props.userId)
+        pageAb = pageId
     }
 
     renderTitle(item) {
         let title = item.name
-
         return (
             <View
                 style={{
@@ -41,26 +53,53 @@ class TribeDiscoverCard extends React.PureComponent {
             </View>
         )
     }
-    renderButton(item, type) {
+
+    renderButtonText = () => {
+        if (this.state.requested) {
+            return 'Requested'
+        } else if (this.state.joined) {
+            return 'Joined'
+        } else {
+            return 'Join'
+        }
+    }
+
+    handleJoinButton = (item) => {
+        const { onPress } = this.props
+        const { requested, joined } = this.state
+
+        if (item.isAutoAcceptEnabled && !this.state.joined) {
+            this.setState({ joined: true })
+            this.props.requestJoinTribe(
+                item._id,
+                true,
+                pageAb,
+                item.isAutoAcceptEnabled
+            )
+        } else if (requested || joined) {
+            onPress(item)
+        } else {
+            this.setState({ requested: true })
+            this.props.requestJoinTribe(
+                item._id,
+                true,
+                pageAb,
+                item.isAutoAcceptEnabled
+            )
+        }
+    }
+
+    renderButton(item) {
+        const { requested } = this.state
         return (
             <View style={styles.iconContainerStyle}>
                 <DelayedButton
                     activeOpacity={0.6}
-                    onPress={() =>
-                        // this.onButtonClicked(item, type)
-
-                        // this.props.requestJoinTribe(
-                        //     item._id,
-                        //     true,
-                        //     pageAb,
-                        //     item.isAutoAcceptEnabled
-                        // ),
-                        this.setState({ requested: true })
-                    }
+                    onPress={() => this.handleJoinButton(item)}
                     style={{
                         height: 31,
-                        width: this.state.requested ? 100 : 65,
-                        backgroundColor: color.GM_BLUE,
+                        width: requested ? 100 : 65,
+                        backgroundColor: requested ? '#BDBDBD' : color.GM_BLUE,
                         borderRadius: 3,
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -76,7 +115,7 @@ class TribeDiscoverCard extends React.PureComponent {
                             fontFamily: 'SFProDisplay-Semibold',
                         }}
                     >
-                        {this.state.requested ? 'Requested' : 'Join'}
+                        {this.renderButtonText()}
                     </Text>
                 </DelayedButton>
             </View>
@@ -84,8 +123,13 @@ class TribeDiscoverCard extends React.PureComponent {
     }
     renderInformation(item) {
         let count = item.memberCount
+        let friendCount = item.friendsCount
+
         if (count > 999) {
             count = '1k+'
+        }
+        if (friendCount > 999) {
+            friendCount = '1k+'
         }
         const defaultTextStyle = { color: '#abb1b0', fontSize: 10 }
 
@@ -100,7 +144,7 @@ class TribeDiscoverCard extends React.PureComponent {
                 {/* <Text style={defaultTextStyle}>{category}</Text> */}
                 {/* <Dot /> */}
                 <Image
-                    source={members}
+                    source={MEMBERS}
                     style={{ height: 12, width: 12, marginHorizontal: 1 }}
                     resizeMode="contain"
                 />
@@ -127,6 +171,48 @@ class TribeDiscoverCard extends React.PureComponent {
                             &nbsp;{item.memberCount > 1 ? 'members' : 'member'}
                         </Text>
                     </View>
+                ) : null}
+
+                {friendCount > 0 ? (
+                    <>
+                        <Image
+                            source={TRIBE_FRIENDS}
+                            style={{
+                                height: 12,
+                                width: 12,
+                                marginHorizontal: 1,
+                            }}
+                            resizeMode="contain"
+                        />
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                marginHorizontal: 3,
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    ...defaultTextStyle,
+                                    color: '#737475',
+                                    fontSize: 12,
+                                    fontWeight: '500',
+                                }}
+                            >
+                                {friendCount}
+                            </Text>
+                            <Text
+                                style={{
+                                    ...defaultTextStyle,
+                                    color: '#737475',
+                                    fontSize: 12,
+                                    fontWeight: '500',
+                                }}
+                            >
+                                &nbsp;
+                                {item.friendsCount > 1 ? 'friends' : 'friend'}
+                            </Text>
+                        </View>
+                    </>
                 ) : null}
             </View>
         )
@@ -174,6 +260,8 @@ class TribeDiscoverCard extends React.PureComponent {
         const containerStyle = selected
             ? styles.tribeCardSelectedContainerStyle
             : styles.tribeCardContainerStyle
+
+        console.log('THIS IS TRIBE TO DISCOVER', item)
 
         return (
             <DelayedButton
@@ -362,6 +450,16 @@ const styles = {
     },
 }
 
-export default connect(null, {
+const mapStateToProps = (state, props) => {
+    const { userId } = state.user
+
+    return {
+        userId,
+    }
+}
+
+export default connect(mapStateToProps, {
     tribeDetailOpen,
+    requestJoinTribe,
+    refreshProfileData,
 })(TribeDiscoverCard)

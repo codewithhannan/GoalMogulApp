@@ -193,7 +193,6 @@ class Bubble extends React.Component {
 
     renderGoalOptions() {
         const { options, text } = this.props.currentMessage
-
         const { user, chatRoom, messages } = this.props
 
         // console.log('this is props of chat', this.props.currentMessage)
@@ -217,7 +216,7 @@ class Bubble extends React.Component {
                         <View
                             style={{
                                 // borderTopColor: '#eee',
-                                width: '100%',
+                                width: '95%',
                                 // marginTop: 12,
                                 // paddingTop: 9,
                                 // paddingBottom: 6,
@@ -232,6 +231,7 @@ class Bubble extends React.Component {
                                     borderRadius: 5,
                                     borderColor: color.GM_BLUE,
                                     borderWidth: 2,
+
                                     // padding: 80,
                                 }}
                                 onPress={() => {
@@ -277,7 +277,6 @@ class Bubble extends React.Component {
                                     style={{
                                         color: '#fff',
                                         fontSize: 14,
-                                        width: '99.8%',
                                         fontWeight: '600',
                                         fontFamily: text.FONT_FAMILY,
                                         color: color.GM_BLUE,
@@ -710,12 +709,7 @@ class Bubble extends React.Component {
     render() {
         const { user, chatRoom, messages } = this.props
 
-        if (this.props.currentMessage.question) {
-            console.log(
-                'THIS ISSSSSS CURRRENT MESSAGE',
-                this.props.currentMessage
-            )
-        }
+        // console.log('THIS ISSSSSS CURRRENT MESSAGE', this.props.currentMessage)
 
         const isSameThread =
             isSameUser(this.props.currentMessage, this.props.previousMessage) &&
