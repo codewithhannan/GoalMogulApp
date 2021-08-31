@@ -156,7 +156,15 @@ class BottomButtonsSheet extends Component {
                 />
             )
         } else if (this.props.chatRecordingPress) {
-            return <AudioModal onClose={this.close} chatType />
+            return (
+                <AudioModal
+                    onClose={this.close}
+                    chatType
+                    chatUser={this.props.user}
+                    chatMessages={this.props.messages}
+                    chatRoom={this.props.chatRoom}
+                />
+            )
         } else {
             return (
                 <View

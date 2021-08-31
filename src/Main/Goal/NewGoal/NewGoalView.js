@@ -803,6 +803,8 @@ class NewGoalView extends Component {
                                 style={{
                                     textDecorationLine: 'underline',
                                     fontSize: 10,
+                                    color: color.GM_BLUE_DEEP,
+                                    fontWeight: '600',
                                 }}
                             >
                                 View Trending Goals

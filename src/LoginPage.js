@@ -350,9 +350,9 @@ class LoginPage extends Component {
             <View style={[OnboardingStyles.container.page]}>
                 <KeyboardAwareScrollView
                     bounces={false}
-                    enableOnAndroid={true}
+                    // enableOnAndroid={true}
                     innerRef={(ref) => (this.scrollView = ref)}
-                    keyboardShouldPersistTaps={'handled'}
+                    // keyboardShouldPersistTaps={'handled'}
                 >
                     <OnboardingHeader />
                     <View

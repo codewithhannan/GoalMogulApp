@@ -682,7 +682,7 @@ class ProfileV2 extends Component {
         const { profileVisited } = this.state
         const { user } = this.props
 
-        const path = user.name.split(/(\s+)/).filter(function (e) {
+        const path = user?.name?.split(/(\s+)/).filter(function (e) {
             return e.trim().length > 0
         })
 

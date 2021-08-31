@@ -589,7 +589,6 @@ export const sendVoiceMessage = (uri, pageId, _id, callback) => async (
             return VoiceUtils.uploadVoice(file, signedRequest)
         })
         .then((res) => {
-            console.log('s3 voice response ===>', res)
             if (res instanceof Error) {
                 // uploading to s3 failed
                 console.log('error uploading voice to s3 with res: ', res)

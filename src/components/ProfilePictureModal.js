@@ -146,8 +146,6 @@ class ProfilePictureModal extends Component {
     }
 
     render() {
-        const { image } = this.props
-
         // let ImageSource = { currentImage: require(image) }
         // console.log('IMAFGE SOURCE', ImageSource)
         return (

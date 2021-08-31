@@ -452,7 +452,7 @@ class SuggestionModal extends Component {
                         }}
                     />
                     {/* {this.renderGoalPreview(item)} */}
-                    {this.renderSuggestionFor(newComment, item)}
+                    {/* {this.renderSuggestionFor(newComment, item)} */}
                     {this.renderOptions(newComment)}
                 </View>
                 <Modal

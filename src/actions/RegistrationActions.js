@@ -329,7 +329,7 @@ export const openCamera = (
         }).catch((error) => console.log('THIS IS ERROR OF IMAGE', error))
     }
 
-    if (!result.cancelled) {
+    if (!result.cancelled || result.cancelled) {
         if (callback) {
             return callback(result)
         }

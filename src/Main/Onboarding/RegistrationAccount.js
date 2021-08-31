@@ -17,6 +17,7 @@
 
 import React from 'react'
 import { View, Text, Alert, Keyboard } from 'react-native'
+
 import { connect } from 'react-redux'
 import * as WebBrowser from 'expo-web-browser'
 import * as Linking from 'expo-linking'
@@ -48,6 +49,8 @@ import {
     EVENT as E,
 } from '../../monitoring/segment'
 import CustomDropDown from './Common/CustomDropdown'
+import moment from 'moment'
+import { DropDownHolder } from '../Common/Modal/DropDownModal'
 
 let dateToSend = undefined
 
@@ -76,6 +79,7 @@ class RegistrationAccount extends React.Component {
             nameStatus: undefined,
             phoneStatus: undefined,
             passwordStatus: undefined,
+            dateOfBirthStatus: undefined,
             inviteCodeStatus: undefined,
             userAgreementChecked: true,
             validateDate: undefined,
@@ -220,6 +224,27 @@ class RegistrationAccount extends React.Component {
                 ...this.state,
                 inviteCodeStatus: FIELD_REQUIREMENTS.inviteCode.require_code,
             })
+        }
+    }
+    validateDateDateOfBirth = (dateOfBirth) => {
+        let oneYearFromNow = new Date()
+        let validateDate = oneYearFromNow.setFullYear(
+            oneYearFromNow.getFullYear() - 13
+        )
+        let validateDateToTime = new Date(validateDate).getTime()
+        let selectedDateToTime = new Date(dateOfBirth).getTime()
+
+        if (selectedDateToTime <= validateDateToTime) {
+            this.setState({ dateOfBirthStatus: selectedDateToTime })
+        } else {
+            this.setState({ dateOfBirthStatus: undefined })
+            setTimeout(() => {
+                DropDownHolder.alert(
+                    'error',
+                    'Error',
+                    'Please enter a valid Date of Birth!'
+                )
+            }, 500)
         }
     }
 
@@ -432,6 +457,7 @@ class RegistrationAccount extends React.Component {
                             val
                         )
                     }}
+                    onBlur={() => this.validateDateDateOfBirth(dateOfBirth)}
                     placeholder={`You must be at least 13yrs of age`}
                     value={dateOfBirth}
                     returnKeyType="done"

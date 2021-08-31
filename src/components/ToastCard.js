@@ -67,6 +67,7 @@ class ToastCard extends Component {
                         paddingHorizontal: 10,
                         paddingVertical: 17,
                         height: 162,
+                        // width: '100%',
                         borderRadius: 8,
                     }}
                 >

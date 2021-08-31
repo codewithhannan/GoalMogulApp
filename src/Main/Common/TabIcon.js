@@ -12,6 +12,12 @@ import { fetchUnreadCount } from '../../redux/modules/notification/NotificationT
 /* Utils */
 import { Logger } from '../../redux/middleware/utils/Logger'
 import { color } from '../../styles/basic'
+import LottieView from 'lottie-react-native'
+import NOTIFICATION_LOTTIE from '../../asset/toast_popup_lotties/notification_icon/Notification.json'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 
 const CHAT_COUNT_UPDATE_INTERVAL = 1000
 const NOTIFICATION_COUNT_UPDATE_INTERVAL = 10000
@@ -89,6 +95,13 @@ class TabIcon extends React.PureComponent {
             this.props.fetchUnreadCount()
         }, NOTIFICATION_COUNT_UPDATE_INTERVAL)
     }
+    startLottieAnim(anim) {
+        console.log('THIS IS ANIMM', anim)
+        this.lottieAnim = anim
+        if (anim) {
+            this.lottieAnim.play()
+        }
+    }
 
     render() {
         const {
@@ -145,12 +158,24 @@ class TabIcon extends React.PureComponent {
                                 </Text>
                             </View>
                         ) : null}
-                        <Icon
-                            name="bell"
-                            pack="material-community"
-                            style={style}
-                            zIndex={1}
-                        />
+                        {notificationCount && notificationCount > 0 ? (
+                            <LottieView
+                                style={{
+                                    height: hp(3.5),
+                                }}
+                                loop={false}
+                                autoPlay
+                                autoSize
+                                source={NOTIFICATION_LOTTIE}
+                            />
+                        ) : (
+                            <Icon
+                                name="bell"
+                                pack="material-community"
+                                style={style}
+                                zIndex={1}
+                            />
+                        )}
                     </View>
                 )
             case 'chatTab':

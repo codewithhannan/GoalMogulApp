@@ -27,6 +27,7 @@ import {
     getPopupData,
     uploadPopupData,
 } from '../../actions'
+
 import { getAllNudges } from '../../actions/NudgeActions'
 
 import {
@@ -57,6 +58,7 @@ import { Actions } from 'react-native-router-flux'
 import PopupFB from '../Journey/FbPopup'
 
 import { getToastsData } from '../../actions/ToastActions'
+import Popup from '../Journey/Popup'
 
 const TAB_KEY = 'activityfeed'
 const DEBUG_KEY = '[ UI ActivityFeed ]'
@@ -79,7 +81,9 @@ class ActivityFeed extends Component {
             heading: '',
             text: '',
             friendsCount: '',
+            popupName: '',
             goldBadge: false,
+            showPopupModal: false,
             noGoals: false,
             someGoals: false,
             friendToVisit: '',
@@ -472,6 +476,44 @@ class ActivityFeed extends Component {
         }
     }
 
+    handlePopup = () => {
+        // console.log('\nhandlePopup is called')
+        const { popup, profile, myGoals } = this.props
+        // console.log('POPP UPP OBJECT', popup)
+        // console.log('\nThis is popup', profile)
+        if (!popup['FIRST_GOAL'].status && myGoals.length === 1) {
+            this.props.uploadPopupData('FIRST_GOAL')
+            this.setState({ showPopupModal: true, popupName: 'FIRST_GOAL' })
+        } else if (
+            !popup['GREEN_BADGE'].status &&
+            profile.badges.milestoneBadge.currentMilestone === 1
+        ) {
+            this.props.uploadPopupData('GREEN_BADGE')
+            this.setState({ showPopupModal: true, popupName: 'GREEN_BADGE' })
+        } else if (
+            !popup['BRONZE_BADGE'].status &&
+            profile.badges.milestoneBadge.currentMilestone === 2
+        ) {
+            this.props.uploadPopupData('BRONZE_BADGE')
+            this.setState({ showPopupModal: true, popupName: 'BRONZE_BADGE' })
+        } else if (!popup['SEVEN_GOALS'].status && myGoals.length === 7) {
+            this.props.uploadPopupData('SEVEN_GOALS')
+            this.setState({ showPopupModal: true, popupName: 'SEVEN_GOALS' })
+        } else if (
+            !popup['SILVER_BADGE'].status &&
+            profile.badges.milestoneBadge.currentMilestone === 3
+        ) {
+            this.props.uploadPopupData('SILVER_BADGE')
+            this.setState({ showPopupModal: true, popupName: 'SILVER_BADGE' })
+        } else if (
+            !popup['GOLD_BADGE'].status &&
+            profile.badges.milestoneBadge.currentMilestone === 4
+        ) {
+            this.props.uploadPopupData('GOLD_BADGE')
+            this.setState({ showPopupModal: true, popupName: 'GOLD_BADGE' })
+        }
+    }
+
     render() {
         console.log('Activity user', this.props.userLogedIn.user)
         const { data, userInvitedFriendsCount, refreshing } = this.props
@@ -531,6 +573,17 @@ class ActivityFeed extends Component {
                         this.setState({
                             showFbModal: false,
                         })
+                    }}
+                />
+                <Popup
+                    popupName={this.state.popupName}
+                    isVisible={this.state.showPopupModal}
+                    closeModal={() => {
+                        this.state.popupName == 'FIRST_GOAL'
+                            ? this.handleQuestionPopup()
+                            : this.setState({
+                                  showPopupModal: false,
+                              })
                     }}
                 />
             </>

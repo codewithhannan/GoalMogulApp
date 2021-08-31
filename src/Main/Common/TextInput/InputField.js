@@ -136,7 +136,7 @@ class InputField extends Component {
         //     value = prefilled
         // }
 
-        console.log('THIS IS PREFFILEEEDD', this.props.prefilled)
+        // console.log('THIS IS PREFFILEEEDD', this.props.prefilled)
 
         const gestureHandler = canDrag ? (
             <TouchableOpacity

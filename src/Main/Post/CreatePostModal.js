@@ -275,7 +275,7 @@ class CreatePostModal extends Component {
 
         const defaulVals = {
             privacy: PRIVACY_FRIENDS,
-            mediaRef: undefined,
+            mediaRef: undefined || this.props.mediaRef,
             post: '' || this.props.post,
             tags: [],
             belongsToTribe,
@@ -336,7 +336,7 @@ class CreatePostModal extends Component {
             this.setState({ clickedButton: false })
         }
         setTimeout(() => {
-            this.props.openCamera(callback, null, null, true)
+            this.props.openCamera(callback)
         }, 500)
     }
 
@@ -540,7 +540,7 @@ class CreatePostModal extends Component {
                     text: 'Cancel',
                     onPress: () => {
                         this.bottomSheetRef.open()
-                        this.setState({ mediaHeight: 0 })
+                        // this.setState({ mediaHeight: 0 })
                     },
                     style: 'cancel',
                 },
@@ -1372,7 +1372,7 @@ class CreatePostModal extends Component {
             this.state.drafts.length > 0
 
         const modalHeight =
-            200 +
+            210 +
             this.state.textContentHeight +
             this.state.mediaHeight +
             this.state.userDetailLayout +

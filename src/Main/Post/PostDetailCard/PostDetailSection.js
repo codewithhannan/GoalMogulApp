@@ -332,7 +332,7 @@ class PostDetailSection extends React.PureComponent {
                                 width: 24,
                                 height: 24,
                                 borderRadius: 12,
-                                padding: 2,
+                                padding: 3,
                                 backgroundColor: 'rgba(0,0,0,0.3)',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -341,10 +341,11 @@ class PostDetailSection extends React.PureComponent {
                             <Image
                                 source={expand}
                                 style={{
-                                    width: 16,
-                                    height: 16,
+                                    width: 15,
+                                    height: 15,
                                     tintColor: '#fafafa',
-                                    borderRadius: 4,
+                                    borderRadius: 3,
+                                    resizeMode: 'contain',
                                 }}
                             />
                         </TouchableOpacity>

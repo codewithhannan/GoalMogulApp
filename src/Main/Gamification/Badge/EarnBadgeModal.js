@@ -296,20 +296,24 @@ class EarnBadgeModal extends React.PureComponent {
                                             this.setState({
                                                 showGoldBagdeInfoModal: true,
                                             })
+                                            b.leadingIcon == null
                                         }
                                     }
                                 }
+
                                 if (b.tier <= tier) {
-                                    b.leadingIcon = CheckIcon
-                                    b.leadingIconContainerStyle = {
-                                        ...b.leadingIconContainerStyle,
-                                        backgroundColor: '#42C0F5',
-                                        borderColor: '#42C0F5',
-                                    }
-                                    b.leadingIconStyle = {
-                                        ...b.leadingIconStyle,
-                                        tintColor: '#FFFFFF',
-                                    }
+                                    setTimeout(() => {
+                                        b.leadingIcon = CheckIcon
+                                        b.leadingIconContainerStyle = {
+                                            ...b.leadingIconContainerStyle,
+                                            backgroundColor: '#42C0F5',
+                                            borderColor: '#42C0F5',
+                                        }
+                                        b.leadingIconStyle = {
+                                            ...b.leadingIconStyle,
+                                            tintColor: '#FFFFFF',
+                                        }
+                                    }, 1000)
                                 }
                                 return (
                                     <BadgeInfoCard
@@ -352,6 +356,7 @@ class EarnBadgeModal extends React.PureComponent {
 // Render badge info
 const BadgeInfoCard = (props) => {
     const { badgeInfo, onLeadingIconPress, userTier } = props
+
     if (!badgeInfo) return null
 
     // NOTE: title can be a component/
@@ -404,12 +409,13 @@ const BadgeInfoCard = (props) => {
                 end={[1, 1]}
             >
                 {/* Left icon and badge */}
+
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     {/* Info or Check icon, show check mark when user has the badge or it's a gold badge */}
                     <DelayedButton
                         style={[
                             leadingIconContainerStyle,
-                            // { opacity: userTier >= tier || tier === 4 ? 1 : 0 },
+                            { opacity: userTier >= tier || tier === 4 ? 1 : 0 },
                         ]}
                         onPress={onLeadingIconPress}
                     >

@@ -12,7 +12,15 @@
 
 import React from 'react'
 import _ from 'lodash'
-import { View, Text, FlatList, Animated, Image, Dimensions } from 'react-native'
+import {
+    View,
+    Text,
+    FlatList,
+    Animated,
+    Image,
+    Dimensions,
+    StyleSheet,
+} from 'react-native'
 import { connect } from 'react-redux'
 import right_arrow_icon from '../../asset/utils/right_arrow.png'
 import DelayedButton from '../Common/Button/DelayedButton'
@@ -32,6 +40,9 @@ import {
     loadMoreTribe,
 } from '../../redux/modules/tribe/TribeTabActions'
 
+import { SearchBar } from 'react-native-elements'
+import { SearchIcon } from '../../Utils/Icons'
+
 const AnimatedFlatList = Animatable.createAnimatableComponent(FlatList)
 
 class TribeDiscover extends React.Component {
@@ -39,6 +50,9 @@ class TribeDiscover extends React.Component {
         super(props)
         this.state = {
             scroll: new Animated.Value(1),
+            searchContent: '',
+            tribesSearchText: '',
+            tribesFilteredData: [],
         }
     }
 
@@ -176,11 +190,28 @@ class TribeDiscover extends React.Component {
 
     getTribesToRender = () => {
         const { tribesToRender, data, useTribesToRender } = this.props
+
         return useTribesToRender ? tribesToRender : data
+    }
+    searchTribes = (input) => {
+        const { tribesSearchText } = this.state
+
+        const tribesToRender = this.getTribesToRender()
+
+        this.setState({ tribesSearchText: input })
+        // this.setState({ input })
+
+        let tribesFilteredData = tribesToRender.filter((item) => {
+            return item.name.includes(input)
+        })
+
+        this.setState({ tribesFilteredData })
     }
 
     render() {
         const tribesToRender = this.getTribesToRender()
+        console.log('THIS IS TRIBE TO RENDER', tribesToRender)
+
         return (
             <View
                 style={[
@@ -195,6 +226,31 @@ class TribeDiscover extends React.Component {
                 {this.renderHeader()}
                 {this.renderHeaderText()}
                 {this.renderCategorySelector()}
+                <View style={{ backgroundColor: 'white' }}>
+                    <SearchBar
+                        round
+                        placeholder="Search"
+                        placeholderTextColor="#D3D3D3"
+                        containerStyle={[
+                            styles.searchBar.container,
+                            { margin: 8, marginTop: 8 },
+                        ]}
+                        inputContainerStyle={styles.searchBar.inputContainer}
+                        searchIcon={() => (
+                            <SearchIcon
+                                iconContainerStyle={
+                                    styles.searchBar.icon.container
+                                }
+                                iconStyle={styles.searchBar.icon.style}
+                            />
+                        )}
+                        inputStyle={default_style.subTitleText_1}
+                        onChangeText={this.searchTribes}
+                        onCancel={() => this.setState({ tribesSearchText: '' })}
+                        value={this.state.tribesSearchText}
+                    />
+                </View>
+
                 <AnimatedFlatList
                     onScroll={Animated.event(
                         [
@@ -209,7 +265,12 @@ class TribeDiscover extends React.Component {
                     onRefresh={this.handleRefresh}
                     onEndReached={this.handleLoadMore}
                     refreshing={this.props.refreshing}
-                    data={tribesToRender}
+                    data={
+                        this.state.tribesFilteredData &&
+                        this.state.tribesFilteredData.length > 0
+                            ? this.state.tribesFilteredData
+                            : tribesToRender
+                    }
                     renderItem={(item, index) => this.renderItem(item, index)}
                     keyExtractor={this.keyExtractor}
                     numColumns={1}
@@ -227,10 +288,37 @@ class TribeDiscover extends React.Component {
     }
 }
 
+const styles = {
+    searchBar: {
+        container: {
+            backgroundColor: 'white',
+            padding: 0,
+            borderWidth: 1,
+            borderTopColor: '#E0E0E0',
+            borderBottomColor: '#E0E0E0',
+            borderColor: '#E0E0E0',
+            borderRadius: 5,
+        },
+        inputContainer: {
+            backgroundColor: 'white',
+            padding: 0,
+            margin: 0,
+        },
+        icon: {
+            container: {
+                marginBottom: 1,
+                marginTop: 1,
+            },
+            style: {
+                ...default_style.normalIcon_1,
+                tintColor: '#828282',
+            },
+        },
+    },
+}
+
 const mapStateToProps = (state) => {
     const { data, loading, sortBy, refreshing } = state.tribeTab
-
-    console.log('THIS IS DATA OF TRIBES', data)
 
     return {
         data,

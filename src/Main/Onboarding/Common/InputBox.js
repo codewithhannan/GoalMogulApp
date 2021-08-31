@@ -2,30 +2,39 @@
 
 import React from 'react'
 import _ from 'lodash'
-import moment from 'moment'
+// import moment from 'moment'
 import {
     View,
     Text,
     ScrollView,
-    TouchableOpacity,
+    // TouchableOpacity,
     Dimensions,
+    // Image,
+    // SafeAreaView,
 } from 'react-native'
 import CountryPicker from 'react-native-country-picker-modal'
-import DateTimePicker from 'react-native-modal-datetime-picker'
-import RNDatePicker from '@react-native-community/datetimepicker'
+// import DateTimePicker from 'react-native-modal-datetime-picker'
+import { TextInputMask } from 'react-native-masked-text'
+// import calendarLeft from '../../../asset/utils/calendarLeft.png'
+// import calendarRight from '../../../asset/utils/calendarRight.png'
+
+// import RNDateTimePicker from '@react-native-community/datetimepicker'
 import { text, color, default_style } from '../../../styles/basic'
 import OnboardingStyles from '../../../styles/Onboarding'
-import CalendarPicker from 'react-native-calendar-picker'
+// import CalendarPicker from 'react-native-calendar-picker'
 
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { Input, Icon } from '@ui-kitten/components'
 import { FONT_FAMILY } from '../../../styles/basic/text'
-import Modal from 'react-native-modal'
-import { Colors } from 'react-native/Libraries/NewAppScreen'
+// import Modal from 'react-native-modal'
+// import { Colors } from 'react-native/Libraries/NewAppScreen'
+// import Constants from 'expo-constants'
 
-const MIN_AGE_REQUIREMENT_YRS = 13
-const MODAL_WIDTH = Dimensions.get('window').width
-const MODAL_HEIGHT = Dimensions.get('screen').height
+// const { text: textStyle, button: buttonStyle } = OnboardingStyles
+
+// const MIN_AGE_REQUIREMENT_YRS = 13
+// const MODAL_WIDTH = Dimensions.get('window').width
+// const MODAL_HEIGHT = Dimensions.get('screen').height
 
 class CountryFlagButton extends React.Component {
     // TODO: improve the flag reloading
@@ -115,15 +124,20 @@ class InputBox extends React.Component {
             onChangeText,
             containerStyle,
             status,
+            onBlur,
         } = this.props
-        // console.log('THIS IS VALUEEE', value)
+        console.log('Value', value)
 
         const { selectedStartDate } = this.state
-        const startDate = selectedStartDate ? selectedStartDate.toString() : ''
-        let oneYearFromNow = new Date()
-        let newDate = oneYearFromNow.setFullYear(
-            oneYearFromNow.getFullYear() - 13
-        )
+        // const startDate = selectedStartDate ? selectedStartDate.toString() : ''
+        // console.log('THIS IS SELECTED DATE', new Date(Date.now()))
+
+        // let oneYearFromNow = new Date()
+        // let newDate = oneYearFromNow.setFullYear(
+        //     oneYearFromNow.getFullYear() - 13
+        // )
+        // var date = new Date(newDate)
+        // console.log(date.toUTCString())
 
         return (
             <View style={[{ marginTop: 20 }, containerStyle || {}]}>
@@ -144,7 +158,7 @@ class InputBox extends React.Component {
                     </Text>
                     <Text style={styles.labelStyle}> {inputTitle}</Text>
                 </View>
-                <TouchableOpacity
+                <View
                     activeOpacity={0.6}
                     style={{
                         // height: 40 * default_style.uiScale,
@@ -155,12 +169,12 @@ class InputBox extends React.Component {
                         borderColor: '#E0E0E0',
                         marginTop: 4,
                     }}
-                    onPress={() =>
-                        this.setState({
-                            ...this.state,
-                            isDatePickerVisible: true,
-                        })
-                    }
+                    // onPress={() =>
+                    //     this.setState({
+                    //         ...this.state,
+                    //         isDatePickerVisible: true,
+                    //     })
+                    // }
                 >
                     <View
                         style={{
@@ -182,7 +196,25 @@ class InputBox extends React.Component {
                             ]}
                         />
                     </View>
-                    <Text
+
+                    <TextInputMask
+                        type={'datetime'}
+                        options={{
+                            format: 'MM/DD/YYYY',
+                        }}
+                        value={value}
+                        onChangeText={(text) => {
+                            onChangeText(text)
+                        }}
+                        placeholder="MM/DD/YYYY"
+                        style={{ marginHorizontal: 8 }}
+                        fontSize={16}
+                        ref={(ref) => {
+                            this.datetimeField = ref
+                        }}
+                        onEndEditing={() => onBlur(value)}
+                    />
+                    {/* <Text
                         style={[
                             default_style.subTitleText_1,
                             {
@@ -193,28 +225,23 @@ class InputBox extends React.Component {
                         ]}
                     >
                         {value ? moment(value).format('ll') : 'Date of Birth'}
-                    </Text>
-                </TouchableOpacity>
-
-                {/* * Date time picker on date touchable is clicked
-                <DateTimePicker
+                    </Text> */}
+                </View>
+                {/* Date time picker on date touchable is clicked */}
+                {/* <DateTimePicker
                     isVisible={this.state.isDatePickerVisible}
                     mode="date"
-                    customPickerIOS={(props) => (
-                        <RNDatePicker
-                            {...props}
-                            display={
-                                Platform.OS === 'ios' ? 'spinner' : 'default'
-                            }
-                            style={{
-                                height: 110,
-                                marginTop: 15,
+                    // customPickerIOS={(props) => {
+                    //     console.log('THIS IS PROPSS', props)
+                    //     return (
+                    //         <RNDateTimePicker
+                    //             {...props}
 
-                                marginHorizontal: 15,
-                            }}
-                        />
-                    )}
-                    titleIOS="Date of Birth"
+                    //         />
+                    //     )
+                    // }}
+                    isHeaderVisibleIOS
+                    headerTextIOS="Date of Birth"
                     maximumDate={moment()
                         .subtract(MIN_AGE_REQUIREMENT_YRS, 'year')
                         .toDate()} // maximum is set to 13 years from now to cap age at least 13 years old
@@ -241,46 +268,38 @@ class InputBox extends React.Component {
                     // isDarkModeEnabled={false}
                 /> */}
 
-                {/* <CalendarPicker onDateChange={this.onDateChange} />
-
-                <View>
-                    <Text>SELECTED DATE:{startDate}</Text>
-                </View> */}
-                <Modal
+                {/* <Modal
                     backdropColor={'black'}
                     backdropOpacity={0.5}
                     isVisible={this.state.isDatePickerVisible}
-                    animationIn="zoomInUp"
+                    swipeDirection={'down'}
                     animationInTiming={400}
+                    style={{
+                        borderRadius: 15,
+                        margin: 0,
+                    }}
                     onBackdropPress={() =>
                         this.setState({ isDatePickerVisible: false })
                     }
                 >
                     <View
                         style={{
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            height: MODAL_HEIGHT * 0.35,
-
-                            alignSelf: 'center',
+                            backgroundColor: 'white',
+                            width: '100%',
+                            position: 'absolute',
+                            height: 400,
+                            bottom: 0,
+                            borderRadius: 5,
                         }}
                     >
                         <View
                             style={{
-                                // backgroundColor: color.GV_MODAL,
-
                                 backgroundColor: 'white',
                                 borderRadius: 5,
                                 padding: 10,
                             }}
                         >
-                            <View
-                                style={
-                                    {
-                                        // paddingVertical: 10,
-                                    }
-                                }
-                            >
+                            <View>
                                 <CalendarPicker
                                     width={370}
                                     onDateChange={(date) => {
@@ -288,44 +307,141 @@ class InputBox extends React.Component {
                                             {
                                                 ...this.state,
                                                 selectedStartDate: date.toDate(),
-                                                isDatePickerVisible: false,
                                             },
                                             () => onChangeText(date)
                                         )
                                     }}
                                     showDayStragglers
-                                    textStyle={{
-                                        fontFamily: 'SFProDisplay-Semibold',
+                                    // textStyle={{
+                                    //     color: '#008DC8',
+                                    //     fontFamily: 'SFProDisplay-Semibold',
+                                    // }}
+                                    disabledDatesTextStyle={{
+                                        color: 'rgba(0, 141, 200, 0.5)',
                                     }}
                                     initialDate={
                                         selectedStartDate
                                             ? selectedStartDate
                                             : newDate
                                     }
+                                    customDatesStyles={(date) => {
+                                        return {
+                                            textStyle: {
+                                                color: 'rgba(0, 141, 200, 1)',
+                                            },
+                                        }
+                                    }}
+                                    monthTitleStyle={{
+                                        color: 'rgba(66, 192, 245, 1)',
+                                        fontFamily: 'SFProDisplay-Semibold',
+                                        fontSize: 17,
+                                    }}
+                                    textStyle={{
+                                        color: 'rgba(0, 141, 200, 1)',
+                                    }}
+                                    yearTitleStyle={{
+                                        color: 'rgba(66, 192, 245, 1)',
+                                        fontFamily: 'SFProDisplay-Semibold',
+                                        fontSize: 17,
+                                    }}
+                                    dayLabelsWrapper={{
+                                        borderColor: 'transparent',
+                                    }}
+                                    customDayHeaderStyles={({
+                                        dayOfWeek,
+                                        month,
+                                        year,
+                                    }) => {
+                                        if (dayOfWeek) {
+                                            return {
+                                                textStyle: {
+                                                    color: '#535353',
+                                                    fontSize: 15,
+                                                    fontFamily:
+                                                        'SFProDisplay-Semibold',
+                                                },
+                                            }
+                                        }
+                                        if (month) {
+                                            return {
+                                                textStyle: {
+                                                    color: '#535353',
+                                                    fontSize: 15,
+                                                    fontFamily:
+                                                        'SFProDisplay-Semibold',
+                                                },
+                                            }
+                                        }
+                                    }}
+                                    previousComponent={
+                                        <View style={{}}>
+                                            <Image
+                                                source={calendarLeft}
+                                                style={{
+                                                    resizeMode: 'contain',
+                                                    height: 15,
+                                                    width: 15,
+                                                }}
+                                            />
+                                        </View>
+                                    }
+                                    nextComponent={
+                                        <View style={{}}>
+                                            <Image
+                                                source={calendarRight}
+                                                style={{
+                                                    resizeMode: 'contain',
+                                                    height: 15,
+                                                    width: 15,
+                                                }}
+                                            />
+                                        </View>
+                                    }
                                     maxDate={newDate}
                                     selectedStartDate={selectedStartDate}
                                     selectedDayColor="#45C9F6"
                                     selectedDayTextColor="white"
-                                    previousTitleStyle={{
-                                        fontFamily: 'SFProDisplay-Regular',
-                                    }}
-                                    nextTitleStyle={{
-                                        fontFamily: 'SFProDisplay-Regular',
-                                    }}
+                                    // previousTitleStyle={{
+                                    //     fontFamily: 'SFProDisplay-Regular',
+                                    // }}
+                                    // nextTitleStyle={{
+                                    //     fontFamily: 'SFProDisplay-Regular',
+                                    // }}
                                     headingLevel={20}
                                 />
-
-                                {/* <View>
-                                    <Text>
-                                        SELECTED DATE:
-                                        {selectedStartDate}
-                                    </Text>
-                                </View> */}
                             </View>
                         </View>
+                        <SafeAreaView>
+                            <DelayedButton
+                                style={[
+                                    buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
+                                        .containerStyle,
+                                    {
+                                        backgroundColor: color.GM_BLUE,
+                                        width: '90%',
+                                        alignSelf: 'center',
+                                        height: 35,
+                                        marginBottom: 10,
+                                    },
+                                ]}
+                                onPress={() =>
+                                    this.setState({
+                                        isDatePickerVisible: false,
+                                    })
+                                }
+                            >
+                                <Text
+                                    style={
+                                        buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
+                                            .textStyle
+                                    }
+                                >
+                                    Confirm
+                                </Text>
+                            </DelayedButton>
+                        </SafeAreaView>
                     </View>
-                </Modal>
-
+                </Modal> */}
                 {/* {this.renderCaption(caption, status)} */}
             </View>
         )
@@ -696,7 +812,6 @@ const styles = {
         borderColor: color.GM_DOT_GRAY,
         borderWidth: 0.5,
         borderRadius: 50,
-
         flexWrap: 'wrap',
         flexDirection: 'row',
     },

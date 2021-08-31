@@ -373,6 +373,7 @@ export const sendMessage = (
                 ImageUtils.uploadImage(file, signedRequest)
             )
             .then((res) => {
+                console.log('uploadedMediaRef', uploadedMediaRef)
                 if (res instanceof Error) {
                     console.log('error uploading image to s3 with res: ', res)
                     Alert.alert(
@@ -574,7 +575,7 @@ export async function _transformMessagesForGiftedChat(
                 sharedEntity,
                 goalRecommendation,
             } = messageDoc
-            // console.log('THIS IS MESSAGE DOC 1', content)
+            console.log('THIS IS MESSAGE DOC 1', content)
 
             //--- populate message content ---//
 
@@ -640,6 +641,7 @@ export async function _transformMessagesForGiftedChat(
                 question: content.question && content.question,
                 actions: content.actions && content.actions,
                 system: !!isSystemMessage,
+                lottie: content.lottie,
             }
         })
     )
