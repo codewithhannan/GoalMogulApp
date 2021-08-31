@@ -33,6 +33,14 @@ import { sendMessage } from '../../../../redux/modules/chat/ChatRoomActions'
 import UUID from 'uuid/v4'
 import { Video, AVPlaybackStatus } from 'expo-av'
 import RNUrlPreview from 'react-native-url-preview'
+import * as FUNNELS_LOTTIES from './funnelsLotties'
+import LottieView from 'lottie-react-native'
+
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
+
 import { getFirstName } from '../../../../Utils/HelperMethods'
 
 const { isSameDay } = utils
@@ -677,6 +685,82 @@ class Bubble extends React.Component {
             )
     }
 
+    renderLottieImage = (lottieName) => {
+        switch (lottieName) {
+            case '1-1-v2':
+                return FUNNELS_LOTTIES.FUNNEL_1_1_2
+            case '1-2':
+                return FUNNELS_LOTTIES.FUNNEL_1_2
+            case '1-3':
+                return FUNNELS_LOTTIES.FUNNEL_1_3
+            case '1-4':
+                return FUNNELS_LOTTIES.FUNNEL_1_4
+            case '1-5':
+                return FUNNELS_LOTTIES.FUNNEL_1_5
+            case '1-6':
+                return FUNNELS_LOTTIES.FUNNEL_1_6
+            case '1-7':
+                return FUNNELS_LOTTIES.FUNNEL_1_7
+            case '2_1':
+                return FUNNELS_LOTTIES.FUNNEL_2_1
+            case '2_2':
+                return FUNNELS_LOTTIES.FUNNEL_2_2
+            case '2_3':
+                return FUNNELS_LOTTIES.FUNNEL_2_3
+            case '2_4':
+                return FUNNELS_LOTTIES.FUNNEL_2_4
+            case '3_1':
+                return FUNNELS_LOTTIES.FUNNEL_3_1
+            case '3_2':
+                return FUNNELS_LOTTIES.FUNNEL_3_2
+            case '3_3':
+                return FUNNELS_LOTTIES.FUNNEL_3_3
+            case '3_4':
+                return FUNNELS_LOTTIES.FUNNEL_3_4
+            case '3_5':
+                return FUNNELS_LOTTIES.FUNNEL_3_5
+            case '3_6a':
+                return FUNNELS_LOTTIES.FUNNEL_3_6a
+            case '3_6b':
+                return FUNNELS_LOTTIES.FUNNEL_3_6b
+            case '3_7':
+                return FUNNELS_LOTTIES.FUNNEL_3_7
+            case '3_8':
+                return FUNNELS_LOTTIES.FUNNEL_3_8
+            case '3_9':
+                return FUNNELS_LOTTIES.FUNNEL_3_9
+            case '3_10':
+                return FUNNELS_LOTTIES.FUNNEL_3_10
+            case '3_11':
+                return FUNNELS_LOTTIES.FUNNEL_3_11
+            case '3_12':
+                return FUNNELS_LOTTIES.FUNNEL_3_12
+
+            default:
+                return null
+        }
+    }
+
+    renderMessageLottie = () => {
+        const { currentMessage } = this.props
+        console.log('THIS IS CURRENT LOTTIE MESSAGE'.currentMessage)
+        if (_.isEmpty(currentMessage.lottie)) return null
+        if (currentMessage?.lottie) {
+            return (
+                <LottieView
+                    style={{
+                        height: hp(20),
+                        marginTop: 2,
+                        alignSelf: 'center',
+                    }}
+                    source={this.renderLottieImage(currentMessage.lottie)}
+                    autoPlay
+                    loop
+                />
+            )
+        }
+    }
+
     renderAccountabilityquestion = () => {
         const { currentMessage } = this.props
         if (_.isEmpty(currentMessage.question)) return null
@@ -736,6 +820,7 @@ class Bubble extends React.Component {
                             {this.renderAccountabilityRequest()}
                             {this.renderGoalRecommendation()}
                             {this.renderGoalOptions()}
+                            {this.renderMessageLottie()}
                         </View>
                     </View>
                     <EarnBadgeModal

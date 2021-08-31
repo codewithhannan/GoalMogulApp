@@ -105,6 +105,20 @@ class ReportModal extends Component {
                     visible={this.props.loading}
                     customIndicator={<DotIndicator size={12} color="white" />}
                 />
+                <ModalHeader
+                    title="Report abuse"
+                    actionText="Submit"
+                    onCancel={() => {
+                        Actions.pop()
+                        this.props.cancelReport()
+                    }}
+                    onAction={() => {
+                        this.props.postingReport()
+                    }}
+                    actionDisabled={
+                        !(title && details && title.length >= 5 && !loading)
+                    }
+                />
                 <ScrollView
                     style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
                 >
@@ -113,25 +127,6 @@ class ReportModal extends Component {
                             onPress={() => Keyboard.dismiss()}
                         >
                             <View style={{ flex: 1 }}>
-                                <ModalHeader
-                                    title="Report abuse"
-                                    actionText="Submit"
-                                    onCancel={() => {
-                                        Actions.pop()
-                                        this.props.cancelReport()
-                                    }}
-                                    onAction={() => {
-                                        this.props.postingReport()
-                                    }}
-                                    actionDisabled={
-                                        !(
-                                            title &&
-                                            details &&
-                                            title.length >= 5 &&
-                                            !loading
-                                        )
-                                    }
-                                />
                                 <Text style={styles.subTitleTextStyle}>
                                     Title
                                 </Text>
