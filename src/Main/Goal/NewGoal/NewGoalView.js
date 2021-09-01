@@ -123,7 +123,7 @@ class NewGoalView extends Component {
                 { id: 3, letter: '3', value: 3, active: false },
                 { id: 4, letter: '4', value: 4, active: false },
                 { id: 5, letter: '5', value: 6, active: false },
-                { id: 6, letter: '6', value: 6, active: false },
+                { id: 6, letter: '6', value: 6, active: true },
                 { id: 7, letter: '7', value: 7, active: false },
                 { id: 8, letter: '8', value: 8, active: false },
                 { id: 9, letter: '9', value: 9, active: false },

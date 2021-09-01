@@ -444,110 +444,130 @@ class AudioModal extends React.Component<Props, State> {
         return (
             <>
                 <View style={styles.emptyContainer}>
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            // alignItems: 'center',
-                            justifyContent: 'space-evenly',
-                        }}
-                    >
-                        {this.props.chatType ? null : (
-                            <>
-                                {privacyOptions.map((options, index) => {
-                                    return (
-                                        <>
-                                            <TouchableOpacity
-                                                key={options.title + index}
-                                                onPress={() => {
-                                                    this._changeColor(
-                                                        options.value
-                                                    )
-                                                }}
-                                                disabled={
-                                                    this.state.selected ===
-                                                    options.value
-                                                }
-                                            >
-                                                <View
-                                                    style={[
-                                                        GOALS_STYLE.commonPillContainer,
-                                                        {
-                                                            height: 35,
-                                                            borderColor:
-                                                                this.state
-                                                                    .selected ===
-                                                                options.value
-                                                                    ? '#828282'
-                                                                    : 'lightgray',
-                                                            borderWidth: 0.3,
-                                                            left: 10,
-                                                            width: 80,
-                                                            marginHorizontal: 3,
-                                                            backgroundColor:
-                                                                'white',
-                                                        },
-                                                    ]}
-                                                >
-                                                    <Icon
-                                                        pack="material-community"
-                                                        name={options.iconName}
-                                                        style={{
-                                                            height: 12,
-                                                            width: 12,
-                                                            tintColor:
-                                                                '#828282',
-                                                            opacity:
-                                                                this.state
-                                                                    .selected ===
-                                                                options.value
-                                                                    ? 1
-                                                                    : 0.3,
-                                                        }}
-                                                    />
-
-                                                    <Text
-                                                        style={{
-                                                            fontFamily:
-                                                                text.FONT_FAMILY
-                                                                    .SEMI_BOLD,
-                                                            fontSize: 14,
-                                                            color: '#828282',
-                                                            marginLeft: 5,
-                                                            opacity:
-                                                                this.state
-                                                                    .selected ===
-                                                                options.value
-                                                                    ? 1
-                                                                    : 0.3,
-                                                        }}
-                                                    >
-                                                        {options.title}
-                                                    </Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                        </>
-                                    )
-                                })}
-                            </>
-                        )}
-                        <TouchableOpacity onPress={this.props.onClose}>
+                    {this.props.chatType ? (
+                        <TouchableOpacity
+                            onPress={this.props.onClose}
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-end',
+                                paddingRight: 10,
+                            }}
+                        >
                             <Image
                                 source={crossIcon}
                                 style={{
                                     width: 25,
                                     height: 25,
                                     resizeMode: 'contain',
-                                    marginLeft: 150,
                                 }}
                             />
                         </TouchableOpacity>
-                    </View>
+                    ) : (
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                // alignItems: 'center',
+                                // justifyContent: 'space-between',
+                            }}
+                        >
+                            {privacyOptions.map((options, index) => {
+                                return (
+                                    <>
+                                        <TouchableOpacity
+                                            key={options.title + index}
+                                            onPress={() => {
+                                                this._changeColor(options.value)
+                                            }}
+                                            disabled={
+                                                this.state.selected ===
+                                                options.value
+                                            }
+                                        >
+                                            <View
+                                                style={[
+                                                    GOALS_STYLE.commonPillContainer,
+                                                    {
+                                                        height: 35,
+                                                        borderColor:
+                                                            this.state
+                                                                .selected ===
+                                                            options.value
+                                                                ? '#828282'
+                                                                : 'lightgray',
+                                                        borderWidth: 0.3,
+                                                        left: 10,
+                                                        width: 80,
+                                                        marginHorizontal: 3,
+                                                        backgroundColor:
+                                                            'white',
+                                                    },
+                                                ]}
+                                            >
+                                                <Icon
+                                                    pack="material-community"
+                                                    name={options.iconName}
+                                                    style={{
+                                                        height: 12,
+                                                        width: 12,
+                                                        tintColor: '#828282',
+                                                        opacity:
+                                                            this.state
+                                                                .selected ===
+                                                            options.value
+                                                                ? 1
+                                                                : 0.3,
+                                                    }}
+                                                />
+
+                                                <Text
+                                                    style={{
+                                                        fontFamily:
+                                                            text.FONT_FAMILY
+                                                                .SEMI_BOLD,
+                                                        fontSize: 14,
+                                                        color: '#828282',
+                                                        marginLeft: 5,
+                                                        opacity:
+                                                            this.state
+                                                                .selected ===
+                                                            options.value
+                                                                ? 1
+                                                                : 0.3,
+                                                    }}
+                                                >
+                                                    {options.title}
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </>
+                                )
+                            })}
+
+                            <TouchableOpacity
+                                onPress={this.props.onClose}
+                                style={{
+                                    position: 'relative',
+                                    left: 200,
+                                }}
+                            >
+                                <Image
+                                    source={crossIcon}
+                                    style={{
+                                        width: 25,
+                                        height: 25,
+                                        resizeMode: 'contain',
+                                    }}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    )}
 
                     <Text
                         style={{
                             color: 'gray',
                             fontSize: 70,
                             marginVertical: 5,
+                            textAlign: 'center',
                         }}
                     >
                         {this._getRecordingTimestamp()}
@@ -579,13 +599,22 @@ class AudioModal extends React.Component<Props, State> {
                                 />
                             </View>
                             <View style={styles.playbackTimestamp}>
-                                <Text>{this._getPlaybackTimestamp()}</Text>
+                                <Text
+                                    style={{ position: 'absolute', right: 0 }}
+                                >
+                                    {this._getPlaybackTimestamp()}
+                                </Text>
                             </View>
                         </View>
                     ) : null}
                     <View style={{ paddingVertical: 25 }}>
                         {this.state.isRecording ? (
-                            <View style={{ flexDirection: 'row' }}>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    alignSelf: 'center',
+                                }}
+                            >
                                 <DelayedButton
                                     style={[
                                         buttonStyle.GM_WHITE_BG_BLUE_TEXT
@@ -607,7 +636,12 @@ class AudioModal extends React.Component<Props, State> {
                                 <View style={{ width: 20 }} />
                             </View>
                         ) : this.state.soundDuration ? (
-                            <View style={{ flexDirection: 'row' }}>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    alignSelf: 'center',
+                                }}
+                            >
                                 <DelayedButton
                                     style={[
                                         buttonStyle.GM_WHITE_BG_BLUE_TEXT
@@ -704,7 +738,7 @@ class AudioModal extends React.Component<Props, State> {
                                     buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
                                         .containerStyle,
                                     ,
-                                    { width: 330 },
+                                    { width: 330, alignSelf: 'center' },
                                 ]}
                                 onPress={this._onRecordPressed}
                             >
@@ -846,8 +880,8 @@ export default connect(null, {
 const styles = StyleSheet.create({
     emptyContainer: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+        // alignItems: 'center',
+        // justifyContent: 'center',
     },
     playerContainer: {
         flexDirection: 'row',
@@ -863,8 +897,10 @@ const styles = StyleSheet.create({
         // position: 'absolute',
         // right: 25,
         // top: 25,
-        alignItems: 'flex-end',
-        justifyContent: 'flex-end',
+        alignSelf: 'center',
+        // justifyContent: 'flex-end',
+        backgroundColor: 'red',
+        width: '73%',
     },
     image: {
         width: 30,

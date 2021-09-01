@@ -215,6 +215,7 @@ class PYMKCard extends React.Component {
         if (!user) {
             return null
         }
+        console.log('PYMK', user)
 
         return (
             <AnimatedCardWrapper {...otherProps}>

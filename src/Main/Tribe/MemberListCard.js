@@ -36,7 +36,10 @@ class MemberListCard extends Component {
         this.state = {
             // When this card is initially displayed, there is no friendship request.
             // If friendship is sent, then in the next refresh, the card won't exist.
-            invited: false,
+            invited:
+                this.props.isRequested !== undefined
+                    ? this.props.isRequested
+                    : false,
             invitedCount: 0,
         }
     }
@@ -302,6 +305,8 @@ class MemberListCard extends Component {
         if (!item) return null
 
         const { headline, _id } = item
+
+        console.log('_IDDD', this.props.isFriend)
         return (
             <View style={styles.containerStyle}>
                 {this.renderProfileImage(item)}
@@ -315,7 +320,7 @@ class MemberListCard extends Component {
                         user={item}
                         style={{ marginLeft: 0, marginTop: 4 }}
                     />
-                    {this.renderButton(_id)}
+                    {this.props.isFriend ? null : this.renderButton(_id)}
                     {/* <TouchableOpacity
                         style={{
                             height: 30,
