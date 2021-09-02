@@ -346,7 +346,7 @@ const styles = {
     },
     optContainer: {
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         marginVertical: hp(0.85),
     },
