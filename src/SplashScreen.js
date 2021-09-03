@@ -1,6 +1,6 @@
 /** @format */
 
-import { AppLoading } from 'expo'
+import AppLoading from 'expo-app-loading'
 import React, { Component } from 'react'
 import { Dimensions, Image, Text, View } from 'react-native'
 import { Actions } from 'react-native-router-flux'
@@ -68,7 +68,7 @@ class SplashScreen extends Component {
                     }}
                     onFinish={() => this.setState({ appReady: true })}
                     onError={console.warn}
-                    autoHideSplash={false}
+                    // autoHideSplash={false}
                 />
             )
         }

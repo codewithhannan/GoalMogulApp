@@ -3,11 +3,9 @@
         "scheme": "goalmogul",
         "name": "GoalMogul",
         "icon": "./assets/logo.png",
-        "sdkVersion": "38.0.0",
         "version": "1.0.17",
         "slug": "goalmogul",
         "orientation": "portrait",
-
         "ios": {
             "bundleIdentifier": "com.goalmogul.goalmogulbeta",
             "infoPlist": {
@@ -48,7 +46,6 @@
             "image": "./assets/splash1.png",
             "resizeMode": "cover"
         },
-        "scheme": "goalmogul",
         "notification": {
             "icon": "./assets/logo.png"
         },
