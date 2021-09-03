@@ -17,7 +17,7 @@ import { queryBuilder } from '../../middleware/utils'
 import { api as API } from '../../middleware/api'
 import { Logger } from '../../middleware/utils/Logger'
 
-import { Notifications } from 'expo'
+import * as Notifications from 'expo-notifications'
 import { Platform } from 'react-native'
 
 // Constants
@@ -66,7 +66,7 @@ export const refreshNotificationTab = () => (dispatch, getState) => {
 export const setBadgeNumberAsyncByPlatform = Platform.select({
     ios: async (number) => {
         // console.log('THIS IS NUMBER OF NOTIFICATION', number)
-        Notifications.setBadgeNumberAsync(number)
+        Notifications.setBadgeCountAsync(number)
     },
 
     // TODO: android: investigate why Notifications.setBadgeNumberAsync throws errors

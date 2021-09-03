@@ -4,7 +4,7 @@ import React from 'react'
 import { Actions } from 'react-native-router-flux'
 import _, { get } from 'lodash'
 import { Alert, Keyboard } from 'react-native'
-import { Notifications } from 'expo'
+import * as Notifications from 'expo-notifications'
 import * as Permissions from 'expo-permissions'
 import moment from 'moment'
 
@@ -117,7 +117,7 @@ export const scheduleNotification = (date, goal, hasAskedPermissions) => async (
 
     console.log(`${DEBUG_KEY}: [ scheduleNotification ]: date: `, date)
     console.log(`${DEBUG_KEY}: [ scheduleNotification ]: goal: `, goal.title)
-    const notificationId = await Notifications.scheduleLocalNotificationAsync(
+    const notificationId = await Notifications.scheduleNotificationAsync(
         localNotification,
         schedulingOptions
     ).then((notificationId) => {

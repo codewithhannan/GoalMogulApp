@@ -13,7 +13,7 @@ import { connect } from 'react-redux'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import _ from 'lodash'
-import { Notifications } from 'expo'
+import * as Notifications from 'expo-notifications'
 import { copilot } from 'react-native-copilot-gm'
 import R from 'ramda'
 // import { copilot } from 'react-native-copilot'
@@ -267,7 +267,7 @@ class Home extends Component {
 
         this.props.refreshActivityFeed()
         AppState.addEventListener('change', this.handleAppStateChange)
-        this._notificationSubscription = Notifications.addListener(
+        this._notificationSubscription = Notifications.addNotificationReceivedListener(
             this._handleNotification
         )
 
