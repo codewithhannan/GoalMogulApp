@@ -4,7 +4,7 @@ import { Actions } from 'react-native-router-flux'
 import { Alert, AppState, Image } from 'react-native'
 import { Platform, Settings } from 'react-native'
 import { api as API } from '../redux/middleware/api'
-import { SplashScreen } from 'expo'
+import * as SplashScreen from 'expo-splash-screen'
 import { SPLASHSCREEN_HIDE } from '../reducers/AuthReducers'
 import _ from 'lodash'
 
@@ -101,8 +101,8 @@ const validateEmail = (email) => {
     return re.test(String(email).toLowerCase())
 }
 
-const dispatchHideSplashScreen = (dispatch) => {
-    SplashScreen.hide()
+const dispatchHideSplashScreen = async (dispatch) => {
+    await SplashScreen.hideAsync()
     dispatch({
         type: SPLASHSCREEN_HIDE,
     })

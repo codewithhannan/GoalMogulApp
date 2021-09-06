@@ -68,7 +68,7 @@ class SplashScreen extends Component {
                     }}
                     onFinish={() => this.setState({ appReady: true })}
                     onError={console.warn}
-                    // autoHideSplash={false}
+                    autoHideSplash={false}
                 />
             )
         }
