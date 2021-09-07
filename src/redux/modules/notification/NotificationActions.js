@@ -6,7 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 /**
  * Actions for notification tab and general notification like subscribe
  */
-import { Notifications, Linking } from 'expo'
+import { Linking } from 'expo'
+import * as Notifications from 'expo-notifications'
 import * as Permissions from 'expo-permissions'
 import * as SecureStore from 'expo-secure-store'
 import { Alert, Platform } from 'react-native'

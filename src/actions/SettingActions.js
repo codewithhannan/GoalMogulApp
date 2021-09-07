@@ -2,7 +2,8 @@
 
 import { Actions } from 'react-native-router-flux'
 import { SubmissionError } from 'redux-form'
-import { Notifications, Linking } from 'expo'
+import { Linking } from 'expo'
+import * as Notifications from 'expo-notifications'
 import * as WebBrowser from 'expo-web-browser'
 import * as Permissions from 'expo-permissions'
 import { Alert, Platform } from 'react-native'
