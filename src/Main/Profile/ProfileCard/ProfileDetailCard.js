@@ -663,6 +663,7 @@ class ProfileDetailCard extends Component {
 
                 <TouchableOpacity
                     onPress={
+                        // this.handleOptionsOnPress
                         Platform.OS == 'ios'
                             ? () => this.handleOptionsOnPress()
                             : this.openCameraRollBottomSheet
