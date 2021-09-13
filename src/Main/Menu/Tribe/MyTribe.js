@@ -12,6 +12,11 @@ import {
     View,
 } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
+import Tooltip from 'react-native-walkthrough-tooltip'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 // Assets
@@ -70,6 +75,9 @@ import { SCREENS, wrapAnalytics } from '../../../monitoring/segment'
 import MyTribeBanner from './MyTribeBanner'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import CreatePostModal from '../../Post/CreatePostModal'
+import CREATE_POST from '../../../asset/icons/group.png'
+import CREATE_GOAL from '../../../asset/icons/create_group.png'
+import SHARE_GOAL from '../../../asset/icons/share_goal.png'
 
 const DEBUG_KEY = '[ UI MyTribe ]'
 const { width } = Dimensions.get('window')
@@ -87,6 +95,7 @@ const months = [
     'Nov',
     'Dec',
 ]
+
 const TAG_SEARCH_OPTIONS = {
     shouldSort: true,
     threshold: 0.6,
@@ -110,8 +119,47 @@ class MyTribe extends React.PureComponent {
             infoCardOpacity: new Animated.Value(1),
             showAboutModal: false,
             showNameInTitle: false,
+            tooltipVisible: false,
         }
         this.switchCaseButton = this.switchCaseButton.bind(this)
+        this.ADD_BUTTON = [
+            {
+                name: 'Create a Post',
+                icon: CREATE_POST,
+                onPress: () => {
+                    this.setState({ tooltipVisible: false }),
+                        setTimeout(() => {
+                            this.createPostModal && this.createPostModal.open()
+                        }, 500)
+                },
+
+                showBorder: true,
+            },
+            {
+                name: 'Share a New Goal in Tribe',
+                icon: CREATE_GOAL,
+                onPress: () => {
+                    this.setState({ tooltipVisible: false })
+                },
+                showBorder: true,
+            },
+            {
+                name: 'Share an Existing Goal ',
+                icon: SHARE_GOAL,
+                onPress: () => {
+                    this.setState({ tooltipVisible: false }),
+                        setTimeout(() => {
+                            Actions.push('myTribeGoalShareView', {
+                                tribe: this.props.item,
+                                tribeId: this.props.tribeId,
+                                pageId: this.props.pageId,
+                            })
+                        }, 500)
+                },
+
+                showBorder: false,
+            },
+        ]
     }
 
     componentWillUnmount() {
@@ -516,15 +564,90 @@ class MyTribe extends React.PureComponent {
         const { userTribeStatus } = this.props
         if (userTribeStatus === 'Admin' || userTribeStatus === 'Member') {
             return (
-                <DelayedButton
-                    activeOpacity={0.6}
-                    style={styles.iconContainerStyle}
-                    onPress={() =>
-                        this.createPostModal && this.createPostModal.open()
+                <Tooltip
+                    animated={true}
+                    // arrowSize={{ width: 16, height: 8 }}
+                    an
+                    backgroundColor="rgba(0,0,0,0.5)"
+                    isVisible={this.state.tooltipVisible}
+                    contentStyle={{
+                        backgroundColor: '#42C0F5',
+                        width: wp('60%'),
+                        marginTop: -80,
+                        marginHorizontal: 30,
+                    }}
+                    arrowStyle={{ marginTop: -80, marginHorizontal: 140 }}
+                    placement="top"
+                    content={
+                        <>
+                            <View
+                                style={{
+                                    flex: 1,
+                                    flexDirection: 'column',
+                                    padding: 5,
+                                }}
+                            >
+                                {this.ADD_BUTTON.map((button) => {
+                                    return (
+                                        <>
+                                            <TouchableOpacity
+                                                onPress={button.onPress}
+                                            >
+                                                <View
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                        padding: 5,
+                                                    }}
+                                                >
+                                                    <Image
+                                                        source={button.icon}
+                                                        style={{
+                                                            height: 18,
+                                                            width: 18,
+                                                            resizeMode:
+                                                                'contain',
+                                                        }}
+                                                    />
+                                                    <Text
+                                                        style={{
+                                                            color: 'white',
+                                                            fontSize: 17,
+                                                            marginHorizontal: 10,
+                                                            fontFamily:
+                                                                'SFProDisplay-Semibold',
+                                                        }}
+                                                    >
+                                                        {button.name}
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
+
+                                            {button.showBorder ? (
+                                                <View
+                                                    style={{
+                                                        borderColor: 'white',
+                                                        borderWidth: 0.8,
+                                                        marginTop: 4,
+                                                        width: '100%',
+                                                    }}
+                                                />
+                                            ) : null}
+                                        </>
+                                    )
+                                })}
+                            </View>
+                        </>
                     }
+                    onClose={() => this.setState({ tooltipVisible: false })}
                 >
-                    <Image style={styles.iconStyle} source={plus} />
-                </DelayedButton>
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        style={styles.iconContainerStyle}
+                        onPress={() => this.setState({ tooltipVisible: true })}
+                    >
+                        <Image style={styles.iconStyle} source={plus} />
+                    </DelayedButton>
+                </Tooltip>
             )
         }
         return null

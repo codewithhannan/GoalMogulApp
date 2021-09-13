@@ -16,6 +16,7 @@ import { Entypo } from '@expo/vector-icons'
 import { color } from '../styles/basic'
 
 import { addNudge, NUDGE_TYPES } from '../actions/NudgeActions'
+import YES_LOTTIE from '../asset/toast_popup_lotties/yes-button/yes_button.json'
 
 import { connect } from 'react-redux'
 
@@ -166,12 +167,12 @@ class NoGoalPrompt extends Component {
     }
 
     render() {
-        const { name, visitedUser, token } = this.props
+        const { name, visitedUser, token, isVisible } = this.props
         return (
             <>
                 <Modal
                     backdropOpacity={0.8}
-                    isVisible={this.props.isVisible}
+                    isVisible={isVisible}
                     animationIn="zoomInUp"
                     animationInTiming={400}
                 >
@@ -187,7 +188,7 @@ class NoGoalPrompt extends Component {
                                 width: MODAL_WIDTH * 0.9,
 
                                 backgroundColor: color.GV_MODAL,
-                                height: '63%',
+                                height: hp('50%'),
                                 backgroundColor: '#FAFAFA',
                                 borderRadius: 5,
                             }}
@@ -212,12 +213,12 @@ class NoGoalPrompt extends Component {
                             <Text
                                 style={{
                                     fontSize: 18,
-                                    padding: 20,
+                                    // padding: 20,
 
                                     fontWeight: 'bold',
                                     fontFamily: 'SFProDisplay-Bold',
-                                    position: 'absolute',
-                                    top: 5,
+                                    // position: 'absolute',
+                                    // top: 5,
 
                                     alignSelf: 'center',
                                 }}
@@ -236,31 +237,27 @@ class NoGoalPrompt extends Component {
                                     left: 20,
                                 }}
                             /> */}
+                            <View style={{ marginTop: 12 }}>
+                                <LottieView
+                                    style={{
+                                        height: hp(20),
 
-                            <LottieView
-                                style={{
-                                    height: hp(21),
-                                    top: 20,
-                                    alignSelf: 'center',
+                                        alignSelf: 'center',
+                                    }}
+                                    source={NO_GOAL_LOTTIE}
+                                    autoPlay
+                                    loop
+                                />
+                            </View>
 
-                                    position: 'absolute',
-                                }}
-                                source={NO_GOAL_LOTTIE}
-                                autoPlay
-                                loop
-                            />
                             <Text
                                 style={{
                                     fontSize: 16,
-
                                     fontWeight: 'normal',
-
                                     fontFamily: 'SFProDisplay-Regular',
-                                    position: 'absolute',
-                                    top: 271,
-                                    width: 295,
-                                    left: 30,
+                                    marginHorizontal: 30,
                                     lineHeight: 24,
+                                    width: '80%',
                                     color: '#333333',
                                 }}
                             >
@@ -276,7 +273,7 @@ class NoGoalPrompt extends Component {
 
                             <View
                                 style={{
-                                    bottom: 75,
+                                    bottom: 70,
                                     position: 'absolute',
                                     width: '100%',
                                 }}
@@ -336,10 +333,43 @@ class NoGoalPrompt extends Component {
                                     justifyContent: 'center',
 
                                     position: 'aboslute',
-                                    top: 410,
+                                    top: 110,
                                     alignSelf: 'center',
                                 }}
                             >
+                                {/* <View
+                                    style={{
+                                        borderRadius: 3,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        position: 'aboslute',
+                                        top: 110,
+                                        alignSelf: 'center',
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            position: 'absolute',
+                                            zIndex: 1,
+                                            padding: 10,
+                                            alignSelf: 'center',
+                                            marginTop: 4,
+                                            color: 'white',
+                                            fontFamily: 'SFProDisplay-Semibold',
+                                        }}
+                                    >
+                                        Confirm
+                                    </Text>
+                                    <LottieView
+                                        style={{
+                                            height: hp(5),
+                                            width: 1000,
+                                        }}
+                                        source={YES_LOTTIE}
+                                        autoPlay
+                                        loop
+                                    />
+                                </View> */}
                                 <Text
                                     style={{
                                         color: 'white',

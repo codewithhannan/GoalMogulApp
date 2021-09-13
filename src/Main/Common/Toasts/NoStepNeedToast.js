@@ -56,13 +56,13 @@ class NoStepNeedToast extends Component {
                             }}
                         /> */}
                         <LottieView
-                            style={{ height: hp(22), alignSelf: 'center' }}
+                            style={{ height: hp(23), alignSelf: 'center' }}
                             source={NO_STEP_LOTTIE}
                             autoPlay
                             loop
                         />
                     </View>
-                    <View
+                    {/* <View
                         style={{
                             // width: '65%',
                             // left: 1,
@@ -82,7 +82,7 @@ class NoStepNeedToast extends Component {
                         >
                             This goal has currently no Steps and Needs
                         </Text>
-                    </View>
+                    </View> */}
                 </View>
             </>
         )

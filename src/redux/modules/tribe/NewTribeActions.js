@@ -47,6 +47,8 @@ export const createNewTribe = (values, needUpload, isEdit, tribeId) => (
     getState
 ) => {
     const { token } = getState().user
+
+    console.log('THESE ARE TRIBES VALUES', values)
     const newTribe = formToTribeAdapter(values, tribeId, isEdit)
     // console.log(`${DEBUG_KEY}: newTribe to submit is; `, newTribe);
 
@@ -228,6 +230,7 @@ const formToTribeAdapter = (values, tribeId, isEdit) => {
         membershipLimit,
         description,
         picture,
+        category,
     } = values
 
     if (isEdit) {
@@ -240,6 +243,7 @@ const formToTribeAdapter = (values, tribeId, isEdit) => {
                 membershipLimit: membershipLimit || Number.MAX_SAFE_INTEGER,
                 description,
                 picture,
+                category,
                 name,
             },
         }
@@ -254,6 +258,7 @@ const formToTribeAdapter = (values, tribeId, isEdit) => {
             membershipLimit: membershipLimit || Number.MAX_SAFE_INTEGER,
             description,
             picture,
+            category,
         },
     }
 }

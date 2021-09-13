@@ -585,7 +585,7 @@ class CreateGoalModal extends React.Component {
                     <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                         <StatusBar
                             animated={true}
-                            backgroundColor="blue"
+                            backgroundColor="#42C0F5"
                             // barStyle={statusBarStyle}
                             // showHideTransition={statusBarTransition}
                         />

@@ -42,7 +42,7 @@ class ModalTester extends Component {
                 <TouchableWithoutFeedback onPress={this.props.onClose}>
                     <View
                         style={{
-                            width: '25%',
+                            width: '27%',
                             justifyContent: 'center',
                             alignItems: 'center',
                             height: hp(4.5),
@@ -57,6 +57,7 @@ class ModalTester extends Component {
                                 color: '#42C0F5',
                                 fontWeight: '600',
                                 fontSize: 15,
+                                fontFamily: 'SFProDisplay-Semibold',
                             }}
                         >
                             No
@@ -82,6 +83,19 @@ class ModalTester extends Component {
                     }}
                 >
                     <View style={{}}>
+                        <Text
+                            style={{
+                                position: 'absolute',
+                                zIndex: 1,
+                                padding: 10,
+                                alignSelf: 'center',
+                                marginTop: 4,
+                                color: 'white',
+                                fontFamily: 'SFProDisplay-Semibold',
+                            }}
+                        >
+                            Yes
+                        </Text>
                         <LottieView
                             style={{ height: hp(5) }}
                             source={YES_LOTTIE}
@@ -95,13 +109,13 @@ class ModalTester extends Component {
     }
 
     render() {
-        const { name } = this.props
+        const { name, isVisible } = this.props
 
         return (
             <>
                 <Modal
                     backdropOpacity={0.5}
-                    isVisible={this.props.isVisible}
+                    isVisible={isVisible}
                     style={{
                         borderRadius: 20,
                     }}
