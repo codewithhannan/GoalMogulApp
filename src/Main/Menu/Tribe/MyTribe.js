@@ -602,8 +602,8 @@ class MyTribe extends React.PureComponent {
                                                     <Image
                                                         source={button.icon}
                                                         style={{
-                                                            height: 18,
-                                                            width: 18,
+                                                            height: 17,
+                                                            width: 17,
                                                             resizeMode:
                                                                 'contain',
                                                         }}
@@ -611,7 +611,7 @@ class MyTribe extends React.PureComponent {
                                                     <Text
                                                         style={{
                                                             color: 'white',
-                                                            fontSize: 17,
+                                                            fontSize: 16,
                                                             marginHorizontal: 10,
                                                             fontFamily:
                                                                 'SFProDisplay-Semibold',
