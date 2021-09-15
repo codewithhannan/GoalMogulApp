@@ -15,6 +15,7 @@ export default StyleSheet.create({
         paddingBottom: 18,
     },
     detailCardSection: {
+        flexDirection: 'row',
         paddingTop: 20,
         marginLeft: 30,
         marginRight: 30,

@@ -133,7 +133,7 @@ class SendFeedback extends Component {
                         isVisible={this.state.feedbackModalVisible}
                         isClose={this.closeFeedbackModal}
                     />
-
+                    <SearchBarHeader title={'Give Feedback'} backButton />
                     <KeyboardAwareScrollView
                         bounces={false}
                         enableOnAndroid={true}
@@ -145,7 +145,6 @@ class SendFeedback extends Component {
                         ]}
                         innerRef={(ref) => (this.scrollView = ref)}
                     >
-                        <SearchBarHeader title={'Give Feedback'} backButton />
                         <TouchableOpacity onPress={this.openCameraRoll}>
                             <View
                                 style={{
