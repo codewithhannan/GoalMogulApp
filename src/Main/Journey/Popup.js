@@ -122,20 +122,20 @@ class Popup extends Component {
                             style={styles.img}
                             source={POPUP_DETAILS[popupName].img}
                         /> */}
-                        <ImageBackground source={POPUP_BLUE}>
-                            <Text style={styles.d1}>
-                                {Helper.parseExpressionAndEval(
-                                    POPUP_DETAILS[popupName].d1,
-                                    this.props.user
-                                )}
-                            </Text>
-                            <Text style={styles.d2}>
-                                {POPUP_DETAILS[popupName].d2}
-                            </Text>
-                            <Text style={styles.d3}>
-                                {POPUP_DETAILS[popupName].d3}
-                            </Text>
-                        </ImageBackground>
+                        {/* <ImageBackground source={POPUP_BLUE}> */}
+                        <Text style={styles.d1}>
+                            {Helper.parseExpressionAndEval(
+                                POPUP_DETAILS[popupName].d1,
+                                this.props.user
+                            )}
+                        </Text>
+                        <Text style={styles.d2}>
+                            {POPUP_DETAILS[popupName].d2}
+                        </Text>
+                        <Text style={styles.d3}>
+                            {POPUP_DETAILS[popupName].d3}
+                        </Text>
+                        {/* </ImageBackground> */}
                     </View>
                 </Modal>
             )
