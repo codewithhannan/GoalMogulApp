@@ -1901,7 +1901,7 @@ const styles = {
             height: height * 0.45,
             width: width * 0.9,
             // width: '100%',
-            bottom: 50,
+            bottom: 25,
             // left: 50,
         },
         optionWrapper: {

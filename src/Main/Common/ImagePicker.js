@@ -126,13 +126,15 @@ class ImagePicker extends Component {
                 </TouchableOpacity>
                 {/* Only render edit icon if there is existing images */}
                 {imageUri || icon ? (
-                    <View style={styles.iconContainerStyle}>
-                        <Icon
-                            name="edit"
-                            pack="material"
-                            style={styles.editIconStyle}
-                        />
-                    </View>
+                    <TouchableOpacity onPress={this.openAddMediaModal}>
+                        <View style={styles.iconContainerStyle}>
+                            <Icon
+                                name="edit"
+                                pack="material"
+                                style={styles.editIconStyle}
+                            />
+                        </View>
+                    </TouchableOpacity>
                 ) : null}
                 {this.renderAddMediaBottomSheet()}
             </View>

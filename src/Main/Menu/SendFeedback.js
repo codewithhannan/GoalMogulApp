@@ -233,6 +233,7 @@ class SendFeedback extends Component {
                                     width: '90%',
                                     height: 35,
                                     alignSelf: 'center',
+                                    marginBottom: 10,
                                 },
                             ]}
                             onPress={() => {

@@ -346,8 +346,8 @@ const styles = {
     },
     optContainer: {
         flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: 'flex',
+        alignItems: 'flex-start',
         marginVertical: hp(0.85),
     },
     optText: {
