@@ -545,7 +545,6 @@ class ActivityFeed extends Component {
                 ) : null}
 
                 <FlatList
-                    keyExtractor={(item, index) => index.toString()}
                     keyboardShouldPersistTaps="handled"
                     scrollEnabled={false}
                     data={processedData}

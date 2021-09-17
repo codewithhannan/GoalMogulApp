@@ -53,7 +53,7 @@ const PADDING_BOTTOM = IS_SMALL_PHONE ? 0 : 40
  *  </BottomSheet>
  * 'fade-in/out animations will only work for View1 not View3 because it is not at root level'
  */
-class BottomSheet extends React.PureComponent {
+class BottomSheet extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -100,7 +100,7 @@ class BottomSheet extends React.PureComponent {
         )
     }
 
-    componentWillUpdate(nextProps) {
+    shouldComponentUpdate(nextProps) {
         // in cases the height props is changed dynamically this will re adjust the view's height
         // Fullscreen animations are done by changing modal's height,
         // whereas modal open close animations are done by moving the whole modal
@@ -111,6 +111,7 @@ class BottomSheet extends React.PureComponent {
                 this.getMiniModalHeight() - this.props.height + nextProps.height
             this.animatedHeight = new Animated.Value(newHeight)
         }
+        return true
     }
 
     componentWillUnmount() {
@@ -599,9 +600,9 @@ BottomSheet.defaultProps = {
     closeOnPressBack: true,
     keyboardShouldPersistTaps: 'handled',
     customStyles: {
-        borderTopRightRadius: 5,
-        borderTopLeftRadius: 5,
-        paddingHorizontal: 16,
+        // borderTopRightRadius: 5,
+        // borderTopLeftRadius: 5,
+        // paddingHorizontal: 16,
     },
     onClose: null,
     onOpen: null,

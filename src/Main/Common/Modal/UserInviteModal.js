@@ -310,7 +310,10 @@ class UserInviteModal extends React.PureComponent {
             : this.state.preloadData
 
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
+            >
                 <KeyboardAvoidingView
                     behavior="padding"
                     style={{

@@ -156,7 +156,7 @@ class GoalSwiper extends React.Component {
                     return (
                         <TouchableOpacity
                             onPress={item.onPress}
-                            key={index}
+                            key={Math.random().toString(36).substr(2, 9)}
                             activeOpacity={0.7}
                             style={{
                                 backgroundColor: item.backgroundColor,
@@ -205,11 +205,11 @@ class GoalSwiper extends React.Component {
         // console.log('====================================')
         return (
             <>
-                <CommentVideoModal
+                {/* <CommentVideoModal
                     isVisible={this.state.videoModalVisible}
                     onClose={() => this.setState({ videoModalVisible: false })}
                     onRecordPress={this.openCameraRollBottomSheet}
-                />
+                /> */}
                 <Swipeable
                     renderRightActions={this.rightSwipeActions}
                     friction={2}

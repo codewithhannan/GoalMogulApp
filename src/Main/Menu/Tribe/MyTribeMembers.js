@@ -188,6 +188,7 @@ class MyTribeMembers extends React.PureComponent {
             <MenuProvider
                 style={styles.containerStyle}
                 customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
             >
                 <SearchBarHeader
                     title="Members"

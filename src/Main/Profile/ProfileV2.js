@@ -621,7 +621,7 @@ class ProfileV2 extends Component {
                 return <ProfileNeedCard item={item} pageId={pageId} />
             }
             default:
-                return <View key={props.index} />
+                return <View key={Math.random().toString(36).substr(2, 9)} />
         }
     }
 
@@ -811,7 +811,10 @@ class ProfileV2 extends Component {
 
         return (
             <>
-                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <MenuProvider
+                    customStyles={{ backdrop: styles.backdrop }}
+                    skipInstanceCheck={true}
+                >
                     <ProfilePictureModal
                         isVisible={this.state.profilePictureVisible}
                         onClose={this.closeProfileModal}

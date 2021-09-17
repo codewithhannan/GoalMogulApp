@@ -880,7 +880,7 @@ class NewGoalView extends Component {
                                 </Text>
                             </View>
                             <Field
-                                key={`goal-description-${index}`}
+                                key={Math.random().toString(36).substr(2, 9)}
                                 name={description}
                                 component={this.renderInput}
                                 editable={this.props.uploading}
@@ -1104,7 +1104,9 @@ class NewGoalView extends Component {
                                                     ? '#42C0F5'
                                                     : 'transparent',
                                             }}
-                                            key={index}
+                                            key={Math.random()
+                                                .toString(36)
+                                                .substr(2, 9)}
                                         >
                                             <Text
                                                 style={{
@@ -1433,7 +1435,7 @@ class NewGoalView extends Component {
         const iconOnPress = () => fields.remove(index)
         return (
             <Field
-                key={`description-${index}`}
+                key={Math.random().toString(36).substr(2, 9)}
                 name={`${item.item}.description`}
                 component={InputField}
                 editable={this.props.uploading}

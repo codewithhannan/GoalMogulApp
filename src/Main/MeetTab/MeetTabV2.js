@@ -279,7 +279,12 @@ class MeetTabV2 extends React.Component {
             type: 'info',
             info: 'You have no incoming request',
         }
-        return <FriendRequestCardView item={item} key={item._id} />
+        return (
+            <FriendRequestCardView
+                item={item}
+                key={Math.random().toString(36).substr(2, 9)}
+            />
+        )
     }
 
     // Render compacted friend request cards
@@ -305,7 +310,10 @@ class MeetTabV2 extends React.Component {
         )
         ret = ret.concat(
             dataToRender.map((d) => (
-                <FriendRequestCardView item={d} key={d._id} />
+                <FriendRequestCardView
+                    item={d}
+                    key={Math.random().toString(36).substr(2, 9)}
+                />
             ))
         )
 
@@ -336,7 +344,12 @@ class MeetTabV2 extends React.Component {
             ret.push(this.renderSectionTitle('Your Friends'))
         }
         ret = ret.concat(
-            dataToRender.map((d) => <FriendCardView item={d} key={d._id} />)
+            dataToRender.map((d) => (
+                <FriendCardView
+                    item={d}
+                    key={Math.random().toString(36).substr(2, 9)}
+                />
+            ))
         )
         if (friendCount > NumCardsToShow) {
             ret.push(
@@ -372,7 +385,7 @@ class MeetTabV2 extends React.Component {
         return (
             <View
                 style={{ flexDirection: 'row', alignItems: 'center' }}
-                key={`${title}`}
+                key={Math.random().toString(36).substr(2, 9)}
             >
                 <View style={{ padding: 13 }}>
                     <Text
@@ -398,7 +411,7 @@ class MeetTabV2 extends React.Component {
                 style={{ ...seeAllContainerStyle, ...shadow }}
                 activeOpacity={0.6}
                 onPress={onPress}
-                key={key}
+                key={Math.random().toString(36).substr(2, 9)}
             >
                 <Text style={seeAllTextStyle}>See All{countToDisplay}</Text>
                 <RightArrowIcon

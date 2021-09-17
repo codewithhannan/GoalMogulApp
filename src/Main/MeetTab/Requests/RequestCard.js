@@ -39,7 +39,7 @@ class RequestCard extends Component {
         requested: true,
     }
 
-    componentWillReceiveProps(props) {
+    UNSAFE_componentWillReceiveProps(props) {
         // console.log('new props for meet card are: ', props);
     }
 

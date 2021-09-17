@@ -477,86 +477,82 @@ class PostDetailSection extends React.PureComponent {
                     flex: 1,
                 }}
                 content={
-                    <>
-                        <Animatable.View
-                            style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                width: TOOLTIP_WIDTH * 0.8,
-                            }}
-                            animation="fadeInLeft"
-                            delay={150}
-                            duration={500}
-                            easing="ease-in-out-expo"
-                        >
-                            {LOTTIE_DATA.map((lottie) => {
-                                return (
-                                    <>
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                if (
-                                                    maybeLikeRef &&
-                                                    maybeLikeRef.length > 0
-                                                ) {
-                                                    return (
-                                                        this.props.unLikeGoal(
-                                                            'post',
-                                                            _id,
-                                                            maybeLikeRef
-                                                        ),
-                                                        setTimeout(() => {
-                                                            this.props.likeGoal(
-                                                                'post',
-                                                                _id,
-                                                                '',
-                                                                '',
-                                                                lottie.value
-                                                            )
-                                                        }, 1000),
-                                                        this.setState({
-                                                            unitText:
-                                                                lottie.title,
-                                                            toolTipVisible: false,
-                                                        })
-                                                    )
-                                                }
-                                                this.incrementFloatingHeartCount()
-                                                this.props.likeGoal(
+                    <Animatable.View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            width: TOOLTIP_WIDTH * 0.8,
+                        }}
+                        animation="fadeInLeft"
+                        delay={150}
+                        duration={500}
+                        easing="ease-in-out-expo"
+                    >
+                        {LOTTIE_DATA.map((lottie, i) => {
+                            return (
+                                <TouchableOpacity
+                                    key={lottie.name + i}
+                                    onPress={() => {
+                                        if (
+                                            maybeLikeRef &&
+                                            maybeLikeRef.length > 0
+                                        ) {
+                                            return (
+                                                this.props.unLikeGoal(
                                                     'post',
                                                     _id,
-                                                    '',
-                                                    '',
-                                                    lottie.value
-                                                )
+                                                    maybeLikeRef
+                                                ),
+                                                setTimeout(() => {
+                                                    this.props.likeGoal(
+                                                        'post',
+                                                        _id,
+                                                        '',
+                                                        '',
+                                                        lottie.value
+                                                    )
+                                                }, 1000),
                                                 this.setState({
                                                     unitText: lottie.title,
                                                     toolTipVisible: false,
                                                 })
-                                            }}
-                                        >
-                                            <LottieView
-                                                style={{
-                                                    height: hp(5),
-                                                }}
-                                                source={lottie.lottieSource}
-                                                autoPlay
-                                                loop
-                                            />
-                                            <Text
-                                                style={{
-                                                    fontSize: 8,
-                                                    color: '#818181',
-                                                    alignSelf: 'center',
-                                                }}
-                                            >
-                                                {lottie.name}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    </>
-                                )
-                            })}
-                        </Animatable.View>
-                    </>
+                                            )
+                                        }
+                                        this.incrementFloatingHeartCount()
+                                        this.props.likeGoal(
+                                            'post',
+                                            _id,
+                                            '',
+                                            '',
+                                            lottie.value
+                                        )
+                                        this.setState({
+                                            unitText: lottie.title,
+                                            toolTipVisible: false,
+                                        })
+                                    }}
+                                >
+                                    <LottieView
+                                        style={{
+                                            height: hp(5),
+                                        }}
+                                        source={lottie.lottieSource}
+                                        autoPlay
+                                        loop
+                                    />
+                                    <Text
+                                        style={{
+                                            fontSize: 8,
+                                            color: '#818181',
+                                            alignSelf: 'center',
+                                        }}
+                                    >
+                                        {lottie.name}
+                                    </Text>
+                                </TouchableOpacity>
+                            )
+                        })}
+                    </Animatable.View>
                 }
                 disableShadow={false}
                 topAdjustment={2}

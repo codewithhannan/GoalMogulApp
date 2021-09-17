@@ -235,7 +235,10 @@ class ChatRoomPublicView extends React.Component {
         }
 
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
+            >
                 <View style={styles.homeContainerStyle}>
                     <LoadingModal
                         visible={this.props.chatRoom.updating}

@@ -9,6 +9,8 @@
 # expo
 .expo/
 
+/.temp
+
 # dependencies
 /node_modules
 

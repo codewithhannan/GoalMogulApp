@@ -16,7 +16,6 @@ import {
 } from 'react-native'
 import { Audio, AVPlaybackStatus } from 'expo-av'
 import { Icon } from '@ui-kitten/components'
-import * as Permissions from 'expo-permissions'
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -181,7 +180,7 @@ class AudioModal extends React.Component<Props, State> {
     }
 
     private _askForPermissions = async () => {
-        const response = await Permissions.askAsync(Permissions.AUDIO_RECORDING)
+        const response = await Audio.requestPermissionsAsync()
         this.setState({
             haveRecordingPermissions: response.status === 'granted',
         })
@@ -477,7 +476,9 @@ class AudioModal extends React.Component<Props, State> {
                                 return (
                                     <>
                                         <TouchableOpacity
-                                            key={options.title + index}
+                                            key={Math.random()
+                                                .toString(36)
+                                                .substr(2, 9)}
                                             onPress={() => {
                                                 this._changeColor(options.value)
                                             }}

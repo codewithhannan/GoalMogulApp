@@ -51,7 +51,7 @@ export const StackedAvatarsV2 = (props) => {
                 const { participantRef } = participant
                 return (
                     <ProfileImage
-                        key={index}
+                        key={Math.random().toString(36).substr(2, 9)}
                         imageContainerStyle={{
                             ...styles.bottomPictureContainerStyle,
                             marginRight: 0,
@@ -94,7 +94,7 @@ export const StackedAvatarsV2 = (props) => {
                 const { memberRef } = memberDoc
                 return (
                     <ProfileImage
-                        key={index}
+                        key={Math.random().toString(36).substr(2, 9)}
                         imageContainerStyle={{
                             ...styles.bottomPictureContainerStyle,
                             right: index * 13,
@@ -111,7 +111,7 @@ export const StackedAvatarsV2 = (props) => {
                 const index = pictures.length
                 pictures.push(
                     <ProfileImage
-                        key={index}
+                        key={Math.random().toString(36).substr(2, 9)}
                         imageContainerStyle={{
                             ...styles.bottomPictureContainerStyle,
                             left: index * 13,
@@ -146,7 +146,7 @@ export const StackedAvatarsV2 = (props) => {
                 const { memberRef } = member
                 return (
                     <ProfileImage
-                        key={index}
+                        key={Math.random().toString(36).substr(2, 9)}
                         imageContainerStyle={{
                             ...styles.bottomPictureContainerStyle,
                             left: index * 13,

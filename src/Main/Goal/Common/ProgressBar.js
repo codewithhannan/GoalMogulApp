@@ -57,7 +57,7 @@ const renderProgressBar = (props) => {
                     backgroundColor: '#E0E0E0',
                     ...borderRadius,
                 }}
-                key={index}
+                key={Math.random().toString(36).substr(2, 9)}
             >
                 <View
                     style={{

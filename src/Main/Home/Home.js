@@ -598,7 +598,10 @@ class Home extends Component {
                   }
                 : undefined
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
+            >
                 <CreatePostModal
                     attachGoalRequired
                     // onModal={() => this.setState({ shareModal: true })}

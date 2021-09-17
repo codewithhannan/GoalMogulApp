@@ -58,7 +58,7 @@ class GoalCardBody extends React.Component {
     handleLoadMore = () =>
         this.props.loadMoreGoalUpdates(this.props.goalId, this.props.pageId)
 
-    keyExtractor = (item) => item._id
+    keyExtractor = (item) => item._id.toString()
 
     renderItem({ item }) {
         if (!item) return <View />
@@ -99,7 +99,7 @@ class GoalCardBody extends React.Component {
     renderEmptyUpdateContainer(opacity, i) {
         if (this.emptyContainersToDisplay <= 0) return null
         this.emptyContainersToDisplay = this.emptyContainersToDisplay - 1
-        return <View style={[styles.updatesContainer, { opacity }]} />
+        return <View style={[styles.updatesContainer, { opacity }]} key={i} />
     }
 
     renderAddUpdateButton() {
@@ -199,6 +199,7 @@ class GoalCardBody extends React.Component {
                         data={data}
                         showsHorizontalScrollIndicator={false}
                         keyExtractor={this.keyExtractor}
+                        listKey={Math.random().toString(36).substr(2, 9)}
                         renderItem={this.renderItem}
                         horizontal
                         scrollEnabled={

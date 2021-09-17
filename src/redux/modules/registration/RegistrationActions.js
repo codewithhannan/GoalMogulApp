@@ -8,7 +8,7 @@
  */
 
 import _ from 'lodash'
-import * as Permissions from 'expo-permissions'
+import * as Contacts from 'expo-contacts'
 import {
     REGISTRATION_TEXT_CHANGE,
     REGISTRATION_USER_TARGETS,
@@ -558,7 +558,7 @@ export const uploadContacts = ({
     onMatchNotFound,
     onError,
 }) => async (dispatch, getState) => {
-    const permission = await Permissions.askAsync(Permissions.CONTACTS)
+    const permission = await Contacts.requestPermissionsAsync()
     if (permission.status !== 'granted') {
         // Permission was denied and dispatch an action
         return

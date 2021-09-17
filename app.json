@@ -46,6 +46,12 @@
             "image": "./assets/splash1.png",
             "resizeMode": "cover"
         },
+        "assetBundlePatterns": ["./assets/**"],
+        "updates": {
+            "enabled": true,
+            "checkAutomatically": "ON_ERROR_RECOVERY",
+            "fallbackToCacheTimeout": 0
+        },
         "notification": {
             "icon": "./assets/logo.png"
         },
@@ -111,6 +117,7 @@
                 "BADGE_COUNT_READ",
                 "BADGE_COUNT_WRITE"
             ]
-        }
+        },
+        "plugins": ["sentry-expo"]
     }
 }

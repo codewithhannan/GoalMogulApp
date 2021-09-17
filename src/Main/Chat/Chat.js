@@ -268,7 +268,10 @@ class ChatTab extends React.Component {
 
     render() {
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                skipInstanceCheck={true}
+                customStyles={{ backdrop: styles.backdrop }}
+            >
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" />
                     {this.renderScene()}

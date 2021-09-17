@@ -6,9 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 /**
  * Actions for notification tab and general notification like subscribe
  */
-import { Linking } from 'expo'
+import * as Linking from 'expo-linking'
 import * as Notifications from 'expo-notifications'
-import * as Permissions from 'expo-permissions'
 import * as SecureStore from 'expo-secure-store'
 import { Alert, Platform } from 'react-native'
 import _ from 'lodash'
@@ -416,9 +415,7 @@ export const seeMore = (type) => (dispatch, getState) => {}
  */
 export const subscribeNotification = () => async (dispatch, getState) => {
     const { token, userId, user } = getState().user
-    const { status: existingStatus } = await Permissions.getAsync(
-        Permissions.NOTIFICATIONS
-    )
+    const { status: existingStatus } = await Notifications.getPermissionsAsync()
 
     // only ask if permissions have not already been determined, because
     // iOS won't necessarily prompt the user a second time.
@@ -436,9 +433,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
 
         // request again for iOS
         if (Platform.OS == 'ios') {
-            const { status } = await Permissions.askAsync(
-                Permissions.NOTIFICATIONS
-            )
+            const { status } = await Notifications.requestPermissionsAsync()
             finalStatus = status
         }
 

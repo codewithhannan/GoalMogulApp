@@ -539,7 +539,7 @@ export class GoalDetailCardV3 extends React.Component {
                 return (
                     <>
                         <StepAndNeedCardV3
-                            key={`mastermind-${index}`}
+                            key={Math.random().toString(36).substr(2, 9)}
                             item={item}
                             // goalRef={goalDetail}
                             onCardPress={() => {
@@ -566,7 +566,7 @@ export class GoalDetailCardV3 extends React.Component {
             case 'focusTab':
                 return (
                     <CommentCard
-                        key={`comment-${props.index}`}
+                        key={Math.random().toString(36).substr(2, 9)}
                         item={props.item}
                         index={props.index}
                         commentDetail={{
@@ -898,7 +898,10 @@ export class GoalDetailCardV3 extends React.Component {
 
         return (
             <>
-                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <MenuProvider
+                    customStyles={{ backdrop: styles.backdrop }}
+                    skipInstanceCheck={true}
+                >
                     <LikeListModal
                         isVisible={this.state.showCommentLikeList}
                         closeModal={this.closeCommentLikeList}

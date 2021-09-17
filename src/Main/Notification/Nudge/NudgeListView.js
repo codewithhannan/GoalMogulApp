@@ -80,7 +80,7 @@ class NudgeListView extends React.PureComponent {
                     data={this.props.nudgesData}
                     renderItem={this.renderItem}
                     // keyExtractor={this._keyExtractor}
-                    listKey={(item, index) => 'D' + index.toString()}
+                    listKey={Math.random().toString(36).substr(2, 9)}
                     // onRefresh={this.handleRefresh}
                     refreshing={this.props.refreshing}
                     // onEndReached={this.handleOnLoadMore}

@@ -5,7 +5,6 @@ import { Actions } from 'react-native-router-flux'
 import _, { get } from 'lodash'
 import { Alert, Keyboard } from 'react-native'
 import * as Notifications from 'expo-notifications'
-import * as Permissions from 'expo-permissions'
 import moment from 'moment'
 
 import { api as API } from '../../middleware/api'
@@ -92,7 +91,7 @@ export const scheduleNotification = (date, goal, hasAskedPermissions) => async (
     getState
 ) => {
     if (!hasAskedPermissions) {
-        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+        const { status } = await Notifications.requestPermissionsAsync()
         if (status !== 'granted') {
             return Alert.alert(
                 'Denied',

@@ -506,7 +506,7 @@ class MyTribe extends React.PureComponent {
             <PostPreviewCard
                 item={props.item}
                 tribeDetailPostData={tribeDetailPostData}
-                key={props.index}
+                key={Math.random().toString(36).substr(2, 9)}
                 hasActionButton
             />
         )
@@ -569,6 +569,7 @@ class MyTribe extends React.PureComponent {
             <MenuProvider
                 style={{ backgroundColor: color.GM_BACKGROUND }}
                 customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
             >
                 {this.renderCreatePostModal(item)}
                 <SearchBarHeader

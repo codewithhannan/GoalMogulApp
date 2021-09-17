@@ -133,9 +133,10 @@ class GoldBadgeRewardModal extends React.PureComponent {
                             After you receive a Gold Badge, follow these instructions to receive your cash prize:{"\n"}{"\n"}
                             Email <Text selectable style={styles.emailTextStyle}>support@goalmogul.com</Text> with subject line "Gold Badge winner" and in the email let us know your
                         </Text> */}
-                        {bulletPointList.map((l) => {
+                        {bulletPointList.map((l, i) => {
                             return (
                                 <TextInput
+                                    key={i}
                                     multiline
                                     editable={false}
                                     style={styles.contentTextStyle}

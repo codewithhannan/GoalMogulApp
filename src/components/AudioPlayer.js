@@ -165,8 +165,11 @@ export default class AudioSlider extends PureComponent {
         })
     }
 
-    async componentWillUnmount() {
-        this.soundObject && (await this.soundObject.unloadAsync())
+    componentWillUnmount() {
+        const unMountAudio = async () => {
+            this.soundObject && (await this.soundObject.unloadAsync())
+        }
+        unMountAudio()
         this.state.dotOffset.removeAllListeners()
     }
 

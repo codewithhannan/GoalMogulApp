@@ -457,36 +457,36 @@ const BadgeInfoCard = (props) => {
                         const { text, hasBulletPoint } = t
                         if (hasBulletPoint) {
                             return (
-                                <>
-                                    <View
-                                        key={index}
+                                <View
+                                    key={Math.random()
+                                        .toString(36)
+                                        .substr(2, 9)}
+                                    style={{
+                                        flexDirection: 'row',
+                                        // marginTop: 3,
+                                        width: '80%',
+                                    }}
+                                >
+                                    <Image
+                                        source={bulletIcon}
                                         style={{
-                                            flexDirection: 'row',
-                                            // marginTop: 3,
-                                            width: '80%',
+                                            height: 10,
+                                            width: 10,
+                                            tintColor: '#4D4D4D',
+                                            top: 3,
+                                        }}
+                                    />
+                                    <Text
+                                        style={{
+                                            color: 'rgb(85, 85, 85)',
+                                            fontSize: 12,
+                                            left: 7,
+                                            flexWrap: 'wrap',
                                         }}
                                     >
-                                        <Image
-                                            source={bulletIcon}
-                                            style={{
-                                                height: 10,
-                                                width: 10,
-                                                tintColor: '#4D4D4D',
-                                                top: 3,
-                                            }}
-                                        />
-                                        <Text
-                                            style={{
-                                                color: 'rgb(85, 85, 85)',
-                                                fontSize: 12,
-                                                left: 7,
-                                                flexWrap: 'wrap',
-                                            }}
-                                        >
-                                            {`${text}`}
-                                        </Text>
-                                    </View>
-                                </>
+                                        {`${text}`}
+                                    </Text>
+                                </View>
                             )
                         }
                         return (

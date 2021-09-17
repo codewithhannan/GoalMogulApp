@@ -2,10 +2,9 @@
 
 import { Actions } from 'react-native-router-flux'
 import { SubmissionError } from 'redux-form'
-import { Linking } from 'expo'
+import * as Linking from 'expo-linking'
 import * as Notifications from 'expo-notifications'
 import * as WebBrowser from 'expo-web-browser'
-import * as Permissions from 'expo-permissions'
 import { Alert, Platform } from 'react-native'
 import TokenService from '../services/token/TokenService'
 import { api as API } from '../redux/middleware/api'
@@ -562,9 +561,8 @@ export const registerForPushNotificationsAsync = () => async (
     getState
 ) => {
     const { token } = getState().user
-    const { status: existingStatus } = await Permissions.getAsync(
-        Permissions.NOTIFICATIONS
-    )
+
+    const { status: existingStatus } = await Notifications.getPermissionsAsync()
     let finalStatus = existingStatus
 
     // only ask if permissions have not already been determined, because
@@ -572,7 +570,7 @@ export const registerForPushNotificationsAsync = () => async (
     if (existingStatus !== 'granted' && Platform.OS == 'ios') {
         // Android remote notification permissions are granted during the app
         // install, so this will only ask on iOS
-        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+        const { status } = await Notifications.requestPermissionsAsync()
         finalStatus = status
     }
 

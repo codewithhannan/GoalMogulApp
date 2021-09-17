@@ -16,7 +16,7 @@ import { Actions } from 'react-native-router-flux'
 import { copilot } from 'react-native-copilot-gm'
 import DateTimePicker from 'react-native-modal-datetime-picker'
 import moment from 'moment'
-import * as Permissions from 'expo-permissions'
+import * as Notifications from 'expo-notifications'
 import Modal from 'react-native-modal'
 import Button from './Button'
 
@@ -175,7 +175,7 @@ class CreateGoalModal extends React.Component {
             return
         }
 
-        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+        const { status } = await Notifications.requestPermissionsAsync()
         if (status !== 'granted') {
             return Alert.alert(
                 'Goal Reminders',
@@ -582,7 +582,10 @@ class CreateGoalModal extends React.Component {
                 <SafeAreaView style={{ flex: 0, backgroundColor: '#42C0F5' }} />
 
                 <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-                    <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                    <MenuProvider
+                        customStyles={{ backdrop: styles.backdrop }}
+                        skipInstanceCheck={true}
+                    >
                         <StatusBar
                             animated={true}
                             backgroundColor="blue"

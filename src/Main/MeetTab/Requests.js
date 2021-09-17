@@ -76,7 +76,10 @@ class Requests extends Component {
                 buttonTextStyle.color = '#696969'
             }
             return (
-                <View style={buttonContainerStyle} key={index}>
+                <View
+                    style={buttonContainerStyle}
+                    key={Math.random().toString(36).substr(2, 9)}
+                >
                     <TouchableOpacity
                         activeOpacity={0.6}
                         onPress={this.selectTab.bind(this, t.key)}

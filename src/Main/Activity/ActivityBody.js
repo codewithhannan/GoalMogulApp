@@ -177,7 +177,7 @@ class ActivityBody extends React.Component {
 
     renderUpdateAttachments(item) {
         const { belongsToGoalStoryline, mediaRef } = item
-        console.log('Media red', item)
+        // console.log('Media red', item)
         const showGoalRefCard = _.get(belongsToGoalStoryline, 'goalRef', false)
         return (
             <View>

@@ -21,7 +21,7 @@ const Pagination = (props) => {
         const key = `registration-pagination-${i}`
         pagination.push(
             <DotIcon
-                key={key}
+                key={Math.random().toString(36).substr(2, 9)}
                 iconContainerStyle={{ ...styles.iconContainerStyle }}
                 iconStyle={{ tintColor: color, height: 10, width: 10 }}
             />

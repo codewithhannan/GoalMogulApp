@@ -267,77 +267,74 @@ class ActivityCard extends React.PureComponent {
                         >
                             {LOTTIE_DATA.map((lottie, index) => {
                                 return (
-                                    <>
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                if (selfLiked) {
-                                                    return (
-                                                        this.props.unLikeGoal(
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            if (selfLiked) {
+                                                return (
+                                                    this.props.unLikeGoal(
+                                                        isPost
+                                                            ? 'post'
+                                                            : 'goal',
+                                                        _id,
+                                                        maybeLikeRef
+                                                    ),
+                                                    setTimeout(() => {
+                                                        this.props.likeGoal(
                                                             isPost
                                                                 ? 'post'
                                                                 : 'goal',
                                                             _id,
-                                                            maybeLikeRef
+                                                            '',
+                                                            '',
+                                                            lottie.value
                                                         ),
-                                                        setTimeout(() => {
-                                                            this.props.likeGoal(
-                                                                isPost
-                                                                    ? 'post'
-                                                                    : 'goal',
-                                                                _id,
-                                                                '',
-                                                                '',
+                                                            updateLikeIcon(
+                                                                reactions,
                                                                 lottie.value
-                                                            ),
-                                                                updateLikeIcon(
-                                                                    reactions,
-                                                                    lottie.value
-                                                                )
-                                                            // this.props.refreshActivityFeed()
-                                                        }, 1000),
-                                                        this.setState({
-                                                            unitText:
-                                                                lottie.title,
-                                                            toolTipVisible: false,
-                                                            updateReaction: reactions,
-                                                        })
-                                                    )
-                                                }
-                                                this.incrementFloatingHeartCount()
-                                                this.props.likeGoal(
-                                                    isPost ? 'post' : 'goal',
-                                                    _id,
-                                                    '',
-                                                    '',
-                                                    lottie.value
+                                                            )
+                                                        // this.props.refreshActivityFeed()
+                                                    }, 1000),
+                                                    this.setState({
+                                                        unitText: lottie.title,
+                                                        toolTipVisible: false,
+                                                        updateReaction: reactions,
+                                                    })
                                                 )
+                                            }
+                                            this.incrementFloatingHeartCount()
+                                            this.props.likeGoal(
+                                                isPost ? 'post' : 'goal',
+                                                _id,
+                                                '',
+                                                '',
+                                                lottie.value
+                                            )
 
-                                                this.setState({
-                                                    unitText: lottie.title,
-                                                    toolTipVisible: false,
-                                                    updateReaction: '',
-                                                })
+                                            this.setState({
+                                                unitText: lottie.title,
+                                                toolTipVisible: false,
+                                                updateReaction: '',
+                                            })
+                                        }}
+                                    >
+                                        <LottieView
+                                            style={{
+                                                height: hp(5),
+                                            }}
+                                            source={lottie.lottieSource}
+                                            autoPlay
+                                            loop
+                                        />
+                                        <Text
+                                            style={{
+                                                fontSize: 8,
+                                                color: '#818181',
+                                                alignSelf: 'center',
                                             }}
                                         >
-                                            <LottieView
-                                                style={{
-                                                    height: hp(5),
-                                                }}
-                                                source={lottie.lottieSource}
-                                                autoPlay
-                                                loop
-                                            />
-                                            <Text
-                                                style={{
-                                                    fontSize: 8,
-                                                    color: '#818181',
-                                                    alignSelf: 'center',
-                                                }}
-                                            >
-                                                {lottie.name}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    </>
+                                            {lottie.name}
+                                        </Text>
+                                    </TouchableOpacity>
                                 )
                             })}
                         </Animatable.View>

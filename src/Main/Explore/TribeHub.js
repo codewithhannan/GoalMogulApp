@@ -241,7 +241,7 @@ class TribeHub extends Component {
             return this.renderEmptyTribeFeedPage()
         }
         return (
-            <MenuProvider>
+            <MenuProvider skipInstanceCheck={true}>
                 <View style={{ backgroundColor: color.GM_BACKGROUND, flex: 1 }}>
                     <SearchBarHeader rightIcon="menu" />
                     <FlatList

@@ -95,11 +95,12 @@ class GoalFilterBar extends Component {
                                     padding: 10 * default_style.uiScale,
                                 }}
                             >
-                                {SORT_BY_OPTIONS.map((option) => {
+                                {SORT_BY_OPTIONS.map((option, i) => {
                                     const { value, text } = option
                                     const isSelected = sortBy === value
                                     return (
                                         <MenuOption
+                                            key={option.text + i}
                                             onSelect={() =>
                                                 this.handleOnMenuSelect(
                                                     'sortBy',

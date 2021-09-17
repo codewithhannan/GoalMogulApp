@@ -309,7 +309,7 @@ class OnboardingPhoneVerification extends React.Component {
                                                     Submit
                                                 </Text>
                                             </DelayedButton>
-                                            {/* <DelayedButton
+                                            <DelayedButton
                                                 onPress={this.onNotNow}
                                                 style={[
                                                     buttonStyle
@@ -327,7 +327,7 @@ class OnboardingPhoneVerification extends React.Component {
                                                 >
                                                     Skip
                                                 </Text>
-                                            </DelayedButton> */}
+                                            </DelayedButton>
                                         </View>
                                     </View>
                                 </>
