@@ -28,6 +28,7 @@ class NudgePopup extends Component {
     }
 
     renderButtons() {
+        const { owner, goalId } = this.props
         return (
             <>
                 <View
@@ -36,9 +37,11 @@ class NudgePopup extends Component {
                     <TouchableWithoutFeedback
                         onPress={() => {
                             this.props.addNudge(
-                                this.props.visitedUser,
+                                owner._id,
                                 this.props.token,
-                                NUDGE_TYPES.clarifyGoals
+                                NUDGE_TYPES.clarifyGoals,
+                                null,
+                                goalId
                             )
                             this.props.closeModal()
                         }}
@@ -103,13 +106,17 @@ const mapStateToProps = (state, ownProps) => {
     const user = state.user
     const { isVisible, closeModal } = ownProps
     const visitedUser = state.profile.userId.userId
+    const { owner, _id } = state.goalDetail.goal.goal
     const { token } = state.auth.user
+    console.log('THIS IS STATEEEE', state)
     return {
         user,
         isVisible,
         closeModal,
         visitedUser,
         token,
+        owner,
+        goalId: _id,
     }
 }
 

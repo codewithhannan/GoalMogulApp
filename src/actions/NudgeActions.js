@@ -23,7 +23,7 @@ export const NUDGE_TYPES = {
     inviteeGoalCheck: 'inviteeGoalCheck',
 }
 
-export const addNudge = (visitedId, token, nudgeType, question) => {
+export const addNudge = (visitedId, token, nudgeType, question, goalId) => {
     return async () => {
         let obj = {
             id: visitedId,
@@ -37,6 +37,9 @@ export const addNudge = (visitedId, token, nudgeType, question) => {
         obj.nudgeTypes[nudgeType] = true
         if (obj.nudgeTypes.inviteeGoalCheck) {
             obj.question = question
+        }
+        if (obj.nudgeTypes.clarifyGoals) {
+            obj.goalId = goalId
         }
         try {
             const res = await API.post('secure/nudge/send-nudge', obj, token)

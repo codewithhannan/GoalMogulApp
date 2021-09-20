@@ -80,11 +80,11 @@ class CreateTribeModal extends React.Component {
 
     componentDidMount() {
         this.startTime = new Date()
-        track(
-            this.props.initializeFromState
-                ? E.EDIT_TRIBE_MODAL_OPENED
-                : E.CREATE_TRIBE_MODAL_OPENED
-        )
+        // track(
+        //     this.props.initializeFromState
+        //         ? E.EDIT_TRIBE_MODAL_OPENED
+        //         : E.CREATE_TRIBE_MODAL_OPENED
+        // )
         this.initializeForm()
     }
 
@@ -97,6 +97,7 @@ class CreateTribeModal extends React.Component {
             membershipLimit: undefined,
             description: '',
             picture: undefined,
+            category: 'General',
         }
 
         // Initialize based on the props, if it's opened through edit button
@@ -129,11 +130,11 @@ class CreateTribeModal extends React.Component {
         //     { ...this.props.formVals.values, DurationSec: durationSec }
         // )
 
-        let valuesToSend = { ...this.props.formVals.values }
-        valuesToSend['category'] = this.state.catogary
+        // let valuesToSend = { ...this.props.formVals.values }
+        // valuesToSend['category'] = this.state.catogary
 
         this.props.createNewTribe(
-            valuesToSend,
+            this.props.formVals.values,
             needUpload,
             initializeFromState, // isEdit
             tribeId // tribeId
@@ -480,7 +481,7 @@ class CreateTribeModal extends React.Component {
     }
 
     handleTribeCatogary = (value) => {
-        this.setState({ catogary: value })
+        this.props.change('category', value)
     }
 
     renderTribeCategory = () => {
@@ -498,9 +499,7 @@ class CreateTribeModal extends React.Component {
                 'Things to Buy',
             ],
             this.handleTribeCatogary,
-            this.state.catogary == ''
-                ? 'Select a category'
-                : this.state.catogary,
+            this.props.category,
             styles.triggerContainerStyle,
             () => console.log('animationCallback')
         )
@@ -529,6 +528,8 @@ class CreateTribeModal extends React.Component {
             ? 'Edit Tribe'
             : 'New Tribe'
 
+        console.log('THIS IS PROPSSS', this.props)
+
         return (
             <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
                 <KeyboardAvoidingView
@@ -539,16 +540,16 @@ class CreateTribeModal extends React.Component {
                         title={titleText}
                         actionText={actionText}
                         onCancel={() => {
-                            const durationSec =
-                                (new Date().getTime() -
-                                    this.startTime.getTime()) /
-                                1000
-                            trackWithProperties(
-                                this.props.initializeFromState
-                                    ? E.EDIT_TRIBE_MODAL_CANCELLED
-                                    : E.CREATE_TRIBE_MODAL_CANCELLED,
-                                { DurationSec: durationSec }
-                            )
+                            // const durationSec =
+                            //     (new Date().getTime() -
+                            //         this.startTime.getTime()) /
+                            //     1000
+                            // trackWithProperties(
+                            //     this.props.initializeFromState
+                            //         ? E.EDIT_TRIBE_MODAL_CANCELLED
+                            //         : E.CREATE_TRIBE_MODAL_CANCELLED,
+                            //     { DurationSec: durationSec }
+                            // )
                             this.props.cancelCreatingNewTribe()
                         }}
                         onAction={handleSubmit(this.handleCreate)}
@@ -593,6 +594,7 @@ const mapStateToProps = (state) => {
         isPubliclyVisible: selector(state, 'isPubliclyVisible'),
         membershipLimit: selector(state, 'membershipLimit'),
         description: selector(state, 'description'),
+        category: selector(state, 'category'),
         picture: selector(state, 'picture'),
         formVals: state.form.createTribeModal,
         uploading,
@@ -774,7 +776,7 @@ const MenuFactory = (
                         style={{
                             margin: 10,
                             flex: 1,
-                            color: '#a1a1a1',
+                            color: 'black',
                         }}
                     >
                         {triggerText}

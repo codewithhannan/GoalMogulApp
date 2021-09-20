@@ -563,8 +563,6 @@ class ActivityCard extends React.PureComponent {
     render() {
         const { item, userId } = this.props
 
-        // console.log('THIS IS ITEMSS OF ACTIVITY', item)
-
         const { goalRef } = item
         const ownerId = goalRef?.owner._id
         let isSelf = userId == ownerId
