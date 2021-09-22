@@ -1,6 +1,4 @@
 /** @format */
-
-import { postRequest, getRequest } from '../store/services'
 import { api as API } from '../redux/middleware/api'
 
 import {
@@ -12,6 +10,7 @@ import {
 import { setBadgeNumberAsyncByPlatform } from '../redux/modules/notification/NotificationTabActions'
 import { Alert } from 'react-native'
 import { Actions } from 'react-native-router-flux'
+import { DropDownHolder } from '../Main/Common/Modal/DropDownModal'
 
 const makeMessage = () => 'You have nudged successfully!'
 

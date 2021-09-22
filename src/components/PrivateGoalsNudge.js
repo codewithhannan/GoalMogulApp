@@ -139,11 +139,9 @@ class PrivateGoalsNudge extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-    const visitedUser = state.profile.userId.userId
     const { token } = state.auth.user
 
     return {
-        visitedUser,
         token,
     }
 }
