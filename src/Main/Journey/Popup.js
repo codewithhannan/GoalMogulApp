@@ -122,7 +122,11 @@ class Popup extends Component {
                             style={styles.img}
                             source={POPUP_DETAILS[popupName].img}
                         /> */}
-                        {/* <ImageBackground source={POPUP_BLUE}> */}
+                        {/* <ImageBackground
+                            source={POPUP_BLUE}
+                            resizeMode="cover"
+                            style={{ height: 100, width: 100 }}
+                        > */}
                         <Text style={styles.d1}>
                             {Helper.parseExpressionAndEval(
                                 POPUP_DETAILS[popupName].d1,
@@ -175,7 +179,7 @@ const styles = StyleSheet.create({
     },
     anm: {
         height: hp(42),
-        // width: wp(40),
+        width: wp(40),
     },
     d1: {
         fontFamily: text.FONT_FAMILY.BOLD,

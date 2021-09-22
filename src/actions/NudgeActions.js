@@ -1,6 +1,4 @@
 /** @format */
-
-import { postRequest, getRequest } from '../store/services'
 import { api as API } from '../redux/middleware/api'
 
 import {
@@ -12,6 +10,7 @@ import {
 import { setBadgeNumberAsyncByPlatform } from '../redux/modules/notification/NotificationTabActions'
 import { Alert } from 'react-native'
 import { Actions } from 'react-native-router-flux'
+import { DropDownHolder } from '../Main/Common/Modal/DropDownModal'
 
 const makeMessage = () => 'You have nudged successfully!'
 
@@ -23,7 +22,7 @@ export const NUDGE_TYPES = {
     inviteeGoalCheck: 'inviteeGoalCheck',
 }
 
-export const addNudge = (visitedId, token, nudgeType, question) => {
+export const addNudge = (visitedId, token, nudgeType, question, goalId) => {
     return async () => {
         let obj = {
             id: visitedId,
@@ -37,6 +36,9 @@ export const addNudge = (visitedId, token, nudgeType, question) => {
         obj.nudgeTypes[nudgeType] = true
         if (obj.nudgeTypes.inviteeGoalCheck) {
             obj.question = question
+        }
+        if (obj.nudgeTypes.clarifyGoals) {
+            obj.goalId = goalId
         }
         try {
             const res = await API.post('secure/nudge/send-nudge', obj, token)

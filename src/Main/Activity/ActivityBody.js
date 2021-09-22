@@ -177,11 +177,41 @@ class ActivityBody extends React.Component {
 
     renderUpdateAttachments(item) {
         const { belongsToGoalStoryline, mediaRef } = item
-        console.log('Media red', item)
+        // console.log('Media red', item)
         const showGoalRefCard = _.get(belongsToGoalStoryline, 'goalRef', false)
+        if (showGoalRefCard) {
+            // console.log('ACTIVITY SUMMARY', item, showGoalRefCard)
+        }
         return (
             <View>
                 {this.renderPostImage(mediaRef)}
+                {showGoalRefCard && [
+                    <Text
+                        style={[
+                            default_style.normalText_2,
+                            { marginTop: 12, marginBottom: 4 },
+                        ]}
+                    >
+                        Attached
+                    </Text>,
+                    <ShareCard
+                        goalRef={
+                            belongsToGoalStoryline.goalRef._id ||
+                            belongsToGoalStoryline.goalRef
+                        }
+                        containerStyle={{ width: '100%' }}
+                    />,
+                ]}
+            </View>
+        )
+    }
+
+    renderStepsCompleted = () => {
+        const { belongsToGoalStoryline, mediaRef } = item
+        const showGoalRefCard = _.get(belongsToGoalStoryline, 'goalRef', false)
+
+        return (
+            <View>
                 {showGoalRefCard && [
                     <Text
                         style={[

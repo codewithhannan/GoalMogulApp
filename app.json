@@ -67,7 +67,7 @@
         "android": {
             "package": "com.goalmogul.goalmogulbeta",
             "googleServicesFile": "./config/google-services.json",
-            "versionCode": 1000,
+            "versionCode": 1002,
             "permissions": [
                 "ACCESS_NETWORK_STATE",
                 "ACCESS_WIFI_STATE",

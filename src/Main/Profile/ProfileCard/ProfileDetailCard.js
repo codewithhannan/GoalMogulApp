@@ -602,7 +602,6 @@ class ProfileDetailCard extends Component {
     }
 
     handleOptionsOnPress() {
-        console.log('YAHAN ARAHA HAAA')
         const options = switchByButtonIndex([
             [
                 R.equals(0),
@@ -614,11 +613,25 @@ class ProfileDetailCard extends Component {
                     )
                 },
             ],
+            [
+                R.equals(1),
+                () => {
+                    console.log(
+                        `${DEBUG_KEY} User chooses to show profile pitrue`,
+                        '',
+                        this.props.profilePictureVisible()
+                    )
+                },
+            ],
         ])
 
-        const requestOptions = ['Update Profile Picture', 'Cancel']
+        const requestOptions = [
+            'Update Profile Picture',
+            'Show Profile Picutre',
+            'Cancel',
+        ]
 
-        const cancelIndex = 1
+        const cancelIndex = 2
 
         const adminActionSheet = actionSheet(
             requestOptions,
@@ -655,7 +668,11 @@ class ProfileDetailCard extends Component {
                     </View>
                 ) : (
                     <TouchableOpacity
-                        onPress={() => this.props.profilePictureVisible()}
+                        onPress={
+                            Platform.OS == 'ios'
+                                ? () => this.handleOptionsOnPress()
+                                : this.openCameraRollBottomSheet
+                        }
                     >
                         <Image
                             source={this.renderImageSource()}
@@ -667,21 +684,22 @@ class ProfileDetailCard extends Component {
                                 overflow: 'hidden',
                             }}
                         />
+                        <View style={styles.iconContainerStyle}>
+                            <Entypo name="camera" size={11} color="#FFFF" />
+                        </View>
                     </TouchableOpacity>
                 )}
 
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     onPress={
                         // this.handleOptionsOnPress
                         Platform.OS == 'ios'
                             ? () => this.handleOptionsOnPress()
                             : this.openCameraRollBottomSheet
                     }
-                >
-                    <View style={styles.iconContainerStyle}>
-                        <Entypo name="camera" size={11} color="#FFFF" />
-                    </View>
-                </TouchableOpacity>
+                > */}
+
+                {/* </TouchableOpacity> */}
             </View>
         )
     }
@@ -914,16 +932,22 @@ class ProfileDetailCard extends Component {
                 text: 'Update Profile Picture',
                 onPress: () => {
                     this.closeNotificationBottomSheet(),
-                        setTimeout(() => {
-                            this.pickImage()
-                        }, 500)
+                        setTimeout(() => this.pickImage(), 500)
+                },
+            },
+            {
+                text: 'Show Profile Picture',
+                onPress: () => {
+                    this.closeNotificationBottomSheet(),
+                        setTimeout(
+                            () => this.props.profilePictureVisible(),
+                            500
+                        )
                 },
             },
             {
                 text: 'Cancel',
-                onPress: () => {
-                    this.closeNotificationBottomSheet()
-                },
+                onPress: () => this.closeNotificationBottomSheet(),
             },
         ]
     }
@@ -1069,7 +1093,7 @@ const styles = {
         borderColor: '#FFFFFF',
         position: 'absolute',
         bottom: 10 * default_style.uiScale,
-        left: width * 0.07,
+        left: width * 0.2,
     },
 
     imageStyle: {

@@ -69,6 +69,18 @@ class ActivitySummary extends React.Component {
                         }`
                     )
                 },
+                Step: (val) => {
+                    if (!val.postRef && !val.postRef.postType) return ''
+                    if (!isSharedPost(val.postRef.postType)) {
+                        return `completed steps for a Goal`
+                    }
+                    return (
+                        `shared ${switchPostType(val.postRef.postType)} ` +
+                        `${
+                            val.belongsToEvent || val.belongsToTribe ? 'to' : ''
+                        }`
+                    )
+                },
                 // NOTE: the clean approach is to change the backend that populate the field
                 // actedUponEntityType from Post to Update
                 Comment: (val) =>

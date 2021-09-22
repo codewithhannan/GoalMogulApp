@@ -114,8 +114,17 @@ class ProfileV2 extends Component {
         )
     }
 
-    async componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps, nextProps) {
+        // console.log('THIS IS PREVPROPSSS', prevProps)
+        // console.log('THIS IS PREVPROPSSS 1', nextProps)
         // console.log('this is token', this.props.token)
+
+        // if (
+        //     !this.props.isSelf &&
+        //     prevProps.visitedUser !== nextProps.visitedUser
+        // ) {
+        //     this.shouldSendNudge()
+        // }
 
         if (
             prevProps.userPageLoading !== this.props.userPageLoading &&
@@ -147,7 +156,11 @@ class ProfileV2 extends Component {
                 showBadgeEarnModal: true,
             })
         }
-        if (!this.props.isSelf && prevProps.user._id !== this.props.user._id) {
+        // if (!this.props.isSelf && prevProps.user._id !== this.props.user._id) {
+        //     this.shouldSendNudge()
+        // }
+
+        if (!this.props.isSelf && !_.isEqual(prevProps, this.props)) {
             this.shouldSendNudge()
         }
         if (this.props.isSelf) {
@@ -752,7 +765,10 @@ class ProfileV2 extends Component {
         ) {
             //Nudge friends to make their goals public
             return (
-                <PrivateGoalsNudge name={getFirstName(this.props.user.name)} />
+                <PrivateGoalsNudge
+                    name={getFirstName(this.props.user.name)}
+                    visitedUser={this.props.visitedUser}
+                />
             )
         } else if (currentTabName === 'goals' && isSelf && noGoals) {
             return <NoGoalToast pageId={this.props.pageId} />
@@ -994,6 +1010,7 @@ const makeMapStateToProps = () => {
         const selfUser = state.user.userId
         const visitedUserName = state.profile
         const visitedUser = state.profile.userId.userId
+
         const visitedUserFriendShip = state.profile.friendship.status
 
         // console.log('visitedFrp', state.profile.friendship.status)
