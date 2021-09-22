@@ -260,6 +260,7 @@ class Menu extends React.PureComponent {
                         <>
                             <View
                                 style={{
+                                    bottom: 0,
                                     flex: 1,
                                     flexDirection: 'column',
                                 }}
@@ -364,7 +365,7 @@ class Menu extends React.PureComponent {
                                     </View>
                                     <View
                                         style={{
-                                            marginTop: 5,
+                                            marginTop: 3,
                                             flexDirection: 'row',
                                             justifyContent: 'space-evenly',
                                         }}
