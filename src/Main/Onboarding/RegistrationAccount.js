@@ -67,6 +67,10 @@ const FIELD_REQUIREMENTS = {
     inviteCode: {
         require_code: 'Invite Code is required',
     },
+    dateOfBirth: {
+        invalid_dateOfBirth: 'Invalid Date of Birth',
+        require_dateOfBirth: 'Date of Birth is required',
+    },
     testname: '',
 }
 
@@ -137,7 +141,8 @@ class RegistrationAccount extends React.Component {
             this.state.nameStatus == undefined &&
             this.state.emailStatus == undefined &&
             this.state.inviteCodeStatus == undefined &&
-            this.state.passwordStatus == undefined
+            this.state.passwordStatus == undefined &&
+            this.state.dateOfBirthStatus == undefined
         ) {
             this.setState({
                 ...this.state,
@@ -145,6 +150,8 @@ class RegistrationAccount extends React.Component {
                 emailStatus: FIELD_REQUIREMENTS.email.require_email,
                 passwordStatus: FIELD_REQUIREMENTS.password.missing_password,
                 inviteCodeStatus: FIELD_REQUIREMENTS.inviteCode.require_code,
+                dateOfBirthStatus:
+                    FIELD_REQUIREMENTS.dateOfBirth.require_dateOfBirth,
             })
             return
         }
@@ -208,6 +215,7 @@ class RegistrationAccount extends React.Component {
         }
         return isValid(email)
     }
+    isValidDateOfBirth = (dateOfBirth) => {}
 
     validateName = (name) => {
         if (!name || !name.trim().length) {
@@ -226,26 +234,51 @@ class RegistrationAccount extends React.Component {
             })
         }
     }
-    validateDateDateOfBirth = (dateOfBirth) => {
+
+    validateEmail = (email) => {
+        if (!email || !email.trim().length) {
+            this.setState({
+                ...this.state,
+                emailStatus: FIELD_REQUIREMENTS.email.require_email,
+            })
+        } else if (!this.isValidEmail(email)) {
+            this.setState({
+                ...this.state,
+                emailStatus: FIELD_REQUIREMENTS.email.invalid_email,
+            })
+        }
+    }
+
+    validateDateDOB = (dateOfBirth) => {
         let oneYearFromNow = new Date()
         let validateDate = oneYearFromNow.setFullYear(
             oneYearFromNow.getFullYear() - 13
         )
         let validateDateToTime = new Date(validateDate).getTime()
         let selectedDateToTime = new Date(dateOfBirth).getTime()
-
-        if (selectedDateToTime <= validateDateToTime) {
-            this.setState({ dateOfBirthStatus: selectedDateToTime })
-        } else {
-            this.setState({ dateOfBirthStatus: undefined })
-            setTimeout(() => {
-                DropDownHolder.alert(
-                    'error',
-                    'Error',
-                    'Please enter a valid Date of Birth!'
-                )
-            }, 500)
+        if (!dateOfBirth) {
+            this.setState({
+                ...this.state,
+                dateOfBirthStatus:
+                    FIELD_REQUIREMENTS.dateOfBirth.require_dateOfBirth,
+            })
+        } else if (selectedDateToTime >= validateDateToTime) {
+            this.setState({
+                ...this.state,
+                dateOfBirthStatus:
+                    FIELD_REQUIREMENTS.dateOfBirth.invalid_dateOfBirth,
+            })
         }
+        // else {
+        //     this.setState({ dateOfBirthStatus: undefined })
+        //     setTimeout(() => {
+        //         DropDownHolder.alert(
+        //             'error',
+        //             'Error',
+        //             'Please enter a valid Date of Birth!'
+        //         )
+        //     }, 500)
+        // }
     }
 
     validateEmail = (email) => {
@@ -331,6 +364,8 @@ class RegistrationAccount extends React.Component {
             registerErrMsg,
             inviterCode,
         } = this.props
+
+        console.log('THIS IS DOB', this.state.dateOfBirthStatus)
 
         return (
             <View
@@ -452,16 +487,45 @@ class RegistrationAccount extends React.Component {
                     inputTitle="Date of birth"
                     ref="dateOfBirth"
                     onChangeText={(val) => {
+                        if (
+                            this.state.dateOfBirthStatus !=
+                                FIELD_REQUIREMENTS.done &&
+                            val &&
+                            val.trim().length
+                        ) {
+                            this.setState({
+                                ...this.state,
+                                dateOfBirthStatus: FIELD_REQUIREMENTS.done,
+                            })
+                        }
                         this.props.registrationTextInputChange(
                             'dateOfBirth',
                             val
                         )
                     }}
-                    onBlur={() => this.validateDateDateOfBirth(dateOfBirth)}
+                    onBlur={() => this.validateDateDOB(dateOfBirth)}
+                    onSubmitEditing={() => {
+                        this.validateDateDOB(dateOfBirth)
+                        // TODO
+                        // this.scrollView.props.scrollToFocusedInput()
+                        Keyboard.dismiss()
+                    }}
+                    caption={this.state.dateOfBirthStatus}
+                    status={
+                        this.state.dateOfBirthStatus &&
+                        this.state.dateOfBirthStatus !== FIELD_REQUIREMENTS.done
+                            ? 'danger'
+                            : 'basic'
+                    }
                     placeholder={`You must be at least 13yrs of age`}
                     value={dateOfBirth}
                     returnKeyType="done"
-                    caption={`We won't share this information with anyone`}
+                    caption={
+                        !this.state.dateOfBirthStatus ||
+                        this.state.dateOfBirthStatus == FIELD_REQUIREMENTS.done
+                            ? `We won't share this information with anyone`
+                            : this.state.dateOfBirthStatus
+                    }
                     disabled={this.props.loading}
                 />
 
@@ -481,7 +545,6 @@ class RegistrationAccount extends React.Component {
                         this.validateInviteCode(inviterCode)
                     }}
                     returnKeyType="done"
-                    caption={``}
                     disabled={this.props.loading}
                     onBlur={() => {
                         this.validateInviteCode(inviterCode)
