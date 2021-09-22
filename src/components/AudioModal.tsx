@@ -466,8 +466,11 @@ class AudioModal extends React.Component<Props, State> {
                         <View
                             style={{
                                 flexDirection: 'row',
-                                // alignItems: 'center',
-                                // justifyContent: 'space-between',
+                                // marginHorizontal: 10,
+                                // paddingRight: 10,
+                                width: '90%',
+                                alignItems: 'center',
+                                alignSelf: 'center',
                             }}
                         >
                             {privacyOptions.map((options, index) => {
@@ -546,8 +549,10 @@ class AudioModal extends React.Component<Props, State> {
                             <TouchableOpacity
                                 onPress={this.props.onClose}
                                 style={{
-                                    position: 'relative',
-                                    left: 200,
+                                    position: 'absolute',
+                                    // flexDirection: 'row',
+                                    // justifyContent: 'flex-end',
+                                    right: 0,
                                 }}
                             >
                                 <Image

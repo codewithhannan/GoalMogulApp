@@ -403,21 +403,21 @@ class CreateChatroomModal extends React.Component {
                                 </View>
                             </View>
                         </ScrollView>
+                        <Button
+                            size="large"
+                            style={styles.actionButtonStyle}
+                            onPress={this.handleNext}
+                            disabled={
+                                modalPageNumber == 2 &&
+                                this.props.selectedMembers.length == 0
+                            }
+                        >
+                            {actionText}
+                        </Button>
                     </KeyboardAvoidingView>
                 ) : (
                     this.renderMemberInvite()
                 )}
-                <Button
-                    size="large"
-                    style={styles.actionButtonStyle}
-                    onPress={this.handleNext}
-                    disabled={
-                        modalPageNumber == 2 &&
-                        this.props.selectedMembers.length == 0
-                    }
-                >
-                    {actionText}
-                </Button>
             </Layout>
         )
     }

@@ -53,42 +53,38 @@ class ClarifyModal extends React.Component {
 
     renderOptions(options, setFieldValue) {
         return options.map((option, index) => (
-            <>
-                <View style={styles.optContainer}>
-                    <TouchableWithoutFeedback
-                        onPress={() =>
-                            this.handleCheckbox(
-                                `opt${index}`,
-                                setFieldValue,
-                                index
-                            )
+            // <>
+            <View key={index} style={styles.optContainer}>
+                <TouchableWithoutFeedback
+                    onPress={() =>
+                        this.handleCheckbox(`opt${index}`, setFieldValue, index)
+                    }
+                >
+                    <Icon
+                        name={
+                            this.state[`opt${index}`]
+                                ? 'radio-button-checked'
+                                : 'radio-button-unchecked'
                         }
-                    >
-                        <Icon
-                            name={
-                                this.state[`opt${index}`]
-                                    ? 'radio-button-checked'
-                                    : 'radio-button-unchecked'
-                            }
-                            style={
-                                this.state[`opt${index}`]
-                                    ? styles.btnChecked
-                                    : styles.btnUnchecked
-                            }
-                        />
-                    </TouchableWithoutFeedback>
-                    <Text style={styles.optText}>{option}</Text>
-                </View>
-                {/* <View
-                    style={{
-                        width: '100%',
-                        borderWidth: 0.2,
-                        marginTop: 5,
+                        style={
+                            this.state[`opt${index}`]
+                                ? styles.btnChecked
+                                : styles.btnUnchecked
+                        }
+                    />
+                </TouchableWithoutFeedback>
+                <Text style={styles.optText}>{option}</Text>
+            </View>
+            // {/* <View
+            //     style={{
+            //         width: '100%',
+            //         borderWidth: 0.2,
+            //         marginTop: 5,
 
-                        backgroundColor: 'lightgrey',
-                    }}
-                /> */}
-            </>
+            //         backgroundColor: 'lightgrey',
+            //     }}
+            // /> */}
+            // </>
         ))
     }
 
@@ -346,7 +342,7 @@ const styles = {
     },
     optContainer: {
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         marginVertical: hp(0.85),
     },

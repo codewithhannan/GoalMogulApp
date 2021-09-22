@@ -647,12 +647,13 @@ class ProfileV2 extends Component {
         )
     }
 
-    renderUserInfo({ userId, pageId }) {
+    renderUserInfo({ userId, pageId, selectedTab }) {
         return (
             <Animated.View style={{ opacity: this.state.infoCardOpacity }}>
                 <ProfileDetailCard
                     pageId={pageId}
                     userId={userId}
+                    selectedTab={selectedTab}
                     onLayout={this.handleProfileDetailCardLayout}
                     openEarnBageModal={() =>
                         this.setState({

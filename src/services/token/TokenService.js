@@ -446,11 +446,11 @@ class TokenService {
         // First try to check from cache
         const tokenObject = this._authTokenObject
 
-        Logger.log(
-            '[TokenService] [checkAndGetValidAuthToken] authTokenObject loaded from cache is ',
-            tokenObject,
-            1
-        )
+        // Logger.log(
+        //     '[TokenService] [checkAndGetValidAuthToken] authTokenObject loaded from cache is ',
+        //     tokenObject,
+        //     1
+        // )
         if (
             tokenObject &&
             _.get(tokenObject, 'token') &&

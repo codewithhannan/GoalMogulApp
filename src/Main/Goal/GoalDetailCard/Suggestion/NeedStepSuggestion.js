@@ -13,6 +13,7 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
     ScrollView,
+    Platform,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { CheckBox } from 'react-native-elements'
@@ -21,6 +22,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import R from 'ramda'
 import RNModal from 'react-native-modalbox'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 // Actions
 import {
@@ -207,7 +209,7 @@ class NeedStepSuggestion extends React.Component {
                     // borderColor: 'lightgray',
                 }}
             >
-                <View style={{ marginHorizontal: 15 }}>{titleText}</View>
+                {/* <View style={{ marginHorizontal: 15 }}>{titleText}</View> */}
                 <TextInput
                     placeholder={`What ${suggestion} do you want to suggest?`}
                     onChangeText={(val) =>
@@ -729,8 +731,8 @@ class NeedStepSuggestion extends React.Component {
         const goalReminderOptions = this.getOnGoalReminderOptions()
 
         return (
-            <ScrollView>
-                <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>
+                <KeyboardAwareScrollView bounces={false}>
                     {/* <SuggestionPopup
                         isVisible={this.state.showSuggestionPopup}
                         name={goalDetail.owner.name}
@@ -814,8 +816,8 @@ class NeedStepSuggestion extends React.Component {
 
                         {this.renderInputField()}
                     </View>
-                </KeyboardAvoidingView>
-            </ScrollView>
+                </KeyboardAwareScrollView>
+            </View>
         )
     }
 }
