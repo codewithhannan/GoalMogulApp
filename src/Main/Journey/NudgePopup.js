@@ -108,7 +108,7 @@ const mapStateToProps = (state, ownProps) => {
     const visitedUser = state.profile.userId.userId
     const { owner, _id } = state.goalDetail.goal.goal
     const { token } = state.auth.user
-    console.log('THIS IS STATEEEE', state)
+    // console.log('THIS IS STATEEEE', state)
     return {
         user,
         isVisible,

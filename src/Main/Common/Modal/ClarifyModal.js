@@ -20,6 +20,7 @@ import {
 } from 'react-native'
 import Constants from 'expo-constants'
 import Modal from 'react-native-modal'
+
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import {
     widthPercentageToDP as wp,
@@ -31,6 +32,11 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import * as text from '../../../styles/basic/text'
 import { GM_BLUE } from '../../../styles/basic/color'
 import DelayedButton from '../Button/DelayedButton'
+import {
+    attachSuggestion,
+    postComment,
+    sendClarifyMessage,
+} from '../../../redux/modules/feed/comment/CommentActions'
 
 class ClarifyModal extends React.Component {
     constructor(props) {
@@ -41,49 +47,70 @@ class ClarifyModal extends React.Component {
             opt2: false,
             opt3: false,
             increaseHeight: false,
+            clarifyText: '',
+            btnDisabled: true,
+            itemId: null,
+            itemindex: '',
+            textToSend: '',
+            options: [
+                {
+                    id: 1,
+                    title: `Make your goal more specific`,
+                    isSelected: false,
+                },
+                {
+                    id: 2,
+
+                    title: `Break your goal into more Steps so i can follow better?`,
+                    isSelected: false,
+                },
+                {
+                    id: 3,
+
+                    title: `List more Needs so i can help you more easily?`,
+                    isSelected: false,
+                },
+                {
+                    id: 4,
+
+                    title: `Set a clear deadline for you goal?`,
+                    isSelected: false,
+                },
+            ],
         }
     }
 
-    options = [
-        `Make your goal more specific`,
-        `Break your goal into more Steps so i can follow better?`,
-        `List more Needs so i can help you more easily?`,
-        `Set a clear deadline for you goal?`,
-    ]
+    PressedItem = (itemId) => {
+        this.setState({ itemId, btnDisabled: false })
+    }
 
     renderOptions(options, setFieldValue) {
         return options.map((option, index) => (
             // <>
             <View key={index} style={styles.optContainer}>
                 <TouchableWithoutFeedback
-                    onPress={() =>
-                        this.handleCheckbox(`opt${index}`, setFieldValue, index)
-                    }
+                    onPress={() => {
+                        this.setState({ textToSend: option.title })
+                        this.PressedItem(option.id)
+                        this.setState({ itemindex: option.id })
+                    }}
                 >
                     <Icon
                         name={
-                            this.state[`opt${index}`]
+                            this.state.itemindex == option.id
                                 ? 'radio-button-checked'
                                 : 'radio-button-unchecked'
                         }
                         style={
-                            this.state[`opt${index}`]
+                            this.state.itemindex == option.id
                                 ? styles.btnChecked
                                 : styles.btnUnchecked
                         }
                     />
                 </TouchableWithoutFeedback>
-                <Text style={styles.optText}>{option}</Text>
+                <Text style={styles.optText}>{option.title}</Text>
             </View>
-            // {/* <View
-            //     style={{
-            //         width: '100%',
-            //         borderWidth: 0.2,
-            //         marginTop: 5,
 
-            //         backgroundColor: 'lightgrey',
-            //     }}
-            // /> */}
             // </>
         ))
     }
@@ -134,7 +161,7 @@ class ClarifyModal extends React.Component {
     }
 
     render() {
-        const { name } = this.props
+        const { name, goalDetail, goalId, focusRef, pageId } = this.props
 
         return (
             <>
@@ -193,27 +220,24 @@ class ClarifyModal extends React.Component {
 
                             <Formik
                                 initialValues={{
-                                    opt0: '',
-                                    opt1: '',
-                                    opt2: '',
-                                    opt3: '',
+                                    suggestionType: 'Clarify',
+                                    suggestionText: 'Testing',
                                 }}
-                                onSubmit={async (value, { setSubmitting }) => {
-                                    Alert.alert(
-                                        'Thank you',
-                                        'Your message has been submitted!',
-                                        [
-                                            {
-                                                text: 'Ok',
-                                                onPress: () =>
-                                                    this.props.closeModal(
-                                                        true,
-                                                        value
-                                                    ),
-                                            },
-                                        ],
-                                        { cancelable: false }
+                                onSubmit={(value, { setSubmitting }) => {
+                                    // console.log('TESTTT')
+                                    this.props.closeModal()
+                                    this.props.sendClarifyMessage(
+                                        goalId,
+                                        this.state.textToSend,
+                                        pageId
                                     )
+                                    setTimeout(() => {
+                                        this.props.openGoalDetail(goalDetail, {
+                                            focusType: 'comment',
+                                            initialShowSuggestionModal: false,
+                                            initialFocusCommentBox: false,
+                                        })
+                                    }, 500)
                                 }}
                             >
                                 {({
@@ -225,7 +249,7 @@ class ClarifyModal extends React.Component {
                                 }) => (
                                     <>
                                         {this.renderOptions(
-                                            this.options,
+                                            this.state.options,
                                             setFieldValue
                                         )}
 
@@ -234,9 +258,11 @@ class ClarifyModal extends React.Component {
                                                 placeholder={`Anything else you want to add?`}
                                                 multiline={true}
                                                 style={styles.inputText}
-                                                onChangeText={handleChange(
-                                                    'opt4'
-                                                )}
+                                                onChangeText={(value) =>
+                                                    this.setState({
+                                                        textToSend: value,
+                                                    })
+                                                }
                                                 onFocus={() =>
                                                     this.setState({
                                                         increaseHeight: true,
@@ -273,7 +299,17 @@ class ClarifyModal extends React.Component {
     }
 }
 
-export default ClarifyModal
+const mapStateToProps = (state, props) => {
+    const visitedUser = state.profile.userId.userId
+    const { token } = state.auth.user
+
+    return {
+        visitedUser,
+        token,
+    }
+}
+
+export default connect(mapStateToProps, { sendClarifyMessage })(ClarifyModal)
 
 const styles = {
     title: {

@@ -370,10 +370,10 @@ export const postComment = (pageId, callback) => (dispatch, getState) => {
     // If succeed, COMMENT_NEW_POST_SUCCESS, otherwise, COMMENT_NEW_POST_FAIL
     const onSuccess = (data) => {
         const { commentType } = newComment
-        trackWithProperties(E.COMMENT_ADDED, {
-            CommentDetail: newComment,
-            UserId: user.userId,
-        })
+        // trackWithProperties(E.COMMENT_ADDED, {
+        //     CommentDetail: newComment,
+        //     UserId: user.userId,
+        // })
         dispatch({
             type: COMMENT_NEW_POST_SUCCESS,
             payload: {
@@ -543,10 +543,10 @@ export const sendVoiceMessage = (uri, pageId, _id, callback) => async (
     }
 
     const onSuccess = (data) => {
-        trackWithProperties(E.COMMENT_ADDED, {
-            CommentDetail: newComment,
-            UserId: user.userId,
-        })
+        // trackWithProperties(E.COMMENT_ADDED, {
+        //     CommentDetail: newComment,
+        //     UserId: user.userId,
+        // })
         // dispatch({
         //     type: COMMENT_NEW_POST_SUCCESS,
         //     payload: {
@@ -621,6 +621,88 @@ export const sendVoiceMessage = (uri, pageId, _id, callback) => async (
         */
             onError(err)
         })
+}
+
+export const sendClarifyMessage = (goalId, textToSend, pageId) => async (
+    dispatch,
+    getState
+) => {
+    const { token, user } = getState().user
+    const { tab } = getState().navigation
+    // const newComment = commentAdapter(getState(), pageId, tab)
+    // const { suggestion, mediaRef } = newComment
+    // console.log(`${DEBUG_KEY}: new comment to submit is: `, newComment)
+    const newComment = {
+        commentType: 'Suggestion',
+        parentRef: goalId,
+        parentType: 'Goal',
+        contentText: '',
+        contentTags: [],
+        content: undefined,
+        suggestion: {
+            suggestionText: textToSend,
+            suggestionType: 'Clarify',
+        },
+        mediaPresignedUrl: undefined,
+        mediaRef: undefined,
+        replyToRef: undefined,
+    }
+
+    dispatch({
+        type: COMMENT_NEW_POST_START,
+        payload: {
+            tab,
+            pageId,
+            entityId: newComment.parentRef, // This is for post/share/goal to set the loading indicator
+        },
+    })
+
+    const onError = (err) => {
+        Keyboard.dismiss()
+        console.log(`${DEBUG_KEY}: error submitting comment: `, err)
+    }
+
+    try {
+        const onSuccess = (data) => {
+            console.log(
+                `${DEBUG_KEY}: comment posted successfully with res: `,
+                data
+            )
+
+            dispatch({
+                type: COMMENT_NEW_POST_SUCCESS,
+                payload: {
+                    comment: {
+                        ...data,
+                        owner: {
+                            ...user,
+                        },
+                    },
+                    tab,
+                    pageId,
+                    entityId: newComment.parentRef, // This is for post/share/goal to remove the loading indicator
+                },
+            })
+        }
+
+        let newCommentObject = {
+            ...newComment,
+        }
+
+        return sendPostCommentRequest(
+            newCommentObject,
+            token,
+            onError,
+            onSuccess
+        )
+
+        /*
+        Error Type:
+          voice upload to S3
+        */
+    } catch (error) {
+        console.log('ERRRORRR', error.message)
+    }
 }
 
 // Send creating comment request
