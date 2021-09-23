@@ -382,7 +382,7 @@ class RegistrationAccount extends React.Component {
                     caption={
                         !this.state.nameStatus ||
                         this.state.nameStatus == FIELD_REQUIREMENTS.done
-                            ? 'So your friends can recognize you'
+                            ? ''
                             : this.state.nameStatus
                     }
                     status={
@@ -445,7 +445,6 @@ class RegistrationAccount extends React.Component {
                     }
                     value={gender}
                     disabled={this.props.loading}
-                    caption="This is used to customize your experience"
                 />
                 <InputBox
                     key="dateOfBirth"

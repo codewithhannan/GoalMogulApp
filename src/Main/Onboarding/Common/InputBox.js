@@ -140,7 +140,7 @@ class InputBox extends React.Component {
         // console.log(date.toUTCString())
 
         return (
-            <View style={[{ marginTop: 20 }, containerStyle || {}]}>
+            <View style={[{ marginTop: 10 }, containerStyle || {}]}>
                 <View
                     style={{
                         flexDirection: 'row',
@@ -803,7 +803,7 @@ const styles = {
     containerStyle: {
         display: 'flex',
         width: '100%',
-        marginTop: 20,
+        marginTop: 15,
     },
     pillStyle: {
         paddingVertical: 16,

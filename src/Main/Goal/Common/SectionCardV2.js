@@ -290,7 +290,11 @@ class SectionCardV2 extends Component {
                         {this.renderCheckBox(isCompleted, isCreateCard)}
                     </View>
 
-                    <View style={{ flex: 1 }}>
+                    <View
+                        style={{
+                            flex: 1,
+                        }}
+                    >
                         {this.renderTextStuff(isCommentFocused, description)}
                         {!isCommentFocused &&
                             !isCreateCard &&

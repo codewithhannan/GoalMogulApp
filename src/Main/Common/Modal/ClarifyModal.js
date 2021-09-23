@@ -46,9 +46,9 @@ class ClarifyModal extends React.Component {
 
     options = [
         `Make your goal more specific`,
-        `Break your goal into more Steps so i can follow better?`,
-        `List more Needs so i can help you more easily?`,
-        `Set a clear deadline for you goal?`,
+        `Break your goal into more Steps so I can follow better?`,
+        `List more Needs so I can help you more easily?`,
+        `Set a clear deadline for your goal?`,
     ]
 
     renderOptions(options, setFieldValue) {
@@ -185,10 +185,14 @@ class ClarifyModal extends React.Component {
                                 }}
                             />
                             <Text style={styles.title}>
-                                {`Ask ${name} to clarify his goals:`}
+                                {`Ask ${
+                                    name && name.substr(0, name.indexOf(' '))
+                                } to clarify his goal:`}
                             </Text>
                             <Text style={styles.text}>
-                                {`${name}, are you able to..`}
+                                {`${
+                                    name && name.substr(0, name.indexOf(' '))
+                                }, are you able to...`}
                             </Text>
 
                             <Formik

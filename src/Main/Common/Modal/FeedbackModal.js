@@ -79,15 +79,15 @@ function FeedbackModal(props) {
                     <Text
                         style={{
                             fontWeight: '400',
-                            fontSize: 15,
-                            paddingLeft: 20,
+                            fontSize: 16,
                             lineHeight: 23,
-                            width: '90%',
+                            width: '100%',
                             marginBottom: 20,
                             marginTop: 10,
+                            textAlign: 'center',
                         }}
                     >
-                        {`Thanks for your feedback! We will be in touch.`}
+                        {`We will be in touch.`}
                     </Text>
                 </View>
             </View>
