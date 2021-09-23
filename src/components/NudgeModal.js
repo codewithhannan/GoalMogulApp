@@ -42,7 +42,7 @@ class ModalTester extends Component {
                 <TouchableWithoutFeedback onPress={this.props.onClose}>
                     <View
                         style={{
-                            width: '27%',
+                            width: '23%',
                             justifyContent: 'center',
                             alignItems: 'center',
                             height: hp(4.5),
@@ -89,7 +89,6 @@ class ModalTester extends Component {
                                 zIndex: 1,
                                 padding: 10,
                                 alignSelf: 'center',
-                                marginTop: 4,
                                 color: 'white',
                                 fontFamily: 'SFProDisplay-Semibold',
                             }}

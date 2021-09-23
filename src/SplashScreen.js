@@ -14,6 +14,7 @@ import {
 /* Asset */
 import LogoText from './asset/header/GMText.png'
 import LogoIcon from './asset/header/header-logo-white.png'
+import newSplashScreenLogo from './asset/header/newSplashScreenLogo.png'
 
 import { track, trackViewScreen, EVENT as E } from './monitoring/segment'
 import { Screen } from './monitoring/segment/Constants'
@@ -79,8 +80,10 @@ class SplashScreen extends Component {
                 <View style={styles.bodyContainerStyle}>
                     {/* Top header logo */}
                     <View style={styles.logoContainerStyle}>
-                        <Image source={LogoIcon} style={styles.logoIconStyle} />
-                        <Image source={LogoText} style={styles.logoTextStyle} />
+                        <Image
+                            source={newSplashScreenLogo}
+                            style={styles.logoIconStyle}
+                        />
                     </View>
                     {/* Artwork */}
                     {/* <Image source={HandshakeArt} style={styles.artworkStyle} /> */}
@@ -155,12 +158,13 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: IS_BIG_IPHONE ? 60 : 48,
+        flexDirection: 'row',
     },
     logoIconStyle: {
-        height: 100,
-        width: 100,
+        height: 60,
+        width: 300,
         marginBottom: 16,
-        // resizeMode: 'contain',
+        resizeMode: 'contain',
     },
     logoTextStyle: {
         height: 40,
@@ -179,8 +183,9 @@ const styles = {
     sloganTextStyle: {
         color: 'white',
         fontFamily: FONT_FAMILY.MEDIUM,
-        fontSize: 24 * UI_SCALE,
+        fontSize: 22 * UI_SCALE,
         letterSpacing: LETTER_SPACING.WIDE,
+        top: 100,
     },
 
     // action button styles

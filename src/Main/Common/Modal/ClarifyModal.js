@@ -52,28 +52,30 @@ class ClarifyModal extends React.Component {
             itemId: null,
             itemindex: '',
             textToSend: '',
+
             options: [
                 {
                     id: 1,
+
                     title: `Make your goal more specific`,
                     isSelected: false,
                 },
                 {
                     id: 2,
 
-                    title: `Break your goal into more Steps so i can follow better?`,
+                    title: `Break your goal into more Steps so I can follow better?`,
                     isSelected: false,
                 },
                 {
                     id: 3,
 
-                    title: `List more Needs so i can help you more easily?`,
+                    title: `List more Needs so I can help you more easily?`,
                     isSelected: false,
                 },
                 {
                     id: 4,
 
-                    title: `Set a clear deadline for you goal?`,
+                    title: `Set a clear deadline for your goal?`,
                     isSelected: false,
                 },
             ],
@@ -212,10 +214,14 @@ class ClarifyModal extends React.Component {
                                 }}
                             />
                             <Text style={styles.title}>
-                                {`Ask ${name} to clarify his goals:`}
+                                {`Ask ${
+                                    name && name.substr(0, name.indexOf(' '))
+                                } to clarify his goal:`}
                             </Text>
                             <Text style={styles.text}>
-                                {`${name}, are you able to..`}
+                                {`${
+                                    name && name.substr(0, name.indexOf(' '))
+                                }, are you able to...`}
                             </Text>
 
                             <Formik
