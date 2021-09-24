@@ -42,14 +42,14 @@ class ModalTester extends Component {
                 <TouchableWithoutFeedback onPress={this.props.onClose}>
                     <View
                         style={{
-                            width: '23%',
+                            width: 75,
                             justifyContent: 'center',
                             alignItems: 'center',
-                            height: hp(4.5),
+                            height: 31,
                             borderColor: '#42C0F5',
                             borderWidth: 2,
                             borderRadius: 3,
-                            marginTop: 0,
+                            marginBottom: 15,
                         }}
                     >
                         <Text
@@ -82,12 +82,13 @@ class ModalTester extends Component {
                         this.props.onClose()
                     }}
                 >
-                    <View style={{}}>
+                    <View style={{ marginBottom: 16 }}>
                         <Text
                             style={{
                                 position: 'absolute',
                                 zIndex: 1,
                                 padding: 10,
+
                                 alignSelf: 'center',
                                 color: 'white',
                                 fontFamily: 'SFProDisplay-Semibold',
@@ -96,7 +97,7 @@ class ModalTester extends Component {
                             Yes
                         </Text>
                         <LottieView
-                            style={{ height: hp(5) }}
+                            style={{ height: 35 }}
                             source={YES_LOTTIE}
                             autoPlay
                             loop
@@ -135,7 +136,6 @@ class ModalTester extends Component {
 
                                 borderRadius: 8,
                                 backgroundColor: color.GV_MODAL,
-                                height: '40%',
                             }}
                         >
                             <View

@@ -387,18 +387,10 @@ class CreateGoalModal extends React.Component {
                     )
                 }}
                 onCancel={() => {
-                    this.setState(
-                        {
-                            ...this.state,
-                            goalReminderDatePicker: false,
-                        },
-                        () => {
-                            // Timeout is set to allow animation finished
-                            setTimeout(() => {
-                                this.handleCreate()
-                            }, 100)
-                        }
-                    )
+                    this.setState({
+                        ...this.state,
+                        goalReminderDatePicker: false,
+                    })
                 }}
             />
         )

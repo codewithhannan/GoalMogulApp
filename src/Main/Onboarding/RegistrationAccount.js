@@ -251,10 +251,17 @@ class RegistrationAccount extends React.Component {
 
     validateDateDOB = (dateOfBirth) => {
         let oneYearFromNow = new Date()
-        let validateDate = oneYearFromNow.setFullYear(
+        let validateDateTo = oneYearFromNow.setFullYear(
             oneYearFromNow.getFullYear() - 13
         )
-        let validateDateToTime = new Date(validateDate).getTime()
+        let validateDateFrom = oneYearFromNow.setFullYear(
+            oneYearFromNow.getFullYear() - 71
+        )
+        let validateDateToTime = new Date(validateDateTo).getTime()
+        const checkDate =
+            moment(dateOfBirth, 'MM/DD/YYYY').format('MM/DD/YYYY') ===
+            dateOfBirth
+        let validateDateFromTime = new Date(validateDateFrom).getTime()
         let selectedDateToTime = new Date(dateOfBirth).getTime()
         if (!dateOfBirth) {
             this.setState({
@@ -262,23 +269,17 @@ class RegistrationAccount extends React.Component {
                 dateOfBirthStatus:
                     FIELD_REQUIREMENTS.dateOfBirth.require_dateOfBirth,
             })
-        } else if (selectedDateToTime >= validateDateToTime) {
+        } else if (
+            selectedDateToTime >= validateDateToTime ||
+            !checkDate ||
+            selectedDateToTime <= validateDateFromTime
+        ) {
             this.setState({
                 ...this.state,
                 dateOfBirthStatus:
                     FIELD_REQUIREMENTS.dateOfBirth.invalid_dateOfBirth,
             })
         }
-        // else {
-        //     this.setState({ dateOfBirthStatus: undefined })
-        //     setTimeout(() => {
-        //         DropDownHolder.alert(
-        //             'error',
-        //             'Error',
-        //             'Please enter a valid Date of Birth!'
-        //         )
-        //     }, 500)
-        // }
     }
 
     validateEmail = (email) => {
@@ -364,8 +365,6 @@ class RegistrationAccount extends React.Component {
             registerErrMsg,
             inviterCode,
         } = this.props
-
-        console.log('THIS IS DOB', this.state.dateOfBirthStatus)
 
         return (
             <View
@@ -621,7 +620,8 @@ class RegistrationAccount extends React.Component {
                                     FIELD_REQUIREMENTS.done ||
                                 this.state.emailStatus !==
                                     FIELD_REQUIREMENTS.done ||
-                                !this.props.dateOfBirth ||
+                                this.state.dateOfBirthStatus !==
+                                    FIELD_REQUIREMENTS.done ||
                                 !this.props.gender
                             }
                         />

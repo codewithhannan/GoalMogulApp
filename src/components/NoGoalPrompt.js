@@ -186,9 +186,10 @@ class NoGoalPrompt extends Component {
                         <View
                             style={{
                                 width: MODAL_WIDTH * 0.9,
+                                height: 430,
 
                                 backgroundColor: color.GV_MODAL,
-                                height: hp('50%'),
+
                                 backgroundColor: '#FAFAFA',
                                 borderRadius: 5,
                             }}
@@ -240,7 +241,7 @@ class NoGoalPrompt extends Component {
                             <View style={{ marginTop: 12 }}>
                                 <LottieView
                                     style={{
-                                        height: hp(20),
+                                        height: 170,
 
                                         alignSelf: 'center',
                                     }}
@@ -273,40 +274,35 @@ class NoGoalPrompt extends Component {
 
                             <View
                                 style={{
-                                    bottom: 70,
+                                    flex: 1,
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    bottom: 65,
                                     position: 'absolute',
                                     width: '100%',
                                 }}
                             >
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        flexDirection: 'row',
-                                        justifyContent: 'center',
+                                <Carousel
+                                    layout={'default'}
+                                    ref={(ref) => (this.carousel = ref)}
+                                    data={this.state.randomQuestions}
+                                    sliderWidth={ITEM_WIDTH * 1.085}
+                                    itemWidth={ITEM_WIDTH * 1.085}
+                                    renderItem={this._renderItem}
+                                    onSnapToItem={(index) => {
+                                        this.setState({
+                                            selectedText: this.state
+                                                .randomQuestions[index].title,
+                                        })
+                                        this.changeColor(index, index)
                                     }}
-                                >
-                                    <Carousel
-                                        layout={'default'}
-                                        ref={(ref) => (this.carousel = ref)}
-                                        data={this.state.randomQuestions}
-                                        sliderWidth={ITEM_WIDTH * 1.085}
-                                        itemWidth={ITEM_WIDTH * 1.085}
-                                        renderItem={this._renderItem}
-                                        onSnapToItem={(index) => {
-                                            this.setState({
-                                                selectedText: this.state
-                                                    .randomQuestions[index]
-                                                    .title,
-                                            })
-                                            this.changeColor(index, index)
-                                        }}
-                                        useScrollView
-                                        initialScrollIndex={0}
-                                        activeSlideOffset={0}
-                                        hasParallaxImages={true}
-                                    />
-                                </View>
+                                    useScrollView
+                                    initialScrollIndex={0}
+                                    activeSlideOffset={0}
+                                    hasParallaxImages={true}
+                                />
                             </View>
+
                             <DelayedButton
                                 activeOpacity={0.6}
                                 onPress={() => {
@@ -333,7 +329,7 @@ class NoGoalPrompt extends Component {
                                     justifyContent: 'center',
 
                                     position: 'aboslute',
-                                    top: 110,
+                                    top: 100,
                                     alignSelf: 'center',
                                 }}
                             >
