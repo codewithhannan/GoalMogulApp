@@ -33,15 +33,15 @@ class GoalSwiper extends React.Component {
         }
         this.refsArray = [] // add this
         this.SWIPED_DATA = [
-            {
-                id: 1,
-                source: ACCOUNTABILITY,
-                onPress: () => {
-                    prevOpenedRow.close()
-                    this.setState({ accountPopUpVisible: true })
-                },
-                backgroundColor: '#CEFFBC',
-            },
+            // {
+            //     id: 1,
+            //     source: ACCOUNTABILITY,
+            //     onPress: () => {
+            //         prevOpenedRow.close()
+            //         this.setState({ accountPopUpVisible: true })
+            //     },
+            //     backgroundColor: '#CEFFBC',
+            // },
 
             {
                 id: 3,
@@ -200,9 +200,6 @@ class GoalSwiper extends React.Component {
             goalId,
             goalRef,
         } = this.props
-        // console.log('====================================')
-        // console.log('goalswiper goalref', goalRef)
-        // console.log('====================================')
         return (
             <>
                 <CommentVideoModal

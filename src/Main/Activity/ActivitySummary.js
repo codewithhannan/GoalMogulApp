@@ -21,6 +21,9 @@ class ActivitySummary extends React.Component {
             belongsToEvent,
             postRef,
         } = item
+        if (actedWith === 'Step') {
+            console.log('STEEEEPSSSSSSS', item)
+        }
 
         const tribeText = belongsToTribe ? (
             <Text>

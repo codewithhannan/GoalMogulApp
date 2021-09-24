@@ -126,7 +126,6 @@ class InputBox extends React.Component {
             status,
             onBlur,
         } = this.props
-        console.log('Value', value)
 
         const { selectedStartDate } = this.state
         // const startDate = selectedStartDate ? selectedStartDate.toString() : ''
@@ -442,7 +441,7 @@ class InputBox extends React.Component {
                         </SafeAreaView>
                     </View>
                 </Modal> */}
-                {/* {this.renderCaption(caption, status)} */}
+                {this.renderCaption(caption, status)}
             </View>
         )
     }
@@ -583,6 +582,7 @@ class InputBox extends React.Component {
                 <View
                     style={{
                         flexDirection: 'row',
+                        marginTop: 5,
                     }}
                 >
                     <Text
@@ -604,6 +604,7 @@ class InputBox extends React.Component {
                         alignItems: 'center',
                         justifyContent: 'center',
                         paddingVertical: 4,
+                        marginTop: 5,
                     }}
                 >
                     {this.renderPill('Male', value, onChangeText)}
@@ -801,7 +802,6 @@ class InputBox extends React.Component {
 
 const styles = {
     containerStyle: {
-        display: 'flex',
         width: '100%',
         marginTop: 15,
     },
