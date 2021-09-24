@@ -468,7 +468,7 @@ export class GoalDetailCardV3 extends React.Component {
 
     scrollToIndex = (index, viewOffset = 0, animated = true) => {
         if (this.flatList)
-            this.flatList.getNode().scrollToIndex({
+            this.flatList.scrollToIndex({
                 index,
                 animated,
                 viewPosition: 1,

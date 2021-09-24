@@ -142,16 +142,16 @@ class CreateGoalModal extends React.Component {
                 order + 1
             )
 
-            if (order === 5) {
-                if (this.newGoalView !== undefined) {
-                    // this.newGoalView.scrollToEnd();
-                    // return new Promise(r => setTimeout(r, 4000));
-                } else {
-                    console.warn(
-                        `${DEBUG_KEY}: [ onStepChange ]: newGoalView ref is undefined`
-                    )
-                }
-            }
+            // if (order === 5) {
+            //     if (this.newGoalView !== undefined) {
+            //         // this.newGoalView.scrollToEnd();
+            //         // return new Promise(r => setTimeout(r, 4000));
+            //     } else {
+            //         console.warn(
+            //             `${DEBUG_KEY}: [ onStepChange ]: newGoalView ref is undefined`
+            //         )
+            //     }
+            // }
         })
     }
 
@@ -677,9 +677,9 @@ class CreateGoalModal extends React.Component {
                                 isImportedGoal={this.props.isImportedGoal}
                                 goal={this.props.goal}
                                 tutorialText={this.props.tutorialText}
-                                onRef={(r) => {
-                                    this.newGoalView = r
-                                }}
+                                // onRef={(r) => {
+                                //     this.newGoalView = r
+                                // }}
                                 createButtonTitle={actionText}
                                 handleCreateButton={this.handleGoalReminder}
                                 actionDisabled={

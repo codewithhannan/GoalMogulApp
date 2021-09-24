@@ -506,7 +506,7 @@ class MyTribe extends React.PureComponent {
             <PostPreviewCard
                 item={props.item}
                 tribeDetailPostData={tribeDetailPostData}
-                key={Math.random().toString(36).substr(2, 9)}
+                key={props.index}
                 hasActionButton
             />
         )
@@ -591,6 +591,8 @@ class MyTribe extends React.PureComponent {
                         this.props.refreshMyTribeDetail(
                             this.props.tribeId,
                             this.props.pageId
+                            // null,
+                            // false
                         )
                     }
                     onEndReached={() =>

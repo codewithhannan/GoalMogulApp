@@ -422,6 +422,9 @@ export const getEmails = (contact) => {
 const Entities = require('html-entities').XmlEntities
 const entities = new Entities()
 export const decode = (text) => entities.decode(text)
+// const { decodeEntity } = require('html-entities')
+// const entities = new Entities()
+// export const decode = (text) => decodeEntity(text)
 
 export const escapeRegExp = (string) => {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string

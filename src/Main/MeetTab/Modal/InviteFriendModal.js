@@ -459,7 +459,7 @@ class InviteFriendModal extends React.PureComponent {
                     // marginTop: 50,
                     backgroundColor: 'transparent',
                 }}
-                useNativeDriver={true}
+                // useNativeDriver={true}
             >
                 <View
                     style={{

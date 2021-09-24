@@ -474,76 +474,70 @@ class AudioModal extends React.Component<Props, State> {
                         >
                             {privacyOptions.map((options, index) => {
                                 return (
-                                    <>
-                                        <TouchableOpacity
-                                            key={Math.random()
-                                                .toString(36)
-                                                .substr(2, 9)}
-                                            onPress={() => {
-                                                this._changeColor(options.value)
-                                            }}
-                                            disabled={
-                                                this.state.selected ===
-                                                options.value
-                                            }
+                                    <TouchableOpacity
+                                        key={Math.random()
+                                            .toString(36)
+                                            .substr(2, 9)}
+                                        onPress={() => {
+                                            this._changeColor(options.value)
+                                        }}
+                                        disabled={
+                                            this.state.selected ===
+                                            options.value
+                                        }
+                                    >
+                                        <View
+                                            style={[
+                                                GOALS_STYLE.commonPillContainer,
+                                                {
+                                                    height: 35,
+                                                    borderColor:
+                                                        this.state.selected ===
+                                                        options.value
+                                                            ? '#828282'
+                                                            : 'lightgray',
+                                                    borderWidth: 0.3,
+                                                    left: 10,
+                                                    width: 80,
+                                                    marginHorizontal: 3,
+                                                    backgroundColor: 'white',
+                                                },
+                                            ]}
                                         >
-                                            <View
-                                                style={[
-                                                    GOALS_STYLE.commonPillContainer,
-                                                    {
-                                                        height: 35,
-                                                        borderColor:
-                                                            this.state
-                                                                .selected ===
-                                                            options.value
-                                                                ? '#828282'
-                                                                : 'lightgray',
-                                                        borderWidth: 0.3,
-                                                        left: 10,
-                                                        width: 80,
-                                                        marginHorizontal: 3,
-                                                        backgroundColor:
-                                                            'white',
-                                                    },
-                                                ]}
-                                            >
-                                                <Icon
-                                                    pack="material-community"
-                                                    name={options.iconName}
-                                                    style={{
-                                                        height: 12,
-                                                        width: 12,
-                                                        tintColor: '#828282',
-                                                        opacity:
-                                                            this.state
-                                                                .selected ===
-                                                            options.value
-                                                                ? 1
-                                                                : 0.3,
-                                                    }}
-                                                />
+                                            <Icon
+                                                pack="material-community"
+                                                name={options.iconName}
+                                                style={{
+                                                    height: 12,
+                                                    width: 12,
+                                                    tintColor: '#828282',
+                                                    opacity:
+                                                        this.state.selected ===
+                                                        options.value
+                                                            ? 1
+                                                            : 0.3,
+                                                }}
+                                            />
 
-                                                <Text
-                                                    style={{
-                                                        fontFamily:
-                                                            text.FONT_FAMILY
-                                                                .SEMI_BOLD,
-                                                        fontSize: 14,
-                                                        color: '#828282',
-                                                        marginLeft: 5,
-                                                        opacity:
-                                                            this.state
-                                                                .selected ===
-                                                            options.value
-                                                                ? 1
-                                                                : 0.3,
-                                                    }}
-                                                >
-                                                    {options.title}
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </>
+                                            <Text
+                                                style={{
+                                                    fontFamily:
+                                                        text.FONT_FAMILY
+                                                            .SEMI_BOLD,
+                                                    fontSize: 14,
+                                                    color: '#828282',
+                                                    marginLeft: 5,
+                                                    opacity:
+                                                        this.state.selected ===
+                                                        options.value
+                                                            ? 1
+                                                            : 0.3,
+                                                }}
+                                            >
+                                                {options.title}
+                                            </Text>
+                                        </View>
+                                    </TouchableOpacity>
                                 )
                             })}
 

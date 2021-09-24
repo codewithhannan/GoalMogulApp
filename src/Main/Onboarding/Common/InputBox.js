@@ -116,9 +116,9 @@ class InputBox extends React.Component {
         )
     }
 
-    focus() {
-        this.refs['textInput'].focus()
-    }
+    // focus() {
+    //     this.refs['textInput'].focus()
+    // }
 
     renderDateTimePicker() {
         const {

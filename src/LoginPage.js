@@ -76,7 +76,7 @@ class LoginPage extends Component {
 
     _keyboardDidShow = () => {
         if (this.state.shouldScrollToLoginButton) {
-            this.scrollView.props.scrollToFocusedInput(this.loginButton)
+            // this.scrollView.props.scrollToFocusedInput(this.loginButton)
             this.setState({
                 shouldScrollToLoginButton: false,
             })
@@ -392,11 +392,12 @@ class LoginPage extends Component {
                                             handleSubmit(
                                                 this.handleLoginPressed
                                             )
-                                        } else {
-                                            this.refs['password']
-                                                .getRenderedComponent()
-                                                .focus()
                                         }
+                                        // else {
+                                        //     this.refs['password']
+                                        //         .getRenderedComponent()
+                                        //         .focus()
+                                        // }
                                     }}
                                     onFocus={this.scrollToLoginButton.bind(
                                         this

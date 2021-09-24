@@ -231,7 +231,7 @@ class EarnBadgeModal extends React.PureComponent {
                             justifyContent: 'center',
                             alignContent: 'center',
                         }}
-                        imageStyle={{ borderRadius: 15 }}
+                        // imageStyle={{ borderRadius: 15 }}
                     >
                         <View
                             style={{

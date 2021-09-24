@@ -301,14 +301,14 @@ class MemberListCard extends Component {
     }
 
     render() {
-        const { item } = this.props
+        const { item, index } = this.props
         if (!item) return null
 
         const { headline, _id } = item
 
         console.log('_IDDD', this.props.isFriend)
         return (
-            <View style={styles.containerStyle}>
+            <View style={styles.containerStyle} key={index}>
                 {this.renderProfileImage(item)}
                 <TouchableOpacity
                     style={styles.bodyContainerStyle}
