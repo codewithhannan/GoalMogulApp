@@ -1212,7 +1212,7 @@ export const tribeRefreshUserGoals = (tribeId, pageId) => (
             type: MYTRIBE_GOAL_REFRESH_DONE,
             payload: {
                 data,
-                skip: skip + data.length,
+                // skip: skip + data.length,
                 hasNextPage: data.length && data.length !== 0, // no next page when data is empty
                 tribeId,
                 pageId,
@@ -1231,7 +1231,7 @@ export const tribeRefreshUserGoals = (tribeId, pageId) => (
             type: MYTRIBE_GOAL_REFRESH_DONE,
             payload: {
                 data: [],
-                skip: 0,
+                // skip: 0,
                 hasNextPage: false,
                 tribeId,
                 pageId,
@@ -1273,11 +1273,12 @@ export const tribeLoadMoreUserGoals = (tribeId, pageId) => (
     if (loading || hasNextPage == false) return // Don't load more if there is already pending request
 
     const onSuccess = (data) => {
+        console.log(data.length)
         dispatch({
             type: MYTRIBE_GOAL_LOAD_DONE,
             payload: {
                 data,
-                skip: skip + data.length,
+                // skip: skip + data.length,
                 hasNextPage: !(data.length && data.length !== 0), // no next page when data is empty
                 tribeId,
                 pageId,
@@ -1297,7 +1298,7 @@ export const tribeLoadMoreUserGoals = (tribeId, pageId) => (
             type: MYTRIBE_GOAL_LOAD_DONE,
             payload: {
                 data: [],
-                skip,
+                // skip,
                 hasNextPage: false,
                 tribeId,
                 pageId,
