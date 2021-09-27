@@ -216,7 +216,7 @@ class Bubble extends React.Component {
             let transformedOption = { ...options[option], optionTitle: option }
             optionsArray.push(transformedOption)
         }
-        console.log('optionsArrayyyyy', optionsArray)
+        // console.log('optionsArrayyyyy', optionsArray)
         return (
             <View>
                 {optionsArray.map((option) => {
@@ -788,6 +788,7 @@ class Bubble extends React.Component {
 
     render() {
         const { user, chatRoom, messages } = this.props
+        // console.log('MESSAGES', messages)
 
         // console.log('THIS ISSSSSS CURRRENT MESSAGE', this.props.currentMessage)
 

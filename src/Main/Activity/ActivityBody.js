@@ -303,6 +303,7 @@ class ActivityBody extends React.Component {
     // Render Activity Card body
     render() {
         const { item } = this.props
+        // console.log('THESE ARE ITEMSSS', item)
 
         if (!item) return null
 
