@@ -8,7 +8,9 @@ import {
     TouchableWithoutFeedback,
     Image,
     TouchableOpacity,
-    // SafeAreaView,
+    SafeAreaView,
+    Alert,
+    Keyboard,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuProvider } from 'react-native-popup-menu'
@@ -17,15 +19,19 @@ import _ from 'lodash'
 import { Notifications } from 'expo'
 import { copilot } from 'react-native-copilot-gm'
 import R from 'ramda'
-// import NewGoalView from '../Goal/NewGoal/NewGoalView'
+import NewGoalView from '../Goal/NewGoal/NewGoalView'
+import * as Permissions from 'expo-permissions'
+import moment from 'moment'
+import Animated from 'react-native-reanimated'
 
 // import { copilot } from 'react-native-copilot'
+// import { makeGetUserGoals } from '../../redux/modules/User/Selector'
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup'
 import SearchBarHeader from '../Common/Header/SearchBarHeader'
 import { openCamera, openCameraRoll } from '../../actions'
-// import BottomSheet from 'reanimated-bottom-sheet'
+import BottomSheet from 'reanimated-bottom-sheet'
 
 import Mastermind from './Mastermind'
 import ActivityFeed from './ActivityFeed'
@@ -33,12 +39,18 @@ import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
 import CreatePostModal from '../Post/CreatePostModal'
 import CreateContentButtons from '../Common/Button/CreateContentButtons'
 import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
-import { track, EVENT as E } from '../../monitoring/segment'
 import { getToastsData } from '../../actions/ToastActions'
 import BottomButtonsSheet from '../Common/Modal/BottomButtonsSheet'
 
 //video stroyline
 import VideoStoryLineCircle from './VideoStoryLineCircle'
+
+import {
+    track,
+    trackWithProperties,
+    EVENT as E,
+    identifyWithTraits,
+} from '../../monitoring/segment'
 
 // Actions
 import {
@@ -49,6 +61,13 @@ import {
     getUserVisitedNumber,
     refreshProfileData,
 } from '../../actions'
+
+import {
+    createGoalSwitchTab,
+    submitGoal,
+    validate,
+    refreshTrendingGoals,
+} from '../../redux/modules/goal/CreateGoalActions'
 
 import {
     openCreateOverlay,
@@ -91,7 +110,7 @@ import {
     refreshNotificationTab,
 } from '../../redux/modules/notification/NotificationTabActions'
 import { makeGetUserGoals } from '../../redux/modules/User/Selector'
-import { trackWithProperties } from 'expo-analytics-segment'
+// import { trackWithProperties } from 'expo-analytics-segment'
 import { getAllNudges } from '../../actions/NudgeActions'
 
 const stories = [
@@ -176,7 +195,7 @@ let pageAb
 class Home extends Component {
     constructor(props) {
         super(props)
-        // this.sheetref = React.createRef()
+        this.sheetref = React.createRef()
         this.state = {
             navigationState: {
                 index: 0,
@@ -191,6 +210,7 @@ class Home extends Component {
             shouldRenderBadgeModal: false,
             pickedImage: null,
             shareModal: false,
+            currentPositionBottomSheet: 0,
         }
         this.scrollToTop = this.scrollToTop.bind(this)
         this._renderScene = this._renderScene.bind(this)
@@ -199,49 +219,274 @@ class Home extends Component {
         this._handleNotification = this._handleNotification.bind(this)
         this._notificationSubscription = undefined
         this.setMastermindRef = this.setMastermindRef.bind(this)
+        this.handleCreate = this.handleCreate.bind(this)
+        this.handleGoalReminder = this.handleGoalReminder.bind(this)
+        // this.handleIndexChange = this.handleIndexChange.bind(this)
     }
-    // renderContent = () => {
-    //     const actionText = this.props.initializeFromState ? 'Update' : 'Create'
 
-    //     const titleText = this.props.initializeFromState
-    //         ? 'Edit Goal'
-    //         : 'New Goal'
-    //     const hasValidFormVals =
-    //         this.props.formVals &&
-    //         this.props.formVals.values &&
-    //         this.props.formVals.values.title &&
-    //         this.props.formVals.values.category &&
-    //         this.props.formVals.values.priority &&
-    //         this.props.formVals.values.title.trim() !== ''
-    //     return (
-    //         <>
-    //             <SafeAreaView style={{ flex: 0, backgroundColor: '#42C0F5' }} />
-    //             <View
-    //                 style={{
-    //                     backgroundColor: 'white',
-    //                     padding: 16,
-    //                     height: '100%',
-    //                 }}
-    //             >
-    //                 <NewGoalView
-    //                     initializeFromState={this.props.initializeFromState}
-    //                     isImportedGoal={this.props.isImportedGoal}
-    //                     goal={this.props.goal}
-    //                     tutorialText={this.props.tutorialText}
-    //                     onRef={(r) => {
-    //                         this.newGoalView = r
-    //                     }}
-    //                     createButtonTitle={actionText}
-    //                     handleCreateButton={this.handleGoalReminder}
-    //                     actionDisabled={
-    //                         !this.props.uploading || !hasValidFormVals
-    //                     }
-    //                     prefilledTitle={this.props.preffiled}
-    //                 />
-    //             </View>
-    //         </>
-    //     )
-    // }
+    handleGoalReminder = async () => {
+        const { initializeFromState } = this.props
+        if (initializeFromState) {
+            // This is updating the goal
+            this.handleCreate()
+            return
+        }
+
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+        if (status !== 'granted') {
+            return Alert.alert(
+                'Goal Reminders',
+                'Enable Push Notifications for GoalMogul in your phone’s settings to get reminders',
+                [
+                    {
+                        text: 'Settings',
+                        onPress: () => Linking.openURL('app-settings:'),
+                    },
+                    { text: 'Skip', onPress: () => this.handleCreate() },
+                ]
+            )
+        }
+
+        const hasAskedPermission = true
+        Alert.alert(
+            'Goal Reminder',
+            'Would you like to set a reminder for this goal?',
+            [
+                {
+                    text: 'Tomorrow',
+                    onPress: () => {
+                        // Add 24 hours to current time
+                        const reminderTime = moment(new Date())
+                            .add(24, 'hours')
+                            .toDate()
+                        const scheduleNotificationCallback = (goal) => {
+                            this.props.scheduleNotification(
+                                reminderTime,
+                                goal,
+                                hasAskedPermission
+                            )
+                        }
+                        this.handleCreate(scheduleNotificationCallback)
+                        // trackWithProperties(EVENT.GOAL_CREATED, {
+                        //     reminder_set: true,
+                        //     reminder_type: 'tomorrow',
+                        // })
+                    },
+                },
+                {
+                    text: 'Next Week',
+                    onPress: () => {
+                        // Add 7 days to current time
+                        const reminderTime = moment(new Date())
+                            .add(7, 'days')
+                            .toDate()
+                        const scheduleNotificationCallback = (goal) => {
+                            this.props.scheduleNotification(
+                                reminderTime,
+                                goal,
+                                hasAskedPermission
+                            )
+                        }
+                        this.handleCreate(scheduleNotificationCallback)
+                        // trackWithProperties(EVENT.GOAL_CREATED, {
+                        //     reminder_set: true,
+                        //     reminder_type: 'nextweek',
+                        // })
+                    },
+                },
+                {
+                    text: 'Custom',
+                    onPress: () => {
+                        this.setState({
+                            ...this.state,
+                            goalReminderDatePicker: true,
+                        })
+                        // trackWithProperties(EVENT.GOAL_CREATED, {
+                        //     reminder_set: true,
+                        //     reminder_type: 'custom',
+                        // })
+                    },
+                },
+                {
+                    text: 'No Thanks',
+                    onPress: () => {
+                        // Use chooses not to set reminder
+                        this.handleCreate()
+                        // trackWithProperties(EVENT.GOAL_CREATED, {
+                        //     reminder_set: false,
+                        // })
+                    },
+                    style: 'cancel',
+                },
+            ],
+            { cancelable: false }
+        )
+    }
+
+    handleCreate = (scheduleNotificationCallback) => {
+        //Close keyboard no matter what
+        Keyboard.dismiss()
+        const errors = validate(this.props.formVals.values)
+        console.log(
+            `${DEBUG_KEY}: raw goal values are: `,
+            this.props.formVals.values
+        )
+        if (
+            !(Object.keys(errors).length === 0 && errors.constructor === Object)
+        ) {
+            // throw new SubmissionError(errors);
+            return Alert.alert('Error', 'You have incomplete fields.')
+        }
+
+        const { goal, initializeFromState, uploading, goals } = this.props
+
+        if (!uploading) return // when uploading is false, it's actually uploading.
+        const goalId = goal ? goal._id : undefined
+
+        const getGoalPrivacy =
+            this.props.formVals.values.privacy === 'self' && goals.length == 0
+
+        if (getGoalPrivacy) {
+            this.setState({ goalModalVisible: true })
+        } else {
+            // const durationSec =
+            //     (new Date().getTime() - this.startTime.getTime()) / 1000
+
+            identifyWithTraits(this.props.userId, {
+                goalsCreated: goals.length + 1,
+            })
+
+            trackWithProperties(E.GOAL_CREATED, {
+                goal_title: this.props.formVals.values.title,
+                category: this.props.formVals.values.category,
+                goal_importance: this.props.formVals.values.priority,
+                privacy: this.props.formVals.values.privacy,
+                start_date: this.props.formVals.values.startTime.date,
+                end_date: this.props.formVals.values.endTime.date,
+                steps: this.props.formVals.values.steps.length,
+                needs: this.props.formVals.values.needs.length,
+            })
+
+            return this.props.submitGoal(
+                this.props.formVals.values,
+                this.props.user._id,
+                initializeFromState,
+                (createdGoal) => {
+                    this.sheetref.current.snapTo(0)
+                    console.log(`${DEBUG_KEY}: [handleCreate] poping the modal`)
+                    if (this.props.callback) {
+                        console.log(
+                            `${DEBUG_KEY}: [handleCreate] calling callback`
+                        )
+                        this.props.callback()
+                    }
+                    if (this.props.onClose) {
+                        console.log(
+                            `${DEBUG_KEY}: [handleCreate] calling onClose`
+                        )
+                        this.props.onClose()
+                    }
+
+                    if (scheduleNotificationCallback) {
+                        // This is to schedule notification on user create goal
+                        // Edit goal won't have this callback
+                        console.log(
+                            `${DEBUG_KEY}: [handleCreate]: [CreateGoalActions]: callback: scheduleNotificationCallback with created goal: `,
+                            createdGoal
+                        )
+                        scheduleNotificationCallback(createdGoal)
+                    }
+                    Actions.pop()
+                },
+                goalId,
+                {
+                    needOpenProfile:
+                        this.props.openProfile === undefined ||
+                        this.props.openProfile === true,
+                    needRefreshProfile: this.props.openProfile === false,
+                },
+                this.props.pageId
+            )
+        }
+    }
+
+    renderContent = () => {
+        const actionText = this.props.initializeFromState ? 'Update' : 'Create'
+
+        const titleText = this.props.initializeFromState
+            ? 'Edit Goal'
+            : 'New Goal'
+        const hasValidFormVals =
+            this.props.formVals &&
+            this.props.formVals.values &&
+            this.props.formVals.values.title &&
+            this.props.formVals.values.category &&
+            this.props.formVals.values.priority &&
+            this.props.formVals.values.title.trim() !== ''
+        return (
+            <>
+                {/* <SafeAreaView style={{ flex: 0, backgroundColor: '#42C0F5' }} /> */}
+                {/* <View
+                    style={{
+                        height: 20,
+                        width: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingTop: 5,
+                    }}
+                >
+                    
+                </View> */}
+                <View
+                    style={{
+                        backgroundColor: 'white',
+                        padding: 10,
+                        height: '100%',
+                    }}
+                >
+                    <TouchableOpacity
+                        style={{ alignSelf: 'center', marginBottom: 10 }}
+                        onPress={() => {
+                            this.setState({ currentPositionBottomSheet: 2 })
+                            console.log(this.currentPositionBottomSheet)
+                            this.sheetref.current.snapTo(2)
+                        }}
+                    >
+                        <Image
+                            source={
+                                this.state.currentPositionBottomSheet === 1
+                                    ? require('../../asset/upward_arrow.png')
+                                    : require('../../asset/linegrey.png')
+                            }
+                            style={{
+                                width: 35,
+                                height:
+                                    this.state.currentPositionBottomSheet === 1
+                                        ? 7
+                                        : 2,
+                            }}
+                        />
+                    </TouchableOpacity>
+                    <NewGoalView
+                        initializeFromState={this.props.initializeFromState}
+                        isImportedGoal={this.props.isImportedGoal}
+                        goal={this.props.goal}
+                        tutorialText={this.props.tutorialText}
+                        onRef={(r) => {
+                            this.newGoalView = r
+                        }}
+                        createButtonTitle={actionText}
+                        handleCreateButton={this.handleGoalReminder}
+                        actionDisabled={
+                            !this.props.uploading || !hasValidFormVals
+                        }
+                        prefilledTitle={this.props.preffiled}
+                    />
+                </View>
+            </>
+        )
+    }
+    fall = new Animated.Value(1)
     componentDidUpdate(prevProps) {
         // this.props.getToastsData()
         // if (!prevProps.showTutorial && this.props.showTutorial === true) {
@@ -507,12 +752,18 @@ class Home extends Component {
                             this.createPostModal && this.createPostModal.open()
                         // this.setState({ shareModal: true })
                     }
-                    onCreateGoalPress={
-                        () =>
-                            Actions.push('createGoalModal', {
-                                pageId: pageAb,
-                            })
-                        // this.sheetref.current.snapTo(1)
+                    onCreateGoalPress={() =>
+                        // Actions.push('createGoalModal', {
+                        //     pageId: pageAb,
+                        // })
+                        {
+                            // console.log('THIS sheet', this.sheetref.current)
+
+                            this.setState({ currentPositionBottomSheet: 1 })
+                            console.log(this.state.currentPositionBottomSheet)
+
+                            this.sheetref.current.snapTo(1)
+                        }
                     }
                 />
                 {/* Hid switching tabs to clean up the main view to just friend's Goals and Updates */}
@@ -592,6 +843,7 @@ class Home extends Component {
                     ref={(r) => (this.bottomSheetRef = r)}
                     buttons={options}
                     height={getButtonBottomSheetHeight(options.length)}
+                    enabledContentTapInteraction={false}
                 />
             </>
         )
@@ -653,7 +905,17 @@ class Home extends Component {
                     // onModal={() => this.setState({ shareModal: true })}
                     onRef={(r) => (this.createPostModal = r)}
                 />
-                <View style={styles.homeContainerStyle}>
+                <Animated.View
+                    style={[
+                        styles.homeContainerStyle,
+                        {
+                            opacity: Animated.add(
+                                0.1,
+                                Animated.multiply(this.fall, 0.9)
+                            ),
+                        },
+                    ]}
+                >
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />
 
                     {/* <View
@@ -694,11 +956,6 @@ class Home extends Component {
                             }}
                         />
                     </View> */}
-                    {/* <BottomSheet
-                        ref={this.sheetref}
-                        snapPoints={[0, 300, '85%']}
-                        renderContent={this.renderContent}
-                    /> */}
 
                     <FlatList
                         keyExtractor={(item, index) => index.toString()}
@@ -724,13 +981,21 @@ class Home extends Component {
                             user={this.props.user}
                         />
                     ) : null} */}
-                </View>
+                </Animated.View>
+                <BottomSheet
+                    ref={this.sheetref}
+                    snapPoints={[0, 300, '87%']}
+                    renderContent={this.renderContent}
+                    callbackNode={this.fall}
+                />
             </MenuProvider>
         )
     }
 }
 
 const mapStateToProps = (state) => {
+    const getUserGoals = makeGetUserGoals()
+
     const { popup } = state
     const { token } = state.auth.user
     const { userId } = state.user
@@ -739,6 +1004,8 @@ const mapStateToProps = (state) => {
     const needRefreshMastermind = _.isEmpty(state.home.mastermind.data)
     const needRefreshActivity = _.isEmpty(state.home.activityfeed.data)
     const { user } = state.user
+    const { navigationState, uploading } = state.createGoal
+    const goals = getUserGoals(state, userId, pageAb)
 
     // Tutorial related
     const { create_goal } = state.tutorials
@@ -751,6 +1018,7 @@ const mapStateToProps = (state) => {
         user,
         needRefreshActivity,
         needRefreshMastermind,
+        formVals: state.form.createGoalModal,
         userId,
         // Tutorial related
         hasShown,
@@ -758,6 +1026,10 @@ const mapStateToProps = (state) => {
         tutorialText,
         nextStepNumber,
         popup,
+
+        navigationState,
+        uploading,
+        goals,
     }
 }
 
@@ -823,6 +1095,10 @@ export default connect(
 
         getToastsData,
         getAllNudges,
+        createGoalSwitchTab,
+        submitGoal,
+        validate,
+        refreshTrendingGoals,
     },
     null,
     { withRef: true }

@@ -15,6 +15,7 @@ import {
 import DropdownAlert from 'react-native-dropdownalert-jia'
 
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
+import 'react-native-reanimated'
 
 // State management
 import { Provider as ReduxProvider } from 'react-redux'
