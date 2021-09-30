@@ -1,42 +1,23 @@
 /** @format */
 
 import React, { Component } from 'react'
-import {
-    Text,
-    View,
-    Image,
-    TouchableWithoutFeedback,
-    TouchableOpacity,
-    Dimensions,
-} from 'react-native'
+import { Text, View, TouchableWithoutFeedback } from 'react-native'
 import Modal from 'react-native-modal'
-import { Entypo } from '@expo/vector-icons'
 import { color, default_style } from '../styles/basic'
-import OnboardingStyles from '../styles/Onboarding'
 import { addNudge, NUDGE_TYPES } from '../actions/NudgeActions'
 import { connect } from 'react-redux'
 import LottieView from 'lottie-react-native'
 import NO_GOAL_LOTTIE from '../asset/toast_popup_lotties/help_friend/help_friend.json'
 import YES_LOTTIE from '../asset/toast_popup_lotties/yes-button/yes_button.json'
 
-import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
-} from 'react-native-responsive-screen'
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 
-import GoalVisible from '../asset/image/Goalmogul_illustration.png'
-
-const { text: textStyle, button: buttonStyle } = OnboardingStyles
-const MODAL_WIDTH = Dimensions.get('screen').width
-const MODAL_HEIGHT = Dimensions.get('screen').height
-
-class ModalTester extends Component {
+class NudgeModal extends Component {
     constructor(props) {
         super(props)
     }
 
-    renderYesButton() {
-        const { visitedUser, token } = this.props
+    renderNoButton() {
         return (
             <>
                 <TouchableWithoutFeedback onPress={this.props.onClose}>
@@ -68,7 +49,7 @@ class ModalTester extends Component {
         )
     }
 
-    renderNoButton() {
+    renderYesButton() {
         const { visitedUser, token } = this.props
         return (
             <>
@@ -184,34 +165,18 @@ class ModalTester extends Component {
                             >
                                 {`Your friend ${name} has not set any goals yet. Do you want to send a nudge?`}
                             </Text>
-
-                            {/* <View
-                                style={{
-                                    marginTop: 8,
-
-                                    alignSelf: 'center',
-                                }}
-                            >
-                                <Text
-                                    style={{ fontWeight: '400', fontSize: 15 }}
-                                >
-                                    Do you want to send a nudge?
-                                </Text>
-                            </View> */}
-
                             <View
                                 style={{
                                     flexDirection: 'row',
                                     justifyContent: 'center',
                                     alignItems: 'center',
-                                    // justifyContent: 'space-evenly',
                                     marginTop: 15,
                                     alignItems: 'center',
                                 }}
                             >
-                                {this.renderNoButton()}
-                                <View style={{ width: 10 }} />
                                 {this.renderYesButton()}
+                                <View style={{ width: 10 }} />
+                                {this.renderNoButton()}
                             </View>
                         </View>
                     </View>
@@ -233,4 +198,4 @@ const mapStateToProps = (state, props) => {
 
 export default connect(mapStateToProps, {
     addNudge,
-})(ModalTester)
+})(NudgeModal)
