@@ -2,7 +2,13 @@
 
 import _ from 'lodash'
 import React, { Component } from 'react'
-import { ActivityIndicator, Animated, SectionList, View } from 'react-native'
+import {
+    ActivityIndicator,
+    Animated,
+    SectionList,
+    View,
+    Text,
+} from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import StepsTooltip from '../../components/StepsTooltip'
@@ -346,6 +352,7 @@ class ProfileV2 extends Component {
     }
 
     handleRefresh = () => {
+        console.log(`${DEBUG_KEY}: MAIN REFRESH`)
         const { userId, pageId, selectedTab } = this.props
         if (selectedTab === 'about') return
         console.log(`${DEBUG_KEY}: refreshing tab`, selectedTab)
@@ -950,6 +957,7 @@ class ProfileV2 extends Component {
                         onBackPress={this.handleOnBackPress}
                         userId={userId}
                     />
+                    {/* <Text>TEST</Text> */}
                     <SectionList
                         keyboardShouldPersistTaps="handled"
                         sections={sectionsData}

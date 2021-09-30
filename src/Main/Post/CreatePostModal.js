@@ -20,8 +20,8 @@ import { Icon } from '@ui-kitten/components'
 // assets
 import cancel from '../../asset/utils/cancel_no_background.png'
 import expand from '../../asset/utils/expand.png'
-import camera from '../../asset/cameragrey.png'
-import gallary from '../../asset/gallerygrey.png'
+import camera from '../../asset/icons/ChatCamera.png'
+import gallary from '../../asset/icons/ChatGallary.png'
 
 // Actions
 import { openCameraRoll, openCamera } from '../../actions'
@@ -642,14 +642,14 @@ class CreatePostModal extends Component {
                     // top: 20,
                 }}
             >
-                {/* <View
+                <View
                     style={{
                         width: '100%',
                         height: 1,
                         backgroundColor: 'lightgray',
                         marginTop: 15,
                     }}
-                /> */}
+                />
                 <MentionsTextInput
                     autoFocus={autoFocus}
                     onRef={(r) => (this.textInput = r)}
@@ -1079,13 +1079,6 @@ class CreatePostModal extends Component {
             >
                 <View
                     style={{
-                        width: '100%',
-                        height: 1,
-                        backgroundColor: 'lightgray',
-                    }}
-                />
-                <View
-                    style={{
                         flexDirection: 'row',
                         marginVertical: 5,
                     }}
@@ -1104,7 +1097,7 @@ class CreatePostModal extends Component {
                                 width: 25,
                                 height: 25,
                                 resizeMode: 'contain',
-                                // tintColor: '#42C0F5',
+                                tintColor: '#42C0F5',
                             }}
                         />
                         {/* <Icon
@@ -1127,7 +1120,7 @@ class CreatePostModal extends Component {
                                 width: 25,
                                 height: 25,
                                 resizeMode: 'contain',
-                                // tintColor: '#42C0F5',
+                                tintColor: '#42C0F5',
                             }}
                         />
                         {/* <Icon
@@ -1156,6 +1149,14 @@ class CreatePostModal extends Component {
                         )}
                     </View>
                 </View>
+
+                <View
+                    style={{
+                        width: '100%',
+                        height: 1,
+                        backgroundColor: 'lightgray',
+                    }}
+                />
             </View>
         )
     }
@@ -1206,7 +1207,7 @@ class CreatePostModal extends Component {
                 style={{
                     backgroundColor: color.GM_BLUE,
                     marginHorizontal: 16,
-                    marginTop: 8,
+                    marginVertical: 8,
                     padding: 8,
                     alignItems: 'center',
                     opacity: actionDisabled ? 0.5 : 1,
@@ -1230,19 +1231,9 @@ class CreatePostModal extends Component {
         )
         const PRIORTY_PILL_STYLE =
             PRIORTY_PILL_STYLES[((priority || 1) - 1) % 10]
-
-        const { belongsToGoalStoryline } = this.props
-        const isGoalAttached =
-            belongsToGoalStoryline && !!belongsToGoalStoryline.goalRef
-
-        // const { privacy } = this.props
-
-        // const privacyObj = PRIVACY_OPTIONS.find(
-        //     ({ value }) => value === privacy
-        // )
         return (
             <View style={{ flex: 1 }}>
-                {/* <View style={{ flexDirection: 'row', flex: 1 }}>
+                <View style={{ flexDirection: 'row', flex: 1 }}>
                     <View style={{ marginLeft: 15, flex: 1 }}>
                         <Headline
                             name={owner.name}
@@ -1252,7 +1243,7 @@ class CreatePostModal extends Component {
                             disabled
                         />
                     </View>
-                </View> */}
+                </View>
 
                 <View
                     style={{
@@ -1267,35 +1258,25 @@ class CreatePostModal extends Component {
                             style={[
                                 GOALS_STYLE.commonPillContainer,
                                 {
-                                    paddingHorizontal: 10,
-                                    paddingVertical: 5,
+                                    paddingHorizontal: 7,
                                     alignSelf: 'center',
                                     // borderWidth: isCompleted ? 0.25 : 0,
                                     borderColor: color.GM_MID_GREY,
-                                    top: 5,
                                 },
                             ]}
                         >
                             <Icon
                                 pack="material-community"
                                 name={privacyObj.materialCommunityIconName}
-                                style={
-                                    ([GOALS_STYLE.commonPillIcon],
-                                    { height: 12, width: 12 })
-                                }
+                                style={[GOALS_STYLE.commonPillIcon]}
                             />
-                            <Text
-                                style={[
-                                    GOALS_STYLE.commonPillText,
-                                    { fontSize: 14 },
-                                ]}
-                            >
+                            <Text style={[GOALS_STYLE.commonPillText]}>
                                 {privacyObj.text}
                             </Text>
                         </View>
                     )}
                     {/* Priority pill */}
-                    {/* {priority && (
+                    {priority && (
                         <View
                             style={[
                                 GOALS_STYLE.commonPillContainer,
@@ -1328,107 +1309,41 @@ class CreatePostModal extends Component {
                                 {priority}
                             </Text>
                         </View>
-                    )} */}
-                    <View
-                        style={{
-                            height: 30,
-                            // width: privacyObj?.text?.length >= 10 ? 200 : 235,
-                            maxWidth:
-                                privacyObj?.text?.length >= 10 ? 200 : 235,
-                            backgroundColor: isGoalAttached
-                                ? '#2D9CDB'
-                                : 'white',
-                            alignItems: 'center',
-                            paddingHorizontal: 8,
-                            // position: 'absolute',
-                            // right: 0,
-                            marginLeft: 10,
-                            top: 6,
-                            borderRadius: 2,
-                            flexDirection: 'row',
-                        }}
-                        onLayout={(e) => {
-                            this.setState({
-                                userDetailLayout: e.nativeEvent.layout.height,
-                            })
-                        }}
-                    >
-                        <Text
-                            style={{
-                                color: 'white',
-                                fontSize: 15,
-                            }}
-                            ellipsizeMode="tail"
-                        >
-                            {isGoalAttached ? belongsToGoalStoryline.title : ''}
-                        </Text>
-                        {/* <TouchableOpacity
-                    style={{ position: 'absolute', top: 11, right: 9 }}
-                >
-                    <Image
-                        source={require('../../asset/cross.png')}
-                        resizeMode="contain"
-                        style={{ height: 8, width: 8 }}
-                    />
-                </TouchableOpacity> */}
-                    </View>
+                    )}
                 </View>
             </View>
         )
     }
 
-    // renderGoalTitle = () => {
-    //     const { belongsToGoalStoryline } = this.props
-    //     const isGoalAttached =
-    //         belongsToGoalStoryline && !!belongsToGoalStoryline.goalRef
-
-    //     const { privacy } = this.props
-
-    //     const privacyObj = PRIVACY_OPTIONS.find(
-    //         ({ value }) => value === privacy
-    //     )
-    //     return (
-    //         <View
-    //             style={{
-    //                 height: 30,
-    //                 // width: privacyObj?.text?.length >= 10 ? 200 : 235,
-    //                 maxWidth: privacyObj?.text?.length >= 10 ? 200 : 235,
-    //                 backgroundColor: isGoalAttached ? '#2D9CDB' : 'white',
-    //                 alignItems: 'center',
-    //                 paddingHorizontal: 8,
-    //                 // position: 'absolute',
-    //                 // right: 0,
-    //                 // top: 15,
-    //                 borderRadius: 2,
-    //                 flexDirection: 'row',
-    //             }}
-    //             onLayout={(e) => {
-    //                 this.setState({
-    //                     userDetailLayout: e.nativeEvent.layout.height,
-    //                 })
-    //             }}
-    //         >
-    //             <Text
-    //                 style={{
-    //                     color: 'white',
-    //                     fontSize: 15,
-    //                 }}
-    //                 ellipsizeMode="tail"
-    //             >
-    //                 {isGoalAttached ? belongsToGoalStoryline.title : ''}
-    //             </Text>
-    //             {/* <TouchableOpacity
-    //                 style={{ position: 'absolute', top: 11, right: 9 }}
-    //             >
-    //                 <Image
-    //                     source={require('../../asset/cross.png')}
-    //                     resizeMode="contain"
-    //                     style={{ height: 8, width: 8 }}
-    //                 />
-    //             </TouchableOpacity> */}
-    //         </View>
-    //     )
-    // }
+    renderGoalTitle = () => {
+        const { belongsToGoalStoryline } = this.props
+        const isGoalAttached =
+            belongsToGoalStoryline && !!belongsToGoalStoryline.goalRef
+        return (
+            <View
+                style={{
+                    flex: 1,
+                }}
+                onLayout={(e) => {
+                    this.setState({
+                        userDetailLayout: e.nativeEvent.layout.height,
+                    })
+                }}
+            >
+                <Text
+                    style={{
+                        flex: 1,
+                        flexWrap: 'wrap',
+                        color: 'black',
+                        fontSize: 15,
+                    }}
+                    ellipsizeMode="tail"
+                >
+                    {isGoalAttached ? belongsToGoalStoryline.title : ''}
+                </Text>
+            </View>
+        )
+    }
 
     open = () => this.bottomSheetRef && this.bottomSheetRef.open()
 
@@ -1457,7 +1372,7 @@ class CreatePostModal extends Component {
             this.state.drafts.length > 0
 
         const modalHeight =
-            150 +
+            210 +
             this.state.textContentHeight +
             this.state.mediaHeight +
             this.state.userDetailLayout +
@@ -1495,7 +1410,7 @@ class CreatePostModal extends Component {
                         this.renderUserDetail(belongsToGoalStoryline)}
                     {this.renderActionIcons(actionDisabled)}
                 </View>
-                {/* {this.renderGoalTitle()} */}
+                {this.renderGoalTitle()}
                 {this.renderPost()}
                 {this.renderMedia()}
                 {this.renderMediaIcons(actionDisabled)}

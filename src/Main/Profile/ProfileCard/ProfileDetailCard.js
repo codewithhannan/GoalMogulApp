@@ -182,10 +182,20 @@ class ProfileDetailCard extends Component {
     }
 
     handleRefresh = () => {
+        console.log(`${DEBUG_KEY}: THIS IS IS HANDLE REFRESH`)
         const { userId, pageId, selectedTab } = this.props
         if (selectedTab === 'about') return
         console.log(`${DEBUG_KEY}: refreshing tab`, selectedTab)
         this.props.handleTabRefresh(selectedTab, userId, pageId)
+        this.props.handleTabRefresh(
+            'goals',
+            userId,
+            pageId,
+            this.props.initialFilter
+        )
+        this.props.handleTabRefresh('posts', userId, pageId)
+        this.props.handleTabRefresh('needs', userId, pageId)
+        // Actions.refresh()
     }
 
     makeFriendshipStatusOptions = () => {
@@ -201,9 +211,9 @@ class ProfileDetailCard extends Component {
                         'requests.incoming',
                         undefined
                     )
-                    this.handleRefresh()
                     // close bottom sheet
                     this.closeFriendRequestOptionModal()
+                    setTimeout(() => this.handleRefresh(), 1500)
                 },
             },
             {
