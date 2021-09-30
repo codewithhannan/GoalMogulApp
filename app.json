@@ -49,7 +49,7 @@
         "assetBundlePatterns": ["**/*"],
         "updates": {
             "enabled": true,
-            "checkAutomatically": "ON_ERROR_RECOVERY",
+            "checkAutomatically": "ON_LOAD",
             "fallbackToCacheTimeout": 0
         },
         "notification": {

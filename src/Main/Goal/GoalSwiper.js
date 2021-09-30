@@ -219,7 +219,7 @@ class GoalSwiper extends React.Component {
                     onSwipeableRightOpen={() =>
                         this.setState({ swiperToolTipVisible: true })
                     }
-                    onSwipeableOpen={this.closeRow(index)}
+                    onSwipeableOpen={() => this.closeRow(index)}
                 >
                     {children}
                 </Swipeable>

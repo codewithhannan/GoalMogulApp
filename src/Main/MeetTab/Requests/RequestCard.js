@@ -39,10 +39,6 @@ class RequestCard extends Component {
         requested: true,
     }
 
-    UNSAFE_componentWillReceiveProps(props) {
-        // console.log('new props for meet card are: ', props);
-    }
-
     onRespondClicked = (friendshipId, userId) => {
         ActionSheetIOS.showActionSheetWithOptions(
             {
