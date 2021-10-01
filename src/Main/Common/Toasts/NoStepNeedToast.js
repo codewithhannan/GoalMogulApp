@@ -22,29 +22,16 @@ class NoStepNeedToast extends Component {
             <>
                 <View
                     style={{
-                        backgroundColor: color.PG_BACKGROUND,
-
-                        marginHorizontal: 20,
-
                         justifyContent: 'center',
                         alignItems: 'center',
                         // paddingHorizontal: 96,
                         paddingVertical: 10,
                         marginBottom: 10,
-                        paddingRight: 10,
+
                         borderRadius: 6,
-                        width: '90%',
-                        height: '40%',
-                        top: 10,
                     }}
                 >
-                    <View
-                        style={{
-                            width: '35%',
-                            marginHorizontal: 10,
-                            marginVertical: 15,
-                        }}
-                    >
+                    <View style={{}}>
                         {/* <Image
                             source={PrivateGoal}
                             style={{
@@ -56,7 +43,10 @@ class NoStepNeedToast extends Component {
                             }}
                         /> */}
                         <LottieView
-                            style={{ height: hp(23), alignSelf: 'center' }}
+                            style={{
+                                height: hp(25),
+                                alignSelf: 'center',
+                            }}
                             source={NO_STEP_LOTTIE}
                             autoPlay
                             loop

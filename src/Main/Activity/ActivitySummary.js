@@ -54,6 +54,7 @@ class ActivitySummary extends React.Component {
                     return `shared a ${val.actedWith}`
                 },
                 Post: (val) => {
+                    console.log('POSTTTT VALUEEE', val)
                     if (!val.postRef && !val.postRef.postType) return ''
                     if (!isSharedPost(val.postRef.postType)) {
                         return (

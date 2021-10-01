@@ -1133,8 +1133,6 @@ import R from 'ramda'
 import TabButtonGroup from '../Common/TabButtonGroup'
 import SearchBarHeader from '../Common/Header/SearchBarHeader'
 import { openCamera, openCameraRoll } from '../../actions'
-// import BottomSheet from 'reanimated-bottom-sheet'
-
 import Mastermind from './Mastermind'
 import ActivityFeed from './ActivityFeed'
 import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'

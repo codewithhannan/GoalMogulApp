@@ -77,6 +77,7 @@ class InputBox extends React.Component {
         this.state = {
             isDatePickerVisible: false,
             selectedStartDate: null,
+            textInputRef: '',
         }
         this.onDateChange = this.onDateChange.bind(this)
     }
@@ -128,15 +129,6 @@ class InputBox extends React.Component {
         } = this.props
 
         const { selectedStartDate } = this.state
-        // const startDate = selectedStartDate ? selectedStartDate.toString() : ''
-        // console.log('THIS IS SELECTED DATE', new Date(Date.now()))
-
-        // let oneYearFromNow = new Date()
-        // let newDate = oneYearFromNow.setFullYear(
-        //     oneYearFromNow.getFullYear() - 13
-        // )
-        // var date = new Date(newDate)
-        // console.log(date.toUTCString())
 
         return (
             <View style={[{ marginTop: 10 }, containerStyle || {}]}>
@@ -208,9 +200,7 @@ class InputBox extends React.Component {
                         placeholder="MM/DD/YYYY"
                         style={{ marginHorizontal: 8 }}
                         fontSize={16}
-                        ref={(ref) => {
-                            this.datetimeField = ref
-                        }}
+                        ref={(ref) => (this.datetimeField = ref)}
                         onEndEditing={() => onBlur(value)}
                     />
                     {/* <Text
