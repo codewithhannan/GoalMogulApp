@@ -303,9 +303,6 @@ class ActivityBody extends React.Component {
     // Render Activity Card body
     render() {
         const { item } = this.props
-        if (item.actedWith === 'Step') {
-            console.log('THESE ARE ITEMSSS', item)
-        }
 
         if (!item) return null
 

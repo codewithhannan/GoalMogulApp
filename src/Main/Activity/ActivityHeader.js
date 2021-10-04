@@ -115,7 +115,7 @@ class ActivityHeader extends Component {
                             </View>
                             <View
                                 style={{
-                                    height: 0.3,
+                                    height: 0.5,
                                     backgroundColor: 'lightgrey',
                                     width: '100%',
                                 }}
