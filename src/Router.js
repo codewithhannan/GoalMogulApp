@@ -150,12 +150,17 @@ function getCommonScenes(tab) {
         <Scene key={`${prefix}post`} component={PostDetailCard} />,
         <Scene key={`${prefix}share`} component={ShareDetailCard} />,
         <Scene key={`${prefix}replyThread`} component={ReplyThread} />,
+
         <Scene key={`${prefix}profile`} component={Profile} />,
         <Scene key={`${prefix}profileDetail`} component={ProfileDetail} />,
         <Scene key={`${prefix}myEventTab`} component={MyEventTab} />,
         <Scene key={`${prefix}myEventDetail`} component={MyEvent} />,
         <Scene key={`${prefix}myTribeTab`} component={MyTribeTab} />,
         <Scene key={`${prefix}myTribeDetail`} component={MyTribe} />,
+        <Scene
+            key="registration_contact_invite"
+            component={SyncContactInvite}
+        />,
 
         <Scene key={`${prefix}challenges`} component={Challenges} />,
         <Scene key={`${prefix}setting`} component={Setting} />,

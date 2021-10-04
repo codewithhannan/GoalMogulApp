@@ -19,9 +19,21 @@ import RequestCard from './V2/RequestCard'
 import { componentKeyByTab } from '../../redux/middleware/utils'
 import { handleRefresh, meetOnLoadMore } from '../../actions'
 import InviteFriendModal from './Modal/InviteFriendModal'
-import { SCREENS, wrapAnalytics } from '../../monitoring/segment'
+import {
+    SCREENS,
+    wrapAnalytics,
+    trackWithProperties,
+    EVENT as E,
+} from '../../monitoring/segment'
 import { FONT_FAMILY } from '../../styles/basic/text'
-
+import { uploadContacts } from '../../redux/modules/registration/RegistrationActions'
+import SyncContactInfoModal from '../Onboarding/SyncContactInfoModal'
+// import {
+//     wrapAnalytics,
+//     SCREENS,
+//     trackWithProperties,
+//     EVENT as E,
+// } from '../../monitoring/segment'
 /**
  * Friend tab page for GM main tabs
  *
@@ -38,6 +50,9 @@ class FriendTab extends React.Component {
         super(props)
         this.state = {
             showInviteFriendModal: false,
+            syncContactInfoModalVisible: false,
+            loading: true, // test loading param
+            errMessage: undefined,
         }
     }
 
@@ -69,6 +84,17 @@ class FriendTab extends React.Component {
         )
         Actions.push(componentKeyToOpen)
     }
+
+    // onNotNow = () => {
+    //     trackWithProperties(E.ONBOARDING_STEP_COMPLETED, {
+    //         onboardingStep: 'add_friend',
+    //         friends_added: this.state.requestsSent,
+    //     })
+    //     // const screenTransitionCallback = () => {
+    //     //     Actions.push('registration_community_guideline')
+    //     // }
+    //     // screenTransitionCallback()
+    // }
 
     /** Render top card for inviting friends */
     renderInviteFriendCard() {
@@ -212,6 +238,80 @@ class FriendTab extends React.Component {
             </View>
         )
     }
+    openModal = () =>
+        this.setState({
+            ...this.state,
+            syncContactInfoModalVisible: true,
+            errMessage: undefined,
+            loading: true,
+        })
+
+    closeModal = () =>
+        this.setState({ ...this.state, syncContactInfoModalVisible: false })
+
+    onModalNotNow = () => {
+        trackWithProperties(E.REG_CONTACT_INVITE_SKIPPED, {
+            UserId: this.props.userId,
+        })
+        this.closeModal()
+        // setTimeout(() => {
+        //     this.onNotNow()
+        // }, 150)
+    }
+
+    onModalInvite = () => {
+        this.closeModal()
+        console.log('TEST LOG')
+        setTimeout(() => {
+            Actions.push('registration_contact_invite', {
+                inviteOnly: true,
+                navigateToHome: true,
+                friendsTab: true,
+            })
+        }, 150)
+    }
+
+    onSyncContact = () => {
+        // trackWithProperties(E.REG_CONTACT_SYNC, {
+        //     UserId: this.props.userId,
+        // })
+
+        this.openModal()
+
+        // Match is not found
+        // Render failure result in modal
+        // by setting loading to false
+        const onMatchNotFound = () => {
+            this.setState({
+                ...this.state,
+                loading: false,
+            })
+        }
+
+        // close modal and go to invite page
+        const onMatchFound = () => {
+            this.closeModal()
+            setTimeout(() => {
+                Actions.push('registration_contact_invite')
+            }, 150)
+        }
+
+        const onError = (errType) => {
+            let errMessage = ''
+            if (errType == 'upload') {
+                errMessage =
+                    "We're sorry that some error happened. Please try again later."
+            }
+
+            this.setState({
+                ...this.state,
+                errMessage,
+                loading: false,
+            })
+        }
+
+        this.props.uploadContacts({ onMatchFound, onMatchNotFound, onError })
+    }
 
     renderFriendRequests = () => {
         return (
@@ -264,16 +364,42 @@ class FriendTab extends React.Component {
         return (
             <View>
                 <View
-                    style={{
-                        padding: 16,
-                        alignItems: 'flex-start',
-                        backgroundColor: 'white',
-                    }}
+                    style={{ flexDirection: 'row', backgroundColor: 'white' }}
                 >
-                    <Text style={[default_style.titleText_1]}>
-                        People You May Know
-                    </Text>
+                    <View
+                        style={{
+                            padding: 16,
+                            alignItems: 'flex-start',
+                        }}
+                    >
+                        <Text style={[default_style.titleText_1]}>
+                            People You May Know
+                        </Text>
+                    </View>
+                    <View style={{ flex: 1 }} />
+                    <DelayedButton
+                        onPress={this.onSyncContact}
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                        }}
+                        activeOpacity={1}
+                    >
+                        <Text
+                            style={[
+                                default_style.titleText_2,
+                                {
+                                    color: color.GM_BLUE,
+                                    fontFamily: FONT_FAMILY.SEMI_BOLD,
+                                    marginRight: 10,
+                                },
+                            ]}
+                        >
+                            Sync Contacts
+                        </Text>
+                    </DelayedButton>
                 </View>
+
                 {this.renderItemSeparator()}
             </View>
         )
@@ -317,6 +443,15 @@ class FriendTab extends React.Component {
                 <InviteFriendModal
                     isVisible={this.state.showInviteFriendModal}
                     closeModal={this.closeInviteFriendModal}
+                />
+                <SyncContactInfoModal
+                    isOpen={this.state.syncContactInfoModalVisible}
+                    loading={this.state.loading}
+                    errMessage={this.state.errMessage}
+                    onSyncContact={this.onSyncContact} // Retry upload contacts
+                    onNotNow={this.onModalNotNow}
+                    onInvite={this.onModalInvite}
+                    onCancel={this.closeModal}
                 />
             </View>
         )
@@ -368,4 +503,5 @@ export default connect(mapStateToProps, {
     handleRefreshRequests,
     handleRefresh,
     meetOnLoadMore,
+    uploadContacts,
 })(wrapAnalytics(FriendTab, SCREENS.MEET_TAB))

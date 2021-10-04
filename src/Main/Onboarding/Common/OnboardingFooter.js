@@ -117,13 +117,21 @@ class OnboardingFooter extends React.Component {
                     isFirst={this.props.currentStep == 1}
                     onPress={this.props.onPrev}
                 />
-                {this.renderProgressBar()}
-                <Circle
-                    {...otherProps}
-                    size={styles.circleSize}
-                    onPress={this.props.onNext}
-                    disabled={nextDisabled == undefined ? false : nextDisabled}
-                />
+                {this.props.friendsTab ? (
+                    <></>
+                ) : (
+                    <>
+                        {this.renderProgressBar()}
+                        <Circle
+                            {...otherProps}
+                            size={styles.circleSize}
+                            onPress={this.props.onNext}
+                            disabled={
+                                nextDisabled == undefined ? false : nextDisabled
+                            }
+                        />
+                    </>
+                )}
             </View>
         )
     }
