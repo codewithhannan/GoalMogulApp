@@ -167,7 +167,7 @@
         "react-native-phone-input": "^1.0.9",
         "react-native-popup-menu": "0.15.11",
         "react-native-progress": "^4.1.2",
-        "react-native-reanimated": "1.13.2",
+        "react-native-reanimated": "1.13.3",
         "react-native-region-country-picker": "^1.1.1",
         "react-native-responsive-screen": "^1.4.2",
         "react-native-router-flux": "4.2.0",

@@ -539,7 +539,7 @@ export class GoalDetailCardV3 extends React.Component {
                 return (
                     <>
                         <StepAndNeedCardV3
-                            key={Math.random().toString(36).substr(2, 9)}
+                            key={`mastermind-${index}`}
                             item={item}
                             // goalRef={goalDetail}
                             onCardPress={() => {
