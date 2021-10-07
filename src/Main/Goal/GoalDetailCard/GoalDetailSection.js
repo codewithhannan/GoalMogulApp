@@ -801,7 +801,6 @@ class GoalDetailSection extends React.PureComponent {
 
     render() {
         const { item, isOwnGoal, goalDetail } = this.props
-        console.log('YAHAN ARAHA HA 1', this.props.focusType)
         if (!item || _.isEmpty(item)) return null
 
         const goalReminderOptions = this.getOnGoalReminderOptions()
@@ -820,6 +819,11 @@ class GoalDetailSection extends React.PureComponent {
                     isVisible={this.state.showClarifyPopup}
                     name={goalDetail.owner.name}
                     closeModal={this.closeClarifyPopup}
+                    focusType={this.props.focusType}
+                    goalDetail={goalDetail}
+                    goalId={goalDetail._id}
+                    focusRef={this.props.focusRef}
+                    pageId={this.props.pageId}
                 />
                 <NudgePopup
                     isVisible={this.state.showNudgePopup}
@@ -927,7 +931,7 @@ const mapStateToProps = (state, props) => {
     const getGoalPageDetailByPageId = makeGetGoalPageDetailByPageId()
     const { pageId, goalId } = props
     const goalDetail = getGoalPageDetailByPageId(state, goalId, pageId)
-    const { focusType } = goalDetail.goalPage.navigationStateV2
+    const { focusType, focusRef } = goalDetail.goalPage.navigationStateV2
     const { goal, goalPage } = goalDetail
     const { userId } = state.user
     const { tutorialText } = state.tutorials.goal_detail.goal_detail_page
@@ -943,6 +947,7 @@ const mapStateToProps = (state, props) => {
         isOwnGoal,
         goalDetail: goal,
         focusType,
+        focusRef,
     }
 }
 

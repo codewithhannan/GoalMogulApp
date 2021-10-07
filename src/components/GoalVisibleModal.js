@@ -44,10 +44,10 @@ class ModalTester extends Component {
                 >
                     <View
                         style={{
-                            width: '29%',
+                            width: 85,
                             justifyContent: 'center',
                             alignItems: 'center',
-                            height: 40,
+                            height: 35,
                             borderColor: '#42C0F5',
                             borderWidth: 2,
                             borderRadius: 4,
@@ -81,8 +81,21 @@ class ModalTester extends Component {
                             bottom: 3,
                         }}
                     >
+                        <Text
+                            style={{
+                                position: 'absolute',
+                                zIndex: 1,
+                                padding: 10,
+
+                                alignSelf: 'center',
+                                color: 'white',
+                                fontFamily: 'SFProDisplay-Semibold',
+                            }}
+                        >
+                            Yes
+                        </Text>
                         <LottieView
-                            style={{ height: hp(5) }}
+                            style={{ height: 40 }}
                             source={YES_LOTTIE}
                             autoPlay
                             loop
@@ -160,12 +173,14 @@ class ModalTester extends Component {
                                         resizeMode: 'contain',
                                     }}
                                 /> */}
-                            <LottieView
-                                style={{ height: hp(22) }}
-                                source={PRIVATE_GOAL_LOTTIE}
-                                autoPlay
-                                loop
-                            />
+                            <View style={{ alignSelf: 'center' }}>
+                                <LottieView
+                                    style={{ height: 190 }}
+                                    source={PRIVATE_GOAL_LOTTIE}
+                                    autoPlay
+                                    loop
+                                />
+                            </View>
 
                             <View
                                 style={

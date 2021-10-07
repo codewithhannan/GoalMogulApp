@@ -268,6 +268,7 @@ class ActivityCard extends React.PureComponent {
                             {LOTTIE_DATA.map((lottie, index) => {
                                 return (
                                     <TouchableOpacity
+                                        key={index}
                                         onPress={() => {
                                             if (selfLiked) {
                                                 return (

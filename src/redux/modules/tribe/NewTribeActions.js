@@ -47,6 +47,7 @@ export const createNewTribe = (values, needUpload, isEdit, tribeId) => (
     getState
 ) => {
     const { token } = getState().user
+
     const newTribe = formToTribeAdapter(values, tribeId, isEdit)
     // console.log(`${DEBUG_KEY}: newTribe to submit is; `, newTribe);
 
@@ -228,6 +229,7 @@ const formToTribeAdapter = (values, tribeId, isEdit) => {
         membershipLimit,
         description,
         picture,
+        category,
     } = values
 
     if (isEdit) {
@@ -240,6 +242,7 @@ const formToTribeAdapter = (values, tribeId, isEdit) => {
                 membershipLimit: membershipLimit || Number.MAX_SAFE_INTEGER,
                 description,
                 picture,
+                category,
                 name,
             },
         }
@@ -254,6 +257,7 @@ const formToTribeAdapter = (values, tribeId, isEdit) => {
             membershipLimit: membershipLimit || Number.MAX_SAFE_INTEGER,
             description,
             picture,
+            category,
         },
     }
 }
@@ -268,6 +272,7 @@ export const tribeToFormAdapter = (tribe) => {
         membershipLimit,
         description,
         picture,
+        category,
     } = tribe
 
     // If membershipLimit is max safe, it means user hasn't defined the limit yet
@@ -284,6 +289,7 @@ export const tribeToFormAdapter = (tribe) => {
         membershipLimit: membershipLimitToShow,
         description,
         picture,
+        category,
     }
 }
 

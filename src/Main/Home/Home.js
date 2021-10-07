@@ -8,6 +8,7 @@ import {
     TouchableWithoutFeedback,
     Image,
     TouchableOpacity,
+    // SafeAreaView,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuProvider } from 'react-native-popup-menu'
@@ -16,13 +17,14 @@ import _ from 'lodash'
 import * as Notifications from 'expo-notifications'
 import { copilot } from 'react-native-copilot-gm'
 import R from 'ramda'
+// import NewGoalView from '../Goal/NewGoal/NewGoalView'
+
 // import { copilot } from 'react-native-copilot'
 
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup'
 import SearchBarHeader from '../Common/Header/SearchBarHeader'
 import { openCamera, openCameraRoll } from '../../actions'
-
 import Mastermind from './Mastermind'
 import ActivityFeed from './ActivityFeed'
 import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
@@ -172,6 +174,7 @@ let pageAb
 class Home extends Component {
     constructor(props) {
         super(props)
+        // this.sheetref = React.createRef()
         this.state = {
             navigationState: {
                 index: 0,
@@ -195,7 +198,48 @@ class Home extends Component {
         this._notificationSubscription = undefined
         this.setMastermindRef = this.setMastermindRef.bind(this)
     }
+    // renderContent = () => {
+    //     const actionText = this.props.initializeFromState ? 'Update' : 'Create'
 
+    //     const titleText = this.props.initializeFromState
+    //         ? 'Edit Goal'
+    //         : 'New Goal'
+    //     const hasValidFormVals =
+    //         this.props.formVals &&
+    //         this.props.formVals.values &&
+    //         this.props.formVals.values.title &&
+    //         this.props.formVals.values.category &&
+    //         this.props.formVals.values.priority &&
+    //         this.props.formVals.values.title.trim() !== ''
+    //     return (
+    //         <>
+    //             <SafeAreaView style={{ flex: 0, backgroundColor: '#42C0F5' }} />
+    //             <View
+    //                 style={{
+    //                     backgroundColor: 'white',
+    //                     padding: 16,
+    //                     height: '100%',
+    //                 }}
+    //             >
+    //                 <NewGoalView
+    //                     initializeFromState={this.props.initializeFromState}
+    //                     isImportedGoal={this.props.isImportedGoal}
+    //                     goal={this.props.goal}
+    //                     tutorialText={this.props.tutorialText}
+    //                     onRef={(r) => {
+    //                         this.newGoalView = r
+    //                     }}
+    //                     createButtonTitle={actionText}
+    //                     handleCreateButton={this.handleGoalReminder}
+    //                     actionDisabled={
+    //                         !this.props.uploading || !hasValidFormVals
+    //                     }
+    //                     prefilledTitle={this.props.preffiled}
+    //                 />
+    //             </View>
+    //         </>
+    //     )
+    // }
     componentDidUpdate(prevProps) {
         // this.props.getToastsData()
         // if (!prevProps.showTutorial && this.props.showTutorial === true) {
@@ -461,10 +505,12 @@ class Home extends Component {
                             this.createPostModal && this.createPostModal.open()
                         // this.setState({ shareModal: true })
                     }
-                    onCreateGoalPress={() =>
-                        Actions.push('createGoalModal', {
-                            pageId: pageAb,
-                        })
+                    onCreateGoalPress={
+                        () =>
+                            Actions.push('createGoalModal', {
+                                pageId: pageAb,
+                            })
+                        // this.sheetref.current.snapTo(1)
                     }
                 />
                 {/* Hid switching tabs to clean up the main view to just friend's Goals and Updates */}
@@ -597,6 +643,7 @@ class Home extends Component {
                       },
                   }
                 : undefined
+
         return (
             <MenuProvider
                 customStyles={{ backdrop: styles.backdrop }}
@@ -648,6 +695,11 @@ class Home extends Component {
                             }}
                         />
                     </View> */}
+                    {/* <BottomSheet
+                        ref={this.sheetref}
+                        snapPoints={[0, 300, '85%']}
+                        renderContent={this.renderContent}
+                    /> */}
 
                     <FlatList
                         keyExtractor={(item, index) => index.toString()}

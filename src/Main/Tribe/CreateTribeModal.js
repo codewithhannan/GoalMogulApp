@@ -13,8 +13,10 @@ import {
     Dimensions,
     ImageBackground,
     Modal,
+    FlatList,
 } from 'react-native'
 import { connect } from 'react-redux'
+import { CopilotStep, walkthroughable } from 'react-native-copilot-gm'
 import { CheckBox } from 'react-native-elements'
 import { MaterialIcons } from '@expo/vector-icons'
 import {
@@ -29,6 +31,14 @@ import { MenuProvider } from 'react-native-popup-menu'
 // Components
 import ModalHeader from '../Common/Header/ModalHeader'
 import ImageModal from '../Common/ImageModal'
+import dropDown from '../../asset/utils/dropDown.png'
+import {
+    Menu,
+    MenuOption,
+    MenuOptions,
+    MenuTrigger,
+    renderers,
+} from 'react-native-popup-menu'
 
 // Actions
 import {
@@ -50,25 +60,31 @@ import {
     EVENT as E,
     trackWithProperties,
 } from '../../monitoring/segment'
+import { default_style, text } from '../../styles/basic'
+import { UI_SCALE } from '../../styles'
+import { color } from 'react-native-reanimated'
 
-// const { Popover } = renderers;
+const { Popover } = renderers
 const { width } = Dimensions.get('window')
+const height = Dimensions.get('window').height
+const WalkableView = walkthroughable(View)
 
 class CreateTribeModal extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             mediaModal: false,
+            catogary: '',
         }
     }
 
     componentDidMount() {
         this.startTime = new Date()
-        track(
-            this.props.initializeFromState
-                ? E.EDIT_TRIBE_MODAL_OPENED
-                : E.CREATE_TRIBE_MODAL_OPENED
-        )
+        // track(
+        //     this.props.initializeFromState
+        //         ? E.EDIT_TRIBE_MODAL_OPENED
+        //         : E.CREATE_TRIBE_MODAL_OPENED
+        // )
         this.initializeForm()
     }
 
@@ -81,6 +97,7 @@ class CreateTribeModal extends React.Component {
             membershipLimit: undefined,
             description: '',
             picture: undefined,
+            category: 'General',
         }
 
         // Initialize based on the props, if it's opened through edit button
@@ -106,12 +123,16 @@ class CreateTribeModal extends React.Component {
                 tribe.picture == undefined &&
                 picture !== undefined) || // picture is updated
             (!initializeFromState && picture) // create new tribe with picture
-        const durationSec =
-            (new Date().getTime() - this.startTime.getTime()) / 1000
-        trackWithProperties(
-            initializeFromState ? E.TRIBE_UPDATED : E.TRIBE_CREATED,
-            { ...this.props.formVals.values, DurationSec: durationSec }
-        )
+        // const durationSec =
+        //     (new Date().getTime() - this.startTime.getTime()) / 1000
+        // trackWithProperties(
+        //     initializeFromState ? E.TRIBE_UPDATED : E.TRIBE_CREATED,
+        //     { ...this.props.formVals.values, DurationSec: durationSec }
+        // )
+
+        // let valuesToSend = { ...this.props.formVals.values }
+        // valuesToSend['category'] = this.state.catogary
+
         this.props.createNewTribe(
             this.props.formVals.values,
             needUpload,
@@ -459,12 +480,55 @@ class CreateTribeModal extends React.Component {
         )
     }
 
+    handleTribeCatogary = (value) => {
+        this.props.change('category', value)
+    }
+
+    renderTribeCategory = () => {
+        const menu = MenuFactory(
+            [
+                'General',
+                'Career/Business',
+                'Charity/Philanthropy',
+                'Financial/Wealth',
+                'Health/Wellness',
+                'Learning/Mindset',
+                'Personal/Relationships',
+                'Spiritual',
+                'Travel',
+                'Things to Buy',
+            ],
+            this.handleTribeCatogary,
+            this.props.category,
+            styles.triggerContainerStyle,
+            () => console.log('animationCallback')
+        )
+
+        return (
+            <View
+                style={{
+                    marginTop: 5,
+                    justifyContent: 'flex-start',
+                    color: '#828282',
+                }}
+            >
+                <View style={{ flexDirection: 'row' }}>
+                    <Text style={styles.subTitleTextStyle}>Category</Text>
+                </View>
+
+                {menu}
+            </View>
+        )
+    }
+
     render() {
         const { handleSubmit, errors } = this.props
         const actionText = this.props.initializeFromState ? 'Update' : 'Create'
         const titleText = this.props.initializeFromState
             ? 'Edit Tribe'
             : 'New Tribe'
+
+        console.log('THIS IS PROPSSS', this.props)
 
         return (
             <MenuProvider
@@ -479,21 +543,22 @@ class CreateTribeModal extends React.Component {
                         title={titleText}
                         actionText={actionText}
                         onCancel={() => {
-                            const durationSec =
-                                (new Date().getTime() -
-                                    this.startTime.getTime()) /
-                                1000
-                            trackWithProperties(
-                                this.props.initializeFromState
-                                    ? E.EDIT_TRIBE_MODAL_CANCELLED
-                                    : E.CREATE_TRIBE_MODAL_CANCELLED,
-                                { DurationSec: durationSec }
-                            )
+                            // const durationSec =
+                            //     (new Date().getTime() -
+                            //         this.startTime.getTime()) /
+                            //     1000
+                            // trackWithProperties(
+                            //     this.props.initializeFromState
+                            //         ? E.EDIT_TRIBE_MODAL_CANCELLED
+                            //         : E.CREATE_TRIBE_MODAL_CANCELLED,
+                            //     { DurationSec: durationSec }
+                            // )
                             this.props.cancelCreatingNewTribe()
                         }}
                         onAction={handleSubmit(this.handleCreate)}
                         actionDisabled={this.props.uploading}
                     />
+
                     <ScrollView
                         style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
                     >
@@ -501,6 +566,7 @@ class CreateTribeModal extends React.Component {
                             {this.renderTribeName()}
                             {this.renderTribeDescription()}
                             {this.renderTribeMemberLimit()}
+                            {this.renderTribeCategory()}
                             {this.renderOptions()}
                             {this.renderImageSelection()}
                         </View>
@@ -531,6 +597,7 @@ const mapStateToProps = (state) => {
         isPubliclyVisible: selector(state, 'isPubliclyVisible'),
         membershipLimit: selector(state, 'membershipLimit'),
         description: selector(state, 'description'),
+        category: selector(state, 'category'),
         picture: selector(state, 'picture'),
         formVals: state.form.createTribeModal,
         uploading,
@@ -591,10 +658,27 @@ const styles = {
         backgroundColor: 'white',
         borderRadius: 22,
     },
+    subTitleTextStyle: {
+        fontSize: 11,
+        color: '#a1a1a1',
+        padding: 2,
+    },
     cancelIconStyle: {
         height: 20,
         width: 20,
         justifyContent: 'flex-end',
+    },
+    triggerContainerStyle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 5,
+        borderWidth: 1,
+        borderRadius: 3,
+        borderColor: '#E0E0E0',
+        height: 40,
+        marginBottom: 10,
+        width: '95%',
+        alignSelf: 'center',
     },
     mediaStyle: {
         height: 150,
@@ -615,6 +699,44 @@ const styles = {
         height: 15,
         width: 18,
     },
+    anchorStyle: {
+        backgroundColor: 'white',
+    },
+    caretStyle: {
+        ...default_style.smallIcon_1,
+        marginRight: 12,
+        tintColor: '#a1a1a1',
+    },
+
+    menuOptionsStyles: {
+        optionsContainer: {
+            padding: 5,
+            height: height * 0.45,
+            width: width * 0.9,
+            // width: '100%',
+            bottom: 50,
+            // left: 50,
+        },
+
+        optionWrapper: {
+            flex: 1,
+        },
+        optionsContainerStyle: {},
+        optionTouchable: {
+            underlayColor: 'lightgray',
+            activeOpacity: 10,
+        },
+        optionText: {
+            ...default_style.subTitleText_1,
+            paddingTop: 5,
+            paddingBottom: 5,
+            paddingLeft: 10,
+            paddingRight: 10,
+        },
+        carouselContainer: {
+            marginTop: 50,
+        },
+    },
     borderStyle: {
         borderRadius: 4,
         borderWidth: 1,
@@ -628,4 +750,57 @@ const styles = {
     backdrop: {
         backgroundColor: 'transparent',
     },
+}
+
+const MenuFactory = (
+    options,
+    callback,
+    triggerText,
+    triggerContainerStyle,
+    animationCallback
+) => {
+    return (
+        <Menu
+            onSelect={(value) => callback(value)}
+            rendererProps={{
+                placement: 'bottom',
+                anchorStyle: styles.anchorStyle,
+            }}
+            renderer={Popover}
+            onOpen={animationCallback}
+        >
+            <MenuTrigger
+                customStyles={{
+                    TriggerTouchableComponent: TouchableOpacity,
+                }}
+            >
+                <View style={triggerContainerStyle}>
+                    <Text
+                        style={{
+                            margin: 10,
+                            flex: 1,
+                            color: 'black',
+                        }}
+                    >
+                        {triggerText}
+                    </Text>
+                    <Image
+                        resizeMode="contain"
+                        style={styles.caretStyle}
+                        source={dropDown}
+                    />
+                </View>
+            </MenuTrigger>
+            <MenuOptions customStyles={styles.menuOptionsStyles}>
+                <FlatList
+                    data={options}
+                    renderItem={({ item }) => (
+                        <MenuOption value={item} text={item} />
+                    )}
+                    keyExtractor={(item, index) => index.toString()}
+                    // style={{ height: 200 }}
+                />
+            </MenuOptions>
+        </Menu>
+    )
 }

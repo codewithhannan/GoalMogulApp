@@ -562,6 +562,7 @@ class ProfileGoalCard extends React.Component {
 
     render() {
         const { item, index, visitedUserName } = this.props
+
         const goalRef = { goalRef: item }
 
         if (!item || _.isEmpty(item)) return null

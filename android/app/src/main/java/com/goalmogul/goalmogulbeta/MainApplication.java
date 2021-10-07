@@ -12,7 +12,18 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.goalmogul.goalmogulbeta.generated.BasePackageList;
-
+//import com.moengage.core.LogLevel;
+import com.moengage.core.MoEngage;
+//import com.moengage.core.config.GeofenceConfig;
+//import com.moengage.core.config.LogConfig;
+//import com.moengage.core.config.NotificationConfig;
+//import com.moengage.core.internal.logger.Logger;
+import com.moengage.core.model.IntegrationPartner;
+//import com.moengage.firebase.MoEFireBaseHelper;
+//import com.moengage.inapp.MoEInAppHelper;
+//import com.moengage.pushbase.MoEPushHelper;
+import com.segment.analytics.Analytics;
+import com.segment.analytics.android.integrations.moengage.MoEngageIntegration;
 import org.unimodules.adapters.react.ReactAdapterPackage;
 import org.unimodules.adapters.react.ModuleRegistryAdapter;
 import org.unimodules.adapters.react.ReactModuleRegistryProvider;
@@ -21,7 +32,7 @@ import org.unimodules.core.interfaces.SingletonModule;
 import expo.modules.updates.UpdatesController;
 
 import com.facebook.react.bridge.JSIModulePackage;
-import com.swmansion.reanimated.ReanimatedJSIModulePackage;
+// import com.swmansion.reanimated.ReanimatedJSIModulePackage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -51,10 +62,10 @@ public class MainApplication extends Application implements ReactApplication {
       return "index";
     }
 
-    @Override
-    protected JSIModulePackage getJSIModulePackage() {
-      return new ReanimatedJSIModulePackage();
-    }
+  //  @Override
+  //  protected JSIModulePackage getJSIModulePackage() {
+  //    return new ReanimatedJSIModulePackage();
+  //  }
 
     @Override
     protected @Nullable String getJSBundleFile() {
@@ -84,6 +95,14 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    Analytics analytics = new Analytics.Builder(this, "Us6yuw9KLihsRmpihcB5OXTYwT4GDq75")
+      .use(MoEngageIntegration.FACTORY)
+      .build();
+
+    MoEngage moEngage = new MoEngage.Builder(this, "UKA6LOAR56FL8SI1JILW1YQC")
+            .enablePartnerIntegration(IntegrationPartner.SEGMENT)
+            .build();
+    MoEngage.initialise(moEngage);
 
     if (!BuildConfig.DEBUG) {
       UpdatesController.initialize(this);
@@ -92,6 +111,7 @@ public class MainApplication extends Application implements ReactApplication {
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
 
+  
   /**
    * Loads Flipper in React Native templates. Call this in the onCreate method with something like
    * initializeFlipper(this, getReactNativeHost().getReactInstanceManager());

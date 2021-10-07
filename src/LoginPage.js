@@ -405,6 +405,8 @@ class LoginPage extends Component {
                                     textContentType="username"
                                     caption=" "
                                     autoCapitalize="none"
+                                    keyboardType="email-address"
+                                    textContentType="emailAddress"
                                 />
                                 <Field
                                     ref="password"

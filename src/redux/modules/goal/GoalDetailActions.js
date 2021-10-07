@@ -394,6 +394,8 @@ export const updateGoal = (itemId, type, updates, goal, pageId) => (
     if (type !== 'step' && type !== 'need') return
     let { isCompleted, description } = updates
 
+    // console.log('ISCOMPLETEDDD', updates)
+
     const { token } = getState().user
     const goalToUpdate = goal || getGoalDetailByTab(getState()).goal
 

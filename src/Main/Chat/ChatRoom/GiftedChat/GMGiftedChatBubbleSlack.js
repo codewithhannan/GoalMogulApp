@@ -216,7 +216,7 @@ class Bubble extends React.Component {
             let transformedOption = { ...options[option], optionTitle: option }
             optionsArray.push(transformedOption)
         }
-        console.log('optionsArrayyyyy', optionsArray)
+        // console.log('optionsArrayyyyy', optionsArray)
         return (
             <View>
                 {optionsArray.map((option) => {
@@ -701,41 +701,38 @@ class Bubble extends React.Component {
                 return FUNNELS_LOTTIES.FUNNEL_1_6
             case '1-7':
                 return FUNNELS_LOTTIES.FUNNEL_1_7
-            case '2_1':
+            case '2-1':
                 return FUNNELS_LOTTIES.FUNNEL_2_1
-            case '2_2':
+            case '2-2':
                 return FUNNELS_LOTTIES.FUNNEL_2_2
-            case '2_3':
+            case '2-3':
                 return FUNNELS_LOTTIES.FUNNEL_2_3
-            case '2_4':
+            case '2-4':
                 return FUNNELS_LOTTIES.FUNNEL_2_4
-            case '3_1':
+            case '3-1':
                 return FUNNELS_LOTTIES.FUNNEL_3_1
-            case '3_2':
+            case '3-2':
                 return FUNNELS_LOTTIES.FUNNEL_3_2
-            case '3_3':
+            case '3-3':
                 return FUNNELS_LOTTIES.FUNNEL_3_3
-            case '3_4':
+            case '3-4':
                 return FUNNELS_LOTTIES.FUNNEL_3_4
-            case '3_5':
+            case '3-5':
                 return FUNNELS_LOTTIES.FUNNEL_3_5
-            case '3_6a':
+            case '3-6a':
                 return FUNNELS_LOTTIES.FUNNEL_3_6a
-            case '3_6b':
-                return FUNNELS_LOTTIES.FUNNEL_3_6b
-            case '3_7':
+            case '3-7':
                 return FUNNELS_LOTTIES.FUNNEL_3_7
-            case '3_8':
+            case '3-8':
                 return FUNNELS_LOTTIES.FUNNEL_3_8
-            case '3_9':
+            case '3-9':
                 return FUNNELS_LOTTIES.FUNNEL_3_9
-            case '3_10':
+            case '3-10':
                 return FUNNELS_LOTTIES.FUNNEL_3_10
-            case '3_11':
+            case '3-11':
                 return FUNNELS_LOTTIES.FUNNEL_3_11
-            case '3_12':
+            case '3-12':
                 return FUNNELS_LOTTIES.FUNNEL_3_12
-
             default:
                 return null
         }
@@ -743,6 +740,7 @@ class Bubble extends React.Component {
 
     renderMessageLottie = () => {
         const { currentMessage } = this.props
+        // console.log('THIS IS CURRENT MESSAGE', currentMessage)
         if (_.isEmpty(currentMessage.lottie)) return null
         if (currentMessage?.lottie) {
             return (
@@ -790,6 +788,7 @@ class Bubble extends React.Component {
 
     render() {
         const { user, chatRoom, messages } = this.props
+        // console.log('MESSAGES', messages)
 
         // console.log('THIS ISSSSSS CURRRENT MESSAGE', this.props.currentMessage)
 

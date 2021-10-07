@@ -34,6 +34,7 @@ import { color, text, default_style } from '../../../styles/basic'
 import { UI_SCALE } from '../../../styles'
 import { Actions } from 'react-native-router-flux'
 import { deleteSelectedNudge } from '../../../reducers/NudgesReducer'
+import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions'
 
 // Constants
 const DEBUG_KEY = '[ UI NudgeCard ]'
@@ -41,9 +42,7 @@ const DEBUG_KEY = '[ UI NudgeCard ]'
 class NudgeCard extends React.PureComponent {
     handleNudgeCardOnPress = () => {
         const { item, token, userId } = this.props
-
         const { _id, sender, receiver } = item
-
         if (
             !item.hasResponded &&
             !item.isDeleted &&
@@ -52,6 +51,17 @@ class NudgeCard extends React.PureComponent {
             return (
                 Actions.replace('no_goal_conversation', { item }),
                 this.props.deleteSelectedNudge(_id),
+                this.props.deleteNudge(_id)
+            )
+        } else if (
+            !item.hasResponded &&
+            !item.isDeleted &&
+            item.type === 'clarifyGoals'
+        ) {
+            return (
+                this.props.openGoalDetail(item.goalRef),
+                this.props.deleteSelectedNudge(_id),
+                this.props.handleNudgeResponsed(_id),
                 this.props.deleteNudge(_id)
             )
         } else if (
@@ -229,6 +239,12 @@ class NudgeCard extends React.PureComponent {
             item.type === 'accountability'
         ) {
             return item.goalRef.title
+        } else if (
+            !item.hasResponded &&
+            !item.isDeleted &&
+            item.type === 'clarifyGoals'
+        ) {
+            return item.goalRef.title
         } else {
             return 'Tap here to view his goal.'
         }
@@ -259,6 +275,12 @@ class NudgeCard extends React.PureComponent {
             item.type === 'accountability'
         ) {
             return 'wants to hold you accountable for your goal:'
+        } else if (
+            !item.hasResponded &&
+            !item.isDeleted &&
+            item.type === 'clarifyGoals'
+        ) {
+            return 'would like you to clarify your goal:'
         } else {
             return 'has responded to your nudge.'
         }
@@ -369,4 +391,5 @@ export default connect(mapStateToProps, {
     openProfile,
     deleteSelectedNudge,
     createOrGetDirectMessage,
+    openGoalDetail,
 })(NudgeCard)

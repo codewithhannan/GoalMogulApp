@@ -136,7 +136,7 @@ export const INITIAL_TRIBE_PAGE = {
     tribeLoading: false,
     goals: {
         skip: 0,
-        limit: 8,
+        limit: 50,
         hasNextPage: undefined,
         refs: [], // current user's goal references
         allRefs: [], // all loaded user's goal references
@@ -825,7 +825,7 @@ export default (state = INITIAL_STATE, action) => {
 
         case MYTRIBE_EDIT_SUCCESS: {
             const { newTribe, tribeId } = action.payload
-            const newState = _.cloneDeep(state)
+            let newState = _.cloneDeep(state)
 
             if (!_.has(newState, tribeId)) {
                 new SentryRequestBuilder(

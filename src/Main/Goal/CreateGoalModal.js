@@ -387,18 +387,10 @@ class CreateGoalModal extends React.Component {
                     )
                 }}
                 onCancel={() => {
-                    this.setState(
-                        {
-                            ...this.state,
-                            goalReminderDatePicker: false,
-                        },
-                        () => {
-                            // Timeout is set to allow animation finished
-                            setTimeout(() => {
-                                this.handleCreate()
-                            }, 100)
-                        }
-                    )
+                    this.setState({
+                        ...this.state,
+                        goalReminderDatePicker: false,
+                    })
                 }}
             />
         )
@@ -588,7 +580,7 @@ class CreateGoalModal extends React.Component {
                     >
                         <StatusBar
                             animated={true}
-                            backgroundColor="blue"
+                            backgroundColor="#42C0F5"
                             // barStyle={statusBarStyle}
                             // showHideTransition={statusBarTransition}
                         />

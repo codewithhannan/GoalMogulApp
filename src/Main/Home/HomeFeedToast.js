@@ -282,7 +282,7 @@ class HomeFeedToast extends Component {
             renderButton: true,
             marginButtonTop: undefined,
             thirdText: undefined,
-            buttonText: 'View profile',
+            buttonText: 'View Profile',
             handleButtonPress: () => {},
             // this.props.openProfile(this.props.friendsProfileToVisit[0]._id),
         },

@@ -320,7 +320,11 @@ class MemberListCard extends Component {
                         user={item}
                         style={{ marginLeft: 0, marginTop: 4 }}
                     />
-                    {this.props.isFriend ? null : this.renderButton(_id)}
+                    {this.props.isFriend
+                        ? null
+                        : this.props.isSelf
+                        ? null
+                        : this.renderButton(_id)}
                     {/* <TouchableOpacity
                         style={{
                             height: 30,

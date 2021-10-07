@@ -613,14 +613,12 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         refreshTokenObject,
         1
     )
-
     if (refreshTokenObject === null) {
         // When refresh token is null, it means either user hasn't logged in before
         // or the refreshToken has expired. User needs to login
         dispatchHideSplashScreen(dispatch)
         return
     }
-
     // Obtain the authToken. Disable auto logout since it's taken care of next step
     let authToken
     try {
@@ -630,7 +628,6 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
     } catch (err) {
         // When refresh auth token failed, it will reject the promise returned. Hence we
         // should catch the error here
-
         Logger.log(
             '[tryAutoLoginV2] fail to get auth token with error: ',
             err,
@@ -639,7 +636,6 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         dispatchHideSplashScreen(dispatch)
         return
     }
-
     Logger.log(
         '[tryAutoLoginV2] authToken loaded from TokenService is: ',
         authToken,
@@ -649,23 +645,18 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         dispatchHideSplashScreen(dispatch)
         return
     }
-
     const {
         userId,
         isOnboarded,
         token: refreshToken,
         accountOnHold,
     } = refreshTokenObject
-
     let { visitedTime } = getState().usersVisited // The visited time is one less than the value in the state because we are calling it in the ACTIVITY FEED
-
-    console.log('THIS IS THE VISITED TIME', visitedTime)
+    // console.log('THIS IS THE VISITED TIME', visitedTime)
     // let userCreated = getState().user.user.created
-
     // let currentDate = moment(Date.now())
     // let comparedUser = moment.duration(currentDate.diff(userCreated)).asDays()
     // let daysCreated = Math.floor(comparedUser)
-
     // Saturate User.js and AuthReducers.js with user token and userId for other actions to work
     dispatch({
         type: LOGIN_USER_SUCCESS,
@@ -674,7 +665,6 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
             token: authToken,
         },
     })
-
     // Step 1 Page transition
     if (!isOnboarded) {
         // isOnboarded is false, then we fetch user profile to validate
@@ -684,7 +674,6 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
             dispatch,
             getState
         )
-
         if (!userObject) {
             // Something went wrong fetching profile
             dispatchHideSplashScreen(dispatch)
@@ -692,11 +681,9 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         }
         if (accountOnHold) {
             // Go to Waitlist screen
-
             Actions.replace('waitlist')
         } else if (!accountOnHold && !userObject.isOnBoarded) {
             // Go to onboarding flow
-
             Actions.replace('registration')
         } else {
             await TokenService.populateAndPersistToken(
@@ -705,7 +692,6 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
                 true,
                 userId
             )
-
             // Pass along the user onboarded state to state.user.user.isOnboarded
             dispatch({
                 type: TUTORIAL_MARK_USER_ONBOARDED,
@@ -713,9 +699,7 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
                     userId: userId,
                 },
             })
-
             // Go to home page
-
             Actions.replace('drawer')
         }
     } else {
@@ -730,7 +714,6 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
             dispatch,
             getState
         )
-
         // Go to home page
         if (visitedTime == 1 && !accountOnHold && userObject.isOnBoarded) {
             Actions.replace('contacts')
@@ -744,14 +727,10 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
             Actions.replace('drawer')
         }
     }
-
     // Add a 50ms delay here to let screen transition finishes
     await new Promise((resolve, rej) => setTimeout(() => resolve(), 500))
-
     // Step 2 hide splash screen
-
     dispatchHideSplashScreen(dispatch)
-
     // Step 3 Setup all necessary service and configuration
     // set up chat listeners
     LiveChatService.mountUser({
@@ -762,27 +741,20 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
         userId: userId,
         authToken,
     })
-
     // Fetch user profile
     await fetchAppUserProfile(undefined, userId)(dispatch, getState)
-
     // Step 4 Refresh feed and all goals
     refreshActivityFeed()(dispatch, getState)
     refreshGoalFeed()(dispatch, getState)
-
     // Step 5 Subscribe notification
     subscribeNotification()(dispatch, getState)
-
     /** Below actions are none blocking since we have transitioned the UI **/
     // Load general assets like icons and images
     loadGeneralAssets()
-
     // Load unread notification
     loadUnreadNotification()(dispatch, getState)
-
     // Load remote matches
     loadRemoteMatches(payload.userId)(dispatch, getState)
-
     // Load tutorial state
     loadTutorialState(payload.userId)(dispatch, getState)
 }

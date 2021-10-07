@@ -237,14 +237,25 @@ class SendFeedback extends Component {
                         }}
                     >
                         <Text
-                            style={
-                                (buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
+                            style={[
+                                buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
                                     .textStyle,
                                 {
-                                    fontWeight: 'normal',
-                                    color: 'white',
-                                })
-                            }
+                                    // marginBottom: 5,
+                                    backgroundColor:
+                                        this.state.description == '' ||
+                                        this.state.disable
+                                            ? color.GM_BLUE_LIGHT
+                                            : color.GM_BLUE,
+                                    width: '90%',
+                                    height: 35,
+                                    alignSelf: 'center',
+                                    marginBottom: 10,
+                                },
+                            ]}
+                            onPress={() => {
+                                return this.onNext(this.state.description)
+                            }}
                         >
                             Send
                         </Text>

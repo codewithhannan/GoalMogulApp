@@ -263,6 +263,7 @@ class Menu extends React.PureComponent {
                         <>
                             <View
                                 style={{
+                                    bottom: 0,
                                     flex: 1,
                                     flexDirection: 'column',
                                 }}
@@ -279,7 +280,7 @@ class Menu extends React.PureComponent {
                                         alignItems: 'center',
                                     }}
                                 >
-                                    <View style={{ top: 5, marginRight: 10 }}>
+                                    <View style={{ marginRight: 10 }}>
                                         <Image
                                             source={Silver}
                                             style={{
@@ -290,7 +291,7 @@ class Menu extends React.PureComponent {
                                     </View>
                                     <View
                                         style={{
-                                            marginTop: 10,
+                                            // marginTop: 5,
                                             flexDirection: 'row',
                                             justifyContent: 'space-evenly',
                                         }}
@@ -318,7 +319,7 @@ class Menu extends React.PureComponent {
                                         alignItems: 'center',
                                     }}
                                 >
-                                    <View style={{ top: 5, marginRight: 10 }}>
+                                    <View style={{ marginRight: 10 }}>
                                         <Image
                                             source={Gold}
                                             style={{
@@ -329,7 +330,7 @@ class Menu extends React.PureComponent {
                                     </View>
                                     <View
                                         style={{
-                                            marginTop: 10,
+                                            // marginTop: 5,
                                             flexDirection: 'row',
                                             justifyContent: 'space-evenly',
                                         }}
@@ -347,13 +348,16 @@ class Menu extends React.PureComponent {
                                 <TouchableOpacity
                                     onPress={() => {
                                         this.setState({ toolTipVisible: false })
+                                        Linking.openURL(
+                                            'https://docs.google.com/spreadsheets/d/1EOoUL70NGnCd4GLUsJYKLkRlVoXwhq3yd3pGZLRhdo8/edit#gid=0'
+                                        )
                                     }}
                                     style={{
                                         flexDirection: 'row',
                                         alignItems: 'center',
                                     }}
                                 >
-                                    <View style={{ top: 5, marginRight: 10 }}>
+                                    <View style={{ marginRight: 10 }}>
                                         <Image
                                             source={Winner}
                                             style={{
@@ -364,7 +368,7 @@ class Menu extends React.PureComponent {
                                     </View>
                                     <View
                                         style={{
-                                            marginTop: 10,
+                                            // marginTop: 3.5,
                                             flexDirection: 'row',
                                             justifyContent: 'space-evenly',
                                         }}

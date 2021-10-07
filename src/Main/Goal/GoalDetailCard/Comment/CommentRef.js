@@ -529,6 +529,7 @@ class CommentRef extends React.PureComponent {
         else if (suggestionType === 'Tribe') return tribeIcon
         else if (suggestionType === 'NewStep') return stepIcon
         else if (suggestionType === 'NewNeed') return needIcon
+        else if (suggestionType === 'Clarify') return needIcon
     }
 
     // Currently this is a dummy component
@@ -587,6 +588,7 @@ class CommentRef extends React.PureComponent {
                             {suggestionType === 'Tribe' ? 'TRIBE' : null}
                             {suggestionType === 'NewNeed' ? 'NEED' : null}
                             {suggestionType === 'NewStep' ? 'STEP' : null}
+                            {suggestionType === 'Clarify' ? 'CLARIFY' : null}
                         </Text>
                     </View>
                     <DelayedButton
@@ -596,7 +598,8 @@ class CommentRef extends React.PureComponent {
                     >
                         {this.renderSuggestionModal(item)}
                         {suggestionType === 'NewNeed' ||
-                        suggestionType === 'NewStep'
+                        suggestionType === 'NewStep' ||
+                        suggestionType === 'Clarify'
                             ? null
                             : this.renderImage(item)}
                         {this.renderTextContent(item)}
@@ -690,6 +693,12 @@ const switchDefaultImageType = (type, item) =>
                 tintColor: '#333',
             },
         }),
+        Clarify: () => ({
+            source: stepIcon,
+            defaultImageStyle: {
+                tintColor: 'white',
+            },
+        }),
     })('User')(type)
 
 const getTextContent = (item) => {
@@ -738,6 +747,12 @@ const getTextContent = (item) => {
             content: suggestionText,
         }
     }
+    if (suggestionType === 'Clarify' && suggestionText) {
+        ret = {
+            content: 'Clarify Goal',
+            title: suggestionText,
+        }
+    }
     if (suggestionType === 'ChatConvoRoom' && chatRoomRef) {
         ret = {
             title: chatRoomRef.name || 'Chat room',
@@ -781,6 +796,7 @@ const styles = {
         fontSize: 13,
         fontWeight: '600',
         marginBottom: 2,
+        left: 10,
     },
     headingTextStyle: {
         fontSize: 9,

@@ -87,7 +87,8 @@ class SearchOverlay extends Component {
             },
             () => {
                 if (value === '') {
-                    this.props.clearSearchState(this.props.selectedTab)
+                    // this.props.clearSearchState(this.props.selectedTab)
+                    this.props.getAllAccounts()
                 }
                 this.props.debouncedSearch(value.trim(), this.props.selectedTab)
             }

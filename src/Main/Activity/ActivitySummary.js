@@ -21,6 +21,9 @@ class ActivitySummary extends React.Component {
             belongsToEvent,
             postRef,
         } = item
+        if (actedWith === 'Step') {
+            console.log('STEEEEPSSSSSSS', item)
+        }
 
         const tribeText = belongsToTribe ? (
             <Text>
@@ -61,6 +64,18 @@ class ActivitySummary extends React.Component {
                                     : ''
                             }`
                         )
+                    }
+                    return (
+                        `shared ${switchPostType(val.postRef.postType)} ` +
+                        `${
+                            val.belongsToEvent || val.belongsToTribe ? 'to' : ''
+                        }`
+                    )
+                },
+                Step: (val) => {
+                    if (!val.postRef && !val.postRef.postType) return ''
+                    if (!isSharedPost(val.postRef.postType)) {
+                        return `completed steps for a Goal`
                     }
                     return (
                         `shared ${switchPostType(val.postRef.postType)} ` +

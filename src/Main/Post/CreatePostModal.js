@@ -1260,7 +1260,7 @@ class CreatePostModal extends Component {
                             style={[
                                 GOALS_STYLE.commonPillContainer,
                                 {
-                                    width: 60,
+                                    paddingHorizontal: 7,
                                     alignSelf: 'center',
                                     // borderWidth: isCompleted ? 0.25 : 0,
                                     borderColor: color.GM_MID_GREY,

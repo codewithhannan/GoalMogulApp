@@ -539,7 +539,7 @@ export class GoalDetailCardV3 extends React.Component {
                 return (
                     <>
                         <StepAndNeedCardV3
-                            key={Math.random().toString(36).substr(2, 9)}
+                            key={`mastermind-${index}`}
                             item={item}
                             // goalRef={goalDetail}
                             onCardPress={() => {
@@ -566,7 +566,7 @@ export class GoalDetailCardV3 extends React.Component {
             case 'focusTab':
                 return (
                     <CommentCard
-                        key={Math.random().toString(36).substr(2, 9)}
+                        key={`comment-${props.index}`}
                         item={props.item}
                         index={props.index}
                         commentDetail={{

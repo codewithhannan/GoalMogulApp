@@ -81,6 +81,7 @@ class InputBox extends React.Component {
         this.state = {
             isDatePickerVisible: false,
             selectedStartDate: null,
+            textInputRef: '',
         }
         this.onDateChange = this.onDateChange.bind(this)
     }
@@ -130,21 +131,11 @@ class InputBox extends React.Component {
             status,
             onBlur,
         } = this.props
-        console.log('Value', value)
 
         const { selectedStartDate } = this.state
-        // const startDate = selectedStartDate ? selectedStartDate.toString() : ''
-        // console.log('THIS IS SELECTED DATE', new Date(Date.now()))
-
-        // let oneYearFromNow = new Date()
-        // let newDate = oneYearFromNow.setFullYear(
-        //     oneYearFromNow.getFullYear() - 13
-        // )
-        // var date = new Date(newDate)
-        // console.log(date.toUTCString())
 
         return (
-            <View style={[{ marginTop: 20 }, containerStyle || {}]}>
+            <View style={[{ marginTop: 10 }, containerStyle || {}]}>
                 <View
                     style={{
                         flexDirection: 'row',
@@ -213,9 +204,7 @@ class InputBox extends React.Component {
                         placeholder="MM/DD/YYYY"
                         style={{ marginHorizontal: 8 }}
                         fontSize={16}
-                        ref={(ref) => {
-                            this.datetimeField = ref
-                        }}
+                        ref={(ref) => (this.datetimeField = ref)}
                         onEndEditing={() => onBlur(value)}
                     />
                     {/* <Text
@@ -446,7 +435,7 @@ class InputBox extends React.Component {
                         </SafeAreaView>
                     </View>
                 </Modal> */}
-                {/* {this.renderCaption(caption, status)} */}
+                {this.renderCaption(caption, status)}
             </View>
         )
     }
@@ -587,6 +576,7 @@ class InputBox extends React.Component {
                 <View
                     style={{
                         flexDirection: 'row',
+                        marginTop: 5,
                     }}
                 >
                     <Text
@@ -608,6 +598,7 @@ class InputBox extends React.Component {
                         alignItems: 'center',
                         justifyContent: 'center',
                         paddingVertical: 4,
+                        marginTop: 5,
                     }}
                 >
                     {this.renderPill('Male', value, onChangeText)}
@@ -805,9 +796,8 @@ class InputBox extends React.Component {
 
 const styles = {
     containerStyle: {
-        display: 'flex',
         width: '100%',
-        marginTop: 20,
+        marginTop: 15,
     },
     pillStyle: {
         paddingVertical: 16,
