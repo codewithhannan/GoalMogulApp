@@ -24,7 +24,9 @@ const PriorityBar = (props) => {
         if (index >= 10 - priority) {
             style = _.set(style, 'backgroundColor', backgroundColor)
         }
-        return <View style={style} key={index} />
+        return (
+            <View style={style} key={Math.random().toString(36).substr(2, 9)} />
+        )
     })
 
     return <View>{views}</View>

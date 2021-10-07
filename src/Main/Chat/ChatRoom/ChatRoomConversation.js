@@ -19,7 +19,7 @@
 
 import { Icon, Layout } from '@ui-kitten/components'
 import * as FileSystem from 'expo-file-system'
-import * as Permissions from 'expo-permissions'
+import * as ImagePicker from 'expo-image-picker'
 import { MenuProvider } from 'react-native-popup-menu'
 
 import _ from 'lodash'
@@ -958,7 +958,10 @@ class ChatRoomConversation extends React.Component {
         return <ChatRoomConversationInputToolbar {...props} />
     }
     async saveToCameraRoll(imageSource) {
-        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
+        // const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
+        const {
+            status,
+        } = await ImagePicker.requestMediaLibraryPermissionsAsync()
         if (status !== 'granted') {
             return Alert.alert(
                 'Denied',
@@ -976,12 +979,12 @@ class ChatRoomConversation extends React.Component {
                     urlToRender
                 )}`
             ).then((res) => {
-                CameraRoll.saveToCameraRoll(res.uri).then(
+                CameraRoll.save(res.uri).then(
                     Alert.alert('Saved', 'Photo saved to camera roll')
                 )
             })
         } else {
-            CameraRoll.saveToCameraRoll(urlToRender).then(
+            CameraRoll.save(urlToRender).then(
                 Alert.alert('Saved', 'Photo saved to camera roll')
             )
         }
@@ -1089,7 +1092,10 @@ class ChatRoomConversation extends React.Component {
         const { messageMediaRef } = this.props
         // console.log('this is the props', this.props)
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
+            >
                 <Layout style={styles.homeContainerStyle}>
                     {this.props.showInitialLoader ? (
                         <ChatRoomLoaderOverlay />

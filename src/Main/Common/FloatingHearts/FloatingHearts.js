@@ -38,13 +38,13 @@ class FloatingHearts extends Component {
         })
     }
 
-    componentWillUpdate(nextProps) {
+    shouldComponentUpdate(nextProps) {
         const oldCount = this.props.count
         const newCount = nextProps.count
         const numHearts = newCount - oldCount
 
         if (numHearts <= 0) {
-            return
+            return false
         }
 
         const items = Array(numHearts).fill()
@@ -53,6 +53,7 @@ class FloatingHearts extends Component {
             .map(this.createHeart)
 
         this.setState({ hearts: this.state.hearts.concat(newHearts) })
+        return true
     }
 
     handleOnLayout = (e) => {
@@ -80,7 +81,7 @@ class FloatingHearts extends Component {
                 {isReady &&
                     this.state.hearts.map(({ id, left }) => (
                         <AnimatedShape
-                            key={id}
+                            key={Math.random().toString(36).substr(2, 9)}
                             height={height}
                             style={{ left }}
                             onComplete={this.removeHeart.bind(this, id)}

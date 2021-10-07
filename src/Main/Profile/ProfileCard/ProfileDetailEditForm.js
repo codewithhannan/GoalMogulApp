@@ -87,10 +87,10 @@ class ProfileDetailEditForm extends Component {
         this.scrollview.props.scrollToFocusedInput(reactNode)
     }
 
-    handleOnFocus = (position) => {
-        console.log('on focus')
-        this.refs.scrollview.scrollTo({ x: 0, y: position, animated: true })
-    }
+    // handleOnFocus = (position) => {
+    //     console.log('on focus')
+    //     this.refs.scrollview.scrollTo({ x: 0, y: position, animated: true })
+    // }
 
     chooseImage = async () => {
         ActionSheetIOS.showActionSheetWithOptions(
@@ -301,6 +301,7 @@ class ProfileDetailEditForm extends Component {
                             label="Name"
                             component={this.renderInput}
                             disabled={uploading}
+                            returnKeyType="next"
                             autoCorrect
                         />
                         <Field
@@ -329,6 +330,7 @@ class ProfileDetailEditForm extends Component {
                                     .getRenderedComponent()
                                     .focus()
                             }}
+                            returnKeyType="next"
                             autoCorrect
                         />
                         {/* <Field
@@ -357,7 +359,7 @@ class ProfileDetailEditForm extends Component {
                             disabled={uploading}
                             multiline
                             autoCorrect
-                            returnKeyType="Enter"
+                            returnKeyType="done"
                         />
                         {this.renderCameraRollBottomSheet()}
                     </KeyboardAwareScrollView>

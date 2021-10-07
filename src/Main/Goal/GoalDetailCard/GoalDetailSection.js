@@ -648,67 +648,65 @@ class GoalDetailSection extends React.PureComponent {
                             duration={500}
                             easing="ease-in-out-expo"
                         >
-                            {LOTTIE_DATA.map((lottie) => {
+                            {LOTTIE_DATA.map((lottie, i) => {
                                 return (
-                                    <>
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                if (selfLiked) {
-                                                    return (
-                                                        this.props.unLikeGoal(
+                                    <TouchableOpacity
+                                        key={lottie}
+                                        onPress={() => {
+                                            if (selfLiked) {
+                                                return (
+                                                    this.props.unLikeGoal(
+                                                        'goal',
+                                                        _id,
+                                                        maybeLikeRef
+                                                    ),
+                                                    setTimeout(() => {
+                                                        this.props.likeGoal(
                                                             'goal',
                                                             _id,
-                                                            maybeLikeRef
-                                                        ),
-                                                        setTimeout(() => {
-                                                            this.props.likeGoal(
-                                                                'goal',
-                                                                _id,
-                                                                '',
-                                                                '',
-                                                                lottie.value
-                                                            )
-                                                        }, 1000),
-                                                        this.setState({
-                                                            unitText:
-                                                                lottie.title,
-                                                            toolTipVisible: false,
-                                                        })
-                                                    )
-                                                }
-                                                this.incrementFloatingHeartCount()
-                                                this.props.likeGoal(
-                                                    'goal',
-                                                    _id,
-                                                    '',
-                                                    '',
-                                                    lottie.value
+                                                            '',
+                                                            '',
+                                                            lottie.value
+                                                        )
+                                                    }, 1000),
+                                                    this.setState({
+                                                        unitText: lottie.title,
+                                                        toolTipVisible: false,
+                                                    })
                                                 )
-                                                this.setState({
-                                                    unitText: lottie.title,
-                                                    toolTipVisible: false,
-                                                })
+                                            }
+                                            this.incrementFloatingHeartCount()
+                                            this.props.likeGoal(
+                                                'goal',
+                                                _id,
+                                                '',
+                                                '',
+                                                lottie.value
+                                            )
+                                            this.setState({
+                                                unitText: lottie.title,
+                                                toolTipVisible: false,
+                                            })
+                                        }}
+                                    >
+                                        <LottieView
+                                            style={{
+                                                height: hp(5),
+                                            }}
+                                            source={lottie.lottieSource}
+                                            autoPlay
+                                            loop
+                                        />
+                                        <Text
+                                            style={{
+                                                fontSize: 8,
+                                                color: '#818181',
+                                                alignSelf: 'center',
                                             }}
                                         >
-                                            <LottieView
-                                                style={{
-                                                    height: hp(5),
-                                                }}
-                                                source={lottie.lottieSource}
-                                                autoPlay
-                                                loop
-                                            />
-                                            <Text
-                                                style={{
-                                                    fontSize: 8,
-                                                    color: '#818181',
-                                                    alignSelf: 'center',
-                                                }}
-                                            >
-                                                {lottie.name}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    </>
+                                            {lottie.name}
+                                        </Text>
+                                    </TouchableOpacity>
                                 )
                             })}
                         </Animatable.View>

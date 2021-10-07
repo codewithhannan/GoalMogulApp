@@ -358,7 +358,7 @@ class InviteFriendModal extends React.PureComponent {
 
         return (
             <DelayedButton
-                index={index}
+                index={Math.random().toString(36).substr(2, 9) + index}
                 style={[
                     {
                         width: '100%',
@@ -371,6 +371,7 @@ class InviteFriendModal extends React.PureComponent {
                 }}
             >
                 <View
+                    // key={Math.random().toString(36).substr(2, 9) + index}
                     style={[
                         {
                             flexDirection: 'row',
@@ -444,261 +445,257 @@ class InviteFriendModal extends React.PureComponent {
         const inviteLink = this.getInviteLink()
 
         return (
-            <>
-                <Modal
-                    swipeToClose={true}
-                    isOpen={this.props.isVisible}
-                    backdropOpacity={0.6}
-                    coverScreen={true}
-                    hideModalContentWhileAnimating
-                    onClosed={this.closeModal}
+            <Modal
+                swipeToClose={true}
+                isOpen={this.props.isVisible}
+                backdropOpacity={0.6}
+                coverScreen={true}
+                hideModalContentWhileAnimating
+                onClosed={this.closeModal}
+                style={{
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
+                    flex: 1,
+                    // marginTop: 50,
+                    backgroundColor: 'transparent',
+                }}
+                // useNativeDriver={true}
+            >
+                <View
                     style={{
+                        backgroundColor: '#F2F2F2',
+                        // flex: 1,
+                        height: height * 0.85,
+                        position: 'absolute',
+                        bottom: 0,
                         borderTopLeftRadius: 10,
                         borderTopRightRadius: 10,
-                        flex: 1,
-                        // marginTop: 50,
-                        backgroundColor: 'transparent',
                     }}
-                    useNativeDriver={true}
                 >
                     <View
-                        style={{
-                            backgroundColor: '#F2F2F2',
-                            // flex: 1,
-                            height: height * 0.85,
-                            position: 'absolute',
-                            bottom: 0,
-                            borderTopLeftRadius: 10,
-                            borderTopRightRadius: 10,
+                        style={[
+                            styles.boxContainerStyle,
+                            {
+                                flexDirection: 'row',
+                                marginBottom: 1,
+                                borderTopLeftRadius: 10,
+                                borderTopRightRadius: 10,
+                            },
+                        ]}
+                    >
+                        <Text style={[default_style.titleText_1]}>
+                            Invite Friends
+                        </Text>
+                        <View style={{ flex: 1, alignItems: 'center' }} />
+                        <DelayedButton
+                            activeOpacity={0.85}
+                            onPress={this.closeModal}
+                            style={{
+                                width: 24,
+                                height: 24,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Image
+                                source={cancel}
+                                style={{
+                                    width: 16,
+                                    height: 16,
+                                    tintColor: 'black',
+                                    padding: 2,
+                                }}
+                            />
+                        </DelayedButton>
+                    </View>
+                    <ScrollView
+                        style={{ flex: 1 }}
+                        contentContainerStyle={{
+                            paddingBottom: 30,
+                            flexGrow: 1,
+                        }}
+                        onScroll={(e) => {
+                            this.onScrollFlatList(
+                                e.nativeEvent.contentOffset.y,
+                                height
+                            )
                         }}
                     >
                         <View
                             style={[
                                 styles.boxContainerStyle,
-                                {
-                                    flexDirection: 'row',
-                                    marginBottom: 1,
-                                    borderTopLeftRadius: 10,
-                                    borderTopRightRadius: 10,
-                                },
+                                { marginBottom: 1 },
                             ]}
                         >
-                            <Text style={[default_style.titleText_1]}>
-                                Invite Friends
-                            </Text>
-                            <View style={{ flex: 1, alignItems: 'center' }} />
-                            <DelayedButton
-                                activeOpacity={0.85}
-                                onPress={this.closeModal}
+                            <View
                                 style={{
-                                    width: 24,
-                                    height: 24,
-                                    alignItems: 'center',
+                                    borderWidth: 1,
+                                    borderColor: '#E0E0E0',
+                                    borderRadius: 5,
+                                    padding: 20,
                                     justifyContent: 'center',
                                 }}
                             >
-                                <Image
-                                    source={cancel}
-                                    style={{
-                                        width: 16,
-                                        height: 16,
-                                        tintColor: 'black',
-                                        padding: 2,
+                                <TextInput
+                                    ref={(input) => {
+                                        this.input = input
                                     }}
+                                    value={
+                                        this.descriptionsArray[
+                                            this.state.descriptionIndex
+                                        ]
+                                    }
+                                    onChangeText={(text) =>
+                                        this.updateDescription(text)
+                                    }
+                                    style={[
+                                        default_style.subTitleText_1,
+                                        {
+                                            lineHeight: 24,
+                                            padding: 0,
+                                            width: width - 72,
+                                            height: 120,
+                                        },
+                                    ]}
+                                    multiline
                                 />
-                            </DelayedButton>
-                        </View>
-                        <ScrollView
-                            style={{ flex: 1 }}
-                            contentContainerStyle={{
-                                paddingBottom: 30,
-                                flexGrow: 1,
-                            }}
-                            onScroll={(e) => {
-                                this.onScrollFlatList(
-                                    e.nativeEvent.contentOffset.y,
-                                    height
-                                )
-                            }}
-                        >
-                            <View
-                                style={[
-                                    styles.boxContainerStyle,
-                                    { marginBottom: 1 },
-                                ]}
-                            >
-                                <View
-                                    style={{
-                                        borderWidth: 1,
-                                        borderColor: '#E0E0E0',
-                                        borderRadius: 5,
-                                        padding: 20,
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <TextInput
-                                        ref={(input) => {
-                                            this.input = input
-                                        }}
-                                        value={
-                                            this.descriptionsArray[
-                                                this.state.descriptionIndex
-                                            ]
-                                        }
-                                        onChangeText={(text) =>
-                                            this.updateDescription(text)
-                                        }
-                                        style={[
-                                            default_style.subTitleText_1,
-                                            {
-                                                lineHeight: 24,
-                                                padding: 0,
-                                                width: width - 72,
-                                                height: 120,
-                                            },
-                                        ]}
-                                        multiline
-                                    />
-                                    <Text
-                                        numberOfLines={1}
-                                        style={[
-                                            default_style.titleText_1,
-                                            {
-                                                fontWeight: '400',
-                                                color: color.GM_BLUE,
-                                                fontFamily: FONT_FAMILY.REGULAR,
-                                                textDecorationLine: 'underline',
-                                                marginTop: 16,
-                                                width: '90%',
-                                            },
-                                        ]}
-                                    >
-                                        {inviteLink}
-                                    </Text>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            Clipboard.setString(inviteLink)
-                                            Alert.alert(
-                                                'Link is copied to Clipboard'
-                                            )
-                                        }}
-                                    >
-                                        <View
-                                            style={{
-                                                position: 'absolute',
-                                                right: 0,
-                                                bottom: 0,
-                                            }}
-                                        >
-                                            <Icon
-                                                name="link-variant"
-                                                pack="material-community"
-                                                style={{
-                                                    height: 24,
-                                                    tintColor:
-                                                        color.GM_MID_GREY,
-                                                }}
-                                            />
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        justifyContent: 'center',
-                                        marginTop: '3%',
-                                    }}
-                                >
-                                    <TouchableOpacity
-                                        onPress={this.leftArrowClickHandler}
-                                        style={styles.arrowButtons}
-                                    >
-                                        <ArrowLeft />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={this.rightArrowClickHandler}
-                                        style={styles.arrowButtons}
-                                    >
-                                        <ArrowRight />
-                                    </TouchableOpacity>
-                                </View>
                                 <Text
-                                    onPress={this.openEditInviteCodeForm}
+                                    numberOfLines={1}
                                     style={[
-                                        default_style.smallTitle_1,
+                                        default_style.titleText_1,
                                         {
+                                            fontWeight: '400',
                                             color: color.GM_BLUE,
-                                            paddingTop: 8,
-                                            paddingLeft: 10,
-                                            alignSelf: 'flex-end',
+                                            fontFamily: FONT_FAMILY.REGULAR,
+                                            textDecorationLine: 'underline',
+                                            marginTop: 16,
+                                            width: '90%',
                                         },
                                     ]}
                                 >
-                                    Customize invite code
+                                    {inviteLink}
                                 </Text>
-                            </View>
-                            <View
-                                style={{
-                                    flex: 1,
-                                    paddingBottom: 30,
-                                    backgroundColor: 'white',
-                                }}
-                            >
-                                {DEFAULT_CARDS.map((i, index) =>
-                                    this.renderCard(i, index)
-                                )}
-
-                                <DelayedButton
-                                    style={[
-                                        {
-                                            width: '100%',
-                                            paddingVertical: 15,
-                                            paddingHorizontal: 16,
-                                        },
-                                    ]}
+                                <TouchableOpacity
                                     onPress={() => {
-                                        this.inviteNative(
-                                            this.state.description,
-                                            inviteLink
+                                        Clipboard.setString(inviteLink)
+                                        Alert.alert(
+                                            'Link is copied to Clipboard'
                                         )
                                     }}
                                 >
                                     <View
-                                        style={[
-                                            {
-                                                flexDirection: 'row',
-                                                flex: 1,
-                                                alignItems: 'center',
-                                            },
-                                        ]}
+                                        style={{
+                                            position: 'absolute',
+                                            right: 0,
+                                            bottom: 0,
+                                        }}
                                     >
                                         <Icon
-                                            name="more-horiz"
-                                            pack="material"
+                                            name="link-variant"
+                                            pack="material-community"
                                             style={{
                                                 height: 24,
                                                 tintColor: color.GM_MID_GREY,
                                             }}
                                         />
-                                        <Text
-                                            style={{
-                                                fontWeight: '700',
-                                                marginLeft: 20,
-                                                fontSize: 18,
-                                                fontFamily:
-                                                    'SFProDisplay-Medium',
-                                            }}
-                                        >
-                                            More
-                                        </Text>
-                                        <View style={{ flex: 1 }} />
                                     </View>
-                                </DelayedButton>
+                                </TouchableOpacity>
                             </View>
-                        </ScrollView>
-                    </View>
-                </Modal>
-            </>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    marginTop: '3%',
+                                }}
+                            >
+                                <TouchableOpacity
+                                    onPress={this.leftArrowClickHandler}
+                                    style={styles.arrowButtons}
+                                >
+                                    <ArrowLeft />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={this.rightArrowClickHandler}
+                                    style={styles.arrowButtons}
+                                >
+                                    <ArrowRight />
+                                </TouchableOpacity>
+                            </View>
+                            <Text
+                                onPress={this.openEditInviteCodeForm}
+                                style={[
+                                    default_style.smallTitle_1,
+                                    {
+                                        color: color.GM_BLUE,
+                                        paddingTop: 8,
+                                        paddingLeft: 10,
+                                        alignSelf: 'flex-end',
+                                    },
+                                ]}
+                            >
+                                Customize invite code
+                            </Text>
+                        </View>
+                        <View
+                            style={{
+                                flex: 1,
+                                paddingBottom: 30,
+                                backgroundColor: 'white',
+                            }}
+                        >
+                            {DEFAULT_CARDS.map((i, index) =>
+                                this.renderCard(i, index)
+                            )}
+
+                            <DelayedButton
+                                style={[
+                                    {
+                                        width: '100%',
+                                        paddingVertical: 15,
+                                        paddingHorizontal: 16,
+                                    },
+                                ]}
+                                onPress={() => {
+                                    this.inviteNative(
+                                        this.state.description,
+                                        inviteLink
+                                    )
+                                }}
+                            >
+                                <View
+                                    style={[
+                                        {
+                                            flexDirection: 'row',
+                                            flex: 1,
+                                            alignItems: 'center',
+                                        },
+                                    ]}
+                                >
+                                    <Icon
+                                        name="more-horiz"
+                                        pack="material"
+                                        style={{
+                                            height: 24,
+                                            tintColor: color.GM_MID_GREY,
+                                        }}
+                                    />
+                                    <Text
+                                        style={{
+                                            fontWeight: '700',
+                                            marginLeft: 20,
+                                            fontSize: 18,
+                                            fontFamily: 'SFProDisplay-Medium',
+                                        }}
+                                    >
+                                        More
+                                    </Text>
+                                    <View style={{ flex: 1 }} />
+                                </View>
+                            </DelayedButton>
+                        </View>
+                    </ScrollView>
+                </View>
+            </Modal>
         )
     }
 }

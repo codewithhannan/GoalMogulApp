@@ -291,80 +291,73 @@ class ProfileGoalCard extends React.Component {
                                             {privacyOptions.map(
                                                 (options, index) => {
                                                     return (
-                                                        <>
-                                                            <TouchableOpacity
-                                                                key={
-                                                                    options.title +
-                                                                    index
-                                                                }
-                                                                onPress={() => {
-                                                                    this.props.submitGoalPrivacy(
-                                                                        goalId,
-                                                                        options.value,
-                                                                        token
-                                                                    )
-                                                                    this.setState(
-                                                                        {
-                                                                            toolTipVisible: false,
-                                                                        }
-                                                                    )
-                                                                }}
+                                                        <TouchableOpacity
+                                                            key={options}
+                                                            onPress={() => {
+                                                                this.props.submitGoalPrivacy(
+                                                                    goalId,
+                                                                    options.value,
+                                                                    token
+                                                                )
+                                                                this.setState({
+                                                                    toolTipVisible: false,
+                                                                })
+                                                            }}
+                                                        >
+                                                            <View
+                                                                style={[
+                                                                    GOALS_STYLE.commonPillContainer,
+                                                                    {
+                                                                        height: 35,
+                                                                        borderColor:
+                                                                            '#828282',
+                                                                        borderWidth:
+                                                                            options.text ==
+                                                                            privacyName
+                                                                                ? 1
+                                                                                : 0.3,
+
+                                                                        marginHorizontal: 3,
+                                                                        marginBottom: 5,
+                                                                        backgroundColor:
+                                                                            options.text ==
+                                                                            privacyName
+                                                                                ? '#EFEFEF'
+                                                                                : 'white',
+                                                                    },
+                                                                ]}
                                                             >
-                                                                <View
-                                                                    style={[
-                                                                        GOALS_STYLE.commonPillContainer,
-                                                                        {
-                                                                            height: 35,
-                                                                            borderColor:
-                                                                                '#828282',
-                                                                            borderWidth:
-                                                                                options.text ==
-                                                                                privacyName
-                                                                                    ? 1
-                                                                                    : 0.3,
+                                                                <Icon
+                                                                    pack="material-community"
+                                                                    name={
+                                                                        options.iconName
+                                                                    }
+                                                                    style={{
+                                                                        height: 12,
+                                                                        width: 12,
+                                                                        tintColor:
+                                                                            '#828282',
+                                                                    }}
+                                                                />
 
-                                                                            marginHorizontal: 3,
-                                                                            marginBottom: 5,
-                                                                            backgroundColor:
-                                                                                options.text ==
-                                                                                privacyName
-                                                                                    ? '#EFEFEF'
-                                                                                    : 'white',
-                                                                        },
-                                                                    ]}
+                                                                <Text
+                                                                    style={{
+                                                                        fontFamily:
+                                                                            text
+                                                                                .FONT_FAMILY
+                                                                                .SEMI_BOLD,
+                                                                        fontSize: 11,
+                                                                        color:
+                                                                            '#828282',
+                                                                        marginLeft: 5,
+                                                                    }}
                                                                 >
-                                                                    <Icon
-                                                                        pack="material-community"
-                                                                        name={
-                                                                            options.iconName
-                                                                        }
-                                                                        style={{
-                                                                            height: 12,
-                                                                            width: 12,
-                                                                            tintColor:
-                                                                                '#828282',
-                                                                        }}
-                                                                    />
-
-                                                                    <Text
-                                                                        style={{
-                                                                            fontFamily:
-                                                                                text
-                                                                                    .FONT_FAMILY
-                                                                                    .SEMI_BOLD,
-                                                                            fontSize: 11,
-                                                                            color:
-                                                                                '#828282',
-                                                                            marginLeft: 5,
-                                                                        }}
-                                                                    >
-                                                                        {
-                                                                            options.title
-                                                                        }
-                                                                    </Text>
-                                                                </View>
-                                                            </TouchableOpacity>
-                                                        </>
+                                                                    {
+                                                                        options.title
+                                                                    }
+                                                                </Text>
+                                                            </View>
+                                                        </TouchableOpacity>
                                                     )
                                                 }
                                             )}

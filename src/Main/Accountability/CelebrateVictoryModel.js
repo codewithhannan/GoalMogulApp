@@ -155,7 +155,7 @@ function CelebrateVictoryModel() {
                     >
                         {lotties.map((item, index) => (
                             <TouchableOpacity
-                                key={index}
+                                key={Math.random().toString(36).substr(2, 9)}
                                 style={{
                                     width: 72,
                                     height: 45,

@@ -183,7 +183,7 @@ class CreateButtonOverlay extends Component {
                     //   },
                     // ],
                 }}
-                key={info.index}
+                key={Math.random().toString(36).substr(2, 9)}
             >
                 <Button
                     accessoryLeft={this.renderIcon(

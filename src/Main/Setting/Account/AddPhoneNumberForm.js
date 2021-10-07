@@ -12,6 +12,7 @@ import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import { TextField } from 'react-native-material-textfield-gm'
 import Expo, { WebBrowser } from 'expo'
+import * as Linking from 'expo-linking'
 
 /* Components */
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
@@ -52,7 +53,7 @@ class AddPhoneNumberForm extends Component {
     handleRedirect = (event) => {
         WebBrowser.dismissBrowser()
         // TODO: parse url and determine verification states
-        const { path, queryParams } = Expo.Linking.parse(event.url)
+        const { path, queryParams } = Linking.parse(event.url)
 
         if (path === 'status=fail') {
             // TODO: error handling, verification failed

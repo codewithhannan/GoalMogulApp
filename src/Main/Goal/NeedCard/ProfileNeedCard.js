@@ -40,7 +40,7 @@ class ProfileNeedCard extends React.Component {
         const needsComponent = needs.map((need, index) => {
             return (
                 <SectionCard
-                    key={index}
+                    key={Math.random().toString(36).substr(2, 9)}
                     item={need}
                     goalRef={item}
                     onPress={() => this.props.openGoalDetail(item)}

@@ -4,8 +4,7 @@ import { Actions } from 'react-native-router-flux'
 import { ImagePickerIOS } from 'react-native'
 import CameraRoll from '@react-native-community/cameraroll'
 import * as ImagePicker from 'expo-image-picker'
-import * as FeedBackImagePicker from 'react-native-image-crop-picker'
-import * as Permissions from 'expo-permissions'
+import * as Contacts from 'expo-contacts'
 import { SubmissionError } from 'redux-form'
 import { api as API } from '../redux/middleware/api'
 import { tutorial as Tutorial } from '../redux/modules/auth/Tutorial'
@@ -306,13 +305,12 @@ export const openCamera = (
     mayBeVideoOpen
 ) => async (dispatch, getState) => {
     var result
-    const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
 
-    const permissionGranted = await ImageUtils.checkPermission(permissions)
+    const permissionGranted = await ImagePicker.requestCameraPermissionsAsync()
     console.log(`${DEBUG_KEY}: permissionGranted is: ${permissionGranted}`)
 
-    if (!permissionGranted) {
-        return
+    if (permissionGranted.status !== 'granted') {
+        return alert('Please grant access to photos and camera.')
     }
 
     if (maybeTrackCameraOpen) {
@@ -347,13 +345,12 @@ export const openCamera = (
 
 export const openCameraForVideo = (showModal) => async (dispatch, getState) => {
     var result
-    const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
 
-    const permissionGranted = await ImageUtils.checkPermission(permissions)
+    const permissionGranted = await ImagePicker.requestMediaLibraryPermissionsAsync()
     console.log(`${DEBUG_KEY}: permissionGranted is: ${permissionGranted}`)
 
-    if (!permissionGranted) {
-        return
+    if (permissionGranted.status !== 'granted') {
+        return alert('Please grant access to photos and camera.')
     }
 
     result = await ImagePicker.launchCameraAsync({
@@ -378,12 +375,10 @@ export const openCameraForVideo = (showModal) => async (dispatch, getState) => {
 }
 
 export const openCameraRollForVideo = (showModal) => async (dispatch) => {
-    const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
+    const permissionGranted = await ImagePicker.requestMediaLibraryPermissionsAsync()
 
-    const permissionGranted = await ImageUtils.checkPermission(permissions)
-    if (!permissionGranted) {
-        // TODO: fire event to say permission not granted
-        return
+    if (permissionGranted.status !== 'granted') {
+        return alert('Please grant access to photos and camera.')
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -402,9 +397,11 @@ export const openCameraRollForVideo = (showModal) => async (dispatch) => {
 }
 
 export const getPhotosAsync = async () => {
-    const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
-    const permissionGranted = await ImageUtils.checkPermission(permissions)
-    if (!permissionGranted) return
+    const permissionGranted = await ImagePicker.requestMediaLibraryPermissionsAsync()
+
+    if (permissionGranted.status !== 'granted') {
+        return alert('Please grant access to photos and camera.')
+    }
 
     return await CameraRoll.getPhotos({ first: 10 })
         .then((data) => {
@@ -423,12 +420,10 @@ export const openCameraRoll = (
     maybeTrackImageSelected
 ) => async (dispatch) => {
     console.log('MAYBE OPTION', maybeOptions)
-    const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
+    const permissionGranted = await ImagePicker.requestMediaLibraryPermissionsAsync()
 
-    const permissionGranted = await ImageUtils.checkPermission(permissions)
-    if (!permissionGranted) {
-        // TODO: fire event to say permission not granted
-        return
+    if (permissionGranted.status !== 'granted') {
+        return alert('Please grant access to photos and camera.')
     }
 
     if (maybeTrackCamRollOpen) {
@@ -631,10 +626,10 @@ export const registrationNextContactSync = ({ skip }) => {
     // TODO: load contacts from iphone contacts and send to server
 
     return async (dispatch, getState) => {
-        const permission = await Permissions.askAsync(Permissions.CONTACTS)
+        const permission = await Contacts.requestPermissionsAsync()
         if (permission.status !== 'granted') {
             // Permission was denied and dispatch an action
-            return
+            return alert('Please give access of your Contacts')
         }
         const { token } = getState().user
         // Skip and limit for fetching matched contacts

@@ -202,7 +202,7 @@ class CreateGoalButtonOverlay extends Component {
                                 textStyle: { marginLeft: 5 },
                             }}
                             onPress={this.handleCreatePost}
-                            key={0}
+                            key={Math.random().toString(36).substr(2, 9)}
                         />
                     </Animated.View>
                     <Animated.View
@@ -228,7 +228,7 @@ class CreateGoalButtonOverlay extends Component {
                                 textStyle: { marginLeft: 5, marginRight: 3 },
                             }}
                             onPress={this.handleCreateGoal}
-                            key={1}
+                            key={Math.random().toString(36).substr(2, 9)}
                         />
                     </Animated.View>
                     {this.renderCancelButton()}

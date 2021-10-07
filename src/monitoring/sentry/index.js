@@ -15,7 +15,7 @@ const initSentry = () => {
         ignoreErrors: ['SubmissionError'],
     })
 
-    Sentry.setRelease(Constants.manifest.revisionId)
+    Sentry.Native.setRelease(Constants.manifest.revisionId)
 }
 
 /**
@@ -24,7 +24,7 @@ const initSentry = () => {
  * @param {string} level exception level. One of fatal, error, warning, info and debug
  */
 const captureException = (message, level = 'error') => {
-    Sentry.captureMessage(message, level)
+    Sentry.Native.captureMessage(message, level)
 }
 
 /**
@@ -33,7 +33,7 @@ const captureException = (message, level = 'error') => {
  * @param {*} username
  */
 const setUser = (userId, username) => {
-    Sentry.setUser({ id: userId, username })
+    Sentry.Native.setUser({ id: userId, username })
 }
 
 class SentryRequestBuilder {
@@ -72,7 +72,7 @@ class SentryRequestBuilder {
         const message = this.message
         const type = this.type
 
-        Sentry.withScope(function (scope) {
+        Sentry.Native.withScope(function (scope) {
             scope.setLevel(level)
             if (tags && Object.keys(tags).length > 0) {
                 scope.setTags(tags)
@@ -83,11 +83,11 @@ class SentryRequestBuilder {
             }
 
             if (type == 'message') {
-                Sentry.captureMessage(message)
+                Sentry.Native.captureMessage(message)
             } else if (type == 'event') {
-                Sentry.captureEvent(message)
+                Sentry.Native.captureEvent(message)
             } else {
-                Sentry.captureException(message)
+                Sentry.Native.captureException(message)
             }
         })
     }

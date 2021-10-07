@@ -122,106 +122,124 @@ class SendFeedback extends Component {
 
     render() {
         return (
-            <>
-                <View
-                    style={{
-                        flex: 1,
-                        backgroundColor: color.GM_CARD_BACKGROUND,
-                    }}
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: color.GM_CARD_BACKGROUND,
+                }}
+            >
+                <FeedbackModal
+                    isVisible={this.state.feedbackModalVisible}
+                    isClose={this.closeFeedbackModal}
+                />
+                <SearchBarHeader title={'Give Feedback'} backButton />
+                <KeyboardAwareScrollView
+                    bounces={false}
+                    enableOnAndroid={true}
+                    // enableAutomaticScroll={DEVICE_PLATFORM === 'ios'}
+                    contentContainerStyle={[
+                        {
+                            paddingBottom: getBottomSpace(),
+                        },
+                    ]}
+                    innerRef={(ref) => (this.scrollView = ref)}
                 >
-                    <FeedbackModal
-                        isVisible={this.state.feedbackModalVisible}
-                        isClose={this.closeFeedbackModal}
-                    />
-                    <SearchBarHeader title={'Give Feedback'} backButton />
-                    <KeyboardAwareScrollView
-                        bounces={false}
-                        enableOnAndroid={true}
-                        // enableAutomaticScroll={DEVICE_PLATFORM === 'ios'}
-                        contentContainerStyle={[
-                            {
-                                paddingBottom: getBottomSpace(),
-                            },
-                        ]}
-                        innerRef={(ref) => (this.scrollView = ref)}
-                    >
-                        <TouchableOpacity onPress={this.openCameraRoll}>
-                            <View
+                    <TouchableOpacity onPress={this.openCameraRoll}>
+                        <View
+                            style={{
+                                alignSelf: 'center',
+                                height: 200,
+                                marginTop: 25,
+                                width: '90%',
+                                marginBottom: 10,
+                                borderWidth: 2,
+                                borderStyle: 'dashed',
+                                borderColor: '#42C0F5',
+                                borderTopColor: '#42C0F5',
+                                borderRadius: 10,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Image
+                                source={FeedbackScreenShot}
+                                resizeMode="contain"
+                                style={{ marginBottom: 10 }}
+                            />
+
+                            <Text
                                 style={{
-                                    alignSelf: 'center',
-                                    height: 200,
-                                    marginTop: 25,
-                                    width: '90%',
-                                    marginBottom: 10,
-                                    borderWidth: 2,
-                                    borderStyle: 'dashed',
-                                    borderColor: '#42C0F5',
-                                    borderTopColor: '#42C0F5',
-                                    borderRadius: 10,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
+                                    fontSize: 14,
+                                    color: '#42C0F5',
+                                    fontWeight: '600',
                                 }}
                             >
-                                <Image
-                                    source={FeedbackScreenShot}
-                                    resizeMode="contain"
-                                    style={{ marginBottom: 10 }}
-                                />
-
-                                <Text
-                                    style={{
-                                        fontSize: 14,
-                                        color: '#42C0F5',
-                                        fontWeight: '600',
-                                    }}
-                                >
-                                    Attach Screenshot
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-
-                        <View style={styles.textAreaContainer}>
-                            <TextInput
-                                multiline={true}
-                                style={styles.textArea}
-                                textAlign="left"
-                                keyboardType="default"
-                                numberOfLines={10}
-                                onChangeText={(description) =>
-                                    this.setState({ description })
-                                }
-                                value={this.state.description}
-                                placeholder="Describe the issue you're having"
-                            />
+                                Attach Screenshot
+                            </Text>
                         </View>
-                        <FlatList
-                            showsVerticalScrollIndicator={false}
-                            data={this.props.feedback}
-                            renderItem={this.renderItem}
-                            ListHeaderComponent={this.lisHeaderComponent}
-                            listKey={(item, index) => 'D' + index.toString()}
-                            onEndReachedThreshold={0}
-                            ItemSeparatorComponent={this.itemSeperatorComponent}
-                            // ListEmptyComponent={() => {
-                            //     return (
-                            //         <EmptyResult
-                            //             text="No Screenshot Attached"
-                            //             textStyle={{
-                            //                 paddingTop: 65,
-                            //             }}
-                            //         />
-                            //     )
-                            // }}
-                        />
+                    </TouchableOpacity>
 
-                        <DelayedButton
-                            disabled={
-                                this.state.description == '' ||
-                                this.state.disable
+                    <View style={styles.textAreaContainer}>
+                        <TextInput
+                            multiline={true}
+                            style={styles.textArea}
+                            textAlign="left"
+                            keyboardType="default"
+                            numberOfLines={10}
+                            onChangeText={(description) =>
+                                this.setState({ description })
                             }
+                            value={this.state.description}
+                            placeholder="Describe the issue you're having"
+                        />
+                    </View>
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        data={this.props.feedback}
+                        renderItem={this.renderItem}
+                        ListHeaderComponent={this.lisHeaderComponent}
+                        listKey={Math.random().toString(36).substr(2, 9)}
+                        onEndReachedThreshold={0}
+                        ItemSeparatorComponent={this.itemSeperatorComponent}
+                        // ListEmptyComponent={() => {
+                        //     return (
+                        //         <EmptyResult
+                        //             text="No Screenshot Attached"
+                        //             textStyle={{
+                        //                 paddingTop: 65,
+                        //             }}
+                        //         />
+                        //     )
+                        // }}
+                    />
+
+                    <DelayedButton
+                        disabled={
+                            this.state.description == '' || this.state.disable
+                        }
+                        style={[
+                            buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
+                                .containerStyle,
+                            {
+                                // marginBottom: 5,
+                                backgroundColor:
+                                    this.state.description == '' ||
+                                    this.state.disable
+                                        ? color.GM_BLUE_LIGHT
+                                        : color.GM_BLUE,
+                                width: '90%',
+                                height: 35,
+                                alignSelf: 'center',
+                            },
+                        ]}
+                        onPress={() => {
+                            return this.onNext(this.state.description)
+                        }}
+                    >
+                        <Text
                             style={[
                                 buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
-                                    .containerStyle,
+                                    .textStyle,
                                 {
                                     // marginBottom: 5,
                                     backgroundColor:
@@ -239,22 +257,11 @@ class SendFeedback extends Component {
                                 return this.onNext(this.state.description)
                             }}
                         >
-                            <Text
-                                style={
-                                    (buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
-                                        .textStyle,
-                                    {
-                                        fontWeight: 'normal',
-                                        color: 'white',
-                                    })
-                                }
-                            >
-                                Send
-                            </Text>
-                        </DelayedButton>
-                    </KeyboardAwareScrollView>
-                </View>
-            </>
+                            Send
+                        </Text>
+                    </DelayedButton>
+                </KeyboardAwareScrollView>
+            </View>
         )
     }
 }

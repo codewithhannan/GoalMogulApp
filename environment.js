@@ -7,7 +7,7 @@
  * @format
  */
 
-import Constants from 'expo-constants'
+import * as Updates from 'expo-updates'
 import {
     API_URL,
     GOOGLE_RECAPTCHA_KEY,
@@ -57,19 +57,26 @@ const ENV = {
     },
 }
 
-const getEnvVars = (env = Constants.manifest.releaseChannel) => {
+const getEnvVars = () => {
     // This variable is set to true when react-native is running in Dev mode.
     // __DEV__ is true when run locally, but false when published.
     // Currently, i am not sure if DEV is working properly
-    if (__DEV__) {
-        return ENV.dev
-    } else if (env === 'staging') {
-        return ENV.staging
-    } else if (env === 'prod') {
+    if (Updates.releaseChannel.startsWith('prod')) {
         return ENV.prod
+    } else if (Updates.releaseChannel.startsWith('staging')) {
+        return ENV.staging
     } else {
         return ENV.dev
     }
+    // if (__DEV__) {
+    //     return ENV.dev
+    // } else if (env === 'staging') {
+    //     return ENV.staging
+    // } else if (env === 'prod') {
+    //     return ENV.prod
+    // } else {
+    //     return ENV.dev
+    // }
 }
 
 export default getEnvVars

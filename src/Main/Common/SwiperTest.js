@@ -56,7 +56,10 @@ const rightSwipeActions = () => {
             {SWIPED_DATA.map((item, index) => {
                 return (
                     <View>
-                        <TouchableOpacity onPress={item.onPress} key={index}>
+                        <TouchableOpacity
+                            onPress={item.onPress}
+                            key={Math.random().toString(36).substr(2, 9)}
+                        >
                             <Animatable.View
                                 style={{
                                     backgroundColor: item.backgroundColor,

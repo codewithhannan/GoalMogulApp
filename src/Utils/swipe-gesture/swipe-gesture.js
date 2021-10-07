@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { View, Animated, PanResponder } from 'react-native'
 
 export default class SwipeGesture extends Component {
-    componentWillMount = () => {
+    UNSAFE_componentWillMount = () => {
         this.PanResponder = PanResponder.create({
             onStartShouldSetPanResponder: (evt, gestureState) => true,
             onPanResponderRelease: (evt, gestureState) => {

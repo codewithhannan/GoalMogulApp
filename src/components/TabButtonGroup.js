@@ -15,7 +15,10 @@ class TabButtonGroup extends Component {
             if (index !== 0) {
                 // console.log('hi I am number 1');
                 return (
-                    <View key={index} style={styles.dividerContainerStyle}>
+                    <View
+                        key={Math.random().toString(36).substr(2, 9)}
+                        style={styles.dividerContainerStyle}
+                    >
                         <Divider />
                         {b}
                     </View>

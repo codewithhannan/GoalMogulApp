@@ -48,7 +48,7 @@ class BottomButtonsSheet extends Component {
                             onPress && onPress()
                         }, 500)
                     }}
-                    key={text}
+                    key={Math.random().toString(36).substr(2, 9)}
                     style={{
                         backgroundColor: color.GM_CARD_BACKGROUND,
                         flexDirection: 'row',

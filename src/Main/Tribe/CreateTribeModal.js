@@ -531,7 +531,10 @@ class CreateTribeModal extends React.Component {
         console.log('THIS IS PROPSSS', this.props)
 
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
+            >
                 <KeyboardAvoidingView
                     behavior="padding"
                     style={{ flex: 1, backgroundColor: '#ffffff' }}

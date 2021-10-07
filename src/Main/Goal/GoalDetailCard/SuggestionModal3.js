@@ -213,12 +213,19 @@ class SuggestionModal extends Component {
             ) {
                 // console.log(`${DEBUG_KEY}: i am here`);
                 suggestionForText.push(
-                    <Text style={{ fontWeight: '700' }} key={`${index}_${w}`}>
+                    <Text
+                        style={{ fontWeight: '700' }}
+                        key={Math.random().toString(36).substr(2, 9)}
+                    >
                         {w}
                     </Text>
                 )
             } else {
-                suggestionForText.push(<Text key={`${index}`}>{w} </Text>)
+                suggestionForText.push(
+                    <Text key={Math.random().toString(36).substr(2, 9)}>
+                        {w}{' '}
+                    </Text>
+                )
             }
         })
 
@@ -512,7 +519,7 @@ const Options = (props) => {
             <TouchableOpacity
                 activeOpacity={0.6}
                 onPress={() => onPress(key)}
-                key={key}
+                key={Math.random().toString(36).substr(2, 9)}
                 style={{
                     marginTop: 15,
                     marginLeft: 30,

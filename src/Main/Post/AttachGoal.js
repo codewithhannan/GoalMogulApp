@@ -99,9 +99,10 @@ class AttachGoal extends Component {
         if (this.menu) this.menu.close()
     }
 
-    renderItem({ item }) {
+    renderItem({ item, index }) {
         return (
             <MenuOption
+                key={index}
                 customStyles={{
                     optionTouchable: {
                         underlayColor: 'white',
@@ -109,13 +110,15 @@ class AttachGoal extends Component {
                 }}
                 onSelect={() => this.props.onSelect(item)}
             >
-                <CompactGoalCard item={item} disabled={true} />
+                <CompactGoalCard item={item} disabled={true} index={index} />
             </MenuOption>
         )
     }
 
-    renderItemSeparator() {
-        return <View style={default_style.cardHorizontalSeparator} />
+    renderItemSeparator(index) {
+        return (
+            <View style={default_style.cardHorizontalSeparator} key={index} />
+        )
     }
 
     renderHeader() {
@@ -245,7 +248,8 @@ class AttachGoal extends Component {
                         keyboardShouldPersistTaps="handled"
                         data={data}
                         renderItem={this.renderItem}
-                        keyExtractor={(item) => item._id}
+                        keyExtractor={(item) => item._id.toString()}
+                        listKey={Math.random().toString(36).substr(2, 9)}
                         refreshing={this.props.refreshing || false}
                         onRefresh={this.props.refreshMyUserGoals}
                         onEndReached={this.props.loadMoreMyUserGoals}

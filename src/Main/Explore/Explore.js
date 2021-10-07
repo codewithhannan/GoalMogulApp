@@ -160,7 +160,10 @@ class Explore extends Component {
           2. assign key on for TabButton
         */
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
+            >
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader backButton />
                     <TabView

@@ -21,7 +21,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { CopilotStep, walkthroughable } from 'react-native-copilot-gm'
 import DraggableFlatlist from 'react-native-draggable-flatlist'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
-import RNDatePicker from '@react-native-community/datetimepicker'
 import {
     Menu,
     MenuOption,
@@ -372,16 +371,16 @@ class NewGoalView extends Component {
         }
         this.updateSearchRes = this.updateSearchRes.bind(this)
         this.handleLayoutChange = this.handleLayoutChange.bind(this)
-        this.scrollToEnd = this.scrollToEnd.bind(this)
+        // this.scrollToEnd = this.scrollToEnd.bind(this)
         this.enableDescriptionInput = this.enableDescriptionInput.bind(this)
         this.enableMoreGoalInputs = this.enableMoreGoalInputs.bind(this)
     }
 
     componentDidMount() {
         this.initializeForm()
-        if (this.props.onRef !== null) {
-            this.props.onRef(this)
-        }
+        // if (this.props.onRef !== null) {
+        //     this.props.onRef(this)
+        // }
 
         // const randome = this.state.randomText
         //     .map((person) => `${Math.random().toFixed(10)}${person}`)
@@ -429,11 +428,11 @@ class NewGoalView extends Component {
     /**
      * Scroll the form to the end
      */
-    scrollToEnd() {
-        if (this.scrollView !== undefined) {
-            this.scrollView.props.scrollToEnd()
-        }
-    }
+    // scrollToEnd() {
+    //     if (this.scrollView !== undefined) {
+    //         this.scrollView.props.scrollToEnd()
+    //     }
+    // }
 
     handleLayoutChange = ({ nativeEvent }) => {
         console.log(
@@ -878,7 +877,7 @@ class NewGoalView extends Component {
                                 </Text>
                             </View>
                             <Field
-                                key={`goal-description-${index}`}
+                                key={`goal-description=${index}`}
                                 name={description}
                                 component={this.renderInput}
                                 editable={this.props.uploading}
@@ -1073,6 +1072,7 @@ class NewGoalView extends Component {
                             {this.state.sliderNumbers.map((val, index) => {
                                 return (
                                     <TouchableOpacity
+                                        key={`priority-${index}`}
                                         onPress={() => {
                                             this.toggleState(val.id)
                                             this.handlePriorityOnSelect(
@@ -1102,7 +1102,6 @@ class NewGoalView extends Component {
                                                     ? '#42C0F5'
                                                     : 'transparent',
                                             }}
-                                            key={index}
                                         >
                                             <Text
                                                 style={{
@@ -1739,10 +1738,10 @@ class NewGoalView extends Component {
                         : null}
                     {this.state.showMoreGoalInputs ? (
                         <View
-                            ref={(r) => {
-                                this.view = r
-                            }}
-                            // style={{ bottom: 60 }}
+                        // ref={(r) => {
+                        //     this.view = r
+                        // }}
+                        // style={{ bottom: 60 }}
                         >
                             <FieldArray
                                 name="steps"

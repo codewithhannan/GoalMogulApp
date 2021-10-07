@@ -416,7 +416,7 @@ class CommentUserDetail extends Component {
         return (
             <DelayedButton
                 activeOpacity={0.6}
-                key={childComments.length}
+                key={Math.random().toString(36).substr(2, 9)}
                 onPress={() => this.openReplyThread(_id)}
                 style={{
                     flexDirection: 'row',

@@ -28,7 +28,7 @@ class StepTab extends Component {
             if (index < itemCount - 1) {
                 return (
                     <SectionCard
-                        key={index}
+                        key={Math.random().toString(36).substr(2, 9)}
                         item={section}
                         goalRef={goalRef}
                         onPress={onPress}
@@ -41,7 +41,7 @@ class StepTab extends Component {
                 return (
                     <View
                         style={{ backgroundColor: 'white', marginTop: 0.5 }}
-                        key={index}
+                        key={Math.random().toString(36).substr(2, 9)}
                     >
                         <MaskedViewIOS
                             style={{ maxHeight: 300 }}
@@ -55,7 +55,7 @@ class StepTab extends Component {
                             }
                         >
                             <SectionCard
-                                key={index}
+                                key={Math.random().toString(36).substr(2, 9)}
                                 item={section}
                                 goalRef={goalRef}
                                 onPress={onPress}
@@ -79,7 +79,7 @@ class StepTab extends Component {
                         backgroundColor: 'white',
                         marginTop: 0.5,
                     }}
-                    key={steps.length}
+                    key={Math.random().toString(36).substr(2, 9)}
                 />
             )
         }

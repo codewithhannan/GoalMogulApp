@@ -115,7 +115,10 @@ class UserGoalsView extends Component {
     render() {
         const { data } = this.props
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
+            >
                 <View style={styles.containerStyle}>
                     <ModalHeader title="Your Goals" back />
                     {/* {this.renderFilterBar(props)} */}

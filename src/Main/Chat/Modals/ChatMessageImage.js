@@ -15,7 +15,7 @@ import {
 } from 'react-native'
 import ImageModal from '../../Common/ImageModal'
 export default class ChatMessageImage extends React.Component {
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({
             imageOpen: false,
         })

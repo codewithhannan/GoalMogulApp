@@ -137,7 +137,7 @@ class CompactGoalCard extends React.Component {
     }
 
     render() {
-        const { item, disabled } = this.props
+        const { item, disabled, index } = this.props
         if (!item || _.isEmpty(item)) return null
 
         const backgroundColor = item.isCompleted
@@ -145,6 +145,7 @@ class CompactGoalCard extends React.Component {
             : color.GM_CARD_BACKGROUND
         return (
             <DelayedButton
+                key={index}
                 activeOpacity={1}
                 style={[styles.cardContainerStyle, { backgroundColor }]}
                 onPress={() => this.handleOnCardPress(item)}

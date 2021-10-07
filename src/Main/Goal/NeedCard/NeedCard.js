@@ -148,7 +148,7 @@ class NeedCard extends Component {
             return (
                 <SectionCard
                     goalRef={item}
-                    key={index}
+                    key={Math.random().toString(36).substr(2, 9)}
                     item={need}
                     onPress={() => this.props.openGoalDetail(item)}
                     type="need"

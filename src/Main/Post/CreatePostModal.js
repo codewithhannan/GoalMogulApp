@@ -327,6 +327,7 @@ class CreatePostModal extends Component {
     }
 
     handleOpenCamera = () => {
+        this.props.change('mediaRef', false)
         this.setState({ clickedButton: true })
         this.bottomSheetRef.close()
         const callback = (result) => {
@@ -341,6 +342,7 @@ class CreatePostModal extends Component {
     }
 
     handleOpenCameraRoll = () => {
+        this.props.change('mediaRef', false)
         this.setState({ clickedButton: true })
         this.bottomSheetRef.close()
         const callback = (result) => {

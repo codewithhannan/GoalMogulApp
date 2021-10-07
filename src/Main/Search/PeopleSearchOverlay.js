@@ -125,7 +125,10 @@ class PeopleSearchOverlay extends Component {
                 horizontalPercent={1}
                 ref="baseOverlay"
             >
-                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <MenuProvider
+                    customStyles={{ backdrop: styles.backdrop }}
+                    skipInstanceCheck={true}
+                >
                     <KeyboardAvoidingView
                         behavior="padding"
                         style={{ flex: 1 }}
