@@ -55,14 +55,14 @@ class OnboardingFooter extends React.Component {
                         return (
                             <View
                                 style={styles.dotStyleEmpty(styles.circleSize)}
-                                key={i}
+                                key={Math.random().toString(36).substr(2, 9)}
                             />
                         )
                     } else {
                         return (
                             <View
                                 style={styles.dotStyleFull(styles.circleSize)}
-                                key={i}
+                                key={Math.random().toString(36).substr(2, 9)}
                             />
                         )
                     }

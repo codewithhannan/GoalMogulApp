@@ -267,7 +267,10 @@ class ShareToChatModal extends Component {
                 ? 'as a direct message'
                 : 'to group convrsations'
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
+            >
                 <KeyboardAvoidingView
                     behavior="padding"
                     style={{

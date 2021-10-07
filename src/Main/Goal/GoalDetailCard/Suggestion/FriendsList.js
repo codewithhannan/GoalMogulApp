@@ -9,13 +9,14 @@ import {
     Image,
     Alert,
     StyleSheet,
+    SafeAreaView,
 } from 'react-native'
 import _ from 'lodash'
 import { Actions } from 'react-native-router-flux'
 import { Icon } from '@ui-kitten/components'
 import { TextInput } from 'react-native-paper'
 import { ActivityIndicator } from 'react-native-paper'
-import { SafeAreaView } from 'react-navigation'
+// import { SafeAreaView } from 'react-navigation'
 import { MaterialIcons } from '@expo/vector-icons'
 import { connect } from 'react-redux'
 
@@ -245,7 +246,7 @@ class FriendsList extends Component {
                                     }
                                 />
                             )}
-                            listKey={(item, index) => 'D' + index.toString()}
+                            listKey={Math.random().toString(36).substr(2, 9)}
                             refreshing={this.state.isLoading}
                             ListEmptyComponent={
                                 this.props.refreshing ? null : (

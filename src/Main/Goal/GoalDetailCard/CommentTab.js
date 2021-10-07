@@ -30,13 +30,19 @@ class CommentTab extends Component {
     renderSections(needs) {
         const sections = needs.map((section, index) => {
             if (index < 2) {
-                return <SectionCard key={index} item={section} type="need" />
+                return (
+                    <SectionCard
+                        key={Math.random().toString(36).substr(2, 9)}
+                        item={section}
+                        type="need"
+                    />
+                )
             }
             if (index === 2) {
                 return (
                     <View
                         style={{ backgroundColor: 'white', marginTop: 0.5 }}
-                        key={index}
+                        key={Math.random().toString(36).substr(2, 9)}
                     >
                         <MaskedViewIOS
                             style={{ maxHeight: 300 }}
@@ -64,7 +70,7 @@ class CommentTab extends Component {
                         backgroundColor: 'white',
                         marginTop: 0.5,
                     }}
-                    key={needs.length}
+                    key={Math.random().toString(36).substr(2, 9)}
                 />
             )
         }

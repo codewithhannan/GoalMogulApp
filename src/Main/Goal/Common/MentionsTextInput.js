@@ -34,7 +34,7 @@ export default class MentionsTextInput extends Component {
         if (this.props.onRef) this.props.onRef(this)
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (!nextProps.value) {
             this.resetTextbox()
         } else if (

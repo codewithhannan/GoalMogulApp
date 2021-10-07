@@ -426,7 +426,7 @@ class ReplyThread extends React.Component {
         if (!item) return <ModalHeader back />
         const { childComments } = item
         return (
-            <MenuProvider>
+            <MenuProvider skipInstanceCheck={true}>
                 <LikeListModal
                     isVisible={this.state.showCommentLikeList}
                     closeModal={this.closeCommentLikeList}

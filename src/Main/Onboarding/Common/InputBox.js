@@ -57,7 +57,11 @@ class CountryFlagButton extends React.Component {
         console.log('Country Codee', callingCode)
 
         return (
-            <DelayedButton style={{ flexDirection: 'row' }} onPress={onOpen}>
+            <DelayedButton
+                style={{ flexDirection: 'row' }}
+                onPress={onOpen}
+                key={Math.random().toString(36).substr(2, 9)}
+            >
                 <Text style={[OnboardingStyles.text.subTitle_2]}>
                     +{`${callingCode}`}
                 </Text>
@@ -113,9 +117,9 @@ class InputBox extends React.Component {
         )
     }
 
-    focus() {
-        this.refs['textInput'].focus()
-    }
+    // focus() {
+    //     this.refs['textInput'].focus()
+    // }
 
     renderDateTimePicker() {
         const {

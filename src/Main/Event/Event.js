@@ -462,14 +462,19 @@ class Event extends Component {
         // TODO: refactor to become a literal function
         switch (routes[index].key) {
             case 'about': {
-                return <About item={props.item} key={props.index} />
+                return (
+                    <About
+                        item={props.item}
+                        key={Math.random().toString(36).substr(2, 9)}
+                    />
+                )
             }
 
             case 'posts': {
                 return (
                     <PostPreviewCard
                         item={props.item}
-                        key={props.index}
+                        key={Math.random().toString(36).substr(2, 9)}
                         hasActionButton
                     />
                 )
@@ -494,7 +499,10 @@ class Event extends Component {
         if (!item) return <View />
 
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
+            >
                 <View style={styles.containerStyle}>
                     <SearchBarHeader
                         backButton

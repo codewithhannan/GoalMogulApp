@@ -139,7 +139,9 @@ class CommentVideoModal extends Component {
                                     return (
                                         <>
                                             <TouchableOpacity
-                                                key={options.title + index}
+                                                key={Math.random()
+                                                    .toString(36)
+                                                    .substr(2, 9)}
                                                 onPress={() => {
                                                     this.changeColor(options.id)
                                                 }}

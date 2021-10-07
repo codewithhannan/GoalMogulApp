@@ -87,10 +87,11 @@ class MyTribeMembers extends React.PureComponent {
         this.props.myTribeAdminAcceptUser(userId, this.props.itemId)
     }
 
-    renderItem = (member) => {
+    renderItem = (member, index) => {
         console.log('MEMBERSSS', member)
         return (
             <MemberListCard
+                index={index}
                 item={member.memberRef}
                 isFriend={member.isFriend}
                 isRequested={member.isRequested}
@@ -143,7 +144,9 @@ class MyTribeMembers extends React.PureComponent {
                                 </Text>
                             </View>
                         )}
-                        {admins.map((admin) => this.renderItem(admin))}
+                        {admins.map((admin, index) =>
+                            this.renderItem(admin, index)
+                        )}
                         {members.length > 0 && (
                             <View
                                 style={{
@@ -155,7 +158,9 @@ class MyTribeMembers extends React.PureComponent {
                                 </Text>
                             </View>
                         )}
-                        {members.map((member) => this.renderItem(member))}
+                        {members.map((member, index) =>
+                            this.renderItem(member, index)
+                        )}
                     </ScrollView>
                 )
             default:
@@ -163,7 +168,9 @@ class MyTribeMembers extends React.PureComponent {
                     <ScrollView
                         style={{ backgroundColor: 'white', marginTop: 8 }}
                     >
-                        {allMembers.map((member) => this.renderItem(member))}
+                        {allMembers.map((member, index) =>
+                            this.renderItem(member, index)
+                        )}
                     </ScrollView>
                 )
         }
@@ -188,6 +195,7 @@ class MyTribeMembers extends React.PureComponent {
             <MenuProvider
                 style={styles.containerStyle}
                 customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
             >
                 <SearchBarHeader
                     title="Members"

@@ -40,7 +40,7 @@ class ContactSync extends Component {
         this.modalTimer = undefined
     }
 
-    componentWillReceiveProps(props) {
+    UNSAFE_componentWillReceiveProps(props) {
         if (props.type) {
             this.setState({ type: props.type })
         }

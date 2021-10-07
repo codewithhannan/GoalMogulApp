@@ -153,7 +153,7 @@ class OnboardingTribeSelection extends React.Component {
                             }}
                             onPress={() => this.selectCategory(title)}
                             activeOpacity={0.8}
-                            key={title}
+                            key={Math.random().toString(36).substr(2, 9)}
                         >
                             <Icon
                                 {...iconProps}

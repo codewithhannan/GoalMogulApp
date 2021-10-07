@@ -261,9 +261,9 @@ class PostDetailCard extends React.PureComponent {
         const parentRef = postDetail ? postDetail._id : undefined
         return (
             <CommentCard
-                key={props.index}
+                key={postId}
                 item={props.item}
-                index={props.index}
+                index={Math.random().toString(36).substr(2, 9)}
                 commentDetail={{ parentType: 'Post', parentRef }}
                 scrollToIndex={(i, viewOffset) =>
                     this.scrollToIndex(i, viewOffset)
@@ -304,7 +304,10 @@ class PostDetailCard extends React.PureComponent {
         const data = comments
 
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
+            >
                 <LikeListModal
                     isVisible={this.state.showCommentLikeList}
                     closeModal={this.closeCommentLikeList}

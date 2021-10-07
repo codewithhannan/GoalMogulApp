@@ -244,7 +244,10 @@ class ChatRoomMessageSearch extends React.Component {
             return null
         }
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
+            >
                 <KeyboardAvoidingView
                     behavior="padding"
                     style={{ flex: 1, backgroundColor: '#ffffff' }}

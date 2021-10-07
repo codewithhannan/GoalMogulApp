@@ -61,7 +61,10 @@ class TrendingGoalView extends React.PureComponent {
     render() {
         const { refreshing, loading, category } = this.props
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
+            >
                 <ModalHeader
                     title="Trending Goals"
                     back

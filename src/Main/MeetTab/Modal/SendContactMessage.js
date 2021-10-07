@@ -10,15 +10,15 @@ import {
     Alert,
     StyleSheet,
     ScrollView,
+    SafeAreaView,
 } from 'react-native'
 
 import { color } from '../../../styles/basic'
 import { Icon } from '@ui-kitten/components'
 import { connect } from 'react-redux'
-import { SafeAreaView } from 'react-navigation'
+// import { SafeAreaView } from 'react-navigation'
 import { TextInput } from 'react-native-paper'
 import * as Contacts from 'expo-contacts'
-import * as Permissions from 'expo-permissions'
 import { ActivityIndicator } from 'react-native-paper'
 import { MaterialIcons } from '@expo/vector-icons'
 
@@ -75,7 +75,7 @@ class MessageToContactsModal extends Component {
             getInviteMessage
         )
         setTimeout(async () => {
-            const { status } = await Permissions.askAsync(Permissions.CONTACTS)
+            const { status } = await Contacts.requestPermissionsAsync()
             console.log(
                 `${DEBUGKEY} this is the Status of Contacts Permission`,
                 status
@@ -195,7 +195,7 @@ class MessageToContactsModal extends Component {
         const inviteLink = this.getInviteLink()
 
         const renderUser = ({ item }) => {
-            console.log('CONTACT ITEMS======>', item)
+            // console.log('CONTACT ITEMS======>', item)
             return (
                 <>
                     <TouchableOpacity
@@ -397,10 +397,11 @@ class MessageToContactsModal extends Component {
                                         ? this.state.friendsFilteredData
                                         : this.state.flatListData
                                 }
+                                keyExtractor={(item) => item.id.toString()}
                                 renderItem={(item) => renderUser(item)}
-                                listKey={(item, index) =>
-                                    'D' + index.toString()
-                                }
+                                listKey={Math.random()
+                                    .toString(36)
+                                    .substr(2, 9)}
                                 refreshing={this.state.isLoading}
                                 ListEmptyComponent={
                                     this.props.refreshing ? null : (
@@ -468,8 +469,8 @@ class MessageToContactsModal extends Component {
                                                 color: 'white',
                                                 fontWeight: '500',
                                                 fontSize: 12,
-                                                fontStyle:
-                                                    'SFProDisplay-Regular',
+                                                // fontStyle:
+                                                //     'SFProDisplay-Regular',
                                             }}
                                         >
                                             Send Invite Message

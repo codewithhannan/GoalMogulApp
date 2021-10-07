@@ -12,6 +12,7 @@ import Expo from 'expo'
 import * as WebBrowser from 'expo-web-browser'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
+import * as Linking from 'expo-linking'
 
 /* Components */
 import SearchBarHeader from '../../Common/Header/SearchBarHeader'
@@ -48,7 +49,7 @@ class Phone extends Component {
     handleRedirect = (event) => {
         WebBrowser.dismissBrowser()
         // TODO: parse url and determine verification states
-        const { path, queryParams } = Expo.Linking.parse(event.url)
+        const { path, queryParams } = Linking.parse(event.url)
 
         if (path === 'status=fail') {
             // TODO: error handling, verification failed

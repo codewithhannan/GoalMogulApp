@@ -8,14 +8,14 @@
 
 import React from 'react'
 import { View } from 'react-native'
-import { Notifications } from 'expo'
+import * as Notifications from 'expo-notifications'
 
 export default class extends React.Component {
     componentDidMount() {
         // Register the alert located on this master page
         // This MessageBar will be accessible from the current (same) component, and from its child component
         // The MessageBar is then declared only once, in your main component.
-        this.notificationSubscription = Notifications.addListener(
+        this.notificationSubscription = Notifications.addNotificationReceivedListener(
             this.handleNotification
         )
     }

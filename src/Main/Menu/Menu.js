@@ -245,10 +245,13 @@ class Menu extends React.PureComponent {
                     backgroundColor="rgba(0,0,0,0.12)"
                     isVisible={this.state.toolTipVisible}
                     contentStyle={{
+                        // alignSelf: 'center',
                         backgroundColor: 'white',
-                        width: 220,
+                        width: 245,
                         // right: 2,
-                        // position: 'absolute',
+                        position: 'absolute',
+                        top: 5,
+                        left: 20,
 
                         // marginBottom: 100,
                         // bottom: 430,

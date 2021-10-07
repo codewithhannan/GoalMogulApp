@@ -1,6 +1,6 @@
 /** @format */
 
-import { Notifications } from 'expo'
+import * as Notifications from 'expo-notifications'
 import Fuse from 'fuse.js'
 import MongoDatastore from 'react-native-local-mongodb'
 import { arrayUnique } from '../../reducers/MeetReducers'

@@ -135,7 +135,7 @@ class OnboardingSelectionTarget extends React.Component {
                         marginBottom: 20,
                         opacity: this.animations.checkBoxOpacity,
                     }}
-                    key={title}
+                    key={Math.random().toString(36).substr(2, 9)}
                 >
                     <DelayedButton
                         style={{

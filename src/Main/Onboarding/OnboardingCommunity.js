@@ -94,7 +94,7 @@ class OnboardingCommunity extends React.Component {
                     borderRadius: 10,
                     ...styles.shadow,
                 }}
-                key={index}
+                key={Math.random().toString(36).substr(2, 9)}
             >
                 <View
                     style={{ paddingTop: 0, position: 'absolute', bottom: 100 }}

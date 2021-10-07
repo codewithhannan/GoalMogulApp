@@ -692,6 +692,7 @@ class MyTribe extends React.PureComponent {
             <MenuProvider
                 style={{ backgroundColor: color.GM_BACKGROUND }}
                 customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
             >
                 {this.renderCreatePostModal(item)}
                 <SearchBarHeader
@@ -713,6 +714,8 @@ class MyTribe extends React.PureComponent {
                         this.props.refreshMyTribeDetail(
                             this.props.tribeId,
                             this.props.pageId
+                            // null,
+                            // false
                         )
                     }
                     onEndReached={() =>

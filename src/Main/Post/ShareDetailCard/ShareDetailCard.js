@@ -252,9 +252,9 @@ class ShareDetailCard extends Component {
         const parentRef = shareDetail ? shareDetail._id : undefined
         return (
             <CommentCard
-                key={props.index}
+                key={Math.random().toString(36).substr(2, 9)}
                 item={props.item}
-                index={props.index}
+                index={Math.random().toString(36).substr(2, 9)}
                 scrollToIndex={(i, viewOffset) =>
                     this.scrollToIndex(i, viewOffset)
                 }
@@ -295,7 +295,10 @@ class ShareDetailCard extends Component {
         const title = switchCaseTitle(shareDetail.postType || postType)
 
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
+            >
                 <LikeListModal
                     isVisible={this.state.showCommentLikeList}
                     closeModal={this.closeCommentLikeList}

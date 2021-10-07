@@ -1,7 +1,6 @@
 /** @format */
 
 import * as FileSystem from 'expo-file-system'
-import * as Permissions from 'expo-permissions'
 import React from 'react'
 import {
     Alert,
@@ -12,6 +11,7 @@ import {
     View,
 } from 'react-native'
 import CameraRoll from '@react-native-community/cameraroll'
+import * as ImagePicker from 'expo-image-picker'
 import ImageViewer from 'react-native-image-zoom-viewer'
 import Modal from 'react-native-modal'
 // Assets
@@ -35,7 +35,10 @@ class ImageModal extends React.Component {
         return false
     }
     async saveToCameraRoll() {
-        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
+        // const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
+        const {
+            status,
+        } = await ImagePicker.requestMediaLibraryPermissionsAsync()
         if (status !== 'granted') {
             return Alert.alert(
                 'Denied',
@@ -47,6 +50,7 @@ class ImageModal extends React.Component {
         if (!urlToRender.includes(IMAGE_BASE_URL) && !this.props.isLocalFile) {
             urlToRender = `${IMAGE_BASE_URL}${urlToRender}`
         }
+
         if (Platform.OS === 'android') {
             FileSystem.downloadAsync(
                 urlToRender,
@@ -54,12 +58,12 @@ class ImageModal extends React.Component {
                     urlToRender
                 )}`
             ).then((res) => {
-                CameraRoll.saveToCameraRoll(res.path()).then(
+                CameraRoll.save(res.path()).then(
                     Alert.alert('Saved', 'Photo saved to camera roll')
                 )
             })
         } else {
-            CameraRoll.saveToCameraRoll(urlToRender).then(
+            CameraRoll.save(urlToRender).then(
                 Alert.alert('Saved', 'Photo saved to camera roll')
             )
         }
@@ -109,57 +113,57 @@ class ImageModal extends React.Component {
             </Modal>
         )
 
-        return (
-            <Modal
-                backdropColor={'black'}
-                isVisible={this.props.mediaModal}
-                backdropOpacity={1}
-                onSwipe={() => this.closeModal()}
-                swipeDirection="down"
-                style={{ flex: 1 }}
-                deviceWidth={width}
-            >
-                <View
-                    style={{
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <TouchableOpacity
-                        activeOpacity={0.6}
-                        onPress={() => {
-                            this.closeModal()
-                        }}
-                        style={{
-                            position: 'absolute',
-                            top: 5,
-                            left: 5,
-                            padding: 10,
-                            zIndex: 2,
-                        }}
-                    >
-                        <Image
-                            source={cancel}
-                            style={{
-                                ...styles.cancelIconStyle,
-                                tintColor: 'white',
-                            }}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        onLongPress={this.saveToCameraRoll.bind(this)}
-                    >
-                        <Image
-                            source={{ uri: urlToRender }}
-                            style={{ width, height }}
-                            resizeMode="contain"
-                        />
-                    </TouchableOpacity>
-                </View>
-            </Modal>
-        )
+        // return (
+        //     <Modal
+        //         backdropColor={'black'}
+        //         isVisible={this.props.mediaModal}
+        //         backdropOpacity={1}
+        //         onSwipe={() => this.closeModal()}
+        //         swipeDirection="down"
+        //         style={{ flex: 1 }}
+        //         deviceWidth={width}
+        //     >
+        //         <View
+        //             style={{
+        //                 flex: 1,
+        //                 alignItems: 'center',
+        //                 justifyContent: 'center',
+        //             }}
+        //         >
+        //             <TouchableOpacity
+        //                 activeOpacity={0.6}
+        //                 onPress={() => {
+        //                     this.closeModal()
+        //                 }}
+        //                 style={{
+        //                     position: 'absolute',
+        //                     top: 5,
+        //                     left: 5,
+        //                     padding: 10,
+        //                     zIndex: 2,
+        //                 }}
+        //             >
+        //                 <Image
+        //                     source={cancel}
+        //                     style={{
+        //                         ...styles.cancelIconStyle,
+        //                         tintColor: 'white',
+        //                     }}
+        //                 />
+        //             </TouchableOpacity>
+        //             <TouchableOpacity
+        //                 activeOpacity={0.8}
+        //                 onLongPress={this.saveToCameraRoll.bind(this)}
+        //             >
+        //                 <Image
+        //                     source={{ uri: urlToRender }}
+        //                     style={{ width, height }}
+        //                     resizeMode="contain"
+        //                 />
+        //             </TouchableOpacity>
+        //         </View>
+        //     </Modal>
+        // )
     }
 }
 

@@ -61,7 +61,7 @@ class MyTribeAbout extends Component {
                       const { memberRef } = member
                       if (index > 4 || !memberRef) return null
                       return (
-                          <View style={{ margin: 4 }}>
+                          <View style={{ margin: 4 }} key={index}>
                               <ProfileImage
                                   imageUrl={getProfileImageOrDefaultFromUser(
                                       memberRef

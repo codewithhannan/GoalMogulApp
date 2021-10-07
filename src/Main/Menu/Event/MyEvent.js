@@ -752,14 +752,19 @@ class MyEvent extends Component {
         // TODO: refactor to become a literal function
         switch (routes[index].key) {
             case 'about': {
-                return <About item={props.item} key={props.index} />
+                return (
+                    <About
+                        item={props.item}
+                        key={Math.random().toString(36).substr(2, 9)}
+                    />
+                )
             }
 
             case 'posts': {
                 return (
                     <PostPreviewCard
                         item={props.item}
-                        key={props.index}
+                        key={Math.random().toString(36).substr(2, 9)}
                         hasActionButton
                     />
                 )
@@ -769,13 +774,13 @@ class MyEvent extends Component {
                 return (
                     <MemberListCard
                         item={props.item.participantRef}
-                        key={props.index}
+                        key={Math.random().toString(36).substr(2, 9)}
                     />
                 )
             }
 
             default:
-                return <View key={props.index} />
+                return <View key={Math.random().toString(36).substr(2, 9)} />
         }
     }
 
@@ -795,7 +800,10 @@ class MyEvent extends Component {
 
         // console.log(`${DEBUG_KEY}: rendering myevent with item: `, item);
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
+            >
                 <View style={styles.containerStyle}>
                     <SearchBarHeader
                         backButton

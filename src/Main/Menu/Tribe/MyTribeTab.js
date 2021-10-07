@@ -339,14 +339,17 @@ class MyTribeTab extends React.Component {
     render() {
         return (
             <View style={{ flex: 1, backgroundColor: 'white' }}>
-                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <MenuProvider
+                    customStyles={{ backdrop: styles.backdrop }}
+                    skipInstanceCheck={true}
+                >
                     <SearchBarHeader
                         backButton
                         title="My Tribes"
                         onBackPress={() => this.props.closeMyTribeTab()}
                     />
                     <TabView
-                        ref={(ref) => (this.tab = ref)}
+                        // ref={(ref) => (this.tab = ref)}
                         navigationState={this.props.navigationState}
                         renderScene={this._renderScene}
                         renderTabBar={this._renderHeader}

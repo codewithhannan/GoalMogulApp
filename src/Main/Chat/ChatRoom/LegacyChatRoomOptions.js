@@ -316,7 +316,10 @@ class ChatRoomOptions extends React.Component {
         } = this.props
         if (!chatRoom || (chatRoom.roomType == 'Direct' && !otherUser)) {
             return (
-                <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+                <MenuProvider
+                    customStyles={{ backdrop: styles.backdrop }}
+                    skipInstanceCheck={true}
+                >
                     <View style={styles.homeContainerStyle}>
                         <ModalHeader
                             title={'Details'}
@@ -355,7 +358,10 @@ class ChatRoomOptions extends React.Component {
             )
         }
         return (
-            <MenuProvider customStyles={{ backdrop: styles.backdrop }}>
+            <MenuProvider
+                customStyles={{ backdrop: styles.backdrop }}
+                skipInstanceCheck={true}
+            >
                 <View style={styles.homeContainerStyle}>
                     <ModalHeader
                         title={'Details'}

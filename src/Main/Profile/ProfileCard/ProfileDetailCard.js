@@ -445,25 +445,6 @@ class ProfileDetailCard extends Component {
                     </View>
                 )
 
-            case undefined:
-                return (
-                    <View style={{ marginRight: 10 }}>
-                        <ProfileActionButton
-                            text={ADD_FRIEND}
-                            iconName="account-plus"
-                            onPress={this.handleButtonOnPress.bind(
-                                this,
-                                'requestFriend'
-                            )}
-                            iconStyle={iconStyle}
-                            textStyle={textStyle}
-                            containerStyle={{
-                                ...containerStyle,
-                            }}
-                        />
-                    </View>
-                )
-
             case 'Accepted':
                 return (
                     <View style={{ marginRight: 10 }}>

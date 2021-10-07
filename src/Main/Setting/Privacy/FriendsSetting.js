@@ -78,7 +78,7 @@ class FriendsSetting extends Component {
                 <TouchableOpacity
                     activeOpacity={0.6}
                     onPress={this.handleOnSelectedPress.bind(this, info.title)}
-                    key={info.title}
+                    key={Math.random().toString(36).substr(2, 9)}
                 >
                     <View style={styles.sectionContainerStyle}>
                         <View style={{ flex: 1 }}>

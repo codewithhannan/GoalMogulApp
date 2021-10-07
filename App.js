@@ -13,7 +13,7 @@ import {
     Alert,
 } from 'react-native'
 import DropdownAlert from 'react-native-dropdownalert-jia'
-
+import { enableScreens } from 'react-native-screens'
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
 import 'react-native-reanimated'
 
@@ -58,6 +58,10 @@ Text.defaultProps = Text.defaultProps || {}
 Text.defaultProps.allowFontScaling = false
 
 const DEBUG_KEY = '[APP ROOT]'
+
+if (!__DEV__) {
+    enableScreens()
+}
 
 // Initialize Segment
 initSegment()
@@ -117,10 +121,10 @@ export default class App extends React.Component {
     // }
 
     // componentDidMount() {
-    //     Linking.addEventListener('url', this.handleDeepLink)
-    //     if (!this.state.data) {
-    //         this.getInitialUrl()
-    //     }
+    // Linking.addEventListener('url', this.handleDeepLink)
+    // if (!this.state.data) {
+    //     this.getInitialUrl()
+    // }
     // }
 
     // componentWillUnmount() {
@@ -129,8 +133,17 @@ export default class App extends React.Component {
 
     render() {
         console.disableYellowBox = true
-
+        enableScreens(false)
         return (
+            // <View
+            //     style={{
+            //         flex: 1,
+            //         justifyContent: 'center',
+            //         alignItems: 'center',
+            //     }}
+            // >
+            //     <Text style={{ color: 'blue', fontSize: 20 }}>GOALMOGUL</Text>
+            // </View>
             <ThemeProvider>
                 <ReduxProvider store={store}>
                     <PersistGate persistor={persistor}>

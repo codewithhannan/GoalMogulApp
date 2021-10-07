@@ -7,20 +7,19 @@ import {
     feedbackImagesToSend,
 } from '../reducers/FeedbackReducers'
 import * as ImagePicker from 'expo-image-picker'
-import * as Permissions from 'expo-permissions'
 import ImageUtils from '../Utils/ImageUtils'
 import { api as API } from '../redux/middleware/api'
+import { Alert } from 'react-native'
 
 const DEBUG_KEY = '[Feedback Actions]'
 
 export const openFeedBackCameraRoll = (callback, maybeOptions) => async (
     dispatch
 ) => {
-    const permissions = [Permissions.CAMERA, Permissions.CAMERA_ROLL]
-    const permissionGranted = await ImageUtils.checkPermission(permissions)
-    if (!permissionGranted) {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    if (status !== 'granted') {
         // TODO: fire event to say permission not granted
-        return
+        return alert('Please grant access to photos and camera.')
     }
     const disableEditing = maybeOptions && maybeOptions.disableEditing
     const result = await ImagePicker.launchImageLibraryAsync(

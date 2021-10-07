@@ -41,7 +41,11 @@ class MastermindTab extends Component {
         )
 
         const needCards = needs.map((need, index) => (
-            <SectionCard key={`need-${index}`} item={need} goalRef={item} />
+            <SectionCard
+                key={Math.random().toString(36).substr(2, 9)}
+                item={need}
+                goalRef={item}
+            />
         ))
 
         return (
@@ -68,7 +72,11 @@ class MastermindTab extends Component {
         )
 
         const stepCards = steps.map((step, index) => (
-            <SectionCard key={`step-${index}`} item={step} goalRef={item} />
+            <SectionCard
+                key={Math.random().toString(36).substr(2, 9)}
+                item={step}
+                goalRef={item}
+            />
         ))
 
         return (
