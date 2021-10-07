@@ -1,6 +1,8 @@
 #import "AppDelegate.h"
 #import <EXScreenOrientation/EXScreenOrientationViewController.h>
 
+#import <SEGMoEngageIntegrationFactory.h> // This line is key for MoEngage integration
+#import <SEGAnalytics.h>
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
@@ -19,6 +21,7 @@
 #import <FlipperKitNetworkPlugin/FlipperKitNetworkPlugin.h>
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
+
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -42,6 +45,10 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  SEGAnalyticsConfiguration *config = [SEGAnalyticsConfiguration configurationWithWriteKey:@"Us6yuw9KLihsRmpihcB5OXTYwT4GDq75"];
+  // Add MoEngageIntegrationFactory. Without this data will not come to MoEngage.
+      [config use:[SEGMoEngageIntegrationFactory instance]];
+      [SEGAnalytics setupWithConfiguration:config];
 #if defined(FB_SONARKIT_ENABLED) && __has_include(<FlipperKit/FlipperClient.h>)
   InitializeFlipper(application);
 #endif

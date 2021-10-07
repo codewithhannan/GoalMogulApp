@@ -111,6 +111,9 @@ PODS:
   - lottie-react-native (4.0.2):
     - lottie-ios (~> 3.1.8)
     - React-Core
+  - MoEngage-iOS-SDK (7.1.1):
+    - MORichNotification (< 5.3.0, >= 5.2.0)
+  - MORichNotification (5.2.0)
   - RCTRequired (0.63.4)
   - RCTTypeSafety (0.63.4):
     - FBLazyVector (= 0.63.4)
@@ -374,6 +377,9 @@ PODS:
     - React
   - RNVectorIcons (6.6.0):
     - React
+  - Segment-MoEngage (6.1.0):
+    - Analytics (~> 4.0)
+    - MoEngage-iOS-SDK (< 7.2, >= 7.1.0)
   - UMAppLoader (1.4.0)
   - UMBarCodeScannerInterface (5.4.0)
   - UMCameraInterface (5.4.0)
@@ -471,6 +477,7 @@ DEPENDENCIES:
   - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - Segment-MoEngage
   - UMAppLoader (from `../node_modules/unimodules-app-loader/ios`)
   - UMBarCodeScannerInterface (from `../node_modules/unimodules-barcode-scanner-interface/ios`)
   - UMCameraInterface (from `../node_modules/unimodules-camera-interface/ios`)
@@ -490,6 +497,9 @@ SPEC REPOS:
   trunk:
     - Analytics
     - boost-for-react-native
+    - MoEngage-iOS-SDK
+    - MORichNotification
+    - Segment-MoEngage
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -711,6 +721,8 @@ SPEC CHECKSUMS:
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
   lottie-react-native: 4dff8fe8d10ddef9e7880e770080f4a56121397e
+  MoEngage-iOS-SDK: dbb00d48c2c9355e7bed52b5643be1885f3d9e77
+  MORichNotification: e97f0d7462ee6c46796852e81b92c72706fe4105
   RCTRequired: 082f10cd3f905d6c124597fd1c14f6f2655ff65e
   RCTTypeSafety: 8c9c544ecbf20337d069e4ae7fd9a377aadf504b
   React: b0a957a2c44da4113b0c4c9853d8387f8e64e615
@@ -749,11 +761,12 @@ SPEC CHECKSUMS:
   RNShare: 4df87d1791f50a2c7b1d89432fb9bbb7c02a9c9a
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
+  Segment-MoEngage: 4ea236159126c912d26d93e7650d85de231fe523
   UMAppLoader: 92d044af52626af3d81a69796ad666fc7a9a7d78
   UMBarCodeScannerInterface: 3f6c1b09ef4b867ce752b8c0b3893bcf9cd85f32
   UMCameraInterface: d516032121192fee9a6c93bdfff0bb2cc7282796
   UMConstantsInterface: 6825ea3832d26ed392ca6eff2df84edd69968fd0
-  UMCore: ce3a4faa010239063b8343895b29a6d97b01069d
+  UMCore: 573e838e2a2d5dfcb23506fd7d7db6dcc07c2fb3
   UMFaceDetectorInterface: 60b36b07faa539205efce30b20c192e058b31c23
   UMFileSystemInterface: ab01294ce58a3c773aefb4a5b131ce589c199559
   UMFontInterface: 85fe1b845fb7caab45e04d9ce47e1677a5ce90a5
@@ -764,6 +777,6 @@ SPEC CHECKSUMS:
   UMTaskManagerInterface: 4c60b43eaf3cb05a164bc9113258a171c18b7bf7
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
 
-PODFILE CHECKSUM: d022f66ce989e5d119e7372a3b002fa0d0bd28a4
+PODFILE CHECKSUM: be5031fb9360fa28191249b211afb83316ece3ed
 
 COCOAPODS: 1.11.2
