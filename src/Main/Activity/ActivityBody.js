@@ -235,7 +235,7 @@ class ActivityBody extends React.Component {
 
     renderPostBody(postRef) {
         if (!postRef) return null
-        const { postType, goalRef, needRef, stepRef, userRef } = postRef
+        const { postType, goalRef, needRef, userRef } = postRef
         if (!isSharedPost(postType)) {
             const milestoneIdentifier = _.get(
                 postRef,
@@ -252,9 +252,9 @@ class ActivityBody extends React.Component {
             item = getNeedFromRef(goalRef, needRef)
         }
 
-        if (postType === 'ShareStep') {
-            item = getStepFromGoal(goalRef, stepRef)
-        }
+        // if (postType === 'ShareStep') {
+        //     item = getStepFromGoal(goalRef, stepRef)
+        // }
 
         if (postType === 'ShareUser') {
             item = userRef
@@ -303,7 +303,6 @@ class ActivityBody extends React.Component {
     // Render Activity Card body
     render() {
         const { item } = this.props
-        // console.log('THESE ARE ITEMSSS', item)
 
         if (!item) return null
 
@@ -329,8 +328,8 @@ class ActivityBody extends React.Component {
     }
 }
 
-const getStepFromGoal = (goal, stepRef) =>
-    getItemFromGoal(goal, 'steps', stepRef)
+// const getStepFromGoal = (goal, stepRef) =>
+//     getItemFromGoal(goal, 'steps', stepRef)
 
 const getNeedFromRef = (goal, needRef) =>
     getItemFromGoal(goal, 'needs', needRef)

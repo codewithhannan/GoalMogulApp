@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, Image } from 'react-native'
 import { connect } from 'react-redux'
 import timeago from 'timeago.js'
 import _ from 'lodash'
@@ -23,6 +23,7 @@ import {
 } from '../../redux/modules/notification/NotificationActions'
 
 // Assets
+import CHECK_BOX from '../../asset/icons/checkbox.png'
 
 // Components
 import Headline from '../Goal/Common/Headline'
@@ -71,6 +72,59 @@ class ActivityHeader extends Component {
                 lastLine.text.length > firstLine.text.length ||
                 countWords(e.nativeEvent.lines) < countWords(content),
         })
+    }
+
+    renderPostSteps = (item) => {
+        const steps = item.belongsToGoalStoryline.goalRef.steps
+
+        const completedStep = steps.filter((step) => {
+            if (step.isCompleted) {
+                return step
+            }
+        })
+
+        return (
+            <>
+                {completedStep.map((step) => {
+                    return (
+                        <>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    padding: 15,
+                                }}
+                            >
+                                <Image
+                                    source={CHECK_BOX}
+                                    style={{
+                                        width: 20,
+                                        height: 20,
+                                        resizeMode: 'contain',
+                                    }}
+                                />
+                                <Text
+                                    style={{
+                                        marginHorizontal: 10,
+                                        fontSize: 16,
+                                        fontWeight: '900',
+                                        fontFamily: 'SFProDisplay-Regular',
+                                    }}
+                                >
+                                    {step.description}
+                                </Text>
+                            </View>
+                            <View
+                                style={{
+                                    height: 0.5,
+                                    backgroundColor: 'lightgrey',
+                                    width: '100%',
+                                }}
+                            />
+                        </>
+                    )
+                })}
+            </>
+        )
     }
 
     renderSeeMore(postRef, actedUponEntityType) {
@@ -258,31 +312,39 @@ class ActivityHeader extends Component {
                         />
                     </View>
                 </View>
-                <RichText
-                    contentText={content}
-                    contentTags={tags}
-                    contentLinks={links || []}
-                    textStyle={{
-                        ...(isPost
-                            ? default_style.normalText_1
-                            : default_style.goalTitleText_1),
-                        marginTop: 10,
-                        flex: 1,
-                        flexWrap: 'wrap',
-                        color: 'black',
-                    }}
-                    textContainerStyle={{ flexDirection: 'row', marginTop: 5 }}
-                    numberOfLines={CONTENT_PREVIEW_MAX_NUMBER_OF_LINES}
-                    ellipsizeMode="tail"
-                    onTextLayout={this.onTextLayout}
-                    onUserTagPressed={(user) => {
-                        console.log(
-                            `${DEBUG_KEY}: user tag press for user: `,
-                            user
-                        )
-                        this.props.openProfile(user)
-                    }}
-                />
+                {this.props.item.actedWith === 'Step' ? (
+                    this.renderPostSteps(item)
+                ) : (
+                    <RichText
+                        contentText={content}
+                        contentTags={tags}
+                        contentLinks={links || []}
+                        textStyle={{
+                            ...(isPost
+                                ? default_style.normalText_1
+                                : default_style.goalTitleText_1),
+                            marginTop: 10,
+                            flex: 1,
+                            flexWrap: 'wrap',
+                            color: 'black',
+                        }}
+                        textContainerStyle={{
+                            flexDirection: 'row',
+                            marginTop: 5,
+                        }}
+                        numberOfLines={CONTENT_PREVIEW_MAX_NUMBER_OF_LINES}
+                        ellipsizeMode="tail"
+                        onTextLayout={this.onTextLayout}
+                        onUserTagPressed={(user) => {
+                            console.log(
+                                `${DEBUG_KEY}: user tag press for user: `,
+                                user
+                            )
+                            this.props.openProfile(user)
+                        }}
+                    />
+                )}
+
                 {this.renderSeeMore(postRef, actedUponEntityType)}
             </View>
         )
