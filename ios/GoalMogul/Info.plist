@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.17</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -47,23 +47,19 @@
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
-		<!-- <key>NSAllowsArbitraryLoadsForMedia</key>
-		<true/>
-		<key>NSAllowsArbitraryLoadsInWebContent</key>
-		<true/> -->
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>localhost</key>
-		<dict>
-		<key>NSExceptionAllowsInsecureHTTPLoads</key>
-		<true/>
-		</dict>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>This app uses the camera to allow members to share images with other members</string>
 	<key>NSContactsUsageDescription</key>
-	<string>This app uses the user&apos;s contacts to help the user find friends who have already signed up on the platform</string>
+	<string>This app uses the user's contacts to help the user find friends who have already signed up on the platform</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>This app uses FaceId to unlock access to the App.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
