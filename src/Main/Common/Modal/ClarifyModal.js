@@ -117,15 +117,15 @@ class ClarifyModal extends React.Component {
         ))
     }
 
-    handleCheckbox(opt, setFieldValue, index) {
-        this.setState({ [opt]: !this.state[opt] }, () => {
-            if (index != this.options.length - 1) {
-                setFieldValue(opt, this.state[opt] ? this.options[index] : '')
-            } else if (index == this.options.length - 1 && !this.state[opt]) {
-                setFieldValue(opt, '')
-            }
-        })
-    }
+    // handleCheckbox(opt, setFieldValue, index) {
+    //     this.setState({ [opt]: !this.state[opt] }, () => {
+    //         if (index != this.options.length - 1) {
+    //             setFieldValue(opt, this.state[opt] ? this.options[index] : '')
+    //         } else if (index == this.options.length - 1 && !this.state[opt]) {
+    //             setFieldValue(opt, '')
+    //         }
+    //     })
+    // }
 
     closeModal() {
         this.props.closeModal && this.props.closeModal()
