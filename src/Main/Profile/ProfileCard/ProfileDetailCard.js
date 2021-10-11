@@ -47,6 +47,7 @@ import {
     actionSheet,
     switchByButtonIndex,
 } from '../../Common/ActionSheetFactory'
+import FOLLOW from '../../../asset/icons/follow.png'
 
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 
@@ -58,6 +59,10 @@ import { getButtonBottomSheetHeight } from '../../../styles'
 import ProfileImage from '../../Common/ProfileImage'
 import { getProfileImageOrDefaultFromUser } from '../../../redux/middleware/utils'
 import { EVENT as E, track } from '../../../monitoring/segment'
+import {
+    shouldFollowUser,
+    shouldUnfollowUser,
+} from '../../../actions/FollowActions'
 
 const { width } = Dimensions.get('window')
 const DEBUG_KEY = '[ Copmonent ProfileDetailCard ]'
@@ -71,6 +76,7 @@ class ProfileDetailCard extends Component {
             imageUrl: '',
             imageSource: '',
             name: '',
+            userFollow: false,
         }
 
         this.handleEditOnPressed = this.handleEditOnPressed.bind(this)
@@ -868,6 +874,37 @@ class ProfileDetailCard extends Component {
                 }, 500)
             },
         }
+        const followOption = {
+            text: this.props.isFollowed ? 'Unfollow' : 'Follow',
+            textStyle: { color: 'black' },
+            image: FOLLOW,
+            imageStyle: { tintColor: 'black' },
+            // icon: { name: 'account-cancel', pack: 'material-community' },
+            onPress: () => {
+                this.closeOptionModal()
+                setTimeout(() => {
+                    // console.log(
+                    //     `${DEBUG_KEY} User follow _id: `,
+                    //     this.props.userId
+                    // )
+                    if (this.props.isFollowed) {
+                        return (
+                            this.props.shouldUnfollowUser(this.props.userId),
+                            setTimeout(() => {
+                                this.handleRefresh()
+                            }, 500)
+                        )
+                    } else {
+                        return (
+                            this.props.shouldFollowUser(this.props.userId),
+                            setTimeout(() => {
+                                this.handleRefresh()
+                            }, 500)
+                        )
+                    }
+                }, 500)
+            },
+        }
 
         const reportOption = {
             text: 'Report',
@@ -898,6 +935,7 @@ class ProfileDetailCard extends Component {
         }
 
         return [
+            followOption,
             shareToDirectMessageOption,
             shareToGroupChatOption,
             blockOption,
@@ -962,6 +1000,8 @@ class ProfileDetailCard extends Component {
         if (!user) return null
         const { name, headline, profile } = user
         const { location } = profile
+
+        console.log('THIS IS FOLLOWD', this.props.isFollowed)
 
         return (
             <>
@@ -1131,6 +1171,7 @@ const mapStateToProps = (state, props) => {
     const self = userId === state.user.userId
 
     const userObject = getUserData(state, userId, '')
+    const { isFollowed } = state.followUser
 
     const { user, mutualFriends, friendship } = userObject
     const { profile } = user
@@ -1155,6 +1196,7 @@ const mapStateToProps = (state, props) => {
         profile,
         pageId,
         uploading,
+        isFollowed,
     }
 }
 
@@ -1168,4 +1210,6 @@ export default connect(mapStateToProps, {
     submitUpdatingProfile,
     updateProfilePic,
     handleTabRefresh,
+    shouldFollowUser,
+    shouldUnfollowUser,
 })(ProfileDetailCard)

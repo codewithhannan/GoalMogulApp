@@ -43,7 +43,7 @@ class BottomButtonsSheet extends Component {
             return (
                 <DelayedButton
                     onPress={() => {
-                        this.close()
+                        // this.close()
                         setTimeout(() => {
                             onPress && onPress()
                         }, 500)

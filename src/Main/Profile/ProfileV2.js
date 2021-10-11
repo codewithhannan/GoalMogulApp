@@ -79,6 +79,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import NoGoalPrompt from '../../components/NoGoalPrompt'
 import CommentVideoModal from '../Common/Modal/CommentVideoModal'
 import AccountabilityPopUp from '../Common/Modal/AccountabilityPopUp'
+import { getFollowedStatus } from '../../actions/FollowActions'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
@@ -168,6 +169,7 @@ class ProfileV2 extends Component {
 
         if (!this.props.isSelf && !_.isEqual(prevProps, this.props)) {
             this.shouldSendNudge()
+            this.props.getFollowedStatus(this.props.visitedUser)
         }
         if (this.props.isSelf) {
             this.handlePopup()
@@ -1123,4 +1125,5 @@ export default connect(makeMapStateToProps, {
     handleProfileTabOnLoadMore,
     changeFilter,
     uploadPopupData,
+    getFollowedStatus,
 })(wrapAnalytics(ProfileV2, SCREENS.PROFILE))
