@@ -2,6 +2,8 @@
 
 // /** @format */
 
+// // /** @format */
+
 // import React, { Component } from 'react'
 // import {
 //     View,
@@ -18,14 +20,15 @@
 // import { MenuProvider } from 'react-native-popup-menu'
 // import { Actions } from 'react-native-router-flux'
 // import _ from 'lodash'
-// import { Notifications } from 'expo'
+// import * as Notifications from 'expo-notifications'
 // import { copilot } from 'react-native-copilot-gm'
 // import R from 'ramda'
 // import NewGoalView from '../Goal/NewGoal/NewGoalView'
 // import * as Permissions from 'expo-permissions'
 // import moment from 'moment'
+// // import Animated from 'react-native-reanimated'
 // import Animated from 'react-native-reanimated'
-
+// import CustomBackdrop from './CustomBackdrop'
 // // import { copilot } from 'react-native-copilot'
 // // import { makeGetUserGoals } from '../../redux/modules/User/Selector'
 
@@ -33,7 +36,9 @@
 // import TabButtonGroup from '../Common/TabButtonGroup'
 // import SearchBarHeader from '../Common/Header/SearchBarHeader'
 // import { openCamera, openCameraRoll } from '../../actions'
-// import BottomSheet from 'reanimated-bottom-sheet'
+// // import BottomSheet from 'reanimated-bottom-sheet'
+// import BottomSheet from '@gorhom/bottom-sheet'
+// // import  from '@gorhom/bottom-sheet';
 
 // import Mastermind from './Mastermind'
 // import ActivityFeed from './ActivityFeed'
@@ -226,6 +231,31 @@
 //         // this.handleIndexChange = this.handleIndexChange.bind(this)
 //     }
 
+//     // CustomBackdrop = ({ animatedIndex, style }) => {
+//     //     // animated variables
+//     //     const animatedOpacity =
+//     //             interpolate(animatedIndex, {
+//     //                 inputRange: [0, 1],
+//     //                 outputRange: [0, 1],
+//     //                 extrapolate: Extrapolate.CLAMP,
+//     //             }),
+//     //         [animatedIndex]
+//     //     )
+
+//     //     // styles
+//     //     const containerStyle = useMemo(
+//     //         () => [
+//     //             style,
+//     //             {
+//     //                 backgroundColor: '#a8b5eb',
+//     //                 opacity: animatedOpacity,
+//     //             },
+//     //         ],
+//     //         [style, animatedOpacity]
+//     //     )
+
+//     //     return <Animated.View style={containerStyle} />
+//     // }
 //     handleGoalReminder = async () => {
 //         const { initializeFromState } = this.props
 //         if (initializeFromState) {
@@ -374,7 +404,7 @@
 //                 this.props.user._id,
 //                 initializeFromState,
 //                 (createdGoal) => {
-//                     this.sheetref.current.snapTo(0)
+//                     this.sheetref.current.collapse()
 //                     console.log(`${DEBUG_KEY}: [handleCreate] poping the modal`)
 //                     if (this.props.callback) {
 //                         console.log(
@@ -446,7 +476,7 @@
 //                         height: '100%',
 //                     }}
 //                 >
-//                     <TouchableOpacity
+//                     {/* <TouchableOpacity
 //                         style={{ alignSelf: 'center', marginBottom: 10 }}
 //                         onPress={() => {
 //                             this.setState({ currentPositionBottomSheet: 2 })
@@ -468,8 +498,11 @@
 //                                         : 2,
 //                             }}
 //                         />
-//                     </TouchableOpacity>
+//                     </TouchableOpacity> */}
 //                     <NewGoalView
+//                         currentstatebottom={
+//                             this.state.currentPositionBottomSheet
+//                         }
 //                         initializeFromState={this.props.initializeFromState}
 //                         isImportedGoal={this.props.isImportedGoal}
 //                         goal={this.props.goal}
@@ -548,7 +581,7 @@
 
 //     componentDidMount() {
 //         const pageId = this.props.refreshProfileData(this.props.userId)
-
+//         this.sheetref.current.snapTo(0)
 //         pageAb = pageId
 
 //         setTimeout(() => {
@@ -560,7 +593,10 @@
 
 //         this.props.refreshActivityFeed()
 //         AppState.addEventListener('change', this.handleAppStateChange)
-//         this._notificationSubscription = Notifications.addListener(
+//         // this._notificationSubscription = Notifications.addListener(
+//         //     this._handleNotification
+//         // )
+//         this._notificationSubscription = Notifications.addNotificationReceivedListener(
 //             this._handleNotification
 //         )
 
@@ -609,6 +645,7 @@
 
 //     componentWillUnmount() {
 //         console.log(`${DEBUG_KEY}: [ componentWillUnmount ]`)
+//         this.sheetref.current.snapTo(0)
 
 //         // Remove tutorial listener
 //         this.props.copilotEvents.off('stop')
@@ -761,8 +798,8 @@
 //                         {
 //                             // console.log('THIS sheet', this.sheetref.current)
 
-//                             this.setState({ currentPositionBottomSheet: 1 })
-//                             console.log(this.state.currentPositionBottomSheet)
+//                             // this.setState({ currentPositionBottomSheet: 1 })
+//                             // console.log(this.state.currentPositionBottomSheet)
 
 //                             this.sheetref.current.snapTo(1)
 //                         }
@@ -986,10 +1023,24 @@
 //                 </Animated.View>
 //                 <BottomSheet
 //                     ref={this.sheetref}
-//                     snapPoints={[0, 300, '87%']}
-//                     renderContent={this.renderContent}
-//                     callbackNode={this.fall}
-//                 />
+//                     snapPoints={[0, 450, '88%']}
+//                     index={-1}
+//                     onChange={(index) =>
+//                         this.setState({ currentPositionBottomSheet: index })
+//                     }
+//                     // renderContent={this.renderContent}
+//                     // callbackNode={this.fall}
+//                     BottomSheetBackdrop={() => (
+//                         <CustomBackdrop
+//                             animatedIndex={
+//                                 this.state.currentPositionBottomSheet
+//                             }
+//                         />
+//                     )}
+//                 >
+//                     {/* <Text>TEST TEST</Text> */}
+//                     {this.renderContent()}
+//                 </BottomSheet>
 //             </MenuProvider>
 //         )
 //     }
@@ -1142,7 +1193,9 @@ import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
 import { track, EVENT as E } from '../../monitoring/segment'
 import { getToastsData } from '../../actions/ToastActions'
 import BottomButtonsSheet from '../Common/Modal/BottomButtonsSheet'
-
+import GOAL_ENDDATE_2_WEEKS from '../Goal/Common/GOAL_ENDDATE_2_WEEKS'
+import GOAL_UPDATE_POPUP_A from '../Goal/Common/GOAL_UPDATE_POPUP_A'
+import GOAL_UPDATE_POPUP_B from '../Goal/Common/GOAL_UPDATE_POPUP_B'
 //video stroyline
 import VideoStoryLineCircle from './VideoStoryLineCircle'
 
@@ -1297,6 +1350,9 @@ class Home extends Component {
             shouldRenderBadgeModal: false,
             pickedImage: null,
             shareModal: false,
+            isVisible: false,
+            isVisibleA: false,
+            isVisibleB: true,
         }
         this.scrollToTop = this.scrollToTop.bind(this)
         this._renderScene = this._renderScene.bind(this)
@@ -1761,6 +1817,18 @@ class Home extends Component {
                     attachGoalRequired
                     // onModal={() => this.setState({ shareModal: true })}
                     onRef={(r) => (this.createPostModal = r)}
+                />
+                <GOAL_ENDDATE_2_WEEKS
+                    isVisible={this.state.isVisible}
+                    closeModal={() => this.setState({ isVisible: false })}
+                />
+                <GOAL_UPDATE_POPUP_A
+                    isVisible={this.state.isVisibleA}
+                    closeModal={() => this.setState({ isVisibleA: false })}
+                />
+                <GOAL_UPDATE_POPUP_B
+                    isVisible={this.state.isVisibleB}
+                    closeModal={() => this.setState({ isVisibleB: false })}
                 />
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />

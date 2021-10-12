@@ -1660,15 +1660,20 @@ class NewGoalView extends Component {
                     ]}
                 /> */}
 
+                {/* {this.props.currentstatebottom === 2 ? ( */}
                 <CreateGoalToast
                     randomText={this.state.RANDOM_TEXT}
                     randomSilverText={this.state.RANDOM_TEXT_SILVER_BADGE}
                 />
+                {/* ) : ( */}
+                {/* <></>
+                )} */}
 
                 {/* Primary form */}
-                <View style={{ padding: 20, flex: 1 }}>
+                <View style={{ padding: 10, flex: 1 }}>
                     {this.renderGoal()}
                     {/* {this.state.showGoalDescription ? ( */}
+                    {/* {this.props.currentstatebottom === 2 ? ( */}
                     <FieldArray
                         name="details"
                         component={this.renderGoalDescription}
@@ -1676,6 +1681,9 @@ class NewGoalView extends Component {
                         tagData={this.state.tagSearchData.data}
                         keyword={this.state.keyword}
                     />
+                    {/* ) : (
+                        <></>
+                    )} */}
 
                     {/* ) : ( */}
                     {/* <TouchableWithoutFeedback
@@ -1710,6 +1718,7 @@ class NewGoalView extends Component {
                 /> */}
 
                 {/* Secondary form */}
+                {/* {this.props.currentstatebottom === 2 ? ( */}
                 <View
                     style={{
                         padding: 20,
@@ -1755,6 +1764,9 @@ class NewGoalView extends Component {
                         </View>
                     ) : null}
                 </View>
+                {/* ) : (
+                    <></>
+                )} */}
                 <View style={{ marginBottom: 40 }}>
                     <Button
                         text={this.props.createButtonTitle}

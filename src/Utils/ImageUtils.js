@@ -187,7 +187,7 @@ const ImageUtils = {
                     name: `photo.${fileType}`,
                     type: `image/${fileType}`,
                 })
-            } catch (error) {
+            } catch (err) {
                 console.log('edited err: ', err)
                 reject(err)
             }
@@ -248,7 +248,7 @@ const ImageUtils = {
                     name: `photo.${fileType}`,
                     type: `image/${fileType}`,
                 })
-            } catch (error) {
+            } catch (err) {
                 console.log('edited err: ', err)
                 reject(err)
             }
