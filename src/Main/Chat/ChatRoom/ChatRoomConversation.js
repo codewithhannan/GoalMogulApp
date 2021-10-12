@@ -1090,6 +1090,8 @@ class ChatRoomConversation extends React.Component {
         const { useDefaultChatRoomImage } = this.props
         const { _id, name, profile } = this.props.user
         const { messageMediaRef } = this.props
+
+        console.log('TESTINGGGG', this.props.isChatBotRoom)
         // console.log('this is the props', this.props)
         return (
             <MenuProvider
@@ -1193,6 +1195,7 @@ class ChatRoomConversation extends React.Component {
 
 const mapStateToProps = (state, props) => {
     const { userId, user, token } = state.user
+
     const {
         initializing,
         chatRoomsMap,
@@ -1208,6 +1211,8 @@ const mapStateToProps = (state, props) => {
     } = state.chatRoom
 
     const chatRoom = activeChatRoomId && chatRoomsMap[activeChatRoomId]
+    const isChatBotRoom =
+        activeChatRoomId && chatRoomsMap[activeChatRoomId]?.chatBotState
 
     let chatRoomName = 'Loading'
     let chatRoomImage = null
@@ -1264,6 +1269,7 @@ const mapStateToProps = (state, props) => {
         currentlyTypingUserIds,
         messageMediaRef,
         ghostMessages,
+        isChatBotRoom,
     }
 }
 

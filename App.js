@@ -16,6 +16,7 @@ import DropdownAlert from 'react-native-dropdownalert-jia'
 import { enableScreens } from 'react-native-screens'
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
 import 'react-native-reanimated'
+import DeepLinking from 'react-native-deep-linking'
 
 // State management
 import { Provider as ReduxProvider } from 'react-redux'
@@ -100,6 +101,7 @@ export default class App extends React.Component {
             appReady: false,
             image: null,
             data: null,
+            response: {},
         }
 
         // must be initialized in this order as each depends on the previous
@@ -109,27 +111,51 @@ export default class App extends React.Component {
         StatusBar.setBarStyle('light-content')
     }
 
-    // getInitialUrl = async () => {
-    //     const initialUrl = await Linking.getInitialURL()
-    //     console.log('THIS IS DATA OF INISITAL', initialUrl)
-    //     if (initialUrl) this.setState({ data: Linking.parse(initialUrl) })
-    // }
+    componentDidMount() {
+        // DeepLinking.addScheme('example1://')
+        // DeepLinking.addRoute('/test', (response) => {
+        //     console.log('SUPPORTED 5', response)
+        // })
+        // Linking.getInitialURL()
+        //     .then((ev) => {
+        //         if (ev) {
+        //             console.log('SUPPORTED 5', ev)
+        //             this.handleUrl(ev)
+        //         }
+        //     })
+        //     .catch((err) => {
+        //         console.warn('An error occurred', err)
+        //     })
+        // Linking.addEventListener('url', this.handleUrl)
+        // Linking.getInitialURL()
+        //     .then((url) => {
+        //         if (url) {
+        //             Linking.openURL(url)
+        //         }
+        //     })
+        //     .catch((err) => console.error('An error occurred', err))
 
-    // handleDeepLink = (event) => {
-    //     let data = Linking.parse(event.url)
-    //     this.setState({ data })
-    // }
+        var url = Linking.getInitialURL()
+            .then((url) => {
+                console.log('url', url)
+                if (url) {
+                    Linking.openURL(url)
+                }
+            })
+            .catch((err) => console.error('An error occurred', err))
+    }
 
-    // componentDidMount() {
-    // Linking.addEventListener('url', this.handleDeepLink)
-    // if (!this.state.data) {
-    //     this.getInitialUrl()
-    // }
-    // }
+    componentWillUnmount() {
+        Linking.removeEventListener('url', this.handleUrl)
+    }
 
-    // componentWillUnmount() {
-    //     Linking.removeEventListener('url')
-    // }
+    handleUrl = ({ url }) => {
+        Linking.canOpenURL(url).then((supported) => {
+            if (supported) {
+                DeepLinking.evaluateUrl(url)
+            }
+        })
+    }
 
     render() {
         console.disableYellowBox = true
