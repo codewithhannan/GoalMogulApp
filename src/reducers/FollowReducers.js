@@ -15,9 +15,9 @@ const slice = createSlice({
             state.isFollowed = action.payload
         },
 
-        clearNudgeData: () => initialState,
+        clearFollowData: () => initialState,
     },
 })
 
 export default slice.reducer
-export const { getFollowStatus } = slice.actions
+export const { getFollowStatus, clearFollowData } = slice.actions

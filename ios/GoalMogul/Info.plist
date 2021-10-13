@@ -26,10 +26,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>example1</string>
+			<string>app.goalmogul.me</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>example1</string>
+				<string>app.goalmogul.me</string>
 			</array>
 		</dict>
 	</array>
