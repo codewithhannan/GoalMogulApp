@@ -79,6 +79,7 @@ import ContactSyncReducers from '../redux/modules/User/ContactSync/ContactSyncRe
 
 //All Existing Accounts
 import ExistingAccountsReducers from './ExistingAccounts'
+import FollowReducers from './FollowReducers'
 
 const rootPersistConfig = {
     key: 'root',
@@ -145,6 +146,7 @@ export const reducers = combineReducers({
     friendsRequest: FriendsRequests,
     feedback: FeedBackReducers,
     goalSwiper: ProfileGoalSwipe,
+    followUser: FollowReducers,
 })
 
 export default persistReducer(rootPersistConfig, reducers)

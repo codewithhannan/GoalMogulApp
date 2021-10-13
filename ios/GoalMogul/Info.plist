@@ -23,10 +23,13 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>example1</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>goalmogul</string>
-				<string>com.goalmogul.goalmogulbeta</string>
+				<string>example1</string>
 			</array>
 		</dict>
 	</array>

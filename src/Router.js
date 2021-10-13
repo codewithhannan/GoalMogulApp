@@ -17,6 +17,7 @@ import {
 import { connect } from 'react-redux'
 import LoginPage from './LoginPage'
 import * as Linking from 'expo-linking'
+import crossroads from 'crossroads'
 // Chat
 import Chat from './Main/Chat/Chat'
 import ChatRoomConversation from './Main/Chat/ChatRoom/ChatRoomConversation'
@@ -51,6 +52,8 @@ import MyEvent from './Main/Menu/Event/MyEvent'
 import ContactInvitePage from './Main/MeetTab/Contacts/ContactInvitePage'
 // Friend tab
 import MeetTab from './Main/MeetTab/FriendTab'
+import DeepLinking from 'react-native-deep-linking'
+
 // Menu
 import MyEventTab from './Main/Menu/Event/MyEventTab'
 import Menu from './Main/Menu/Menu'
@@ -133,6 +136,7 @@ import { EVENT as E, track } from './monitoring/segment'
 import SendFeedback from './Main/Menu/SendFeedback'
 import MultipleImagePicker from './Main/Menu/MutlipleImagePicker'
 
+let scheme = 'exampleapp'
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
     let prefix = `${tab}_`
@@ -215,6 +219,10 @@ function getCommonScenes(tab) {
 }
 
 class RouterComponent extends Component {
+    state = {
+        response: {},
+    }
+
     onTabPress = (all) => {
         const { state, isFocused } = all.navigation
 
@@ -323,6 +331,47 @@ class RouterComponent extends Component {
         }
         // console.log('newState is: ', newState);
     }
+
+    componentDidMount() {
+        DeepLinking.addScheme('exampleapp://')
+        Linking.addEventListener('url', this.handleUrl)
+
+        DeepLinking.addRoute('/test', (response) => {
+            // example://test
+            this.setState({ response })
+        })
+
+        DeepLinking.addRoute('/test/:id', (response) => {
+            // example://test/23
+            this.setState({ response })
+        })
+
+        DeepLinking.addRoute('/test/:id/details', (response) => {
+            // example://test/100/details
+            this.setState({ response })
+        })
+
+        Linking.getInitialURL()
+            .then((url) => {
+                if (url) {
+                    Linking.openURL(url)
+                }
+            })
+            .catch((err) => console.error('An error occurred', err))
+    }
+
+    componentWillUnmount() {
+        Linking.removeEventListener('url', this.handleUrl)
+    }
+
+    handleUrl = ({ url }) => {
+        Linking.canOpenURL(url).then((supported) => {
+            if (supported) {
+                DeepLinking.evaluateUrl(url)
+            }
+        })
+    }
+
     rootTransitionConfig = () => {
         // we're just doing a regular horizontal slide for now
         return {
@@ -385,6 +434,7 @@ class RouterComponent extends Component {
                     elevation: 0,
                 }}
                 {...this.props}
+                scheme={scheme}
             >
                 <Modal key="modal" hideNavBar>
                     <Lightbox key="lightbox" hideNavBar>
@@ -960,6 +1010,17 @@ class RouterComponent extends Component {
         )
     }
 }
+// DeepLinking.addRoute('/profile', ({ scheme, path }) => {
+//     console.log('TEST 1', scheme) // `facebook://`
+//     console.log('TEST 2', path) // `/profile`
+//     Actions.replace('no_goal_conversation')
+// })
+
+DeepLinking.addRoute('/profile', (response) => {
+    // example://test/23
+    console.log('RESPONSE', response)
+    alert('Hello')
+})
 
 const styles = {
     tabBarStyle: {

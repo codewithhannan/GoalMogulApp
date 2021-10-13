@@ -76,7 +76,7 @@ PODS:
     - UMCore
   - EXSMS (9.2.3):
     - UMCore
-  - EXSplashScreen (0.11.4):
+  - EXSplashScreen (0.11.2):
     - React-Core
     - UMCore
   - EXStructuredHeaders (1.1.1):
@@ -356,7 +356,7 @@ PODS:
     - React
   - ReactNativeExceptionHandler (2.10.10):
     - React-Core
-  - RNCAsyncStorage (1.15.8):
+  - RNCAsyncStorage (1.15.5):
     - React-Core
   - RNCClipboard (1.5.1):
     - React-Core
@@ -426,7 +426,7 @@ DEPENDENCIES:
   - EXSecureStore (from `../node_modules/expo-secure-store/ios`)
   - EXSegment (from `../node_modules/expo-analytics-segment/ios`)
   - EXSMS (from `../node_modules/expo-sms/ios`)
-  - EXSplashScreen (from `../node_modules/expo-app-loading/node_modules/expo-splash-screen/ios`)
+  - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - EXStructuredHeaders (from `../node_modules/expo-structured-headers/ios`)
   - EXUpdates (from `../node_modules/expo-updates/ios`)
   - EXUpdatesInterface (from `../node_modules/expo-updates-interface/ios`)
@@ -555,7 +555,7 @@ EXTERNAL SOURCES:
   EXSMS:
     :path: "../node_modules/expo-sms/ios"
   EXSplashScreen:
-    :path: "../node_modules/expo-app-loading/node_modules/expo-splash-screen/ios"
+    :path: "../node_modules/expo-splash-screen/ios"
   EXStructuredHeaders:
     :path: "../node_modules/expo-structured-headers/ios"
   EXUpdates:
@@ -710,7 +710,7 @@ SPEC CHECKSUMS:
   EXSecureStore: 1aa80d49a3a101418bbd2675e2a0d32dceea10c2
   EXSegment: 24e2986d5e4b3a318f2240312f2b33deb76900e6
   EXSMS: 9571a38e371461ca0eca0bccf59db7ad92e813ee
-  EXSplashScreen: 847e0d8026731c1090bf269ede3e15ac87d88958
+  EXSplashScreen: 6208ca88470ff5979fd49a08ef3feb01143a2b79
   EXStructuredHeaders: e52b880264d15b8ad07d36670226c29476af6334
   EXUpdates: 013d26649cb6ab4f8d8d80c35d3d4be150b47e7c
   EXUpdatesInterface: b68e78b912a03fff7901a5f46ec200c45e3506a5
@@ -751,7 +751,7 @@ SPEC CHECKSUMS:
   ReactCommon: 73d79c7039f473b76db6ff7c6b159c478acbbb3b
   ReactNativeAutogrowTextinput: 571f3260e200d91ea22fab160452f26d2fd5d55b
   ReactNativeExceptionHandler: b11ff67c78802b2f62eed0e10e75cb1ef7947c60
-  RNCAsyncStorage: e8b8d6320a0dd90eb610fb0d0b1ef90596697c69
+  RNCAsyncStorage: 56a3355a10b5d660c48c6e37325ac85ebfd09885
   RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNDateTimePicker: 7658208086d86d09e1627b5c34ba0cf237c60140

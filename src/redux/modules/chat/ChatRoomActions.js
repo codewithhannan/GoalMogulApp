@@ -11,6 +11,7 @@ import ImageUtils from '../../../Utils/ImageUtils'
 import { MemberDocumentFetcher } from '../../../Utils/UserUtils'
 import { api as API } from '../../middleware/api'
 import { decode, getProfileImageOrDefault } from '../../middleware/utils'
+
 import {
     CHAT_ROOM_CLOSE_ACTIVE_ROOM,
     CHAT_ROOM_LOAD_INITIAL,
@@ -22,6 +23,7 @@ import {
     CHAT_ROOM_UPDATE_MESSAGES,
     CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF,
 } from './ChatRoomReducers'
+import axios from 'axios'
 
 const LOADING_RIPPLE_URL = 'https://i.imgur.com/EhwxDDf.gif'
 
@@ -338,7 +340,9 @@ export const sendMessage = (
 ) => (dispatch, getState) => {
     if (!chatRoom) return
     const { token, userId } = getState().user
-
+    const { chatRoomsMap, activeChatRoomId } = getState().chatRoom
+    const isChatBotRoom =
+        activeChatRoomId && chatRoomsMap[activeChatRoomId]?.chatBotState
     let uploadedMediaRef = null
     // upload the image if a file's mounted
     if (mountedMediaRef) {
@@ -381,7 +385,9 @@ export const sendMessage = (
                         'Could not upload image. Please try again later.'
                     )
                 } else {
-                    sendMessages()
+                    console.log('HELLO 3')
+
+                    sendMessages(isChatBotRoom, token)
                 }
             })
             .catch((err) => {
@@ -397,10 +403,11 @@ export const sendMessage = (
                 Alert.alert('Error', 'Could not upload image.')
             })
     } else {
-        sendMessages()
+        console.log('HELLO 2')
+        sendMessages(isChatBotRoom, token)
     }
 
-    function sendMessages() {
+    function sendMessages(isChatBotRoom, token) {
         // iterate over each message to be sent (usually should only be 1)
         messagesToSend.forEach((messageToSend) => {
             // insert message into local storage
@@ -471,13 +478,42 @@ export const sendMessage = (
                             UserId: userId,
                             ChatroomId: chatRoom._id,
                         })
-                        API.post(`secure/chat/message`, body, token)
-                            .then((resp) => {
-                                if (resp.status != 200) {
-                                    handleRequestFailure()
-                                }
+
+                        if (isChatBotRoom) {
+                            console.log('HELLO')
+                            axios({
+                                method: 'POST',
+                                url:
+                                    'https://goalmogul-funnels.herokuapp.com/api/secure/chat/message',
+                                data: JSON.stringify({
+                                    ...body,
+                                    token: token,
+                                }),
+
+                                headers: {
+                                    Accept: 'application/json',
+                                    'Content-Type': 'application/json',
+                                },
                             })
-                            .catch(handleRequestFailure)
+                                .then(function (response) {
+                                    //handle success
+                                    console.log(response)
+                                })
+                                .catch(function (response) {
+                                    //handle error
+                                    console.log(response)
+                                })
+                        } else {
+                            console.log('HELLO 1')
+
+                            API.post(`secure/chat/message`, body, token)
+                                .then((resp) => {
+                                    if (resp.status != 200) {
+                                        handleRequestFailure()
+                                    }
+                                })
+                                .catch(handleRequestFailure)
+                        }
                     }, MESSAGE_SLIDE_IN_ANIMATION_MS + 100)
                 }
             )
@@ -575,7 +611,7 @@ export async function _transformMessagesForGiftedChat(
                 sharedEntity,
                 goalRecommendation,
             } = messageDoc
-            console.log('THIS IS MESSAGE DOC 1', content)
+            // console.log('THIS IS MESSAGE DOC 1', content)
 
             //--- populate message content ---//
 
