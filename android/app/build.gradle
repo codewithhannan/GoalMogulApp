@@ -122,7 +122,16 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  * and the benefits of using Hermes will therefore be sharply reduced.
  */
 def enableHermes = project.ext.react.get("enableHermes", false);
+// android {
+//     ...
 
+//     defaultConfig {
+//         ...
+//         vectorDrawables.useSupportLibrary = true
+//         ...
+//     }
+//     ...
+// }
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -134,6 +143,7 @@ android {
     defaultConfig {
         applicationId 'com.goalmogul.goalmogulbeta'
         minSdkVersion rootProject.ext.minSdkVersion
+        vectorDrawables.useSupportLibrary = true
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1000
         versionName "1.0.17"

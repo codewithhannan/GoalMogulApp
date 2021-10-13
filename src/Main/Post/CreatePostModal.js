@@ -346,9 +346,10 @@ class CreatePostModal extends Component {
         this.setState({ clickedButton: true })
         this.bottomSheetRef.close()
         const callback = (result) => {
+            console.log(result)
             this.bottomSheetRef.open()
 
-            this.props.change('mediaRef', result.uri)
+            this.props.change('mediaRef', result.path)
             this.setState({ clickedButton: false })
         }
         setTimeout(() => {
@@ -1362,6 +1363,8 @@ class CreatePostModal extends Component {
             belongsToGoalStoryline,
         } = this.props
         const { profile } = user
+
+        // console.log('THISIS THE MEDIAREF', mediaRef)f
 
         const actionDisabled =
             uploading ||

@@ -43,6 +43,7 @@ class PostPreviewBody extends React.Component {
             return null
         }
         const imageUrl = `${IMAGE_BASE_URL}${url}`
+        console.log(imageUrl)
         return (
             <TouchableWithoutFeedback
                 activeOpacity={1}

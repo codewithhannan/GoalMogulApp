@@ -3,13 +3,15 @@
 import { Actions } from 'react-native-router-flux'
 import { ImagePickerIOS } from 'react-native'
 import CameraRoll from '@react-native-community/cameraroll'
-import * as ImagePicker from 'expo-image-picker'
+// import * as ImagePicker from 'expo-image-picker'
 import * as Contacts from 'expo-contacts'
 import { SubmissionError } from 'redux-form'
 import { api as API } from '../redux/middleware/api'
 import { tutorial as Tutorial } from '../redux/modules/auth/Tutorial'
 import { DropDownHolder } from '../Main/Common/Modal/DropDownModal'
 import { track, trackWithProperties, EVENT as E } from '../monitoring/segment'
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
+import ImagePicker from 'react-native-image-crop-picker'
 
 import {
     REGISTRATION_BACK,
@@ -420,11 +422,11 @@ export const openCameraRoll = (
     maybeTrackImageSelected
 ) => async (dispatch) => {
     console.log('MAYBE OPTION', maybeOptions)
-    const permissionGranted = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    // const permissionGranted = await ImagePicker.requestMediaLibraryPermissionsAsync()
 
-    if (permissionGranted.status !== 'granted') {
-        return alert('Please grant access to photos and camera.')
-    }
+    // if (permissionGranted.status !== 'granted') {
+    //     return alert('Please grant access to photos and camera.')
+    // }
 
     if (maybeTrackCamRollOpen) {
         maybeTrackCamRollOpen()
@@ -432,33 +434,77 @@ export const openCameraRoll = (
 
     const disableEditing = maybeOptions && maybeOptions.disableEditing
 
-    const result = await ImagePicker.launchImageLibraryAsync(
-        disableEditing
-            ? {
-                  mediaTypes: 'All',
-              }
-            : {
-                  allowsEditing: true,
-                  aspect: [4, 3],
-                  quality: 0.9,
-                  exif: true,
-              }
-    )
-
-    if (!result.cancelled || result.cancelled) {
+    // const result = await ImagePicker.launchImageLibraryAsync(
+    //     disableEditing
+    //         ? {
+    //               mediaTypes: 'All',
+    //           }
+    //         : {
+    //               allowsEditing: true,
+    //               aspect: [4, 3],
+    //               quality: 0.9,
+    //               exif: true,
+    //           }
+    // )
+    // launchImageLibrary(
+    //     disableEditing
+    //         ? {
+    //               mediaType: 'All',
+    //               videoQuality: 'low',
+    //           }
+    //         : {
+    //               mediaType: 'photo',
+    //               //   allowsEditing: true,
+    //               //   aspect: [4, 3],
+    //               quality: 0.7,
+    //               //   exif: true,
+    //           },
+    //     ({ didCancel, assets }) => {
+    //         if (!didCancel || didCancel) {
+    //             if (callback) {
+    //                 return callback(assets[0])
+    //             }
+    //             if (maybeTrackImageSelected) {
+    //                 maybeTrackImageSelected()
+    //             }
+    //             return dispatch({
+    //                 type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+    //                 payload: assets[0].uri,
+    //             })
+    //         }
+    //     }
+    // )
+    ImagePicker.openPicker({
+        width: 300,
+        height: 400,
+        cropping: true,
+    }).then((image) => {
         if (callback) {
-            return callback(result)
+            return callback(image)
         }
         if (maybeTrackImageSelected) {
             maybeTrackImageSelected()
         }
         return dispatch({
             type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
-            payload: result.uri,
+            payload: image.path,
         })
-    }
+    })
 
-    console.log('user choosing from camera roll fail with result: ', result)
+    // if (!result.cancelled || result.cancelled) {
+    //     if (callback) {
+    //         return callback(result)
+    //     }
+    //     if (maybeTrackImageSelected) {
+    //         maybeTrackImageSelected()
+    //     }
+    //     return dispatch({
+    //         type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+    //         payload: result.uri,
+    //     })
+    // }
+
+    // console.log('user choosing from camera roll fail with result: ', result)
     // Method 2:
     // ImagePickerIOS.canUseCamera(() => {
     //   ImagePickerIOS.openSelectDialog({}, imageUri => {
