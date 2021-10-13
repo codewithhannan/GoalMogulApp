@@ -1352,7 +1352,7 @@ class Home extends Component {
             shareModal: false,
             isVisible: false,
             isVisibleA: false,
-            isVisibleB: true,
+            isVisibleB: false,
         }
         this.scrollToTop = this.scrollToTop.bind(this)
         this._renderScene = this._renderScene.bind(this)
