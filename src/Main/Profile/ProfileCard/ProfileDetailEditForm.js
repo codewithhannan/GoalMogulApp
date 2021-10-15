@@ -48,6 +48,7 @@ import {
 } from '../../../redux/middleware/utils'
 import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
 import { getButtonBottomSheetHeight } from '../../../styles'
+import { resetTutorial } from '../../../redux/modules/User/TutorialActions'
 
 const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel']
 const TAKING_PICTURE_INDEX = 0
@@ -103,12 +104,13 @@ class ProfileDetailEditForm extends Component {
                 switch (buttonIndex) {
                     case TAKING_PICTURE_INDEX:
                         this.props.openCamera((result) => {
-                            this.props.change('profile.image', result.uri)
+                            this.props.change('profile.image', result.path)
                         })
                         break
                     case CAMERA_ROLL_INDEX:
                         this.props.openCameraRoll((result) => {
-                            this.props.change('profile.image', result.uri)
+                            console.log('CAMERA ROLLL', result)
+                            this.props.change('profile.image', result.path)
                         })
                         break
                     default:

@@ -729,6 +729,7 @@ class CreatePostModal extends Component {
     renderMedia() {
         const { mediaRef, uploading } = this.props
         let imageUrl = mediaRef
+        // console.log('MEDIA REF HA YE', mediaRef)
 
         if (!this.isMediaNotUploaded()) {
             // if nor stored locally image source must be from server

@@ -439,6 +439,7 @@ export const escapeRegExp = (string) => {
  * @param {*} defaultImageSource
  */
 export const getImageOrDefault = (imageSource, defaultImageSource) => {
+    // console.log('IMAGE SOURCE HA YE', imageSource)
     if (!imageSource && !defaultImageSource) {
         return
     }
@@ -459,6 +460,7 @@ export const getImageOrDefault = (imageSource, defaultImageSource) => {
             return { uri: `${IMAGE_BASE_URL}${imageSource}` }
         } else {
             // This is a full URL
+            console.log('RETURN YE HA', { uri: imageSource })
             return { uri: imageSource }
         }
     }

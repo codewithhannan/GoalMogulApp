@@ -474,22 +474,49 @@ export const openCameraRoll = (
     //         }
     //     }
     // )
-    ImagePicker.openPicker({
-        width: 300,
-        height: 400,
-        cropping: true,
-    }).then((image) => {
-        if (callback) {
-            return callback(image)
-        }
-        if (maybeTrackImageSelected) {
-            maybeTrackImageSelected()
-        }
-        return dispatch({
-            type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
-            payload: image.path,
+    if (disableEditing) {
+        ImagePicker.openPicker({
+            mediaType: 'any',
+            width: 848,
+            height: 480,
+            cropping: true,
+            includeExif: true,
+            // multiple: true,
+        }).then((vid) => {
+            console.log('IMAGE HYE HA', vid)
+            if (callback) {
+                return callback(vid)
+            }
+            if (maybeTrackImageSelected) {
+                maybeTrackImageSelected()
+            }
+            return dispatch({
+                type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+                payload: vid.path,
+            })
         })
-    })
+    } else {
+        ImagePicker.openPicker({
+            width: 848,
+            height: 480,
+            compressImageQuality: 0.7,
+            cropping: true,
+            includeExif: true,
+        }).then((image) => {
+            // console.log('IMAGE HYE HA', image)
+            if (image !== undefined || image === undefined)
+                if (callback) {
+                    return callback(image)
+                }
+            if (maybeTrackImageSelected) {
+                maybeTrackImageSelected()
+            }
+            return dispatch({
+                type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+                payload: image.path,
+            })
+        })
+    }
 
     // if (!result.cancelled || result.cancelled) {
     //     if (callback) {
