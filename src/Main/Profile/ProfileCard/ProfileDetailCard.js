@@ -858,6 +858,33 @@ class ProfileDetailCard extends Component {
                 }, 500)
             },
         }
+        const followOption = {
+            text: this.props.isFollowed ? 'Unfollow' : 'Follow',
+            textStyle: { color: 'black' },
+            image: FOLLOW,
+            imageStyle: { tintColor: 'black' },
+            // icon: { name: 'account-cancel', pack: 'material-community' },
+            onPress: () => {
+                this.closeOptionModal()
+                setTimeout(() => {
+                    if (this.props.isFollowed) {
+                        return (
+                            this.props.shouldUnfollowUser(this.props.userId),
+                            setTimeout(() => {
+                                this.handleRefresh()
+                            }, 500)
+                        )
+                    } else {
+                        return (
+                            this.props.shouldFollowUser(this.props.userId),
+                            setTimeout(() => {
+                                this.handleRefresh()
+                            }, 500)
+                        )
+                    }
+                }, 500)
+            },
+        }
 
         const reportOption = {
             text: 'Report',

@@ -13,10 +13,12 @@ import {
     Scene,
     Stack,
     Tabs,
+    Linking,
 } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import LoginPage from './LoginPage'
-import * as Linking from 'expo-linking'
+
+import crossroads from 'crossroads'
 // Chat
 import Chat from './Main/Chat/Chat'
 import ChatRoomConversation from './Main/Chat/ChatRoom/ChatRoomConversation'
@@ -380,6 +382,7 @@ class RouterComponent extends Component {
                     elevation: 0,
                 }}
                 {...this.props}
+                uriPrefix={'app.goalmogul.me:'}
             >
                 <Modal key="modal" hideNavBar>
                     <Lightbox key="lightbox" hideNavBar>
@@ -780,6 +783,7 @@ class RouterComponent extends Component {
                                         <Stack
                                             key="chatTab"
                                             icon={TabIcon}
+                                            path={'/chat'}
                                             hideNavBar
                                             transitionConfig={() => ({
                                                 screenInterpolator: (props) => {

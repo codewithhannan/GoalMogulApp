@@ -73,6 +73,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import NoGoalPrompt from '../../components/NoGoalPrompt'
 import CommentVideoModal from '../Common/Modal/CommentVideoModal'
 import AccountabilityPopUp from '../Common/Modal/AccountabilityPopUp'
+// import { getFollowedStatus } from '../../actions/FollowActions'
+import { clearFollowData } from '../../reducers/FollowReducers'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
 const INFO_CARD_HEIGHT = 242
@@ -343,6 +345,7 @@ class ProfileV2 extends Component {
     componentWillUnmount() {
         const { pageId, userId } = this.props
         this.props.closeProfile(userId, pageId)
+        this.props.clearFollowData()
     }
 
     handleRefresh = () => {
@@ -1115,4 +1118,6 @@ export default connect(makeMapStateToProps, {
     handleProfileTabOnLoadMore,
     changeFilter,
     uploadPopupData,
+    // getFollowedStatus,
+    clearFollowData,
 })(wrapAnalytics(ProfileV2, SCREENS.PROFILE))

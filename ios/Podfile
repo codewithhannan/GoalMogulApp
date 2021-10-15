@@ -11,9 +11,7 @@ target 'GoalMogul' do
   
   use_frameworks! :linkage => :static
   pod 'Segment-MoEngage’
-
   use_react_native!(:path => config["reactNativePath"])
-
   # Uncomment to opt-in to using Flipper
   #
   # if !ENV['CI']
