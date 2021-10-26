@@ -571,6 +571,7 @@ class InputBox extends React.Component {
             containerStyle,
             status,
         } = this.props
+        console.log(value)
         return (
             <View style={[styles.containerStyle, containerStyle || {}]}>
                 <View

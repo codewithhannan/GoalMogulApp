@@ -534,12 +534,12 @@ class ProfileV2 extends Component {
                 switch (buttonIndex) {
                     case TAKING_PICTURE_INDEX:
                         this.props.openCamera((result) => {
-                            this.props.change('profile.image', result.uri)
+                            this.props.change('profile.image', result.path)
                         })
                         break
                     case CAMERA_ROLL_INDEX:
                         this.props.openCameraRoll((result) => {
-                            this.props.change('profile.image', result.uri)
+                            this.props.change('profile.image', result.path)
                         })
                         break
                     default:

@@ -333,7 +333,7 @@ class CreatePostModal extends Component {
         const callback = (result) => {
             this.bottomSheetRef.open()
 
-            this.props.change('mediaRef', result.uri)
+            this.props.change('mediaRef', result.path)
             this.setState({ clickedButton: false })
         }
         setTimeout(() => {

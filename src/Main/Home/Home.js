@@ -1167,6 +1167,7 @@ import {
     TouchableWithoutFeedback,
     Image,
     TouchableOpacity,
+    Platform,
     // SafeAreaView,
 } from 'react-native'
 import { connect } from 'react-redux'
@@ -1221,6 +1222,7 @@ import {
     subscribeNotification,
     saveUnreadNotification,
     handlePushNotification,
+    getFcmToken,
 } from '../../redux/modules/notification/NotificationActions'
 
 import {
@@ -1462,6 +1464,11 @@ class Home extends Component {
     }
 
     componentDidMount() {
+        console.log('platform', Platform)
+        if (Platform.OS === 'android') {
+            console.log('FCM FCM ')
+            getFcmToken()
+        }
         const pageId = this.props.refreshProfileData(this.props.userId)
 
         pageAb = pageId

@@ -275,7 +275,7 @@ class CommentBoxV2 extends Component {
         setTimeout(() => {
             this.props.openCamera((result) => {
                 this.props.newCommentOnMediaRefChange(
-                    result.uri,
+                    result.path,
                     this.props.pageId
                 )
             })

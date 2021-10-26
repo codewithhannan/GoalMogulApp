@@ -17,6 +17,9 @@ import { enableScreens } from 'react-native-screens'
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
 import 'react-native-reanimated'
 import DeepLinking from 'react-native-deep-linking'
+import ReactMoE from 'react-native-moengage'
+import messaging from '@react-native-firebase/messaging'
+// import ReactMoE from 'react-native-moengage'
 
 // State management
 import { Provider as ReduxProvider } from 'react-redux'
@@ -143,10 +146,19 @@ export default class App extends React.Component {
                 }
             })
             .catch((err) => console.error('An error occurred', err))
+        if (Platform.OS === 'android') {
+            ReactMoE.initialize()
+        }
     }
 
     componentWillUnmount() {
         Linking.removeEventListener('url', this.handleUrl)
+    }
+    onMessageReceived = async (message) => {
+        console.log('A FCM MESSAGE WAS RECIEVED', message)
+        if (Platform.OS === 'android') {
+            ReactMoE.passFcmPushPayload(message.data)
+        }
     }
 
     handleUrl = ({ url }) => {
@@ -160,6 +172,10 @@ export default class App extends React.Component {
     render() {
         console.disableYellowBox = true
         enableScreens(false)
+        if (Platform.OS === 'android') {
+            messaging().onMessage(this.onMessageReceived)
+            messaging().setBackgroundMessageHandler(this.onMessageReceived)
+        }
         return (
             // <View
             //     style={{

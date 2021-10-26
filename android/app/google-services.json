@@ -10,7 +10,7 @@
             "client_info": {
                 "mobilesdk_app_id": "1:528421087287:android:c096495812260fd35eb7b2",
                 "android_client_info": {
-                    "package_name": "com.goalmogul.android"
+                    "package_name": "com.goalmogul.goalmogulbeta"
                 }
             },
             "oauth_client": [
@@ -21,7 +21,7 @@
             ],
             "api_key": [
                 {
-                    "current_key": "AIzaSyBreiBEYnCmWEmb5_f3PAyGkJ7dbd7IDRw"
+                    "current_key": "AIzaSyBuxYNLcMllKltbBp-X4NhDTKPgT3k6p8o"
                 }
             ],
             "services": {

@@ -580,7 +580,9 @@ export const registerForPushNotificationsAsync = () => async (
     }
 
     // Get the token that uniquely identifies this device
-    const notificationToken = await Notifications.getExpoPushTokenAsync()
+    const notificationToken = await Notifications.getExpoPushTokenAsync({
+        experienceId: 'abdulhannan1996/GoalMogulBeta',
+    })
 
     const onSuccess = (res) => {
         Alert.alert('Success', 'You have succesfully enabled the notification.')

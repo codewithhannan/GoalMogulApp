@@ -5,11 +5,12 @@ import {
     View,
     Text,
     Dimensions,
-    Image,
+    Platform,
     TouchableOpacity,
     TouchableWithoutFeedback,
     Keyboard,
 } from 'react-native'
+import ReactMoE from 'react-native-moengage'
 
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
@@ -78,6 +79,10 @@ class OnboardingPhoneVerification extends React.Component {
         const errorMessage = () => {
             this.onError()
         }
+        if (Platform === 'android') {
+            ReactMoE.setUserContactNumber(value)
+        }
+
         return this.props.phoneNumberSent(value, errorMessage)
     }
 

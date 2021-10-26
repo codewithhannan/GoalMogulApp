@@ -143,14 +143,14 @@ class CreateTribeModal extends React.Component {
 
     handleOpenCamera = () => {
         this.props.openCamera((result) => {
-            this.props.change('picture', result.uri)
+            this.props.change('picture', result.path)
         })
     }
 
     handleOpenCameraRoll = () => {
         const callback = R.curry((result) => {
             console.log('result is: ', result)
-            this.props.change('picture', result.uri)
+            this.props.change('picture', result.path)
         })
         this.props.openCameraRoll(callback)
     }

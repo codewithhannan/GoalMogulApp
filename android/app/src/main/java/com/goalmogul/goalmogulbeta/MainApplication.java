@@ -14,13 +14,17 @@ import com.facebook.soloader.SoLoader;
 import com.goalmogul.goalmogulbeta.generated.BasePackageList;
 //import com.moengage.core.LogLevel;
 import com.moengage.core.MoEngage;
-//import com.moengage.core.config.GeofenceConfig;
-//import com.moengage.core.config.LogConfig;
-//import com.moengage.core.config.NotificationConfig;
+import com.moengage.react.MoEReactPackage;
+import com.moengage.core.config.GeofenceConfig;
+import com.moengage.core.config.LogConfig;
+import com.moengage.core.config.NotificationConfig;
+import com.moe.pushlibrary.MoEHelper;
+// import com.moengage.core.MoEngage;
+import com.moengage.react.MoEInitializer;
 //import com.moengage.core.internal.logger.Logger;
 import com.moengage.core.model.IntegrationPartner;
-//import com.moengage.firebase.MoEFireBaseHelper;
-//import com.moengage.inapp.MoEInAppHelper;
+import com.moengage.firebase.MoEFireBaseHelper;
+import com.moengage.inapp.MoEInAppHelper;
 //import com.moengage.pushbase.MoEPushHelper;
 import com.segment.analytics.Analytics;
 import com.segment.analytics.android.integrations.moengage.MoEngageIntegration;
@@ -54,6 +58,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       List<ReactPackage> packages = new PackageList(this).getPackages();
       packages.add(new ModuleRegistryAdapter(mModuleRegistryProvider));
+      // packages.add(new MainReactPackage());
+      // packages.add(new MoEReactPackage());
       return packages;
     }
 
@@ -99,8 +105,12 @@ public class MainApplication extends Application implements ReactApplication {
       .use(MoEngageIntegration.FACTORY)
       .build();
 
-    MoEngage moEngage = new MoEngage.Builder(this, "UKA6LOAR56FL8SI1JILW1YQC")
+    MoEngage moEngage = new MoEngage.Builder(this, "F95F79AU76R3W1GGQQZEE2OT")
+    // .configureNotificationMetaData(NotificationConfig(R.drawable.small_icon, R.drawable.large_icon, R.color.notiColor, null, true, isBuildingBackStackEnabled = false, isLargeIconDisplayEnabled = true))
+
             .enablePartnerIntegration(IntegrationPartner.SEGMENT)
+        //     .configureNotificationMetaData(NotificationConfig(R.drawable.small_icon, R.drawable.large_icon, R.color.notiColor, null, true, isBuildingBackStackEnabled = false, isLargeIconDisplayEnabled = true))
+        // .configureFcm(FcmConfig(false))
             .build();
     MoEngage.initialise(moEngage);
 

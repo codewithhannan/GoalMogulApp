@@ -3,7 +3,7 @@
 import { Actions } from 'react-native-router-flux'
 import { ImagePickerIOS } from 'react-native'
 import CameraRoll from '@react-native-community/cameraroll'
-// import * as ImagePicker from 'expo-image-picker'
+import * as ImagePickerr from 'expo-image-picker'
 import * as Contacts from 'expo-contacts'
 import { SubmissionError } from 'redux-form'
 import { api as API } from '../redux/middleware/api'
@@ -308,7 +308,7 @@ export const openCamera = (
 ) => async (dispatch, getState) => {
     var result
 
-    const permissionGranted = await ImagePicker.requestCameraPermissionsAsync()
+    const permissionGranted = await ImagePickerr.requestCameraPermissionsAsync()
     console.log(`${DEBUG_KEY}: permissionGranted is: ${permissionGranted}`)
 
     if (permissionGranted.status !== 'granted') {
@@ -320,42 +320,83 @@ export const openCamera = (
     }
 
     if (mayBeVideoOpen) {
-        result = await ImagePicker.launchCameraAsync({
-            mediaTypes: 'All',
-        }).catch((error) => console.log('THIS IS ERROR OF IMAGE', error))
-    } else {
-        result = await ImagePicker.launchCameraAsync({
-            mediaTypes: 'Images',
-        }).catch((error) => console.log('THIS IS ERROR OF IMAGE', error))
-    }
-
-    if (!result.cancelled || result.cancelled) {
-        if (callback) {
-            return callback(result)
-        }
-        if (maybeTrackImageSelected) {
-            maybeTrackImageSelected()
-        }
-        return dispatch({
-            type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
-            payload: result.uri,
+        ImagePicker.openCamera({
+            mediaType: 'any',
+            width: 848,
+            height: 500,
+            cropping: true,
+            includeExif: true,
+            // multiple: true,
+        }).then((vid) => {
+            console.log('camera HYE HA', vid)
+            if (vid !== undefined || vid === undefined)
+                if (callback) {
+                    return callback(vid)
+                }
+            if (maybeTrackImageSelected) {
+                maybeTrackImageSelected()
+            }
+            return dispatch({
+                type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+                payload: vid.path,
+            })
         })
+        // result = await ImagePickerr.launchCameraAsync({
+        //     mediaTypes: 'All',
+        // }).catch((error) => console.log('THIS IS ERROR OF IMAGE', error))
+    } else {
+        ImagePicker.openCamera({
+            width: 848,
+            height: 500,
+            cropping: true,
+            includeExif: true,
+            // multiple: true,
+        }).then((img) => {
+            console.log('IMAGE HYE HA', img)
+            if (img !== undefined || img === undefined)
+                if (callback) {
+                    return callback(img)
+                }
+            if (maybeTrackImageSelected) {
+                maybeTrackImageSelected()
+            }
+            return dispatch({
+                type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+                payload: img.path,
+            })
+        })
+        // result = await ImagePickerr.launchCameraAsync({
+        //     mediaTypes: 'Images',
+        // }).catch((error) => console.log('THIS IS ERROR OF IMAGE', error))
     }
 
-    console.log('user took image fail with result: ', result)
+    // if (!result.cancelled || result.cancelled) {
+    //     if (callback) {
+    //         return callback(result)
+    //     }
+    //     if (maybeTrackImageSelected) {
+    //         maybeTrackImageSelected()
+    //     }
+    //     return dispatch({
+    //         type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+    //         payload: result.uri,
+    //     })
+    // }
+
+    // console.log('user took image fail with result: ', result)
 }
 
 export const openCameraForVideo = (showModal) => async (dispatch, getState) => {
     var result
 
-    const permissionGranted = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    const permissionGranted = await ImagePickerr.requestMediaLibraryPermissionsAsync()
     console.log(`${DEBUG_KEY}: permissionGranted is: ${permissionGranted}`)
 
     if (permissionGranted.status !== 'granted') {
         return alert('Please grant access to photos and camera.')
     }
 
-    result = await ImagePicker.launchCameraAsync({
+    result = await ImagePickerr.launchCameraAsync({
         mediaTypes: 'Videos',
         quality: 0.5,
         videoMaxDuration: 10,
@@ -377,13 +418,13 @@ export const openCameraForVideo = (showModal) => async (dispatch, getState) => {
 }
 
 export const openCameraRollForVideo = (showModal) => async (dispatch) => {
-    const permissionGranted = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    const permissionGranted = await ImagePickerr.requestMediaLibraryPermissionsAsync()
 
     if (permissionGranted.status !== 'granted') {
         return alert('Please grant access to photos and camera.')
     }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePickerr.launchImageLibraryAsync({
         mediaTypes: 'Videos',
     })
 
@@ -399,7 +440,7 @@ export const openCameraRollForVideo = (showModal) => async (dispatch) => {
 }
 
 export const getPhotosAsync = async () => {
-    const permissionGranted = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    const permissionGranted = await ImagePickerr.requestMediaLibraryPermissionsAsync()
 
     if (permissionGranted.status !== 'granted') {
         return alert('Please grant access to photos and camera.')
@@ -478,15 +519,16 @@ export const openCameraRoll = (
         ImagePicker.openPicker({
             mediaType: 'any',
             width: 848,
-            height: 480,
+            height: 500,
             cropping: true,
             includeExif: true,
             // multiple: true,
         }).then((vid) => {
             console.log('IMAGE HYE HA', vid)
-            if (callback) {
-                return callback(vid)
-            }
+            if (vid !== undefined || vid === undefined)
+                if (callback) {
+                    return callback(vid)
+                }
             if (maybeTrackImageSelected) {
                 maybeTrackImageSelected()
             }
@@ -498,7 +540,7 @@ export const openCameraRoll = (
     } else {
         ImagePicker.openPicker({
             width: 848,
-            height: 480,
+            height: 500,
             compressImageQuality: 0.7,
             cropping: true,
             includeExif: true,
