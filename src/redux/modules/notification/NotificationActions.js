@@ -542,7 +542,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
         return
     }
     const notificationToken = await Notifications.getExpoPushTokenAsync({
-        experienceId: 'abdulhannan1996/GoalMogulBeta',
+        experienceId: '@a0n0d0y/goalmogul',
     })
     // const token = (await Notifications.getExpoPushTokenAsync()).data;
     console.log('push token', notificationToken)

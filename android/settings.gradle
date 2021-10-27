@@ -1,4 +1,6 @@
 rootProject.name = 'GoalMogul'
+include ':react-native-moengage'
+project(':react-native-moengage').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-moengage/android')
 
 apply from: '../node_modules/react-native-unimodules/gradle.groovy'
 includeUnimodulesProjects()
@@ -6,7 +8,7 @@ includeUnimodulesProjects()
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle");
 applyNativeModulesSettingsGradle(settings)
 
-include ':react-native-moengage'
-project(':react-native-moengage').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-moengage/android')
+// include ':react-native-moengage'
+// project(':react-native-moengage').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-moengage/android')
 
 include ':app'

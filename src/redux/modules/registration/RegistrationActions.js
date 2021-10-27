@@ -65,7 +65,7 @@ import { is2xxRespose } from '../../middleware/utils'
 import { Actions } from 'react-native-router-flux'
 import { storeData } from '../../../store/storage'
 import ReactMoE from 'react-native-moengage'
-import { Platform } from 'react'
+import { Platform } from 'react-native'
 
 const DEBUG_KEY = '[ Action RegistrationActions ]'
 /**

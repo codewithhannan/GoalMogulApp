@@ -22,4 +22,6 @@ target 'GoalMogul' do
   #     flipper_post_install(installer)
   #   end
   # end
+  pod 'ReactNativeMoEngage', :path => '../node_modules/react-native-moengage'
+
 end

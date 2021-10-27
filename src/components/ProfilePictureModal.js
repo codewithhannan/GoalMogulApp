@@ -96,6 +96,7 @@ class ProfilePictureModal extends Component {
 
     pickImage = () => {
         let res
+        console.log('THIS IS PROFILE IMAGE')
         try {
             this.props.onClose()
             setTimeout(async () => {

@@ -270,6 +270,7 @@ class Menu extends React.PureComponent {
                             >
                                 <TouchableOpacity
                                     onPress={() => {
+                                        console.log('SILVER SILVER')
                                         this.setState({ toolTipVisible: false })
                                         this.props.openChallenges(
                                             SILVER_CHALLENGE_URL
@@ -278,6 +279,7 @@ class Menu extends React.PureComponent {
                                     style={{
                                         flexDirection: 'row',
                                         alignItems: 'center',
+                                        backgroundColor: 'red',
                                     }}
                                 >
                                     <View style={{ marginRight: 10 }}>

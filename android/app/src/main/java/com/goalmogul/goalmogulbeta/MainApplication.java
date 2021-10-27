@@ -12,6 +12,8 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.goalmogul.goalmogulbeta.generated.BasePackageList;
+// import com.moengage.react.MoEReactPackage;
+// import com.moengage.core.MoEngage;
 //import com.moengage.core.LogLevel;
 import com.moengage.core.MoEngage;
 import com.moengage.react.MoEReactPackage;
@@ -108,7 +110,8 @@ public class MainApplication extends Application implements ReactApplication {
     MoEngage moEngage = new MoEngage.Builder(this, "F95F79AU76R3W1GGQQZEE2OT")
     // .configureNotificationMetaData(NotificationConfig(R.drawable.small_icon, R.drawable.large_icon, R.color.notiColor, null, true, isBuildingBackStackEnabled = false, isLargeIconDisplayEnabled = true))
 
-            .enablePartnerIntegration(IntegrationPartner.SEGMENT)
+            .enablePartnerIntegration(IntegrationPartner.SEGMENT).configureNotificationMetaData(new NotificationConfig(R.drawable.notification_icon, R.drawable.notification_icon, R.color.colorPrimary, "sound", true, true, true))
+
         //     .configureNotificationMetaData(NotificationConfig(R.drawable.small_icon, R.drawable.large_icon, R.color.notiColor, null, true, isBuildingBackStackEnabled = false, isLargeIconDisplayEnabled = true))
         // .configureFcm(FcmConfig(false))
             .build();
