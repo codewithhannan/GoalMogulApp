@@ -136,6 +136,7 @@ import ConversationGoal from './Main/Goal/NewGoal/ConversationGoal'
 import { EVENT as E, track } from './monitoring/segment'
 import SendFeedback from './Main/Menu/SendFeedback'
 import MultipleImagePicker from './Main/Menu/MutlipleImagePicker'
+import InviteFriendScreen from './Main/MeetTab/Modal/InviteFriendScreen'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -285,10 +286,6 @@ class RouterComponent extends Component {
 
         if (state.key === 'notificationTab') {
             if (Actions.refs.notification !== undefined) {
-                console.log(
-                    'THIS IS ACTIONSS REFF',
-                    Actions.refs.notification.getWrappedInstance()
-                )
                 Actions.refs.notification.getWrappedInstance().handleRefresh()
             }
         }
@@ -394,7 +391,7 @@ class RouterComponent extends Component {
                     elevation: 0,
                 }}
                 {...this.props}
-                uriPrefix={'app.goalmogul.me:'}
+                uriPrefix={'goalmogulapp.com/'}
             >
                 <Modal key="modal" hideNavBar>
                     <Lightbox key="lightbox" hideNavBar>
@@ -671,6 +668,7 @@ class RouterComponent extends Component {
                                                 key="tribeHub"
                                                 component={TribeHub}
                                                 initial
+                                                path={'/tribehub'}
                                             />
                                             <Scene
                                                 key="explore"
@@ -701,6 +699,7 @@ class RouterComponent extends Component {
 
                                         <Stack
                                             key="profileTab"
+                                            path={'/profile'}
                                             icon={TabIcon}
                                             hideNavBar
                                             transitionConfig={() => ({
@@ -879,17 +878,24 @@ class RouterComponent extends Component {
                         hideNavBar
                     />
                     <Scene
+                        path={'/creategoal'}
                         key="createGoalModal"
                         component={CreateGoalModal}
                         hideNavBar
                     />
 
                     <Scene
+                        path={'/trendinggoal'}
                         key="trendingGoalView"
                         component={TrendingGoalView}
                         hideNavBar
                     />
-
+                    <Scene
+                        key="invitefriend"
+                        component={InviteFriendScreen}
+                        hideNavBar
+                        path={'/invitefriend'}
+                    />
                     <Stack key="createChatRoomStack" hideNavBar>
                         <Scene
                             key="createChatRoomModal"

@@ -82,6 +82,7 @@ setJSExceptionHandler((error, isFatal) => {
 // })
 
 const prefix = Linking.makeUrl('/')
+let scheme = 'goalmogulapp'
 
 const theme = {
     ...DefaultTheme,
@@ -97,6 +98,7 @@ const theme = {
 export default class App extends React.Component {
     constructor(props) {
         super(props)
+        // this.handleOpenURL = this.handleOpenURL.bind(this)
         this.state = {
             appReady: false,
             image: null,
@@ -111,51 +113,21 @@ export default class App extends React.Component {
         StatusBar.setBarStyle('light-content')
     }
 
-    componentDidMount() {
-        // DeepLinking.addScheme('example1://')
-        // DeepLinking.addRoute('/test', (response) => {
-        //     console.log('SUPPORTED 5', response)
-        // })
-        // Linking.getInitialURL()
-        //     .then((ev) => {
-        //         if (ev) {
-        //             console.log('SUPPORTED 5', ev)
-        //             this.handleUrl(ev)
-        //         }
-        //     })
-        //     .catch((err) => {
-        //         console.warn('An error occurred', err)
-        //     })
-        // Linking.addEventListener('url', this.handleUrl)
-        // Linking.getInitialURL()
-        //     .then((url) => {
-        //         if (url) {
-        //             Linking.openURL(url)
-        //         }
-        //     })
-        //     .catch((err) => console.error('An error occurred', err))
+    // componentDidMount() {
+    //     Linking.getInitialURL()
+    //         .then((url) => this.handleOpenURL({ url }))
+    //         .catch(console.error)
 
-        var url = Linking.getInitialURL()
-            .then((url) => {
-                console.log('url', url)
-                if (url) {
-                    Linking.openURL(url)
-                }
-            })
-            .catch((err) => console.error('An error occurred', err))
-    }
+    //     Linking.addEventListener('url', this.handleOpenURL)
+    // }
 
-    componentWillUnmount() {
-        Linking.removeEventListener('url', this.handleUrl)
-    }
+    // componentWillUnmount() {
+    //     Linking.removeEventListener('url', this.handleOpenURL)
+    // }
 
-    handleUrl = ({ url }) => {
-        Linking.canOpenURL(url).then((supported) => {
-            if (supported) {
-                DeepLinking.evaluateUrl(url)
-            }
-        })
-    }
+    // handleOpenURL(event) {
+    //     Alert.alert(event.url)
+    // }
 
     render() {
         console.disableYellowBox = true

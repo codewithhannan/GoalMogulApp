@@ -515,6 +515,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
 
     // Get the token that an user has on this device
     // const hasToken = await SecureStore.getItemAsync(NOTIFICATION_TOKEN_KEY, {})
+
     const hasToken = await AsyncStorage.getItem(NOTIFICATION_TOKEN_KEY)
 
     if (hasToken && hasToken !== '' && _.isEqual(hasToken, notificationToken)) {
