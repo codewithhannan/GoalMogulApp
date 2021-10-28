@@ -85,6 +85,7 @@ setJSExceptionHandler((error, isFatal) => {
 // })
 
 const prefix = Linking.makeUrl('/')
+let scheme = 'goalmogulapp'
 
 const theme = {
     ...DefaultTheme,
@@ -100,6 +101,7 @@ const theme = {
 export default class App extends React.Component {
     constructor(props) {
         super(props)
+        // this.handleOpenURL = this.handleOpenURL.bind(this)
         this.state = {
             appReady: false,
             image: null,
@@ -159,13 +161,13 @@ export default class App extends React.Component {
         }
     }
 
-    handleUrl = ({ url }) => {
-        Linking.canOpenURL(url).then((supported) => {
-            if (supported) {
-                DeepLinking.evaluateUrl(url)
-            }
-        })
-    }
+    // componentWillUnmount() {
+    //     Linking.removeEventListener('url', this.handleOpenURL)
+    // }
+
+    // handleOpenURL(event) {
+    //     Alert.alert(event.url)
+    // }
 
     render() {
         ReactMoE.setEventListener('pushClicked', (notificationPayload) => {

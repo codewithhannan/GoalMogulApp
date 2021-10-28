@@ -891,10 +891,6 @@ class ProfileDetailCard extends Component {
             onPress: () => {
                 this.closeOptionModal()
                 setTimeout(() => {
-                    // console.log(
-                    //     `${DEBUG_KEY} User follow _id: `,
-                    //     this.props.userId
-                    // )
                     if (this.props.isFollowed) {
                         return (
                             this.props.shouldUnfollowUser(this.props.userId),

@@ -13,10 +13,11 @@ import {
     Scene,
     Stack,
     Tabs,
+    Linking,
 } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import LoginPage from './LoginPage'
-import * as Linking from 'expo-linking'
+
 import crossroads from 'crossroads'
 // Chat
 import Chat from './Main/Chat/Chat'
@@ -135,8 +136,8 @@ import ConversationGoal from './Main/Goal/NewGoal/ConversationGoal'
 import { EVENT as E, track } from './monitoring/segment'
 import SendFeedback from './Main/Menu/SendFeedback'
 import MultipleImagePicker from './Main/Menu/MutlipleImagePicker'
+import InviteFriendScreen from './Main/MeetTab/Modal/InviteFriendScreen'
 
-let scheme = 'exampleapp'
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
     let prefix = `${tab}_`
@@ -285,10 +286,6 @@ class RouterComponent extends Component {
 
         if (state.key === 'notificationTab') {
             if (Actions.refs.notification !== undefined) {
-                console.log(
-                    'THIS IS ACTIONSS REFF',
-                    Actions.refs.notification.getWrappedInstance()
-                )
                 Actions.refs.notification.getWrappedInstance().handleRefresh()
             }
         }
@@ -330,46 +327,6 @@ class RouterComponent extends Component {
             // trackViewScreen(action.routeName)
         }
         // console.log('newState is: ', newState);
-    }
-
-    componentDidMount() {
-        DeepLinking.addScheme('exampleapp://')
-        Linking.addEventListener('url', this.handleUrl)
-
-        DeepLinking.addRoute('/test', (response) => {
-            // example://test
-            this.setState({ response })
-        })
-
-        DeepLinking.addRoute('/test/:id', (response) => {
-            // example://test/23
-            this.setState({ response })
-        })
-
-        DeepLinking.addRoute('/test/:id/details', (response) => {
-            // example://test/100/details
-            this.setState({ response })
-        })
-
-        Linking.getInitialURL()
-            .then((url) => {
-                if (url) {
-                    Linking.openURL(url)
-                }
-            })
-            .catch((err) => console.error('An error occurred', err))
-    }
-
-    componentWillUnmount() {
-        Linking.removeEventListener('url', this.handleUrl)
-    }
-
-    handleUrl = ({ url }) => {
-        Linking.canOpenURL(url).then((supported) => {
-            if (supported) {
-                DeepLinking.evaluateUrl(url)
-            }
-        })
     }
 
     rootTransitionConfig = () => {
@@ -434,7 +391,7 @@ class RouterComponent extends Component {
                     elevation: 0,
                 }}
                 {...this.props}
-                scheme={scheme}
+                uriPrefix={'goalmogulapp.com/'}
             >
                 <Modal key="modal" hideNavBar>
                     <Lightbox key="lightbox" hideNavBar>
@@ -711,6 +668,7 @@ class RouterComponent extends Component {
                                                 key="tribeHub"
                                                 component={TribeHub}
                                                 initial
+                                                path={'/tribehub'}
                                             />
                                             <Scene
                                                 key="explore"
@@ -741,6 +699,7 @@ class RouterComponent extends Component {
 
                                         <Stack
                                             key="profileTab"
+                                            path={'/profile'}
                                             icon={TabIcon}
                                             hideNavBar
                                             transitionConfig={() => ({
@@ -835,6 +794,7 @@ class RouterComponent extends Component {
                                         <Stack
                                             key="chatTab"
                                             icon={TabIcon}
+                                            path={'/chat'}
                                             hideNavBar
                                             transitionConfig={() => ({
                                                 screenInterpolator: (props) => {
@@ -918,17 +878,24 @@ class RouterComponent extends Component {
                         hideNavBar
                     />
                     <Scene
+                        path={'/creategoal'}
                         key="createGoalModal"
                         component={CreateGoalModal}
                         hideNavBar
                     />
 
                     <Scene
+                        path={'/trendinggoal'}
                         key="trendingGoalView"
                         component={TrendingGoalView}
                         hideNavBar
                     />
-
+                    <Scene
+                        key="invitefriend"
+                        component={InviteFriendScreen}
+                        hideNavBar
+                        path={'/invitefriend'}
+                    />
                     <Stack key="createChatRoomStack" hideNavBar>
                         <Scene
                             key="createChatRoomModal"
@@ -1010,17 +977,6 @@ class RouterComponent extends Component {
         )
     }
 }
-// DeepLinking.addRoute('/profile', ({ scheme, path }) => {
-//     console.log('TEST 1', scheme) // `facebook://`
-//     console.log('TEST 2', path) // `/profile`
-//     Actions.replace('no_goal_conversation')
-// })
-
-DeepLinking.addRoute('/profile', (response) => {
-    // example://test/23
-    console.log('RESPONSE', response)
-    alert('Hello')
-})
 
 const styles = {
     tabBarStyle: {

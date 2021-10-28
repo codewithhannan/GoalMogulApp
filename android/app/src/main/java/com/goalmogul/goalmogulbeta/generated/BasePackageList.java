@@ -8,7 +8,6 @@ public class BasePackageList {
   public List<Package> getPackageList() {
     return Arrays.<Package>asList(
         new expo.modules.analytics.segment.SegmentPackage(),
-        new expo.modules.splashscreen.SplashScreenPackage(),
         new expo.modules.application.ApplicationPackage(),
         new expo.modules.av.AVPackage(),
         new expo.modules.camera.CameraPackage(),
@@ -31,6 +30,7 @@ public class BasePackageList {
         new expo.modules.notifications.NotificationsPackage(),
         new expo.modules.securestore.SecureStorePackage(),
         new expo.modules.sms.SMSPackage(),
+        new expo.modules.splashscreen.SplashScreenPackage(),
         new expo.modules.updates.UpdatesPackage(),
         new expo.modules.webbrowser.WebBrowserPackage()
     );
