@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, Text, Animated, Keyboard, Linking, Platform } from 'react-native'
+import { View, Text, Animated, Keyboard, Linking } from 'react-native'
 import _ from 'lodash'
 import { connect } from 'react-redux'
 import {
@@ -238,10 +238,8 @@ class LoginPage extends Component {
                     this.props.change('username', username)
                 },
                 onSuccess: () => {
-                    if (Platform.OS === 'android') {
-                        ReactMoE.setUserUniqueID(username)
-                        ReactMoE.setUserEmailID(username)
-                    }
+                    ReactMoE.setUserUniqueID(username)
+                    ReactMoE.setUserEmailID(username)
                     this.resetNumFailLoginAttempt()
                     this.resetErrorMessage()
                 },

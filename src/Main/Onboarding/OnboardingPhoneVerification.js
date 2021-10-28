@@ -79,9 +79,7 @@ class OnboardingPhoneVerification extends React.Component {
         const errorMessage = () => {
             this.onError()
         }
-        if (Platform === 'android') {
-            ReactMoE.setUserContactNumber(value)
-        }
+        ReactMoE.setUserContactNumber(value)
 
         return this.props.phoneNumberSent(value, errorMessage)
     }

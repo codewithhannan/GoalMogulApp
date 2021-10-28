@@ -146,9 +146,7 @@ export default class App extends React.Component {
                 }
             })
             .catch((err) => console.error('An error occurred', err))
-        if (Platform.OS === 'android') {
-            ReactMoE.initialize()
-        }
+        ReactMoE.initialize()
     }
 
     componentWillUnmount() {
@@ -170,11 +168,18 @@ export default class App extends React.Component {
     }
 
     render() {
+        ReactMoE.setEventListener('pushClicked', (notificationPayload) => {
+            console.log('pushClicked', notificationPayload)
+        })
         console.disableYellowBox = true
         enableScreens(false)
         if (Platform.OS === 'android') {
             messaging().onMessage(this.onMessageReceived)
             messaging().setBackgroundMessageHandler(this.onMessageReceived)
+        }
+        if (Platform.OS === 'ios') {
+            console.log('REGISTER FOR IOS MOENGAGE')
+            ReactMoE.registerForPush()
         }
         return (
             // <View

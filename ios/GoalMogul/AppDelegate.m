@@ -8,6 +8,7 @@
 #import <React/RCTRootView.h>
 #import <React/RCTLinkingManager.h>
 #import "RCTLinkingManager.h"
+#import <ReactNativeMoEngage/MOReactInitializer.h>
 
 #import <UMCore/UMModuleRegistry.h>
 #import <UMReactNativeAdapter/UMNativeModulesProxy.h>
@@ -47,6 +48,12 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  
+  // Set Data Center
+    [MoEngage setDataCenter:DATA_CENTER_01]; //DATA_CENTER_01, DATA_CENTER_02, OR DATA_CENTER_03
+    
+    [[MOReactInitializer sharedInstance] intializeSDKWithLaunchOptions:launchOptions];
+  
   SEGAnalyticsConfiguration *config = [SEGAnalyticsConfiguration configurationWithWriteKey:@"Us6yuw9KLihsRmpihcB5OXTYwT4GDq75"];
   // Add MoEngageIntegrationFactory. Without this data will not come to MoEngage.
       [config use:[SEGMoEngageIntegrationFactory instance]];

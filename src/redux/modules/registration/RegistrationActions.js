@@ -309,15 +309,13 @@ export const registerAccount = (onSuccess, dateToSend) => async (
         const res = await API.post('pub/user/', { ...data })
 
         if (res.status == 200) {
-            if (Platform.OS === 'android') {
-                ReactMoE.setUserUniqueID(email)
-                ReactMoE.setUserName(name)
-                ReactMoE.setUserEmailID(email)
-                if (gender !== undefined) {
-                    ReactMoE.setUserGender(gender)
-                }
-                ReactMoE.setUserBirthday(dateOfBirth)
+            ReactMoE.setUserUniqueID(email)
+            ReactMoE.setUserName(name)
+            ReactMoE.setUserEmailID(email)
+            if (gender !== undefined) {
+                ReactMoE.setUserGender(gender)
             }
+            ReactMoE.setUserBirthday(dateOfBirth)
             track(E.REG_FIELDS_FILL)
         }
 

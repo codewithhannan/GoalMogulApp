@@ -46,6 +46,11 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>MoEngage</key>
+	<dict>
+		<key>MoEngage_APP_ID</key>
+		<string>F95F79AU76R3W1GGQQZEE2OT</string>
+	</dict>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -75,6 +80,10 @@
 	<string>This app uses the gallery to allow members to share photos with other members</string>
 	<key>RCTAsyncStorageExcludeFromBackup</key>
 	<false/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
