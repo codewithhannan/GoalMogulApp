@@ -510,8 +510,13 @@ export const subscribeNotification = () => async (dispatch, getState) => {
         }
     }
 
+    console.log('calling push token before', existingStatus)
     // Get the token that uniquely identifies this device
-    const notificationToken = await Notifications.getExpoPushTokenAsync()
+    const notificationToken = await Notifications.getExpoPushTokenAsync({
+        experienceId: '@a0n0d0y/goalmogul',
+    })
+    console.log('Expo push Token ========>', notificationToken.data)
+    console.log('calling push token after')
 
     // Get the token that an user has on this device
     // const hasToken = await SecureStore.getItemAsync(NOTIFICATION_TOKEN_KEY, {})

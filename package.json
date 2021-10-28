@@ -161,6 +161,7 @@
         "react-native-modal": "^11.5.3",
         "react-native-modal-datetime-picker": "^10.0.0",
         "react-native-modalbox": "^2.0.0",
+        "react-native-moengage": "^7.3.0",
         "react-native-otp-textinput": "^0.0.8",
         "react-native-pager-view": "5.0.12",
         "react-native-pagination": "^1.5.5",

@@ -15,6 +15,7 @@ import {
 import DropdownAlert from 'react-native-dropdownalert-jia'
 import { enableScreens } from 'react-native-screens'
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
+import ReactMoE from 'react-native-moengage'
 
 // State management
 import { Provider as ReduxProvider } from 'react-redux'
@@ -43,6 +44,7 @@ import { initSentry } from './src/monitoring/sentry'
 import * as Linking from 'expo-linking'
 import MultipleImagePicker from './src/Main/Menu/MutlipleImagePicker'
 import EditModal from './src/Main/Accountability/EditModal'
+import * as Notifications from 'expo-notifications'
 
 import { setJSExceptionHandler } from 'react-native-exception-handler' // If an error occurs or app crashes these functions are called we used them to send sengments
 
@@ -119,12 +121,13 @@ export default class App extends React.Component {
     //     this.setState({ data })
     // }
 
-    // componentDidMount() {
-    // Linking.addEventListener('url', this.handleDeepLink)
-    // if (!this.state.data) {
-    //     this.getInitialUrl()
-    // }
-    // }
+    componentDidMount() {
+        // Linking.addEventListener('url', this.handleDeepLink)
+        // if (!this.state.data) {
+        //     this.getInitialUrl()
+        // }
+        ReactMoE.initialize()
+    }
 
     // componentWillUnmount() {
     //     Linking.removeEventListener('url')

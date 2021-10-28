@@ -3,7 +3,7 @@
 import axios from 'axios'
 import TokenService from '../services/token/TokenService'
 
-const VoiceTypes = ['CommentAudio', 'ChatRoomAudio']
+const VoiceTypes = ['CommentAudio', 'ChatVoice']
 
 const getVoiceUrl = (type) => {
     let voiceType
@@ -11,10 +11,10 @@ const getVoiceUrl = (type) => {
     if (VoiceTypes.some((oneType) => oneType === type)) {
         voiceType = type
     } else {
-        throw new Error(`Image type: ${type} is not included`)
+        throw new Error(`Voice type: ${type} is not included`)
     }
     return `https://api.goalmogul.com/api/secure/s3/${voiceType}/signature`
-    // return `http:/192.168.1.5:8081/api/secure/s3/${voiceType}/signature`
+    // return `http:/192.168.1.24:8081/api/secure/s3/${voiceType}/signature`
 }
 
 const VoiceUtils = {
@@ -112,14 +112,14 @@ const VoiceUtils = {
                     )
                 })
                 .then(({ signedRequest, file }) => {
-                    console.log('[ VoiceUtils ]: Uploading image')
+                    console.log('[ VoiceUtils ]: Uploading voice')
                     return VoiceUtils.uploadImage(file, signedRequest)
                 })
                 .then((res) => {
                     if (res instanceof Error) {
                         // uploading to s3 failed
                         console.log(
-                            'error uploading image to s3 with res: ',
+                            'error uploading voice to s3 with res: ',
                             res
                         )
                         reject(res)

@@ -297,7 +297,7 @@ class Home extends Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const pageId = this.props.refreshProfileData(this.props.userId)
 
         pageAb = pageId

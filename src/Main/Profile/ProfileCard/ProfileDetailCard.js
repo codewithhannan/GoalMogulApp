@@ -21,6 +21,7 @@ import { default_style, color } from '../../../styles/basic'
 import { PROFILE_STYLES } from '../../../styles/Profile'
 import { createReport } from '../../../redux/modules/report/ReportActions'
 import * as ImagePicker from 'expo-image-picker'
+import FOLLOW from '../../../asset/icons/follow.png'
 
 import { Entypo } from '@expo/vector-icons'
 

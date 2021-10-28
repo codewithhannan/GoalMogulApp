@@ -151,6 +151,8 @@ class ChatRoomCard extends React.Component {
                 )
                     ? `You: ${lastMessageText}`
                     : lastMessageText
+            } else if (item.latestMessage.media.split('/')[0] === 'ChatVoice') {
+                content = 'Chat member sent an audio...'
             } else if (item.latestMessage.media) {
                 content = 'Chat member sent an image...'
             } else if (item.latestMessage.sharedEntity) {

@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
     },
 })
 
-const allowSend = (text, messageMediaRef) =>
-    (text && text.trim().length > 0) || messageMediaRef
+const allowSend = (text, messageMediaRef, messageVoiceRef) =>
+    (text && text.trim().length > 0) || messageMediaRef || messageVoiceRef
 
 export default class Send extends Component {
     static defaultProps = {
@@ -67,16 +67,16 @@ export default class Send extends Component {
     }
 
     handleOnPress = () => {
-        const { text, onSend, messageMediaRef } = this.props
-        if ((text || messageMediaRef) && onSend) {
+        const { text, onSend, messageMediaRef, messageVoiceRef } = this.props
+        if ((text || messageMediaRef || messageVoiceRef) && onSend) {
             onSend({ text: text.trim() }, true)
         }
     }
 
     renderSend = () => {
-        const { text, messageMediaRef, disabled } = this.props
+        const { text, messageMediaRef, messageVoiceRef, disabled } = this.props
         let tintColor =
-            allowSend(text, messageMediaRef) && !disabled
+            allowSend(text, messageMediaRef, messageVoiceRef) && !disabled
                 ? color.GM_BLUE
                 : 'lightgray'
         return (
@@ -101,8 +101,12 @@ export default class Send extends Component {
             disabled,
             sendButtonProps,
             messageMediaRef,
+            messageVoiceRef,
         } = this.props
-        if (alwaysShowSend || allowSend(text, messageMediaRef)) {
+        if (
+            alwaysShowSend ||
+            allowSend(text, messageMediaRef, messageVoiceRef)
+        ) {
             return (
                 <TouchableOpacity
                     testID="send"
@@ -111,7 +115,10 @@ export default class Send extends Component {
                     style={[styles.container, containerStyle]}
                     onPress={this.handleOnPress}
                     accessibilityTraits="button"
-                    disabled={!allowSend(text, messageMediaRef) && disabled}
+                    disabled={
+                        !allowSend(text, messageMediaRef, messageVoiceRef) &&
+                        disabled
+                    }
                     {...sendButtonProps}
                 >
                     <View>{children || this.renderSend()}</View>

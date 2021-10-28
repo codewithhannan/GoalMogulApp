@@ -8,6 +8,7 @@ import { EVENT as E, trackWithProperties } from '../../../monitoring/segment'
 import MessageStorageService from '../../../services/chat/MessageStorageService'
 import { IMAGE_BASE_URL } from '../../../Utils/Constants'
 import ImageUtils from '../../../Utils/ImageUtils'
+import VoiceUtils from '../../../Utils/VoiceUtils'
 import { MemberDocumentFetcher } from '../../../Utils/UserUtils'
 import { api as API } from '../../middleware/api'
 import { decode, getProfileImageOrDefault } from '../../middleware/utils'
@@ -21,6 +22,7 @@ import {
     CHAT_ROOM_UPDATE_GHOST_MESSAGES,
     CHAT_ROOM_UPDATE_MESSAGES,
     CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF,
+    CHAT_ROOM_UPDATE_MESSAGE_VOICE_REF,
 } from './ChatRoomReducers'
 
 const LOADING_RIPPLE_URL = 'https://i.imgur.com/EhwxDDf.gif'
@@ -485,6 +487,150 @@ export const sendMessage = (
     }
 }
 
+export const sendVoiceMessage = (
+    messagesToSend,
+    mountedMediaRef,
+    chatRoom,
+    currentMessageList
+) => (dispatch, getState) => {
+    console.log('send voice message run--------->')
+    if (!chatRoom) return
+    const { token, userId } = getState().user
+
+    let uploadedMediaRef = null
+    // upload the image if a file's mounted
+    if (mountedMediaRef) {
+        // clear the state for it
+        changeMessageVoiceRef(undefined)(dispatch, getState)
+        const ghostMessage = buildSendingImageGhostMessage(messagesToSend[0])
+        dispatch({
+            type: CHAT_ROOM_UPDATE_GHOST_MESSAGES,
+            payload: [ghostMessage],
+        })
+        VoiceUtils.getPresignedUrl(
+            mountedMediaRef,
+            token,
+            (objectKey) => {
+                uploadedMediaRef = objectKey
+            },
+            'ChatVoice'
+        )
+            .then(({ file, signedRequest }) => {
+                return VoiceUtils.uploadVoice(file, signedRequest)
+            })
+            .then((res) => {
+                console.log('uploadedVoiceRef', uploadedMediaRef)
+                if (res instanceof Error) {
+                    console.log('error uploading audio to s3 with res: ', res)
+                    Alert.alert(
+                        'Error',
+                        'Could not upload audio. Please try again later.'
+                    )
+                } else {
+                    sendMessages()
+                }
+            })
+            .catch((err) => {
+                // clear ghost message
+                dispatch({
+                    type: CHAT_ROOM_UPDATE_GHOST_MESSAGES,
+                    payload: null,
+                })
+                console.log(
+                    'Internal error uploading audio to s3 with error: ',
+                    err
+                )
+                Alert.alert('Error', 'Could not upload audio.')
+            })
+    } else {
+        sendMessages()
+    }
+
+    function sendMessages() {
+        // iterate over each message to be sent (usually should only be 1)
+        messagesToSend.forEach((messageToSend) => {
+            // insert message into local storage
+            const messageToInsert = _transformMessageFromGiftedChat(
+                messageToSend,
+                uploadedMediaRef,
+                chatRoom
+            )
+            MessageStorageService.storeLocallyCreatedMessage(
+                { ...messageToInsert, isRead: true, isLocal: true },
+                (err, insertedDoc) => {
+                    if (err) {
+                        // clear ghost message
+                        dispatch({
+                            type: CHAT_ROOM_UPDATE_GHOST_MESSAGES,
+                            payload: null,
+                        })
+                        return Alert.alert(
+                            'Error',
+                            'Could not store message locally. Please try again later.'
+                        )
+                    }
+                    // update state to show newly inserted message and clear the ghost message
+                    updateMessageList(
+                        chatRoom,
+                        currentMessageList,
+                        true
+                    )(dispatch, getState)
+
+                    // send the message after the slide in animation for the placeholder message is completed
+                    // saves the UI thread some resources - will eventually want to shift to native driver though : )
+                    setTimeout(() => {
+                        const { text, sharedEntity, optionId } = messageToSend
+                        let body = {
+                            created: insertedDoc.created,
+                            chatRoomRef: chatRoom._id,
+                            content: {
+                                message: text,
+                                optionId: optionId ? optionId : undefined,
+                            },
+                            customIdentifier: insertedDoc._id,
+                        }
+                        if (sharedEntity) {
+                            body.sharedEntity = sharedEntity
+                        }
+                        if (uploadedMediaRef) {
+                            body.media = uploadedMediaRef
+                        }
+                        const handleRequestFailure = (failure) => {
+                            console.log('error sending message', failure)
+                            Alert.alert(
+                                'Error',
+                                'Could not send message to others.'
+                            )
+                            MessageStorageService.deleteMessage(
+                                insertedDoc._id,
+                                (err) => {
+                                    if (err) return
+                                    updateMessageList(
+                                        chatRoom,
+                                        currentMessageList
+                                    )(dispatch, getState)
+                                }
+                            )
+                        }
+                        trackWithProperties(E.CHATROOM_MESSAGE_SENT, {
+                            Message: text,
+                            UserId: userId,
+                            ChatroomId: chatRoom._id,
+                        })
+                        API.post(`secure/chat/message`, body, token)
+                            .then((resp) => {
+                                if (resp.status != 200) {
+                                    handleRequestFailure()
+                                }
+                            })
+                            .catch(handleRequestFailure)
+                    }, MESSAGE_SLIDE_IN_ANIMATION_MS + 100)
+                }
+            )
+        })
+    }
+}
+
 export const sendChatBotCustomResponseMessage = (message, chatRoom) => (
     dispatch,
     getState
@@ -513,6 +659,13 @@ export const sendChatBotCustomResponseMessage = (message, chatRoom) => (
 export const changeMessageMediaRef = (mediaRef) => (dispatch, getState) => {
     dispatch({
         type: CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF,
+        payload: mediaRef,
+    })
+}
+
+export const changeMessageVoiceRef = (mediaRef) => (dispatch, getState) => {
+    dispatch({
+        type: CHAT_ROOM_UPDATE_MESSAGE_VOICE_REF,
         payload: mediaRef,
     })
 }

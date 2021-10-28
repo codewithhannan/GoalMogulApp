@@ -194,6 +194,7 @@ export default class AudioSlider extends PureComponent {
                         paddingLeft: 8,
                         paddingRight: 8,
                         height: 35,
+                        width: 230,
                     }}
                 >
                     <TouchableOpacity
@@ -289,6 +290,7 @@ export default class AudioSlider extends PureComponent {
                         flex: 0,
                         flexDirection: 'row',
                         justifyContent: 'space-between',
+                        width: 230,
                     }}
                 >
                     <DigitalTimeString time={this.state.currentTime} />

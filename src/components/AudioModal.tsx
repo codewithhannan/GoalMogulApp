@@ -35,7 +35,7 @@ const crossIcon = require('../asset/icons/cross.png')
 
 import { sendVoiceMessage } from '../redux/modules/feed/comment/CommentActions'
 import { openGoalDetail } from '../redux/modules/home/mastermind/actions'
-import { changeMessageMediaRef } from '../redux/modules/chat/ChatRoomActions'
+import { changeMessageVoiceRef } from '../redux/modules/chat/ChatRoomActions'
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const BACKGROUND_COLOR = '#FFF8ED'
@@ -80,7 +80,7 @@ type Props = {
     chatUser: {}
     chatRoom: {}
     chatMessages: []
-    changeMessageMediaRef: (voiceUri: string | null) => void
+    changeMessageVoiceRef: (voiceUri: string | null) => void
 }
 
 type State = {
@@ -702,7 +702,7 @@ class AudioModal extends React.Component<Props, State> {
                                         }
                                         if (this.props.chatType) {
                                             console.log('chat voice pressed')
-                                            this.props.changeMessageMediaRef(
+                                            this.props.changeMessageVoiceRef(
                                                 this.state.record
                                             )
                                             this.setState({
@@ -874,7 +874,7 @@ class AudioModal extends React.Component<Props, State> {
 export default connect(null, {
     sendVoiceMessage,
     openGoalDetail,
-    changeMessageMediaRef,
+    changeMessageVoiceRef,
 })(AudioModal)
 
 const styles = StyleSheet.create({
