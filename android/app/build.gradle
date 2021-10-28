@@ -135,8 +135,8 @@ android {
         applicationId 'com.goalmogul.goalmogulbeta'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1000
-        versionName "1.0.17"
+        versionCode 1007
+        versionName "1.0.18"
     }
     splits {
         abi {
