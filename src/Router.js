@@ -391,7 +391,7 @@ class RouterComponent extends Component {
                     elevation: 0,
                 }}
                 {...this.props}
-                uriPrefix={'goalmogulapp.com/'}
+                uriPrefix={'goalmogulapp.com:/'}
             >
                 <Modal key="modal" hideNavBar>
                     <Lightbox key="lightbox" hideNavBar>

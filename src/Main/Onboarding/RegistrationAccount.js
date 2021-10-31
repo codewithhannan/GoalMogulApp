@@ -480,7 +480,7 @@ class RegistrationAccount extends React.Component {
                     value={gender}
                     disabled={this.props.loading}
                 />
-                {/* <InputBox
+                <InputBox
                     key="dateOfBirth"
                     inputTitle="Date of birth"
                     ref="dateOfBirth"
@@ -525,9 +525,9 @@ class RegistrationAccount extends React.Component {
                             : this.state.dateOfBirthStatus
                     }
                     disabled={this.props.loading}
-                /> */}
+                />
 
-                <InputBox
+                {/* <InputBox
                     key="dateOfBirth"
                     inputTitle="Date of birth"
                     ref="dateOfBirth"
@@ -542,7 +542,7 @@ class RegistrationAccount extends React.Component {
                     returnKeyType="done"
                     caption={`We won't share this information with anyone`}
                     disabled={this.props.loading}
-                />
+                /> */}
 
                 <InputBox
                     key="inviterCode"
@@ -624,18 +624,6 @@ class RegistrationAccount extends React.Component {
                         <OnboardingFooter
                             buttonText="Continue"
                             onButtonPress={this.onNext}
-                            // disabled={
-                            //     this.props.loading ||
-                            //     this.state.inviteCodeStatus !==
-                            //         FIELD_REQUIREMENTS.done ||
-                            //     this.state.nameStatus !==
-                            //         FIELD_REQUIREMENTS.done ||
-                            //     this.state.emailStatus !==
-                            //         FIELD_REQUIREMENTS.done ||
-                            //     this.state.dateOfBirthStatus !==
-                            //         FIELD_REQUIREMENTS.done ||
-                            //     !this.props.gender
-                            // }
                             disabled={
                                 this.props.loading ||
                                 this.state.inviteCodeStatus !==
@@ -644,9 +632,21 @@ class RegistrationAccount extends React.Component {
                                     FIELD_REQUIREMENTS.done ||
                                 this.state.emailStatus !==
                                     FIELD_REQUIREMENTS.done ||
-                                !this.props.dateOfBirth ||
+                                this.state.dateOfBirthStatus !==
+                                    FIELD_REQUIREMENTS.done ||
                                 !this.props.gender
                             }
+                            // disabled={
+                            //     this.props.loading ||
+                            //     this.state.inviteCodeStatus !==
+                            //         FIELD_REQUIREMENTS.done ||
+                            //     this.state.nameStatus !==
+                            //         FIELD_REQUIREMENTS.done ||
+                            //     this.state.emailStatus !==
+                            //         FIELD_REQUIREMENTS.done ||
+                            //     !this.props.dateOfBirth ||
+                            //     !this.props.gender
+                            // }
                         />
                         <DelayedButton
                             style={[

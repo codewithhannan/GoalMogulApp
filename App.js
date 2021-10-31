@@ -98,7 +98,7 @@ const theme = {
 export default class App extends React.Component {
     constructor(props) {
         super(props)
-        // this.handleOpenURL = this.handleOpenURL.bind(this)
+        this.handleOpenURL = this.handleOpenURL.bind(this)
         this.state = {
             appReady: false,
             image: null,
@@ -113,21 +113,19 @@ export default class App extends React.Component {
         StatusBar.setBarStyle('light-content')
     }
 
-    // componentDidMount() {
-    //     Linking.getInitialURL()
-    //         .then((url) => this.handleOpenURL({ url }))
-    //         .catch(console.error)
+    componentDidMount() {
+        Linking.getInitialURL()
+            .then((url) => this.handleOpenURL({ url }))
+            .catch(console.error)
 
-    //     Linking.addEventListener('url', this.handleOpenURL)
-    // }
+        Linking.addEventListener('url', this.handleOpenURL)
+    }
 
-    // componentWillUnmount() {
-    //     Linking.removeEventListener('url', this.handleOpenURL)
-    // }
+    componentWillUnmount() {
+        Linking.removeEventListener('url', this.handleOpenURL)
+    }
 
-    // handleOpenURL(event) {
-    //     Alert.alert(event.url)
-    // }
+    handleOpenURL(event) {}
 
     render() {
         console.disableYellowBox = true
