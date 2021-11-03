@@ -55,6 +55,8 @@ import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal'
 // Actions
 import {
     changeMessageMediaRef,
+    changeMessageVoiceRef,
+    changeMessageVideoRef,
     closeActiveChatRoom,
     deleteMessage,
     initialLoad,
@@ -62,6 +64,8 @@ import {
     refreshChatRoom,
     sendChatBotCustomResponseMessage,
     sendMessage,
+    sendVoiceMessage,
+    sendVideoMessage,
     updateMessageList,
     updateTypingStatus,
 } from '../../../redux/modules/chat/ChatRoomActions'
@@ -127,7 +131,12 @@ const RemoveAttachedImageButton = (props) => {
             <Icon
                 name="cancel"
                 pack="material"
-                style={{ height: 22, width: 22, borderRadius: 11 }}
+                style={{
+                    height: 22,
+                    width: 22,
+                    borderRadius: 11,
+                    tintColor: 'gray',
+                }}
             />
         </DelayedButton>
     )
@@ -431,16 +440,42 @@ class ChatRoomConversation extends React.Component {
         )
     }
     sendMessage = (messagesToSend) => {
-        const { chatRoom, messages, messageMediaRef } = this.props
+        const {
+            chatRoom,
+            messages,
+            messageMediaRef,
+            messageVoiceRef,
+        } = this.props
 
         const messageText = _.get(messagesToSend, '[0].text', '')
         if (!messageText.trim().length && !messageMediaRef) return
         if (messageMediaRef) {
             this._textInput.blur()
         }
+
         this.props.sendMessage(
             messagesToSend,
             messageMediaRef,
+            chatRoom,
+            messages
+        )
+    }
+    sendVoiceMessage = (messagesToSend) => {
+        const { chatRoom, messages, messageVoiceRef } = this.props
+
+        this.props.sendVoiceMessage(
+            messagesToSend,
+            messageVoiceRef,
+            chatRoom,
+            messages
+        )
+    }
+    sendVideoMessage = (messagesToSend) => {
+        const { chatRoom, messages, messageVideoRef } = this.props
+
+        this.props.sendVideoMessage(
+            messagesToSend,
+            messageVideoRef,
             chatRoom,
             messages
         )
@@ -509,7 +544,12 @@ class ChatRoomConversation extends React.Component {
     }
     handleOpenCameraRoll = () => {
         const callback = R.curry((result) => {
-            this.props.changeMessageMediaRef(result.path)
+            if (result.mime === 'video/mp4') {
+                this.props.changeMessageVideoRef(result.path)
+                this._textInput.focus()
+            } else {
+                this.props.changeMessageMediaRef(result.path)
+            }
         })
         this.props.openCameraRoll(callback, { disableEditing: true })
     }
@@ -720,6 +760,7 @@ class ChatRoomConversation extends React.Component {
         return null
     }
     renderSendImageButton() {
+        const { messageMediaRef, messageVideoRef } = this.props
         return (
             <TouchableOpacity
                 activeOpacity={0.6}
@@ -737,7 +778,15 @@ class ChatRoomConversation extends React.Component {
                 /> */}
                 <Image
                     source={require('../../../asset/icons/ChatGallary.png')}
-                    style={{ height: 25, width: 25, marginBottom: 2 }}
+                    style={{
+                        height: 25,
+                        width: 25,
+                        marginBottom: 2,
+                        tintColor:
+                            messageMediaRef || messageVideoRef
+                                ? '#42C0F5'
+                                : null,
+                    }}
                     resizeMode="contain"
                 />
             </TouchableOpacity>
@@ -815,62 +864,131 @@ class ChatRoomConversation extends React.Component {
     }
 
     renderAttachedImage = () => {
-        const { messageMediaRef } = this.props
-        // console.log('THIS IS MESSAGEMEDIA REF', messageMediaRef)
+        const { messageMediaRef, messageVideoRef } = this.props
 
-        if (!messageMediaRef) return null
+        if (!messageMediaRef && !messageVideoRef) return null
         const onPress = () => {}
-        const onRemove = () => {
+        const onRemoveImage = () => {
             this.props.changeMessageMediaRef(undefined)
+            this._textInput.blur()
+        }
+        const onRemoveVideo = () => {
+            this.props.changeMessageVideoRef(undefined)
             this._textInput.blur()
         }
 
         return (
-            <View style={{ height: 92, marginLeft: 16, paddingVertical: 6 }}>
-                <TouchableOpacity
-                    activeOpacity={0.6}
-                    style={{
-                        flexDirection: 'row',
-                        height: 75,
-                        width: 65,
-                        alignItems: 'center',
-                        justifyContent: 'flex-start',
-                        borderRadius: 5,
-                    }}
-                    onPress={onPress}
-                >
-                    {/* <Video
-                        ref={this.state.video}
-                        source={{ uri: messageMediaRef }}
+            <>
+                {messageMediaRef ? (
+                    <View
                         style={{
-                            height: 75,
                             width: 65,
-                            borderRadius: 5,
+                            height: 75,
+                            marginVertical: 10,
+                            marginLeft: 16,
                         }}
-                        shouldPlay
-                        resizeMode="cover"
-                        isLooping
-                        onPlaybackStatusUpdate={(status) =>
-                            this.setState({ status })
-                        }
-                    /> */}
-                    <Image
-                        source={{ uri: messageMediaRef }}
-                        style={{ height: 75, width: 65, borderRadius: 5 }}
-                        resizeMode="cover"
-                    />
-                    <RemoveAttachedImageButton onRemove={onRemove} />
-                </TouchableOpacity>
-            </View>
+                    >
+                        <TouchableOpacity
+                            activeOpacity={0.6}
+                            style={{
+                                flexDirection: 'row',
+                                borderRadius: 5,
+                            }}
+                            onPress={onPress}
+                        >
+                            <Image
+                                source={{ uri: messageMediaRef }}
+                                style={{
+                                    height: 75,
+                                    width: 65,
+                                    borderRadius: 5,
+                                }}
+                                resizeMode="cover"
+                            />
+                            <RemoveAttachedImageButton
+                                onRemove={onRemoveImage}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    <View
+                        style={{
+                            width: '90%',
+                            alignSelf: 'center',
+
+                            paddingBottom: 10,
+                        }}
+                    >
+                        <TouchableOpacity
+                            activeOpacity={0.6}
+                            style={{
+                                flexDirection: 'row',
+                                borderRadius: 5,
+                            }}
+                            onPress={onPress}
+                        >
+                            <Video
+                                ref={this.state.video}
+                                source={{ uri: messageVideoRef }}
+                                style={{
+                                    height: 135,
+                                    width: '100%',
+                                    borderRadius: 5,
+                                }}
+                                shouldPlay
+                                resizeMode="cover"
+                                isLooping
+                                onPlaybackStatusUpdate={(status) =>
+                                    this.setState({ status })
+                                }
+                            />
+
+                            <RemoveAttachedImageButton
+                                onRemove={onRemoveVideo}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                )}
+            </>
         )
     }
 
     renderAccessory = (props, accessoryLocation) => {
-        const { messageMediaRef } = this.props
+        const { messageMediaRef, messageVoiceRef } = this.props
+        const onRemove = () => {
+            this.props.changeMessageVoiceRef(undefined)
+            this._textInput.blur()
+        }
         if (accessoryLocation == 'bottom') {
             return (
                 <View>
-                    {this.renderAttachedImage()}
+                    {messageVoiceRef ? (
+                        <View
+                            style={{
+                                height: 62,
+                                marginLeft: 16,
+                                paddingVertical: 6,
+                                flexDirection: 'row',
+                            }}
+                        >
+                            <Text>Attached Voice</Text>
+                            <TouchableOpacity
+                                onPress={onRemove}
+                                // style={{ justifyContent: 'flex-end' }}
+                            >
+                                <Icon
+                                    name="cancel"
+                                    pack="material"
+                                    style={{
+                                        height: 22,
+                                        width: 22,
+                                        borderRadius: 11,
+                                    }}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    ) : null}
+
                     <View
                         style={{
                             alignItems: 'center',
@@ -888,9 +1006,7 @@ class ChatRoomConversation extends React.Component {
                                 justifyContent: 'flex-start',
                             }}
                         >
-                            {messageMediaRef
-                                ? null
-                                : this.renderSendImageButton()}
+                            {this.renderSendImageButton()}
                             {this.renderCameraButton()}
                             {this.renderRecordButton()}
                         </View>
@@ -902,13 +1018,19 @@ class ChatRoomConversation extends React.Component {
                             {this.renderSendButton(props)}
                         </View>
                     </View>
+                    {this.renderAttachedImage()}
                 </View>
             )
         }
     }
 
     renderSendButton = (props) => {
-        const { messageMediaRef, initializing } = this.props
+        const {
+            messageMediaRef,
+            messageVoiceRef,
+            messageVideoRef,
+            initializing,
+        } = this.props
         return (
             <Send
                 {...props}
@@ -916,6 +1038,8 @@ class ChatRoomConversation extends React.Component {
                     height: 30,
                 }}
                 messageMediaRef={messageMediaRef}
+                messageVideoRef={messageVideoRef}
+                messageVoiceRef={messageVoiceRef}
                 disabled={initializing}
             />
         )
@@ -1090,8 +1214,6 @@ class ChatRoomConversation extends React.Component {
         const { useDefaultChatRoomImage } = this.props
         const { _id, name, profile } = this.props.user
         const { messageMediaRef } = this.props
-
-        console.log('TESTINGGGG', this.props.isChatBotRoom)
         // console.log('this is the props', this.props)
         return (
             <MenuProvider
@@ -1164,7 +1286,13 @@ class ChatRoomConversation extends React.Component {
                         onPressAvatar={this.openUserProfile}
                         onLongPress={this.onMessageLongPress}
                         renderFooter={this.renderTypingIndicatorFooter}
-                        onSend={this.sendMessage}
+                        onSend={
+                            this.props.messageVoiceRef
+                                ? this.sendVoiceMessage
+                                : this.props.messageMediaRef
+                                ? this.sendMessage
+                                : this.sendVideoMessage
+                        }
                         onInputTextChanged={this.onChatTextInputChanged}
                         renderAccessory={this.renderAccessory}
                         renderSend={null /*this.renderSendButton*/}
@@ -1195,7 +1323,6 @@ class ChatRoomConversation extends React.Component {
 
 const mapStateToProps = (state, props) => {
     const { userId, user, token } = state.user
-
     const {
         initializing,
         chatRoomsMap,
@@ -1207,12 +1334,12 @@ const mapStateToProps = (state, props) => {
         loading,
         currentlyTypingUserIds,
         messageMediaRef,
+        messageVoiceRef,
+        messageVideoRef,
         ghostMessages,
     } = state.chatRoom
 
     const chatRoom = activeChatRoomId && chatRoomsMap[activeChatRoomId]
-    const isChatBotRoom =
-        activeChatRoomId && chatRoomsMap[activeChatRoomId]?.chatBotState
 
     let chatRoomName = 'Loading'
     let chatRoomImage = null
@@ -1268,8 +1395,9 @@ const mapStateToProps = (state, props) => {
         loading,
         currentlyTypingUserIds,
         messageMediaRef,
+        messageVoiceRef,
+        messageVideoRef,
         ghostMessages,
-        isChatBotRoom,
     }
 }
 
@@ -1280,7 +1408,11 @@ export default connect(mapStateToProps, {
     loadOlderMessages,
     deleteMessage,
     sendMessage,
+    sendVoiceMessage,
+    sendVideoMessage,
     changeMessageMediaRef,
+    changeMessageVoiceRef,
+    changeMessageVideoRef,
     refreshChatRoom,
     closeActiveChatRoom,
     openProfile,

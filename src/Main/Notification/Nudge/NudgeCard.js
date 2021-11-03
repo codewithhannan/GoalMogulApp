@@ -43,7 +43,6 @@ class NudgeCard extends React.PureComponent {
     handleNudgeCardOnPress = () => {
         const { item, token, userId } = this.props
         const { _id, sender, receiver } = item
-        console.log(item)
         if (
             !item.hasResponded &&
             !item.isDeleted &&

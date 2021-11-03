@@ -27,6 +27,7 @@ import ProfileImage from '../../../Common/ProfileImage'
 import ImageModal from '../../../Common/ImageModal'
 import RichText from '../../../Common/Text/RichText'
 import AudioPlayer from '../../../../components/AudioPlayer'
+import VideoPlayer from '../../../../components/VideoPlayer'
 
 // Actions
 import {
@@ -141,10 +142,9 @@ class CommentUserDetail extends Component {
         return (
             <>
                 {type === 'CommentAudio' ? (
-                    // <TouchableOpacity onPress={() => this.playSound(voiceUri)}>
-                    //     <Text>Play Sound</Text>
-                    // </TouchableOpacity>
                     <AudioPlayer audio={{ uri: voiceUri }} />
+                ) : type === 'CommentVideo' ? (
+                    <VideoPlayer source="http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4" />
                 ) : (
                     <TouchableWithoutFeedback
                         onPress={() => this.setState({ mediaModal: true })}

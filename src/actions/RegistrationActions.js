@@ -428,12 +428,13 @@ export const openCameraRollForVideo = (showModal) => async (dispatch) => {
         mediaTypes: 'Videos',
     })
 
-    setTimeout(() => {
-        showModal()
-    }, 1000)
-
     if (!result.cancelled) {
-        return dispatch(setVideoUri(result.uri))
+        return (
+            dispatch(setVideoUri(result.uri)),
+            setTimeout(() => {
+                showModal()
+            }, 500)
+        )
     }
 
     console.log('user choosing from camera roll fail with result: ', result)
@@ -516,12 +517,12 @@ export const openCameraRoll = (
     //     }
     // )
     if (disableEditing) {
-        ImagePicker.openPicker({
+        await ImagePicker.openPicker({
             mediaType: 'any',
-            width: 848,
-            height: 500,
-            cropping: true,
-            includeExif: true,
+            // width: 848,
+            // height: 500,
+            // cropping: true,
+            // includeExif: true,
             // multiple: true,
         }).then((vid) => {
             console.log('IMAGE HYE HA', vid)

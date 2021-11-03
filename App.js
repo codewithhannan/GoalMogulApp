@@ -48,6 +48,7 @@ import { initSentry } from './src/monitoring/sentry'
 import * as Linking from 'expo-linking'
 import MultipleImagePicker from './src/Main/Menu/MutlipleImagePicker'
 import EditModal from './src/Main/Accountability/EditModal'
+import * as Notifications from 'expo-notifications'
 
 import { setJSExceptionHandler } from 'react-native-exception-handler' // If an error occurs or app crashes these functions are called we used them to send sengments
 
@@ -106,7 +107,6 @@ export default class App extends React.Component {
             appReady: false,
             image: null,
             data: null,
-            response: {},
         }
 
         // must be initialized in this order as each depends on the previous

@@ -53,8 +53,6 @@ import MyEvent from './Main/Menu/Event/MyEvent'
 import ContactInvitePage from './Main/MeetTab/Contacts/ContactInvitePage'
 // Friend tab
 import MeetTab from './Main/MeetTab/FriendTab'
-import DeepLinking from 'react-native-deep-linking'
-
 // Menu
 import MyEventTab from './Main/Menu/Event/MyEventTab'
 import Menu from './Main/Menu/Menu'
@@ -155,17 +153,12 @@ function getCommonScenes(tab) {
         <Scene key={`${prefix}post`} component={PostDetailCard} />,
         <Scene key={`${prefix}share`} component={ShareDetailCard} />,
         <Scene key={`${prefix}replyThread`} component={ReplyThread} />,
-
         <Scene key={`${prefix}profile`} component={Profile} />,
         <Scene key={`${prefix}profileDetail`} component={ProfileDetail} />,
         <Scene key={`${prefix}myEventTab`} component={MyEventTab} />,
         <Scene key={`${prefix}myEventDetail`} component={MyEvent} />,
         <Scene key={`${prefix}myTribeTab`} component={MyTribeTab} />,
         <Scene key={`${prefix}myTribeDetail`} component={MyTribe} />,
-        <Scene
-            key="registration_contact_invite"
-            component={SyncContactInvite}
-        />,
 
         <Scene key={`${prefix}challenges`} component={Challenges} />,
         <Scene key={`${prefix}setting`} component={Setting} />,
@@ -220,10 +213,6 @@ function getCommonScenes(tab) {
 }
 
 class RouterComponent extends Component {
-    state = {
-        response: {},
-    }
-
     onTabPress = (all) => {
         const { state, isFocused } = all.navigation
 
@@ -328,7 +317,6 @@ class RouterComponent extends Component {
         }
         // console.log('newState is: ', newState);
     }
-
     rootTransitionConfig = () => {
         // we're just doing a regular horizontal slide for now
         return {

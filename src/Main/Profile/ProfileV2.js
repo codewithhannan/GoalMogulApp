@@ -2,13 +2,7 @@
 
 import _ from 'lodash'
 import React, { Component } from 'react'
-import {
-    ActivityIndicator,
-    Animated,
-    SectionList,
-    View,
-    Text,
-} from 'react-native'
+import { ActivityIndicator, Animated, SectionList, View } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import StepsTooltip from '../../components/StepsTooltip'
@@ -55,6 +49,7 @@ import CreatePostModal from '../Post/CreatePostModal'
 import CreateContentButtons from '../Common/Button/CreateContentButtons'
 import PrivateGoalsToast from '../../components/PrivateGoalsToast'
 import NudgeModal from '../../components/NudgeModal'
+import { postRequest } from '../../store/services'
 import Popup from '../Journey/Popup'
 import PrivateGoalsNudge from '../../components/PrivateGoalsNudge'
 import { getFirstName } from '../../Utils/HelperMethods'
@@ -78,7 +73,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import NoGoalPrompt from '../../components/NoGoalPrompt'
 import CommentVideoModal from '../Common/Modal/CommentVideoModal'
 import AccountabilityPopUp from '../Common/Modal/AccountabilityPopUp'
-import { getFollowedStatus } from '../../actions/FollowActions'
+// import { getFollowedStatus } from '../../actions/FollowActions'
 import { clearFollowData } from '../../reducers/FollowReducers'
 
 const DEBUG_KEY = '[ UI ProfileV2 ]'
@@ -169,7 +164,6 @@ class ProfileV2 extends Component {
 
         if (!this.props.isSelf && !_.isEqual(prevProps, this.props)) {
             this.shouldSendNudge()
-            this.props.getFollowedStatus(this.props.visitedUser)
         }
         if (this.props.isSelf) {
             this.handlePopup()
@@ -355,7 +349,6 @@ class ProfileV2 extends Component {
     }
 
     handleRefresh = () => {
-        console.log(`${DEBUG_KEY}: MAIN REFRESH`)
         const { userId, pageId, selectedTab } = this.props
         if (selectedTab === 'about') return
         console.log(`${DEBUG_KEY}: refreshing tab`, selectedTab)
@@ -963,7 +956,6 @@ class ProfileV2 extends Component {
                         onBackPress={this.handleOnBackPress}
                         userId={userId}
                     />
-                    {/* <Text>TEST</Text> */}
                     <SectionList
                         keyboardShouldPersistTaps="handled"
                         sections={sectionsData}
@@ -1126,6 +1118,6 @@ export default connect(makeMapStateToProps, {
     handleProfileTabOnLoadMore,
     changeFilter,
     uploadPopupData,
-    getFollowedStatus,
+    // getFollowedStatus,
     clearFollowData,
 })(wrapAnalytics(ProfileV2, SCREENS.PROFILE))

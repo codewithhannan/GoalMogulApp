@@ -14,8 +14,6 @@ import {
     Text,
     TouchableOpacity,
     View,
-    TouchableWithoutFeedback,
-    ScrollView,
 } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { CopilotStep, walkthroughable } from 'react-native-copilot-gm'
@@ -67,6 +65,10 @@ import CreateGoalToast from './TestGoal'
 import Button from '../Button'
 import MentionsTextInput from '../Common/MentionsTextInput'
 import { Icon } from '@ui-kitten/components'
+import {
+    ScrollView,
+    TouchableWithoutFeedback,
+} from 'react-native-gesture-handler'
 import { EVENT, trackWithProperties } from '../../../monitoring/segment'
 
 const { Popover } = renderers

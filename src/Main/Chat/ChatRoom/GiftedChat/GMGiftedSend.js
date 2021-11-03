@@ -38,8 +38,11 @@ const styles = StyleSheet.create({
     },
 })
 
-const allowSend = (text, messageMediaRef) =>
-    (text && text.trim().length > 0) || messageMediaRef
+const allowSend = (text, messageMediaRef, messageVoiceRef, messageVideoRef) =>
+    (text && text.trim().length > 0) ||
+    messageMediaRef ||
+    messageVoiceRef ||
+    messageVideoRef
 
 export default class Send extends Component {
     static defaultProps = {
@@ -67,16 +70,36 @@ export default class Send extends Component {
     }
 
     handleOnPress = () => {
-        const { text, onSend, messageMediaRef } = this.props
-        if ((text || messageMediaRef) && onSend) {
+        const {
+            text,
+            onSend,
+            messageMediaRef,
+            messageVoiceRef,
+            messageVideoRef,
+        } = this.props
+        if (
+            (text || messageMediaRef || messageVoiceRef || messageVideoRef) &&
+            onSend
+        ) {
             onSend({ text: text.trim() }, true)
         }
     }
 
     renderSend = () => {
-        const { text, messageMediaRef, disabled } = this.props
+        const {
+            text,
+            messageMediaRef,
+            messageVoiceRef,
+            messageVideoRef,
+            disabled,
+        } = this.props
         let tintColor =
-            allowSend(text, messageMediaRef) && !disabled
+            allowSend(
+                text,
+                messageMediaRef,
+                messageVoiceRef,
+                messageVideoRef
+            ) && !disabled
                 ? color.GM_BLUE
                 : 'lightgray'
         return (
@@ -101,8 +124,13 @@ export default class Send extends Component {
             disabled,
             sendButtonProps,
             messageMediaRef,
+            messageVoiceRef,
+            messageVideoRef,
         } = this.props
-        if (alwaysShowSend || allowSend(text, messageMediaRef)) {
+        if (
+            alwaysShowSend ||
+            allowSend(text, messageMediaRef, messageVoiceRef, messageVideoRef)
+        ) {
             return (
                 <TouchableOpacity
                     testID="send"
@@ -111,7 +139,14 @@ export default class Send extends Component {
                     style={[styles.container, containerStyle]}
                     onPress={this.handleOnPress}
                     accessibilityTraits="button"
-                    disabled={!allowSend(text, messageMediaRef) && disabled}
+                    disabled={
+                        !allowSend(
+                            text,
+                            messageMediaRef,
+                            messageVoiceRef,
+                            messageVideoRef
+                        ) && disabled
+                    }
                     {...sendButtonProps}
                 >
                     <View>{children || this.renderSend()}</View>

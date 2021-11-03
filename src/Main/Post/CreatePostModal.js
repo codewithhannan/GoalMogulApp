@@ -509,7 +509,7 @@ class CreatePostModal extends Component {
                 : E.CREATE_POST_MODAL_CANCELLED,
             { DurationSec: durationSec }
         )
-        this.setState({ mediaHeight: 0 })
+        // this.setState({ mediaHeight: 0 })
         if (
             (this.props.post && this.state.clickedButton) ||
             this.state.clickedButton
