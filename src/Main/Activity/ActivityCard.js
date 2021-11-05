@@ -69,6 +69,8 @@ import {
 import Tooltip from 'react-native-walkthrough-tooltip'
 import LottieView from 'lottie-react-native'
 import GoalSwiper from '../Goal/GoalSwiper'
+import AudioPlayer from '../../components/AudioPlayer'
+import VideoPlayer from '../../components/VideoPlayer'
 
 const DEBUG_KEY = '[ UI ActivityCard ]'
 
@@ -439,6 +441,7 @@ class ActivityCard extends React.PureComponent {
     renderComment(item) {
         // CommentRef shouldn't be null as we already sanity check the activity card
         const { actedWith, commentRef, actor } = item
+
         if (actedWith !== 'Comment') return null
 
         // console.log(`${DEBUG_KEY}: commentRef: `, commentRef);
@@ -485,6 +488,7 @@ class ActivityCard extends React.PureComponent {
                         name={name || ''}
                         user={actor}
                         hasCaret={false}
+                        hasMedia={mediaRef}
                         isSelf={this.props.userId === _id}
                         textStyle={default_style.titleText_2}
                     />
@@ -523,28 +527,40 @@ class ActivityCard extends React.PureComponent {
     }
 
     renderMedia(url) {
+        const type = url.split('/')[0]
         if (!url) {
             return null
         }
-        const imageUrl = `${IMAGE_BASE_URL}${url}`
+        const mediaUrl = `${IMAGE_BASE_URL}${url}`
         return (
-            <TouchableWithoutFeedback
-                onPress={() => this.setState({ mediaModal: true })}
-            >
-                <View style={{ marginTop: 5 }}>
-                    <ImageBackground
-                        style={{
-                            ...styles.mediaStyle,
-                            ...imagePreviewContainerStyle,
-                            borderRadius: 8,
-                            backgroundColor: 'black',
-                        }}
-                        source={{ uri: imageUrl }}
-                        imageStyle={{ borderRadius: 8, resizeMode: 'cover' }}
-                    ></ImageBackground>
-                    {this.renderPostImageModal(imageUrl)}
-                </View>
-            </TouchableWithoutFeedback>
+            <>
+                {type === 'CommentAudio' ? (
+                    <AudioPlayer audio={{ uri: mediaUrl }} />
+                ) : type === 'CommentVideo' ? (
+                    <VideoPlayer source={mediaUrl} />
+                ) : (
+                    <TouchableWithoutFeedback
+                        onPress={() => this.setState({ mediaModal: true })}
+                    >
+                        <View style={{ marginTop: 5 }}>
+                            <ImageBackground
+                                style={{
+                                    ...styles.mediaStyle,
+                                    ...imagePreviewContainerStyle,
+                                    borderRadius: 8,
+                                    backgroundColor: 'black',
+                                }}
+                                source={{ uri: mediaUrl }}
+                                imageStyle={{
+                                    borderRadius: 8,
+                                    resizeMode: 'cover',
+                                }}
+                            ></ImageBackground>
+                            {this.renderPostImageModal(mediaUrl)}
+                        </View>
+                    </TouchableWithoutFeedback>
+                )}
+            </>
         )
     }
 

@@ -206,6 +206,8 @@ class GoalSwiper extends React.Component {
                     isVisible={this.state.videoModalVisible}
                     onClose={() => this.setState({ videoModalVisible: false })}
                     onRecordPress={this.openCameraRollBottomSheet}
+                    pageId={this.props.pageId}
+                    goalDetail={this.props.goalRef}
                 />
                 <Swipeable
                     renderRightActions={this.rightSwipeActions}

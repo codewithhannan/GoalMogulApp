@@ -134,17 +134,17 @@ class CommentUserDetail extends Component {
         const { mediaRef } = item
         if (!mediaRef) return null
         const type = mediaRef.split('/')[0]
-        const voiceUri = `https://goalmogul-v1.s3.us-west-2.amazonaws.com/CommentAudio/${
-            mediaRef.split('/')[1]
-        }`
-        const url = mediaRef
-        const imageUrl = `${IMAGE_BASE_URL}${url}`
+        const uri = mediaRef.split('/')[1]
+        const BASE_URL = 'https://goalmogul-v1.s3.us-west-2.amazonaws.com'
+
+        const mediaUrl = `${BASE_URL}/${type}/${uri}`
+        const imageUrl = `${IMAGE_BASE_URL}${mediaRef}`
         return (
             <>
                 {type === 'CommentAudio' ? (
-                    <AudioPlayer audio={{ uri: voiceUri }} />
+                    <AudioPlayer audio={{ uri: mediaUrl }} />
                 ) : type === 'CommentVideo' ? (
-                    <VideoPlayer source="http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4" />
+                    <VideoPlayer source={mediaUrl} />
                 ) : (
                     <TouchableWithoutFeedback
                         onPress={() => this.setState({ mediaModal: true })}
