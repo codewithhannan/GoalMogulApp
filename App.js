@@ -52,6 +52,7 @@ import { setJSExceptionHandler } from 'react-native-exception-handler' // If an 
 import ThemeProvider from './theme/ThemeProvider'
 import CustomDropdown from './CustomDropDown'
 import { color } from './src/styles/basic'
+import { Actions } from 'react-native-router-flux'
 
 // import CustomDropDown from './src/Main/Onboarding/Common/CustomDropdown'
 // Disable font scaling at the start of the App
@@ -98,7 +99,7 @@ const theme = {
 export default class App extends React.Component {
     constructor(props) {
         super(props)
-        this.handleOpenURL = this.handleOpenURL.bind(this)
+        // this.handleOpenURL = this.handleOpenURL.bind(this)
         this.state = {
             appReady: false,
             image: null,
@@ -113,19 +114,28 @@ export default class App extends React.Component {
         StatusBar.setBarStyle('light-content')
     }
 
-    componentDidMount() {
-        Linking.getInitialURL()
-            .then((url) => this.handleOpenURL({ url }))
-            .catch(console.error)
+    // componentDidMount() {
+    //     Linking.getInitialURL()
+    //         .then((url) => this.handleOpenURL({ url }))
+    //         .catch(console.error)
 
-        Linking.addEventListener('url', this.handleOpenURL)
-    }
+    //     Linking.addEventListener('url', this.handleOpenURL)
+    // }
 
-    componentWillUnmount() {
-        Linking.removeEventListener('url', this.handleOpenURL)
-    }
+    // componentWillUnmount() {
+    //     Linking.removeEventListener('url', this.handleOpenURL)
+    // }
 
-    handleOpenURL(event) {}
+    // handleOpenURL(event) {
+    //     Alert.alert(JSON.stringify(event))
+    //     if (event === null) {
+    //         return
+    //     }
+    //     if (event.includes('questions')) {
+    //         Alert.alert(JSON.stringify(event))
+    //         Actions.replace('questions')
+    //     }
+    // }
 
     render() {
         console.disableYellowBox = true
