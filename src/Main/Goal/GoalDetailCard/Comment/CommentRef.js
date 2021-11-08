@@ -436,7 +436,7 @@ class CommentRef extends React.PureComponent {
                 suggestionType === 'NewStep' ? null : (
                     <Text
                         style={styles.titleTextStyle}
-                        numberOfLines={1}
+                        numberOfLines={3}
                         ellipsizeMode="tail"
                     >
                         {title}

@@ -14,8 +14,8 @@ const getVideoUrl = (type) => {
     } else {
         throw new Error(`Video type: ${type} is not included`)
     }
-    // return `https://api.goalmogul.com/api/secure/s3/${videoType}/signature`
-    return `http:/192.168.1.12:8081/api/secure/s3/${videoType}/signature`
+    return `https://api.goalmogul.com/api/secure/s3/${videoType}/signature`
+    // return `http:/192.168.1.12:8081/api/secure/s3/${videoType}/signature`
 }
 
 const VideoUtils = {

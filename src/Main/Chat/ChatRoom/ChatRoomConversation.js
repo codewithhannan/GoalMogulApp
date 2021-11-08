@@ -535,7 +535,7 @@ class ChatRoomConversation extends React.Component {
     handleOpenCamera = () => {
         this.props.openCamera(
             (result) => {
-                this.props.changeMessageMediaRef(result.path)
+                this.props.changeMessageMediaRef(result.uri)
             },
             null,
             null,
@@ -545,10 +545,10 @@ class ChatRoomConversation extends React.Component {
     handleOpenCameraRoll = () => {
         const callback = R.curry((result) => {
             if (result.mime === 'video/mp4') {
-                this.props.changeMessageVideoRef(result.path)
+                this.props.changeMessageVideoRef(result.uri)
                 this._textInput.focus()
             } else {
-                this.props.changeMessageMediaRef(result.path)
+                this.props.changeMessageMediaRef(result.uri)
             }
         })
         this.props.openCameraRoll(callback, { disableEditing: true })
