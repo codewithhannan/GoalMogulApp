@@ -28,7 +28,7 @@ export const postWithParams = async (url, token, params = {}, headers = {}) => {
 }
 
 export const postRequest = async (url, body = {}, headers = {}) => {
-    let xform = qs.stringify(body)
+    // let xform = qs.stringify(body)
 
     // if(baseURL=='https://api.volatia.com/api/WorkOrders/Create')
 
@@ -41,7 +41,7 @@ export const postRequest = async (url, body = {}, headers = {}) => {
     let returnValue
 
     await axios
-        .post(url, xform, config)
+        .post(url, body, config)
         .then((result) => {
             returnValue = { result: result, error: null }
         })

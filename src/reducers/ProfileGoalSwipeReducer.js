@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import _ from 'lodash'
 
 const initialState = {
-    videoUri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+    videoUri: 'test',
     videoFromCameraRollUri: '',
     voiceUri: '',
 }

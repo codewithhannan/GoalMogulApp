@@ -11,6 +11,7 @@ import {
     TouchableHighlight,
     Dimensions,
     TextInput,
+    ActivityIndicator,
 } from 'react-native'
 
 import Modal from 'react-native-modal'
@@ -25,6 +26,8 @@ import { Video } from 'expo-av'
 import { GOALS_STYLE } from '../../../styles/Goal'
 import DelayedButton from '../Button/DelayedButton'
 import { backToInitialState } from '../../../reducers/ProfileGoalSwipeReducer'
+import { sendVideoMessage } from '../../../redux/modules/feed/comment/CommentActions'
+import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions'
 
 const { text: textStyle, button: buttonStyle } = OnboardingStyles
 
@@ -32,18 +35,6 @@ const MODAL_WIDTH = Dimensions.get('screen').width
 const MODAL_HEIGHT = Dimensions.get('screen').height
 
 const privacyOptions = [
-    // {
-    //     text: 'Friends',
-    //     title: 'Friends',
-    //     iconName: 'account-multiple',
-    //     value: 'friends',
-    // },
-    // {
-    //     text: 'Close Friends',
-    //     title: 'Close Friends',
-    //     iconName: 'heart',
-    //     value: 'close-friends',
-    // },
     {
         id: 1,
         text: 'Public',
@@ -67,8 +58,11 @@ class CommentVideoModal extends Component {
         this.state = {
             video: '',
             status: {},
+            videoName: '',
             selected: '',
             isLoading: true,
+            loadingModal: false,
+            loading: false,
         }
     }
 
@@ -81,282 +75,331 @@ class CommentVideoModal extends Component {
     }
 
     render() {
-        const { videoUri } = this.props
+        const { videoUri, pageId, goalDetail } = this.props
 
         return (
             <>
                 <Modal
                     isVisible={this.props.isVisible}
-                    animationIn="zoomInUp"
+                    animationIn="slideInUp"
+                    onSwipeComplete={() => {
+                        this.props.onClose()
+                        this.props.backToInitialState()
+                    }}
+                    swipeDirection="down"
                     animationInTiming={400}
                 >
-                    <View
-                        style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
+                    {this.state.loading ? (
                         <View
                             style={{
-                                width: MODAL_WIDTH * 0.9,
-
-                                backgroundColor: color.GV_MODAL,
-                                height: MODAL_HEIGHT * 0.5,
-                                borderRadius: 5,
+                                // flex: 1,
+                                // alignItems: 'center',
+                                // justifyContent: 'center',
+                                // zIndex: 5,
+                                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            }}
+                        >
+                            <ActivityIndicator
+                                animating
+                                size="large"
+                                color="white"
+                                style={{
+                                    zIndex: 5,
+                                    top: '45%',
+                                    position: 'absolute',
+                                    alignSelf: 'center',
+                                }}
+                            />
+                        </View>
+                    ) : (
+                        <View
+                            style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                // justifyContent: 'center',
                             }}
                         >
                             <View
                                 style={{
-                                    padding: 13,
-                                }}
-                            >
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.props.onClose()
-                                        this.props.backToInitialState()
-                                    }}
-                                    style={{
-                                        position: 'absolute',
-                                        right: 10,
-                                        top: 10,
-                                    }}
-                                >
-                                    <Entypo
-                                        name="cross"
-                                        size={25}
-                                        color="#4F4F4F"
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                }}
-                            >
-                                {privacyOptions.map((options, index) => {
-                                    return (
-                                        <>
-                                            <TouchableOpacity
-                                                key={Math.random()
-                                                    .toString(36)
-                                                    .substr(2, 9)}
-                                                onPress={() => {
-                                                    this.changeColor(options.id)
-                                                }}
-                                                disabled={
-                                                    this.state.selected ===
-                                                    options.id
-                                                }
-                                            >
-                                                <View
-                                                    style={[
-                                                        GOALS_STYLE.commonPillContainer,
-                                                        {
-                                                            height: 35,
-                                                            borderColor:
-                                                                '#828282',
-                                                            borderWidth:
-                                                                this.state
-                                                                    .selected ===
-                                                                options.id
-                                                                    ? 0.23
-                                                                    : 0.3,
-                                                            left: 10,
-                                                            width: 80,
-                                                            marginHorizontal: 3,
-                                                            backgroundColor:
-                                                                'white',
-                                                        },
-                                                    ]}
-                                                >
-                                                    <Icon
-                                                        pack="material-community"
-                                                        name={options.iconName}
-                                                        style={{
-                                                            height: 12,
-                                                            width: 12,
-                                                            tintColor:
-                                                                '#828282',
-                                                            opacity:
-                                                                this.state
-                                                                    .selected ===
-                                                                options.id
-                                                                    ? 0.3
-                                                                    : 1,
-                                                        }}
-                                                    />
+                                    width: MODAL_WIDTH,
 
-                                                    <Text
-                                                        style={{
-                                                            fontFamily:
-                                                                text.FONT_FAMILY
-                                                                    .SEMI_BOLD,
-                                                            fontSize: 14,
-                                                            color: '#828282',
-                                                            marginLeft: 5,
-                                                            opacity:
-                                                                this.state
-                                                                    .selected ===
-                                                                options.id
-                                                                    ? 0.3
-                                                                    : 1,
-                                                        }}
-                                                    >
-                                                        {options.title}
-                                                    </Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                        </>
-                                    )
-                                })}
-                            </View>
-                            <View
-                                style={{
-                                    marginTop: 10,
+                                    backgroundColor: color.GV_MODAL,
+                                    height: MODAL_HEIGHT - 200,
+                                    borderRadius: 5,
+                                    position: 'absolute',
+                                    bottom: 0,
                                 }}
                             >
-                                <Text
+                                <View
                                     style={{
-                                        padding: 5,
-                                        marginHorizontal: 5,
-                                        color: '#333333',
-                                        fontSize: 12,
-                                    }}
-                                >
-                                    Video name:
-                                </Text>
-                                <TextInput
-                                    style={{
-                                        width: '92%',
-                                        height: 34,
-                                        borderColor: 'black',
-                                        borderWidth: 1,
-                                        alignSelf: 'center',
-                                        padding: 5,
-                                        borderRadius: 3,
-                                        borderColor: '#828282',
-                                    }}
-                                    placeholder="Video name"
-                                />
-                            </View>
-                            <View
-                                style={{
-                                    marginTop: 15,
-                                }}
-                            >
-                                {/* <Video
-                                    ref={this.state.video}
-                                    source={{
-                                        uri:
-                                            'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
-                                        'file:///var/mobile/Containers/Data/Application/DB0E429C-1C64-4902-A008-74081503A97A/Library/Caches/ExponentExperienceData/%2540abdulhannan96%252Fgoalmogul/ImagePicker/113BBD27-8D9F-4444-B929-12053F3ED6C7.mov',
-                                    }}
-                                    style={{
-                                        height: MODAL_HEIGHT * 0.3,
-                                        width: MODAL_WIDTH * 0.83,
+                                        marginVertical: 5,
+                                        width: 35,
+                                        height: 3.5,
                                         borderRadius: 5,
                                         alignSelf: 'center',
-                                    }}
-                                    resizeMode="contain"
-                                    onPlaybackStatusUpdate={(status) =>
-                                        this.setState({ status })
-                                    }
-                                    shouldPlay
-                                    shouldCorrectPitch
-                                    shouldRasterizeIOS
-                                /> */}
-
-                                <VideoPlayer
-                                    videoProps={{
-                                        shouldPlay: true,
-                                        resizeMode: Video.RESIZE_MODE_CONTAIN,
-                                        source: {
-                                            uri: videoUri,
-                                        },
-                                    }}
-                                    style={{
-                                        // videoBackgroundColor: 'transparent',
-                                        // controlsBackgroundColor: 'transparent',
-                                        height: 200,
-                                    }}
-                                    fullscreen={{
-                                        visible: false,
-                                    }}
-                                    activityIndicator={{
-                                        color: color.GM_BLUE,
-                                        size: 'large',
+                                        backgroundColor: 'lightgray',
                                     }}
                                 />
-                            </View>
-
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'center',
-                                    marginBottom: 15,
-                                }}
-                            >
-                                <DelayedButton
-                                    style={[
-                                        buttonStyle.GM_WHITE_BG_BLUE_TEXT
-                                            .containerStyle,
-                                        ,
-                                        {
-                                            width: 110,
-                                            marginTop: 20,
-                                            backgroundColor:
-                                                'rgba(66, 192, 245, 0.22)',
-                                            borderColor:
-                                                'rgba(66, 192, 245, 0.22)',
-                                            height: 40,
-                                        },
-                                    ]}
-                                    onPress={() => {
-                                        this.props.onClose()
-                                        setTimeout(() => {
-                                            this.props.onRecordPress()
-                                        }, 500)
+                                <View
+                                    style={{
+                                        padding: 13,
                                     }}
                                 >
-                                    <Text
-                                        style={[
-                                            buttonStyle.GM_WHITE_BG_GRAY_TEXT
-                                                .textStyle,
-                                            { color: '#535353' },
-                                        ]}
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.props.onClose()
+                                            this.props.backToInitialState()
+                                        }}
+                                        style={{
+                                            position: 'absolute',
+                                            right: 10,
+                                            top: 10,
+                                        }}
                                     >
-                                        Record
-                                    </Text>
-                                </DelayedButton>
-                                <View style={{ width: 20 }} />
-                                <DelayedButton
-                                    style={[
-                                        buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
-                                            .containerStyle,
-                                        ,
+                                        <Entypo
+                                            name="cross"
+                                            size={25}
+                                            color="#4F4F4F"
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    {/* {privacyOptions.map((options, index) => {
+                                    return (
+                                        <TouchableOpacity
+                                            key={Math.random()
+                                                .toString(36)
+                                                .substr(2, 9)}
+                                            onPress={() => {
+                                                this.changeColor(options.id)
+                                            }}
+                                            disabled={
+                                                this.state.selected ===
+                                                options.id
+                                            }
+                                        >
+                                            <View
+                                                style={[
+                                                    GOALS_STYLE.commonPillContainer,
+                                                    {
+                                                        height: 35,
+                                                        borderColor: '#828282',
+                                                        borderWidth:
+                                                            this.state
+                                                                .selected ===
+                                                            options.id
+                                                                ? 0.23
+                                                                : 0.3,
+                                                        left: 10,
+                                                        width: 80,
+                                                        marginHorizontal: 3,
+                                                        backgroundColor:
+                                                            'white',
+                                                    },
+                                                ]}
+                                            >
+                                                <Icon
+                                                    pack="material-community"
+                                                    name={options.iconName}
+                                                    style={{
+                                                        height: 12,
+                                                        width: 12,
+                                                        tintColor: '#828282',
+                                                        opacity:
+                                                            this.state
+                                                                .selected ===
+                                                            options.id
+                                                                ? 0.3
+                                                                : 1,
+                                                    }}
+                                                />
+
+                                                <Text
+                                                    style={{
+                                                        fontFamily:
+                                                            text.FONT_FAMILY
+                                                                .SEMI_BOLD,
+                                                        fontSize: 14,
+                                                        color: '#828282',
+                                                        marginLeft: 5,
+                                                        opacity:
+                                                            this.state
+                                                                .selected ===
+                                                            options.id
+                                                                ? 0.3
+                                                                : 1,
+                                                    }}
+                                                >
+                                                    {options.title}
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    )
+                                })} */}
+                                </View>
+                                <View
+                                    style={
                                         {
-                                            width: 110,
-                                            marginTop: 20,
-                                            height: 40,
-                                        },
-                                    ]}
-                                    // onPress={}
+                                            // marginTop: 10,
+                                        }
+                                    }
                                 >
                                     <Text
+                                        style={{
+                                            padding: 5,
+                                            marginHorizontal: 12,
+                                            color: '#333333',
+                                            fontWeight: 'bold',
+                                            fontSize: 14,
+                                        }}
+                                    >
+                                        Video name:
+                                    </Text>
+                                    <TextInput
+                                        style={{
+                                            width: '92%',
+                                            height: 34,
+                                            borderColor: 'black',
+                                            borderWidth: 1,
+                                            alignSelf: 'center',
+                                            padding: 5,
+                                            borderRadius: 3,
+                                            borderColor: '#828282',
+                                        }}
+                                        placeholder="Video name"
+                                        onChangeText={(value) =>
+                                            this.setState({ videoName: value })
+                                        }
+                                    />
+                                </View>
+                                <View
+                                    style={{
+                                        marginTop: 15,
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <VideoPlayer
+                                        videoProps={{
+                                            shouldPlay: true,
+                                            resizeMode: Video.RESIZE_MODE_COVER,
+                                            source: {
+                                                uri: videoUri,
+                                            },
+                                        }}
+                                        style={{
+                                            // videoBackgroundColor: 'transparent',
+                                            // controlsBackgroundColor: 'transparent',
+                                            height: 500,
+                                            width: 380,
+                                        }}
+                                        fullscreen={{
+                                            visible: false,
+                                        }}
+                                        activityIndicator={{
+                                            color: color.GM_BLUE,
+                                            size: 'large',
+                                        }}
+                                    />
+                                </View>
+
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
+                                        // marginBottom: 15,
+                                    }}
+                                >
+                                    <DelayedButton
+                                        style={[
+                                            buttonStyle.GM_WHITE_BG_BLUE_TEXT
+                                                .containerStyle,
+                                            ,
+                                            {
+                                                width: 185,
+                                                marginTop: 20,
+                                                backgroundColor:
+                                                    'rgba(66, 192, 245, 0.22)',
+                                                borderColor:
+                                                    'rgba(66, 192, 245, 0.22)',
+                                                height: 45,
+                                            },
+                                        ]}
+                                        onPress={() => {
+                                            this.props.onClose()
+                                            setTimeout(() => {
+                                                this.props.onRecordPress()
+                                            }, 500)
+                                        }}
+                                    >
+                                        <Text
+                                            style={[
+                                                buttonStyle
+                                                    .GM_WHITE_BG_GRAY_TEXT
+                                                    .textStyle,
+                                                { color: '#535353' },
+                                            ]}
+                                        >
+                                            Record
+                                        </Text>
+                                    </DelayedButton>
+                                    <View style={{ width: 10 }} />
+                                    <DelayedButton
                                         style={[
                                             buttonStyle
                                                 .GM_BLUE_BG_WHITE_BOLD_TEXT
-                                                .textStyle,
+                                                .containerStyle,
+                                            ,
+                                            {
+                                                width: 185,
+                                                marginTop: 20,
+                                                height: 45,
+                                            },
                                         ]}
+                                        onPress={() => {
+                                            this.setState({ loading: true })
+
+                                            this.props.sendVideoMessage(
+                                                videoUri,
+                                                this.state.videoName,
+                                                pageId,
+                                                goalDetail.goalRef._id,
+                                                () => {
+                                                    this.props.onClose()
+                                                    this.setState({
+                                                        loading: false,
+                                                    })
+                                                    this.props.openGoalDetail(
+                                                        goalDetail.goalRef,
+                                                        {
+                                                            focusType:
+                                                                'comment',
+                                                            initialShowSuggestionModal: false,
+                                                            initialFocusCommentBox: false,
+                                                        }
+                                                    )
+                                                }
+                                            )
+                                        }}
                                     >
-                                        Send
-                                    </Text>
-                                </DelayedButton>
+                                        <Text
+                                            style={[
+                                                buttonStyle
+                                                    .GM_BLUE_BG_WHITE_BOLD_TEXT
+                                                    .textStyle,
+                                            ]}
+                                        >
+                                            Send
+                                        </Text>
+                                    </DelayedButton>
+                                </View>
                             </View>
                         </View>
-                    </View>
+                    )}
                 </Modal>
             </>
         )
@@ -374,4 +417,6 @@ const mapStateToProps = (state, props) => {
 
 export default connect(mapStateToProps, {
     backToInitialState,
+    sendVideoMessage,
+    openGoalDetail,
 })(CommentVideoModal)

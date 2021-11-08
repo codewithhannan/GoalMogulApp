@@ -52,12 +52,12 @@ class GoalSwiper extends React.Component {
                 },
                 backgroundColor: '#D7F3FF',
             },
-            // {
-            //     id: 2,
-            //     source: VIDEO,
-            //     onPress: () => this.openCameraRollBottomSheet(),
-            //     backgroundColor: '#E5F7FF',
-            // },
+            {
+                id: 2,
+                source: VIDEO,
+                onPress: () => this.openCameraRollBottomSheet(),
+                backgroundColor: '#E5F7FF',
+            },
         ]
     }
 
@@ -202,11 +202,13 @@ class GoalSwiper extends React.Component {
         } = this.props
         return (
             <>
-                {/* <CommentVideoModal
+                <CommentVideoModal
                     isVisible={this.state.videoModalVisible}
                     onClose={() => this.setState({ videoModalVisible: false })}
                     onRecordPress={this.openCameraRollBottomSheet}
-                /> */}
+                    pageId={this.props.pageId}
+                    goalDetail={this.props.goalRef}
+                />
                 <Swipeable
                     renderRightActions={this.rightSwipeActions}
                     friction={2}
@@ -242,10 +244,12 @@ const mapStateToProps = (state, props) => {
     const { userId } = state.user
     const pageId = constructPageId('goal')
     // console.log('THIS IS PAGE IDDD', pageId)
+    const { videoUri } = state.goalSwiper
 
     return {
         visitedUserName,
         userId,
+        videoUri,
         // newComment: getNewCommentByTab(state, pageId),
         // pageId,
     }

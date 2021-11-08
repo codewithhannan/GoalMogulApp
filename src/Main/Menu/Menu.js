@@ -279,15 +279,15 @@ class Menu extends React.PureComponent {
                                     style={{
                                         flexDirection: 'row',
                                         alignItems: 'center',
-                                        backgroundColor: 'red',
+                                        marginVertical: 7,
                                     }}
                                 >
                                     <View style={{ marginRight: 10 }}>
                                         <Image
                                             source={Silver}
                                             style={{
-                                                height: 20,
-                                                width: 22,
+                                                height: 22,
+                                                width: 24,
                                             }}
                                         />
                                     </View>
@@ -300,7 +300,7 @@ class Menu extends React.PureComponent {
                                     >
                                         <Text
                                             style={{
-                                                fontSize: 21,
+                                                fontSize: 22,
                                                 fontWeight: '400',
                                             }}
                                         >
@@ -319,14 +319,15 @@ class Menu extends React.PureComponent {
                                     style={{
                                         flexDirection: 'row',
                                         alignItems: 'center',
+                                        marginVertical: 7,
                                     }}
                                 >
                                     <View style={{ marginRight: 10 }}>
                                         <Image
                                             source={Gold}
                                             style={{
-                                                height: 20,
-                                                width: 22,
+                                                height: 22,
+                                                width: 24,
                                             }}
                                         />
                                     </View>
@@ -339,7 +340,7 @@ class Menu extends React.PureComponent {
                                     >
                                         <Text
                                             style={{
-                                                fontSize: 21,
+                                                fontSize: 22,
                                                 fontWeight: '400',
                                             }}
                                         >
@@ -357,14 +358,15 @@ class Menu extends React.PureComponent {
                                     style={{
                                         flexDirection: 'row',
                                         alignItems: 'center',
+                                        marginVertical: 7,
                                     }}
                                 >
                                     <View style={{ marginRight: 10 }}>
                                         <Image
                                             source={Winner}
                                             style={{
-                                                height: 20,
-                                                width: 22,
+                                                height: 22,
+                                                width: 24,
                                             }}
                                         />
                                     </View>
@@ -377,7 +379,7 @@ class Menu extends React.PureComponent {
                                     >
                                         <Text
                                             style={{
-                                                fontSize: 21,
+                                                fontSize: 22,
                                                 fontWeight: '400',
                                             }}
                                         >

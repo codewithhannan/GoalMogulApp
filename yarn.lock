@@ -9734,8 +9734,6 @@
   "version" "4.17.21"
 
 "lodash._baseindexof@*":
-  "integrity" "sha1-/lK1OhxnYeQmGNZU5KJXie1hgiw="
-  "resolved" "https://registry.npmjs.org/lodash._baseindexof/-/lodash._baseindexof-3.1.0.tgz"
   "version" "3.1.0"
 
 "lodash._baseuniq@~4.6.0":
@@ -9747,18 +9745,12 @@
     "lodash._root" "~3.0.0"
 
 "lodash._bindcallback@*":
-  "integrity" "sha1-5THCdkTPi1epnhftlbNcdIeJOS4="
-  "resolved" "https://registry.npmjs.org/lodash._bindcallback/-/lodash._bindcallback-3.0.1.tgz"
   "version" "3.0.1"
 
 "lodash._cacheindexof@*":
-  "integrity" "sha1-PcaayCSY0u5ePOVgkbr9Ktx73pI="
-  "resolved" "https://registry.npmjs.org/lodash._cacheindexof/-/lodash._cacheindexof-3.0.2.tgz"
   "version" "3.0.2"
 
 "lodash._createcache@*":
-  "integrity" "sha1-VtagZAF2JeeevKa4AY4XRAvc8JM="
-  "resolved" "https://registry.npmjs.org/lodash._createcache/-/lodash._createcache-3.1.2.tgz"
   "version" "3.1.2"
   dependencies:
     "lodash._getnative" "^3.0.0"
@@ -9769,8 +9761,6 @@
   "version" "4.0.3"
 
 "lodash._getnative@*", "lodash._getnative@^3.0.0":
-  "integrity" "sha1-VwvH3t5G1hzc3mh9ZdPuy6o6r/U="
-  "resolved" "https://registry.npmjs.org/lodash._getnative/-/lodash._getnative-3.9.1.tgz"
   "version" "3.9.1"
 
 "lodash._reinterpolate@^3.0.0":
@@ -9839,8 +9829,6 @@
   "version" "4.4.0"
 
 "lodash.restparam@*":
-  "integrity" "sha1-k2pOMJ7zMKdkXtQUWYbIWuWyCAU="
-  "resolved" "https://registry.npmjs.org/lodash.restparam/-/lodash.restparam-3.6.1.tgz"
   "version" "3.6.1"
 
 "lodash.template@^4.5.0":
@@ -11908,7 +11896,7 @@
     "object.assign" "^4.1.0"
     "reflect.ownkeys" "^0.2.0"
 
-"prop-types@*", "prop-types@^15.5.10", "prop-types@^15.5.6", "prop-types@^15.5.7", "prop-types@^15.5.9", "prop-types@^15.6.0", "prop-types@^15.6.1", "prop-types@^15.6.2", "prop-types@^15.7.2", "prop-types@^15.7.x", "prop-types@15.7.2":
+"prop-types@*", "prop-types@^15.5.10", "prop-types@^15.5.6", "prop-types@^15.5.9", "prop-types@^15.6.0", "prop-types@^15.6.1", "prop-types@^15.6.2", "prop-types@^15.7.2", "prop-types@^15.7.x", "prop-types@15.7.2":
   "integrity" "sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ=="
   "resolved" "https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz"
   "version" "15.7.2"
@@ -12636,11 +12624,6 @@
   "resolved" "https://registry.npmjs.org/react-native-share/-/react-native-share-5.3.0.tgz"
   "version" "5.3.0"
 
-"react-native-simple-radio-button@^2.7.4":
-  "integrity" "sha512-QOZNmJUn0ViBGU+at7wAG/uGzd5PfXi0kMHr9lfTCLXknW/f9f2fOVjxjdHvOCdf/zA/eMJBjGjtusSDzQf1+w=="
-  "resolved" "https://registry.npmjs.org/react-native-simple-radio-button/-/react-native-simple-radio-button-2.7.4.tgz"
-  "version" "2.7.4"
-
 "react-native-skeleton-content@^1.0.18":
   "integrity" "sha512-HiTbP0KsFSBfUgOpa9oqZ20EDTm30SAmUxs4dQGf9pepaQpGPMFL2M5864aQ5/txOUvI7F9SmmTkKz1pHAnRAw=="
   "resolved" "https://registry.npmjs.org/react-native-skeleton-content/-/react-native-skeleton-content-1.0.22.tgz"
@@ -12798,7 +12781,7 @@
   "resolved" "https://registry.npmjs.org/react-native-woodpicker/-/react-native-woodpicker-0.3.10.tgz"
   "version" "0.3.10"
 
-"react-native@*", "react-native@^0.0.0-0 || ^0.60.6 || ^0.61.5 || ^0.62.2 || ^0.63.2 || ^0.64.0 || ^0.65.0 || 1000.0.0", "react-native@^0.41.2", "react-native@>= 0.25", "react-native@>= 0.30.0", "react-native@>= 0.60.0", "react-native@>=0.20.0", "react-native@>=0.35", "react-native@>=0.40.0", "react-native@>=0.42.0", "react-native@>=0.46", "react-native@>=0.47.1", "react-native@>=0.48.4", "react-native@>=0.50.0", "react-native@>=0.51.0", "react-native@>=0.55.0", "react-native@>=0.56.0", "react-native@>=0.57", "react-native@>=0.57.0", "react-native@>=0.60", "react-native@>=0.60 <=0.64", "react-native@>=0.62.0", "react-native@>=0.62.0-rc.0 <0.64.0", "react-native@>=0.64.0", "react-native@~0.63.4":
+"react-native@*", "react-native@^0.0.0-0 || ^0.60.6 || ^0.61.5 || ^0.62.2 || ^0.63.2 || ^0.64.0 || ^0.65.0 || 1000.0.0", "react-native@^0.41.2", "react-native@>= 0.25", "react-native@>= 0.30.0", "react-native@>= 0.60.0", "react-native@>=0.20.0", "react-native@>=0.35", "react-native@>=0.40.0", "react-native@>=0.42.0", "react-native@>=0.46", "react-native@>=0.48.4", "react-native@>=0.50.0", "react-native@>=0.51.0", "react-native@>=0.55.0", "react-native@>=0.56.0", "react-native@>=0.57", "react-native@>=0.57.0", "react-native@>=0.60", "react-native@>=0.60 <=0.64", "react-native@>=0.62.0", "react-native@>=0.62.0-rc.0 <0.64.0", "react-native@>=0.64.0", "react-native@~0.63.4":
   "integrity" "sha512-I4kM8kYO2mWEYUFITMcpRulcy4/jd+j9T6PbIzR0FuMcz/xwd+JwHoLPa1HmCesvR1RDOw9o4D+OFLwuXXfmGw=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.63.4.tgz"
   "version" "0.63.4"
@@ -14630,7 +14613,7 @@
   "resolved" "https://registry.npmjs.org/timeago.js/-/timeago.js-3.0.2.tgz"
   "version" "3.0.2"
   dependencies:
-    "@types/jquery" "^2.0.40"
+    "punycode" "^2.1.1"
 
 "timed-out@^4.0.0":
   "integrity" "sha1-8y6srFoXW+ol1/q1Zas+2HQe9W8="
@@ -14720,13 +14703,6 @@
     "extend-shallow" "^3.0.2"
     "regex-not" "^1.0.2"
     "safe-regex" "^1.1.0"
-
-"toggle-switch-react-native@^3.2.0":
-  "integrity" "sha512-53OEp6h4PMVaaeLJgvHq6dicUYL19SNVuB9Oi01IHKVhFw7i6fio+6Q2xlliPGhS0/eyBuA8KARl9puLzlLj8Q=="
-  "resolved" "https://registry.npmjs.org/toggle-switch-react-native/-/toggle-switch-react-native-3.2.0.tgz"
-  "version" "3.2.0"
-  dependencies:
-    "prop-types" "^15.5.7"
 
 "toidentifier@1.0.0":
   "integrity" "sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw=="

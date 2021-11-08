@@ -104,13 +104,13 @@ class ProfileDetailEditForm extends Component {
                 switch (buttonIndex) {
                     case TAKING_PICTURE_INDEX:
                         this.props.openCamera((result) => {
-                            this.props.change('profile.image', result.path)
+                            this.props.change('profile.image', result.uri)
                         })
                         break
                     case CAMERA_ROLL_INDEX:
                         this.props.openCameraRoll((result) => {
                             console.log('CAMERA ROLLL', result)
-                            this.props.change('profile.image', result.path)
+                            this.props.change('profile.image', result.uri)
                         })
                         break
                     default:

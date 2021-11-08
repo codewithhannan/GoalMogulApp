@@ -132,13 +132,13 @@ class CreateEventModal extends React.Component {
 
     handleOpenCamera = () => {
         this.props.openCamera((result) => {
-            this.props.change('picture', result.path)
+            this.props.change('picture', result.uri)
         })
     }
 
     handleOpenCameraRoll = () => {
         const callback = R.curry((result) => {
-            this.props.change('picture', result.path)
+            this.props.change('picture', result.uri)
         })
         this.props.openCameraRoll(callback)
     }

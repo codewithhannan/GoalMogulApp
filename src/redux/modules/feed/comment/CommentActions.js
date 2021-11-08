@@ -59,6 +59,7 @@ import {
 } from '../../../middleware/utils'
 import ImageUtils from '../../../../Utils/ImageUtils'
 import VoiceUtils from '../../../../Utils/VoiceUtils'
+import VideoUtils from '../../../../Utils/VideoUtils'
 import { openGoalDetail } from '../../../modules/home/mastermind/actions'
 import { trackWithProperties, EVENT as E } from '../../../../monitoring/segment'
 
@@ -605,6 +606,138 @@ export const sendVoiceMessage = (uri, pageId, _id, callback) => async (
             let newCommentObject = {
                 ...newComment,
                 mediaRef: voiceUrl,
+            }
+
+            return sendPostCommentRequest(
+                newCommentObject,
+                token,
+                onError,
+                onSuccess
+            )
+        })
+        .catch((err) => {
+            /*
+        Error Type:
+          voice upload to S3
+        */
+            onError(err)
+        })
+}
+export const sendVideoMessage = (
+    uri,
+    videoName,
+    pageId,
+    _id,
+    callback
+) => async (dispatch, getState) => {
+    const { token, user } = getState().user
+    const { tab } = getState().navigation
+    // const newComment = commentAdapter(getState(), pageId, tab)
+    // const { suggestion, mediaRef } = newComment
+    // console.log(`${DEBUG_KEY}: new comment to submit is: `, newComment)
+    const newComment = {
+        commentType: 'Comment',
+        parentRef: _id,
+        parentType: 'Goal',
+        contentText: videoName,
+        contentTags: [],
+        content: undefined,
+        mediaPresignedUrl: undefined,
+        mediaRef: uri,
+        replyToRef: undefined,
+    }
+
+    // const uriPath = uri.substring(uri.lastIndexOf('/') + 1, uri.length)
+
+    dispatch({
+        type: COMMENT_NEW_POST_START,
+        payload: {
+            tab,
+            pageId,
+            entityId: newComment.parentRef, // This is for post/share/goal to set the loading indicator
+        },
+    })
+
+    const onError = (err) => {
+        Keyboard.dismiss()
+        // dispatch({
+        //     type: COMMENT_NEW_POST_FAIL,
+        //     payload: {
+        //         pageId,
+        //         tab,
+        //         entityId: newComment.parentRef, // This is for post/share/goal to remove the loading indicator
+        //     },
+        // })
+        // Alert.alert(
+        //     'Error',
+        //     'Failed to submit comment. Please try again later.'
+        // )
+        console.log(`${DEBUG_KEY}: error submitting comment: `, err)
+    }
+
+    const onSuccess = (data) => {
+        // trackWithProperties(E.COMMENT_ADDED, {
+        //     CommentDetail: newComment,
+        //     UserId: user.userId,
+        // })
+        // dispatch({
+        //     type: COMMENT_NEW_POST_SUCCESS,
+        //     payload: {
+        //         comment: {
+        //             ...data,
+        //             owner: {
+        //                 ...user,
+        //             },
+        //         },
+        //         tab,
+
+        //         entityId: newComment.parentRef, // This is for post/share/goal to remove the loading indicator
+        //     },
+        // })
+
+        console.log(
+            `${DEBUG_KEY}: comment posted successfully with res: `,
+            data
+        )
+        if (callback) callback()
+        // Alert.alert('Success', 'You have successfully created a comment.');
+    }
+
+    VideoUtils.getPresignedUrl(
+        uri,
+        token,
+        (objectKey) => {
+            dispatch({
+                type: COMMENT_NEW_UPLOAD_VOICE_SUCCESS,
+                payload: {
+                    tab,
+                    pageId,
+                    objectKey,
+                },
+            })
+        },
+        'CommentVideo'
+    )
+        .then(({ file, signedRequest }) => {
+            return VideoUtils.uploadVideo(file, signedRequest)
+        })
+        .then((res) => {
+            if (res instanceof Error) {
+                // uploading to s3 failed
+                console.log('error uploading video to s3 with res: ', res)
+                throw res
+            }
+            const page = pageId ? `${pageId}` : 'default'
+            const path = !tab ? `homeTab.${page}` : `${tab}.${page}`
+            const videoUrl = _.get(
+                getState().newComment,
+                `${path}.mediaPresignedUrl`
+            )
+            // Use the presignedUrl as media string
+            console.log(`${BASE_ROUTE}: presigned url sent is: `, videoUrl)
+            let newCommentObject = {
+                ...newComment,
+                mediaRef: videoUrl,
             }
 
             return sendPostCommentRequest(

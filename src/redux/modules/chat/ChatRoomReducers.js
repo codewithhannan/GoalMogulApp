@@ -15,6 +15,8 @@ const INITIAL_STATE = {
     currentlyTypingUserIds: [],
     activeChatRoomId: null,
     messageMediaRef: null, // for attaching media to message to send
+    messageVoiceRef: null,
+    messageVideoRef: null,
     messages: [],
     ghostMessages: null,
     limit: 15,
@@ -39,6 +41,10 @@ export const CHAT_ROOM_UPDATE_CURRENTLY_TYPING_USERS =
     'chat_room_update_currently_typing_users'
 export const CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF =
     'chat_room_update_message_media_ref'
+export const CHAT_ROOM_UPDATE_MESSAGE_VOICE_REF =
+    'chat_room_update_message_voice_ref'
+export const CHAT_ROOM_UPDATE_MESSAGE_VIDEO_REF =
+    'chat_room_update_message_video_ref'
 export const CHAT_ROOM_UPDATE_GHOST_MESSAGES = 'chat_room_update_ghost_messages'
 export const CHAT_ROOM_CLOSE_ACTIVE_ROOM = 'chat_room_close_active_room'
 export const CHAT_ROOM_SEARCH_MESSAGES_BEGIN = 'chat_room_search_messages_begin'
@@ -62,6 +68,8 @@ export default (state = INITIAL_STATE, action) => {
             newState = _.set(newState, 'searchResults', [])
             newState = _.set(newState, 'searching', false)
             newState = _.set(newState, 'messageMediaRef', null)
+            newState = _.set(newState, 'messageVoiceRef', null)
+            newState = _.set(newState, 'messageVideoRef', null)
             return _.set(newState, 'initializing', true)
         }
         case CHAT_ROOM_LOAD_INITIAL: {
@@ -105,11 +113,21 @@ export default (state = INITIAL_STATE, action) => {
             newState = _.set(newState, 'searchResults', [])
             newState = _.set(newState, 'searching', false)
             newState = _.set(newState, 'messageMediaRef', null)
+            newState = _.set(newState, 'messageVoiceRef', null)
+            newState = _.set(newState, 'messageVideoRef', null)
             return newState
         }
         case CHAT_ROOM_UPDATE_MESSAGE_MEDIA_REF: {
             let newState = _.cloneDeep(state)
             return _.set(newState, 'messageMediaRef', action.payload)
+        }
+        case CHAT_ROOM_UPDATE_MESSAGE_VOICE_REF: {
+            let newState = _.cloneDeep(state)
+            return _.set(newState, 'messageVoiceRef', action.payload)
+        }
+        case CHAT_ROOM_UPDATE_MESSAGE_VIDEO_REF: {
+            let newState = _.cloneDeep(state)
+            return _.set(newState, 'messageVideoRef', action.payload)
         }
         case CHAT_ROOM_LOAD_MORE_MESSAGES_BEGIN: {
             let newState = _.cloneDeep(state)

@@ -207,7 +207,6 @@ class SyncContactInvite extends React.Component {
                     currentStep={0}
                     onNext={this.onNext}
                     onPrev={this.onBack}
-                    friendsTab={this.props.friendsTab}
                 />
             </View>
         )
