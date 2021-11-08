@@ -19,6 +19,15 @@ import { connect } from 'react-redux'
 import { CopilotStep, walkthroughable } from 'react-native-copilot-gm'
 import { CheckBox } from 'react-native-elements'
 import { MaterialIcons } from '@expo/vector-icons'
+// import { RadioButton } from 'react-native-paper';
+import RadioForm, {
+    RadioButton,
+    RadioButtonInput,
+    RadioButtonLabel,
+} from 'react-native-simple-radio-button'
+import ToggleSwitch from 'toggle-switch-react-native'
+import { Tooltip } from 'react-native-elements'
+
 import {
     Field,
     reduxForm,
@@ -39,7 +48,9 @@ import {
     MenuTrigger,
     renderers,
 } from 'react-native-popup-menu'
-
+import BottomButtonsSheet from '../Common/Modal/BottomButtonsSheet'
+import { getButtonBottomSheetHeight } from '../../styles'
+import DelayedButton from '../Common/Button/DelayedButton'
 // Actions
 import {
     cancelCreatingNewTribe,
@@ -69,12 +80,18 @@ const { width } = Dimensions.get('window')
 const height = Dimensions.get('window').height
 const WalkableView = walkthroughable(View)
 
+var radio_props = [
+    { label: 'Public', value: 1 },
+    { label: 'Private', value: 0 },
+]
+
 class CreateTribeModal extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             mediaModal: false,
             catogary: '',
+            privacy: 'public',
         }
     }
 
@@ -91,13 +108,15 @@ class CreateTribeModal extends React.Component {
     initializeForm() {
         const defaulVals = {
             name: undefined,
-            membersCanInvite: false,
+            isMemberInviteEnabled: false,
             isAutoAcceptEnabled: false,
             isPubliclyVisible: false,
             membershipLimit: undefined,
             description: '',
             picture: undefined,
             category: 'General',
+            tribeInviteCode: undefined,
+            guidelines: undefined,
         }
 
         // Initialize based on the props, if it's opened through edit button
@@ -140,19 +159,26 @@ class CreateTribeModal extends React.Component {
             tribeId // tribeId
         )
     }
+    handleImageIconOnClick = () => {
+        this.bottomSheetRef && this.bottomSheetRef.open()
+    }
 
     handleOpenCamera = () => {
+        this.bottomSheetRef.close()
+
         this.props.openCamera((result) => {
-            this.props.change('picture', result.uri)
+            this.props.change('picture', result.path)
         })
     }
 
     handleOpenCameraRoll = () => {
+        this.bottomSheetRef.close()
+
         const callback = R.curry((result) => {
             console.log('result is: ', result)
-            this.props.change('picture', result.uri)
+            this.props.change('picture', result.path)
         })
-        this.props.openCameraRoll(callback)
+        setTimeout(() => this.props.openCameraRoll(callback), 500)
     }
 
     renderInput = ({
@@ -162,8 +188,11 @@ class CreateTribeModal extends React.Component {
         meta: { touched, error },
         placeholder,
         keyboardType,
+        isDesc,
+        tribeInvite,
         ...custom
     }) => {
+        console.log('value', value)
         const inputStyle = {
             ...styles.inputStyle,
         }
@@ -176,9 +205,10 @@ class CreateTribeModal extends React.Component {
             <SafeAreaView
                 style={{
                     backgroundColor: 'white',
-                    borderBottomWidth: 0.5,
+                    borderWidth: 0.5,
                     margin: 5,
                     borderColor: 'lightgray',
+                    height: isDesc ? 120 : 35,
                 }}
             >
                 <TextInput
@@ -224,6 +254,35 @@ class CreateTribeModal extends React.Component {
             </View>
         )
     }
+    renderNextButton(handleSubmit) {
+        return (
+            <DelayedButton
+                style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    height: 40,
+                    width: '90%',
+                    backgroundColor: '#42C0F5',
+                    alignSelf: 'center',
+                    marginVertical: 10,
+                    justifyContent: 'center',
+                    borderRadius: 2,
+                }}
+                onPress={handleSubmit(this.handleCreate)}
+            >
+                <Text
+                    style={{
+                        fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                        fontWeight: '600',
+                        fontSize: 15,
+                        color: 'white',
+                    }}
+                >
+                    Create
+                </Text>
+            </DelayedButton>
+        )
+    }
 
     // Current media type is only picture
     renderMedia() {
@@ -239,17 +298,49 @@ class CreateTribeModal extends React.Component {
                 imageUrl = `${IMAGE_BASE_URL}${picture}`
             }
         }
+        const options = [
+            {
+                text: 'Open Gallery',
+                onPress: this.handleOpenCameraRoll,
+            },
+            {
+                text: 'Open Camera',
+                onPress: this.handleOpenCamera,
+            },
+        ]
 
-        if (this.props.picture) {
-            return (
-                <View style={{ backgroundColor: 'gray' }}>
-                    <ImageBackground
+        return (
+            <>
+                <BottomButtonsSheet
+                    ref={(r) => (this.bottomSheetRef = r)}
+                    buttons={options}
+                    height={getButtonBottomSheetHeight(options.length)}
+                />
+                <TouchableOpacity
+                    activeOpacity={0.6}
+                    onPress={this.handleImageIconOnClick}
+                >
+                    {/* <Image style={styles.mediaStyle} source={require("../../asset/icons/tribe_image_icon.png")} resizeMode="cover"/> */}
+                    {imageUrl === undefined || imageUrl === null ? (
+                        <Image
+                            style={styles.mediaStyle}
+                            source={require('../../asset/icons/tribe_image_icon.png')}
+                            resizeMode="cover"
+                        />
+                    ) : (
+                        <Image
+                            style={styles.mediaStyle}
+                            source={{ uri: imageUrl }}
+                            resizeMode="cover"
+                        />
+                    )}
+                    {/* <ImageBackground
                         style={styles.mediaStyle}
                         source={{ uri: imageUrl }}
                         imageStyle={{
                             borderRadius: 8,
                             opacity: 0.7,
-                            resizeMode: 'cover',
+                            resizeMode: 'contain',
                         }}
                     >
                         <View
@@ -323,12 +414,11 @@ class CreateTribeModal extends React.Component {
                                 }}
                             />
                         </TouchableOpacity>
-                    </ImageBackground>
-                    {this.renderImageModal(imageUrl)}
-                </View>
-            )
-        }
-        return null
+                    </ImageBackground> */}
+                    {/* {this.renderImageModal(imageUrl)} */}
+                </TouchableOpacity>
+            </>
+        )
     }
 
     renderImageModal(imageUrl) {
@@ -351,9 +441,9 @@ class CreateTribeModal extends React.Component {
     }
 
     renderTribeName() {
-        const titleText = <Text style={styles.titleTextStyle}>Tribe Name</Text>
+        const titleText = <Text style={styles.titleTextStyle}>*Tribe Name</Text>
         return (
-            <View style={{ marginBottom: 5 }}>
+            <View style={{ marginBottom: 5, paddingLeft: 10, width: '82%' }}>
                 {titleText}
                 <Field
                     name="name"
@@ -363,7 +453,97 @@ class CreateTribeModal extends React.Component {
                     numberOfLines={1}
                     multiline
                     style={styles.goalInputStyle}
-                    placeholder="Enter the name..."
+                    placeholder="Tribe Name"
+                />
+            </View>
+        )
+    }
+    renderInviteCode(handleSubmit) {
+        const titleText = (
+            <Text style={[styles.titleTextStyle, { paddingRight: 5 }]}>
+                Invite Code:
+            </Text>
+        )
+        const bottomText = (
+            <Text style={[styles.bottomTextStyle, { marginVertical: 3 }]}>
+                {this.props.tribeErr?.message ===
+                'Error updating Tribe. Ensure correct parameters provided.\n Error: you cannot change invite code before 30 days, you cannot change till : 12 8 2021'
+                    ? 'Sorry, the Tribe Invite code has already been changed within the last 30 days. You must wait  until 10/16/2021  before you can change the Tribe Invite code again. '
+                    : `Note- You may only change the Tribe Invite code once per 30 days.`}
+            </Text>
+        )
+        return (
+            <View
+                style={{
+                    marginBottom: 5,
+                    marginTop: 5,
+                    backgroundColor: 'white',
+                    padding: 10,
+                }}
+            >
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    {titleText}
+                    <Tooltip
+                        overlayColor="rgba(250, 250, 250, 0)"
+                        height={70}
+                        width={222}
+                        backgroundColor="#42C0F5"
+                        popover={
+                            <Text style={{ fontSize: 12, color: 'white' }}>
+                                Non-GoalMogul users can use this Tribe Invite
+                                Code to sign up to join GoalMogul!
+                            </Text>
+                        }
+                    >
+                        <Image
+                            source={require('../../asset/icons/question_mark.png')}
+                            style={{
+                                height: 18,
+                                width: 18,
+                                resizeMode: 'contain',
+                            }}
+                        />
+                    </Tooltip>
+                </View>
+                <Field
+                    name="tribeInviteCode"
+                    label="tribeInviteCode"
+                    component={this.renderInput}
+                    editable={!this.props.uploading}
+                    numberOfLines={1}
+                    multiline
+                    tribeInvite
+                    style={styles.goalInputStyle}
+                    placeholder="Invite Code"
+                />
+                {bottomText}
+                {this.renderNextButton(handleSubmit)}
+            </View>
+        )
+    }
+    renderTribeGuidelines() {
+        const titleText = (
+            <Text style={styles.titleTextStyle}>*Tribe Guidelines:</Text>
+        )
+        return (
+            <View
+                style={{
+                    marginBottom: 5,
+                    marginTop: 5,
+                    backgroundColor: 'white',
+                }}
+            >
+                {titleText}
+                <Field
+                    name="guidelines"
+                    label="guidelines"
+                    component={this.renderInput}
+                    editable={!this.props.uploading}
+                    numberOfLines={1}
+                    multiline
+                    isDesc={true}
+                    style={styles.goalInputStyle}
+                    placeholder="Rules, guidelines"
                 />
             </View>
         )
@@ -371,10 +551,21 @@ class CreateTribeModal extends React.Component {
 
     renderTribeMemberLimit() {
         const titleText = (
-            <Text style={styles.titleTextStyle}>Member Limit (Optional)</Text>
+            <Text style={styles.subTitleTextStyle}>
+                Member Limit (No Limit if left blank)
+            </Text>
         )
+        console.log(this.props)
         return (
-            <View style={{ marginBottom: 5 }}>
+            <View
+                style={{
+                    marginBottom: 5,
+                    backgroundColor: 'white',
+                    padding: 10,
+                }}
+            >
+                {this.renderOptions()}
+
                 {titleText}
                 <Field
                     name="membershipLimit"
@@ -384,16 +575,84 @@ class CreateTribeModal extends React.Component {
                     numberOfLines={1}
                     keyboardType="number-pad"
                     style={styles.goalInputStyle}
-                    placeholder="Enter a number..."
+                    placeholder="Default = 0 (No limit)"
                 />
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        marginVertical: 10,
+                        alignItems: 'center',
+                    }}
+                >
+                    <Text
+                        style={[
+                            styles.subTitleTextStyle,
+                            { paddingRight: '28%' },
+                        ]}
+                    >
+                        Members can invite their friends
+                    </Text>
+                    <ToggleSwitch
+                        size="small"
+                        isOn={this.props.isMemberInviteEnabled}
+                        animationSpeed={100}
+                        onToggle={() =>
+                            this.props.change(
+                                'isMemberInviteEnabled',
+                                !this.props.isMemberInviteEnabled
+                            )
+                        }
+                        thumbOffStyle={{
+                            borderWidth: 1,
+                            borderColor: '#45C9F6',
+                            height: 21,
+                            width: 21,
+                            borderRadius: 20,
+                            position: 'absolute',
+                            left: -5,
+                            backgroundColor: 'white',
+                        }}
+                        trackOffStyle={{
+                            borderWidth: 2,
+                            borderColor: '#45C9F6',
+                            width: 40,
+                            backgroundColor: 'white',
+                        }}
+                        thumbOnStyle={{
+                            borderWidth: 0.5,
+                            borderColor: '#45C9F6',
+                            height: 21,
+                            width: 21,
+                            borderRadius: 20,
+                            position: 'absolute',
+                            left: -5,
+                            backgroundColor: 'white',
+                        }}
+                        trackOnStyle={{
+                            width: 40,
+                            borderWidth: 2,
+                            borderColor: '#45C9F6',
+                            backgroundColor: '#45C9F6',
+                        }}
+                    />
+                </View>
             </View>
         )
     }
 
     renderTribeDescription() {
-        const titleText = <Text style={styles.titleTextStyle}>Description</Text>
+        const titleText = (
+            <Text style={styles.titleTextStyle}>*Description:</Text>
+        )
         return (
-            <View style={{ marginBottom: 5 }}>
+            <View
+                style={{
+                    marginBottom: 5,
+                    marginTop: 5,
+                    backgroundColor: 'white',
+                    padding: 10,
+                }}
+            >
                 {titleText}
                 <Field
                     name="description"
@@ -402,16 +661,135 @@ class CreateTribeModal extends React.Component {
                     editable={!this.props.uploading}
                     numberOfLines={5}
                     style={styles.goalInputStyle}
-                    placeholder="Describe your tribe..."
+                    isDesc={true}
+                    placeholder="Who is this tribe for and what is it about?"
                 />
+                {this.renderTribeCategory()}
+                {this.renderTribeGuidelines()}
             </View>
         )
     }
 
     renderOptions() {
+        const titleText = <Text style={styles.titleTextStyle}>*Privacy</Text>
         return (
-            <View>
-                <CheckBox
+            <View style={{ marginBottom: 5, backgroundColor: 'white' }}>
+                {titleText}
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        width: '100%',
+                        alignItems: 'center',
+                        marginTop: 10,
+                        marginBottom: 15,
+                    }}
+                >
+                    <Text
+                        style={[
+                            styles.subTitleTextStyle,
+                            { fontWeight: '300', fontSize: 14, flex: 1 },
+                        ]}
+                    >
+                        Tribe Visibility
+                    </Text>
+                    {/* <View style={{flexDirection:'row' ,alignItems:'center',justifyContent:'flex-end',flex:2,marginRight:'5%'}}>
+                <Text style={[styles.subTitleTextStyle,{fontWeight:'300',fontSize:13}]}>Public</Text>
+                <RadioButton
+        value={true}
+        uncheckedColor="#CCC"
+        color="#42C0F5"
+        status={ this.props.membersCanInvite === true ? 'checked' : 'unchecked' }
+        onPress={() =>
+            this.props.change(
+                'membersCanInvite',
+                true
+            )}
+      />
+      <Text style={[styles.subTitleTextStyle,{fontWeight:'300',fontSize:13}]}>Private</Text>
+      <RadioButton
+        value={false}
+        color="#42C0F5"
+        uncheckedColor="#CCC"
+        status={ this.props.membersCanInvite === false ? 'checked' : 'unchecked' }
+        onPress={() =>
+            this.props.change(
+                'membersCanInvite',
+                false
+            )}
+      />
+                </View> */}
+                    {/* <RadioForm
+  radio_props={radio_props}
+  formHorizontal={true}
+  initial={0}
+  buttonColor={'#42424273'}
+  buttonSize={20}
+  onPress={(value) => {
+      console.log(value);
+      this.props.change(
+    'membersCanInvite',
+    value===1?true:false)}}
+/> */}
+                    <RadioForm
+                        formHorizontal={true}
+                        animation={true}
+                        style={{ marginRight: 20 }}
+                    >
+                        {/* To create radio buttons, loop through your array of options */}
+                        {radio_props.map((obj, i) => {
+                            var ind =
+                                this.props.isPubliclyVisible === true ? 0 : 1
+                            return (
+                                <RadioButton labelHorizontal={true} key={i}>
+                                    {/*  You can set RadioButtonLabel before RadioButtonInput */}
+                                    <RadioButtonInput
+                                        obj={obj}
+                                        index={i}
+                                        isSelected={ind === i}
+                                        onPress={(value) => {
+                                            console.log(value)
+                                            this.props.change(
+                                                'isPubliclyVisible',
+                                                value === 1 ? true : false
+                                            )
+                                        }}
+                                        borderWidth={1}
+                                        buttonInnerColor={'#42C0F5'}
+                                        buttonOuterColor={
+                                            this.props.isPubliclyVisible ===
+                                            true
+                                                ? '#42C0F5'
+                                                : '#42424273'
+                                        }
+                                        buttonSize={12}
+                                        buttonOuterSize={16}
+                                        buttonStyle={{}}
+                                        buttonWrapStyle={{ marginLeft: 10 }}
+                                    />
+                                    <RadioButtonLabel
+                                        obj={obj}
+                                        index={i}
+                                        labelHorizontal={true}
+                                        onPress={(value) => {
+                                            console.log(value)
+                                            this.props.change(
+                                                'isMemberInviteEnabled',
+                                                value === 1 ? true : false
+                                            )
+                                        }}
+                                        labelStyle={{
+                                            fontSize: 14,
+                                            color: '#000000',
+                                            fontWeight: '500',
+                                        }}
+                                        labelWrapStyle={{}}
+                                    />
+                                </RadioButton>
+                            )
+                        })}
+                    </RadioForm>
+                </View>
+                {/* <CheckBox
                     title="Members can invite new members"
                     textStyle={{ fontWeight: 'normal' }}
                     checked={this.props.membersCanInvite}
@@ -427,8 +805,8 @@ class CreateTribeModal extends React.Component {
                             !this.props.membersCanInvite
                         )
                     }
-                />
-                <CheckBox
+                /> */}
+                {/* <CheckBox
                     title="Auto accept join request"
                     textStyle={{ fontWeight: 'normal' }}
                     checked={this.props.isAutoAcceptEnabled}
@@ -461,7 +839,7 @@ class CreateTribeModal extends React.Component {
                             !this.props.isPubliclyVisible
                         )
                     }
-                />
+                /> */}
             </View>
         )
     }
@@ -473,9 +851,9 @@ class CreateTribeModal extends React.Component {
         )
         return (
             <View style={{ marginTop: 4 }}>
-                {titleText}
+                {/* {titleText} */}
                 {this.renderMedia()}
-                {this.renderActionIcons()}
+                {/* {this.renderActionIcons()} */}
             </View>
         )
     }
@@ -513,7 +891,7 @@ class CreateTribeModal extends React.Component {
                 }}
             >
                 <View style={{ flexDirection: 'row' }}>
-                    <Text style={styles.subTitleTextStyle}>Category</Text>
+                    <Text style={styles.titleTextStyle}>*Category</Text>
                 </View>
 
                 {menu}
@@ -537,11 +915,11 @@ class CreateTribeModal extends React.Component {
             >
                 <KeyboardAvoidingView
                     behavior="padding"
-                    style={{ flex: 1, backgroundColor: '#ffffff' }}
+                    style={{ flex: 1, backgroundColor: '#E5E5E5' }}
                 >
                     <ModalHeader
                         title={titleText}
-                        actionText={actionText}
+                        // actionText={actionText}
                         onCancel={() => {
                             // const durationSec =
                             //     (new Date().getTime() -
@@ -555,20 +933,28 @@ class CreateTribeModal extends React.Component {
                             // )
                             this.props.cancelCreatingNewTribe()
                         }}
-                        onAction={handleSubmit(this.handleCreate)}
-                        actionDisabled={this.props.uploading}
+                        // onAction={handleSubmit(this.handleCreate)}
+                        // actionDisabled={this.props.uploading}
                     />
 
                     <ScrollView
-                        style={{ borderTopColor: '#e9e9e9', borderTopWidth: 1 }}
+                        style={{ borderTopColor: '#E5E5E5', borderTopWidth: 1 }}
                     >
-                        <View style={{ flex: 1, padding: 20 }}>
-                            {this.renderTribeName()}
+                        <View style={{ flex: 1 }}>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    width: '100%',
+                                    backgroundColor: 'white',
+                                    padding: 10,
+                                }}
+                            >
+                                {this.renderImageSelection()}
+                                {this.renderTribeName()}
+                            </View>
                             {this.renderTribeDescription()}
                             {this.renderTribeMemberLimit()}
-                            {this.renderTribeCategory()}
-                            {this.renderOptions()}
-                            {this.renderImageSelection()}
+                            {this.renderInviteCode(handleSubmit)}
                         </View>
                     </ScrollView>
                 </KeyboardAvoidingView>
@@ -592,13 +978,16 @@ const mapStateToProps = (state) => {
         user,
         profile,
         name: selector(state, 'name'),
-        membersCanInvite: selector(state, 'membersCanInvite'),
+        isMemberInviteEnabled: selector(state, 'isMemberInviteEnabled'),
         isAutoAcceptEnabled: selector(state, 'isAutoAcceptEnabled'),
         isPubliclyVisible: selector(state, 'isPubliclyVisible'),
         membershipLimit: selector(state, 'membershipLimit'),
         description: selector(state, 'description'),
         category: selector(state, 'category'),
         picture: selector(state, 'picture'),
+        guidelines: selector(state, 'guidelines'),
+        tribeInviteCode: selector(state, 'tribeInviteCode'),
+        tribeErr: selector(state, 'tribeErr'),
         formVals: state.form.createTribeModal,
         uploading,
     }
@@ -634,9 +1023,16 @@ const styles = {
         borderRadius: 5,
     },
     titleTextStyle: {
-        fontSize: 11,
-        color: '#a1a1a1',
+        fontSize: 14,
+        fontWeight: '700',
         padding: 2,
+    },
+    bottomTextStyle: {
+        fontSize: 12,
+        fontWeight: '400',
+        padding: 2,
+        color: 'grey',
+        textAlign: 'center',
     },
     standardInputStyle: {
         flex: 1,
@@ -659,8 +1055,8 @@ const styles = {
         borderRadius: 22,
     },
     subTitleTextStyle: {
-        fontSize: 11,
-        color: '#a1a1a1',
+        fontSize: 14,
+        fontWeight: '600',
         padding: 2,
     },
     cancelIconStyle: {
@@ -681,9 +1077,12 @@ const styles = {
         alignSelf: 'center',
     },
     mediaStyle: {
-        height: 150,
+        height: 65,
+        width: 65,
         alignItems: 'center',
         justifyContent: 'center',
+        borderRadius: 32.5,
+        backgroundColor: '#4a4a4a',
     },
     actionIconWrapperStyle: {
         backgroundColor: '#fafafa',

@@ -500,7 +500,7 @@ class ChatRoomConversation extends React.Component {
     handleOpenCamera = () => {
         this.props.openCamera(
             (result) => {
-                this.props.changeMessageMediaRef(result.uri)
+                this.props.changeMessageMediaRef(result.path)
             },
             null,
             null,
@@ -509,7 +509,7 @@ class ChatRoomConversation extends React.Component {
     }
     handleOpenCameraRoll = () => {
         const callback = R.curry((result) => {
-            this.props.changeMessageMediaRef(result.uri)
+            this.props.changeMessageMediaRef(result.path)
         })
         this.props.openCameraRoll(callback, { disableEditing: true })
     }

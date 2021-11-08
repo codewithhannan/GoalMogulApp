@@ -365,6 +365,7 @@ class RegistrationAccount extends React.Component {
             registerErrMsg,
             inviterCode,
         } = this.props
+        console.log(gender)
 
         return (
             <View

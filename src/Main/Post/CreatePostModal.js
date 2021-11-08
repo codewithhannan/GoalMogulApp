@@ -333,7 +333,7 @@ class CreatePostModal extends Component {
         const callback = (result) => {
             this.bottomSheetRef.open()
 
-            this.props.change('mediaRef', result.uri)
+            this.props.change('mediaRef', result.path)
             this.setState({ clickedButton: false })
         }
         setTimeout(() => {
@@ -346,9 +346,10 @@ class CreatePostModal extends Component {
         this.setState({ clickedButton: true })
         this.bottomSheetRef.close()
         const callback = (result) => {
+            console.log(result)
             this.bottomSheetRef.open()
 
-            this.props.change('mediaRef', result.uri)
+            this.props.change('mediaRef', result.path)
             this.setState({ clickedButton: false })
         }
         setTimeout(() => {
@@ -728,6 +729,7 @@ class CreatePostModal extends Component {
     renderMedia() {
         const { mediaRef, uploading } = this.props
         let imageUrl = mediaRef
+        // console.log('MEDIA REF HA YE', mediaRef)
 
         if (!this.isMediaNotUploaded()) {
             // if nor stored locally image source must be from server
@@ -1362,6 +1364,8 @@ class CreatePostModal extends Component {
             belongsToGoalStoryline,
         } = this.props
         const { profile } = user
+
+        // console.log('THISIS THE MEDIAREF', mediaRef)f
 
         const actionDisabled =
             uploading ||

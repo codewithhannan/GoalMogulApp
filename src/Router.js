@@ -123,6 +123,7 @@ import Tutorial from './Tutorial/Tutorial'
 import MultiUserInvitePage from './Main/Common/MultiUserInvitePage'
 import TribeHub from './Main/Explore/TribeHub'
 import MyTribeGoalShare from './Main/Menu/Tribe/MyTribeGoalShare'
+import MyTribeInviteFriends from './Main/Menu/Tribe/MyTribeInviteFriends'
 import MainProfile from './Main/Profile/MainProfile'
 import ReplyThread from './Main/Goal/GoalDetailCard/Comment/ReplyThread'
 import TribeDiscover from './Main/Tribe/TribeDiscover'
@@ -964,6 +965,11 @@ class RouterComponent extends Component {
                     <Scene
                         key="myTribeGoalShareView"
                         component={MyTribeGoalShare}
+                        hideNavBar
+                    />
+                    <Scene
+                        key="myTribeGoalInviteFriends"
+                        component={MyTribeInviteFriends}
                         hideNavBar
                     />
                     <Scene

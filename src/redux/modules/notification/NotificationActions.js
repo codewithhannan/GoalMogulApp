@@ -2,6 +2,7 @@
 
 // import { AsyncStorage } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+// const ReactMoE = require('react-native-moengage')
 
 /**
  * Actions for notification tab and general notification like subscribe
@@ -12,6 +13,7 @@ import * as SecureStore from 'expo-secure-store'
 import { Alert, Platform } from 'react-native'
 import _ from 'lodash'
 import { Actions } from 'react-native-router-flux'
+import messaging from '@react-native-firebase/messaging'
 
 // Components
 import { DropDownHolder } from '../../../Main/Common/Modal/DropDownModal'
@@ -37,6 +39,8 @@ import { myEventDetailOpenWithId } from '../event/MyEventActions'
 
 /* Utils */
 import { Logger } from '../../middleware/utils/Logger'
+
+import ReactMoE from 'react-native-moengage'
 
 import {
     NOTIFICATION_UNSUBSCRIBE,
@@ -410,6 +414,20 @@ export const openNotificationDetail = (item) => (dispatch, getState) => {
  */
 export const seeMore = (type) => (dispatch, getState) => {}
 
+//RESGISTERING DEVICE WITH FCM FOR MOENGAGE
+export const getFcmToken = async () => {
+    console.log('FCM HA YE')
+    // Register the device with FCM
+    await messaging().registerDeviceForRemoteMessages()
+
+    // Get the token
+    const token = await messaging().getToken()
+    console.log('FCM TOKEN', token)
+
+    ReactMoE.passFcmPushToken(token)
+    // Save the token
+}
+
 /**
  * Ask user for notification token to send over to subscribe for notification
  */
@@ -511,8 +529,32 @@ export const subscribeNotification = () => async (dispatch, getState) => {
     }
 
     // Get the token that uniquely identifies this device
-    const notificationToken = await Notifications.getExpoPushTokenAsync()
+    const {
+        status: existingStatuss,
+    } = await Notifications.getPermissionsAsync()
+    let finalStatus = existingStatuss
+    if (existingStatuss !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync()
+        finalStatus = status
+    }
+    if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!')
+        return
+    }
+    const notificationToken = await Notifications.getExpoPushTokenAsync({
+        experienceId: '@a0n0d0y/goalmogul',
+    })
+    // const token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log('push token', notificationToken)
 
+    if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: 'blue',
+        })
+    }
     // Get the token that an user has on this device
     // const hasToken = await SecureStore.getItemAsync(NOTIFICATION_TOKEN_KEY, {})
 
@@ -535,6 +577,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
         //     {}
         // )
         await AsyncStorage.setItem(NOTIFICATION_TOKEN_KEY, notificationToken)
+        // ReactMoE.passFcmPushToken(notificationToken)
 
         console.log(
             `${DEBUG_KEY}: register notification succeed success with res: `,

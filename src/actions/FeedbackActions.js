@@ -6,39 +6,53 @@ import {
     feedbackImagesSelected,
     feedbackImagesToSend,
 } from '../reducers/FeedbackReducers'
-import * as ImagePicker from 'expo-image-picker'
+import * as ImagePickers from 'expo-image-picker'
 import ImageUtils from '../Utils/ImageUtils'
 import { api as API } from '../redux/middleware/api'
 import { Alert } from 'react-native'
+import ImagePicker from 'react-native-image-crop-picker'
 
 const DEBUG_KEY = '[Feedback Actions]'
 
 export const openFeedBackCameraRoll = (callback, maybeOptions) => async (
     dispatch
 ) => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    const { status } = await ImagePickers.requestMediaLibraryPermissionsAsync()
     if (status !== 'granted') {
         // TODO: fire event to say permission not granted
         return alert('Please grant access to photos and camera.')
     }
     const disableEditing = maybeOptions && maybeOptions.disableEditing
-    const result = await ImagePicker.launchImageLibraryAsync(
-        disableEditing
-            ? {}
-            : {
-                  allowsEditing: true,
-                  aspect: [4, 3],
-                  quality: 0.9,
-              }
-    )
-
-    if (!result.cancelled) {
+    ImagePicker.openPicker({
+        width: 848,
+        height: 480,
+        compressImageQuality: 0.7,
+        cropping: true,
+        includeExif: true,
+    }).then((image) => {
+        // console.log('IMAGE HYE HA', image)
         if (callback) {
-            return callback(result)
+            return callback(image)
         }
+        return dispatch(feedbackImagesSelected(image))
+    })
+    // const result = await ImagePickers.launchImageLibraryAsync(
+    //     disableEditing
+    //         ? {}
+    //         : {
+    //               allowsEditing: true,
+    //               aspect: [4, 3],
+    //               quality: 0.9,
+    //           }
+    // )
 
-        return dispatch(feedbackImagesSelected(result))
-    }
+    // if (!result.cancelled) {
+    //     if (callback) {
+    //         return callback(result)
+    //     }
+
+    //     return dispatch(feedbackImagesSelected(result))
+    // }
 }
 
 export const deleteFeedback = (index) => {
@@ -60,7 +74,7 @@ export const sendFeedbackImages = (description, maybeShowModal) => async (
 ) => {
     // Obtain pre-signed url
     const imageUri = getState().feedback.feedBackimages.map((feedback) => {
-        return feedback.uri
+        return feedback.path
     })
 
     const { token } = getState().user
@@ -83,7 +97,7 @@ export const sendFeedbackImages = (description, maybeShowModal) => async (
                             // Upload image to S3 server
                             console.log('image to upload is: ', resizedImage)
                             return ImageUtils.getPresignedUrl(
-                                resizedImage.uri,
+                                resizedImage.path,
                                 token,
                                 (objectKey) => {
                                     console.log(

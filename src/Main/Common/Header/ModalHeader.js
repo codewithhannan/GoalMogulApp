@@ -41,18 +41,20 @@ const ModalHeader = (props) => {
         titleIconStyle,
         actionIcon,
         tutorialOn,
+        cross,
     } = props
     const cancel = cancelText || 'Cancel'
 
-    let leftComponent = back ? (
-        <Icon
-            name="chevron-left"
-            pack="material-community"
-            style={HEADER_STYLES.nakedButton}
-        />
-    ) : (
-        <Text style={styles.cancelTextStyle}>{cancel}</Text>
-    )
+    let leftComponent =
+        back || cross ? (
+            <Icon
+                name={cross ? 'close' : 'chevron-left'}
+                pack="material-community"
+                style={HEADER_STYLES.nakedButton}
+            />
+        ) : (
+            <Text style={styles.cancelTextStyle}>{cancel}</Text>
+        )
 
     let actionComponent = (
         <DelayedButton

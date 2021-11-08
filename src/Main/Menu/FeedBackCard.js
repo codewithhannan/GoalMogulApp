@@ -73,12 +73,12 @@ class FeedBackCard extends Component {
 
                         borderRadius: 10,
                     }}
-                    source={{ uri: item.uri }}
+                    source={{ uri: item.path }}
                 />
 
                 <View>
                     <View style={{ flexDirection: 'row', top: 20 }}>
-                        <Text style={{}}>{item.uri.slice(195)}</Text>
+                        <Text style={{}}>{item.path.slice(195)}</Text>
                         <Text
                             style={{
                                 position: 'absolute',

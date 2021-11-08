@@ -3,13 +3,15 @@
 import { Actions } from 'react-native-router-flux'
 import { ImagePickerIOS } from 'react-native'
 import CameraRoll from '@react-native-community/cameraroll'
-import * as ImagePicker from 'expo-image-picker'
+import * as ImagePickerr from 'expo-image-picker'
 import * as Contacts from 'expo-contacts'
 import { SubmissionError } from 'redux-form'
 import { api as API } from '../redux/middleware/api'
 import { tutorial as Tutorial } from '../redux/modules/auth/Tutorial'
 import { DropDownHolder } from '../Main/Common/Modal/DropDownModal'
 import { track, trackWithProperties, EVENT as E } from '../monitoring/segment'
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
+import ImagePicker from 'react-native-image-crop-picker'
 
 import {
     REGISTRATION_BACK,
@@ -306,7 +308,7 @@ export const openCamera = (
 ) => async (dispatch, getState) => {
     var result
 
-    const permissionGranted = await ImagePicker.requestCameraPermissionsAsync()
+    const permissionGranted = await ImagePickerr.requestCameraPermissionsAsync()
     console.log(`${DEBUG_KEY}: permissionGranted is: ${permissionGranted}`)
 
     if (permissionGranted.status !== 'granted') {
@@ -318,42 +320,83 @@ export const openCamera = (
     }
 
     if (mayBeVideoOpen) {
-        result = await ImagePicker.launchCameraAsync({
-            mediaTypes: 'All',
-        }).catch((error) => console.log('THIS IS ERROR OF IMAGE', error))
-    } else {
-        result = await ImagePicker.launchCameraAsync({
-            mediaTypes: 'Images',
-        }).catch((error) => console.log('THIS IS ERROR OF IMAGE', error))
-    }
-
-    if (!result.cancelled || result.cancelled) {
-        if (callback) {
-            return callback(result)
-        }
-        if (maybeTrackImageSelected) {
-            maybeTrackImageSelected()
-        }
-        return dispatch({
-            type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
-            payload: result.uri,
+        ImagePicker.openCamera({
+            mediaType: 'any',
+            width: 848,
+            height: 500,
+            cropping: true,
+            includeExif: true,
+            // multiple: true,
+        }).then((vid) => {
+            console.log('camera HYE HA', vid)
+            if (vid !== undefined || vid === undefined)
+                if (callback) {
+                    return callback(vid)
+                }
+            if (maybeTrackImageSelected) {
+                maybeTrackImageSelected()
+            }
+            return dispatch({
+                type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+                payload: vid.path,
+            })
         })
+        // result = await ImagePickerr.launchCameraAsync({
+        //     mediaTypes: 'All',
+        // }).catch((error) => console.log('THIS IS ERROR OF IMAGE', error))
+    } else {
+        ImagePicker.openCamera({
+            width: 848,
+            height: 500,
+            cropping: true,
+            includeExif: true,
+            // multiple: true,
+        }).then((img) => {
+            console.log('IMAGE HYE HA', img)
+            if (img !== undefined || img === undefined)
+                if (callback) {
+                    return callback(img)
+                }
+            if (maybeTrackImageSelected) {
+                maybeTrackImageSelected()
+            }
+            return dispatch({
+                type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+                payload: img.path,
+            })
+        })
+        // result = await ImagePickerr.launchCameraAsync({
+        //     mediaTypes: 'Images',
+        // }).catch((error) => console.log('THIS IS ERROR OF IMAGE', error))
     }
 
-    console.log('user took image fail with result: ', result)
+    // if (!result.cancelled || result.cancelled) {
+    //     if (callback) {
+    //         return callback(result)
+    //     }
+    //     if (maybeTrackImageSelected) {
+    //         maybeTrackImageSelected()
+    //     }
+    //     return dispatch({
+    //         type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+    //         payload: result.uri,
+    //     })
+    // }
+
+    // console.log('user took image fail with result: ', result)
 }
 
 export const openCameraForVideo = (showModal) => async (dispatch, getState) => {
     var result
 
-    const permissionGranted = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    const permissionGranted = await ImagePickerr.requestMediaLibraryPermissionsAsync()
     console.log(`${DEBUG_KEY}: permissionGranted is: ${permissionGranted}`)
 
     if (permissionGranted.status !== 'granted') {
         return alert('Please grant access to photos and camera.')
     }
 
-    result = await ImagePicker.launchCameraAsync({
+    result = await ImagePickerr.launchCameraAsync({
         mediaTypes: 'Videos',
         quality: 0.5,
         videoMaxDuration: 10,
@@ -375,13 +418,13 @@ export const openCameraForVideo = (showModal) => async (dispatch, getState) => {
 }
 
 export const openCameraRollForVideo = (showModal) => async (dispatch) => {
-    const permissionGranted = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    const permissionGranted = await ImagePickerr.requestMediaLibraryPermissionsAsync()
 
     if (permissionGranted.status !== 'granted') {
         return alert('Please grant access to photos and camera.')
     }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePickerr.launchImageLibraryAsync({
         mediaTypes: 'Videos',
     })
 
@@ -397,7 +440,7 @@ export const openCameraRollForVideo = (showModal) => async (dispatch) => {
 }
 
 export const getPhotosAsync = async () => {
-    const permissionGranted = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    const permissionGranted = await ImagePickerr.requestMediaLibraryPermissionsAsync()
 
     if (permissionGranted.status !== 'granted') {
         return alert('Please grant access to photos and camera.')
@@ -420,11 +463,11 @@ export const openCameraRoll = (
     maybeTrackImageSelected
 ) => async (dispatch) => {
     console.log('MAYBE OPTION', maybeOptions)
-    const permissionGranted = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    // const permissionGranted = await ImagePicker.requestMediaLibraryPermissionsAsync()
 
-    if (permissionGranted.status !== 'granted') {
-        return alert('Please grant access to photos and camera.')
-    }
+    // if (permissionGranted.status !== 'granted') {
+    //     return alert('Please grant access to photos and camera.')
+    // }
 
     if (maybeTrackCamRollOpen) {
         maybeTrackCamRollOpen()
@@ -432,33 +475,105 @@ export const openCameraRoll = (
 
     const disableEditing = maybeOptions && maybeOptions.disableEditing
 
-    const result = await ImagePicker.launchImageLibraryAsync(
-        disableEditing
-            ? {
-                  mediaTypes: 'All',
-              }
-            : {
-                  allowsEditing: true,
-                  aspect: [4, 3],
-                  quality: 0.9,
-                  exif: true,
-              }
-    )
-
-    if (!result.cancelled || result.cancelled) {
-        if (callback) {
-            return callback(result)
-        }
-        if (maybeTrackImageSelected) {
-            maybeTrackImageSelected()
-        }
-        return dispatch({
-            type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
-            payload: result.uri,
+    // const result = await ImagePicker.launchImageLibraryAsync(
+    //     disableEditing
+    //         ? {
+    //               mediaTypes: 'All',
+    //           }
+    //         : {
+    //               allowsEditing: true,
+    //               aspect: [4, 3],
+    //               quality: 0.9,
+    //               exif: true,
+    //           }
+    // )
+    // launchImageLibrary(
+    //     disableEditing
+    //         ? {
+    //               mediaType: 'All',
+    //               videoQuality: 'low',
+    //           }
+    //         : {
+    //               mediaType: 'photo',
+    //               //   allowsEditing: true,
+    //               //   aspect: [4, 3],
+    //               quality: 0.7,
+    //               //   exif: true,
+    //           },
+    //     ({ didCancel, assets }) => {
+    //         if (!didCancel || didCancel) {
+    //             if (callback) {
+    //                 return callback(assets[0])
+    //             }
+    //             if (maybeTrackImageSelected) {
+    //                 maybeTrackImageSelected()
+    //             }
+    //             return dispatch({
+    //                 type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+    //                 payload: assets[0].uri,
+    //             })
+    //         }
+    //     }
+    // )
+    if (disableEditing) {
+        ImagePicker.openPicker({
+            mediaType: 'any',
+            width: 848,
+            height: 500,
+            cropping: true,
+            includeExif: true,
+            // multiple: true,
+        }).then((vid) => {
+            console.log('IMAGE HYE HA', vid)
+            if (vid !== undefined || vid === undefined)
+                if (callback) {
+                    return callback(vid)
+                }
+            if (maybeTrackImageSelected) {
+                maybeTrackImageSelected()
+            }
+            return dispatch({
+                type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+                payload: vid.path,
+            })
+        })
+    } else {
+        ImagePicker.openPicker({
+            width: 848,
+            height: 500,
+            compressImageQuality: 0.7,
+            cropping: true,
+            includeExif: true,
+        }).then((image) => {
+            // console.log('IMAGE HYE HA', image)
+            if (image !== undefined || image === undefined)
+                if (callback) {
+                    return callback(image)
+                }
+            if (maybeTrackImageSelected) {
+                maybeTrackImageSelected()
+            }
+            return dispatch({
+                type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+                payload: image.path,
+            })
         })
     }
 
-    console.log('user choosing from camera roll fail with result: ', result)
+    // if (!result.cancelled || result.cancelled) {
+    //     if (callback) {
+    //         return callback(result)
+    //     }
+    //     if (maybeTrackImageSelected) {
+    //         maybeTrackImageSelected()
+    //     }
+    //     return dispatch({
+    //         type: REGISTRATION_ADDPROFILE_CAMERAROLL_PHOTO_CHOOSE,
+    //         payload: result.uri,
+    //     })
+    // }
+
+    // console.log('user choosing from camera roll fail with result: ', result)
     // Method 2:
     // ImagePickerIOS.canUseCamera(() => {
     //   ImagePickerIOS.openSelectDialog({}, imageUri => {

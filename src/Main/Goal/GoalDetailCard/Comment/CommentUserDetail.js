@@ -338,7 +338,7 @@ class CommentUserDetail extends Component {
         return (
             <ProfileImage
                 imageUrl={getProfileImageOrDefaultFromUser(item.owner)}
-                userId={item.owner._id}
+                userId={item?.owner?._id}
             />
         )
     }

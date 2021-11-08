@@ -17,6 +17,9 @@ import { enableScreens } from 'react-native-screens'
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
 import 'react-native-reanimated'
 import DeepLinking from 'react-native-deep-linking'
+import ReactMoE from 'react-native-moengage'
+import messaging from '@react-native-firebase/messaging'
+// import ReactMoE from 'react-native-moengage'
 
 // State management
 import { Provider as ReduxProvider } from 'react-redux'
@@ -114,13 +117,50 @@ export default class App extends React.Component {
         StatusBar.setBarStyle('light-content')
     }
 
-    // componentDidMount() {
-    //     Linking.getInitialURL()
-    //         .then((url) => this.handleOpenURL({ url }))
-    //         .catch(console.error)
+    componentDidMount() {
+        // DeepLinking.addScheme('example1://')
+        // DeepLinking.addRoute('/test', (response) => {
+        //     console.log('SUPPORTED 5', response)
+        // })
+        // Linking.getInitialURL()
+        //     .then((ev) => {
+        //         if (ev) {
+        //             console.log('SUPPORTED 5', ev)
+        //             this.handleUrl(ev)
+        //         }
+        //     })
+        //     .catch((err) => {
+        //         console.warn('An error occurred', err)
+        //     })
+        // Linking.addEventListener('url', this.handleUrl)
+        // Linking.getInitialURL()
+        //     .then((url) => {
+        //         if (url) {
+        //             Linking.openURL(url)
+        //         }
+        //     })
+        //     .catch((err) => console.error('An error occurred', err))
 
-    //     Linking.addEventListener('url', this.handleOpenURL)
-    // }
+        var url = Linking.getInitialURL()
+            .then((url) => {
+                console.log('url', url)
+                if (url) {
+                    Linking.openURL(url)
+                }
+            })
+            .catch((err) => console.error('An error occurred', err))
+        ReactMoE.initialize()
+    }
+
+    componentWillUnmount() {
+        Linking.removeEventListener('url', this.handleUrl)
+    }
+    onMessageReceived = async (message) => {
+        console.log('A FCM MESSAGE WAS RECIEVED', message)
+        if (Platform.OS === 'android') {
+            ReactMoE.passFcmPushPayload(message.data)
+        }
+    }
 
     // componentWillUnmount() {
     //     Linking.removeEventListener('url', this.handleOpenURL)
@@ -138,8 +178,19 @@ export default class App extends React.Component {
     // }
 
     render() {
+        ReactMoE.setEventListener('pushClicked', (notificationPayload) => {
+            console.log('pushClicked', notificationPayload)
+        })
         console.disableYellowBox = true
         enableScreens(false)
+        if (Platform.OS === 'android') {
+            messaging().onMessage(this.onMessageReceived)
+            messaging().setBackgroundMessageHandler(this.onMessageReceived)
+        }
+        if (Platform.OS === 'ios') {
+            console.log('REGISTER FOR IOS MOENGAGE')
+            ReactMoE.registerForPush()
+        }
         return (
             // <View
             //     style={{

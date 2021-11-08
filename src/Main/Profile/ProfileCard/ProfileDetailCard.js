@@ -20,7 +20,8 @@ import Icons from '../../../asset/base64/Icons'
 import { default_style, color } from '../../../styles/basic'
 import { PROFILE_STYLES } from '../../../styles/Profile'
 import { createReport } from '../../../redux/modules/report/ReportActions'
-import * as ImagePicker from 'expo-image-picker'
+// import * as ImagePicker from 'expo-image-picker'
+import ImagePicker from 'react-native-image-crop-picker'
 
 import { Entypo } from '@expo/vector-icons'
 
@@ -579,22 +580,29 @@ class ProfileDetailCard extends Component {
     pickImage = async () => {
         let res
         try {
-            res = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                allowsEditing: true,
-                aspect: [1, 1],
-                quality: 1,
+            ImagePicker.openPicker({
+                width: 300,
+                height: 400,
+                cropping: true,
+                includeExif: true,
+            }).then((image) => {
+                res = image
+                this.props.updateProfilePic(image.path, this.props.pageId)
             })
-
-            this.props.updateProfilePic(res.uri, this.props.pageId)
+            // res = await ImagePicker.launchImageLibraryAsync({
+            //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            //     allowsEditing: true,
+            //     aspect: [1, 1],
+            //     quality: 1,
+            // })
         } catch (err) {
             console.log(
                 '\nError while selecting image from device: ',
                 err.message
             )
         }
-        if (!res.cancelled) {
-            this.setState({ imageUrl: res.uri })
+        if (!res === undefined) {
+            this.setState({ imageUrl: res.path })
         }
     }
 

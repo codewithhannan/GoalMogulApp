@@ -275,7 +275,7 @@ class CommentBoxV2 extends Component {
         setTimeout(() => {
             this.props.openCamera((result) => {
                 this.props.newCommentOnMediaRefChange(
-                    result.uri,
+                    result.path,
                     this.props.pageId
                 )
             })
@@ -284,7 +284,11 @@ class CommentBoxV2 extends Component {
 
     handleOpenCameraRoll = () => {
         const callback = R.curry((result) => {
-            this.props.newCommentOnMediaRefChange(result.uri, this.props.pageId)
+            console.log(result)
+            this.props.newCommentOnMediaRefChange(
+                result.path,
+                this.props.pageId
+            )
         })
         this.bottomSheetRef.close()
         setTimeout(() => {
@@ -457,14 +461,18 @@ class CommentBoxV2 extends Component {
                 style={styles.mediaContainerStyle}
                 onPress={onPress}
             >
-                <ProfileImage
+                <Image
+                    style={{ width: 50, height: 50, borderRadius: 0 }}
+                    source={{ uri: mediaRef }}
+                />
+                {/* <ProfileImage
                     imageStyle={{ width: 50, height: 50, borderRadius: 0 }}
                     imageUrl={mediaRef}
                     imageContainerStyle={{
                         alignItems: 'center',
                         justifyContent: 'center',
                     }}
-                />
+                /> */}
                 <View
                     style={{
                         flex: 1,

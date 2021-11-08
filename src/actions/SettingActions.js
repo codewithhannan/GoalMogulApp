@@ -581,7 +581,7 @@ export const registerForPushNotificationsAsync = () => async (
 
     // Get the token that uniquely identifies this device
     const notificationToken = await Notifications.getExpoPushTokenAsync({
-        experienceId: 'abdulhannan/goalmogul',
+        experienceId: 'abdulhannan1996/goalmogul',
     })
 
     const onSuccess = (res) => {

@@ -230,6 +230,7 @@ class SendFeedback extends Component {
                                 width: '90%',
                                 height: 35,
                                 alignSelf: 'center',
+                                justifyContent: 'center',
                             },
                         ]}
                         onPress={() => {
@@ -249,8 +250,6 @@ class SendFeedback extends Component {
                                             : color.GM_BLUE,
                                     width: '90%',
                                     height: 35,
-                                    alignSelf: 'center',
-                                    marginBottom: 10,
                                 },
                             ]}
                             onPress={() => {

@@ -11,6 +11,7 @@ import {
     formValueSelector,
 } from 'redux-form'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import ReactMoE from 'react-native-moengage'
 
 /* Actions */
 import { registerUser, loginUser } from './actions'
@@ -237,6 +238,8 @@ class LoginPage extends Component {
                     this.props.change('username', username)
                 },
                 onSuccess: () => {
+                    ReactMoE.setUserUniqueID(username)
+                    ReactMoE.setUserEmailID(username)
                     this.resetNumFailLoginAttempt()
                     this.resetErrorMessage()
                 },

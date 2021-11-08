@@ -64,6 +64,8 @@ import { auth as Auth } from '../auth/Auth'
 import { is2xxRespose } from '../../middleware/utils'
 import { Actions } from 'react-native-router-flux'
 import { storeData } from '../../../store/storage'
+import ReactMoE from 'react-native-moengage'
+import { Platform } from 'react-native'
 
 const DEBUG_KEY = '[ Action RegistrationActions ]'
 /**
@@ -307,6 +309,13 @@ export const registerAccount = (onSuccess, dateToSend) => async (
         const res = await API.post('pub/user/', { ...data })
 
         if (res.status == 200) {
+            ReactMoE.setUserUniqueID(email)
+            ReactMoE.setUserName(name)
+            ReactMoE.setUserEmailID(email)
+            if (gender !== undefined) {
+                ReactMoE.setUserGender(gender)
+            }
+            ReactMoE.setUserBirthday(dateOfBirth)
             track(E.REG_FIELDS_FILL)
         }
 
