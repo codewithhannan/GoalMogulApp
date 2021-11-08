@@ -169,7 +169,7 @@ class MemberListCard extends Component {
         }
 
         return (
-            <View style={{ flexDirection: 'row', marginTop: 10 }}>
+            <View style={{ flexDirection: 'row', marginVertical: 10 }}>
                 {button}
                 <View style={{ flex: 1 }} />
             </View>
@@ -259,7 +259,7 @@ class MemberListCard extends Component {
             <View
                 style={{
                     flexDirection: 'row',
-                    marginRight: 6,
+                    marginVertical: 6,
                     alignItems: 'center',
                 }}
             >
@@ -318,7 +318,7 @@ class MemberListCard extends Component {
                     {this.renderInfo(item)}
                     <UserTopGoals
                         user={item}
-                        style={{ marginLeft: 0, marginTop: 4 }}
+                        style={{ marginLeft: 0, marginVertical: 4 }}
                     />
                     {this.props.isFriend
                         ? null
@@ -358,8 +358,7 @@ const styles = {
         flexDirection: 'row',
         paddingLeft: 10,
         paddingRight: 20,
-        paddingTop: 8,
-        paddingBottom: 8,
+        paddingVertical: 10,
         alignItems: 'center',
         backgroundColor: '#ffffff',
         borderBottomWidth: 1,

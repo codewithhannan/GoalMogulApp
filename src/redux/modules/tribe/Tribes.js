@@ -111,6 +111,11 @@ export const MYTRIBE_GOAL_LOAD = 'mytribe_goal_load'
 export const MYTRIBE_GOAL_LOAD_DONE = 'mytribe_goal_load_done'
 export const MYTRIBE_GOAL_REFRESH = 'mytribe_goal_refresh'
 export const MYTRIBE_GOAL_REFRESH_DONE = 'mytribe_goal_refresh_done'
+export const MYTRIBE_FRIEND_INVITE_SELECTED_ITEM =
+    'mytribe_friend_invite_selected_item'
+export const MYTRIBE_FRIEND_INVITE_UNSELECTED_ITEM =
+    'mytribe_friend_invite_unselected_item'
+export const MYTRIBE_FRIEND_CLEAR = 'mytribe_friend_clear'
 
 export const MEMBER_UPDATE_TYPE = {
     promoteAdmin: 'promoteAdmin',
@@ -165,7 +170,7 @@ const INITIAL_TRIBE_OBJECT = {
 }
 
 // keeps a map between tribeId --> tribe object
-const INITIAL_STATE = {}
+const INITIAL_STATE = { selectedItemFriend: [] }
 
 const DEBUG_KEY = '[ Reducer Tribes ]'
 
@@ -261,7 +266,63 @@ export default (state = INITIAL_STATE, action) => {
             newState = _.set(newState, tribeId, tribeObjectToUpdate)
             return newState
         }
+        case MYTRIBE_FRIEND_INVITE_SELECTED_ITEM: {
+            const newState = _.cloneDeep(state)
+            const { selectedItemFriend } = action.payload
+            console.log('MY TRIBE FRIENDS', selectedItemFriend)
+            if (state.selectedItemFriend.length > 0) {
+                if (
+                    !state.selectedItemFriend.some(
+                        (e) => e._id === selectedItemFriend._id
+                    )
+                ) {
+                    console.log('IF THIS CONDITION')
+                    return _.set(newState, `selectedItemFriend`, [
+                        ...state.selectedItemFriend,
+                        selectedItemFriend,
+                    ])
+                } else {
+                    return _.set(
+                        newState,
+                        `selectedItemFriend`,
+                        state.selectedItemFriend
+                    )
+                }
+            } else {
+                return _.set(newState, `selectedItemFriend`, [
+                    selectedItemFriend,
+                ])
+            }
+        }
 
+        case MYTRIBE_FRIEND_INVITE_UNSELECTED_ITEM: {
+            const newState = _.cloneDeep(state)
+            const { selectedItemFriend } = action.payload
+            console.log('MY TRIBE FRIENDS', selectedItemFriend)
+
+            if (
+                state.selectedItemFriend.some(
+                    (e) => e._id === selectedItemFriend._id
+                )
+            ) {
+                console.log('IF THIS CONDITION UNSELECTED')
+                var filtered = state.selectedItemFriend.filter(
+                    (e) => e._id !== selectedItemFriend._id
+                )
+                return _.set(newState, `selectedItemFriend`, filtered)
+            } else {
+                return _.set(
+                    newState,
+                    `selectedItemFriend`,
+                    state.selectedItemFriend
+                )
+            }
+        }
+
+        case MYTRIBE_FRIEND_CLEAR: {
+            const newState = _.cloneDeep(state)
+            return _.set(newState, `selectedItemFriend`, [])
+        }
         case MYTRIBE_DETAIL_LOAD_SUCCESS: {
             // Tribe object load finishes.
             const { tribeId, pageId, tribe } = action.payload

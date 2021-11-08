@@ -157,6 +157,22 @@ class MyTribe extends React.PureComponent {
                         }, 500)
                 },
 
+                showBorder: true,
+            },
+            {
+                name: 'Invite Friends',
+                icon: CREATE_GOAL,
+                onPress: () => {
+                    this.setState({ tooltipVisible: false }),
+                        setTimeout(() => {
+                            Actions.push('myTribeGoalInviteFriends', {
+                                tribe: this.props.item,
+                                tribeId: this.props.tribeId,
+                                pageId: this.props.pageId,
+                            })
+                        }, 500)
+                },
+
                 showBorder: false,
             },
         ]
@@ -625,8 +641,9 @@ class MyTribe extends React.PureComponent {
                                             {button.showBorder ? (
                                                 <View
                                                     style={{
-                                                        borderColor: 'white',
-                                                        borderWidth: 0.8,
+                                                        backgroundColor:
+                                                            'white',
+                                                        height: 1,
                                                         marginTop: 4,
                                                         width: '100%',
                                                     }}

@@ -1353,7 +1353,7 @@ class Home extends Component {
             pickedImage: null,
             shareModal: false,
             isVisible: false,
-            isVisibleA: false,
+            isVisibleA: true,
             isVisibleB: false,
         }
         this.scrollToTop = this.scrollToTop.bind(this)

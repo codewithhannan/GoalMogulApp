@@ -32,6 +32,9 @@ import {
     MYTRIBE_GOAL_REFRESH_DONE,
     MYTRIBE_GOAL_REFRESH,
     MYTRIBE_GOAL_LOAD,
+    MYTRIBE_FRIEND_INVITE_SELECTED_ITEM,
+    MYTRIBE_FRIEND_INVITE_UNSELECTED_ITEM,
+    MYTRIBE_FRIEND_CLEAR,
 } from './Tribes'
 import { api as API } from '../../middleware/api'
 import {
@@ -203,6 +206,50 @@ export const refreshMyTribeDetail = (
     )(dispatch, getState)
 }
 
+export const onFriendsItemSelect = (selectedItemFriend, pageId) => (
+    dispatch,
+    getState
+) => {
+    console.log('suggestion item selected with item: ', selectedItemFriend)
+    const { tab } = getState().navigation
+    dispatch({
+        type: MYTRIBE_FRIEND_INVITE_SELECTED_ITEM,
+        payload: {
+            selectedItemFriend,
+            tab,
+            pageId,
+        },
+    })
+}
+
+export const onFriendsItemUnselect = (selectedItemFriend, pageId) => (
+    dispatch,
+    getState
+) => {
+    console.log('suggestion item unselected with item: ', selectedItemFriend)
+    const { tab } = getState().navigation
+    dispatch({
+        type: MYTRIBE_FRIEND_INVITE_UNSELECTED_ITEM,
+        payload: {
+            selectedItemFriend,
+            tab,
+            pageId,
+        },
+    })
+}
+
+export const clearFriendsArray = (pageId) => (dispatch, getState) => {
+    // console.log('suggestion item unselected with item: ', selectedItemFriend)
+    const { tab } = getState().navigation
+    dispatch({
+        type: MYTRIBE_FRIEND_CLEAR,
+        payload: {
+            tab,
+            pageId,
+        },
+    })
+}
+
 /**
  * Fetch tribe detail for a tribe
  * TODO: tribe: make sure caller inputs pageId
@@ -263,6 +310,70 @@ export const fetchTribeDetail = (tribeId, pageId, callback, showIndicator) => (
             if (callback) {
                 callback(err)
             }
+        })
+}
+
+/**
+ * Add friends to the tribe
+ * @param {string} tribeId
+ * @param {array} friendsToAdd boolean to determine if tribeLoading needs to be updated
+ */
+export const addFriends = (tribeId, friendsToAdd, callback) => (
+    dispatch,
+    getState
+) => {
+    const { token } = getState().user
+    console.log('ADDING FRIENDS')
+
+    //     dispatch({
+    //         type: MYTRIBE_DETAIL_LOAD,
+    //         payload: { tribeId, pageId },
+    //     })
+
+    // const onSuccess = (data) => {
+    //     dispatch({
+    //         type: MYTRIBE_DETAIL_LOAD_SUCCESS,
+    //         payload: {
+    //             tribe: data,
+    //             pageId,
+    //             tribeId,
+    //         },
+    //     })
+    //     // console.log(`${DEBUG_KEY}: load tribe detail success with data: `, data)
+    // }
+
+    // const onError = (err) => {
+    //     dispatch({
+    //         type: MYTRIBE_DETAIL_LOAD_FAIL,
+    //         payload: { tribeId, pageId },
+    //     })
+    //     console.log(`${DEBUG_KEY}: failed to load tribe detail with err: `, err)
+    // }
+
+    API.post(
+        `${BASE_ROUTE}/member-inviting-others`,
+        {
+            invitees: friendsToAdd,
+            tribeId,
+        },
+        token
+    )
+        .then((res) => {
+            if (res.status === 200 || res.data) {
+                if (callback) {
+                    callback(res)
+                }
+                return
+            } else {
+                console.log('Request Failed with data:', res)
+                console.log('Request failed with status:', res.status)
+                Alert.alert('An Error Occured while performing this action!')
+            }
+        })
+        .catch((err) => {
+            // onError(err)
+            console.log(err)
+            Alert.alert('An Error Occured while performing this action!')
         })
 }
 

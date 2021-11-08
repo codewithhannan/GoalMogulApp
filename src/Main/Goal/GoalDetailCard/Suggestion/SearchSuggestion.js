@@ -101,7 +101,7 @@ class SearchSuggestion extends React.Component {
 
     renderItem = ({ item }) => {
         const { selectedItem, pageId } = this.props
-        console.log('THIS IS SELECTED', selectedItem)
+        console.log('THIS IS SELECTED', selectedItem._id === item._id)
         const selected = selectedItem && selectedItem._id === item._id
 
         return switchCaseF({

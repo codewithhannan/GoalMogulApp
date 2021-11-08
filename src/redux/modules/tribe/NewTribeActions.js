@@ -91,6 +91,7 @@ export const createNewTribe = (values, needUpload, isEdit, tribeId) => (
     const onError = (err) => {
         dispatch({
             type: TRIBE_NEW_SUBMIT_FAIL,
+            payload: err,
         })
         Alert.alert(
             `Failed to ${isEdit ? 'update' : 'create'} new Tribe`,
@@ -195,6 +196,7 @@ const sendCreateTribeRequest = (
     onError
 ) => {
     if (isEdit) {
+        console.log(newTribe)
         API.put(`${BASE_ROUTE}`, { ...newTribe }, token)
             .then((res) => {
                 if (res.status === 200) {
@@ -207,6 +209,7 @@ const sendCreateTribeRequest = (
             })
         return
     }
+    console.log(newTribe)
     API.post(`${BASE_ROUTE}`, { ...newTribe }, token)
         .then((res) => {
             if (res.status === 200) {
@@ -223,20 +226,22 @@ const sendCreateTribeRequest = (
 const formToTribeAdapter = (values, tribeId, isEdit) => {
     const {
         name,
-        membersCanInvite,
+        isMemberInviteEnabled,
         isAutoAcceptEnabled,
         isPubliclyVisible,
         membershipLimit,
         description,
         picture,
         category,
+        tribeInviteCode,
+        guidelines,
     } = values
 
     if (isEdit) {
         return {
             tribeId,
             details: {
-                membersCanInvite,
+                isMemberInviteEnabled,
                 isAutoAcceptEnabled,
                 isPubliclyVisible,
                 membershipLimit: membershipLimit || Number.MAX_SAFE_INTEGER,
@@ -244,6 +249,8 @@ const formToTribeAdapter = (values, tribeId, isEdit) => {
                 picture,
                 category,
                 name,
+                tribeInviteCode,
+                guidelines,
             },
         }
     }
@@ -251,13 +258,15 @@ const formToTribeAdapter = (values, tribeId, isEdit) => {
     return {
         name,
         options: {
-            membersCanInvite,
+            isMemberInviteEnabled,
             isAutoAcceptEnabled,
             isPubliclyVisible,
             membershipLimit: membershipLimit || Number.MAX_SAFE_INTEGER,
             description,
             picture,
             category,
+            tribeInviteCode,
+            guidelines,
         },
     }
 }
@@ -266,14 +275,17 @@ const formToTribeAdapter = (values, tribeId, isEdit) => {
 export const tribeToFormAdapter = (tribe) => {
     const {
         name,
-        membersCanInvite,
+        isMemberInviteEnabled,
         isAutoAcceptEnabled,
         isPubliclyVisible,
         membershipLimit,
         description,
         picture,
         category,
+        tribeInviteCode,
+        guidelines,
     } = tribe
+    console.log('TRIBE ha ye', tribe)
 
     // If membershipLimit is max safe, it means user hasn't defined the limit yet
     const membershipLimitToShow =
@@ -283,13 +295,15 @@ export const tribeToFormAdapter = (tribe) => {
 
     return {
         name,
-        membersCanInvite,
+        isMemberInviteEnabled,
         isAutoAcceptEnabled,
         isPubliclyVisible,
         membershipLimit: membershipLimitToShow,
         description,
         picture,
         category,
+        tribeInviteCode: tribeInviteCode.code,
+        guidelines,
     }
 }
 

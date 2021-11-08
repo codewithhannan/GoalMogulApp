@@ -31,7 +31,13 @@ export default (state = INITIAL_STATE, action) => {
 
         case TRIBE_NEW_SUBMIT_FAIL: {
             const newState = _.cloneDeep(state)
-            return _.set(newState, 'uploading', false)
+            return _.set(
+                newState,
+                'uploading',
+                false,
+                'tribeErr',
+                action.payload
+            )
         }
         case TRIBE_NEW_SUBMIT_SUCCESS: {
             let newState = _.cloneDeep(state)
