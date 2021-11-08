@@ -143,7 +143,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				46E4E9F646799ECF01EB728D /* [CP] Embed Pods Frameworks */,
 				56C12D4B7CEE7C4A24BF5160 /* [CP] Copy Pods Resources */,
-				890D9FBBDF18BFAD116F1E08 /* [CP-User] [RNFB] Core Configuration */,
+				9A1F5FE2D4D0318FE0C02BCC /* [CP-User] [RNFB] Core Configuration */,
 			);
 			buildRules = (
 			);
@@ -319,7 +319,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GoalMogul/Pods-GoalMogul-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		890D9FBBDF18BFAD116F1E08 /* [CP-User] [RNFB] Core Configuration */ = {
+		9A1F5FE2D4D0318FE0C02BCC /* [CP-User] [RNFB] Core Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
