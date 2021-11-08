@@ -896,6 +896,10 @@ class RouterComponent extends Component {
                         hideNavBar
                         path={'/invitefriend'}
                     />
+                    <Scene
+                        key={'ContactMessageScreen'}
+                        component={SendContactMessage}
+                    />
                     <Stack key="createChatRoomStack" hideNavBar>
                         <Scene
                             key="createChatRoomModal"
