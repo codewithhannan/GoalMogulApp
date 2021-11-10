@@ -169,49 +169,93 @@ export default class AudioSlider extends PureComponent {
     }
 
     render() {
-        const { source } = this.props
+        const { source, chatView } = this.props
         const videoRef = React.createRef(null)
         return (
             <>
-                <View
-                    style={{
-                        height: 250,
-                        marginVertical: 10,
-                        marginLeft: 0,
-                    }}
-                >
-                    <TouchableOpacity
-                        style={{
-                            flexDirection: 'row',
-                            position: 'absolute',
-                            bottom: 110,
-                            left: 80,
-                            zIndex: 5,
-                        }}
-                        onPress={() => this.setState({ isVisible: true })}
-                    >
-                        <Image
-                            source={PlayIcon}
-                            resizeMode="contain"
-                            style={{
-                                width: 40,
-                                height: 40,
-                            }}
-                        />
-                    </TouchableOpacity>
-                    <Video
-                        ref={videoRef}
-                        source={{ uri: source }}
+                {chatView ? (
+                    <View
                         style={{
                             height: 250,
-                            width: 200,
+                            marginVertical: 10,
+                            marginLeft: 0,
                         }}
-                        resizeMode="cover"
-                        onPlaybackStatusUpdate={(status) =>
-                            this.setState({ status })
-                        }
-                    />
-                </View>
+                    >
+                        <TouchableOpacity
+                            style={{
+                                flexDirection: 'row',
+                                position: 'absolute',
+                                bottom: 110,
+                                left: 80,
+                                zIndex: 5,
+                            }}
+                            onPress={() => this.setState({ isVisible: true })}
+                        >
+                            <Image
+                                source={PlayIcon}
+                                resizeMode="contain"
+                                style={{
+                                    width: 40,
+                                    height: 40,
+                                }}
+                            />
+                        </TouchableOpacity>
+                        <Video
+                            ref={videoRef}
+                            source={{ uri: source }}
+                            style={{
+                                height: 250,
+                                width: 200,
+                            }}
+                            resizeMode="cover"
+                            onPlaybackStatusUpdate={(status) =>
+                                this.setState({ status })
+                            }
+                        />
+                    </View>
+                ) : (
+                    <View
+                        style={{
+                            height: 150,
+                            width: 310,
+                            marginVertical: 10,
+                            marginLeft: 0,
+                        }}
+                    >
+                        <TouchableOpacity
+                            style={{
+                                flexDirection: 'row',
+                                position: 'absolute',
+                                bottom: 60,
+                                left: 140,
+                                zIndex: 5,
+                            }}
+                            onPress={() => this.setState({ isVisible: true })}
+                        >
+                            <Image
+                                source={PlayIcon}
+                                resizeMode="contain"
+                                style={{
+                                    width: 40,
+                                    height: 40,
+                                }}
+                            />
+                        </TouchableOpacity>
+                        <Video
+                            ref={videoRef}
+                            source={{ uri: source }}
+                            style={{
+                                height: 150,
+                                width: 310,
+                                borderRadius: 5,
+                            }}
+                            resizeMode="cover"
+                            onPlaybackStatusUpdate={(status) =>
+                                this.setState({ status })
+                            }
+                        />
+                    </View>
+                )}
                 <Modal
                     backdropColor={'transparent'}
                     isVisible={this.state.isVisible}

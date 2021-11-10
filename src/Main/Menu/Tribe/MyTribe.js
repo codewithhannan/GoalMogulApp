@@ -7,6 +7,7 @@ import {
     Dimensions,
     FlatList,
     Image,
+    Platform,
     Text,
     TouchableOpacity,
     View,
@@ -209,6 +210,9 @@ class MyTribe extends React.PureComponent {
     openOptionModal = () => this.bottomSheetRef.open()
     closeOptionModal = () => this.bottomSheetRef.close()
 
+    openTribeRespondSheet = () => this.tribeRespondBottomSheetRef.open()
+    closeTribeRespondSheet = () => this.tribeRespondBottomSheetRef.close()
+
     openUserInviteModal = (item) => {
         const { name, _id } = item
         this.props.openMultiUserInviteModal({
@@ -370,6 +374,43 @@ class MyTribe extends React.PureComponent {
         )
     }
 
+    makeTribeRespondOptions = (item) => {
+        const { _id } = item
+        return [
+            {
+                text: 'Accept',
+                onPress: () => {
+                    console.log(`${DEBUG_KEY} User chooses to accept`)
+                    this.props.acceptTribeInvit(_id)
+                },
+            },
+            {
+                text: 'Decline',
+                onPress: () => {
+                    console.log(`${DEBUG_KEY} User chooses to decline`)
+                    this.props.declineTribeInvit(_id)
+                },
+            },
+            {
+                text: 'Cancel',
+                onPress: () => this.closeTribeRespondSheet(),
+            },
+        ]
+    }
+
+    renderRespondToInvitationBottomSheet = (item) => {
+        const options = this.makeTribeRespondOptions(item)
+        // Options height + bottom space + bottom sheet handler height
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.tribeRespondBottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
+    }
+
     renderTribeImage(picture) {
         let imageUrl
         // let eventImage = (<Image source={tribe_default_icon} style={styles.defaultImageStyle} />);
@@ -418,7 +459,10 @@ class MyTribe extends React.PureComponent {
             },
             Invitee: {
                 text: 'Respond',
-                onPress: () => this.handleRespondToInvitation(item),
+                onPress: () =>
+                    Platform.OS === 'ios'
+                        ? this.handleRespondToInvitation(item)
+                        : this.openTribeRespondSheet(),
             },
         })({
             text: 'Join Tribe',
@@ -728,6 +772,7 @@ class MyTribe extends React.PureComponent {
                     handlePageSetting={() => this.openOptionModal()}
                 />
                 {this.renderBottomSheet(item)}
+                {this.renderRespondToInvitationBottomSheet(item)}
                 <FlatList
                     ref="flatList"
                     data={data}

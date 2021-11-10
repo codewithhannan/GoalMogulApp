@@ -504,7 +504,7 @@ class Bubble extends React.Component {
         }
 
         if (type === 'ChatVideo') {
-            return <VideoPlayer source={videoUri} />
+            return <VideoPlayer source={videoUri} chatView />
         }
 
         if (this.props.currentMessage.image) {

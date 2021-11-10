@@ -527,7 +527,7 @@ class ActivityCard extends React.PureComponent {
     }
 
     renderMedia(url) {
-        const type = url && url.split('/')[0]
+        const type = url ? url.split('/')[0] : null
         if (!url) {
             return null
         }
