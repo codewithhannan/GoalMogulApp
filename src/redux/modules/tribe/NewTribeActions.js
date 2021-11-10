@@ -12,6 +12,7 @@ import {
     TRIBE_NEW_SUBMIT_FAIL,
     TRIBE_NEW_CANCEL,
     TRIBE_NEW_UPLOAD_PICTURE_SUCCESS,
+    TRIBE_NEW_ERROR,
 } from './NewTribeReducers'
 
 import { refreshTribes } from './TribeHubActions'
@@ -91,6 +92,9 @@ export const createNewTribe = (values, needUpload, isEdit, tribeId) => (
     const onError = (err) => {
         dispatch({
             type: TRIBE_NEW_SUBMIT_FAIL,
+        })
+        dispatch({
+            type: TRIBE_NEW_ERROR,
             payload: err,
         })
         Alert.alert(

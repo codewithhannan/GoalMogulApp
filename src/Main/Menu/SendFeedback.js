@@ -249,7 +249,7 @@ class SendFeedback extends Component {
                                             ? color.GM_BLUE_LIGHT
                                             : color.GM_BLUE,
                                     width: '90%',
-                                    height: 35,
+                                    textAlign: 'center',
                                 },
                             ]}
                             onPress={() => {
