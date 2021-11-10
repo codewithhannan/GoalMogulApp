@@ -27,6 +27,7 @@ import ProfileImage from '../../../Common/ProfileImage'
 import ImageModal from '../../../Common/ImageModal'
 import RichText from '../../../Common/Text/RichText'
 import AudioPlayer from '../../../../components/AudioPlayer'
+import VideoPlayer from '../../../../components/VideoPlayer'
 
 // Actions
 import {
@@ -133,18 +134,17 @@ class CommentUserDetail extends Component {
         const { mediaRef } = item
         if (!mediaRef) return null
         const type = mediaRef.split('/')[0]
-        const voiceUri = `https://goalmogul-v1.s3.us-west-2.amazonaws.com/CommentAudio/${
-            mediaRef.split('/')[1]
-        }`
-        const url = mediaRef
-        const imageUrl = `${IMAGE_BASE_URL}${url}`
+        const uri = mediaRef.split('/')[1]
+        const BASE_URL = 'https://goalmogul-v1.s3.us-west-2.amazonaws.com'
+
+        const mediaUrl = `${BASE_URL}/${type}/${uri}`
+        const imageUrl = `${IMAGE_BASE_URL}${mediaRef}`
         return (
             <>
                 {type === 'CommentAudio' ? (
-                    // <TouchableOpacity onPress={() => this.playSound(voiceUri)}>
-                    //     <Text>Play Sound</Text>
-                    // </TouchableOpacity>
-                    <AudioPlayer audio={{ uri: voiceUri }} />
+                    <AudioPlayer audio={{ uri: mediaUrl }} />
+                ) : type === 'CommentVideo' ? (
+                    <VideoPlayer source={mediaUrl} />
                 ) : (
                     <TouchableWithoutFeedback
                         onPress={() => this.setState({ mediaModal: true })}

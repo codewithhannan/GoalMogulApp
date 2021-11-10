@@ -5,22 +5,30 @@ import {
     TouchableOpacity,
     Animated,
     PanResponder,
+    Dimensions,
     View,
+    Text,
+    Image,
     Easing,
 } from 'react-native'
-import { Audio } from 'expo-av'
-import { Entypo, MaterialIcons } from '@expo/vector-icons'
-import sleep from './sleep'
-import DigitalTimeString from './DigitalTimeString'
+import { Video } from 'expo-av'
+import Modal from 'react-native-modal'
+// import Modal from 'react-native-modalbox'
+import VideoPlayer from 'expo-video-player'
+import PlayIcon from '../asset/icons/playicon.png'
+import { color } from '../styles/basic'
 
 const TRACK_SIZE = 4
 const THUMB_SIZE = 20
+
+const { width, height } = Dimensions.get('window')
 
 export default class AudioSlider extends PureComponent {
     constructor(props) {
         super(props)
         this.state = {
             playing: false,
+            isVisible: false,
             currentTime: 0, // miliseconds; value interpolated by animation.
             duration: 0,
             trackLayout: {},
@@ -147,156 +155,146 @@ export default class AudioSlider extends PureComponent {
     }
 
     async componentDidMount() {
-        this.soundObject = new Audio.Sound()
-        await this.soundObject.loadAsync(this.props.audio)
-        const status = await this.soundObject.getStatusAsync()
+        this.videoObject = new Video()
+        await this.videoObject.loadAsync(this.props.source)
+        const status = await this.videoObject.getStatusAsync()
         this.setState({ duration: status['durationMillis'] })
-
-        // This requires measureTrack to have been called.
-        this.state.dotOffset.addListener(() => {
-            let animatedCurrentTime = this.state.dotOffset.x
-                .interpolate({
-                    inputRange: [0, this.state.trackLayout.width],
-                    outputRange: [0, this.state.duration],
-                    extrapolate: 'clamp',
-                })
-                .__getValue()
-            this.setState({ currentTime: animatedCurrentTime })
-        })
     }
 
     componentWillUnmount() {
         const unMountAudio = async () => {
-            this.soundObject && (await this.soundObject.unloadAsync())
+            this.videoObject && (await this.videoObject.unloadAsync())
         }
         unMountAudio()
-        this.state.dotOffset.removeAllListeners()
     }
 
     render() {
+        const { source, chatView } = this.props
+        const videoRef = React.createRef(null)
         return (
-            <View
-                style={{
-                    flex: 0,
-                    flexDirection: 'column',
-                    justifyContent: 'flex-start',
-                    alignItems: 'stretch',
-                    paddingLeft: 8,
-                    paddingRight: 8,
-                }}
-            >
-                <View
-                    style={{
-                        flex: 0,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        paddingLeft: 8,
-                        paddingRight: 8,
-                        height: 35,
-                        width: 230,
-                    }}
-                >
-                    <TouchableOpacity
+            <>
+                {chatView ? (
+                    <View
                         style={{
-                            flex: 1,
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            paddingRight: THUMB_SIZE,
-                            zIndex: 2,
-                        }}
-                        onPress={this.onPressPlayPause}
-                    >
-                        {this.state.playing ? (
-                            <MaterialIcons
-                                name="pause"
-                                size={30}
-                                color="#45C9F6"
-                            />
-                        ) : (
-                            <Entypo
-                                name="controller-play"
-                                size={30}
-                                color="#45C9F6"
-                            />
-                        )}
-                    </TouchableOpacity>
-
-                    <Animated.View
-                        onLayout={this.measureTrack}
-                        style={{
-                            flex: 8,
-                            flexDirection: 'row',
-                            justifyContent: 'flex-start',
-                            alignItems: 'center',
-                            height: TRACK_SIZE,
-                            borderRadius: TRACK_SIZE / 2,
-                            backgroundColor: '#45C9F6',
+                            height: 250,
+                            marginVertical: 10,
+                            marginLeft: 0,
                         }}
                     >
-                        <Animated.View
+                        <TouchableOpacity
                             style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center',
+                                flexDirection: 'row',
                                 position: 'absolute',
-                                left: -((THUMB_SIZE * 4) / 2),
-                                width: THUMB_SIZE * 4,
-                                height: THUMB_SIZE * 4,
-                                transform: [
-                                    {
-                                        translateX: this.state.dotOffset.x.interpolate(
-                                            {
-                                                inputRange: [
-                                                    0,
-                                                    this.state.trackLayout
-                                                        .width != undefined
-                                                        ? this.state.trackLayout
-                                                              .width
-                                                        : 1,
-                                                ],
-                                                outputRange: [
-                                                    0,
-                                                    this.state.trackLayout
-                                                        .width != undefined
-                                                        ? this.state.trackLayout
-                                                              .width
-                                                        : 1,
-                                                ],
-                                                extrapolate: 'clamp',
-                                            }
-                                        ),
-                                    },
-                                ],
+                                bottom: 110,
+                                left: 80,
+                                zIndex: 5,
                             }}
-                            {...this._panResponder.panHandlers}
+                            onPress={() => this.setState({ isVisible: true })}
                         >
-                            <View
+                            <Image
+                                source={PlayIcon}
+                                resizeMode="contain"
                                 style={{
-                                    width: THUMB_SIZE,
-                                    height: THUMB_SIZE,
-                                    borderRadius: THUMB_SIZE / 2,
-                                    backgroundColor: '#45C9F6',
+                                    width: 40,
+                                    height: 40,
                                 }}
-                            ></View>
-                        </Animated.View>
-                    </Animated.View>
-                </View>
-
-                <View
+                            />
+                        </TouchableOpacity>
+                        <Video
+                            ref={videoRef}
+                            source={{ uri: source }}
+                            style={{
+                                height: 250,
+                                width: 200,
+                            }}
+                            resizeMode="cover"
+                            onPlaybackStatusUpdate={(status) =>
+                                this.setState({ status })
+                            }
+                        />
+                    </View>
+                ) : (
+                    <View
+                        style={{
+                            height: 150,
+                            width: 310,
+                            marginVertical: 10,
+                            marginLeft: 0,
+                        }}
+                    >
+                        <TouchableOpacity
+                            style={{
+                                flexDirection: 'row',
+                                position: 'absolute',
+                                bottom: 60,
+                                left: 140,
+                                zIndex: 5,
+                            }}
+                            onPress={() => this.setState({ isVisible: true })}
+                        >
+                            <Image
+                                source={PlayIcon}
+                                resizeMode="contain"
+                                style={{
+                                    width: 40,
+                                    height: 40,
+                                }}
+                            />
+                        </TouchableOpacity>
+                        <Video
+                            ref={videoRef}
+                            source={{ uri: source }}
+                            style={{
+                                height: 150,
+                                width: 310,
+                                borderRadius: 5,
+                            }}
+                            resizeMode="cover"
+                            onPlaybackStatusUpdate={(status) =>
+                                this.setState({ status })
+                            }
+                        />
+                    </View>
+                )}
+                <Modal
+                    backdropColor={'transparent'}
+                    isVisible={this.state.isVisible}
+                    backdropOpacity={1}
+                    animationIn="fadeIn"
+                    animationInTiming={600}
+                    onSwipeComplete={() => this.setState({ isVisible: false })}
+                    swipeDirection="down"
+                    deviceWidth={width}
                     style={{
-                        flex: 0,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        width: 230,
+                        padding: 0,
+                        margin: 0,
                     }}
                 >
-                    <DigitalTimeString time={this.state.currentTime} />
-                    <DigitalTimeString time={this.state.duration} />
-                </View>
-            </View>
+                    <View style={{ flex: 1 }}>
+                        <VideoPlayer
+                            videoProps={{
+                                shouldPlay: true,
+                                resizeMode: Video.RESIZE_MODE_CONTAIN,
+                                source: {
+                                    uri: source,
+                                },
+                            }}
+                            style={{
+                                // videoBackgroundColor: 'transparent',
+                                // controlsBackgroundColor: 'transparent',
+                                flex: 0.8,
+                            }}
+                            fullscreen={{
+                                visible: false,
+                            }}
+                            activityIndicator={{
+                                color: color.GM_BLUE,
+                                size: 'large',
+                            }}
+                        />
+                    </View>
+                </Modal>
+            </>
         )
     }
 }

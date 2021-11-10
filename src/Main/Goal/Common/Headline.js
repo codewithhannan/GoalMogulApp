@@ -8,6 +8,7 @@ import React from 'react'
 import { View, Alert, Dimensions, Text } from 'react-native'
 import { connect } from 'react-redux'
 import _ from 'lodash'
+import { Icon } from '@ui-kitten/components'
 
 /* Components */
 import Name from './Name'
@@ -29,8 +30,9 @@ import EditIcon from '../../../asset/utils/edit.png'
 import UndoIcon from '../../../asset/utils/undo.png'
 import TrashIcon from '../../../asset/utils/trash.png'
 import Icons from '../../../asset/base64/Icons'
-import { default_style } from '../../../styles/basic'
-import { Icon } from '@ui-kitten/components'
+import { default_style, color } from '../../../styles/basic'
+import { PRIVACY_OPTIONS } from '../../../Utils/Constants'
+import { GOALS_STYLE } from '../../../styles/Goal'
 import DelayedButton from '../../Common/Button/DelayedButton'
 
 const { CheckIcon } = Icons
@@ -171,8 +173,10 @@ class Headline extends React.PureComponent {
             textStyle,
             menuName,
             belongsToTribe,
+            hasMedia,
         } = this.props
 
+        const mediaType = hasMedia ? hasMedia.split('/')[0] : null
         // If item belongs to self, then caret displays delete
         let menu
         if (caret && !_.isEmpty(caret)) {
@@ -259,6 +263,30 @@ class Headline extends React.PureComponent {
                         </Text>
                     </DelayedButton>,
                 ]}
+                {mediaType === 'CommentAudio' ? (
+                    <View
+                        style={[
+                            GOALS_STYLE.commonPillContainer,
+                            {
+                                paddingHorizontal: 10,
+                                alignSelf: 'center',
+                                borderColor: color.GM_MID_GREY,
+                                marginLeft: 125,
+                            },
+                        ]}
+                    >
+                        <Icon
+                            pack="material-community"
+                            name={PRIVACY_OPTIONS[2].materialCommunityIconName}
+                            style={[GOALS_STYLE.commonPillIcon]}
+                        />
+                        <Text style={[GOALS_STYLE.commonPillText]}>
+                            {/* {privacyObj.text} */}
+                            {PRIVACY_OPTIONS[2].text}
+                        </Text>
+                    </View>
+                ) : null}
+
                 <View
                     style={{
                         flexDirection: 'row',

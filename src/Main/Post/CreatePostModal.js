@@ -333,7 +333,7 @@ class CreatePostModal extends Component {
         const callback = (result) => {
             this.bottomSheetRef.open()
 
-            this.props.change('mediaRef', result.path)
+            this.props.change('mediaRef', result.uri)
             this.setState({ clickedButton: false })
         }
         setTimeout(() => {
@@ -349,7 +349,7 @@ class CreatePostModal extends Component {
             console.log(result)
             this.bottomSheetRef.open()
 
-            this.props.change('mediaRef', result.path)
+            this.props.change('mediaRef', result.uri)
             this.setState({ clickedButton: false })
         }
         setTimeout(() => {
@@ -509,7 +509,7 @@ class CreatePostModal extends Component {
                 : E.CREATE_POST_MODAL_CANCELLED,
             { DurationSec: durationSec }
         )
-        this.setState({ mediaHeight: 0 })
+        // this.setState({ mediaHeight: 0 })
         if (
             (this.props.post && this.state.clickedButton) ||
             this.state.clickedButton

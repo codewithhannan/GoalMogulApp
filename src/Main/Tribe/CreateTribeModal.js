@@ -167,7 +167,7 @@ class CreateTribeModal extends React.Component {
         this.bottomSheetRef.close()
 
         this.props.openCamera((result) => {
-            this.props.change('picture', result.path)
+            this.props.change('picture', result.uri)
         })
     }
 
@@ -176,7 +176,7 @@ class CreateTribeModal extends React.Component {
 
         const callback = R.curry((result) => {
             console.log('result is: ', result)
-            this.props.change('picture', result.path)
+            this.props.change('picture', result.uri)
         })
         setTimeout(() => this.props.openCameraRoll(callback), 500)
     }

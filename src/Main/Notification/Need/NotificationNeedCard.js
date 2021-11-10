@@ -121,26 +121,9 @@ class NotificationCard extends React.Component {
                         >
                             {name}
                             {': '}
-                            {goalTitle.length < 23
-                                ? `${goalTitle}`
-                                : `${goalTitle.substring(0, 22)}...`}
                         </Text>
+                        {description}
                     </Text>
-                    {/* <Text
-                        style={[
-                            default_style.titleText_2,
-                            {
-                                color: color.TEXT_COLOR.OFF_DARK,
-                                flexWrap: 'wrap',
-                                marginVertical: 4,
-                            },
-                        ]}
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                    > */}
-
-                    {/* {goalTitle} */}
-                    {/* </Text> */}
                     <Icon
                         pack="material-community"
                         style={[default_style.buttonIcon_1, { height: 16 }]}
@@ -149,21 +132,17 @@ class NotificationCard extends React.Component {
                 </View>
                 <Text
                     style={[
+                        default_style.titleText_2,
                         {
-                            flexWrap: 'wrap',
                             color: color.TEXT_COLOR.OFF_DARK,
-                            fontSize: 14 * UI_SCALE,
-                            fontFamily: text.FONT_FAMILY.REGULAR,
-                            left: 1,
+                            flexWrap: 'wrap',
+                            marginVertical: 4,
                         },
                     ]}
-                    numberOfLines={2}
+                    numberOfLines={1}
                     ellipsizeMode="tail"
                 >
-                    {description.length < 100
-                        ? `${description}`
-                        : `${description.substring(0, 99)}...`}
-                    {/* {description} */}
+                    {goalTitle}
                 </Text>
                 <View style={{ marginBottom: 3 }}>
                     <Timestamp time={timeago().format(created)} />

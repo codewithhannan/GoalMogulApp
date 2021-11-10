@@ -528,6 +528,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
         }
     }
 
+    console.log('calling push token before', existingStatus)
     // Get the token that uniquely identifies this device
     const {
         status: existingStatuss,

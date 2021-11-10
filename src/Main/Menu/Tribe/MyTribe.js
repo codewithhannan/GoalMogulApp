@@ -211,6 +211,9 @@ class MyTribe extends React.PureComponent {
     openOptionModal = () => this.bottomSheetRef.open()
     closeOptionModal = () => this.bottomSheetRef.close()
 
+    openTribeRespondSheet = () => this.tribeRespondBottomSheetRef.open()
+    closeTribeRespondSheet = () => this.tribeRespondBottomSheetRef.close()
+
     openUserInviteModal = (item) => {
         const { name, _id } = item
         this.props.openMultiUserInviteModal({

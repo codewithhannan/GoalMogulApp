@@ -35,6 +35,8 @@ import { Video, AVPlaybackStatus } from 'expo-av'
 import RNUrlPreview from 'react-native-url-preview'
 import * as FUNNELS_LOTTIES from './funnelsLotties'
 import LottieView from 'lottie-react-native'
+import AudioPlayer from '../../../../components/AudioPlayer'
+import VideoPlayer from '../../../../components/VideoPlayer'
 
 import {
     widthPercentageToDP as wp,
@@ -488,6 +490,23 @@ class Bubble extends React.Component {
     }
 
     renderMessageImage() {
+        const type = this.props.currentMessage.image
+            ? this.props.currentMessage.image.split('/')[4]
+            : null
+        const voicePath = this.props.currentMessage.image
+            ? this.props.currentMessage.image.split('/')[5]
+            : null
+        const voiceUri = `https://goalmogul-v1.s3.us-west-2.amazonaws.com/ChatVoice/${voicePath}`
+        const videoUri = `https://goalmogul-v1.s3.us-west-2.amazonaws.com/ChatVideo/${voicePath}`
+
+        if (type === 'ChatVoice') {
+            return <AudioPlayer audio={{ uri: voiceUri }} />
+        }
+
+        if (type === 'ChatVideo') {
+            return <VideoPlayer source={videoUri} chatView />
+        }
+
         if (this.props.currentMessage.image) {
             const {
                 containerStyle,
@@ -916,6 +935,7 @@ Bubble.defaultProps = {
         text: null,
         createdAt: null,
         image: null,
+        audio: null,
     },
     nextMessage: {},
     previousMessage: {},

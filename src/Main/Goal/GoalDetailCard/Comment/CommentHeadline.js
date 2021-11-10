@@ -4,6 +4,7 @@ import React from 'react'
 import { View, Image, Text } from 'react-native'
 import timeago from 'timeago.js'
 import _ from 'lodash'
+import { Icon } from '@ui-kitten/components'
 
 /* Components */
 import Name from '../../Common/Name'
@@ -15,9 +16,11 @@ import { UserBanner } from '../../../../actions'
 import {
     CARET_OPTION_NOTIFICATION_SUBSCRIBE,
     CARET_OPTION_NOTIFICATION_UNSUBSCRIBE,
+    PRIVACY_OPTIONS,
 } from '../../../../Utils/Constants'
 import DelayedButton from '../../../Common/Button/DelayedButton'
-import { default_style } from '../../../../styles/basic'
+import { default_style, color } from '../../../../styles/basic'
+import { GOALS_STYLE } from '../../../../styles/Goal'
 
 const DEBUG_KEY = '[ UI CommentHeadline ]'
 /**
@@ -37,10 +40,14 @@ const CommentHeadline = (props) => {
         isCommentOwner,
         onNamePress,
         onHeadlinePressed,
+        hasPrivacy,
     } = props
     const { owner, commentType, suggestion, created, maybeIsSubscribed } = item
     const timeStamp =
         created === undefined || created.length === 0 ? new Date() : created
+
+    // const { privacy } = this.props
+    // const privacyObj = PRIVACY_OPTIONS.find(({ value }) => value === privacy)
 
     const menu = !isCommentOwner
         ? MenuFactory(
@@ -131,7 +138,7 @@ const CommentHeadV2 = (props) => {
         onNamePress,
         onHeadlinePressed,
     } = props
-    const { owner, needRef, stepRef } = item
+    const { owner, needRef, stepRef, mediaRef } = item
 
     let headerText = { lead: '', description: '' }
     let focusType, focusRef
@@ -226,6 +233,31 @@ const CommentHeadV2 = (props) => {
             />
             <UserBanner user={owner} />
             <Timestamp time={timeago().format(timeStamp)} />
+            {mediaRef ? (
+                <View
+                    style={[
+                        GOALS_STYLE.commonPillContainer,
+                        {
+                            paddingHorizontal: 10,
+                            alignSelf: 'center',
+                            borderColor: color.GM_MID_GREY,
+                            // marginLeft: 70,
+                            position: 'absolute',
+                            right: 30,
+                        },
+                    ]}
+                >
+                    <Icon
+                        pack="material-community"
+                        name={PRIVACY_OPTIONS[2].materialCommunityIconName}
+                        style={[GOALS_STYLE.commonPillIcon]}
+                    />
+                    <Text style={[GOALS_STYLE.commonPillText]}>
+                        {/* {privacyObj.text} */}
+                        {PRIVACY_OPTIONS[2].text}
+                    </Text>
+                </View>
+            ) : null}
             <View style={styles.caretContainer}>{menu}</View>
         </View>
     )
