@@ -7,6 +7,7 @@ import {
     Dimensions,
     FlatList,
     Image,
+    Platform,
     Text,
     TouchableOpacity,
     View,
@@ -17,6 +18,7 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen'
+
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 // Assets
@@ -362,6 +364,50 @@ class MyTribe extends React.PureComponent {
         )
     }
 
+    openTribeStatusnModal = () => this.tribeRequestBottomSheetRef.open()
+    closeTribeStatusnModal = () => this.tribeRequestBottomSheetRef.close()
+
+    renderStatusBottomSheet = (item) => {
+        const options = this.makeStatusBottomOptions(item)
+        // Options height + bottom space + bottom sheet handler height
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
+        return (
+            <BottomButtonsSheet
+                ref={(r) => (this.tribeRequestBottomSheetRef = r)}
+                buttons={options}
+                height={sheetHeight}
+            />
+        )
+    }
+
+    makeStatusBottomOptions = (item) => {
+        const { _id } = item
+        return [
+            {
+                text: 'Accept',
+                textStyle: { color: 'black' },
+                onPress: () => {
+                    // close bottom sheet
+                    this.closeTribeStatusnModal()
+                    setTimeout(() => {
+                        this.props.acceptTribeInvit(_id)
+                    }, 500)
+                },
+            },
+            {
+                text: 'Decline',
+                textStyle: { color: 'black' },
+                onPress: () => {
+                    // close bottom sheet
+                    this.closeTribeStatusnModal()
+                    setTimeout(() => {
+                        this.props.declineTribeInvit(_id)
+                    }, 500)
+                },
+            },
+        ]
+    }
+
     renderTribeImage(picture) {
         let imageUrl
         // let eventImage = (<Image source={tribe_default_icon} style={styles.defaultImageStyle} />);
@@ -410,7 +456,10 @@ class MyTribe extends React.PureComponent {
             },
             Invitee: {
                 text: 'Respond',
-                onPress: () => this.handleRespondToInvitation(item),
+                onPress: () =>
+                    Platform.OS == 'ios'
+                        ? this.handleRespondToInvitation(item)
+                        : this.openTribeStatusnModal(),
             },
         })({
             text: 'Join Tribe',
@@ -720,6 +769,7 @@ class MyTribe extends React.PureComponent {
                     handlePageSetting={() => this.openOptionModal()}
                 />
                 {this.renderBottomSheet(item)}
+                {this.renderStatusBottomSheet(item)}
                 <FlatList
                     ref="flatList"
                     data={data}
@@ -754,6 +804,7 @@ class MyTribe extends React.PureComponent {
                     scrollEventThrottle={16}
                 />
                 {this.renderAddPostButton(item)}
+
                 <MyTribeDescription
                     isVisible={this.state.showAboutModal}
                     closeModal={() => {
