@@ -288,6 +288,7 @@ class NudgeCard extends React.PureComponent {
 
     renderContent() {
         const { item } = this.props
+        console.log('time created', item.createdAt)
         return (
             <View style={{ flex: 1, marginLeft: 10, marginRight: 18 }}>
                 <Text

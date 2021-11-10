@@ -60,6 +60,7 @@ export const PLUS_PRESSED = 'chat_plus_pressed'
 export const PLUS_UNPRESSED = 'chat_plus_unpressed'
 export const SEARCH_QUERY_UPDATED = 'chat_search_query_updated'
 export const CHAT_UPDATE_TAB_UNREAD_COUNT = 'chat_update_tab_unread_count'
+export const CHAT_EMPTY = 'chat_empty'
 
 export const CHAT_LOAD_TYPES = {
     directMessages: 'directMessages',
@@ -150,6 +151,9 @@ export default (state = INITIAL_STATE, action) => {
             let newState = _.cloneDeep(state)
             const { type, count } = action.payload
             return _.set(newState, `${type}.unreadCount`, count)
+        }
+        case CHAT_EMPTY: {
+            return { ...INITIAL_STATE }
         }
 
         default: {

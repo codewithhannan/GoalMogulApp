@@ -257,6 +257,14 @@ class MyTribe extends React.PureComponent {
                 () => {
                     console.log(`${DEBUG_KEY} User chooses to accept`)
                     this.props.acceptTribeInvit(_id)
+                    setTimeout(() => {
+                        this.props.refreshMyTribeDetail(
+                            this.props.tribeId,
+                            this.props.pageId
+                            // null,
+                            // false
+                        )
+                    }, 1800)
                 },
             ],
             [

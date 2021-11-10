@@ -459,16 +459,26 @@ class CreateTribeModal extends React.Component {
         )
     }
     renderInviteCode(handleSubmit) {
+        console.log('TEST TRIBE', this.props.tribeErr.message.includes('30'))
         const titleText = (
             <Text style={[styles.titleTextStyle, { paddingRight: 5 }]}>
                 Invite Code:
             </Text>
         )
         const bottomText = (
-            <Text style={[styles.bottomTextStyle, { marginVertical: 3 }]}>
-                {this.props.tribeErr?.message ===
-                'Error updating Tribe. Ensure correct parameters provided.\n Error: you cannot change invite code before 30 days, you cannot change till : 12 8 2021'
-                    ? 'Sorry, the Tribe Invite code has already been changed within the last 30 days. You must wait  until 10/16/2021  before you can change the Tribe Invite code again. '
+            <Text
+                style={[
+                    styles.bottomTextStyle,
+                    {
+                        marginVertical: 3,
+                        color: this.props.tribeErr.message.includes('30')
+                            ? 'red'
+                            : 'grey',
+                    },
+                ]}
+            >
+                {this.props.tribeErr.message.includes('30')
+                    ? 'Sorry, the Tribe Invite code has already been changed within the last 30 days. You must wait before you can change the Tribe Invite code again.'
                     : `Note- You may only change the Tribe Invite code once per 30 days.`}
             </Text>
         )
@@ -972,7 +982,7 @@ const mapStateToProps = (state) => {
     const selector = formValueSelector('createTribeModal')
     const { user } = state.user
     const { profile } = user
-    const { uploading } = state.newTribe
+    const { uploading, tribeErr } = state.newTribe
 
     return {
         user,
@@ -990,6 +1000,7 @@ const mapStateToProps = (state) => {
         tribeErr: selector(state, 'tribeErr'),
         formVals: state.form.createTribeModal,
         uploading,
+        tribeErr,
     }
 }
 
