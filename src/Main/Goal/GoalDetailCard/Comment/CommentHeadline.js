@@ -241,7 +241,9 @@ const CommentHeadV2 = (props) => {
                             paddingHorizontal: 10,
                             alignSelf: 'center',
                             borderColor: color.GM_MID_GREY,
-                            marginLeft: 70,
+                            // marginLeft: 70,
+                            position: 'absolute',
+                            right: 30,
                         },
                     ]}
                 >

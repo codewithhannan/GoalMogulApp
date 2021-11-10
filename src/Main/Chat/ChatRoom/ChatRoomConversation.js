@@ -544,7 +544,7 @@ class ChatRoomConversation extends React.Component {
     }
     handleOpenCameraRoll = () => {
         const callback = R.curry((result) => {
-            if (result.mime === 'video/mp4') {
+            if (result.type === 'video') {
                 this.props.changeMessageVideoRef(result.uri)
                 this._textInput.focus()
             } else {
