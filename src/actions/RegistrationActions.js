@@ -4,6 +4,7 @@ import { Actions } from 'react-native-router-flux'
 import { ImagePickerIOS, Alert } from 'react-native'
 import CameraRoll from '@react-native-community/cameraroll'
 import * as ImagePickerr from 'expo-image-picker'
+import { Camera } from 'expo-camera'
 import * as Contacts from 'expo-contacts'
 import { SubmissionError } from 'redux-form'
 import { api as API } from '../redux/middleware/api'
@@ -343,6 +344,10 @@ export const openCamera = (
         // })
         result = await ImagePickerr.launchCameraAsync({
             mediaTypes: 'All',
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 0.2,
+            videoExportPreset: ImagePickerr.VideoExportPreset.LowQuality,
         }).catch((error) => console.log('THIS IS ERROR OF IMAGE', error))
     } else {
         // ImagePicker.openCamera({
@@ -398,8 +403,11 @@ export const openCameraForVideo = (showModal) => async (dispatch, getState) => {
 
     result = await ImagePickerr.launchCameraAsync({
         mediaTypes: 'Videos',
-        quality: 0.5,
-        videoMaxDuration: 10,
+        videoMaxDuration: 15,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.2,
+        videoExportPreset: ImagePickerr.VideoExportPreset.LowQuality,
     }).catch((error) =>
         console.log('THIS IS ERROR OF OPENING CAMERA FOR VIDEO', error)
     )
@@ -426,6 +434,10 @@ export const openCameraRollForVideo = (showModal) => async (dispatch) => {
 
     const result = await ImagePickerr.launchImageLibraryAsync({
         mediaTypes: 'Videos',
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.2,
+        videoExportPreset: ImagePickerr.VideoExportPreset.LowQuality,
     })
 
     if (!result.cancelled) {
@@ -480,6 +492,7 @@ export const openCameraRoll = (
         disableEditing
             ? {
                   mediaTypes: 'All',
+                  videoExportPreset: ImagePickerr.VideoExportPreset.LowQuality,
               }
             : {
                   allowsEditing: true,

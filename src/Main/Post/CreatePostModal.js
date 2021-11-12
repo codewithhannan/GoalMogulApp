@@ -10,18 +10,23 @@ import {
     TouchableOpacity,
     ImageBackground,
     ActivityIndicator,
+    Dimensions,
     Keyboard,
     Alert,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
 import { Icon } from '@ui-kitten/components'
+import { Video } from 'expo-av'
+import VideoPlayer from 'expo-video-player'
+import Modal from 'react-native-modal'
 
 // assets
 import cancel from '../../asset/utils/cancel_no_background.png'
 import expand from '../../asset/utils/expand.png'
 import camera from '../../asset/icons/ChatCamera.png'
 import gallary from '../../asset/icons/ChatGallary.png'
+import movie from '../../asset/icons/movie.png'
 
 // Actions
 import { openCameraRoll, openCamera } from '../../actions'
@@ -74,6 +79,8 @@ const ON_CANCEL_OPTIONS = ['Save Draft', 'Discard', 'Cancel']
 const ON_CANCEL_CANCEL_INDEX = 2
 const TEXT_INPUT_DEAFULT_HEIGHT = 80
 
+const { width, height } = Dimensions.get('window')
+
 class CreatePostModal extends Component {
     constructor(props) {
         super(props)
@@ -90,6 +97,9 @@ class CreatePostModal extends Component {
             clickedButton: false,
             postText: '',
             userDetailLayout: 0,
+            isVideo: false,
+            isImage: false,
+            isVideoVisible: false,
         }
         this.onOpen = this.onOpen.bind(this)
         this.updateSearchRes = this.updateSearchRes.bind(this)
@@ -346,7 +356,9 @@ class CreatePostModal extends Component {
         this.setState({ clickedButton: true })
         this.bottomSheetRef.close()
         const callback = (result) => {
-            console.log(result)
+            if (result.type === 'video') this.setState({ isVideo: true })
+            if (result.type === 'image') this.setState({ isImage: true })
+
             this.bottomSheetRef.open()
 
             this.props.change('mediaRef', result.uri)
@@ -552,7 +564,8 @@ class CreatePostModal extends Component {
                     onPress: () => {
                         if (callback) callback()
                         this.setState({ mediaHeight: 0, postText: '' })
-
+                        this.setState({ isImage: false })
+                        this.setState({ isVideo: false })
                         this.resetForm()
                     },
                 },
@@ -728,6 +741,7 @@ class CreatePostModal extends Component {
     // Current media type is only picture
     renderMedia() {
         const { mediaRef, uploading } = this.props
+        const { isVideo, isImage } = this.state
         let imageUrl = mediaRef
         // console.log('MEDIA REF HA YE', mediaRef)
 
@@ -754,6 +768,8 @@ class CreatePostModal extends Component {
                 activeOpacity={0.8}
                 onPress={() => {
                     this.props.change('mediaRef', false)
+                    if (isImage) this.setState({ isImage: false })
+                    if (isVideo) this.setState({ isVideo: false })
                     this.setState({ mediaHeight: 0 })
                 }}
                 style={{
@@ -761,6 +777,7 @@ class CreatePostModal extends Component {
                     height: 25,
                     top: -5,
                     right: -5,
+                    zIndex: 5,
                     borderRadius: 15,
                     backgroundColor: 'white',
                     position: 'absolute',
@@ -786,7 +803,7 @@ class CreatePostModal extends Component {
             // </View>
         )
 
-        if (this.props.mediaRef) {
+        if (this.state.isImage) {
             return (
                 <View
                     onLayout={(e) => {
@@ -794,16 +811,11 @@ class CreatePostModal extends Component {
                             mediaHeight: e.nativeEvent.layout.height,
                         })
                     }}
-                    style={{
-                        borderRadius: 5,
-                        // flex: 1,
-                        width: 120,
-                    }}
+                    style={{ borderRadius: 5, width: 120 }}
                 >
                     <TouchableOpacity
                         activeOpacity={0.6}
                         onPress={() => this.setState({ mediaModal: true })}
-                        // style={{ position: 'absolute', top: 10, right: 15 }}
                         disabled={uploading}
                     >
                         <ImageBackground
@@ -811,22 +823,90 @@ class CreatePostModal extends Component {
                             source={{ uri: imageUrl }}
                             imageStyle={{
                                 borderRadius: 8,
-                                // opacity: 0.7,
                                 resizeMode: 'cover',
                             }}
                         >
-                            {/* <Image
-                                source={expand}
-                                style={{
-                                    width: 15,
-                                    height: 15,
-                                    tintColor: '#fafafa',
-                                }}
-                            /> */}
                             {cancelButton}
                         </ImageBackground>
                     </TouchableOpacity>
                 </View>
+            )
+        }
+        if (this.state.isVideo) {
+            return (
+                <>
+                    <View
+                        onLayout={(e) => {
+                            this.setState({
+                                mediaHeight: e.nativeEvent.layout.height,
+                            })
+                        }}
+                        style={{ width: 120 }}
+                    >
+                        <TouchableOpacity
+                            activeOpacity={0.6}
+                            onPress={() =>
+                                this.setState({ isVideoVisible: true })
+                            }
+                            disabled={uploading}
+                        >
+                            {cancelButton}
+                            <Video
+                                // ref={videoRef}
+                                source={{ uri: imageUrl }}
+                                style={[styles.mediaStyle, { borderRadius: 5 }]}
+                                resizeMode="cover"
+                                onPlaybackStatusUpdate={(status) =>
+                                    this.setState({ status })
+                                }
+                            >
+                                <Image
+                                    source={movie}
+                                    style={{
+                                        width: 20,
+                                        height: 20,
+                                        zIndex: 6,
+                                        bottom: 5,
+                                        left: 5,
+                                        position: 'absolute',
+                                        resizeMode: 'contain',
+                                    }}
+                                />
+                            </Video>
+                        </TouchableOpacity>
+                    </View>
+                    <Modal
+                        backdropColor={'transparent'}
+                        isVisible={this.state.isVideoVisible}
+                        backdropOpacity={1}
+                        animationIn="fadeIn"
+                        animationInTiming={600}
+                        onSwipeComplete={() =>
+                            this.setState({ isVideoVisible: false })
+                        }
+                        swipeDirection="down"
+                        deviceWidth={width}
+                        style={{ padding: 0, margin: 0 }}
+                    >
+                        <View style={{ flex: 1 }}>
+                            <VideoPlayer
+                                videoProps={{
+                                    shouldPlay: true,
+                                    resizeMode: Video.RESIZE_MODE_CONTAIN,
+                                    source: { uri: imageUrl },
+                                }}
+                                style={{ flex: 0.8 }}
+                                fullscreen={{
+                                    visible: false,
+                                }}
+                                activityIndicator={{
+                                    color: color.GM_BLUE,
+                                    size: 'large',
+                                }}
+                            />
+                        </View>
+                    </Modal>
+                </>
             )
         }
         return null

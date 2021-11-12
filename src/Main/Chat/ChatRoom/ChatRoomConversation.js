@@ -535,7 +535,12 @@ class ChatRoomConversation extends React.Component {
     handleOpenCamera = () => {
         this.props.openCamera(
             (result) => {
-                this.props.changeMessageMediaRef(result.uri)
+                if (result.type === 'video') {
+                    this.props.changeMessageVideoRef(result.uri)
+                    this._textInput.focus()
+                } else {
+                    this.props.changeMessageMediaRef(result.uri)
+                }
             },
             null,
             null,
