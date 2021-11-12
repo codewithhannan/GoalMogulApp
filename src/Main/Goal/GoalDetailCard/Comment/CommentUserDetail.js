@@ -139,6 +139,7 @@ class CommentUserDetail extends Component {
 
         const mediaUrl = `${BASE_URL}/${type}/${uri}`
         const imageUrl = `${IMAGE_BASE_URL}${mediaRef}`
+        console.log('imageUrl', mediaUrl)
         return (
             <>
                 {type === 'CommentAudio' ? (

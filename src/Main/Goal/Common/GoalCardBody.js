@@ -5,6 +5,7 @@ import { View, Image, Dimensions, FlatList } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { connect } from 'react-redux'
 import _ from 'lodash'
+import { Video } from 'expo-av'
 
 import { default_style, color } from '../../../styles/basic'
 
@@ -62,15 +63,26 @@ class GoalCardBody extends React.Component {
 
     renderItem({ item }) {
         if (!item) return <View />
+        const mediaType = item.mediaRef ? item.mediaRef.split('/')[0] : null
         return (
             <DelayedButton
                 onPress={() => this.props.openPostDetailById(item._id)}
                 style={{ marginLeft: CONTAINER_MARGIN }}
             >
-                {item.mediaRef ? (
+                {mediaType === 'FeedImage' ? (
                     <Image
                         source={{ uri: `${IMAGE_BASE_URL}${item.mediaRef}` }}
                         style={styles.updatesImageStyle}
+                    />
+                ) : mediaType === 'FeedVideo' ? (
+                    <Video
+                        // ref={videoRef}
+                        source={{ uri: imageUrl }}
+                        style={[styles.mediaStyle, { borderRadius: 5 }]}
+                        resizeMode="cover"
+                        onPlaybackStatusUpdate={(status) =>
+                            this.setState({ status })
+                        }
                     />
                 ) : (
                     <View
