@@ -139,25 +139,25 @@ class ProfileV2 extends Component {
 
         // This is unlikely to be triggered. This function is to handle when user opens
         // profile too fast before profile is being loaded
-        if (
-            this.props.isSelf &&
-            !this.state.showBadgeEarnModal &&
-            _.get(
-                this.props.user,
-                'profile.badges.milestoneBadge.currentMilestone',
-                0
-            ) > 0 &&
-            !_.get(
-                this.props.user,
-                'profile.badges.milestoneBadge.isAwardAlertShown',
-                true
-            )
-        ) {
-            // Showing modal to congrats user earning a new badge
-            this.setState({
-                showBadgeEarnModal: true,
-            })
-        }
+        // if (
+        //     this.props.isSelf &&
+        //     !this.state.showBadgeEarnModal &&
+        //     _.get(
+        //         this.props.user,
+        //         'profile.badges.milestoneBadge.currentMilestone',
+        //         0
+        //     ) > 0 &&
+        //     !_.get(
+        //         this.props.user,
+        //         'profile.badges.milestoneBadge.isAwardAlertShown',
+        //         true
+        //     )
+        // ) {
+        //     // Showing modal to congrats user earning a new badge
+        //     this.setState({
+        //         showBadgeEarnModal: true,
+        //     })
+        // }
         // if (!this.props.isSelf && prevProps.user._id !== this.props.user._id) {
         //     this.shouldSendNudge()
         // }

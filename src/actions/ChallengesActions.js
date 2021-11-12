@@ -15,6 +15,7 @@ export const openChallenges = (webpageUrl) => (dispatch, getState) => {
     dispatch({
         type: CHALLENGES_OPEN_CHALLENGES,
     })
+    console.log('componentKeyToOpen', componentKeyToOpen)
     Actions.push(`${componentKeyToOpen}`, {
         url: webpageUrl,
     })

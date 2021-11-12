@@ -574,17 +574,6 @@ class ActivityFeed extends Component {
                         })
                     }}
                 />
-                <Popup
-                    popupName={this.state.popupName}
-                    isVisible={this.state.showPopupModal}
-                    closeModal={() => {
-                        this.state.popupName == 'FIRST_GOAL'
-                            ? this.handleQuestionPopup()
-                            : this.setState({
-                                  showPopupModal: false,
-                              })
-                    }}
-                />
             </>
         )
     }

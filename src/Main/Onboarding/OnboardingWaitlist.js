@@ -135,7 +135,7 @@ class OnBoardingWaitlist extends React.Component {
                                 width: '75%',
 
                                 marginTop: 15,
-                                fontStyle: 'SFProDisplay-Regular',
+                                // fontStyle: 'SFProDisplay-Regular',
                             }}
                         >
                             After beta testing is done, we'll email you when
@@ -150,7 +150,7 @@ class OnBoardingWaitlist extends React.Component {
                                 width: '75%',
                                 marginHorizontal: 80,
                                 marginTop: 60,
-                                fontStyle: 'SFProDisplay-Regular',
+                                // fontStyle: 'SFProDisplay-Regular',
                             }}
                         >
                             Follow us for updates
@@ -193,7 +193,7 @@ class OnBoardingWaitlist extends React.Component {
                                     style={{
                                         color: '#485A95',
                                         fontSize: 12,
-                                        fontStyle: 'SFProDisplay-Regular',
+                                        // fontStyle: 'SFProDisplay-Regular',
                                         fontWeight: '500',
                                     }}
                                 >
@@ -203,7 +203,7 @@ class OnBoardingWaitlist extends React.Component {
                                     style={{
                                         color: '#485A95',
                                         fontSize: 12,
-                                        fontStyle: 'SFProDisplay-Regular',
+                                        // fontStyle: 'SFProDisplay-Regular',
                                         fontWeight: '500',
                                     }}
                                 >

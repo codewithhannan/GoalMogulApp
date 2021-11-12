@@ -56,6 +56,7 @@ import { setJSExceptionHandler } from 'react-native-exception-handler' // If an 
 import ThemeProvider from './theme/ThemeProvider'
 import CustomDropdown from './CustomDropDown'
 import { color } from './src/styles/basic'
+import { Actions } from 'react-native-router-flux'
 
 // import CustomDropDown from './src/Main/Onboarding/Common/CustomDropdown'
 // Disable font scaling at the start of the App
@@ -166,7 +167,14 @@ export default class App extends React.Component {
     // }
 
     // handleOpenURL(event) {
-    //     Alert.alert(event.url)
+    //     Alert.alert(JSON.stringify(event))
+    //     if (event === null) {
+    //         return
+    //     }
+    //     if (event.includes('questions')) {
+    //         Alert.alert(JSON.stringify(event))
+    //         Actions.replace('questions')
+    //     }
     // }
 
     render() {
