@@ -765,7 +765,7 @@ class Bubble extends React.Component {
             return (
                 <LottieView
                     style={{
-                        height: hp(30),
+                        height: hp(25),
                         alignSelf: 'center',
                     }}
                     source={this.renderLottieImage(currentMessage.lottie)}

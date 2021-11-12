@@ -31,6 +31,8 @@ import CreateChatRoomModal from './Main/Chat/Modals/CreateChatRoomModal'
 import ShareToChatModal from './Main/Chat/Modals/ShareToChatModal'
 import CreateButtonOverlay from './Main/Common/Button/CreateButtonOverlay'
 import CreateGoalButtonOverlay from './Main/Common/Button/CreateGoalButtonOverlay'
+import SilverChallenge from './Main/Challenges/SilverChallenge'
+import GoldChallenge from './Main/Challenges/GoldChallenge'
 /* Main App */
 import TabIcon from './Main/Common/TabIcon'
 import CreateEventModal from './Main/Event/CreateEventModal'
@@ -879,6 +881,19 @@ class RouterComponent extends Component {
                         component={TrendingGoalView}
                         hideNavBar
                     />
+                    <Scene
+                        path={'/silverchallenge'}
+                        key="silverchallenge"
+                        component={SilverChallenge}
+                        hideNavBar
+                    />
+                    <Scene
+                        path={'/goldchallenge'}
+                        key="goldchallenge"
+                        component={GoldChallenge}
+                        hideNavBar
+                    />
+
                     <Scene
                         key="invitefriend"
                         component={InviteFriendScreen}
