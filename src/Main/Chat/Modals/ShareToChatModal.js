@@ -265,7 +265,7 @@ class ShareToChatModal extends Component {
         const modalDescriptionSuffix =
             this.props.chatRoomType == 'Direct'
                 ? 'as a direct message'
-                : 'to group convrsations'
+                : 'to group conversations'
         return (
             <MenuProvider
                 customStyles={{ backdrop: styles.backdrop }}
