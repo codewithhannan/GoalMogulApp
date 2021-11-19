@@ -429,27 +429,34 @@ export const openCameraRollForVideo = (showModal) => async (dispatch) => {
     const permissionGranted = await ImagePickerr.requestMediaLibraryPermissionsAsync()
 
     if (permissionGranted.status !== 'granted') {
-        return alert('Please grant access to photos and camera.')
+        return Alert.alert('Please grant access to photos and camera.')
     }
 
-    const result = await ImagePickerr.launchImageLibraryAsync({
-        mediaTypes: 'Videos',
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 0.2,
-        videoExportPreset: ImagePickerr.VideoExportPreset.LowQuality,
-    })
+    try {
+        const result = await ImagePickerr.launchImageLibraryAsync({
+            mediaTypes: 'Videos',
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 0.2,
+            videoExportPreset: ImagePickerr.VideoExportPreset.LowQuality,
+        })
 
-    if (!result.cancelled) {
-        return (
-            dispatch(setVideoUri(result.uri)),
-            setTimeout(() => {
-                showModal()
-            }, 500)
+        console.log('RESULTTT', result)
+
+        if (!result.cancelled) {
+            return (
+                dispatch(setVideoUri(result.uri)),
+                setTimeout(() => {
+                    showModal()
+                }, 500)
+            )
+        }
+    } catch (error) {
+        console.log(
+            'user choosing from camera roll fail with result: ',
+            error.message
         )
     }
-
-    console.log('user choosing from camera roll fail with result: ', result)
 }
 
 export const getPhotosAsync = async () => {

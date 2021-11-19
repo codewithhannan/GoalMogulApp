@@ -83,6 +83,7 @@ class CreateGoalModal extends React.Component {
 
     componentDidMount() {
         const { userId } = this.props
+        Alert.alert(JSON.stringify(this.props.funnel))
         const pageId = this.props.refreshProfileData(userId)
         pageAb = pageId
 

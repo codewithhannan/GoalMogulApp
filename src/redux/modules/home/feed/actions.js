@@ -24,6 +24,7 @@ const BASE_ROUTE = 'secure/feed/activity'
 
 //Refresh feed for activity tab
 export const refreshActivityFeed = () => (dispatch, getState) => {
+    console.log('YE CHALA HAI')
     const { token } = getState().user
     const { limit, filter } = getState().home.activityfeed
     const { categories, priority } = filter

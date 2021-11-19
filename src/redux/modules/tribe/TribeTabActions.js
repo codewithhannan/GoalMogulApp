@@ -160,6 +160,7 @@ const loadTribe = (
             onError(res)
         })
         .catch((err) => {
+            console.log('ERRRORRR', err.message)
             onError(err)
         })
 }

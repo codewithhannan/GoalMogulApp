@@ -785,7 +785,7 @@ class RouterComponent extends Component {
                                         <Stack
                                             key="chatTab"
                                             icon={TabIcon}
-                                            path={'/chat'}
+                                            path={'/chat/:funnels'}
                                             hideNavBar
                                             transitionConfig={() => ({
                                                 screenInterpolator: (props) => {
@@ -869,14 +869,14 @@ class RouterComponent extends Component {
                         hideNavBar
                     />
                     <Scene
-                        path={'/creategoal'}
+                        path={'/creategoal/:funnel'}
                         key="createGoalModal"
                         component={CreateGoalModal}
                         hideNavBar
                     />
 
                     <Scene
-                        path={'/trendinggoal'}
+                        path={'/trendinggoal/:funnel'}
                         key="trendingGoalView"
                         component={TrendingGoalView}
                         hideNavBar

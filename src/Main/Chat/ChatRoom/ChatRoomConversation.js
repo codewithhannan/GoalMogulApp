@@ -165,6 +165,8 @@ class ChatRoomConversation extends React.Component {
     componentDidMount() {
         // initialize
         const { chatRoomId, limit } = this.props
+
+        console.log('THIS IS PROPSSS', this.props)
         this._pollChatRoomDocument()
         MessageStorageService.markConversationMessagesAsRead(chatRoomId)
         MessageStorageService.setActiveChatRoom(chatRoomId)

@@ -1,7 +1,7 @@
 /** @format */
 
 import React from 'react'
-import { AsyncStorage, View } from 'react-native'
+import { Alert, AsyncStorage, View } from 'react-native'
 import { copilot } from 'react-native-copilot-gm'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
@@ -59,6 +59,7 @@ class ChatTab extends React.Component {
             UNREAD_BADGE_COUNT_REFRESH_INTERVAL_MS
         )
 
+        Alert.alert(JSON.stringify(this.props.funnels))
         AsyncStorage.getItem(CHAT_TAB_LAST_INDEX).then((maybeLastIndex) => {
             if (parseInt(maybeLastIndex)) {
                 setTimeout(() => {

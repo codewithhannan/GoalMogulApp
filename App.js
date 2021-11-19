@@ -118,10 +118,6 @@ export default class App extends React.Component {
     }
 
     componentDidMount() {
-        // DeepLinking.addScheme('example1://')
-        // DeepLinking.addRoute('/test', (response) => {
-        //     console.log('SUPPORTED 5', response)
-        // })
         // Linking.getInitialURL()
         //     .then((ev) => {
         //         if (ev) {
@@ -141,20 +137,21 @@ export default class App extends React.Component {
         //     })
         //     .catch((err) => console.error('An error occurred', err))
 
-        var url = Linking.getInitialURL()
-            .then((url) => {
-                console.log('url', url)
-                if (url) {
-                    Linking.openURL(url)
-                }
-            })
-            .catch((err) => console.error('An error occurred', err))
+        // Linking.getInitialURL()
+        //     .then((url) => {
+        //         Alert.alert(JSON.stringify(url))
+        //         if (url) {
+        //             Linking.openURL(url)
+        //         }
+        //     })
+        //     .catch((err) => console.error('An error occurred', err))
         ReactMoE.initialize()
     }
 
-    componentWillUnmount() {
-        Linking.removeEventListener('url', this.handleUrl)
-    }
+    // componentWillUnmount() {
+    //     Linking.removeEventListener('url', this.handleUrl)
+    // }
+
     onMessageReceived = async (message) => {
         console.log('A FCM MESSAGE WAS RECIEVED', message)
         if (Platform.OS === 'android') {
@@ -171,7 +168,7 @@ export default class App extends React.Component {
     //     if (event === null) {
     //         return
     //     }
-    //     if (event.includes('questions')) {
+    //     if (event.includes('chat')) {
     //         Alert.alert(JSON.stringify(event))
     //         Actions.replace('questions')
     //     }

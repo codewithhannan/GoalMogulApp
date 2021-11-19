@@ -584,7 +584,11 @@ export const createOrGetDirectMessage = (userId, maybeCallback) => (
 }
 
 // TODO: profile reducer redesign to change here. The method signature. Search for usage
-export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
+export const submitUpdatingProfile = (
+    { values, hasImageModified },
+    pageId,
+    refreshHome
+) => {
     return (dispatch, getState) => {
         const { headline, name, oldPassword, newPassword } = values
         const { about, occupation, elevatorPitch, location } = values.profile
@@ -662,6 +666,7 @@ export const submitUpdatingProfile = ({ values, hasImageModified }, pageId) => {
                         pageId,
                     },
                 })
+                refreshHome()
                 Actions.pop()
                 fetchUserProfile(userId, pageId)(dispatch, getState)
                 Logger.log(
