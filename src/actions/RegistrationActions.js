@@ -343,7 +343,8 @@ export const openCamera = (
         //     })
         // })
         result = await ImagePickerr.launchCameraAsync({
-            mediaTypes: 'All',
+            mediaTypes: 'Videos',
+            videoMaxDuration: 15,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 0.2,
@@ -499,6 +500,9 @@ export const openCameraRoll = (
         disableEditing
             ? {
                   mediaTypes: 'All',
+                  allowsEditing: true,
+                  aspect: [4, 3],
+                  quality: 0.2,
                   videoExportPreset: ImagePickerr.VideoExportPreset.LowQuality,
               }
             : {

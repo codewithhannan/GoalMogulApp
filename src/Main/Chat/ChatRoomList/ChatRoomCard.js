@@ -135,12 +135,16 @@ class ChatRoomCard extends React.Component {
     renderCardContent(item) {
         let content
         const lastMessageText = _.get(item, 'latestMessage.content.message', '')
+
         if (this.props.renderDescription && item.description) {
             content = item.description
         } else if (item.isFriend) {
             // for friend search results
             content = 'Tap to start a conversation...'
         } else if (item.latestMessage) {
+            const mediaType = item.latestMessage?.media
+                ? item.latestMessage?.media.split('/')[0]
+                : null
             if (lastMessageText) {
                 // If last message is sent by current user, add a prefix
                 // You: {message to render}
@@ -151,9 +155,9 @@ class ChatRoomCard extends React.Component {
                 )
                     ? `You: ${lastMessageText}`
                     : lastMessageText
-            } else if (item.latestMessage.media.split('/')[0] === 'ChatVoice') {
+            } else if (mediaType === 'ChatVoice') {
                 content = 'Chat member sent an audio...'
-            } else if (item.latestMessage.media.split('/')[0] === 'ChatVideo') {
+            } else if (mediaType === 'ChatVideo') {
                 content = 'Chat member sent a video...'
             } else if (item.latestMessage.media) {
                 content = 'Chat member sent an image...'
