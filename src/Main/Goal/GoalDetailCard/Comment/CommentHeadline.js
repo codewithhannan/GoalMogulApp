@@ -139,6 +139,7 @@ const CommentHeadV2 = (props) => {
         onHeadlinePressed,
     } = props
     const { owner, needRef, stepRef, mediaRef } = item
+    const mediaType = mediaRef ? mediaRef.split('/')[0] : null
 
     let headerText = { lead: '', description: '' }
     let focusType, focusRef
@@ -233,7 +234,7 @@ const CommentHeadV2 = (props) => {
             />
             <UserBanner user={owner} />
             <Timestamp time={timeago().format(timeStamp)} />
-            {mediaRef ? (
+            {mediaType == 'CommentVideo' || mediaType == 'CommentAudio' ? (
                 <View
                     style={[
                         GOALS_STYLE.commonPillContainer,
