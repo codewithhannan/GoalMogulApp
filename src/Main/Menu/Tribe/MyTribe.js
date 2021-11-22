@@ -142,6 +142,10 @@ class MyTribe extends React.PureComponent {
                 icon: CREATE_GOAL,
                 onPress: () => {
                     this.setState({ tooltipVisible: false })
+
+                    Actions.push('createGoalModal', {
+                        pageId: this.props.pageId,
+                    })
                 },
                 showBorder: true,
             },
@@ -666,37 +670,77 @@ class MyTribe extends React.PureComponent {
                                 {this.ADD_BUTTON.map((button) => {
                                     return (
                                         <>
-                                            <TouchableOpacity
-                                                onPress={button.onPress}
-                                            >
-                                                <View
-                                                    style={{
-                                                        flexDirection: 'row',
-                                                        padding: 5,
-                                                    }}
+                                            {button.name !==
+                                            'Invite Friends' ? (
+                                                <TouchableOpacity
+                                                    onPress={button.onPress}
                                                 >
-                                                    <Image
-                                                        source={button.icon}
+                                                    <View
                                                         style={{
-                                                            height: 17,
-                                                            width: 17,
-                                                            resizeMode:
-                                                                'contain',
-                                                        }}
-                                                    />
-                                                    <Text
-                                                        style={{
-                                                            color: 'white',
-                                                            fontSize: 16,
-                                                            marginHorizontal: 10,
-                                                            fontFamily:
-                                                                'SFProDisplay-Semibold',
+                                                            flexDirection:
+                                                                'row',
+                                                            padding: 5,
                                                         }}
                                                     >
-                                                        {button.name}
-                                                    </Text>
-                                                </View>
-                                            </TouchableOpacity>
+                                                        <Image
+                                                            source={button.icon}
+                                                            style={{
+                                                                height: 17,
+                                                                width: 17,
+                                                                resizeMode:
+                                                                    'contain',
+                                                            }}
+                                                        />
+                                                        <Text
+                                                            style={{
+                                                                color: 'white',
+                                                                fontSize: 16,
+                                                                marginHorizontal: 10,
+                                                                fontFamily:
+                                                                    'SFProDisplay-Semibold',
+                                                            }}
+                                                        >
+                                                            {button.name}
+                                                        </Text>
+                                                    </View>
+                                                </TouchableOpacity>
+                                            ) : this.props.item
+                                                  .isMemberInviteEnabled ? (
+                                                <TouchableOpacity
+                                                    onPress={button.onPress}
+                                                >
+                                                    <View
+                                                        style={{
+                                                            flexDirection:
+                                                                'row',
+                                                            padding: 5,
+                                                        }}
+                                                    >
+                                                        <Image
+                                                            source={button.icon}
+                                                            style={{
+                                                                height: 17,
+                                                                width: 17,
+                                                                resizeMode:
+                                                                    'contain',
+                                                            }}
+                                                        />
+                                                        <Text
+                                                            style={{
+                                                                color: 'white',
+                                                                fontSize: 16,
+                                                                marginHorizontal: 10,
+                                                                fontFamily:
+                                                                    'SFProDisplay-Semibold',
+                                                            }}
+                                                        >
+                                                            {button.name}
+                                                        </Text>
+                                                    </View>
+                                                </TouchableOpacity>
+                                            ) : (
+                                                <></>
+                                            )}
 
                                             {button.showBorder ? (
                                                 <View
@@ -765,6 +809,7 @@ class MyTribe extends React.PureComponent {
     render() {
         const { item, data } = this.props
         if (!item) return <View />
+        // console.log("tribe props",this.props);
         return (
             <MenuProvider
                 style={{ backgroundColor: color.GM_BACKGROUND }}

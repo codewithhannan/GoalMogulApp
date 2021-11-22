@@ -41,6 +41,7 @@ import Event from './Main/Event/Event'
 // Explore Tab
 import Explore from './Main/Explore/Explore'
 import CreateGoalModal from './Main/Goal/CreateGoalModal'
+import SeekHelp from './Main/Goal/Common/SeekHelp'
 import TrendingGoalView from './Main/Goal/NewGoal/TrendingGoalView'
 import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCardV3'
 // Home Tab
@@ -872,6 +873,12 @@ class RouterComponent extends Component {
                         path={'/creategoal'}
                         key="createGoalModal"
                         component={CreateGoalModal}
+                        hideNavBar
+                    />
+                    <Scene
+                        path={'/seekhelp'}
+                        key="seekhelp"
+                        component={SeekHelp}
                         hideNavBar
                     />
 

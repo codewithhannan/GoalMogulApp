@@ -56,6 +56,7 @@ import {
     cancelCreatingNewTribe,
     createNewTribe,
     tribeToFormAdapter,
+    clearTribeError,
 } from '../../redux/modules/tribe/NewTribeActions'
 import { openCameraRoll, openCamera } from '../../actions'
 
@@ -104,7 +105,9 @@ class CreateTribeModal extends React.Component {
         // )
         this.initializeForm()
     }
-
+    componentWillUnmount() {
+        this.props.clearTribeError()
+    }
     initializeForm() {
         const defaulVals = {
             name: undefined,
@@ -255,6 +258,7 @@ class CreateTribeModal extends React.Component {
         )
     }
     renderNextButton(handleSubmit) {
+        const actionText = this.props.initializeFromState ? 'Update' : 'Create'
         return (
             <DelayedButton
                 style={{
@@ -278,7 +282,7 @@ class CreateTribeModal extends React.Component {
                         color: 'white',
                     }}
                 >
-                    Create
+                    {actionText}
                 </Text>
             </DelayedButton>
         )
@@ -459,7 +463,7 @@ class CreateTribeModal extends React.Component {
         )
     }
     renderInviteCode(handleSubmit) {
-        console.log('TEST TRIBE', this.props.tribeErr.message.includes('30'))
+        // console.log('TEST TRIBE', this.props.tribeErr.message.includes('30'))
         const titleText = (
             <Text style={[styles.titleTextStyle, { paddingRight: 5 }]}>
                 Invite Code:
@@ -471,13 +475,13 @@ class CreateTribeModal extends React.Component {
                     styles.bottomTextStyle,
                     {
                         marginVertical: 3,
-                        color: this.props.tribeErr.message.includes('30')
+                        color: this.props.tribeErr?.message.includes('30')
                             ? 'red'
                             : 'grey',
                     },
                 ]}
             >
-                {this.props.tribeErr.message.includes('30')
+                {this.props.tribeErr?.message.includes('30')
                     ? 'Sorry, the Tribe Invite code has already been changed within the last 30 days. You must wait before you can change the Tribe Invite code again.'
                     : `Note- You may only change the Tribe Invite code once per 30 days.`}
             </Text>
@@ -911,7 +915,6 @@ class CreateTribeModal extends React.Component {
 
     render() {
         const { handleSubmit, errors } = this.props
-        const actionText = this.props.initializeFromState ? 'Update' : 'Create'
         const titleText = this.props.initializeFromState
             ? 'Edit Tribe'
             : 'New Tribe'
@@ -1009,6 +1012,7 @@ export default connect(mapStateToProps, {
     createNewTribe,
     openCameraRoll,
     openCamera,
+    clearTribeError,
 })(CreateTribeModal)
 
 const styles = {

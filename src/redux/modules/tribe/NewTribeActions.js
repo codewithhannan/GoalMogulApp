@@ -13,6 +13,7 @@ import {
     TRIBE_NEW_CANCEL,
     TRIBE_NEW_UPLOAD_PICTURE_SUCCESS,
     TRIBE_NEW_ERROR,
+    TRIBE_CLEAR_ERROR,
 } from './NewTribeReducers'
 
 import { refreshTribes } from './TribeHubActions'
@@ -306,9 +307,15 @@ export const tribeToFormAdapter = (tribe) => {
         description,
         picture,
         category,
-        tribeInviteCode: tribeInviteCode.code,
+        tribeInviteCode: tribeInviteCode?.code,
         guidelines,
     }
+}
+
+export const clearTribeError = () => (dispatch) => {
+    dispatch({
+        type: TRIBE_CLEAR_ERROR,
+    })
 }
 
 /**
