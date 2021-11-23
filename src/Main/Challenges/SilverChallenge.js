@@ -9,6 +9,7 @@ import React from 'react'
 import { View, Dimensions } from 'react-native'
 import { WebView } from 'react-native-webview'
 import OnboardingHeader from '../../Main/Onboarding/Common/OnboardingHeader'
+import { trackWithProperties, EVENT as E } from '../../monitoring/segment'
 import SearchBarHeader from '../Common/Header/SearchBarHeader'
 
 const SILVER_CHALLENGE_URL = 'https://new5reactpages.web.app/silverBadge'
@@ -19,6 +20,14 @@ class SilverChallenge extends React.Component {
         this.state = {
             loaded: false,
         }
+    }
+
+    componentDidMount() {
+        setTimeout(() => {
+            trackWithProperties(E.DEEPLINK_CLICKED, {
+                FunnelName: this.props.funnel,
+            })
+        }, 2000)
     }
 
     render() {

@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import direct_message_image from '../../asset/utils/direct_message.png'
 import next from '../../asset/utils/next.png'
 import profile_people_image from '../../asset/utils/profile_people.png'
+import { trackWithProperties, EVENT as E } from '../../monitoring/segment'
 // Actions
 import {
     createOrGetDirectMessage,
@@ -59,7 +60,13 @@ class ChatTab extends React.Component {
             UNREAD_BADGE_COUNT_REFRESH_INTERVAL_MS
         )
 
-        Alert.alert(JSON.stringify(this.props.funnels))
+        setTimeout(() => {
+            Alert.alert(JSON.stringify(this.props.funnel))
+            trackWithProperties(E.DEEPLINK_CLICKED, {
+                FunnelName: this.props.funnel,
+            })
+        }, 2000)
+
         AsyncStorage.getItem(CHAT_TAB_LAST_INDEX).then((maybeLastIndex) => {
             if (parseInt(maybeLastIndex)) {
                 setTimeout(() => {

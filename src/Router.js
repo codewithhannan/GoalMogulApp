@@ -659,7 +659,7 @@ class RouterComponent extends Component {
                                                 key="tribeHub"
                                                 component={TribeHub}
                                                 initial
-                                                path={'/tribehub'}
+                                                path={'/tribehub/:funnel'}
                                             />
                                             <Scene
                                                 key="explore"
@@ -690,7 +690,6 @@ class RouterComponent extends Component {
 
                                         <Stack
                                             key="profileTab"
-                                            path={'/profile'}
                                             icon={TabIcon}
                                             hideNavBar
                                             transitionConfig={() => ({
@@ -720,6 +719,7 @@ class RouterComponent extends Component {
                                             <Scene
                                                 key={`mainProfile`}
                                                 component={MainProfile}
+                                                path={'/profile/:funnel'}
                                                 initial
                                             />
                                             {getCommonScenes('profileTab')}
@@ -728,6 +728,7 @@ class RouterComponent extends Component {
                                         <Stack
                                             key="notificationTab"
                                             icon={TabIcon}
+                                            path={'/notifications'}
                                             hideNavBar
                                             transitionConfig={() => ({
                                                 screenInterpolator: (props) => {
@@ -785,7 +786,6 @@ class RouterComponent extends Component {
                                         <Stack
                                             key="chatTab"
                                             icon={TabIcon}
-                                            path={'/chat/:funnels'}
                                             hideNavBar
                                             transitionConfig={() => ({
                                                 screenInterpolator: (props) => {
@@ -814,6 +814,7 @@ class RouterComponent extends Component {
                                             <Scene
                                                 key="chat"
                                                 component={Chat}
+                                                path={'/chat/:funnel'}
                                                 initial
                                             />
                                             <Scene
@@ -882,13 +883,13 @@ class RouterComponent extends Component {
                         hideNavBar
                     />
                     <Scene
-                        path={'/silverchallenge'}
+                        path={'/silverchallenge/:funnel'}
                         key="silverchallenge"
                         component={SilverChallenge}
                         hideNavBar
                     />
                     <Scene
-                        path={'/goldchallenge'}
+                        path={'/goldchallenge/:funnel'}
                         key="goldchallenge"
                         component={GoldChallenge}
                         hideNavBar
@@ -898,7 +899,7 @@ class RouterComponent extends Component {
                         key="invitefriend"
                         component={InviteFriendScreen}
                         hideNavBar
-                        path={'/invitefriend'}
+                        path={'/invitefriend/:funnel'}
                     />
                     <Scene
                         key={'ContactMessageScreen'}

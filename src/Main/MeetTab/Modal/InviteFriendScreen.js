@@ -33,6 +33,11 @@ import { color, default_style } from '../../../styles/basic'
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import {
+    trackWithProperties,
+    EVENT as E,
+} from '../../../monitoring/segment/index'
+
+import {
     generateInvitationLink,
     componentKeyByTab,
 } from '../../../redux/middleware/utils'
@@ -129,7 +134,13 @@ class InviteFriendScreen extends PureComponent {
         })
     }
 
-    async componentDidUpdate() {}
+    componentDidMount() {
+        setTimeout(() => {
+            trackWithProperties(E.DEEPLINK_CLICKED, {
+                FunnelName: this.props.funnel,
+            })
+        }, 2000)
+    }
 
     closeModal = () => {
         if (this.props.closeModal) {

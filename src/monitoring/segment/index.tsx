@@ -198,6 +198,8 @@ const EVENT = {
 
     SPLASH_SCREEN: 'onboarding_page_viewed',
 
+    DEEPLINK_CLICKED:"DeepLinkOpened",
+
     // App
     APP_ACTIVE: 'app_opened',
     APP_INACTIVE: 'app_closed',
