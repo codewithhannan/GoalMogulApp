@@ -6,7 +6,7 @@ import { Alert } from 'react-native'
 import { api as API } from '../../middleware/api'
 import ImageUtils from '../../../Utils/ImageUtils'
 
-import { GET_HELP_FROM } from './seekHelpReducers'
+import { GET_HELP_FROM, CLEAR_SEEKHELP } from './seekHelpReducers'
 
 const BASE_ROUTE = 'secure/tribe'
 const DEBUG_KEY = '[ Action Create Tribe ]'
@@ -18,6 +18,14 @@ export const setSelected = (data) => (dispatch) => {
     dispatch({
         type: GET_HELP_FROM,
         paylaod: data,
+    })
+}
+
+export const clearSelected = (data) => (dispatch) => {
+    // console.log(data)
+    // Actions.push('createTribeStack')
+    dispatch({
+        type: CLEAR_SEEKHELP,
     })
 }
 

@@ -118,6 +118,7 @@
                 "BADGE_COUNT_READ",
                 "BADGE_COUNT_WRITE"
             ]
-        }
+        },
+        "plugins": ["@react-native-firebase/app"]
     }
 }
