@@ -578,7 +578,10 @@ export const subscribeNotification = () => async (dispatch, getState) => {
         //     notificationToken,
         //     {}
         // )
-        await AsyncStorage.setItem(NOTIFICATION_TOKEN_KEY, notificationToken)
+        await AsyncStorage.setItem(
+            NOTIFICATION_TOKEN_KEY,
+            notificationToken.data
+        )
         // ReactMoE.passFcmPushToken(notificationToken)
 
         console.log(
@@ -606,7 +609,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
     // where you can retrieve it to send push notifications.
     return API.put(
         'secure/user/settings/expo-token',
-        { pushToken: notificationToken },
+        { pushToken: notificationToken.data },
         token
     )
         .then((res) => {

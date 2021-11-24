@@ -1354,7 +1354,7 @@ class Home extends Component {
             pickedImage: null,
             shareModal: false,
             isVisible: false,
-            isVisibleA: true,
+            isVisibleA: false,
             isVisibleB: false,
             showPopupModal: false,
             popupName: '',
