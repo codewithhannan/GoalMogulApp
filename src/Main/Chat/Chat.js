@@ -61,7 +61,6 @@ class ChatTab extends React.Component {
         )
 
         setTimeout(() => {
-            Alert.alert(JSON.stringify(this.props.funnel))
             trackWithProperties(E.DEEPLINK_CLICKED, {
                 FunnelName: this.props.funnel,
             })

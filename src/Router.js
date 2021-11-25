@@ -728,7 +728,6 @@ class RouterComponent extends Component {
                                         <Stack
                                             key="notificationTab"
                                             icon={TabIcon}
-                                            path={'/notifications'}
                                             hideNavBar
                                             transitionConfig={() => ({
                                                 screenInterpolator: (props) => {
@@ -757,6 +756,7 @@ class RouterComponent extends Component {
                                             <Scene
                                                 key="notification"
                                                 component={NotificationTab}
+                                                path={'/notifications'}
                                                 hideNavBar
                                                 onEnter={() => {
                                                     if (
