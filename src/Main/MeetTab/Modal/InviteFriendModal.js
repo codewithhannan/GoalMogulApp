@@ -631,7 +631,12 @@ class InviteFriendModal extends React.PureComponent {
                                                 inviteLink
                                         )
                                         Alert.alert(
-                                            'Invite message copied to Clipboard'
+                                            `Invite message copied to Clipboard \n Use this invite code: ${
+                                                this.props.isTribe
+                                                    ? this.props.tribeCode
+                                                          .tribeInviteCode
+                                                    : this.props.inviteCode
+                                            }`
                                         )
                                     }}
                                 >

@@ -178,7 +178,8 @@ class SuggestionModal extends Component {
             this.setState({ modalVisible: true })
         }
         if (suggestionType === 'Contact') {
-            this.setState({ showInviteFriendModal: true })
+            // this.setState({ showInviteFriendModal: true })
+            Actions.push('ContactMessage')
         }
 
         if (suggestionType === 'NewNeed' || suggestionType === 'NewStep') {
