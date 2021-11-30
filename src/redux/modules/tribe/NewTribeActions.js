@@ -98,10 +98,7 @@ export const createNewTribe = (values, needUpload, isEdit, tribeId) => (
             type: TRIBE_NEW_ERROR,
             payload: err,
         })
-        Alert.alert(
-            `Failed to ${isEdit ? 'update' : 'create'} new Tribe`,
-            'Please try again later'
-        )
+        Alert.alert(err.message, 'Please try again later')
         console.log(
             `${DEBUG_KEY}: edit or create new tribe failed with err: `,
             err

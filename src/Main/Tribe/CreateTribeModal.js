@@ -482,7 +482,7 @@ class CreateTribeModal extends React.Component {
                 ]}
             >
                 {this.props.tribeErr?.message.includes('30')
-                    ? 'Sorry, the Tribe Invite code has already been changed within the last 30 days. You must wait before you can change the Tribe Invite code again.'
+                    ? this.props.tribeErr?.message
                     : `Note- You may only change the Tribe Invite code once per 30 days.`}
             </Text>
         )
