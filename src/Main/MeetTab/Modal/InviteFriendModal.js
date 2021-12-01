@@ -115,10 +115,14 @@ class InviteFriendModal extends React.PureComponent {
     constructor(props) {
         super(props)
         // this.state = { ...DEFAULT_STATE }
+
         this.state = {
-            description: this.descriptionsArray[0],
+            description: this.props.isTribe
+                ? this.props.tribeDes
+                : this.descriptionsArray[0],
             descriptionIndex: 0,
             editEnabled: false,
+            inviteCode: '',
         }
     }
 
@@ -129,7 +133,11 @@ class InviteFriendModal extends React.PureComponent {
         })
     }
 
-    async componentDidUpdate() {}
+    componentDidMount() {
+        const inviteLink = this.getInviteLink()
+        const inviteCode = inviteLink.slice(35)
+        this.setState({ inviteCode })
+    }
 
     closeModal = () => {
         if (this.props.closeModal) {
@@ -149,7 +157,11 @@ class InviteFriendModal extends React.PureComponent {
     }
 
     getInviteLink = () => {
-        return generateInvitationLink(this.props.inviteCode)
+        if (this.props.isTribe) {
+            return generateInvitationLink(this.props.tribeCode.tribeInviteCode)
+        } else {
+            return generateInvitationLink(this.props.inviteCode)
+        }
     }
 
     postOnFacebook = () => {
@@ -175,7 +187,9 @@ class InviteFriendModal extends React.PureComponent {
     }
 
     shareOnMessanger = (message, link) => {
-        Linking.openURL(`fb-messenger://share?link=${message}\n\n${link}`)
+        Linking.openURL(
+            `fb-messenger://share?link=${message} Use this Invite Code to sign up ${this.state.inviteCode} \n\n${link}`
+        )
             .then((data) => {
                 console.log('Messanger OPENED', data)
             })
@@ -245,7 +259,7 @@ class InviteFriendModal extends React.PureComponent {
             // do your SMS stuff here
             const { result } = await SMS.sendSMSAsync(
                 [],
-                `${message}\n\n${url}`
+                `${message}.Use this Invite Code to sign up: ${this.state.inviteCode}\n\n${url}`
             )
             console.log(`${DEBUG_KEY}: result is: `, result)
         }
@@ -258,7 +272,7 @@ class InviteFriendModal extends React.PureComponent {
         if (canOpen) {
             Linking.openURL(
                 `mailto:?subject=Join GoalMogul&body=${unescape(
-                    message
+                    `${message}.Use this Invite Code to sign up: ${this.state.inviteCode}`
                 )}\n\n${unescape(url)}`
             )
         }
@@ -274,7 +288,10 @@ class InviteFriendModal extends React.PureComponent {
     }
 
     shareToWhatsApp = (text, link) => {
-        Linking.openURL(`whatsapp://send?text=${text}\n\n${link}`)
+        Linking.openURL(
+            `whatsapp://send?text=${text}.Use this Invite Code to sign up: ${this.state.inviteCode}\n\n${link}`
+        )
+
             .then((data) => {
                 console.log('WHATSAPP OPENED', data)
             })
@@ -294,39 +311,79 @@ class InviteFriendModal extends React.PureComponent {
                 // this.props.cancelSuggestion(this.props.pageId),
                 Actions.push('ContactMessage'),
                 this.closeModal(),
-                await storeData('INVITEMESSAGE', this.state.description)
+                await storeData(
+                    'INVITEMESSAGE',
+                    this.props.isTribe
+                        ? this.props.tribeDes
+                        : this.state.description
+                )
             )
         }
         if (type == 'sms') {
-            return this.inviteSms(this.state.description, inviteLink)
+            return this.inviteSms(
+                this.props.isTribe
+                    ? this.props.tribeDes
+                    : this.state.description,
+                inviteLink
+            )
         }
         if (type == 'facebook') {
             return this.postOnFacebook()
         }
         if (type == 'whatsapp') {
-            return this.shareToWhatsApp(this.state.description, inviteLink)
+            return this.shareToWhatsApp(
+                this.props.isTribe
+                    ? this.props.tribeDes
+                    : this.state.description,
+                inviteLink
+            )
         }
         if (type == 'messagner') {
-            return this.shareOnMessanger(this.state.description, inviteLink)
+            return this.shareOnMessanger(
+                this.props.isTribe
+                    ? this.props.tribeDes
+                    : this.state.description,
+                inviteLink
+            )
         }
 
         if (type == 'native') {
-            return this.inviteNative(this.state.description, inviteLink)
+            return this.inviteNative(
+                this.props.isTribe
+                    ? this.props.tribeDes
+                    : this.state.description,
+                inviteLink
+            )
         }
 
         if (type == 'clipboard') {
-            return this.copyToClipboard(this.state.description, inviteLink)
+            return this.copyToClipboard(
+                this.props.isTribe
+                    ? this.props.tribeDes
+                    : this.state.description,
+                inviteLink
+            )
         }
 
         if (type == 'email') {
-            return this.inviteEmail(this.state.description, inviteLink)
+            return this.inviteEmail(
+                this.props.isTribe
+                    ? this.props.tribeDes
+                    : this.state.description,
+                inviteLink
+            )
         }
 
         const canOpen = await Linking.canOpenURL(deepLink)
 
         if (canOpen) {
             const fullLink = deepLinkFormat
-                ? deepLinkFormat(this.state.description, inviteLink)
+                ? deepLinkFormat(
+                      this.props.isTribe
+                          ? this.props.tribeDes
+                          : this.state.description,
+                      inviteLink
+                  )
                 : deepLink
             await Linking.openURL(fullLink)
         }
@@ -484,7 +541,7 @@ class InviteFriendModal extends React.PureComponent {
                         ]}
                     >
                         <Text style={[default_style.titleText_1]}>
-                            Invite Friends
+                            {this.props.isTribe ? 'Share' : 'Invite Friends'}
                         </Text>
                         <View style={{ flex: 1, alignItems: 'center' }} />
                         <DelayedButton
@@ -541,9 +598,11 @@ class InviteFriendModal extends React.PureComponent {
                                         this.input = input
                                     }}
                                     value={
-                                        this.descriptionsArray[
-                                            this.state.descriptionIndex
-                                        ]
+                                        this.props.isTribe
+                                            ? this.props.tribeDes
+                                            : this.descriptionsArray[
+                                                  this.state.descriptionIndex
+                                              ]
                                     }
                                     onChangeText={(text) =>
                                         this.updateDescription(text)
@@ -578,12 +637,15 @@ class InviteFriendModal extends React.PureComponent {
                                 <TouchableOpacity
                                     onPress={() => {
                                         Clipboard.setString(
-                                            this.state.description +
-                                                '\n \n' +
-                                                inviteLink
+                                            `${this.state.description} Use this Invite Code to sign up ${this.state.inviteCode}\n\n${inviteLink}`
                                         )
                                         Alert.alert(
-                                            'Invite message copied to Clipboard'
+                                            `Invite message copied to Clipboard \n Use this invite code: ${
+                                                this.props.isTribe
+                                                    ? this.props.tribeCode
+                                                          .tribeInviteCode
+                                                    : this.props.inviteCode
+                                            }`
                                         )
                                     }}
                                 >
@@ -605,26 +667,30 @@ class InviteFriendModal extends React.PureComponent {
                                     </View>
                                 </TouchableOpacity>
                             </View>
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'center',
-                                    marginTop: '3%',
-                                }}
-                            >
-                                <TouchableOpacity
-                                    onPress={this.leftArrowClickHandler}
-                                    style={styles.arrowButtons}
+                            {this.props.isTribe ? (
+                                <></>
+                            ) : (
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
+                                        marginTop: '3%',
+                                    }}
                                 >
-                                    <ArrowLeft />
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    onPress={this.rightArrowClickHandler}
-                                    style={styles.arrowButtons}
-                                >
-                                    <ArrowRight />
-                                </TouchableOpacity>
-                            </View>
+                                    <TouchableOpacity
+                                        onPress={this.leftArrowClickHandler}
+                                        style={styles.arrowButtons}
+                                    >
+                                        <ArrowLeft />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={this.rightArrowClickHandler}
+                                        style={styles.arrowButtons}
+                                    >
+                                        <ArrowRight />
+                                    </TouchableOpacity>
+                                </View>
+                            )}
                             <Text
                                 onPress={this.openEditInviteCodeForm}
                                 style={[
@@ -637,7 +703,9 @@ class InviteFriendModal extends React.PureComponent {
                                     },
                                 ]}
                             >
-                                Customize invite code
+                                {this.props.isTribe
+                                    ? 'Customize Username'
+                                    : 'Customize invite code'}
                             </Text>
                         </View>
                         <View
@@ -661,7 +729,9 @@ class InviteFriendModal extends React.PureComponent {
                                 ]}
                                 onPress={() => {
                                     this.inviteNative(
-                                        this.state.description,
+                                        this.props.isTribe
+                                            ? this.props.tribeDes
+                                            : this.state.description,
                                         inviteLink
                                     )
                                 }}

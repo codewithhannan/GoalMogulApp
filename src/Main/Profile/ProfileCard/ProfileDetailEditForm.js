@@ -42,6 +42,7 @@ import {
 import { color, default_style } from '../../../styles/basic'
 import { Icon } from '@ui-kitten/components'
 import ProfileImage from '../../Common/ProfileImage'
+
 import {
     getProfileImageOrDefault,
     getProfileImageOrDefaultFromUser,
@@ -49,6 +50,8 @@ import {
 import BottomButtonsSheet from '../../Common/Modal/BottomButtonsSheet'
 import { getButtonBottomSheetHeight } from '../../../styles'
 import { resetTutorial } from '../../../redux/modules/User/TutorialActions'
+import { getToastsData } from '../../../actions/ToastActions'
+import { refreshActivityFeed } from '../../../redux/modules/home/feed/actions'
 
 const BUTTONS = ['Take a Picture', 'Camera Roll', 'Cancel']
 const TAKING_PICTURE_INDEX = 0
@@ -63,6 +66,8 @@ class ProfileDetailEditForm extends Component {
         this[name] = ref
     }
 
+    refreshActivity = () => this.props.refreshActivityFeed()
+
     submit = (values) => {
         console.log(
             '\ninitialValues from submit in ProfileDetailEditForm',
@@ -73,13 +78,19 @@ class ProfileDetailEditForm extends Component {
             values.profile
         )
 
+        const refreshActivity = () => {
+            this.refreshActivity()
+        }
+
         const hasImageModified =
             JSON.stringify(this.props.initialValues.profile.image) !==
             JSON.stringify(values.profile.image)
         this.props.submitUpdatingProfile(
             { values, hasImageModified },
-            this.props.pageId
+            this.props.pageId,
+            refreshActivity
         )
+
         track(E.PROFILE_UPDATED)
     }
 
@@ -474,4 +485,6 @@ export default connect(mapStateToProps, {
     submitUpdatingProfile,
     openCamera,
     openCameraRoll,
+    getToastsData,
+    refreshActivityFeed,
 })(ProfileDetailEditForm)

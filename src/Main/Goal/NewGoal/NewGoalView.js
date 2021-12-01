@@ -1135,6 +1135,7 @@ class NewGoalView extends Component {
                 date={new Date()}
                 isVisible={this.props.startTime.picker}
                 mode="date"
+                display="inline"
                 onConfirm={(date) => {
                     if (validateTime(date, this.props.endTime.date)) {
                         this.props.change('startTime', { date, picker: false })
@@ -1188,6 +1189,7 @@ class NewGoalView extends Component {
             <DateTimePickerModal
                 isVisible={this.props.endTime.picker}
                 date={new Date()}
+                display="inline"
                 onConfirm={(date) => {
                     if (validateTime(this.props.startTime.date, date)) {
                         this.props.change('endTime', { date, picker: false })

@@ -1,7 +1,7 @@
 /** @format */
 
 import React from 'react'
-import { AsyncStorage, View } from 'react-native'
+import { Alert, AsyncStorage, View } from 'react-native'
 import { copilot } from 'react-native-copilot-gm'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import direct_message_image from '../../asset/utils/direct_message.png'
 import next from '../../asset/utils/next.png'
 import profile_people_image from '../../asset/utils/profile_people.png'
+import { trackWithProperties, EVENT as E } from '../../monitoring/segment'
 // Actions
 import {
     createOrGetDirectMessage,
@@ -58,6 +59,12 @@ class ChatTab extends React.Component {
             this._refreshUnreadBadgeCount,
             UNREAD_BADGE_COUNT_REFRESH_INTERVAL_MS
         )
+
+        setTimeout(() => {
+            trackWithProperties(E.DEEPLINK_CLICKED, {
+                FunnelName: this.props.funnel,
+            })
+        }, 2000)
 
         AsyncStorage.getItem(CHAT_TAB_LAST_INDEX).then((maybeLastIndex) => {
             if (parseInt(maybeLastIndex)) {

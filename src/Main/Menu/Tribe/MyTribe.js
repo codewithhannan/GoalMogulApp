@@ -18,6 +18,7 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen'
+
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 // Assets
@@ -141,6 +142,10 @@ class MyTribe extends React.PureComponent {
                 icon: CREATE_GOAL,
                 onPress: () => {
                     this.setState({ tooltipVisible: false })
+
+                    Actions.push('createGoalModal', {
+                        pageId: this.props.pageId,
+                    })
                 },
                 showBorder: true,
             },
@@ -151,6 +156,22 @@ class MyTribe extends React.PureComponent {
                     this.setState({ tooltipVisible: false }),
                         setTimeout(() => {
                             Actions.push('myTribeGoalShareView', {
+                                tribe: this.props.item,
+                                tribeId: this.props.tribeId,
+                                pageId: this.props.pageId,
+                            })
+                        }, 500)
+                },
+
+                showBorder: true,
+            },
+            {
+                name: 'Invite Friends',
+                icon: CREATE_GOAL,
+                onPress: () => {
+                    this.setState({ tooltipVisible: false }),
+                        setTimeout(() => {
+                            Actions.push('myTribeGoalInviteFriends', {
                                 tribe: this.props.item,
                                 tribeId: this.props.tribeId,
                                 pageId: this.props.pageId,
@@ -245,6 +266,14 @@ class MyTribe extends React.PureComponent {
                 () => {
                     console.log(`${DEBUG_KEY} User chooses to accept`)
                     this.props.acceptTribeInvit(_id)
+                    setTimeout(() => {
+                        this.props.refreshMyTribeDetail(
+                            this.props.tribeId,
+                            this.props.pageId
+                            // null,
+                            // false
+                        )
+                    }, 1800)
                 },
             ],
             [
@@ -350,41 +379,48 @@ class MyTribe extends React.PureComponent {
         )
     }
 
-    makeTribeRespondOptions = (item) => {
-        const { _id } = item
-        return [
-            {
-                text: 'Accept',
-                onPress: () => {
-                    console.log(`${DEBUG_KEY} User chooses to accept`)
-                    this.props.acceptTribeInvit(_id)
-                },
-            },
-            {
-                text: 'Decline',
-                onPress: () => {
-                    console.log(`${DEBUG_KEY} User chooses to decline`)
-                    this.props.declineTribeInvit(_id)
-                },
-            },
-            {
-                text: 'Cancel',
-                onPress: () => this.closeTribeRespondSheet(),
-            },
-        ]
-    }
+    openTribeStatusnModal = () => this.tribeRequestBottomSheetRef.open()
+    closeTribeStatusnModal = () => this.tribeRequestBottomSheetRef.close()
 
-    renderRespondToInvitationBottomSheet = (item) => {
-        const options = this.makeTribeRespondOptions(item)
+    renderStatusBottomSheet = (item) => {
+        const options = this.makeStatusBottomOptions(item)
         // Options height + bottom space + bottom sheet handler height
         const sheetHeight = getButtonBottomSheetHeight(options.length)
         return (
             <BottomButtonsSheet
-                ref={(r) => (this.tribeRespondBottomSheetRef = r)}
+                ref={(r) => (this.tribeRequestBottomSheetRef = r)}
                 buttons={options}
                 height={sheetHeight}
             />
         )
+    }
+
+    makeStatusBottomOptions = (item) => {
+        const { _id } = item
+        return [
+            {
+                text: 'Accept',
+                textStyle: { color: 'black' },
+                onPress: () => {
+                    // close bottom sheet
+                    this.closeTribeStatusnModal()
+                    setTimeout(() => {
+                        this.props.acceptTribeInvit(_id)
+                    }, 500)
+                },
+            },
+            {
+                text: 'Decline',
+                textStyle: { color: 'black' },
+                onPress: () => {
+                    // close bottom sheet
+                    this.closeTribeStatusnModal()
+                    setTimeout(() => {
+                        this.props.declineTribeInvit(_id)
+                    }, 500)
+                },
+            },
+        ]
     }
 
     renderTribeImage(picture) {
@@ -436,9 +472,9 @@ class MyTribe extends React.PureComponent {
             Invitee: {
                 text: 'Respond',
                 onPress: () =>
-                    Platform.OS === 'ios'
+                    Platform.OS == 'ios'
                         ? this.handleRespondToInvitation(item)
-                        : this.openTribeRespondSheet(),
+                        : this.openTribeStatusnModal(),
             },
         })({
             text: 'Join Tribe',
@@ -634,43 +670,84 @@ class MyTribe extends React.PureComponent {
                                 {this.ADD_BUTTON.map((button) => {
                                     return (
                                         <>
-                                            <TouchableOpacity
-                                                onPress={button.onPress}
-                                            >
-                                                <View
-                                                    style={{
-                                                        flexDirection: 'row',
-                                                        padding: 5,
-                                                    }}
+                                            {button.name !==
+                                            'Invite Friends' ? (
+                                                <TouchableOpacity
+                                                    onPress={button.onPress}
                                                 >
-                                                    <Image
-                                                        source={button.icon}
+                                                    <View
                                                         style={{
-                                                            height: 17,
-                                                            width: 17,
-                                                            resizeMode:
-                                                                'contain',
-                                                        }}
-                                                    />
-                                                    <Text
-                                                        style={{
-                                                            color: 'white',
-                                                            fontSize: 16,
-                                                            marginHorizontal: 10,
-                                                            fontFamily:
-                                                                'SFProDisplay-Semibold',
+                                                            flexDirection:
+                                                                'row',
+                                                            padding: 5,
                                                         }}
                                                     >
-                                                        {button.name}
-                                                    </Text>
-                                                </View>
-                                            </TouchableOpacity>
+                                                        <Image
+                                                            source={button.icon}
+                                                            style={{
+                                                                height: 17,
+                                                                width: 17,
+                                                                resizeMode:
+                                                                    'contain',
+                                                            }}
+                                                        />
+                                                        <Text
+                                                            style={{
+                                                                color: 'white',
+                                                                fontSize: 16,
+                                                                marginHorizontal: 10,
+                                                                fontFamily:
+                                                                    'SFProDisplay-Semibold',
+                                                            }}
+                                                        >
+                                                            {button.name}
+                                                        </Text>
+                                                    </View>
+                                                </TouchableOpacity>
+                                            ) : this.props.item
+                                                  .isMemberInviteEnabled ? (
+                                                <TouchableOpacity
+                                                    onPress={button.onPress}
+                                                >
+                                                    <View
+                                                        style={{
+                                                            flexDirection:
+                                                                'row',
+                                                            padding: 5,
+                                                        }}
+                                                    >
+                                                        <Image
+                                                            source={button.icon}
+                                                            style={{
+                                                                height: 17,
+                                                                width: 17,
+                                                                resizeMode:
+                                                                    'contain',
+                                                            }}
+                                                        />
+                                                        <Text
+                                                            style={{
+                                                                color: 'white',
+                                                                fontSize: 16,
+                                                                marginHorizontal: 10,
+                                                                fontFamily:
+                                                                    'SFProDisplay-Semibold',
+                                                            }}
+                                                        >
+                                                            {button.name}
+                                                        </Text>
+                                                    </View>
+                                                </TouchableOpacity>
+                                            ) : (
+                                                <></>
+                                            )}
 
                                             {button.showBorder ? (
                                                 <View
                                                     style={{
-                                                        borderColor: 'white',
-                                                        borderWidth: 0.8,
+                                                        backgroundColor:
+                                                            'white',
+                                                        height: 1,
                                                         marginTop: 4,
                                                         width: '100%',
                                                     }}
@@ -732,6 +809,7 @@ class MyTribe extends React.PureComponent {
     render() {
         const { item, data } = this.props
         if (!item) return <View />
+        // console.log("tribe props",this.props);
         return (
             <MenuProvider
                 style={{ backgroundColor: color.GM_BACKGROUND }}
@@ -747,7 +825,7 @@ class MyTribe extends React.PureComponent {
                     handlePageSetting={() => this.openOptionModal()}
                 />
                 {this.renderBottomSheet(item)}
-                {this.renderRespondToInvitationBottomSheet(item)}
+                {this.renderStatusBottomSheet(item)}
                 <FlatList
                     ref="flatList"
                     data={data}
@@ -782,6 +860,7 @@ class MyTribe extends React.PureComponent {
                     scrollEventThrottle={16}
                 />
                 {this.renderAddPostButton(item)}
+
                 <MyTribeDescription
                     isVisible={this.state.showAboutModal}
                     closeModal={() => {

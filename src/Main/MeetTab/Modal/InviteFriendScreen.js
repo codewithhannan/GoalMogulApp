@@ -33,6 +33,11 @@ import { color, default_style } from '../../../styles/basic'
 import cancel from '../../../asset/utils/cancel_no_background.png'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import {
+    trackWithProperties,
+    EVENT as E,
+} from '../../../monitoring/segment/index'
+
+import {
     generateInvitationLink,
     componentKeyByTab,
 } from '../../../redux/middleware/utils'
@@ -129,7 +134,13 @@ class InviteFriendScreen extends PureComponent {
         })
     }
 
-    async componentDidUpdate() {}
+    componentDidMount() {
+        setTimeout(() => {
+            trackWithProperties(E.DEEPLINK_CLICKED, {
+                FunnelName: this.props.funnel,
+            })
+        }, 2000)
+    }
 
     closeModal = () => {
         if (this.props.closeModal) {
@@ -292,8 +303,7 @@ class InviteFriendScreen extends PureComponent {
         if (type == 'contacts') {
             return (
                 // this.props.cancelSuggestion(this.props.pageId),
-                Actions.push('ContactMessage'),
-                this.closeModal(),
+                Actions.push('ContactMessageScreen'),
                 await storeData('INVITEMESSAGE', this.state.description)
             )
         }
@@ -429,7 +439,8 @@ class InviteFriendScreen extends PureComponent {
                             // fontWeight: '900',
                             marginLeft: 16,
                             fontSize: 18,
-                            fontFamily: 'SFProDisplay-Medium',
+                            fontWeight: '500',
+                            // fontFamily: 'SFProDisplay-Medium',
                         }}
                     >
                         {text}
@@ -475,7 +486,12 @@ class InviteFriendScreen extends PureComponent {
                             },
                         ]}
                     >
-                        <Text style={[default_style.titleText_1]}>
+                        <Text
+                            style={{
+                                fontSize: 17,
+                                fontWeight: 'bold',
+                            }}
+                        >
                             Invite Friends
                         </Text>
                         <View style={{ flex: 1, alignItems: 'center' }} />
@@ -526,12 +542,12 @@ class InviteFriendScreen extends PureComponent {
                                     this.updateDescription(text)
                                 }
                                 style={[
-                                    default_style.subTitleText_1,
                                     {
                                         lineHeight: 24,
                                         padding: 0,
                                         width: width - 72,
                                         height: 120,
+                                        fontSize: 15,
                                     },
                                 ]}
                                 multiline
@@ -539,11 +555,9 @@ class InviteFriendScreen extends PureComponent {
                             <Text
                                 numberOfLines={1}
                                 style={[
-                                    default_style.titleText_1,
                                     {
                                         fontWeight: '400',
                                         color: color.GM_BLUE,
-                                        fontFamily: FONT_FAMILY.REGULAR,
                                         textDecorationLine: 'underline',
                                         marginTop: 16,
                                         width: '90%',
@@ -599,11 +613,11 @@ class InviteFriendScreen extends PureComponent {
                         <Text
                             onPress={this.openEditInviteCodeForm}
                             style={[
-                                default_style.smallTitle_1,
                                 {
                                     color: color.GM_BLUE,
                                     paddingTop: 8,
                                     paddingLeft: 10,
+                                    fontSize: 12,
                                     alignSelf: 'flex-end',
                                 },
                             ]}
@@ -659,7 +673,6 @@ class InviteFriendScreen extends PureComponent {
                                         fontWeight: '700',
                                         marginLeft: 20,
                                         fontSize: 18,
-                                        fontFamily: 'SFProDisplay-Medium',
                                     }}
                                 >
                                     More

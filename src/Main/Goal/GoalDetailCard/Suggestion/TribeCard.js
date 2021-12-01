@@ -65,7 +65,7 @@ class TribeCard extends React.Component {
                 <Image
                     style={{ ...styles.imageStyle, height: 45, width: 45 }}
                     source={TribeIcon}
-                    resizeMethod="contain"
+                    resizeMode="contain"
                 />
             </View>
         )

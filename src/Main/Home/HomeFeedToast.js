@@ -29,6 +29,7 @@ import { UI_SCALE } from '../../styles'
 import InviteFriendModal from '../MeetTab/Modal/InviteFriendModal'
 import * as underscore from 'underscore'
 import { track, EVENT as E } from '../../monitoring/segment'
+import { refreshActivityFeed } from '../../redux/modules/home/feed/actions'
 
 const SLIDER_WIDTH = Dimensions.get('window').width
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.95)
@@ -70,6 +71,7 @@ class HomeFeedToast extends Component {
             heading: '',
             refreshCarousal: false,
             toastsData: [],
+            userToVisit: '',
         }
     }
 
@@ -283,7 +285,7 @@ class HomeFeedToast extends Component {
             marginButtonTop: undefined,
             thirdText: undefined,
             buttonText: 'View Profile',
-            handleButtonPress: () => {},
+            handleButtonPress: undefined,
             // this.props.openProfile(this.props.friendsProfileToVisit[0]._id),
         },
 
@@ -316,7 +318,7 @@ class HomeFeedToast extends Component {
             marginButtonTop: undefined,
             thirdText: undefined,
             buttonText: 'View profile',
-            handleButtonPress: () => {},
+            handleButtonPress: undefined,
             // this.props.openProfile(this.props.closeFriendsToVisit[0]._id),
         },
     ]
@@ -381,10 +383,13 @@ class HomeFeedToast extends Component {
                                 ? null
                                 : this.props.friendsProfileToVisit[0]?.name
                         }’s profile yet.`
-                        toast.handleButtonPress = () =>
+                        toast.handleButtonPress = () => {
                             this.props.openProfile(
                                 this.props.friendsProfileToVisit[0]._id
                             )
+                            this.props.getToastsData()
+                        }
+
                         return toast
                     } else {
                         return null
@@ -397,10 +402,13 @@ class HomeFeedToast extends Component {
                                 ? null
                                 : this.props.closeFriendsToVisit[0].name
                         }’s goals in while.`
-                        toast.handleButtonPress = () =>
+                        toast.handleButtonPress = () => {
                             this.props.openProfile(
-                                this.props.closeFriendsToVisit[0]._id
+                                this.props.friendsProfileToVisit[0]._id
                             )
+                            this.props.getToastsData()
+                        }
+
                         return toast
                     }
                 }
@@ -416,9 +424,9 @@ class HomeFeedToast extends Component {
         if (prevProps != this.props) {
             this.handleToastCarousel()
         }
-        if (!_.isEqual(prevProps, this.props)) {
-            this.props.getToastsData()
-        }
+        // if (!_.isEqual(prevProps, this.props)) {
+        //     this.props.getToastsData()
+        // }
     }
 
     componentDidMount() {
@@ -508,6 +516,7 @@ export default connect(mapStateToProps, {
     refreshProfileData,
     openProfile,
     getToastsData,
+    refreshActivityFeed,
 })(HomeFeedToast)
 
 const styles = StyleSheet.create({

@@ -536,14 +536,21 @@ export const subscribeNotification = () => async (dispatch, getState) => {
 
     console.log('push token', notificationToken)
 
-    if (Platform.OS === 'android') {
-        Notifications.setNotificationChannelAsync('default', {
-            name: 'default',
-            importance: Notifications.AndroidImportance.MAX,
-            vibrationPattern: [0, 250, 250, 250],
-            lightColor: 'blue',
-        })
-    }
+    // if (Platform.OS === 'android') {
+    //     Notifications.setNotificationChannelAsync("default", {
+    //         name: "GoalMogul",
+    //         importance: Notifications.AndroidImportance.MAX,
+    //         vibrationPattern: [0, 250, 250, 250],
+    //         lightColor: "#FF231F7C",
+    //         showBadge: true,
+    //       });
+    //     // Notifications.setNotificationChannelAsync('default', {
+    //     //     name: 'default',
+    //     //     importance: Notifications.AndroidImportance.MAX,
+    //     //     vibrationPattern: [0, 250, 250, 250],
+    //     //     lightColor: 'blue',
+    //     // })
+    // }
     // Get the token that an user has on this device
     // const hasToken = await SecureStore.getItemAsync(NOTIFICATION_TOKEN_KEY, {})
 
@@ -565,7 +572,11 @@ export const subscribeNotification = () => async (dispatch, getState) => {
         //     notificationToken,
         //     {}
         // )
-        await AsyncStorage.setItem(NOTIFICATION_TOKEN_KEY, notificationToken)
+        await AsyncStorage.setItem(
+            NOTIFICATION_TOKEN_KEY,
+            notificationToken.data
+        )
+        console.log('notificationToken', notificationToken)
         // ReactMoE.passFcmPushToken(notificationToken)
 
         console.log(
@@ -593,7 +604,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
     // where you can retrieve it to send push notifications.
     return API.put(
         'secure/user/settings/expo-token',
-        { pushToken: notificationToken },
+        { pushToken: notificationToken.data },
         token
     )
         .then((res) => {

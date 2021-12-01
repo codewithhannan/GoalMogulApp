@@ -31,6 +31,8 @@ import CreateChatRoomModal from './Main/Chat/Modals/CreateChatRoomModal'
 import ShareToChatModal from './Main/Chat/Modals/ShareToChatModal'
 import CreateButtonOverlay from './Main/Common/Button/CreateButtonOverlay'
 import CreateGoalButtonOverlay from './Main/Common/Button/CreateGoalButtonOverlay'
+import SilverChallenge from './Main/Challenges/SilverChallenge'
+import GoldChallenge from './Main/Challenges/GoldChallenge'
 /* Main App */
 import TabIcon from './Main/Common/TabIcon'
 import CreateEventModal from './Main/Event/CreateEventModal'
@@ -39,6 +41,7 @@ import Event from './Main/Event/Event'
 // Explore Tab
 import Explore from './Main/Explore/Explore'
 import CreateGoalModal from './Main/Goal/CreateGoalModal'
+import SeekHelp from './Main/Goal/Common/SeekHelp'
 import TrendingGoalView from './Main/Goal/NewGoal/TrendingGoalView'
 import GoalDetailCard from './Main/Goal/GoalDetailCard/GoalDetailCardV3'
 // Home Tab
@@ -121,6 +124,7 @@ import Tutorial from './Tutorial/Tutorial'
 import MultiUserInvitePage from './Main/Common/MultiUserInvitePage'
 import TribeHub from './Main/Explore/TribeHub'
 import MyTribeGoalShare from './Main/Menu/Tribe/MyTribeGoalShare'
+import MyTribeInviteFriends from './Main/Menu/Tribe/MyTribeInviteFriends'
 import MainProfile from './Main/Profile/MainProfile'
 import ReplyThread from './Main/Goal/GoalDetailCard/Comment/ReplyThread'
 import TribeDiscover from './Main/Tribe/TribeDiscover'
@@ -656,7 +660,7 @@ class RouterComponent extends Component {
                                                 key="tribeHub"
                                                 component={TribeHub}
                                                 initial
-                                                path={'/tribehub'}
+                                                path={'/tribehub/:funnel'}
                                             />
                                             <Scene
                                                 key="explore"
@@ -687,7 +691,6 @@ class RouterComponent extends Component {
 
                                         <Stack
                                             key="profileTab"
-                                            path={'/profile'}
                                             icon={TabIcon}
                                             hideNavBar
                                             transitionConfig={() => ({
@@ -717,6 +720,7 @@ class RouterComponent extends Component {
                                             <Scene
                                                 key={`mainProfile`}
                                                 component={MainProfile}
+                                                path={'/profile/:funnel'}
                                                 initial
                                             />
                                             {getCommonScenes('profileTab')}
@@ -753,6 +757,7 @@ class RouterComponent extends Component {
                                             <Scene
                                                 key="notification"
                                                 component={NotificationTab}
+                                                path={'/notifications'}
                                                 hideNavBar
                                                 onEnter={() => {
                                                     if (
@@ -782,7 +787,6 @@ class RouterComponent extends Component {
                                         <Stack
                                             key="chatTab"
                                             icon={TabIcon}
-                                            path={'/chat'}
                                             hideNavBar
                                             transitionConfig={() => ({
                                                 screenInterpolator: (props) => {
@@ -811,6 +815,7 @@ class RouterComponent extends Component {
                                             <Scene
                                                 key="chat"
                                                 component={Chat}
+                                                path={'/chat/:funnel'}
                                                 initial
                                             />
                                             <Scene
@@ -866,23 +871,46 @@ class RouterComponent extends Component {
                         hideNavBar
                     />
                     <Scene
-                        path={'/creategoal'}
+                        path={'/creategoal/:funnel'}
                         key="createGoalModal"
                         component={CreateGoalModal}
                         hideNavBar
                     />
+                    <Scene
+                        path={'/seekhelp'}
+                        key="seekhelp"
+                        component={SeekHelp}
+                        hideNavBar
+                    />
 
                     <Scene
-                        path={'/trendinggoal'}
+                        path={'/trendinggoal/:funnel'}
                         key="trendingGoalView"
                         component={TrendingGoalView}
                         hideNavBar
                     />
                     <Scene
+                        path={'/silverchallenge/:funnel'}
+                        key="silverchallenge"
+                        component={SilverChallenge}
+                        hideNavBar
+                    />
+                    <Scene
+                        path={'/goldchallenge/:funnel'}
+                        key="goldchallenge"
+                        component={GoldChallenge}
+                        hideNavBar
+                    />
+
+                    <Scene
                         key="invitefriend"
                         component={InviteFriendScreen}
                         hideNavBar
-                        path={'/invitefriend'}
+                        path={'/invitefriend/:funnel'}
+                    />
+                    <Scene
+                        key={'ContactMessageScreen'}
+                        component={SendContactMessage}
                     />
                     <Stack key="createChatRoomStack" hideNavBar>
                         <Scene
@@ -948,6 +976,11 @@ class RouterComponent extends Component {
                     <Scene
                         key="myTribeGoalShareView"
                         component={MyTribeGoalShare}
+                        hideNavBar
+                    />
+                    <Scene
+                        key="myTribeGoalInviteFriends"
+                        component={MyTribeInviteFriends}
                         hideNavBar
                     />
                     <Scene

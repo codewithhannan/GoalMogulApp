@@ -61,7 +61,10 @@ class GoalSwiper extends React.Component {
         ]
     }
 
-    showVideoModal = () => this.setState({ videoModalVisible: true })
+    showVideoModal = () =>
+        this.setState({ videoModalVisible: true }, () =>
+            console.log('MODAL OPENEDE')
+        )
     openCameraRollBottomSheet = () => this.CameraRefBottomSheetRef.open()
     closeNotificationBottomSheet = () => this.CameraRefBottomSheetRef.close()
     openRecordingModal = () => this.bottomRecodingSheet.open()

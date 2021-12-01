@@ -2,18 +2,18 @@
 
 import React from 'react'
 import _ from 'lodash'
-// import moment from 'moment'
+import moment from 'moment'
 import {
     View,
     Text,
     ScrollView,
-    // TouchableOpacity,
+    TouchableOpacity,
     Dimensions,
-    // Image,
-    // SafeAreaView,
+    Image,
+    SafeAreaView,
 } from 'react-native'
 import CountryPicker from 'react-native-country-picker-modal'
-// import DateTimePicker from 'react-native-modal-datetime-picker'
+import DateTimePicker from 'react-native-modal-datetime-picker'
 import { TextInputMask } from 'react-native-masked-text'
 // import calendarLeft from '../../../asset/utils/calendarLeft.png'
 // import calendarRight from '../../../asset/utils/calendarRight.png'
@@ -26,15 +26,15 @@ import OnboardingStyles from '../../../styles/Onboarding'
 import DelayedButton from '../../Common/Button/DelayedButton'
 import { Input, Icon } from '@ui-kitten/components'
 import { FONT_FAMILY } from '../../../styles/basic/text'
-// import Modal from 'react-native-modal'
-// import { Colors } from 'react-native/Libraries/NewAppScreen'
-// import Constants from 'expo-constants'
+import Modal from 'react-native-modal'
+import { Colors } from 'react-native/Libraries/NewAppScreen'
+import Constants from 'expo-constants'
 
-// const { text: textStyle, button: buttonStyle } = OnboardingStyles
+const { text: textStyle, button: buttonStyle } = OnboardingStyles
 
-// const MIN_AGE_REQUIREMENT_YRS = 13
-// const MODAL_WIDTH = Dimensions.get('window').width
-// const MODAL_HEIGHT = Dimensions.get('screen').height
+const MIN_AGE_REQUIREMENT_YRS = 13
+const MODAL_WIDTH = Dimensions.get('window').width
+const MODAL_HEIGHT = Dimensions.get('screen').height
 
 class CountryFlagButton extends React.Component {
     // TODO: improve the flag reloading
@@ -439,6 +439,121 @@ class InputBox extends React.Component {
             </View>
         )
     }
+    // renderDateTimePicker() {
+    //     const {
+    //         inputTitle,
+    //         caption,
+    //         value,
+    //         onChangeText,
+    //         containerStyle,
+    //         status,
+    //     } = this.props
+    //     return (
+    //         <View style={[{}, containerStyle || {}]}>
+    //             <View
+    //                 style={{
+    //                     flexDirection: 'row',
+    //                 }}
+    //             >
+    //                 <Text
+    //                     style={[
+    //                         styles.labelStyle,
+    //                         {
+    //                             color: 'red',
+    //                         },
+    //                     ]}
+    //                 >
+    //                     *
+    //                 </Text>
+    //                 <Text style={styles.labelStyle}> {inputTitle}</Text>
+    //             </View>
+    //             <TouchableOpacity
+    //                 activeOpacity={0.6}
+    //                 style={{
+    //                     // height: 40 * default_style.uiScale,
+    //                     flexDirection: 'row',
+    //                     alignItems: 'center',
+    //                     borderRadius: 3,
+    //                     borderWidth: 1,
+    //                     borderColor: '#E0E0E0',
+    //                     marginTop: 4,
+    //                 }}
+    //                 onPress={() =>
+    //                     this.setState({
+    //                         ...this.state,
+    //                         isDatePickerVisible: true,
+    //                     })
+    //                 }
+    //             >
+    //                 <View
+    //                     style={{
+    //                         height: 48,
+    //                         width: 34 * default_style.uiScale,
+    //                         borderRightWidth: 1,
+    //                         borderColor: '#DFE0E1',
+    //                         backgroundColor: '#F5F7FA',
+    //                         alignItems: 'center',
+    //                         justifyContent: 'center',
+    //                     }}
+    //                 >
+    //                     <Icon
+    //                         name="calendar-blank-outline"
+    //                         pack="material-community"
+    //                         style={[
+    //                             default_style.buttonIcon_1,
+    //                             { tintColor: '#DADADA' },
+    //                         ]}
+    //                     />
+    //                 </View>
+    //                 <Text
+    //                     style={[
+    //                         default_style.subTitleText_1,
+    //                         {
+    //                             marginLeft: 12,
+    //                             marginRight: 12,
+    //                             paddingVertical: 12,
+    //                         },
+    //                     ]}
+    //                 >
+    //                     {value ? moment(value).format('ll') : 'Date of Birth'}
+    //                 </Text>
+    //             </TouchableOpacity>
+
+    //             {/** Date time picker on date touchable is clicked */}
+    //             <DateTimePicker
+    //                 isVisible={this.state.isDatePickerVisible}
+    //                 mode="date"
+    //                 display="inline"
+    //                 titleIOS="Date of Birth"
+    //                 maximumDate={moment()
+    //                     .subtract(MIN_AGE_REQUIREMENT_YRS, 'year')
+    //                     .toDate()} // maximum is set to 13 years from now to cap age at least 13 years old
+    //                 date={
+    //                     value
+    //                         ? value
+    //                         : moment()
+    //                               .subtract(MIN_AGE_REQUIREMENT_YRS, 'year')
+    //                               .toDate()
+    //                 }
+    //                 onConfirm={(date) =>
+    //                     this.setState(
+    //                         {
+    //                             isDatePickerVisible: false,
+    //                         },
+    //                         () => onChangeText(date)
+    //                     )
+    //                 }
+    //                 onCancel={() =>
+    //                     this.setState({
+    //                         isDatePickerVisible: false,
+    //                     })
+    //                 }
+    //                 // isDarkModeEnabled={false}
+    //             />
+    //             {this.renderCaption(caption, status)}
+    //         </View>
+    //     )
+    // }
 
     renderFlagButton(props, countryCode) {
         return (

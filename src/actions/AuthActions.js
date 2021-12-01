@@ -79,7 +79,7 @@ import { getVisitedTime, userLogout } from '../reducers/UserVisited'
 import { resetToastData } from '../reducers/ToastReducers'
 import { clearPopupData } from '../reducers/PopupReducers'
 import { clearNudgeData } from '../reducers/NudgesReducer'
-
+import { CHAT_EMPTY } from '../redux/modules/chat/ChatReducers'
 const DEBUG_KEY = '[ Action Auth ]'
 
 export const userNameChanged = (username) => {
@@ -322,6 +322,7 @@ const mountUserWithToken = (
         type: LOGIN_USER_SUCCESS,
         payload,
     })
+    dispatch({ type: CHAT_EMPTY })
 
     let tokenObjectToUpdate = _.cloneDeep(payload)
 
@@ -665,6 +666,8 @@ export const tryAutoLoginV2 = () => async (dispatch, getState) => {
             token: authToken,
         },
     })
+    dispatch({ type: CHAT_EMPTY })
+
     // Step 1 Page transition
     if (!isOnboarded) {
         // isOnboarded is false, then we fetch user profile to validate
@@ -1006,6 +1009,7 @@ export const logout = () => async (dispatch, getState) => {
     MemberDocumentFetcher.clearMemberCache()
 
     Actions.reset('root')
+    dispatch({ type: CHAT_EMPTY })
     dispatch({
         type: USER_LOG_OUT,
     })

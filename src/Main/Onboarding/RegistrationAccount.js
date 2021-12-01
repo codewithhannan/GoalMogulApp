@@ -528,9 +528,21 @@ class RegistrationAccount extends React.Component {
                     disabled={this.props.loading}
                 />
 
-                {/* <CustomDropDown
-                    dateOfBirth={dateOfBirth}
-                    change={this.handleFilterUpdate}
+                {/* <InputBox
+                    key="dateOfBirth"
+                    inputTitle="Date of birth"
+                    ref="dateOfBirth"
+                    onChangeText={(val) => {
+                        this.props.registrationTextInputChange(
+                            'dateOfBirth',
+                            val
+                        )
+                    }}
+                    placeholder={`You must be at least 13yrs of age`}
+                    value={dateOfBirth}
+                    returnKeyType="done"
+                    caption={`We won't share this information with anyone`}
+                    disabled={this.props.loading}
                 /> */}
 
                 <InputBox
@@ -625,6 +637,17 @@ class RegistrationAccount extends React.Component {
                                     FIELD_REQUIREMENTS.done ||
                                 !this.props.gender
                             }
+                            // disabled={
+                            //     this.props.loading ||
+                            //     this.state.inviteCodeStatus !==
+                            //         FIELD_REQUIREMENTS.done ||
+                            //     this.state.nameStatus !==
+                            //         FIELD_REQUIREMENTS.done ||
+                            //     this.state.emailStatus !==
+                            //         FIELD_REQUIREMENTS.done ||
+                            //     !this.props.dateOfBirth ||
+                            //     !this.props.gender
+                            // }
                         />
                         <DelayedButton
                             style={[

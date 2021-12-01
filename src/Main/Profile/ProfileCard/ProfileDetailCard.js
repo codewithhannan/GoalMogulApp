@@ -203,7 +203,7 @@ class ProfileDetailCard extends Component {
                         'requests.incoming',
                         undefined
                     )
-                    this.handleRefresh()
+                    setTimeout(() => this.handleRefresh(), 1500)
                     // close bottom sheet
                     this.closeFriendRequestOptionModal()
                 },
@@ -881,14 +881,14 @@ class ProfileDetailCard extends Component {
                             this.props.shouldUnfollowUser(this.props.userId),
                             setTimeout(() => {
                                 this.handleRefresh()
-                            }, 500)
+                            }, 1000)
                         )
                     } else {
                         return (
                             this.props.shouldFollowUser(this.props.userId),
                             setTimeout(() => {
                                 this.handleRefresh()
-                            }, 500)
+                            }, 1000)
                         )
                     }
                 }, 500)

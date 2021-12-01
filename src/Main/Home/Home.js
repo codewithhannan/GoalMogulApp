@@ -1184,7 +1184,7 @@ import R from 'ramda'
 /* Components */
 import TabButtonGroup from '../Common/TabButtonGroup'
 import SearchBarHeader from '../Common/Header/SearchBarHeader'
-import { openCamera, openCameraRoll } from '../../actions'
+import { openCamera, openCameraRoll, uploadPopupData } from '../../actions'
 import Mastermind from './Mastermind'
 import ActivityFeed from './ActivityFeed'
 import EarnBadgeModal from '../Gamification/Badge/EarnBadgeModal'
@@ -1215,6 +1215,7 @@ import {
     refreshGoalFeed,
     closeCreateOverlay,
 } from '../../redux/modules/home/mastermind/actions'
+import Popup from '../Journey/Popup'
 
 import { refreshActivityFeed } from '../../redux/modules/home/feed/actions'
 
@@ -1355,6 +1356,8 @@ class Home extends Component {
             isVisible: false,
             isVisibleA: false,
             isVisibleB: false,
+            showPopupModal: false,
+            popupName: '',
         }
         this.scrollToTop = this.scrollToTop.bind(this)
         this._renderScene = this._renderScene.bind(this)
@@ -1478,6 +1481,10 @@ class Home extends Component {
 
         this.props.refreshNotificationTab()
         // this.props.fetchUnreadCount()
+
+        setTimeout(() => {
+            this.handlePopup()
+        }, 500)
 
         this.props.refreshActivityFeed()
         AppState.addEventListener('change', this.handleAppStateChange)
@@ -1797,6 +1804,62 @@ class Home extends Component {
         }, 500)
     }
 
+    handleQuestionPopup = () => {
+        // console.log('\ncoming in handleQuestionPopup')
+        this.setState({
+            showPopupModal: false,
+        })
+        setTimeout(() => {
+            if (!this.props.popup['INVITE_POPUPS'].status) {
+                this.props.uploadPopupData('INVITE_POPUPS')
+                this.setState({
+                    showQuestionModal: true,
+                })
+            }
+        }, 500)
+    }
+
+    handlePopup = () => {
+        // console.log('\nhandlePopup is called')
+        const { popup, profile, myGoals } = this.props
+
+        console.log('POPUP DATA', popup)
+        console.log('POPUP DATA 1', this.state.popupName)
+        // console.log('POPP UPP OBJECT', popup)
+        // console.log('\nThis is popup', profile)
+        if (!popup['FIRST_GOAL'].status && myGoals.length === 1) {
+            this.props.uploadPopupData('FIRST_GOAL')
+            this.setState({ showPopupModal: true, popupName: 'FIRST_GOAL' })
+        } else if (
+            !popup['GREEN_BADGE'].status &&
+            profile.badges.milestoneBadge.currentMilestone === 1
+        ) {
+            this.props.uploadPopupData('GREEN_BADGE')
+            this.setState({ showPopupModal: true, popupName: 'GREEN_BADGE' })
+        } else if (
+            !popup['BRONZE_BADGE'].status &&
+            profile.badges.milestoneBadge.currentMilestone === 2
+        ) {
+            this.props.uploadPopupData('BRONZE_BADGE')
+            this.setState({ showPopupModal: true, popupName: 'BRONZE_BADGE' })
+        } else if (!popup['SEVEN_GOALS'].status && myGoals.length === 7) {
+            this.props.uploadPopupData('SEVEN_GOALS')
+            this.setState({ showPopupModal: true, popupName: 'SEVEN_GOALS' })
+        } else if (
+            !popup['SILVER_BADGE'].status &&
+            profile.badges.milestoneBadge.currentMilestone === 3
+        ) {
+            this.props.uploadPopupData('SILVER_BADGE')
+            this.setState({ showPopupModal: true, popupName: 'SILVER_BADGE' })
+        } else if (
+            !popup['GOLD_BADGE'].status &&
+            profile.badges.milestoneBadge.currentMilestone === 4
+        ) {
+            this.props.uploadPopupData('GOLD_BADGE')
+            this.setState({ showPopupModal: true, popupName: 'GOLD_BADGE' })
+        }
+    }
+
     render() {
         const { user, refreshing } = this.props
 
@@ -1896,6 +1959,17 @@ class Home extends Component {
                         refreshing={showRefreshing}
                         onRefresh={this.handleOnRefresh}
                     />
+                    <Popup
+                        popupName={this.state.popupName}
+                        isVisible={this.state.showPopupModal}
+                        closeModal={() => {
+                            this.state.popupName == 'FIRST_GOAL'
+                                ? this.handleQuestionPopup()
+                                : this.setState({
+                                      showPopupModal: false,
+                                  })
+                        }}
+                    />
                     {/* {this.state.shouldRenderBadgeModal ? (
                         <EarnBadgeModal
                             isVisible={this.state.showBadgeEarnModal}
@@ -1916,6 +1990,8 @@ class Home extends Component {
 const mapStateToProps = (state) => {
     const { popup } = state
     const { token } = state.auth.user
+    const { profile } = state.user.user
+    const { myGoals } = state.goals
     const { userId } = state.user
     const refreshing = state.home.activityfeed.refreshing
     // || state.home.mastermind.refreshing
@@ -1931,10 +2007,12 @@ const mapStateToProps = (state) => {
     return {
         refreshing,
         token,
+        profile,
         user,
         needRefreshActivity,
         needRefreshMastermind,
         userId,
+        myGoals,
         // Tutorial related
         hasShown,
         showTutorial,
@@ -2006,6 +2084,7 @@ export default connect(
 
         getToastsData,
         getAllNudges,
+        uploadPopupData,
     },
     null,
     { withRef: true }

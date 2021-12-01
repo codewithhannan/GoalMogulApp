@@ -882,7 +882,7 @@ export async function _transformMessagesForGiftedChat(
                 sharedEntity,
                 goalRecommendation,
             } = messageDoc
-            console.log('THIS IS MESSAGE DOC 1', content)
+            // console.log('THIS IS MESSAGE DOC 1', content)
 
             //--- populate message content ---//
 

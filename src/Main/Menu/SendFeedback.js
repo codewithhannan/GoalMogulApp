@@ -248,8 +248,8 @@ class SendFeedback extends Component {
                                         this.state.disable
                                             ? color.GM_BLUE_LIGHT
                                             : color.GM_BLUE,
-                                    // width: '90%',
-                                    // height: 35,
+                                    width: '90%',
+                                    textAlign: 'center',
                                 },
                             ]}
                             onPress={() => {

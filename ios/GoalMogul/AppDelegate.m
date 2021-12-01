@@ -56,8 +56,10 @@ static void InitializeFlipper(UIApplication *application) {
   
   SEGAnalyticsConfiguration *config = [SEGAnalyticsConfiguration configurationWithWriteKey:@"Us6yuw9KLihsRmpihcB5OXTYwT4GDq75"];
   // Add MoEngageIntegrationFactory. Without this data will not come to MoEngage.
-      [config use:[SEGMoEngageIntegrationFactory instance]];
-      [SEGAnalytics setupWithConfiguration:config];
+  config.trackDeepLinks = YES;
+  config.trackApplicationLifecycleEvents = YES; 
+  [config use:[SEGMoEngageIntegrationFactory instance]];
+  [SEGAnalytics setupWithConfiguration:config];
 #if defined(FB_SONARKIT_ENABLED) && __has_include(<FlipperKit/FlipperClient.h>)
   InitializeFlipper(application);
 #endif
@@ -109,16 +111,15 @@ static void InitializeFlipper(UIApplication *application) {
  #endif
 }
 
+
+
+
 - (void)appController:(EXUpdatesAppController *)appController didStartWithSuccess:(BOOL)success {
   appController.bridge = [self initializeReactNativeApp];
   EXSplashScreenService *splashScreenService = (EXSplashScreenService *)[UMModuleRegistryProvider getSingletonModuleForClass:[EXSplashScreenService class]];
   [splashScreenService showSplashScreenFor:self.window.rootViewController];
 }
 
-// Linking API
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-  return [RCTLinkingManager application:application openURL:url options:options];
-}
 
 // Universal Links
 - (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler {
@@ -126,13 +127,11 @@ static void InitializeFlipper(UIApplication *application) {
                    continueUserActivity:userActivity
                      restorationHandler:restorationHandler];
 }
-
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
-{
-  return [RCTLinkingManager application:application openURL:url
-                      sourceApplication:sourceApplication annotation:annotation];
+// Linking API
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+  return [RCTLinkingManager application:application openURL:url options:options];
 }
- 
+
+
 
 @end

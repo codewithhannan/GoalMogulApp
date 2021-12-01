@@ -8,6 +8,7 @@ import {
     FlatList,
     Platform,
     Text,
+    Alert,
     View,
 } from 'react-native'
 import { CopilotStep, walkthroughable } from 'react-native-copilot-gm'

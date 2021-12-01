@@ -12,9 +12,22 @@ import { refreshProfileData } from '../../actions'
 /* Components */
 import ProfileV2 from './ProfileV2'
 
-import { wrapAnalytics, SCREENS } from '../../monitoring/segment'
+import {
+    wrapAnalytics,
+    SCREENS,
+    trackWithProperties,
+    EVENT as E,
+} from '../../monitoring/segment'
 
 class MainProfile extends Component {
+    componentDidMount() {
+        setTimeout(() => {
+            trackWithProperties(E.DEEPLINK_CLICKED, {
+                FunnelName: this.props.funnel,
+            })
+        }, 2000)
+    }
+
     render() {
         const { userId } = this.props
         const pageId = this.props.refreshProfileData(userId)

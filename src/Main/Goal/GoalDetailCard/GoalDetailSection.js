@@ -734,7 +734,7 @@ class GoalDetailSection extends React.PureComponent {
                             ? renderUnitText(likeType)
                             : this.state.unitText
                     }
-                    showClarifyButton={noStepsAndNeeds && !isOwnGoal}
+                    showClarifyButton={!isOwnGoal} //noStepsAndNeeds &&
                     onLikeSummaryPress={() =>
                         this.setState({ showlikeListModal: true })
                     }
