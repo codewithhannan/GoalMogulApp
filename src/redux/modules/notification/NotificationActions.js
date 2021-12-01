@@ -543,6 +543,22 @@ export const subscribeNotification = () => async (dispatch, getState) => {
         alert('Failed to get push token for push notification!')
         return
     }
+
+    if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+            name: 'GoalMogul',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: 'blue',
+            showBadge: true,
+        })
+        // Notifications.setNotificationChannelAsync('default', {
+        //     name: 'default',
+        //     importance: Notifications.AndroidImportance.MAX,
+        //     vibrationPattern: [0, 250, 250, 250],
+        //     lightColor: 'blue',
+        // })
+    }
     const notificationToken = await Notifications.getExpoPushTokenAsync({
         experienceId: '@a0n0d0y/goalmogul',
     })
