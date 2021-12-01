@@ -56,8 +56,10 @@ static void InitializeFlipper(UIApplication *application) {
   
   SEGAnalyticsConfiguration *config = [SEGAnalyticsConfiguration configurationWithWriteKey:@"Us6yuw9KLihsRmpihcB5OXTYwT4GDq75"];
   // Add MoEngageIntegrationFactory. Without this data will not come to MoEngage.
-      [config use:[SEGMoEngageIntegrationFactory instance]];
-      [SEGAnalytics setupWithConfiguration:config];
+  config.trackDeepLinks = YES;
+  config.trackApplicationLifecycleEvents = YES; 
+  [config use:[SEGMoEngageIntegrationFactory instance]];
+  [SEGAnalytics setupWithConfiguration:config];
 #if defined(FB_SONARKIT_ENABLED) && __has_include(<FlipperKit/FlipperClient.h>)
   InitializeFlipper(application);
 #endif
@@ -108,6 +110,9 @@ static void InitializeFlipper(UIApplication *application) {
   return [[EXUpdatesAppController sharedInstance] launchAssetUrl];
  #endif
 }
+
+
+
 
 - (void)appController:(EXUpdatesAppController *)appController didStartWithSuccess:(BOOL)success {
   appController.bridge = [self initializeReactNativeApp];

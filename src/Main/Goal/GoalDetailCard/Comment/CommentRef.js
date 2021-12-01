@@ -8,6 +8,7 @@ import {
     Linking,
     Image,
     Alert,
+    Platform,
 } from 'react-native'
 import { connect } from 'react-redux'
 import _ from 'lodash'
@@ -429,7 +430,8 @@ class CommentRef extends React.PureComponent {
                     justifyContent: 'center',
                     marginLeft,
                     marginRight: 10,
-                    paddingVertical: 4,
+                    // paddingVertical: 4,
+                    marginHorizontal: 5,
                 }}
             >
                 {suggestionType === 'NewNeed' ||
@@ -565,6 +567,8 @@ class CommentRef extends React.PureComponent {
                         borderRadius: 5,
                         borderWidth: 0.5,
                         borderColor: colors.grey4,
+                        padding: 5,
+                        marginTop: Platform.OS === 'ios' ? 5 : 0,
                     }}
                 >
                     <View
@@ -572,6 +576,7 @@ class CommentRef extends React.PureComponent {
                             marginHorizontal: 10,
                             flexDirection: 'row',
                             marginTop: 5,
+                            alignItems: 'center',
                         }}
                     >
                         <Image

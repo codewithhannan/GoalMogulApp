@@ -1467,11 +1467,10 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        console.log('platform', Platform)
         if (Platform.OS === 'android') {
-            console.log('FCM FCM ')
             getFcmToken()
         }
+
         const pageId = this.props.refreshProfileData(this.props.userId)
 
         pageAb = pageId

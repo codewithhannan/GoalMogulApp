@@ -1,9 +1,19 @@
 /** @format */
 
 import React from 'react'
-import { View, FlatList, Dimensions, ActivityIndicator } from 'react-native'
+import {
+    View,
+    FlatList,
+    Dimensions,
+    ActivityIndicator,
+    Alert,
+} from 'react-native'
 import { connect } from 'react-redux'
 import { MenuProvider } from 'react-native-popup-menu'
+import {
+    trackWithProperties,
+    EVENT as E,
+} from '../../../monitoring/segment/index'
 
 // Components
 import TrendingGoalCardView from './TrendingGoalCardView'
@@ -29,6 +39,12 @@ const { width } = Dimensions.get('window')
 class TrendingGoalView extends React.PureComponent {
     componentDidMount() {
         console.log(`${DEBUG_KEY}: component did mount`)
+        setTimeout(() => {
+            trackWithProperties(E.DEEPLINK_CLICKED, {
+                FunnelName: this.props.funnel,
+            })
+        }, 2000)
+
         this.handleOnRefresh()
     }
 

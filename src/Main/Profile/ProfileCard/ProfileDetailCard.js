@@ -455,7 +455,7 @@ class ProfileDetailCard extends Component {
 
             case 'Invited':
                 return (
-                    <View style={{ marginRight: 10 }}>
+                    <View style={{ marginRight: 5 }}>
                         <ProfileActionButton
                             text={REQUEST_PENDING}
                             iconName="close-circle"

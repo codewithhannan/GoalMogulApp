@@ -382,7 +382,7 @@ class SuggestionModal extends Component {
                         title={
                             suggestionType === 'NewNeed'
                                 ? 'Suggest a Need'
-                                : 'Suggest a ep'
+                                : 'Suggest a Step'
                         }
                         back
                         onCancel={() => {
@@ -444,7 +444,7 @@ class SuggestionModal extends Component {
                     style={{
                         backgroundColor: 'white',
                         width: '100%',
-                        height: 350,
+                        height: 360,
                         position: 'absolute',
                         bottom: 0,
                     }}

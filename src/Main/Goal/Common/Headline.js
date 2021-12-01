@@ -263,7 +263,7 @@ class Headline extends React.PureComponent {
                         </Text>
                     </DelayedButton>,
                 ]}
-                {mediaType === 'CommentAudio' ? (
+                {mediaType == 'CommentVideo' || mediaType == 'CommentAudio' ? (
                     <View
                         style={[
                             GOALS_STYLE.commonPillContainer,

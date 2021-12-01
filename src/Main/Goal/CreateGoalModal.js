@@ -83,8 +83,15 @@ class CreateGoalModal extends React.Component {
 
     componentDidMount() {
         const { userId } = this.props
+
         const pageId = this.props.refreshProfileData(userId)
         pageAb = pageId
+
+        setTimeout(() => {
+            trackWithProperties(E.DEEPLINK_CLICKED, {
+                FunnelName: this.props.funnel,
+            })
+        }, 2000)
 
         this.startTime = new Date()
         track(

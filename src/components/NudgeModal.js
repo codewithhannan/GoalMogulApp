@@ -68,7 +68,7 @@ class NudgeModal extends Component {
                             style={{
                                 position: 'absolute',
                                 zIndex: 1,
-                                padding: 10,
+                                padding: 5,
 
                                 alignSelf: 'center',
                                 color: 'white',

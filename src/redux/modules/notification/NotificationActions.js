@@ -416,7 +416,6 @@ export const seeMore = (type) => (dispatch, getState) => {}
 
 //RESGISTERING DEVICE WITH FCM FOR MOENGAGE
 export const getFcmToken = async () => {
-    console.log('FCM HA YE')
     // Register the device with FCM
     await messaging().registerDeviceForRemoteMessages()
 
@@ -528,7 +527,6 @@ export const subscribeNotification = () => async (dispatch, getState) => {
         }
     }
 
-    console.log('calling push token before', existingStatus)
     // Get the token that uniquely identifies this device
     const {
         status: existingStatuss,
@@ -562,7 +560,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
     const notificationToken = await Notifications.getExpoPushTokenAsync({
         experienceId: '@a0n0d0y/goalmogul',
     })
-    // const token = (await Notifications.getExpoPushTokenAsync()).data;
+
     console.log('push token', notificationToken)
 
     // if (Platform.OS === 'android') {
@@ -605,6 +603,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
             NOTIFICATION_TOKEN_KEY,
             notificationToken.data
         )
+        console.log('notificationToken', notificationToken)
         // ReactMoE.passFcmPushToken(notificationToken)
 
         console.log(

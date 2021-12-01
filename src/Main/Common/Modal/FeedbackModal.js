@@ -1,8 +1,7 @@
 /** @format */
 
 import React, { useState } from 'react'
-import { Button, Text, View, Image } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { Button, Text, View, Image, TouchableOpacity } from 'react-native'
 import Modal from 'react-native-modal'
 import { Dimensions } from 'react-native'
 import { Actions } from 'react-native-router-flux'
@@ -31,9 +30,8 @@ function FeedbackModal(props) {
                     style={{
                         borderRadius: 8,
                         backgroundColor: color.GV_MODAL,
-
-                        width: '100%',
-                        height: '60%',
+                        width: wp('100%'),
+                        height: hp('40%'),
                     }}
                 >
                     <View

@@ -61,7 +61,10 @@ class GoalSwiper extends React.Component {
         ]
     }
 
-    showVideoModal = () => this.setState({ videoModalVisible: true })
+    showVideoModal = () =>
+        this.setState({ videoModalVisible: true }, () =>
+            console.log('MODAL OPENEDE')
+        )
     openCameraRollBottomSheet = () => this.CameraRefBottomSheetRef.open()
     closeNotificationBottomSheet = () => this.CameraRefBottomSheetRef.close()
     openRecordingModal = () => this.bottomRecodingSheet.open()
@@ -107,7 +110,7 @@ class GoalSwiper extends React.Component {
     }
 
     renderBottomVoiceRecording = () => {
-        const sheetHeight = getButtonBottomSheetHeight(5.35)
+        const sheetHeight = getButtonBottomSheetHeight(5)
         return (
             <BottomButtonsSheet
                 ref={(r) => (this.bottomRecodingSheet = r)}

@@ -48,6 +48,7 @@ class TribeCard extends React.Component {
                     <Image
                         style={styles.imageStyle}
                         source={{ uri: imageUrl }}
+                        resizeMode="contain"
                     />
                 </View>
             )
@@ -56,7 +57,11 @@ class TribeCard extends React.Component {
         // Render default image
         return (
             <View style={styles.imageContainerStyle}>
-                <Image style={styles.imageStyle} source={tribeDefaultIcon} />
+                <Image
+                    style={styles.imageStyle}
+                    source={tribeDefaultIcon}
+                    resizeMode="contain"
+                />
             </View>
         )
     }

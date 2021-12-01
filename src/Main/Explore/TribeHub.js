@@ -58,6 +58,11 @@ class TribeHub extends Component {
         // this.props.refreshTribeHub()
         this.props.refreshTribeHubFeed()
         this.props.refreshTribeHub()
+        setTimeout(() => {
+            trackWithProperties(E.DEEPLINK_CLICKED, {
+                FunnelName: this.props.funnel,
+            })
+        }, 2000)
 
         const pageId = this.props.refreshProfileData(this.props.userId)
 

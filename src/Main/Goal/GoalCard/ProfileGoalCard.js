@@ -265,7 +265,7 @@ class ProfileGoalCard extends React.Component {
                                 isVisible={this.state.toolTipVisible}
                                 contentStyle={{
                                     backgroundColor: '#EFEFEF',
-                                    width: wp('90%'),
+                                    width: wp('95%'),
                                 }}
                                 //
                                 content={

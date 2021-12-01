@@ -43,6 +43,7 @@
 		<string>twitter</string>
 		<string>whatsapp</string>
 		<string>instagram</string>
+		<string>mailto</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

@@ -115,12 +115,14 @@ class InviteFriendModal extends React.PureComponent {
     constructor(props) {
         super(props)
         // this.state = { ...DEFAULT_STATE }
+
         this.state = {
             description: this.props.isTribe
                 ? this.props.tribeDes
                 : this.descriptionsArray[0],
             descriptionIndex: 0,
             editEnabled: false,
+            inviteCode: '',
         }
     }
 
@@ -131,7 +133,11 @@ class InviteFriendModal extends React.PureComponent {
         })
     }
 
-    async componentDidUpdate() {}
+    componentDidMount() {
+        const inviteLink = this.getInviteLink()
+        const inviteCode = inviteLink.slice(35)
+        this.setState({ inviteCode })
+    }
 
     closeModal = () => {
         if (this.props.closeModal) {
@@ -181,7 +187,9 @@ class InviteFriendModal extends React.PureComponent {
     }
 
     shareOnMessanger = (message, link) => {
-        Linking.openURL(`fb-messenger://share?link=${message}\n\n${link}`)
+        Linking.openURL(
+            `fb-messenger://share?link=${message} Use this Invite Code to sign up ${this.state.inviteCode} \n\n${link}`
+        )
             .then((data) => {
                 console.log('Messanger OPENED', data)
             })
@@ -251,7 +259,7 @@ class InviteFriendModal extends React.PureComponent {
             // do your SMS stuff here
             const { result } = await SMS.sendSMSAsync(
                 [],
-                `${message}\n\n${url}`
+                `${message}.Use this Invite Code to sign up: ${this.state.inviteCode}\n\n${url}`
             )
             console.log(`${DEBUG_KEY}: result is: `, result)
         }
@@ -264,7 +272,7 @@ class InviteFriendModal extends React.PureComponent {
         if (canOpen) {
             Linking.openURL(
                 `mailto:?subject=Join GoalMogul&body=${unescape(
-                    message
+                    `${message}.Use this Invite Code to sign up: ${this.state.inviteCode}`
                 )}\n\n${unescape(url)}`
             )
         }
@@ -280,7 +288,10 @@ class InviteFriendModal extends React.PureComponent {
     }
 
     shareToWhatsApp = (text, link) => {
-        Linking.openURL(`whatsapp://send?text=${text}\n\n${link}`)
+        Linking.openURL(
+            `whatsapp://send?text=${text}.Use this Invite Code to sign up: ${this.state.inviteCode}\n\n${link}`
+        )
+
             .then((data) => {
                 console.log('WHATSAPP OPENED', data)
             })
@@ -626,9 +637,7 @@ class InviteFriendModal extends React.PureComponent {
                                 <TouchableOpacity
                                     onPress={() => {
                                         Clipboard.setString(
-                                            this.state.description +
-                                                '\n \n' +
-                                                inviteLink
+                                            `${this.state.description} Use this Invite Code to sign up ${this.state.inviteCode}\n\n${inviteLink}`
                                         )
                                         Alert.alert(
                                             `Invite message copied to Clipboard \n Use this invite code: ${

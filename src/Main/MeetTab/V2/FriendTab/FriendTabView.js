@@ -134,9 +134,9 @@ class FriendTabView extends React.Component {
                     <Text
                         style={{
                             color: focused ? 'white' : '#828282',
-                            // marginBottom: 10,
-                            bottom: 9,
-                            right: 2,
+                            marginBottom: 50,
+                            bottom: 3,
+                            // right: 2,
                             fontWeight: focused ? '400' : '300',
                         }}
                     >

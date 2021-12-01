@@ -179,6 +179,13 @@ class AudioModal extends React.Component<Props, State> {
         this._askForPermissions()
     }
 
+    componentWillUnmount() {
+        const unloaded = async () => {
+            return await this.recording?.stopAndUnloadAsync()
+        }
+        unloaded()
+    }
+
     private _askForPermissions = async () => {
         const response = await Audio.requestPermissionsAsync()
         this.setState({
@@ -439,7 +446,7 @@ class AudioModal extends React.Component<Props, State> {
 
     render() {
         const { chatMessages } = this.props
-
+        const { soundDuration } = this.state
         return (
             <>
                 <View style={styles.emptyContainer}>
@@ -564,7 +571,7 @@ class AudioModal extends React.Component<Props, State> {
 
                     <Text
                         style={{
-                            color: 'gray',
+                            color: soundDuration > 0 ? '#535353' : 'gray',
                             fontSize: 70,
                             marginVertical: 5,
                             textAlign: 'center',
@@ -620,7 +627,12 @@ class AudioModal extends React.Component<Props, State> {
                                         buttonStyle.GM_WHITE_BG_BLUE_TEXT
                                             .containerStyle,
                                         ,
-                                        { width: 150 },
+                                        {
+                                            width: 345,
+                                            height: 50,
+                                            alignSelf: 'center',
+                                            marginVertical: 20,
+                                        },
                                     ]}
                                     onPress={this._onRecordPressed}
                                 >
@@ -633,9 +645,8 @@ class AudioModal extends React.Component<Props, State> {
                                         Stop
                                     </Text>
                                 </DelayedButton>
-                                <View style={{ width: 20 }} />
                             </View>
-                        ) : this.state.soundDuration ? (
+                        ) : soundDuration ? (
                             <View
                                 style={{
                                     flexDirection: 'row',
@@ -647,7 +658,11 @@ class AudioModal extends React.Component<Props, State> {
                                         buttonStyle.GM_WHITE_BG_BLUE_TEXT
                                             .containerStyle,
                                         ,
-                                        { width: 150 },
+                                        {
+                                            width: 170,
+                                            backgroundColor: '#D3F2FF',
+                                            borderColor: '#D3F2FF',
+                                        },
                                     ]}
                                     onPress={() =>
                                         this.setState({
@@ -701,7 +716,6 @@ class AudioModal extends React.Component<Props, State> {
                                             )
                                         }
                                         if (this.props.chatType) {
-                                            console.log('chat voice pressed')
                                             this.props.changeMessageVoiceRef(
                                                 this.state.record
                                             )
@@ -718,7 +732,7 @@ class AudioModal extends React.Component<Props, State> {
                                         buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
                                             .containerStyle,
                                         ,
-                                        { width: 150 },
+                                        { width: 170 },
                                     ]}
                                 >
                                     <Text
@@ -738,7 +752,12 @@ class AudioModal extends React.Component<Props, State> {
                                     buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
                                         .containerStyle,
                                     ,
-                                    { width: 330, alignSelf: 'center' },
+                                    {
+                                        width: 345,
+                                        height: 50,
+                                        alignSelf: 'center',
+                                        marginVertical: 20,
+                                    },
                                 ]}
                                 onPress={this._onRecordPressed}
                             >
@@ -770,7 +789,7 @@ class AudioModal extends React.Component<Props, State> {
                         >
                             <View
                                 style={{
-                                    height: 150,
+                                    height: 175,
                                     width: '90%',
                                     backgroundColor: 'white',
                                     padding: 15,
@@ -806,7 +825,7 @@ class AudioModal extends React.Component<Props, State> {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={{ marginVertical: 10 }}>
-                                    <Text>
+                                    <Text style={{ lineHeight: 30 }}>
                                         This will overwrite the recording you
                                         just made. Are you sure?
                                     </Text>

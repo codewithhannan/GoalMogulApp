@@ -358,9 +358,10 @@ class CreateTribeModal extends React.Component {
                                 style={{
                                     alignSelf: 'center',
                                     justifyContent: 'center',
-                                    height: 40,
-                                    width: 50,
+                                    height: 30,
+                                    width: 40,
                                     tintColor: '#fafafa',
+                                    resizeMode: 'contain',
                                 }}
                             />
                         </View>

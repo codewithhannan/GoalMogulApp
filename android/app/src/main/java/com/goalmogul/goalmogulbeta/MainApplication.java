@@ -104,7 +104,7 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     Analytics analytics = new Analytics.Builder(this, "Us6yuw9KLihsRmpihcB5OXTYwT4GDq75")
-      .use(MoEngageIntegration.FACTORY)
+      .use(MoEngageIntegration.FACTORY).trackDeepLinks()
       .build();
 
     MoEngage moEngage = new MoEngage.Builder(this, "F95F79AU76R3W1GGQQZEE2OT")
