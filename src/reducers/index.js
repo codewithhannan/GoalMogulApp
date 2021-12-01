@@ -60,6 +60,10 @@ import ShareToChatReducers from '../redux/modules/chat/ShareToChatReducers'
 import AccountsReducers from './ExistingAccounts'
 import FeedBackReducers from './FeedbackReducers'
 
+//Seek Help
+
+import SeekHelpReducer from '../redux/modules/SeekHelp/seekHelpReducers'
+
 import VisitedUsers from './UserVisited'
 
 import ProfileGoalSwipe from './ProfileGoalSwipeReducer'
@@ -145,6 +149,7 @@ export const reducers = combineReducers({
     friendsRequest: FriendsRequests,
     feedback: FeedBackReducers,
     goalSwiper: ProfileGoalSwipe,
+    seekHelp: SeekHelpReducer,
 })
 
 export default persistReducer(rootPersistConfig, reducers)

@@ -2,7 +2,14 @@
 
 import _ from 'lodash'
 import React, { Component } from 'react'
-import { ActivityIndicator, Animated, SectionList, View } from 'react-native'
+import {
+    ActivityIndicator,
+    Animated,
+    SectionList,
+    View,
+    Image,
+    Text,
+} from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { Actions } from 'react-native-router-flux'
 import StepsTooltip from '../../components/StepsTooltip'
@@ -778,7 +785,36 @@ class ProfileV2 extends Component {
         }
 
         const emptyStateText = `No ${currentTabName}`
-        return (
+        return currentTabName === 'goals' ? (
+            <>
+                <View
+                    style={{
+                        height: '100%',
+                        width: '100%',
+                        backgroundColor: 'white',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Image
+                        source={require('../../asset/image/NoGoal.png')}
+                        style={{ height: 200, width: 200, top: 40 }}
+                        resizeMode="contain"
+                    />
+                    <Text
+                        style={{
+                            fontSize: 18,
+                            fontWeight: '500',
+                            top: 20,
+                            paddingHorizontal: 5,
+                            textAlign: 'center',
+                            alignSelf: 'center',
+                        }}
+                    >
+                        {this.props.user.name} has no goals yet
+                    </Text>
+                </View>
+            </>
+        ) : (
             <EmptyResult
                 text={emptyStateText}
                 textStyle={{

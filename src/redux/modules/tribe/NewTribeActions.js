@@ -13,6 +13,7 @@ import {
     TRIBE_NEW_CANCEL,
     TRIBE_NEW_UPLOAD_PICTURE_SUCCESS,
     TRIBE_NEW_ERROR,
+    TRIBE_CLEAR_ERROR,
 } from './NewTribeReducers'
 
 import { refreshTribes } from './TribeHubActions'
@@ -97,10 +98,7 @@ export const createNewTribe = (values, needUpload, isEdit, tribeId) => (
             type: TRIBE_NEW_ERROR,
             payload: err,
         })
-        Alert.alert(
-            `Failed to ${isEdit ? 'update' : 'create'} new Tribe`,
-            'Please try again later'
-        )
+        Alert.alert(err.message, 'Please try again later')
         console.log(
             `${DEBUG_KEY}: edit or create new tribe failed with err: `,
             err
@@ -306,9 +304,15 @@ export const tribeToFormAdapter = (tribe) => {
         description,
         picture,
         category,
-        tribeInviteCode: tribeInviteCode.code,
+        tribeInviteCode: tribeInviteCode?.code,
         guidelines,
     }
+}
+
+export const clearTribeError = () => (dispatch) => {
+    dispatch({
+        type: TRIBE_CLEAR_ERROR,
+    })
 }
 
 /**

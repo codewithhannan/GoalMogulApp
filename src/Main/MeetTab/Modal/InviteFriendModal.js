@@ -640,7 +640,12 @@ class InviteFriendModal extends React.PureComponent {
                                             `${this.state.description} Use this Invite Code to sign up ${this.state.inviteCode}\n\n${inviteLink}`
                                         )
                                         Alert.alert(
-                                            'Invite message copied to Clipboard'
+                                            `Invite message copied to Clipboard \n Use this invite code: ${
+                                                this.props.isTribe
+                                                    ? this.props.tribeCode
+                                                          .tribeInviteCode
+                                                    : this.props.inviteCode
+                                            }`
                                         )
                                     }}
                                 >

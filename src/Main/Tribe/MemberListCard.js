@@ -359,7 +359,6 @@ const styles = {
         paddingLeft: 10,
         paddingRight: 20,
         paddingVertical: 10,
-        alignItems: 'center',
         backgroundColor: '#ffffff',
         borderBottomWidth: 1,
         borderBottomColor: '#F2F2F2',

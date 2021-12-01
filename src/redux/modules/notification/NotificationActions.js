@@ -534,6 +534,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
         status: existingStatuss,
     } = await Notifications.getPermissionsAsync()
     let finalStatus = existingStatuss
+    console.log('push token', existingStatuss)
     if (existingStatuss !== 'granted') {
         const { status } = await Notifications.requestPermissionsAsync()
         finalStatus = status
@@ -548,14 +549,21 @@ export const subscribeNotification = () => async (dispatch, getState) => {
     // const token = (await Notifications.getExpoPushTokenAsync()).data;
     console.log('push token', notificationToken)
 
-    if (Platform.OS === 'android') {
-        Notifications.setNotificationChannelAsync('default', {
-            name: 'default',
-            importance: Notifications.AndroidImportance.MAX,
-            vibrationPattern: [0, 250, 250, 250],
-            lightColor: 'blue',
-        })
-    }
+    // if (Platform.OS === 'android') {
+    //     Notifications.setNotificationChannelAsync("default", {
+    //         name: "GoalMogul",
+    //         importance: Notifications.AndroidImportance.MAX,
+    //         vibrationPattern: [0, 250, 250, 250],
+    //         lightColor: "#FF231F7C",
+    //         showBadge: true,
+    //       });
+    //     // Notifications.setNotificationChannelAsync('default', {
+    //     //     name: 'default',
+    //     //     importance: Notifications.AndroidImportance.MAX,
+    //     //     vibrationPattern: [0, 250, 250, 250],
+    //     //     lightColor: 'blue',
+    //     // })
+    // }
     // Get the token that an user has on this device
     // const hasToken = await SecureStore.getItemAsync(NOTIFICATION_TOKEN_KEY, {})
 

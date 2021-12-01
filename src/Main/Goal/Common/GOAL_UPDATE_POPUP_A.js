@@ -13,21 +13,10 @@ import { GM_BLUE } from '../../../styles/basic/color'
 import { Entypo } from '@expo/vector-icons'
 import * as text from '../../../styles/basic/text'
 import { default_style } from '../../../styles/basic'
+import { Actions } from 'react-native-router-flux'
 
 import DelayedButton from '../../../Main/Common/Button/DelayedButton'
-
-// import SILVER_BADGE from '../../asset/popup_animation/p5.json'
-// import GOLD_BADGE from '../../asset/popup_animation/p6.json'
-// import GREEN_BADGE from '../../asset/popup_animation/p2-v2.json'
-// import BRONZE_BADGE from '../../asset/popup_animation/p3.json'
-// import FIRST_GOAL from '../../asset/popup_animation/p1.json'
-// import SEVEN_GOALS from '../../asset/popup_animation/p4-v2.json'
-// import STREAK from '../../asset/popup_animation/p7.json'
-// import STREAK_MISSED from '../../asset/popup_animation/p8.json'
-// import POPUP_BLUE from '../../asset/popup_animation/popupBlue.png'
 import GoalUpdateA from '../../../asset/image/GoalUpdateA.png'
-
-// import * as Helper from '../../Utils/HelperMethods'
 
 const GOAL_UPDATE_POPUP_A = ({ isVisible, closeModal, user }) => {
     return (
@@ -56,7 +45,10 @@ const GOAL_UPDATE_POPUP_A = ({ isVisible, closeModal, user }) => {
                                 marginTop: 10,
                             },
                         ]}
-                        onPress={() => console.log('1ST BUTTON')}
+                        onPress={() => {
+                            closeModal()
+                            Actions.push('seekhelp')
+                        }}
                     >
                         <Text
                             style={[
