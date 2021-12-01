@@ -84,9 +84,9 @@ class MessageToContactsModal extends Component {
                 if (status === 'granted') {
                     const { data } = await Contacts.getContactsAsync({
                         fields: [
-                            Contacts.Fields.Name,
-                            Contacts.Fields.PhoneNumbers,
-                            Contacts.Fields.Image,
+                            Contacts.Fields?.Name,
+                            Contacts.Fields?.PhoneNumbers,
+                            Contacts.Fields?.Image,
                         ],
                         sort: Contacts.SortTypes.FirstName,
                     })
@@ -101,10 +101,10 @@ class MessageToContactsModal extends Component {
                         data.map((item) => {
                             if (item.name && item.phoneNumbers) {
                                 contacts.push({
-                                    name: `${item.name}`,
-                                    number: item.phoneNumbers[0],
-                                    image: item.imageAvailable
-                                        ? item.image.uri
+                                    name: `${item?.name}`,
+                                    number: item?.phoneNumbers[0],
+                                    image: item?.imageAvailable
+                                        ? item?.image.uri
                                         : null,
                                 })
                             }
@@ -116,9 +116,9 @@ class MessageToContactsModal extends Component {
                         )
                         const allData = contacts.map((item, index) => {
                             return {
-                                value: item.name,
-                                number: item.number.number,
-                                image: item.image,
+                                value: item?.name,
+                                number: item?.number.number,
+                                image: item?.image,
                                 id: index,
                                 // key: index.toString(),
                             }
@@ -139,6 +139,7 @@ class MessageToContactsModal extends Component {
                     Alert.alert('Please give access of your Contacts')
                 }
             } catch (error) {
+                // this.setState({ isLoading: true })
                 console.log(
                     `${DEBUGKEY} this is the error while getting Contacts`,
                     error.message

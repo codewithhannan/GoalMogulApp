@@ -637,9 +637,7 @@ class InviteFriendModal extends React.PureComponent {
                                 <TouchableOpacity
                                     onPress={() => {
                                         Clipboard.setString(
-                                            this.state.description +
-                                                '\n \n' +
-                                                inviteLink
+                                            `${this.state.description} Use this Invite Code to sign up ${this.state.inviteCode}\n\n${inviteLink}`
                                         )
                                         Alert.alert(
                                             'Invite message copied to Clipboard'
