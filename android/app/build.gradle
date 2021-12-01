@@ -145,8 +145,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         vectorDrawables.useSupportLibrary = true
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1011
-        versionName "1.0.22"
+        versionCode 1012
+        versionName "1.0.23"
     }
     splits {
         abi {
