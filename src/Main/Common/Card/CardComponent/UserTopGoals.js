@@ -17,10 +17,10 @@ class UserTopGoals extends React.PureComponent {
         let text // text to display
         if (topGoal && topGoal.trim().length) {
             text = topGoal
-            title = 'Top Goal: '
+            title = 'Goal: '
         } else if (topGoals && topGoals.length) {
             text = topGoals[0]
-            title = 'Top Goal: '
+            title = 'Goal: '
         } else if (headline && headline.trim().length) {
             title = '' // Don't render the prefix "Headline: ..." for headline
             text = headline
@@ -38,7 +38,7 @@ class UserTopGoals extends React.PureComponent {
         let Needs_text
         if (topNeeds && topNeeds.length) {
             Needs_text = topNeeds[0]
-            Needs_title = 'Top Needs: '
+            Needs_title = 'Needs: '
         }
         return {
             Needs_title,

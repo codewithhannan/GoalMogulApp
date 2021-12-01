@@ -170,28 +170,6 @@ class NeedStepSuggestion extends React.Component {
         }
     }
 
-    renderCheckBox() {
-        const { suggestionType, pageId } = this.props
-        return (
-            <View>
-                <CheckBox
-                    title="Need"
-                    checked={suggestionType === 'NewNeed'}
-                    onPress={() =>
-                        this.props.updateSuggestionType('NewNeed', pageId)
-                    }
-                />
-                <CheckBox
-                    title="Step"
-                    checked={suggestionType === 'NewStep'}
-                    onPress={() =>
-                        this.props.updateSuggestionType('NewStep', pageId)
-                    }
-                />
-            </View>
-        )
-    }
-
     renderInputField() {
         const { suggestionText, suggestionType } = this.props
         const suggestion = suggestionType === 'NewNeed' ? 'Need' : 'Step'
@@ -209,7 +187,7 @@ class NeedStepSuggestion extends React.Component {
                     // borderColor: 'lightgray',
                 }}
             >
-                {/* <View style={{ marginHorizontal: 15 }}>{titleText}</View> */}
+                <View style={{ marginHorizontal: 15 }}>{titleText}</View>
                 <TextInput
                     placeholder={`What ${suggestion} do you want to suggest?`}
                     onChangeText={(val) =>
@@ -487,7 +465,8 @@ class NeedStepSuggestion extends React.Component {
                             name={owner.name || ''}
                             category={category}
                             isSelf={this.props.userId === owner._id}
-                            caret={caret}
+                            hasCaret={false}
+                            // caret={caret}
                             item={item}
                             user={owner}
                             pageId={this.props.pageId}
@@ -812,8 +791,6 @@ class NeedStepSuggestion extends React.Component {
                         />
                         {this.renderActionButtons(item, isOwnGoal)}
                         {this.renderGoalReminderDatePicker()}
-                        {/* {this.renderCheckBox()} */}
-
                         {this.renderInputField()}
                     </View>
                 </KeyboardAwareScrollView>

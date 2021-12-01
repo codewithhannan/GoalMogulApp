@@ -179,6 +179,13 @@ class AudioModal extends React.Component<Props, State> {
         this._askForPermissions()
     }
 
+    componentWillUnmount() {
+        const unloaded = async () => {
+            return await this.recording?.stopAndUnloadAsync()
+        }
+        unloaded()
+    }
+
     private _askForPermissions = async () => {
         const response = await Audio.requestPermissionsAsync()
         this.setState({
@@ -709,7 +716,6 @@ class AudioModal extends React.Component<Props, State> {
                                             )
                                         }
                                         if (this.props.chatType) {
-                                            console.log('chat voice pressed')
                                             this.props.changeMessageVoiceRef(
                                                 this.state.record
                                             )
