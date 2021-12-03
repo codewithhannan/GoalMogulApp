@@ -1009,7 +1009,7 @@ const makeMapStateToProps = () => {
 
         const { goal, goalPage } = goalDetail
         const { owner } = goal
-        const { name } = owner
+        const name = owner?.name
         const { navigationStateV2, updating } = goalPage
         const { showingModalInDetail } = state.report
         const { userId, user } = state.user

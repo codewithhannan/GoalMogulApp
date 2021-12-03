@@ -249,7 +249,8 @@ class Menu extends React.PureComponent {
                         backgroundColor: 'white',
                         width: 245,
                         // right: 2,
-                        position: 'absolute',
+                        position:
+                            Platform.OS === 'ios' ? 'absolute' : 'relative',
                         top: 5,
                         left: 20,
 
@@ -270,7 +271,6 @@ class Menu extends React.PureComponent {
                             >
                                 <TouchableOpacity
                                     onPress={() => {
-                                        console.log('SILVER SILVER')
                                         this.setState({ toolTipVisible: false })
                                         this.props.openChallenges(
                                             SILVER_CHALLENGE_URL
