@@ -557,9 +557,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
         //     lightColor: 'blue',
         // })
     }
-    const notificationToken = await Notifications.getExpoPushTokenAsync({
-        experienceId: '@a0n0d0y/goalmogul',
-    })
+    const notificationToken = await Notifications.getDevicePushTokenAsync()
 
     console.log('push token', notificationToken)
 
@@ -630,7 +628,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
     // POST the token to your backend server from
     // where you can retrieve it to send push notifications.
     return API.put(
-        'secure/user/settings/expo-token',
+        'secure/user/settings/fcm-token',
         { pushToken: notificationToken.data },
         token
     )

@@ -238,9 +238,12 @@ class Bubble extends React.Component {
                                     paddingTop: 9,
                                     paddingBottom: 9,
                                     marginBottom: 12,
+                                    paddingHorizontal: 10,
                                     borderRadius: 5,
                                     borderColor: color.GM_BLUE,
                                     borderWidth: 2,
+                                    width: '90%',
+                                    alignItems: 'center',
 
                                     // padding: 80,
                                 }}
@@ -286,11 +289,10 @@ class Bubble extends React.Component {
                                 <Text
                                     style={{
                                         color: '#fff',
-                                        fontSize: 14,
+                                        fontSize: 13,
                                         fontWeight: '600',
                                         fontFamily: text.FONT_FAMILY,
                                         color: color.GM_BLUE,
-                                        textAlign: 'center',
                                     }}
                                 >
                                     {option.optionTitle}
