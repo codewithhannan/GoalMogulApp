@@ -61,6 +61,8 @@ class ReportModal extends Component {
                             Alert.alert(
                                 'Title cannot be longer than 70 characters'
                             )
+                        if (title.trim() == '')
+                            Alert.alert('Enter the title here...')
                     }}
                 />
             </View>
@@ -89,6 +91,10 @@ class ReportModal extends Component {
                     }}
                     placeholder="Your description here..."
                     value={_.isEmpty(details) ? '' : details}
+                    onEndEditing={() => {
+                        if (details.trim() == '')
+                            Alert.alert('Enter the description here...')
+                    }}
                 />
             </View>
         )

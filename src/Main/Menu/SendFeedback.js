@@ -135,7 +135,7 @@ class SendFeedback extends Component {
                 <SearchBarHeader title={'Give Feedback'} backButton />
                 <KeyboardAwareScrollView
                     bounces={false}
-                    enableOnAndroid={true}
+                    // enableOnAndroid={true}
                     // enableAutomaticScroll={DEVICE_PLATFORM === 'ios'}
                     contentContainerStyle={[
                         {
