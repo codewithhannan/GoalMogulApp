@@ -865,7 +865,7 @@ class NewGoalView extends Component {
         return fields.map((description, index) => {
             return (
                 <WalkableView>
-                    {this.state.detailsFieldShow && (
+                    {/* {this.state.detailsFieldShow && (
                         <>
                             <View
                                 style={{
@@ -902,15 +902,15 @@ class NewGoalView extends Component {
                                 }
                             />
                         </>
-                    )}
+                    )} */}
 
                     {!this.state.detailsFieldShow ? (
                         <Button
                             text={'Tap to add more details'}
                             source={plus}
-                            onPress={() => {
+                            onPress={() =>
                                 this.setState({ detailsFieldShow: true })
-                            }}
+                            }
                             containerStyle={{
                                 width: '100%',
                                 justifyContent: 'center',

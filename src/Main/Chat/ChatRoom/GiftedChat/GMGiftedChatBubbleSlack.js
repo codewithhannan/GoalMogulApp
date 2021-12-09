@@ -164,7 +164,7 @@ class Bubble extends React.Component {
         let gomoExist = false
         let chatroomId = this.props.chatRooms.filter((chatroom) => {
             for (let member of chatroom.members) {
-                console.log('THIS IS MEMBERRRSSS', member)
+                // console.log('THIS IS MEMBERRRSSS', member)
                 if (member.memberRef.name == 'GoalMogul Planner (GoMo)') {
                     gomoExist = true
                     break
@@ -227,7 +227,7 @@ class Bubble extends React.Component {
                             style={{
                                 // borderTopColor: '#eee',
                                 width: '95%',
-                                // marginTop: 12,
+                                // marginTop: -12,
                                 // paddingTop: 9,
                                 // paddingBottom: 6,
                             }}
@@ -471,6 +471,8 @@ class Bubble extends React.Component {
                 messageTextStyle,
                 ...messageTextProps
             } = this.props
+
+            // console.log('messageTextProps', messageTextProps)
             if (this.props.renderMessageText) {
                 return this.props.renderMessageText(messageTextProps)
             }
@@ -809,7 +811,6 @@ class Bubble extends React.Component {
 
     render() {
         const { user, chatRoom, messages } = this.props
-        // console.log('MESSAGES', messages)
 
         // console.log('THIS ISSSSSS CURRRENT MESSAGE', this.props.currentMessage)
 
@@ -837,7 +838,13 @@ class Bubble extends React.Component {
                             {this.renderAccountabilityquestion()}
                             {this.renderAccountabilityRequest()}
                             {this.renderGoalRecommendation()}
-                            {this.renderGoalOptions()}
+                            {_.isEmpty(this.props.currentMessage.options) ===
+                            false ? (
+                                <View style={{ marginTop: -20 }}>
+                                    {this.renderGoalOptions()}
+                                </View>
+                            ) : null}
+
                             {this.renderMessageLottie()}
                         </View>
                     </View>
