@@ -494,6 +494,18 @@ class RegistrationAccount extends React.Component {
                     }
                 />
                 <View style={{ marginTop: 10, top: 10 }}>
+                    <Text style={{ color: 'red' }}>
+                        *
+                        <Text
+                            style={{
+                                color: 'black',
+                                fontWeight: '600',
+                                fontSize: 14,
+                            }}
+                        >
+                            Password
+                        </Text>
+                    </Text>
                     <TextInput
                         onChangeText={(val) => {
                             if (
@@ -542,7 +554,7 @@ class RegistrationAccount extends React.Component {
 
                     <TouchableOpacity
                         onPress={() => this.showPassword()}
-                        style={{ position: 'absolute', right: 10, top: 15 }}
+                        style={{ position: 'absolute', right: 10, top: 30 }}
                     >
                         <Icon
                             name={this.state.icon}
