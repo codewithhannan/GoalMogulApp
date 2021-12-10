@@ -116,6 +116,7 @@ const EVENT = {
 
     REG_ACCOUNT_CREATED: 'signup_completed', //ok
     REG_FIELDS_FILL: 'signup_continue',
+    REG_UTM_SOURCE: 'affiliate',
 
     // add profile photo
     REG_ADD_PHOTO_SKIPPED: 'Registration AddPhoto Skipped',
