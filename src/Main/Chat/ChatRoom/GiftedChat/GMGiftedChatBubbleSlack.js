@@ -205,7 +205,7 @@ class Bubble extends React.Component {
         const { options, text } = this.props.currentMessage
         const { user, chatRoom, messages } = this.props
 
-        // console.log('this is props of chat', this.props.currentMessage)
+        // console.log('this is props of chat', options)
 
         if (text.includes('It looks like your goal is to')) {
             this.splittedText = text.slice(30)

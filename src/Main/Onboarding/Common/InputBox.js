@@ -841,7 +841,6 @@ class InputBox extends React.Component {
             ...custom
         } = this.props
 
-        console.log('secureTextEntry', secureTextEntry)
         const isPhoneNumber = inputTitle == 'Phone Number'
         if (isPhoneNumber) {
             return this.renderPhoneInput()
