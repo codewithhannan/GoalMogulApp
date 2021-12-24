@@ -18,7 +18,7 @@ import CommentSolidIcon from '../../../asset/utils/comment_solid.png'
 import ShareIcon from '../../../asset/utils/forward.png'
 import ShareSolidIcon from '../../../asset/utils/forward_solid.png'
 import LoveOutlineIcon from '../../../asset/utils/love-outline.png'
-import LoveIcon from '../../../asset/icons/Like.png'
+import LoveIcon from '../../../asset/utils/love.png'
 import Clap from '../../../asset/icons/clap.png'
 import Hearthand from '../../../asset/icons/handheart.png'
 import Wow from '../../../asset/icons/wow.png'
@@ -142,7 +142,7 @@ class ActionBar extends React.Component {
                     )}
                     {actionButtonVisible ? null : (
                         <ActionButtonGroup>
-                            <ActionButton
+                            {/* <ActionButton
                                 onLongPress={() =>
                                     this.setState({ toolTipVisible: true })
                                 }
@@ -168,6 +168,25 @@ class ActionBar extends React.Component {
                                 onPress={onLikeButtonPress}
                                 onLayout={onLikeButtonLayout}
                                 onLongPress={onLikeLongPress}
+                            /> */}
+                            <ActionButton
+                                iconSource={
+                                    isContentLiked ? LoveIcon : LoveOutlineIcon
+                                }
+                                count={0}
+                                unitText="Like"
+                                textStyle={{
+                                    color: isContentLiked
+                                        ? color.GM_RED
+                                        : color.GM_MID_GREY,
+                                }}
+                                iconStyle={{
+                                    tintColor: isContentLiked
+                                        ? color.GM_RED
+                                        : color.GM_MID_GREY,
+                                }}
+                                onPress={onLikeButtonPress}
+                                onLayout={onLikeButtonLayout}
                             />
 
                             <ActionButton
@@ -409,6 +428,59 @@ const renderLikeIcons = (
  * @param summaryIconStyle
  * @param summaryTextStyle
  */
+// const renderSummaryItem = (
+//     // Values
+//     itemCount,
+//     // Handlers
+//     onItemPress,
+//     // Assets
+//     itemIcon,
+//     // Styles
+//     itemIconColor,
+//     actionItemSummaryWrapperStyle,
+//     summaryIconStyle,
+//     summaryTextStyle,
+//     reactions,
+//     updateReaction
+// ) => (
+//     <DelayedButton
+//         touchableWithoutFeedback
+//         hidden={!itemCount}
+//         onPress={onItemPress}
+//     >
+//         <View
+//             style={[
+//                 styles.actionItemSummaryWrapper,
+//                 actionItemSummaryWrapperStyle,
+//             ]}
+//         >
+//             {/* {renderLikeIcons(
+//                 reactions,
+//                 itemIcon,
+//                 itemIconColor,
+//                 summaryIconStyle,
+//                 summaryTextStyle,
+//                 actionItemSummaryWrapperStyle,
+//                 updateReaction
+//             )} */}
+//             <Image
+//                 source={itemIcon}
+//                 style={[
+//                     styles.summaryIcon,
+//                     itemIconColor
+//                         ? {
+//                               tintColor: itemIconColor,
+//                           }
+//                         : {},
+//                     summaryIconStyle,
+//                 ]}
+//             />
+//             <Text style={[styles.summaryText, summaryTextStyle]}>
+//                 {itemCount}
+//             </Text>
+//         </View>
+//     </DelayedButton>
+// )
 const renderSummaryItem = (
     // Values
     itemCount,
@@ -420,9 +492,7 @@ const renderSummaryItem = (
     itemIconColor,
     actionItemSummaryWrapperStyle,
     summaryIconStyle,
-    summaryTextStyle,
-    reactions,
-    updateReaction
+    summaryTextStyle
 ) => (
     <DelayedButton
         touchableWithoutFeedback
@@ -435,15 +505,6 @@ const renderSummaryItem = (
                 actionItemSummaryWrapperStyle,
             ]}
         >
-            {/* {renderLikeIcons(
-                reactions,
-                itemIcon,
-                itemIconColor,
-                summaryIconStyle,
-                summaryTextStyle,
-                actionItemSummaryWrapperStyle,
-                updateReaction
-            )} */}
             <Image
                 source={itemIcon}
                 style={[

@@ -126,10 +126,26 @@ class PeopleSearch extends Component {
 
     render() {
         const { height } = Dimensions.get('window')
+        let SortedObjs = _.sortBy(this.props.data, 'name')
 
         return (
             <View style={{ flex: 1, height: height }}>
-                {this.renderFlatList()}
+                {this.props.data.length === 0 &&
+                this.props.searchContent &&
+                !this.props.loading ? (
+                    <EmptyResult text={'No Results'} />
+                ) : (
+                    <FlatList
+                        data={SortedObjs}
+                        renderItem={this.renderItem}
+                        keyExtractor={this._keyExtractor}
+                        onEndReached={this.handleOnLoadMore}
+                        onEndReachedThreshold={0.5}
+                        onRefresh={this.handleRefresh}
+                        refreshing={this.props.loading}
+                        keyboardShouldPersistTaps="always"
+                    />
+                )}
             </View>
         )
     }

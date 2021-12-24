@@ -259,7 +259,7 @@ class InviteFriendModal extends React.PureComponent {
             // do your SMS stuff here
             const { result } = await SMS.sendSMSAsync(
                 [],
-                `${message}.Use this Invite Code to sign up: ${this.state.inviteCode}\n\n${url}`
+                `${message} Use this Invite Code to sign up: ${this.state.inviteCode}\n\n${url}`
             )
             console.log(`${DEBUG_KEY}: result is: `, result)
         }
@@ -272,7 +272,7 @@ class InviteFriendModal extends React.PureComponent {
         if (canOpen) {
             Linking.openURL(
                 `mailto:?subject=Join GoalMogul&body=${unescape(
-                    `${message}.Use this Invite Code to sign up: ${this.state.inviteCode}`
+                    `${message} Use this Invite Code to sign up: ${this.state.inviteCode}`
                 )}\n\n${unescape(url)}`
             )
         }
@@ -289,7 +289,7 @@ class InviteFriendModal extends React.PureComponent {
 
     shareToWhatsApp = (text, link) => {
         Linking.openURL(
-            `whatsapp://send?text=${text}.Use this Invite Code to sign up: ${this.state.inviteCode}\n\n${link}`
+            `whatsapp://send?text=${text} Use this Invite Code to sign up: ${this.state.inviteCode}\n\n${link}`
         )
 
             .then((data) => {
@@ -640,7 +640,8 @@ class InviteFriendModal extends React.PureComponent {
                                             `${this.state.description} Use this Invite Code to sign up ${this.state.inviteCode}\n\n${inviteLink}`
                                         )
                                         Alert.alert(
-                                            `Invite message copied to Clipboard \n Use this invite code: ${
+                                            `Invite message copied to Clipboard `,
+                                            `Use this invite code:  ${
                                                 this.props.isTribe
                                                     ? this.props.tribeCode
                                                           .tribeInviteCode
@@ -648,23 +649,29 @@ class InviteFriendModal extends React.PureComponent {
                                             }`
                                         )
                                     }}
+                                    style={{
+                                        position: 'absolute',
+                                        right: 10,
+                                        bottom: 15,
+                                    }}
                                 >
-                                    <View
+                                    {/* <View
                                         style={{
                                             position: 'absolute',
                                             right: 0,
                                             bottom: 0,
+                                            backgroundColor: 'red',
                                         }}
-                                    >
-                                        <Icon
-                                            name="link-variant"
-                                            pack="material-community"
-                                            style={{
-                                                height: 24,
-                                                tintColor: color.GM_MID_GREY,
-                                            }}
-                                        />
-                                    </View>
+                                    > */}
+                                    <Icon
+                                        name="link-variant"
+                                        pack="material-community"
+                                        style={{
+                                            height: 24,
+                                            tintColor: color.GM_MID_GREY,
+                                        }}
+                                    />
+                                    {/* </View> */}
                                 </TouchableOpacity>
                             </View>
                             {this.props.isTribe ? (

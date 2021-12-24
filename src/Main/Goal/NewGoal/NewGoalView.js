@@ -865,7 +865,7 @@ class NewGoalView extends Component {
         return fields.map((description, index) => {
             return (
                 <WalkableView>
-                    {this.state.detailsFieldShow ? (
+                    {/* {this.state.detailsFieldShow && (
                         <>
                             <View
                                 style={{
@@ -902,7 +902,7 @@ class NewGoalView extends Component {
                                 }
                             />
                         </>
-                    ) : null}
+                    )} */}
 
                     {!this.state.detailsFieldShow ? (
                         <Button

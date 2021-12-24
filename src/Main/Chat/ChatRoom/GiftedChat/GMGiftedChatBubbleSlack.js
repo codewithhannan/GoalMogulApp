@@ -164,7 +164,7 @@ class Bubble extends React.Component {
         let gomoExist = false
         let chatroomId = this.props.chatRooms.filter((chatroom) => {
             for (let member of chatroom.members) {
-                console.log('THIS IS MEMBERRRSSS', member)
+                // console.log('THIS IS MEMBERRRSSS', member)
                 if (member.memberRef.name == 'GoalMogul Planner (GoMo)') {
                     gomoExist = true
                     break
@@ -205,7 +205,7 @@ class Bubble extends React.Component {
         const { options, text } = this.props.currentMessage
         const { user, chatRoom, messages } = this.props
 
-        // console.log('this is props of chat', this.props.currentMessage)
+        // console.log('this is props of chat', options)
 
         if (text.includes('It looks like your goal is to')) {
             this.splittedText = text.slice(30)
@@ -227,7 +227,7 @@ class Bubble extends React.Component {
                             style={{
                                 // borderTopColor: '#eee',
                                 width: '95%',
-                                // marginTop: 12,
+                                // marginTop: -12,
                                 // paddingTop: 9,
                                 // paddingBottom: 6,
                             }}
@@ -238,9 +238,12 @@ class Bubble extends React.Component {
                                     paddingTop: 9,
                                     paddingBottom: 9,
                                     marginBottom: 12,
+                                    paddingHorizontal: 10,
                                     borderRadius: 5,
                                     borderColor: color.GM_BLUE,
                                     borderWidth: 2,
+                                    width: '90%',
+                                    alignItems: 'center',
 
                                     // padding: 80,
                                 }}
@@ -286,11 +289,10 @@ class Bubble extends React.Component {
                                 <Text
                                     style={{
                                         color: '#fff',
-                                        fontSize: 14,
+                                        fontSize: 13,
                                         fontWeight: '600',
                                         fontFamily: text.FONT_FAMILY,
                                         color: color.GM_BLUE,
-                                        textAlign: 'center',
                                     }}
                                 >
                                     {option.optionTitle}
@@ -469,6 +471,8 @@ class Bubble extends React.Component {
                 messageTextStyle,
                 ...messageTextProps
             } = this.props
+
+            // console.log('messageTextProps', messageTextProps)
             if (this.props.renderMessageText) {
                 return this.props.renderMessageText(messageTextProps)
             }
@@ -807,7 +811,6 @@ class Bubble extends React.Component {
 
     render() {
         const { user, chatRoom, messages } = this.props
-        // console.log('MESSAGES', messages)
 
         // console.log('THIS ISSSSSS CURRRENT MESSAGE', this.props.currentMessage)
 
@@ -835,7 +838,13 @@ class Bubble extends React.Component {
                             {this.renderAccountabilityquestion()}
                             {this.renderAccountabilityRequest()}
                             {this.renderGoalRecommendation()}
-                            {this.renderGoalOptions()}
+                            {_.isEmpty(this.props.currentMessage.options) ===
+                            false ? (
+                                <View style={{ marginTop: -20 }}>
+                                    {this.renderGoalOptions()}
+                                </View>
+                            ) : null}
+
                             {this.renderMessageLottie()}
                         </View>
                     </View>

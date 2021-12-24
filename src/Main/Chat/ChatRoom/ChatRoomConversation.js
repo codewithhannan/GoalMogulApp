@@ -1122,7 +1122,6 @@ class ChatRoomConversation extends React.Component {
 
     renderMessage = (props) => {
         const { messageDoc } = this.state
-
         return <GMGiftedMessage {...props} messageDoc={messageDoc} />
     }
 

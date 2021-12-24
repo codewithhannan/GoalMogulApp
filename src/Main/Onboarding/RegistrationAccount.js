@@ -16,9 +16,17 @@
  */
 
 import React from 'react'
-import { View, Text, Alert, Keyboard } from 'react-native'
+import {
+    View,
+    Text,
+    Alert,
+    Keyboard,
+    TextInput,
+    TouchableOpacity,
+} from 'react-native'
 
 import { connect } from 'react-redux'
+import { Input, Icon } from '@ui-kitten/components'
 import * as WebBrowser from 'expo-web-browser'
 import * as Linking from 'expo-linking'
 import { Actions } from 'react-native-router-flux'
@@ -61,6 +69,10 @@ const FIELD_REQUIREMENTS = {
         invalid_email: 'Invalid Email',
         require_email: 'Email is required',
     },
+    password: {
+        password_too_short: 'Password is too short',
+        missing_password: 'Password is required',
+    },
     name: {
         require_name: 'Name is required',
     },
@@ -87,6 +99,8 @@ class RegistrationAccount extends React.Component {
             inviteCodeStatus: undefined,
             userAgreementChecked: true,
             validateDate: undefined,
+            icon: 'eye-off',
+            showPassword: true,
         }
     }
 
@@ -96,6 +110,13 @@ class RegistrationAccount extends React.Component {
 
     nextStep = () => {
         Actions.replace(NEXT_STEP)
+    }
+
+    showPassword = () => {
+        this.setState((prevState) => ({
+            icon: prevState.icon === 'eye' ? 'eye-off' : 'eye',
+            showPassword: !prevState.showPassword,
+        }))
     }
 
     /** Below are the phone verification method 2 **/
@@ -362,6 +383,7 @@ class RegistrationAccount extends React.Component {
             dateOfBirth,
             name,
             countryCode,
+            password,
             registerErrMsg,
             inviterCode,
         } = this.props
@@ -471,6 +493,125 @@ class RegistrationAccount extends React.Component {
                             : 'basic'
                     }
                 />
+                <View style={{ marginTop: 10, top: 10 }}>
+                    <Text style={{ color: 'red' }}>
+                        *
+                        <Text
+                            style={{
+                                color: 'black',
+                                fontWeight: '600',
+                                fontSize: 14,
+                            }}
+                        >
+                            Password
+                        </Text>
+                    </Text>
+                    <TextInput
+                        onChangeText={(val) => {
+                            if (
+                                this.state.passwordStatus !=
+                                    FIELD_REQUIREMENTS.done &&
+                                val &&
+                                val.trim().length
+                            ) {
+                                this.setState({
+                                    ...this.state,
+                                    passwordStatus: FIELD_REQUIREMENTS.done,
+                                })
+                            }
+                            this.props.registrationTextInputChange(
+                                'password',
+                                val
+                            )
+                        }}
+                        onSubmitEditing={() => {
+                            this.validatePassword(password)
+                        }}
+                        secureTextEntry={this.state.showPassword}
+                        returnKeyType="done"
+                        disabled={this.props.loading}
+                        onBlur={() => {
+                            this.validatePassword(password)
+                        }}
+                        placeholder="Enter your password code here"
+                        value={password}
+                        placeholderTextColor={color.TEXT_COLOR}
+                        style={{
+                            width: '100%',
+                            height: 47,
+                            borderWidth: 1,
+                            borderRadius: 5,
+                            borderColor: '#E4E9F2',
+                            padding: 10,
+                            fontSize: 16,
+                        }}
+                    />
+                    <Text style={{ color: 'red', fontSize: 12 }}>
+                        {this.state.passwordStatus === 'done'
+                            ? ''
+                            : this.state.passwordStatus}
+                    </Text>
+
+                    <TouchableOpacity
+                        onPress={() => this.showPassword()}
+                        style={{ position: 'absolute', right: 10, top: 30 }}
+                    >
+                        <Icon
+                            name={this.state.icon}
+                            pack="material-community"
+                            style={[
+                                {
+                                    tintColor: 'grey',
+                                    height: 18,
+                                    width: 18,
+                                },
+                            ]}
+                        />
+                    </TouchableOpacity>
+                </View>
+                {/* <InputBox
+                    key="password"
+                    inputTitle="Password"
+                    ref="password"
+                    placeholder={`Enter your password code here`}
+                    value={password}
+                    returnKeyType="password"
+                    secureTextEntry={true}
+                    onSubmitEditing={() => {
+                        this.validatePassword(password)
+                    }}
+                    returnKeyType="done"
+                    disabled={this.props.loading}
+                    onBlur={() => {
+                        this.validatePassword(password)
+                    }}
+                    onChangeText={(val) => {
+                        if (
+                            this.state.passwordStatus !=
+                                FIELD_REQUIREMENTS.done &&
+                            val &&
+                            val.trim().length
+                        ) {
+                            this.setState({
+                                ...this.state,
+                                passwordStatus: FIELD_REQUIREMENTS.done,
+                            })
+                        }
+                        this.props.registrationTextInputChange('password', val)
+                    }}
+                    caption={
+                        !this.state.passwordStatus ||
+                        this.state.passwordStatus == FIELD_REQUIREMENTS.done
+                            ? ''
+                            : this.state.passwordStatus
+                    }
+                    status={
+                        this.state.passwordStatus &&
+                        this.state.passwordStatus !== FIELD_REQUIREMENTS.done
+                            ? 'danger'
+                            : 'basic'
+                    }
+                /> */}
                 <InputBox
                     key="gender"
                     inputTitle="Gender"
@@ -590,6 +731,7 @@ class RegistrationAccount extends React.Component {
                             : 'basic'
                     }
                 />
+
                 <UserAgreementCheckBox
                     onPress={(val) =>
                         this.setState({
@@ -632,6 +774,8 @@ class RegistrationAccount extends React.Component {
                                 this.state.nameStatus !==
                                     FIELD_REQUIREMENTS.done ||
                                 this.state.emailStatus !==
+                                    FIELD_REQUIREMENTS.done ||
+                                this.state.passwordStatus !==
                                     FIELD_REQUIREMENTS.done ||
                                 this.state.dateOfBirthStatus !==
                                     FIELD_REQUIREMENTS.done ||
@@ -708,6 +852,7 @@ const mapStateToProps = (state) => {
     const {
         name,
         email,
+        password,
         gender,
         dateOfBirth,
         error,
@@ -719,6 +864,7 @@ const mapStateToProps = (state) => {
     return {
         name,
         email,
+        password,
         gender,
         dateOfBirth,
         error,

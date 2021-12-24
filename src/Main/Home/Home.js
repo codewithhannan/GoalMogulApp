@@ -1895,6 +1895,7 @@ class Home extends Component {
                     closeModal={() => this.setState({ isVisible: false })}
                 />
                 <GOAL_UPDATE_POPUP_A
+                    pageId={this.props.pageId}
                     isVisible={this.state.isVisibleA}
                     closeModal={() => this.setState({ isVisibleA: false })}
                     data={this.props.lateGoal}

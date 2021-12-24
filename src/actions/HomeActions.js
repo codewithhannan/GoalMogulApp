@@ -10,6 +10,7 @@ import {
     GOAL_UPDATE_27,
 } from './types'
 import TokenService from '../services/token/TokenService'
+import { api as API } from '../redux/middleware/api'
 
 const DEBUG_KEY = '[ HomeActions ]'
 

@@ -242,198 +242,256 @@ class ActivityCard extends React.PureComponent {
         const isShare = (isPost && isSharedPost(postRef.postType)) || !selfOwned
 
         return (
-            <Tooltip
-                isVisible={this.state.toolTipVisible}
-                arrowSize={{
-                    height: 2,
-                    width: 2,
-                }}
-                contentStyle={{
-                    // backgroundColor: '#F9F9F9',
-                    borderRadius: 40,
-                    width: TOOLTIP_WIDTH * 0.85,
-                    flex: 1,
-                }}
-                content={
-                    <>
-                        <Animatable.View
-                            style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                width: TOOLTIP_WIDTH * 0.8,
-                            }}
-                            animation="fadeInLeft"
-                            delay={150}
-                            duration={500}
-                            easing="ease-in-out-expo"
-                        >
-                            {LOTTIE_DATA.map((lottie, index) => {
-                                return (
-                                    <TouchableOpacity
-                                        key={index}
-                                        onPress={() => {
-                                            if (selfLiked) {
-                                                return (
-                                                    this.props.unLikeGoal(
-                                                        isPost
-                                                            ? 'post'
-                                                            : 'goal',
-                                                        _id,
-                                                        maybeLikeRef
-                                                    ),
-                                                    setTimeout(() => {
-                                                        this.props.likeGoal(
-                                                            isPost
-                                                                ? 'post'
-                                                                : 'goal',
-                                                            _id,
-                                                            '',
-                                                            '',
-                                                            lottie.value
-                                                        ),
-                                                            updateLikeIcon(
-                                                                reactions,
-                                                                lottie.value
-                                                            )
-                                                        // this.props.refreshActivityFeed()
-                                                    }, 1000),
-                                                    this.setState({
-                                                        unitText: lottie.title,
-                                                        toolTipVisible: false,
-                                                        updateReaction: reactions,
-                                                    })
-                                                )
-                                            }
-                                            this.incrementFloatingHeartCount()
-                                            this.props.likeGoal(
-                                                isPost ? 'post' : 'goal',
-                                                _id,
-                                                '',
-                                                '',
-                                                lottie.value
-                                            )
+            // <Tooltip
+            //     isVisible={this.state.toolTipVisible}
+            //     arrowSize={{
+            //         height: 2,
+            //         width: 2,
+            //     }}
+            //     contentStyle={{
+            //         // backgroundColor: '#F9F9F9',
+            //         borderRadius: 40,
+            //         width: TOOLTIP_WIDTH * 0.85,
+            //         flex: 1,
+            //     }}
+            //     content={
+            //         <>
+            //             <Animatable.View
+            //                 style={{
+            //                     flexDirection: 'row',
+            //                     justifyContent: 'space-between',
+            //                     width: TOOLTIP_WIDTH * 0.8,
+            //                 }}
+            //                 animation="fadeInLeft"
+            //                 delay={150}
+            //                 duration={500}
+            //                 easing="ease-in-out-expo"
+            //             >
+            //                 {LOTTIE_DATA.map((lottie, index) => {
+            //                     return (
+            //                         <TouchableOpacity
+            //                             key={index}
+            //                             onPress={() => {
+            //                                 if (selfLiked) {
+            //                                     return (
+            //                                         this.props.unLikeGoal(
+            //                                             isPost
+            //                                                 ? 'post'
+            //                                                 : 'goal',
+            //                                             _id,
+            //                                             maybeLikeRef
+            //                                         ),
+            //                                         setTimeout(() => {
+            //                                             this.props.likeGoal(
+            //                                                 isPost
+            //                                                     ? 'post'
+            //                                                     : 'goal',
+            //                                                 _id,
+            //                                                 '',
+            //                                                 '',
+            //                                                 lottie.value
+            //                                             ),
+            //                                                 updateLikeIcon(
+            //                                                     reactions,
+            //                                                     lottie.value
+            //                                                 )
+            //                                             // this.props.refreshActivityFeed()
+            //                                         }, 1000),
+            //                                         this.setState({
+            //                                             unitText: lottie.title,
+            //                                             toolTipVisible: false,
+            //                                             updateReaction: reactions,
+            //                                         })
+            //                                     )
+            //                                 }
+            //                                 this.incrementFloatingHeartCount()
+            //                                 this.props.likeGoal(
+            //                                     isPost ? 'post' : 'goal',
+            //                                     _id,
+            //                                     '',
+            //                                     '',
+            //                                     lottie.value
+            //                                 )
 
-                                            this.setState({
-                                                unitText: lottie.title,
-                                                toolTipVisible: false,
-                                                updateReaction: '',
-                                            })
-                                        }}
-                                    >
-                                        <LottieView
-                                            style={{
-                                                height: hp(5),
-                                            }}
-                                            source={lottie.lottieSource}
-                                            autoPlay
-                                            loop
-                                        />
-                                        <Text
-                                            style={{
-                                                fontSize: 8,
-                                                color: '#818181',
-                                                alignSelf: 'center',
-                                            }}
-                                        >
-                                            {lottie.name}
-                                        </Text>
-                                    </TouchableOpacity>
-                                )
-                            })}
-                        </Animatable.View>
-                    </>
+            //                                 this.setState({
+            //                                     unitText: lottie.title,
+            //                                     toolTipVisible: false,
+            //                                     updateReaction: '',
+            //                                 })
+            //                             }}
+            //                         >
+            //                             <LottieView
+            //                                 style={{
+            //                                     height: hp(5),
+            //                                 }}
+            //                                 source={lottie.lottieSource}
+            //                                 autoPlay
+            //                                 loop
+            //                             />
+            //                             <Text
+            //                                 style={{
+            //                                     fontSize: 8,
+            //                                     color: '#818181',
+            //                                     alignSelf: 'center',
+            //                                 }}
+            //                             >
+            //                                 {lottie.name}
+            //                             </Text>
+            //                         </TouchableOpacity>
+            //                     )
+            //                 })}
+            //             </Animatable.View>
+            //         </>
+            //     }
+            //     disableShadow={false}
+            //     topAdjustment={2}
+            //     placement="top"
+            //     showChildInTooltip={false}
+            //     backgroundColor="transparent"
+            //     onClose={() => this.setState({ toolTipVisible: false })}
+            // >
+            //     <ActionBar
+            //         isContentLiked={selfLiked}
+            //         reactions={
+            //             this.state.updateReaction == ''
+            //                 ? filteredReaction
+            //                 : this.state.updateReaction
+            //         }
+            //         updateReaction={this.state.updateReaction}
+            //         isShareContent={isShare}
+            //         actionSummaries={{
+            //             likeCount,
+            //             shareCount,
+            //             commentCount,
+            //         }}
+            //         onContainerLayout={({ nativeEvent }) =>
+            //             this.setState({
+            //                 actionBarOffsetY: nativeEvent.layout.y,
+            //             })
+            //         }
+            //         onLikeSummaryPress={() => {
+            //             // TODO open liker list
+            //         }}
+            //         onLikeLongPress={() => {
+            //             this.setState({ toolTipVisible: true })
+            //         }}
+            //         unitText={
+            //             this.state.unitText == ''
+            //                 ? renderUnitText(likeType)
+            //                 : this.state.unitText
+            //         }
+            //         onLikeButtonPress={() => {
+            //             if (selfLiked) {
+            //                 return (
+            //                     this.props.unLikeGoal(
+            //                         isPost ? 'post' : 'goal',
+            //                         _id,
+            //                         maybeLikeRef
+            //                     ),
+            //                     this.setState({ unitText: 'Like' })
+            //                 )
+            //             }
+
+            //             this.incrementFloatingHeartCount()
+            //             this.props.likeGoal(
+            //                 isPost ? 'post' : 'goal',
+            //                 _id,
+            //                 '',
+            //                 '',
+            //                 'Thumbsup'
+            //             ),
+            //                 this.setState({ unitText: 'Like' })
+            //         }}
+            //         onLikeButtonLayout={({ nativeEvent }) =>
+            //             this.setState({
+            //                 likeButtonLeftOffset: nativeEvent.layout.x,
+            //             })
+            //         }
+            //         onShareSummaryPress={() => {
+            //             // TODO open sharers list
+            //         }}
+            //         onShareButtonOptions={this.getOnShareOptions(
+            //             actedUponEntityType
+            //         )}
+            //         onCommentSummaryPress={() =>
+            //             this.props.onPress(
+            //                 item,
+            //                 (actedWith === 'Comment' ||
+            //                     actedWith === 'Like' ||
+            //                     actedWith === 'Goal') &&
+            //                     actedUponEntityType === 'Goal',
+            //                 { shouldNotFocusCommentBox: true }
+            //             )
+            //         }
+            //         onCommentButtonPress={() =>
+            //             this.props.onPress(
+            //                 item,
+            //                 (actedWith === 'Comment' ||
+            //                     actedWith === 'Like' ||
+            //                     actedWith === 'Goal') &&
+            //                     actedUponEntityType === 'Goal'
+            //             )
+            //         }
+            //     />
+            // </Tooltip>
+            <ActionBar
+                isContentLiked={selfLiked}
+                isShareContent={isShare}
+                actionSummaries={{
+                    likeCount,
+                    shareCount,
+                    commentCount,
+                }}
+                onContainerLayout={({ nativeEvent }) =>
+                    this.setState({
+                        actionBarOffsetY: nativeEvent.layout.y,
+                    })
                 }
-                disableShadow={false}
-                topAdjustment={2}
-                placement="top"
-                showChildInTooltip={false}
-                backgroundColor="transparent"
-                onClose={() => this.setState({ toolTipVisible: false })}
-            >
-                <ActionBar
-                    isContentLiked={selfLiked}
-                    reactions={
-                        this.state.updateReaction == ''
-                            ? filteredReaction
-                            : this.state.updateReaction
-                    }
-                    updateReaction={this.state.updateReaction}
-                    isShareContent={isShare}
-                    actionSummaries={{
-                        likeCount,
-                        shareCount,
-                        commentCount,
-                    }}
-                    onContainerLayout={({ nativeEvent }) =>
-                        this.setState({
-                            actionBarOffsetY: nativeEvent.layout.y,
-                        })
-                    }
-                    onLikeSummaryPress={() => {
-                        // TODO open liker list
-                    }}
-                    onLikeLongPress={() => {
-                        this.setState({ toolTipVisible: true })
-                    }}
-                    unitText={
-                        this.state.unitText == ''
-                            ? renderUnitText(likeType)
-                            : this.state.unitText
-                    }
-                    onLikeButtonPress={() => {
-                        if (selfLiked) {
-                            return (
-                                this.props.unLikeGoal(
-                                    isPost ? 'post' : 'goal',
-                                    _id,
-                                    maybeLikeRef
-                                ),
-                                this.setState({ unitText: 'Like' })
-                            )
-                        }
-
-                        this.incrementFloatingHeartCount()
-                        this.props.likeGoal(
+                onLikeSummaryPress={() => {
+                    // TODO open liker list
+                }}
+                onLikeButtonPress={() => {
+                    if (selfLiked) {
+                        return this.props.unLikeGoal(
                             isPost ? 'post' : 'goal',
                             _id,
-                            '',
-                            '',
-                            'Thumbsup'
-                        ),
-                            this.setState({ unitText: 'Like' })
-                    }}
-                    onLikeButtonLayout={({ nativeEvent }) =>
-                        this.setState({
-                            likeButtonLeftOffset: nativeEvent.layout.x,
-                        })
-                    }
-                    onShareSummaryPress={() => {
-                        // TODO open sharers list
-                    }}
-                    onShareButtonOptions={this.getOnShareOptions(
-                        actedUponEntityType
-                    )}
-                    onCommentSummaryPress={() =>
-                        this.props.onPress(
-                            item,
-                            (actedWith === 'Comment' ||
-                                actedWith === 'Like' ||
-                                actedWith === 'Goal') &&
-                                actedUponEntityType === 'Goal',
-                            { shouldNotFocusCommentBox: true }
+                            maybeLikeRef
                         )
                     }
-                    onCommentButtonPress={() =>
-                        this.props.onPress(
-                            item,
-                            (actedWith === 'Comment' ||
-                                actedWith === 'Like' ||
-                                actedWith === 'Goal') &&
-                                actedUponEntityType === 'Goal'
-                        )
-                    }
-                />
-            </Tooltip>
+                    this.incrementFloatingHeartCount()
+                    this.props.likeGoal(isPost ? 'post' : 'goal', _id)
+                }}
+                onLikeButtonLayout={({ nativeEvent }) =>
+                    this.setState({
+                        likeButtonLeftOffset: nativeEvent.layout.x,
+                    })
+                }
+                onShareSummaryPress={() => {
+                    // TODO open sharers list
+                }}
+                onShareButtonOptions={this.getOnShareOptions(
+                    actedUponEntityType
+                )}
+                onCommentSummaryPress={() =>
+                    this.props.onPress(
+                        item,
+                        (actedWith === 'Comment' ||
+                            actedWith === 'Like' ||
+                            actedWith === 'Goal') &&
+                            actedUponEntityType === 'Goal',
+                        { shouldNotFocusCommentBox: true }
+                    )
+                }
+                onCommentButtonPress={() =>
+                    this.props.onPress(
+                        item,
+                        (actedWith === 'Comment' ||
+                            actedWith === 'Like' ||
+                            actedWith === 'Goal') &&
+                            actedUponEntityType === 'Goal'
+                    )
+                }
+            />
         )
     }
 

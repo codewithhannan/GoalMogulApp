@@ -317,6 +317,7 @@ export const registerAccount = (onSuccess, dateToSend) => async (
             }
             ReactMoE.setUserBirthday(dateOfBirth)
             track(E.REG_FIELDS_FILL)
+            track(E.REG_UTM_SOURCE)
         }
 
         Logger.log(

@@ -1,7 +1,15 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, Image } from 'react-native'
+import {
+    View,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    Image,
+    Alert,
+} from 'react-native'
+
 // import LottieView from 'lottie-react-native'
 import {
     widthPercentageToDP as wp,
@@ -16,6 +24,7 @@ import { default_style } from '../../../styles/basic'
 import { Actions } from 'react-native-router-flux'
 import CreatePostModal from '../../Post/CreatePostModal'
 import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions'
+import { api as API } from '../../../redux/middleware/api'
 
 import DelayedButton from '../../../Main/Common/Button/DelayedButton'
 import GoalUpdateA from '../../../asset/image/GoalUpdateA.png'
@@ -25,12 +34,12 @@ class GOAL_UPDATE_POPUP_A extends Component {
         super(props)
     }
     render() {
-        const { isVisible, closeModal, data, pageId } = this.props
+        const { isVisible, closeModal, data, pageId, token } = this.props
         return (
             <Modal isVisible={isVisible}>
                 <CreatePostModal
                     onRef={(r) => (this.createPostModal = r)}
-                    initializeFromState
+                    initializeFromGoal
                     pageId={pageId}
                     initialPost={{
                         belongsToGoalStoryline: {
@@ -160,7 +169,28 @@ class GOAL_UPDATE_POPUP_A extends Component {
                                     borderColor: GM_BLUE,
                                 },
                             ]}
-                            onPress={() => console.log('1ST BUTTON')}
+                            onPress={() => {
+                                return API.put(
+                                    'secure/goal/set-stalegoal-reminder',
+                                    { goalId: data?.goal?._id },
+                                    token
+                                )
+                                    .then((res) => {
+                                        // All 200 status imply success
+                                        if (
+                                            res.status >= 200 &&
+                                            res.status < 300
+                                        ) {
+                                            return Alert.alert(
+                                                'Goal Reminder in 1 week set!'
+                                            )
+                                        }
+                                        return console.log(res)
+                                    })
+                                    .catch((err) => {
+                                        onError(err)
+                                    })
+                            }}
                         >
                             <Text
                                 style={[
@@ -181,16 +211,14 @@ class GOAL_UPDATE_POPUP_A extends Component {
     }
 }
 
-// const mapStateToProps = (state, ownProps) => {
-//     const user = state.user
-//     const { popupName, isVisible, closeModal } = ownProps
-//     return {
-//         user,
-//         popupName,
-//         isVisible,
-//         closeModal,
-//     }
-// }
+const mapStateToProps = (state, ownProps) => {
+    const { user, token } = state.user
+    // const { popupName, isVisible, closeModal } = ownProps
+    return {
+        user,
+        token,
+    }
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -236,4 +264,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(null, { openGoalDetail })(GOAL_UPDATE_POPUP_A)
+export default connect(mapStateToProps, { openGoalDetail })(GOAL_UPDATE_POPUP_A)
