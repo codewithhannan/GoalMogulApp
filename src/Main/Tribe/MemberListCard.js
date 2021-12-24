@@ -13,6 +13,8 @@ import {
     switchCase,
     getProfileImageOrDefaultFromUser,
 } from '../../redux/middleware/utils'
+import { getButtonBottomSheetHeight } from '../../styles'
+import BottomButtonsSheet from '../Common/Modal/BottomButtonsSheet'
 
 // Actions
 import { updateFriendship, openProfile } from '../../actions'
@@ -157,6 +159,18 @@ class MemberListCard extends Component {
             cancelIndex,
             requestOptions
         )
+        // const renderBottomSheet = () => {
+        //     // const options = this.makeProfileCardOptions()
+        //     // // Options height + bottom space + bottom sheet handler height
+        //     const sheetHeight = getButtonBottomSheetHeight(options.length)
+        //     return (
+        //         <BottomButtonsSheet
+        //             ref={(r) => (this.bottomSheetRef = r)}
+        //             buttons={requestOptions}
+        //             height={sheetHeight}
+        //         />
+        //     )
+        // }
         adminActionSheet()
     }
 
@@ -306,7 +320,7 @@ class MemberListCard extends Component {
 
         const { headline, _id } = item
 
-        console.log('_IDDD', this.props.isFriend)
+        console.log('_IDDD', this.props)
         return (
             <View style={styles.containerStyle} key={index}>
                 {this.renderProfileImage(item)}

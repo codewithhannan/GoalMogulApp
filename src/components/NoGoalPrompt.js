@@ -328,8 +328,8 @@ class NoGoalPrompt extends Component {
                                     alignItems: 'center',
                                     justifyContent: 'center',
 
-                                    position: 'aboslute',
-                                    top: 100,
+                                    // position: 'absolute',
+                                    top: 110,
                                     alignSelf: 'center',
                                 }}
                             >

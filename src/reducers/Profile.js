@@ -12,6 +12,7 @@ import {
     PROFILE_SWITCH_TAB,
     MEET_UPDATE_FRIENDSHIP_DONE,
     PROFILE_FETCHING_FAIL,
+    GOAL_UPDATE_27,
 } from '../actions/types'
 
 import {
@@ -182,6 +183,10 @@ const INITIAL_STATE = {
         loading: false,
         refreshing: false,
     },
+    lateGoal: {
+        show: false,
+        goal: {},
+    },
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -204,10 +209,20 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, loading: false }
 
         case PROFILE_FETCHING_SUCCESS: {
+            console.log('27 goal update reducer profile')
             let newState = _.cloneDeep(state)
             const { user } = action.payload
             newState = _.set(newState, 'loading', false)
             return _.set(newState, 'user', user)
+        }
+        case GOAL_UPDATE_27: {
+            console.log('27 goal update reducer')
+            let newState = _.cloneDeep(state)
+            // const { goal } = action.payload
+            return _.set(newState, 'lateGoal', {
+                show: true,
+                goal: action.payload,
+            })
         }
 
         case PROFILE_IMAGE_UPLOAD_SUCCESS: {

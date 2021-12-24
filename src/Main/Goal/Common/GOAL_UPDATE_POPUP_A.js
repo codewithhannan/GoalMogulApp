@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState, useEffect } from 'react'
+import React, { Component } from 'react'
 import { View, StyleSheet, Text, TouchableOpacity, Image } from 'react-native'
 // import LottieView from 'lottie-react-native'
 import {
@@ -14,135 +14,171 @@ import { Entypo } from '@expo/vector-icons'
 import * as text from '../../../styles/basic/text'
 import { default_style } from '../../../styles/basic'
 import { Actions } from 'react-native-router-flux'
+import CreatePostModal from '../../Post/CreatePostModal'
+import { openGoalDetail } from '../../../redux/modules/home/mastermind/actions'
 
 import DelayedButton from '../../../Main/Common/Button/DelayedButton'
 import GoalUpdateA from '../../../asset/image/GoalUpdateA.png'
 
-const GOAL_UPDATE_POPUP_A = ({ isVisible, closeModal, user }) => {
-    return (
-        <Modal isVisible={isVisible}>
-            <View style={styles.container}>
-                <TouchableOpacity onPress={closeModal} style={styles.closeBtn}>
-                    <Entypo name="cross" size={28} color="black" />
-                </TouchableOpacity>
-                <Text style={styles.title}>Goal Update</Text>
-                <Image source={GoalUpdateA} style={styles.img} />
+class GOAL_UPDATE_POPUP_A extends Component {
+    constructor(props) {
+        super(props)
+    }
+    render() {
+        const { isVisible, closeModal, data, pageId } = this.props
+        return (
+            <Modal isVisible={isVisible}>
+                <CreatePostModal
+                    onRef={(r) => (this.createPostModal = r)}
+                    initializeFromState
+                    pageId={pageId}
+                    initialPost={{
+                        belongsToGoalStoryline: {
+                            goalRef: data?.goal?._id,
+                            title: data?.goal?.title,
+                            owner: data?.goal?.owner,
+                            category: data?.goal?.category,
+                            priority: data?.goal?.priority,
+                        },
+                        privacy: data?.goal?.privacy,
+                    }}
+                />
+                <View style={styles.container}>
+                    <TouchableOpacity
+                        onPress={closeModal}
+                        style={styles.closeBtn}
+                    >
+                        <Entypo name="cross" size={28} color="black" />
+                    </TouchableOpacity>
+                    <Text style={styles.title}>Goal Update</Text>
+                    <Image source={GoalUpdateA} style={styles.img} />
 
-                <Text style={styles.d2}>
-                    You haven’t updated your goal in a while:
-                </Text>
-                <Text style={styles.goal}>GOAL TITLE COMES HERE</Text>
-                {/* </ImageBackground> */}
-                <View style={{ position: 'absolute', bottom: 30 }}>
-                    <DelayedButton
-                        style={[
-                            {
-                                paddingVertical: 10,
-                                width: 200,
-                                alignItems: 'center',
-                                backgroundColor: GM_BLUE,
-                                borderRadius: 5,
-                                marginTop: 10,
-                            },
-                        ]}
-                        onPress={() => {
-                            closeModal()
-                            Actions.push('seekhelp')
-                        }}
-                    >
-                        <Text
+                    <Text style={styles.d2}>
+                        You haven’t updated your goal in a while:
+                    </Text>
+                    <Text style={styles.goal}>{data?.goal?.title}</Text>
+                    {/* </ImageBackground> */}
+                    <View style={{ position: 'absolute', bottom: 30 }}>
+                        <DelayedButton
                             style={[
-                                default_style.subTitleText_1,
                                 {
-                                    fontFamily: text.FONT_FAMILY.SEMI_BOLD,
-                                    color: 'white',
+                                    paddingVertical: 10,
+                                    width: 200,
+                                    alignItems: 'center',
+                                    backgroundColor: GM_BLUE,
+                                    borderRadius: 5,
+                                    marginTop: 10,
                                 },
                             ]}
+                            onPress={() => {
+                                closeModal()
+                                Actions.push('seekhelp')
+                            }}
                         >
-                            Seek Help
-                        </Text>
-                    </DelayedButton>
-                    <DelayedButton
-                        style={[
-                            {
-                                paddingVertical: 10,
-                                width: 200,
-                                alignItems: 'center',
-                                backgroundColor: GM_BLUE,
-                                borderRadius: 5,
-                                marginTop: 10,
-                            },
-                        ]}
-                        onPress={() => console.log('1ST BUTTON')}
-                    >
-                        <Text
+                            <Text
+                                style={[
+                                    default_style.subTitleText_1,
+                                    {
+                                        fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                                        color: 'white',
+                                    },
+                                ]}
+                            >
+                                Seek Help
+                            </Text>
+                        </DelayedButton>
+                        <DelayedButton
                             style={[
-                                default_style.subTitleText_1,
                                 {
-                                    fontFamily: text.FONT_FAMILY.SEMI_BOLD,
-                                    color: 'white',
+                                    paddingVertical: 10,
+                                    width: 200,
+                                    alignItems: 'center',
+                                    backgroundColor: GM_BLUE,
+                                    borderRadius: 5,
+                                    marginTop: 10,
                                 },
                             ]}
+                            onPress={() => {
+                                console.log(this.createPostModal)
+                                this.createPostModal &&
+                                    this.createPostModal.open()
+                            }}
                         >
-                            Share An Update
-                        </Text>
-                    </DelayedButton>
-                    <DelayedButton
-                        style={[
-                            {
-                                paddingVertical: 10,
-                                width: 200,
-                                alignItems: 'center',
-                                backgroundColor: GM_BLUE,
-                                borderRadius: 5,
-                                marginTop: 10,
-                            },
-                        ]}
-                        onPress={() => console.log('1ST BUTTON')}
-                    >
-                        <Text
+                            <Text
+                                style={[
+                                    default_style.subTitleText_1,
+                                    {
+                                        fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                                        color: 'white',
+                                    },
+                                ]}
+                            >
+                                Share An Update
+                            </Text>
+                        </DelayedButton>
+                        <DelayedButton
                             style={[
-                                default_style.subTitleText_1,
                                 {
-                                    fontFamily: text.FONT_FAMILY.SEMI_BOLD,
-                                    color: 'white',
+                                    paddingVertical: 10,
+                                    width: 200,
+                                    alignItems: 'center',
+                                    backgroundColor: GM_BLUE,
+                                    borderRadius: 5,
+                                    marginTop: 10,
                                 },
                             ]}
+                            onPress={() => {
+                                // initialProps = { initialShowGoalModal: true }
+                                this.props.openGoalDetail(data?.goal, {
+                                    initialShowGoalModal: true,
+                                })
+                                closeModal()
+                            }}
                         >
-                            Edit Goal
-                        </Text>
-                    </DelayedButton>
-                    <DelayedButton
-                        style={[
-                            {
-                                paddingVertical: 10,
-                                width: 200,
-                                alignItems: 'center',
-                                backgroundColor: 'white',
-                                borderRadius: 5,
-                                marginTop: 10,
-                                borderWidth: 1,
-                                borderColor: GM_BLUE,
-                            },
-                        ]}
-                        onPress={() => console.log('1ST BUTTON')}
-                    >
-                        <Text
+                            <Text
+                                style={[
+                                    default_style.subTitleText_1,
+                                    {
+                                        fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                                        color: 'white',
+                                    },
+                                ]}
+                            >
+                                Edit Goal
+                            </Text>
+                        </DelayedButton>
+                        <DelayedButton
                             style={[
-                                default_style.subTitleText_1,
                                 {
-                                    fontFamily: text.FONT_FAMILY.SEMI_BOLD,
-                                    color: GM_BLUE,
+                                    paddingVertical: 10,
+                                    width: 200,
+                                    alignItems: 'center',
+                                    backgroundColor: 'white',
+                                    borderRadius: 5,
+                                    marginTop: 10,
+                                    borderWidth: 1,
+                                    borderColor: GM_BLUE,
                                 },
                             ]}
+                            onPress={() => console.log('1ST BUTTON')}
                         >
-                            Remind me in 1 week
-                        </Text>
-                    </DelayedButton>
+                            <Text
+                                style={[
+                                    default_style.subTitleText_1,
+                                    {
+                                        fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                                        color: GM_BLUE,
+                                    },
+                                ]}
+                            >
+                                Remind me in 1 week
+                            </Text>
+                        </DelayedButton>
+                    </View>
                 </View>
-            </View>
-        </Modal>
-    )
+            </Modal>
+        )
+    }
 }
 
 // const mapStateToProps = (state, ownProps) => {
@@ -163,7 +199,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#ffffff',
         alignSelf: 'center',
-        height: hp(71),
+        height: hp(76),
         width: wp(90),
         borderRadius: wp(2),
     },
@@ -200,4 +236,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default connect(null, null)(GOAL_UPDATE_POPUP_A)
+export default connect(null, { openGoalDetail })(GOAL_UPDATE_POPUP_A)

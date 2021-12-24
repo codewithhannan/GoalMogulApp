@@ -1208,6 +1208,7 @@ import {
     checkIfNewlyCreated,
     getUserVisitedNumber,
     refreshProfileData,
+    fetchGoalPopup27Day,
 } from '../../actions'
 
 import {
@@ -1354,7 +1355,7 @@ class Home extends Component {
             pickedImage: null,
             shareModal: false,
             isVisible: false,
-            isVisibleA: false,
+            isVisibleA: this.props.lateGoal.show,
             isVisibleB: false,
             showPopupModal: false,
             popupName: '',
@@ -1418,7 +1419,9 @@ class Home extends Component {
         //     )
         //     this.props.start()
         // }
-
+        if (!_.isEqual(prevProps.lateGoal, this.props.lateGoal)) {
+            this.setState({ isVisibleA: this.props.lateGoal.show })
+        }
         if (
             !_.isEqual(prevProps.user, this.props.user) &&
             !prevProps.user &&
@@ -1470,7 +1473,7 @@ class Home extends Component {
         if (Platform.OS === 'android') {
             getFcmToken()
         }
-
+        this.setState({ isVisibleA: this.props.lateGoal.show })
         const pageId = this.props.refreshProfileData(this.props.userId)
 
         pageAb = pageId
@@ -1485,7 +1488,7 @@ class Home extends Component {
         setTimeout(() => {
             this.handlePopup()
         }, 500)
-
+        this.props.fetchGoalPopup27Day()
         this.props.refreshActivityFeed()
         AppState.addEventListener('change', this.handleAppStateChange)
         this._notificationSubscription = Notifications.addNotificationReceivedListener(
@@ -1894,6 +1897,7 @@ class Home extends Component {
                 <GOAL_UPDATE_POPUP_A
                     isVisible={this.state.isVisibleA}
                     closeModal={() => this.setState({ isVisibleA: false })}
+                    data={this.props.lateGoal}
                 />
                 <GOAL_UPDATE_POPUP_B
                     isVisible={this.state.isVisibleB}
@@ -1988,12 +1992,14 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state) => {
+    // console.log("STATE",state);
     const { popup } = state
     const { token } = state.auth.user
     const { profile } = state.user.user
     const { myGoals } = state.goals
     const { userId } = state.user
     const refreshing = state.home.activityfeed.refreshing
+    const lateGoal = state.profile.lateGoal
     // || state.home.mastermind.refreshing
     const needRefreshMastermind = _.isEmpty(state.home.mastermind.data)
     const needRefreshActivity = _.isEmpty(state.home.activityfeed.data)
@@ -2019,6 +2025,7 @@ const mapStateToProps = (state) => {
         tutorialText,
         nextStepNumber,
         popup,
+        lateGoal,
     }
 }
 
@@ -2067,6 +2074,7 @@ export default connect(
         refreshGoalFeed,
         refreshActivityFeed,
         fetchProfile,
+        fetchGoalPopup27Day,
         checkIfNewlyCreated,
         closeCreateOverlay,
         refreshProfileData,

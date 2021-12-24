@@ -80,6 +80,7 @@ export const PROFILE_IMAGE_UPLOAD_SUCCESS = 'profile_image_upload_success'
 export const PROFILE_UPDATE_SUCCESS = 'profile_update_success'
 export const PROFILE_UPDATE_FAIL = 'profile_update_fail'
 export const PROFILE_SWITCH_TAB = 'profile_switch_tab'
+export const GOAL_UPDATE_27 = 'goal_update_27'
 
 /* Setting actions */
 export const SETTING_OPEN_SETTING = 'setting_open_setting'

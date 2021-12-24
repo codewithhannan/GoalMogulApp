@@ -789,7 +789,7 @@ class ProfileV2 extends Component {
             <>
                 <View
                     style={{
-                        height: '100%',
+                        height: 310,
                         width: '100%',
                         backgroundColor: 'white',
                         alignItems: 'center',
