@@ -6,10 +6,14 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
-    Image,
+    TextInput,
     SafeAreaView,
+    KeyboardAvoidingView,
 } from 'react-native'
 // import LottieView from 'lottie-react-native'
+import CheckBox from '@react-native-community/checkbox'
+import { Actions } from 'react-native-router-flux'
+
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -20,8 +24,9 @@ import { GM_BLUE } from '../../../styles/basic/color'
 import { MaterialIcons } from '@expo/vector-icons'
 import * as text from '../../../styles/basic/text'
 import { default_style } from '../../../styles/basic'
-
 import DelayedButton from '../../../Main/Common/Button/DelayedButton'
+
+// import DelayedButton from '../../../Main/Common/Button/DelayedButton'
 
 // import SILVER_BADGE from '../../asset/popup_animation/p5.json'
 // import GOLD_BADGE from '../../asset/popup_animation/p6.json'
@@ -36,11 +41,22 @@ import GoalUpdateA from '../../../asset/image/GoalUpdateA.png'
 
 // import * as Helper from '../../Utils/HelperMethods'
 
-const GOAL_UPDATE_POPUP_B = ({ isVisible, closeModal, user }) => {
+const GOAL_UPDATE_POPUP_B = ({
+    isVisible,
+    closeModal,
+    data,
+    pageId,
+    token,
+    makeVisibleB,
+}) => {
+    const [toggleTribe, setToggleTribe] = useState(false)
+    const [toggleFriends, setToggleFriends] = useState(false)
+    const [toggleContact, setToggleContacts] = useState(false)
+
     return (
         <Modal isVisible={isVisible}>
             <SafeAreaView style={styles.container}>
-                <View
+                <KeyboardAvoidingView
                     style={{
                         height: '100%',
                         width: '100%',
@@ -73,9 +89,136 @@ const GOAL_UPDATE_POPUP_B = ({ isVisible, closeModal, user }) => {
                     <Text style={styles.d2}>
                         Specify what you would like help with:
                     </Text>
-                    <Text style={styles.goal}>GOAL TITLE COMES HERE</Text>
+                    <Text style={styles.goal}>{data?.goal?.title}</Text>
                     {/* </ImageBackground> */}
-                </View>
+                    <TextInput
+                        multiline
+                        style={{
+                            width: '90%',
+                            height: 124,
+                            borderColor: '##707079',
+                            borderWidth: 0.5,
+                            borderRadius: 4,
+                            marginTop: 15,
+                            padding: 10,
+                        }}
+                        placeholder="Clarify what you want help with"
+                        textAlignVertical="top"
+                    />
+                    <Text style={styles.d2}>
+                        Where do you want to Seek Help from?
+                    </Text>
+                    <View style={{ width: '95%' }}>
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                alignContent: 'center',
+                            }}
+                        >
+                            <CheckBox
+                                disabled={false}
+                                value={toggleTribe}
+                                onValueChange={() =>
+                                    setToggleTribe(!toggleTribe)
+                                }
+                            />
+                            <Text
+                                style={{
+                                    fontSize: 16,
+                                    fontWeight: '400',
+                                    marginLeft: 5,
+                                }}
+                            >
+                                Pick a Tribe
+                            </Text>
+                        </View>
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                alignContent: 'center',
+                            }}
+                        >
+                            <CheckBox
+                                disabled={false}
+                                value={toggleFriends}
+                                onValueChange={() =>
+                                    setToggleFriends(!toggleFriends)
+                                }
+                            />
+                            <Text
+                                style={{
+                                    fontSize: 16,
+                                    fontWeight: '400',
+                                    marginLeft: 5,
+                                }}
+                            >
+                                Friends List
+                            </Text>
+                        </View>
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                alignContent: 'center',
+                            }}
+                        >
+                            <CheckBox
+                                disabled={false}
+                                value={toggleContact}
+                                onValueChange={() =>
+                                    setToggleContacts(!toggleContact)
+                                }
+                                // tintColors={{true:'#42C0F5',false:'grey'}}
+                            />
+                            <Text
+                                style={{
+                                    fontSize: 16,
+                                    fontWeight: '400',
+                                    marginLeft: 5,
+                                }}
+                            >
+                                My Contacts (Outside of GoalMogul)
+                            </Text>
+                        </View>
+                    </View>
+                    <DelayedButton
+                        style={[
+                            {
+                                paddingVertical: 10,
+                                width: '90%',
+                                alignItems: 'center',
+                                backgroundColor: GM_BLUE,
+                                borderRadius: 5,
+                                position: 'absolute',
+                                bottom: 20,
+                            },
+                        ]}
+                        // onPress={() => {
+                        //     closeModal()
+                        //     Actions.push('seekhelp')
+                        // }}
+                        onPress={() => {
+                            if (toggleTribe) {
+                                closeModal()
+                                Actions.push('seekTribe')
+                            }
+                        }}
+                    >
+                        <Text
+                            style={[
+                                default_style.subTitleText_1,
+                                {
+                                    fontFamily: text.FONT_FAMILY.SEMI_BOLD,
+                                    color: 'white',
+                                },
+                            ]}
+                        >
+                            Next
+                        </Text>
+                    </DelayedButton>
+                </KeyboardAvoidingView>
             </SafeAreaView>
         </Modal>
     )
@@ -103,22 +246,22 @@ const styles = StyleSheet.create({
     title: {
         paddingTop: hp(2.2),
         // fontFamily: text.FONT_FAMILY.MEDIUM,
-        marginLeft: wp(12),
+        marginLeft: wp(9),
         width: wp(76),
         textAlign: 'center',
         fontSize: hp(2),
         color: 'white',
     },
     d2: {
-        fontSize: hp(1.75),
+        fontSize: hp(2.2),
         marginTop: hp(3.4),
-        fontWeight: '600',
+        fontWeight: 'bold',
         width: wp(90),
         // fontFamily: text.FONT_FAMILY.REGULAR,
     },
     goal: {
         // fontFamily: text.FONT_FAMILY.SEMI_BOLD,
-        fontSize: hp(1.7),
+        fontSize: hp(2),
         fontWeight: '600',
         marginTop: hp(1.9),
         width: wp(90),

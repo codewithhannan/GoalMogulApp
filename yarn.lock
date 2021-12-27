@@ -2051,6 +2051,11 @@
   resolved "https://registry.npmjs.org/@react-native-community/cameraroll/-/cameraroll-4.0.4.tgz"
   integrity sha512-3SY96Xh1yQjV5M7dFisl5kQmrO/K09URarZwmTN801KEalOoo/opsd/e8Vu1dwSKe0NGCK7A2u0oJQpeNbWbnA==
 
+"@react-native-community/checkbox@^0.5.9":
+  version "0.5.9"
+  resolved "https://registry.yarnpkg.com/@react-native-community/checkbox/-/checkbox-0.5.9.tgz#73e1fa91b0cbb4d1eaaa75a57844435a51c22290"
+  integrity sha512-2y/MW8zwXgzRN6fApZbYov3xKkR4vyWSOPo69OWSfa5emTbtKpSl7BY9xlKgu2pzGlLg5EyE8yogp0U7vFk+sQ==
+
 "@react-native-community/cli-debugger-ui@^4.13.1":
   version "4.13.1"
   resolved "https://registry.npmjs.org/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-4.13.1.tgz"
@@ -2229,11 +2234,6 @@
   version "12.9.3"
   resolved "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-12.9.3.tgz"
   integrity sha512-5xO6WuTmm9qfaRaTaG0jRiMr2hPzgl6IMJYtZ48/xXYLe38gxXyOd14w9f+f4yXlJftqcPIE3thLeNawMfdWBA==
-
-"@react-native-picker/picker@>= 2.0":
-  "integrity" "sha512-EC7yv22QLHlTfnbC1ez9IUdXTOh1W31x96Oir0PfskSGFFJMWWdLTg4VrcE2DsGLzbfjjkBk123c173vf2a5MQ=="
-  "resolved" "https://registry.npmjs.org/@react-native-picker/picker/-/picker-2.2.1.tgz"
-  "version" "2.2.1"
 
 "@react-native/normalize-color@^2.0.0":
   version "2.0.0"
@@ -4242,16 +4242,6 @@ caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.npmjs.org/caseless/-/caseless-0.12.0.tgz"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
-
-"caw@^1.0.1":
-  "integrity" "sha1-/7Im/n78VHKI3GLuPpcHPCEtEDQ="
-  "resolved" "https://registry.npmjs.org/caw/-/caw-1.2.0.tgz"
-  "version" "1.2.0"
-  dependencies:
-    "get-proxy" "^1.0.1"
-    "is-obj" "^1.0.0"
-    "object-assign" "^3.0.0"
-    "tunnel-agent" "^0.4.0"
 
 "chainsaw@>=0.0.7 <0.1":
   version "0.0.9"

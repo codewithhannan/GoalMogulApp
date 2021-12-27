@@ -34,7 +34,14 @@ class GOAL_UPDATE_POPUP_A extends Component {
         super(props)
     }
     render() {
-        const { isVisible, closeModal, data, pageId, token } = this.props
+        const {
+            isVisible,
+            closeModal,
+            data,
+            pageId,
+            token,
+            makeVisibleB,
+        } = this.props
         return (
             <Modal isVisible={isVisible}>
                 <CreatePostModal
@@ -79,9 +86,13 @@ class GOAL_UPDATE_POPUP_A extends Component {
                                     marginTop: 10,
                                 },
                             ]}
+                            // onPress={() => {
+                            //     closeModal()
+                            //     Actions.push('seekhelp')
+                            // }}
                             onPress={() => {
                                 closeModal()
-                                Actions.push('seekhelp')
+                                makeVisibleB()
                             }}
                         >
                             <Text

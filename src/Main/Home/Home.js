@@ -1899,8 +1899,11 @@ class Home extends Component {
                     isVisible={this.state.isVisibleA}
                     closeModal={() => this.setState({ isVisibleA: false })}
                     data={this.props.lateGoal}
+                    makeVisibleB={() => this.setState({ isVisibleB: true })}
                 />
                 <GOAL_UPDATE_POPUP_B
+                    data={this.props.lateGoal}
+                    pageId={this.props.pageId}
                     isVisible={this.state.isVisibleB}
                     closeModal={() => this.setState({ isVisibleB: false })}
                 />

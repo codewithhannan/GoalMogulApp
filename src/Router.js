@@ -139,6 +139,7 @@ import { EVENT as E, track } from './monitoring/segment'
 import SendFeedback from './Main/Menu/SendFeedback'
 import MultipleImagePicker from './Main/Menu/MutlipleImagePicker'
 import InviteFriendScreen from './Main/MeetTab/Modal/InviteFriendScreen'
+import SeekTribe from './Main/Goal/Common/SeekTribe'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -880,6 +881,12 @@ class RouterComponent extends Component {
                         path={'/seekhelp'}
                         key="seekhelp"
                         component={SeekHelp}
+                        hideNavBar
+                    />
+                    <Scene
+                        path={'/seektribe'}
+                        key="seekTribe"
+                        component={SeekTribe}
                         hideNavBar
                     />
 

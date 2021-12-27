@@ -6,10 +6,12 @@ import { arrayUnique } from '../../middleware/utils'
 
 const INITIAL_STATE = {
     selected: {},
+    tribeSeek: [],
 }
 
 export const GET_HELP_FROM = 'get_help_from'
 export const CLEAR_SEEKHELP = 'clear_seekhelp'
+export const SET_TRIBE_SEEK = 'set_tribe_seek'
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
@@ -18,6 +20,10 @@ export default (state = INITIAL_STATE, action) => {
         }
         case CLEAR_SEEKHELP: {
             return {}
+        }
+        case SET_TRIBE_SEEK: {
+            console.log('tribe reducerrr', action.payload)
+            return { ...state, tribeSeek: action.payload }
         }
         default:
             return { ...state }

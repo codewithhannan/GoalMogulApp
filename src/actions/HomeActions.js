@@ -74,7 +74,7 @@ export const fetchGoalPopup27Day = () => {
     console.log('fetch 27 goal')
     return async (dispatch, getState) => {
         const token = await TokenService.getAuthToken()
-        const url = `https://goalmogul-api-dev.herokuapp.com/api/secure/feed/activity/stale-goal`
+        const url = `http://192.168.1.13:8081/api/secure/goal/stale-goal`
         const headers = {
             method: 'GET',
             headers: {
