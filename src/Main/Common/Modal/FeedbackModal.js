@@ -30,7 +30,7 @@ function FeedbackModal(props) {
                     style={{
                         borderRadius: 8,
                         backgroundColor: color.GV_MODAL,
-                        width: wp('100%'),
+                        width: wp('90%'),
                         height: hp('40%'),
                     }}
                 >

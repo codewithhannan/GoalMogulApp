@@ -137,18 +137,18 @@ class MyTribe extends React.PureComponent {
 
                 showBorder: true,
             },
-            {
-                name: 'Share a New Goal in Tribe',
-                icon: CREATE_GOAL,
-                onPress: () => {
-                    this.setState({ tooltipVisible: false })
+            // {
+            //     name: 'Share a New Goal in Tribe',
+            //     icon: CREATE_GOAL,
+            //     onPress: () => {
+            //         this.setState({ tooltipVisible: false })
 
-                    Actions.push('createGoalModal', {
-                        pageId: this.props.pageId,
-                    })
-                },
-                showBorder: true,
-            },
+            //         Actions.push('createGoalModal', {
+            //             pageId: this.props.pageId,
+            //         })
+            //     },
+            //     showBorder: true,
+            // },
             {
                 name: 'Share an Existing Goal ',
                 icon: SHARE_GOAL,
@@ -640,14 +640,13 @@ class MyTribe extends React.PureComponent {
         )
     }
 
-    renderAddPostButton(item) {
+    renderIOSAddPostButtons(item) {
         const { userTribeStatus } = this.props
         if (userTribeStatus === 'Admin' || userTribeStatus === 'Member') {
             return (
                 <Tooltip
                     animated={true}
                     // arrowSize={{ width: 16, height: 8 }}
-                    an
                     backgroundColor="rgba(0,0,0,0.5)"
                     isVisible={this.state.tooltipVisible}
                     contentStyle={{
@@ -659,7 +658,135 @@ class MyTribe extends React.PureComponent {
                     arrowStyle={{ marginTop: -80, marginHorizontal: 140 }}
                     placement="top"
                     content={
-                        <>
+                        <View
+                            style={{
+                                flex: 1,
+                                flexDirection: 'column',
+                                padding: 5,
+                            }}
+                        >
+                            {this.ADD_BUTTON.map((button, i) => {
+                                return (
+                                    <>
+                                        {button.name !== 'Invite Friends' ? (
+                                            <TouchableOpacity
+                                                onPress={button.onPress}
+                                            >
+                                                <View
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                        padding: 5,
+                                                    }}
+                                                    key={button.name + i}
+                                                >
+                                                    <Image
+                                                        source={button.icon}
+                                                        style={{
+                                                            height: 17,
+                                                            width: 17,
+                                                            resizeMode:
+                                                                'contain',
+                                                        }}
+                                                    />
+                                                    <Text
+                                                        style={{
+                                                            color: 'white',
+                                                            fontSize: 16,
+                                                            marginHorizontal: 10,
+                                                            fontFamily:
+                                                                'SFProDisplay-Semibold',
+                                                        }}
+                                                    >
+                                                        {button.name}
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        ) : this.props.item
+                                              .isMemberInviteEnabled ? (
+                                            <TouchableOpacity
+                                                onPress={button.onPress}
+                                            >
+                                                <View
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                        padding: 5,
+                                                    }}
+                                                >
+                                                    <Image
+                                                        source={button.icon}
+                                                        style={{
+                                                            height: 17,
+                                                            width: 17,
+                                                            resizeMode:
+                                                                'contain',
+                                                        }}
+                                                    />
+                                                    <Text
+                                                        style={{
+                                                            color: 'white',
+                                                            fontSize: 16,
+                                                            marginHorizontal: 10,
+                                                            fontFamily:
+                                                                'SFProDisplay-Semibold',
+                                                        }}
+                                                    >
+                                                        {button.name}
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        ) : (
+                                            <></>
+                                        )}
+
+                                        {button.showBorder ? (
+                                            <View
+                                                style={{
+                                                    backgroundColor: 'white',
+                                                    height: 1,
+                                                    marginTop: 4,
+                                                    width: '100%',
+                                                }}
+                                            />
+                                        ) : null}
+                                    </>
+                                )
+                            })}
+                        </View>
+                    }
+                    onClose={() => this.setState({ tooltipVisible: false })}
+                >
+                    <DelayedButton
+                        activeOpacity={0.6}
+                        style={styles.iconContainerStyle}
+                        onPress={() => this.setState({ tooltipVisible: true })}
+                    >
+                        <Image style={styles.iconStyle} source={plus} />
+                    </DelayedButton>
+                </Tooltip>
+            )
+        }
+        return null
+    }
+
+    renderAndroidAddPostButton(item) {
+        const { userTribeStatus } = this.props
+        if (userTribeStatus === 'Admin' || userTribeStatus === 'Member') {
+            return (
+                <>
+                    <Tooltip
+                        animated={true}
+                        backgroundColor="rgba(0,0,0,0.5)"
+                        isVisible={this.state.tooltipVisible}
+                        contentStyle={{
+                            backgroundColor: '#42C0F5',
+                            width: wp('60%'),
+                        }}
+                        tooltipStyle={{
+                            marginVertical: -100,
+                            marginHorizontal: 40,
+                        }}
+                        placement="bottom"
+                        content={
                             <View
                                 style={{
                                     flex: 1,
@@ -667,7 +794,7 @@ class MyTribe extends React.PureComponent {
                                     padding: 5,
                                 }}
                             >
-                                {this.ADD_BUTTON.map((button) => {
+                                {this.ADD_BUTTON.map((button, i) => {
                                     return (
                                         <>
                                             {button.name !==
@@ -680,7 +807,10 @@ class MyTribe extends React.PureComponent {
                                                             flexDirection:
                                                                 'row',
                                                             padding: 5,
+                                                            alignItems:
+                                                                'center',
                                                         }}
+                                                        key={button.name + i}
                                                     >
                                                         <Image
                                                             source={button.icon}
@@ -757,10 +887,11 @@ class MyTribe extends React.PureComponent {
                                     )
                                 })}
                             </View>
-                        </>
-                    }
-                    onClose={() => this.setState({ tooltipVisible: false })}
-                >
+                        }
+                        onClose={() => this.setState({ tooltipVisible: false })}
+                    />
+                    {/* )} */}
+
                     <DelayedButton
                         activeOpacity={0.6}
                         style={styles.iconContainerStyle}
@@ -768,10 +899,9 @@ class MyTribe extends React.PureComponent {
                     >
                         <Image style={styles.iconStyle} source={plus} />
                     </DelayedButton>
-                </Tooltip>
+                </>
             )
         }
-        return null
     }
 
     renderCreatePostModal(item) {
@@ -859,7 +989,9 @@ class MyTribe extends React.PureComponent {
                     }}
                     scrollEventThrottle={16}
                 />
-                {this.renderAddPostButton(item)}
+                {Platform.OS === 'ios'
+                    ? this.renderIOSAddPostButton(item)
+                    : this.renderAndroidAddPostButton(item)}
 
                 <MyTribeDescription
                     isVisible={this.state.showAboutModal}
@@ -919,6 +1051,15 @@ const styles = {
         position: 'absolute',
         bottom: 20,
         right: 29,
+        height: 54,
+        width: 54,
+        borderRadius: 28,
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 3000,
+        backgroundColor: color.GM_BLUE,
+    },
+    iconButtonStyle: {
         height: 54,
         width: 54,
         borderRadius: 28,

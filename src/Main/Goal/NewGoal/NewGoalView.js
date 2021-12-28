@@ -613,7 +613,7 @@ class NewGoalView extends Component {
             tags: [],
         }
 
-        // Initialize based on the props, if it's opened through edit button
+        // Initialize based on the props, if it's opened through edit `button`
         const { initializeFromState, goal, isImportedGoal } = this.props
         const initialVals =
             initializeFromState || isImportedGoal
@@ -865,46 +865,40 @@ class NewGoalView extends Component {
         return fields.map((description, index) => {
             return (
                 <WalkableView>
-                    {this.state.detailsFieldShow && (
-                        <>
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                    marginTop: 16,
-                                }}
-                            >
-                                <Text style={styles.subTitleTextStyle}>
-                                    More Details{' '}
-                                </Text>
-                            </View>
-                            <Field
-                                key={`goal-description=${index}`}
-                                name={description}
-                                component={this.renderInput}
-                                editable={this.props.uploading}
-                                style={{
-                                    ...styles.standardInputStyle,
-                                    paddingLeft: 15,
-                                    paddingRight: 15,
-                                    // Should approximately match numberOfLines * fontSize height + padding
-                                    maxHeight: 200,
-                                    minHeight: 80,
-                                }}
-                                numberOfLines={5}
-                                placeholder="Share some more info about your goals..."
-                                multiline
-                                loading={this.state.tagSearchData.loading}
-                                tagData={this.state.tagSearchData.data}
-                                keyword={this.state.keyword}
-                                change={(type, val) =>
-                                    this.props.change(type, val)
-                                }
-                            />
-                        </>
-                    )}
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            marginTop: 16,
+                        }}
+                    >
+                        <Text style={styles.subTitleTextStyle}>
+                            More Details{' '}
+                        </Text>
+                    </View>
+                    <Field
+                        key={`goal-description=${index}`}
+                        name={description}
+                        component={this.renderInput}
+                        editable={this.props.uploading}
+                        style={{
+                            ...styles.standardInputStyle,
+                            paddingLeft: 15,
+                            paddingRight: 15,
+                            // Should approximately match numberOfLines * fontSize height + padding
+                            maxHeight: 200,
+                            minHeight: 80,
+                        }}
+                        numberOfLines={5}
+                        placeholder="Share some more info about your goals..."
+                        multiline
+                        loading={this.state.tagSearchData.loading}
+                        tagData={this.state.tagSearchData.data}
+                        keyword={this.state.keyword}
+                        change={(type, val) => this.props.change(type, val)}
+                    />
 
-                    {!this.state.detailsFieldShow ? (
+                    {/* {!this.state.detailsFieldShow ? (
                         <Button
                             text={'Tap to add more details'}
                             source={plus}
@@ -931,7 +925,7 @@ class NewGoalView extends Component {
                                 color: '#999999',
                             }}
                         />
-                    ) : null}
+                    ) : null} */}
                 </WalkableView>
             )
         })
@@ -1605,7 +1599,7 @@ class NewGoalView extends Component {
             <KeyboardAwareScrollView
                 scrollEnabled={this.state.scrollEnabled}
                 extraHeight={100}
-                enableResetScrollToCoords={false}
+                // enableResetScrollToCoords={false}
                 innerRef={(r) => {
                     this.scrollView = r
                 }}
@@ -1676,35 +1670,40 @@ class NewGoalView extends Component {
                 {/* Primary form */}
                 <View style={{ padding: 10, flex: 1 }}>
                     {this.renderGoal()}
-                    {/* {this.state.showGoalDescription ? ( */}
-                    {/* {this.props.currentstatebottom === 2 ? ( */}
-                    <FieldArray
-                        name="details"
-                        component={this.renderGoalDescription}
-                        loading={this.state.tagSearchData.loading}
-                        tagData={this.state.tagSearchData.data}
-                        keyword={this.state.keyword}
-                    />
-                    {/* ) : (
-                        <></>
-                    )} */}
-
-                    {/* ) : ( */}
-                    {/* <TouchableWithoutFeedback
+                    {this.state.showGoalDescription ? (
+                        <FieldArray
+                            name="details"
+                            component={this.renderGoalDescription}
+                            loading={this.state.tagSearchData.loading}
+                            tagData={this.state.tagSearchData.data}
+                            keyword={this.state.keyword}
+                        />
+                    ) : (
+                        <Button
+                            text={'Tap to add more details'}
+                            source={plus}
                             onPress={this.enableDescriptionInput}
-                        >
-                            <Text
-                                style={{
-                                    marginTop: 12,
-                                    marginBottom: 8,
-                                    ...default_style.buttonText_2,
-                                    color: color.GM_MID_GREY,
-                                }}
-                            >
-                                + Add a description
-                            </Text>
-                        </TouchableWithoutFeedback> */}
-                    {/* )} */}
+                            containerStyle={{
+                                width: '100%',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: color.GM_CARD_BACKGROUND,
+                                borderWidth: 1.5,
+                                borderRadius: 3,
+                                borderColor: '#F3F3F3',
+                                padding: 10,
+                            }}
+                            iconStyle={{
+                                ...default_style.smallIcon_1,
+                                backgroundColor: 'transparent',
+                                tintColor: '#999999',
+                            }}
+                            textStyle={{
+                                ...default_style.titleText_1,
+                                color: '#999999',
+                            }}
+                        />
+                    )}
                     {this.renderCategory()}
                     {this.renderPriority()}
                     {this.renderPrivacyControl(initializeFromState)}

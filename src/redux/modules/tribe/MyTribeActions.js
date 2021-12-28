@@ -651,6 +651,7 @@ const doAdminAcceptUser = (userId, tribeId) => (dispatch, getState) => {
         token
     )
         .then((res) => {
+            console.log('tribe join response', res)
             if (res.status === 200 || (res.data && res.message)) {
                 return onSuccess(res)
             }

@@ -337,12 +337,12 @@ class CreatePostModal extends Component {
     }
 
     handleOpenCamera = () => {
-        this.props.change('mediaRef', false)
+        if (this.props.mediaRef) this.props.change('mediaRef', false)
         this.setState({ clickedButton: true })
         this.bottomSheetRef.close()
         const callback = (result) => {
+            // if (result.type === 'image') this.setState({ isImage: true })
             this.bottomSheetRef.open()
-
             this.props.change('mediaRef', result.uri)
             this.setState({ clickedButton: false })
         }
@@ -352,12 +352,12 @@ class CreatePostModal extends Component {
     }
 
     handleOpenCameraRoll = () => {
-        this.props.change('mediaRef', false)
+        if (this.props.mediaRef) this.props.change('mediaRef', false)
         this.setState({ clickedButton: true })
         this.bottomSheetRef.close()
         const callback = (result) => {
-            if (result.type === 'video') this.setState({ isVideo: true })
-            if (result.type === 'image') this.setState({ isImage: true })
+            // if (result.type === 'video') this.setState({ isVideo: true })
+            // if (result.type === 'image') this.setState({ isImage: true })
 
             this.bottomSheetRef.open()
 
@@ -521,7 +521,7 @@ class CreatePostModal extends Component {
                 : E.CREATE_POST_MODAL_CANCELLED,
             { DurationSec: durationSec }
         )
-        // this.setState({ mediaHeight: 0 })
+        this.setState({ mediaHeight: 0 })
         if (
             (this.props.post && this.state.clickedButton) ||
             this.state.clickedButton
@@ -573,7 +573,9 @@ class CreatePostModal extends Component {
                     text: 'Save Draft',
                     onPress: () => {
                         this.handleSaveDraft().then(callback)
-                        this.setState({ mediaHeight: 0 })
+                        this.setState({ mediaHeight: 0, postText: '' })
+                        this.setState({ isImage: false })
+                        this.setState({ isVideo: false })
                     },
                 },
             ],
@@ -743,12 +745,12 @@ class CreatePostModal extends Component {
         const { mediaRef, uploading } = this.props
         const { isVideo, isImage } = this.state
         let imageUrl = mediaRef
-        // console.log('MEDIA REF HA YE', mediaRef)
 
         if (!this.isMediaNotUploaded()) {
             // if nor stored locally image source must be from server
             imageUrl = `${IMAGE_BASE_URL}${mediaRef}`
         }
+        // console.log('MEDIA REF HA YE', imageUrl)
 
         // Do not render cancel button if editing post since we
         // don't allow editing image
@@ -803,10 +805,14 @@ class CreatePostModal extends Component {
             // </View>
         )
 
-        if (this.state.isImage) {
+        if (mediaRef) {
             return (
                 <View
                     onLayout={(e) => {
+                        console.log(
+                            'media view height==>',
+                            e.nativeEvent.layout.height
+                        )
                         this.setState({
                             mediaHeight: e.nativeEvent.layout.height,
                         })
@@ -832,83 +838,85 @@ class CreatePostModal extends Component {
                 </View>
             )
         }
-        if (this.state.isVideo) {
-            return (
-                <>
-                    <View
-                        onLayout={(e) => {
-                            this.setState({
-                                mediaHeight: e.nativeEvent.layout.height,
-                            })
-                        }}
-                        style={{ width: 120 }}
-                    >
-                        <TouchableOpacity
-                            activeOpacity={0.6}
-                            onPress={() =>
-                                this.setState({ isVideoVisible: true })
-                            }
-                            disabled={uploading}
-                        >
-                            {cancelButton}
-                            <Video
-                                // ref={videoRef}
-                                source={{ uri: imageUrl }}
-                                style={[styles.mediaStyle, { borderRadius: 5 }]}
-                                resizeMode="cover"
-                                onPlaybackStatusUpdate={(status) =>
-                                    this.setState({ status })
-                                }
-                            >
-                                <Image
-                                    source={movie}
-                                    style={{
-                                        width: 20,
-                                        height: 20,
-                                        zIndex: 6,
-                                        bottom: 5,
-                                        left: 5,
-                                        position: 'absolute',
-                                        resizeMode: 'contain',
-                                    }}
-                                />
-                            </Video>
-                        </TouchableOpacity>
-                    </View>
-                    <Modal
-                        backdropColor={'transparent'}
-                        isVisible={this.state.isVideoVisible}
-                        backdropOpacity={1}
-                        animationIn="fadeIn"
-                        animationInTiming={600}
-                        onSwipeComplete={() =>
-                            this.setState({ isVideoVisible: false })
-                        }
-                        swipeDirection="down"
-                        deviceWidth={width}
-                        style={{ padding: 0, margin: 0 }}
-                    >
-                        <View style={{ flex: 1 }}>
-                            <VideoPlayer
-                                videoProps={{
-                                    shouldPlay: true,
-                                    resizeMode: Video.RESIZE_MODE_CONTAIN,
-                                    source: { uri: imageUrl },
-                                }}
-                                style={{ flex: 0.8 }}
-                                fullscreen={{
-                                    visible: false,
-                                }}
-                                activityIndicator={{
-                                    color: color.GM_BLUE,
-                                    size: 'large',
-                                }}
-                            />
-                        </View>
-                    </Modal>
-                </>
-            )
-        }
+
+        // if (this.state.isVideo) {
+        //     return (
+        //         <>
+        //             <View
+        //                 onLayout={(e) => {
+        //                     this.setState({
+        //                         mediaHeight: e.nativeEvent.layout.height,
+        //                     })
+        //                 }}
+        //                 style={{ width: 120 }}
+        //             >
+        //                 <TouchableOpacity
+        //                     activeOpacity={0.6}
+        //                     onPress={() =>
+        //                         this.setState({ isVideoVisible: true })
+        //                     }
+        //                     disabled={uploading}
+        //                 >
+        //                     {cancelButton}
+        //                     <Video
+        //                         // ref={videoRef}
+        //                         source={{ uri: imageUrl }}
+        //                         style={[styles.mediaStyle, { borderRadius: 5 }]}
+        //                         resizeMode="cover"
+        //                         onPlaybackStatusUpdate={(status) =>
+        //                             this.setState({ status })
+        //                         }
+        //                     >
+        //                         <Image
+        //                             source={movie}
+        //                             style={{
+        //                                 width: 20,
+        //                                 height: 20,
+        //                                 zIndex: 6,
+        //                                 bottom: 5,
+        //                                 left: 5,
+        //                                 position: 'absolute',
+        //                                 resizeMode: 'contain',
+        //                             }}
+        //                         />
+        //                     </Video>
+        //                 </TouchableOpacity>
+        //             </View>
+        //             <Modal
+        //                 backdropColor={'transparent'}
+        //                 isVisible={this.state.isVideoVisible}
+        //                 backdropOpacity={1}
+        //                 animationIn="fadeIn"
+        //                 animationInTiming={600}
+        //                 onSwipeComplete={() =>
+        //                     this.setState({ isVideoVisible: false })
+        //                 }
+        //                 swipeDirection="down"
+        //                 deviceWidth={width}
+        //                 style={{ padding: 0, margin: 0 }}
+        //             >
+        //                 <View style={{ flex: 1 }}>
+        //                     <VideoPlayer
+        //                         videoProps={{
+        //                             shouldPlay: true,
+        //                             resizeMode: Video.RESIZE_MODE_CONTAIN,
+        //                             source: { uri: imageUrl },
+        //                         }}
+        //                         style={{ flex: 0.8 }}
+        //                         fullscreen={{
+        //                             visible: false,
+        //                         }}
+        //                         activityIndicator={{
+        //                             color: color.GM_BLUE,
+        //                             size: 'large',
+        //                         }}
+        //                     />
+        //                 </View>
+        //             </Modal>
+        //         </>
+        //     )
+        // }
+
         return null
     }
 
