@@ -118,7 +118,7 @@ class Menu extends React.PureComponent {
         const paddingTop =
             Platform.OS === 'ios' && IPHONE_MODELS.includes(DEVICE_MODEL)
                 ? 30
-                : 40
+                : 0
 
         const pageID = 391422631718856
         const scheme = Platform.select({
@@ -198,6 +198,30 @@ class Menu extends React.PureComponent {
                             source={Trending}
                             style={[styles.iconStyle, { tintColor: '#828282' }]}
                         />
+                    </View>
+                </DelayedButton>
+                <DelayedButton
+                    activeOpacity={0.6}
+                    onPress={() => Actions.push('member')}
+                    style={styles.buttonStyle}
+                >
+                    <Text style={styles.titleTextStyle}>
+                        Accountability Buddies
+                    </Text>
+                    <View style={{ position: 'absolute', right: 0 }}>
+                        <Svg
+                            width={25}
+                            height={25}
+                            viewBox="0 0 20 15"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            {...this.props}
+                        >
+                            <Path
+                                d="M13.667 12.583v1.833H.833v-1.833s0-3.667 6.417-3.667 6.417 3.667 6.417 3.667zm-3.209-8.709a3.208 3.208 0 10-6.416 0 3.208 3.208 0 006.416 0zm3.154 5.042a4.878 4.878 0 011.888 3.667v1.833h3.667v-1.833s0-3.328-5.555-3.667zM12.75.666a3.107 3.107 0 00-1.77.54 4.583 4.583 0 010 5.336 3.107 3.107 0 001.77.54 3.209 3.209 0 000-6.416z"
+                                fill="#828282"
+                            />
+                        </Svg>
                     </View>
                 </DelayedButton>
                 <DelayedButton
@@ -682,6 +706,7 @@ export default connect(mapStateToProps, {
     openMyEventTab,
     openMyTribeTab,
     openMeet,
+    // buddies,
     openSetting,
     openChallenges,
     logout,
