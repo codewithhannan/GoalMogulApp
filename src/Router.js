@@ -139,6 +139,10 @@ import { EVENT as E, track } from './monitoring/segment'
 import SendFeedback from './Main/Menu/SendFeedback'
 import MultipleImagePicker from './Main/Menu/MutlipleImagePicker'
 import InviteFriendScreen from './Main/MeetTab/Modal/InviteFriendScreen'
+import AccountabilityBuddies from './Main/Accountability/AccountabilityBuddies'
+import HoldingMe from './Main/Accountability/HoldingMe'
+import HoldingAccountable from './Main/Accountability/HoldingAccountable'
+import PatriciaModal from './Main/Accountability/PatriciaModal'
 import SeekTribe from './Main/Goal/Common/SeekTribe'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
@@ -152,6 +156,7 @@ function getCommonScenes(tab) {
             key={`${prefix}ContactMessage`}
             component={SendContactMessage}
         />,
+
         <Scene key={`${prefix}ImagePicker`} component={MultipleImagePicker} />,
         <Scene key={`${prefix}sendFeedback`} component={SendFeedback} />,
         <Scene key={`${prefix}goal`} component={GoalDetailCard} />,
@@ -214,6 +219,10 @@ function getCommonScenes(tab) {
             component={FriendInvitationView}
         />,
         <Scene key="myTribeMembers" component={MyTribeMembers} />,
+        <Scene key="member" component={AccountabilityBuddies} />,
+        <Scene key="holding" component={HoldingMe} />,
+        <Scene key="holdingAccountable" component={HoldingAccountable} />,
+        <Scene key="pateriaModal" component={PatriciaModal} />,
     ]
 }
 

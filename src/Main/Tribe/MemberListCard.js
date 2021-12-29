@@ -13,8 +13,8 @@ import {
     switchCase,
     getProfileImageOrDefaultFromUser,
 } from '../../redux/middleware/utils'
-import { getButtonBottomSheetHeight } from '../../styles'
-import BottomButtonsSheet from '../Common/Modal/BottomButtonsSheet'
+// import { getButtonBottomSheetHeight } from '../../styles'
+// import BottomButtonsSheet from '../Common/Modal/BottomButtonsSheet'
 
 // Actions
 import { updateFriendship, openProfile } from '../../actions'

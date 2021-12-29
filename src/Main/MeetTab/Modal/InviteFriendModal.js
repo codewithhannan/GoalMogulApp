@@ -173,7 +173,7 @@ class InviteFriendModal extends React.PureComponent {
 
     getInviteLink = () => {
         if (this.props.isTribe) {
-            return generateInvitationLink(this.props.tribeCode.tribeInviteCode)
+            return generateInvitationLink(this.props.tribeCode?.tribeInviteCode)
         } else {
             return generateInvitationLink(this.props.inviteCode)
         }
