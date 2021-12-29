@@ -78,7 +78,7 @@ class FeedBackCard extends Component {
 
                 <View>
                     <View style={{ flexDirection: 'row', top: 20 }}>
-                        <Text style={{}}>{item.path.slice(195)}</Text>
+                        <Text style={{}}>{item.path.slice(220)}</Text>
                         <Text
                             style={{
                                 position: 'absolute',

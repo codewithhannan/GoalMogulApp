@@ -836,9 +836,11 @@ class InputBox extends React.Component {
             input,
             containerStyle,
             status,
+            secureTextEntry,
             caption,
             ...custom
         } = this.props
+
         const isPhoneNumber = inputTitle == 'Phone Number'
         if (isPhoneNumber) {
             return this.renderPhoneInput()
@@ -872,6 +874,7 @@ class InputBox extends React.Component {
                         {...custom}
                         {...restInput}
                         onChangeText={onChange}
+                        secureTextEntry={secureTextEntry ? true : false}
                         status={statusToUse}
                         caption={this.renderCaption(captionToUse, statusToUse)}
                         ref="textInput"
@@ -894,6 +897,7 @@ class InputBox extends React.Component {
                 <Input
                     {...custom}
                     ref="textInput"
+                    secureTextEntry={secureTextEntry ? true : false}
                     label={this.renderInputTitle}
                     style={{
                         width: '100%',

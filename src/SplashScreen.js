@@ -2,7 +2,14 @@
 
 import AppLoading from 'expo-app-loading'
 import React, { Component } from 'react'
-import { Dimensions, Image, Text, View, SafeAreaView } from 'react-native'
+import {
+    Dimensions,
+    Image,
+    Text,
+    View,
+    // SafeAreaView,
+    StatusBar,
+} from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 // Actions
@@ -75,62 +82,68 @@ class SplashScreen extends Component {
         }
 
         return (
-            <SafeAreaView style={{ flex: 1 }}>
-                <View style={styles.containerStyle}>
-                    {/* Main content including logo, artwork and slogan */}
-                    <View style={styles.bodyContainerStyle}>
-                        {/* Top header logo */}
-                        <View style={styles.logoContainerStyle}>
-                            <Image
-                                source={newSplashScreenLogo}
-                                style={styles.logoIconStyle}
-                            />
-                        </View>
-                        {/* Artwork */}
-                        {/* <Image source={HandshakeArt} style={styles.artworkStyle} /> */}
-                        {/* Slogan */}
-                        <Text style={styles.sloganTextStyle}>
-                            Achieve more, together.
-                        </Text>
+            // <SafeAreaView style={{ flex: 1 }}>
+            <View style={styles.containerStyle}>
+                {/* Main content including logo, artwork and slogan */}
+                <StatusBar
+                    animated={true}
+                    backgroundColor="#42C0F5"
+                    // barStyle={statusBarStyle}
+                    // showHideTransition={statusBarTransition}
+                />
+                <View style={styles.bodyContainerStyle}>
+                    {/* Top header logo */}
+                    <View style={styles.logoContainerStyle}>
+                        <Image
+                            source={newSplashScreenLogo}
+                            style={styles.logoIconStyle}
+                        />
                     </View>
-                    {/* Bottom bar for registration and log in */}
-                    <View style={styles.actionButtonsContainerStyle}>
-                        <DelayedButton
-                            onPress={this.handleGetStartedOnPress.bind(this)}
-                            touchableWithoutFeedback
-                        >
-                            <View style={styles.signUpButtonStyle}>
-                                <Text
-                                    style={[
-                                        default_style.buttonText_1,
-                                        {
-                                            color: color.GM_BLUE_DEEP,
-                                        },
-                                    ]}
-                                >
-                                    Sign Up
-                                </Text>
-                            </View>
-                        </DelayedButton>
-                        <DelayedButton
-                            onPress={this.handleLoginPress.bind(this)}
-                            touchableWithoutFeedback
-                        >
+                    {/* Artwork */}
+                    {/* <Image source={HandshakeArt} style={styles.artworkStyle} /> */}
+                    {/* Slogan */}
+                    <Text style={styles.sloganTextStyle}>
+                        Achieve more, together.
+                    </Text>
+                </View>
+                {/* Bottom bar for registration and log in */}
+                <View style={styles.actionButtonsContainerStyle}>
+                    <DelayedButton
+                        onPress={this.handleGetStartedOnPress.bind(this)}
+                        touchableWithoutFeedback
+                    >
+                        <View style={styles.signUpButtonStyle}>
                             <Text
                                 style={[
                                     default_style.buttonText_1,
                                     {
-                                        color: 'white',
-                                        paddingVertical: 16,
+                                        color: color.GM_BLUE_DEEP,
                                     },
                                 ]}
                             >
-                                Log In
+                                Sign Up
                             </Text>
-                        </DelayedButton>
-                    </View>
+                        </View>
+                    </DelayedButton>
+                    <DelayedButton
+                        onPress={this.handleLoginPress.bind(this)}
+                        touchableWithoutFeedback
+                    >
+                        <Text
+                            style={[
+                                default_style.buttonText_1,
+                                {
+                                    color: 'white',
+                                    paddingVertical: 16,
+                                },
+                            ]}
+                        >
+                            Log In
+                        </Text>
+                    </DelayedButton>
                 </View>
-            </SafeAreaView>
+            </View>
+            // </SafeAreaView>
         )
     }
 }

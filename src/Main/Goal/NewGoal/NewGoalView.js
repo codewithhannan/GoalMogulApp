@@ -902,9 +902,9 @@ class NewGoalView extends Component {
                         <Button
                             text={'Tap to add more details'}
                             source={plus}
-                            onPress={() => {
+                            onPress={() =>
                                 this.setState({ detailsFieldShow: true })
-                            }}
+                            }
                             containerStyle={{
                                 width: '100%',
                                 justifyContent: 'center',

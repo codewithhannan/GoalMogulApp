@@ -31,7 +31,7 @@ function FeedbackModal(props) {
                         borderRadius: 8,
                         backgroundColor: color.GV_MODAL,
                         width: wp('90%'),
-                        height: hp('40%'),
+                        height: hp('35%'),
                     }}
                 >
                     <View
@@ -81,7 +81,7 @@ function FeedbackModal(props) {
                             lineHeight: 23,
                             width: '100%',
                             marginBottom: 20,
-                            marginTop: 10,
+                            marginTop: 15,
                             textAlign: 'center',
                         }}
                     >

@@ -529,10 +529,35 @@ export const subscribeNotification = () => async (dispatch, getState) => {
 
     // Get the token that uniquely identifies this device
     const {
-        data: notificationToken,
-    } = await Notifications.getExpoPushTokenAsync({
-        experienceId: '@a0n0d0y/goalmogul',
-    })
+        status: existingStatuss,
+    } = await Notifications.getPermissionsAsync()
+    let finalStatus = existingStatuss
+    console.log('push token', existingStatuss)
+    if (existingStatuss !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync()
+        finalStatus = status
+    }
+    if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!')
+        return
+    }
+
+    if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+            name: 'GoalMogul',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: 'blue',
+            showBadge: true,
+        })
+        // Notifications.setNotificationChannelAsync('default', {
+        //     name: 'default',
+        //     importance: Notifications.AndroidImportance.MAX,
+        //     vibrationPattern: [0, 250, 250, 250],
+        //     lightColor: 'blue',
+        // })
+    }
+    const notificationToken = await Notifications.getDevicePushTokenAsync()
 
     console.log('push token', notificationToken)
 
@@ -572,10 +597,7 @@ export const subscribeNotification = () => async (dispatch, getState) => {
         //     notificationToken,
         //     {}
         // )
-        await AsyncStorage.setItem(
-            NOTIFICATION_TOKEN_KEY,
-            notificationToken.data
-        )
+        // await AsyncStorage.setItem(NOTIFICATION_TOKEN_KEY, notificationToken)
         console.log('notificationToken', notificationToken)
         // ReactMoE.passFcmPushToken(notificationToken)
 
@@ -602,19 +624,22 @@ export const subscribeNotification = () => async (dispatch, getState) => {
 
     // POST the token to your backend server from
     // where you can retrieve it to send push notifications.
+
     return API.put(
-        'secure/user/settings/expo-token',
-        { pushToken: notificationToken.data },
+        'secure/user/settings/device-token',
+        { pushToken: JSON.stringify(notificationToken) },
         token
     )
         .then((res) => {
             // All 200 status imply success
             if (res.status >= 200 && res.status < 300) {
+                console.log('NOTIFICATION RESPONSE', res)
                 return onSuccess(res)
             }
             return onError(res)
         })
         .catch((err) => {
+            console.log('ERROR', err)
             onError(err)
         })
 }

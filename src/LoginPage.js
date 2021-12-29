@@ -1,7 +1,14 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, Text, Animated, Keyboard, Linking } from 'react-native'
+import {
+    View,
+    Text,
+    Animated,
+    Keyboard,
+    Linking,
+    StatusBar,
+} from 'react-native'
 import _ from 'lodash'
 import { connect } from 'react-redux'
 import {
@@ -351,6 +358,12 @@ class LoginPage extends Component {
 
         return (
             <View style={[OnboardingStyles.container.page]}>
+                <StatusBar
+                    animated={true}
+                    backgroundColor="#42C0F5"
+                    // barStyle={statusBarStyle}
+                    // showHideTransition={statusBarTransition}
+                />
                 <KeyboardAwareScrollView
                     bounces={false}
                     // enableOnAndroid={true}

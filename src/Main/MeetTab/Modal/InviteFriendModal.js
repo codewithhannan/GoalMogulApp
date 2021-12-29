@@ -259,7 +259,7 @@ class InviteFriendModal extends React.PureComponent {
             // do your SMS stuff here
             const { result } = await SMS.sendSMSAsync(
                 [],
-                `${message}.Use this Invite Code to sign up: ${this.state.inviteCode}\n\n${url}`
+                `${message} Use this Invite Code to sign up: ${this.state.inviteCode}\n\n${url}`
             )
             console.log(`${DEBUG_KEY}: result is: `, result)
         }
@@ -272,7 +272,7 @@ class InviteFriendModal extends React.PureComponent {
         if (canOpen) {
             Linking.openURL(
                 `mailto:?subject=Join GoalMogul&body=${unescape(
-                    `${message}.Use this Invite Code to sign up: ${this.state.inviteCode}`
+                    `${message} Use this Invite Code to sign up: ${this.state.inviteCode}`
                 )}\n\n${unescape(url)}`
             )
         }
@@ -289,7 +289,7 @@ class InviteFriendModal extends React.PureComponent {
 
     shareToWhatsApp = (text, link) => {
         Linking.openURL(
-            `whatsapp://send?text=${text}.Use this Invite Code to sign up: ${this.state.inviteCode}\n\n${link}`
+            `whatsapp://send?text=${text} Use this Invite Code to sign up: ${this.state.inviteCode}\n\n${link}`
         )
 
             .then((data) => {

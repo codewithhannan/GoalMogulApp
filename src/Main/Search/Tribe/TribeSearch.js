@@ -16,6 +16,7 @@ import {
     refreshPreloadData,
     loadPreloadData,
 } from '../../../redux/modules/search/SearchActions'
+import * as _ from 'underscore'
 
 import { loadMoreTribes, getAllAccounts } from '../../../actions'
 
@@ -166,15 +167,17 @@ class TribeSearch extends Component {
 
     render() {
         const { height } = Dimensions.get('window')
+        let SortedObjs = _.sortBy(this.props.data, 'name')
+
         return (
             <View style={{ flex: 1, height: height }}>
-                {/* {this.props.data.length === 0 &&
+                {this.props.data.length === 0 &&
                 this.props.searchContent &&
                 !this.props.loading ? (
                     <EmptyResult text={'No Results'} />
                 ) : (
                     <FlatList
-                        data={this.props.data}
+                        data={SortedObjs}
                         renderItem={this.renderItem}
                         keyExtractor={this._keyExtractor}
                         onEndReached={this.handleOnLoadMore}
@@ -183,8 +186,7 @@ class TribeSearch extends Component {
                         refreshing={this.props.loading}
                         keyboardShouldPersistTaps="always"
                     />
-                )} */}
-                {this.renderFlatList()}
+                )}
             </View>
         )
     }

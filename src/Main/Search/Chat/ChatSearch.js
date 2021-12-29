@@ -116,17 +116,9 @@ class ChatSearch extends Component {
         return (
             <View style={{ flex: 1 }}>
                 {this.props.data.length === 0 &&
-                !this.props.searchContent &&
+                this.props.searchContent &&
                 !this.props.loading ? (
-                    <FlatList
-                        data={this.props.allChats}
-                        renderItem={this.renderItem}
-                        keyExtractor={this._keyExtractor}
-                        onEndReached={this.preHandleOnLoadMore}
-                        onEndReachedThreshold={0.5}
-                        refreshing={this.props.chatLoading}
-                        keyboardShouldPersistTaps="always"
-                    />
+                    <EmptyResult text={'No Results'} />
                 ) : (
                     <FlatList
                         data={SortedObjs}
