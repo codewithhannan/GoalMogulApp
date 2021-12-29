@@ -1169,6 +1169,7 @@ import {
     TouchableOpacity,
     Platform,
     // SafeAreaView,
+    StatusBar,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuProvider } from 'react-native-popup-menu'
@@ -1885,6 +1886,12 @@ class Home extends Component {
                 customStyles={{ backdrop: styles.backdrop }}
                 skipInstanceCheck={true}
             >
+                <StatusBar
+                    animated={true}
+                    backgroundColor="#42C0F5"
+                    // barStyle={statusBarStyle}
+                    // showHideTransition={statusBarTransition}
+                />
                 <CreatePostModal
                     attachGoalRequired
                     // onModal={() => this.setState({ shareModal: true })}

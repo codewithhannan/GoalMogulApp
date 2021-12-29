@@ -17,7 +17,10 @@ import {
 import Modal from 'react-native-modal'
 import { Icon } from '@ui-kitten/components'
 import { Entypo } from '@expo/vector-icons'
-
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 import { connect } from 'react-redux'
 import { color, text } from '../../../styles/basic'
 import OnboardingStyles from '../../../styles/Onboarding'
@@ -88,6 +91,7 @@ class CommentVideoModal extends Component {
                     }}
                     swipeDirection="down"
                     animationInTiming={400}
+                    // coverScreen={true}
                 >
                     {this.state.loading ? (
                         <View
@@ -121,10 +125,10 @@ class CommentVideoModal extends Component {
                         >
                             <View
                                 style={{
-                                    width: MODAL_WIDTH,
+                                    width: wp('100%'),
 
                                     backgroundColor: color.GV_MODAL,
-                                    height: MODAL_HEIGHT - 200,
+                                    // height: hp('50%'),
                                     borderRadius: 5,
                                     position: 'absolute',
                                     bottom: 0,
@@ -169,78 +173,80 @@ class CommentVideoModal extends Component {
                                         alignItems: 'center',
                                     }}
                                 >
-                                    {/* {privacyOptions.map((options, index) => {
-                                    return (
-                                        <TouchableOpacity
-                                            key={Math.random()
-                                                .toString(36)
-                                                .substr(2, 9)}
-                                            onPress={() => {
-                                                this.changeColor(options.id)
-                                            }}
-                                            disabled={
-                                                this.state.selected ===
-                                                options.id
-                                            }
-                                        >
-                                            <View
-                                                style={[
-                                                    GOALS_STYLE.commonPillContainer,
-                                                    {
-                                                        height: 35,
-                                                        borderColor: '#828282',
-                                                        borderWidth:
-                                                            this.state
-                                                                .selected ===
-                                                            options.id
-                                                                ? 0.23
-                                                                : 0.3,
-                                                        left: 10,
-                                                        width: 80,
-                                                        marginHorizontal: 3,
-                                                        backgroundColor:
-                                                            'white',
-                                                    },
-                                                ]}
+                                    {privacyOptions.map((options, index) => {
+                                        return (
+                                            <TouchableOpacity
+                                                key={Math.random()
+                                                    .toString(36)
+                                                    .substr(2, 9)}
+                                                onPress={() => {
+                                                    this.changeColor(options.id)
+                                                }}
+                                                disabled={
+                                                    this.state.selected ===
+                                                    options.id
+                                                }
                                             >
-                                                <Icon
-                                                    pack="material-community"
-                                                    name={options.iconName}
-                                                    style={{
-                                                        height: 12,
-                                                        width: 12,
-                                                        tintColor: '#828282',
-                                                        opacity:
-                                                            this.state
-                                                                .selected ===
-                                                            options.id
-                                                                ? 0.3
-                                                                : 1,
-                                                    }}
-                                                />
-
-                                                <Text
-                                                    style={{
-                                                        fontFamily:
-                                                            text.FONT_FAMILY
-                                                                .SEMI_BOLD,
-                                                        fontSize: 14,
-                                                        color: '#828282',
-                                                        marginLeft: 5,
-                                                        opacity:
-                                                            this.state
-                                                                .selected ===
-                                                            options.id
-                                                                ? 0.3
-                                                                : 1,
-                                                    }}
+                                                <View
+                                                    style={[
+                                                        GOALS_STYLE.commonPillContainer,
+                                                        {
+                                                            height: 35,
+                                                            borderColor:
+                                                                '#828282',
+                                                            borderWidth:
+                                                                this.state
+                                                                    .selected ===
+                                                                options.id
+                                                                    ? 0.3
+                                                                    : 0.23,
+                                                            left: 10,
+                                                            width: 80,
+                                                            marginHorizontal: 3,
+                                                            backgroundColor:
+                                                                'white',
+                                                        },
+                                                    ]}
                                                 >
-                                                    {options.title}
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    )
-                                })} */}
+                                                    <Icon
+                                                        pack="material-community"
+                                                        name={options.iconName}
+                                                        style={{
+                                                            height: 12,
+                                                            width: 12,
+                                                            tintColor:
+                                                                '#828282',
+                                                            opacity:
+                                                                this.state
+                                                                    .selected ===
+                                                                options.id
+                                                                    ? 1
+                                                                    : 0.3,
+                                                        }}
+                                                    />
+
+                                                    <Text
+                                                        style={{
+                                                            fontFamily:
+                                                                text.FONT_FAMILY
+                                                                    .SEMI_BOLD,
+                                                            fontSize: 14,
+                                                            color: '#828282',
+                                                            marginLeft: 5,
+                                                            opacity:
+                                                                this.state
+                                                                    .selected ===
+                                                                options.id
+                                                                    ? 1
+                                                                    : 0.3,
+                                                        }}
+                                                    >
+                                                        {options.title}
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                    })}
                                 </View>
                                 <View
                                     style={
@@ -294,8 +300,8 @@ class CommentVideoModal extends Component {
                                         style={{
                                             // videoBackgroundColor: 'transparent',
                                             // controlsBackgroundColor: 'transparent',
-                                            height: 500,
-                                            width: 380,
+                                            height: hp('40%'),
+                                            width: wp('100%'),
                                         }}
                                         fullscreen={{
                                             visible: false,
@@ -311,7 +317,7 @@ class CommentVideoModal extends Component {
                                     style={{
                                         flexDirection: 'row',
                                         justifyContent: 'center',
-                                        // marginBottom: 15,
+                                        marginBottom: 15,
                                     }}
                                 >
                                     <DelayedButton
@@ -320,7 +326,7 @@ class CommentVideoModal extends Component {
                                                 .containerStyle,
                                             ,
                                             {
-                                                width: 185,
+                                                width: wp('45%'),
                                                 marginTop: 20,
                                                 backgroundColor:
                                                     'rgba(66, 192, 245, 0.22)',
@@ -355,7 +361,7 @@ class CommentVideoModal extends Component {
                                                 .containerStyle,
                                             ,
                                             {
-                                                width: 185,
+                                                width: wp('45%'),
                                                 marginTop: 20,
                                                 height: 45,
                                             },

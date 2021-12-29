@@ -13,15 +13,24 @@ import {
 // import LottieView from 'lottie-react-native'
 import CheckBox from '@react-native-community/checkbox'
 import { Actions } from 'react-native-router-flux'
-
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen'
 import { connect } from 'react-redux'
 import Modal from 'react-native-modal'
-import { GM_BLUE } from '../../../styles/basic/color'
 import { MaterialIcons } from '@expo/vector-icons'
+
+import InviteFriendModal from '../../MeetTab/Modal/InviteFriendModal'
+import {
+    wrapAnalytics,
+    SCREENS,
+    trackWithProperties,
+    EVENT as E,
+    track,
+    identifyWithTraits,
+} from '../../../monitoring/segment'
+import { GM_BLUE } from '../../../styles/basic/color'
 import * as text from '../../../styles/basic/text'
 import { default_style } from '../../../styles/basic'
 import DelayedButton from '../../../Main/Common/Button/DelayedButton'
@@ -52,9 +61,26 @@ const GOAL_UPDATE_POPUP_B = ({
     const [toggleTribe, setToggleTribe] = useState(false)
     const [toggleFriends, setToggleFriends] = useState(false)
     const [toggleContact, setToggleContacts] = useState(false)
+    const [showInviteFriendModal, setShowInviteFriendModal] = useState(false)
+    const [helpText, setHelpText] = useState('')
+    // showInviteFriendModal: false,
+
+    const openInviteFriendModal = () => {
+        setShowInviteFriendModal(true)
+        track(E.INVITE_FRIENDS_OPEN)
+    }
+
+    const closeInviteFriendModal = () => {
+        setShowInviteFriendModal(false)
+    }
 
     return (
         <Modal isVisible={isVisible}>
+            <InviteFriendModal
+                isVisible={showInviteFriendModal}
+                closeModal={closeInviteFriendModal}
+                seekHelp
+            />
             <SafeAreaView style={styles.container}>
                 <KeyboardAvoidingView
                     style={{
@@ -104,6 +130,8 @@ const GOAL_UPDATE_POPUP_B = ({
                         }}
                         placeholder="Clarify what you want help with"
                         textAlignVertical="top"
+                        autoCorrect={false}
+                        onChangeText={(value) => setHelpText(value)}
                     />
                     <Text style={styles.d2}>
                         Where do you want to Seek Help from?
@@ -119,9 +147,11 @@ const GOAL_UPDATE_POPUP_B = ({
                             <CheckBox
                                 disabled={false}
                                 value={toggleTribe}
-                                onValueChange={() =>
+                                onValueChange={() => {
+                                    setToggleFriends(false)
+                                    setToggleContacts(false)
                                     setToggleTribe(!toggleTribe)
-                                }
+                                }}
                             />
                             <Text
                                 style={{
@@ -143,9 +173,11 @@ const GOAL_UPDATE_POPUP_B = ({
                             <CheckBox
                                 disabled={false}
                                 value={toggleFriends}
-                                onValueChange={() =>
+                                onValueChange={() => {
+                                    setToggleContacts(false)
+                                    setToggleTribe(false)
                                     setToggleFriends(!toggleFriends)
-                                }
+                                }}
                             />
                             <Text
                                 style={{
@@ -167,9 +199,11 @@ const GOAL_UPDATE_POPUP_B = ({
                             <CheckBox
                                 disabled={false}
                                 value={toggleContact}
-                                onValueChange={() =>
+                                onValueChange={() => {
+                                    setToggleTribe(false)
+                                    setToggleFriends(false)
                                     setToggleContacts(!toggleContact)
-                                }
+                                }}
                                 // tintColors={{true:'#42C0F5',false:'grey'}}
                             />
                             <Text
@@ -202,8 +236,11 @@ const GOAL_UPDATE_POPUP_B = ({
                         onPress={() => {
                             if (toggleTribe) {
                                 closeModal()
-                                Actions.push('seekTribe')
+                                return Actions.push('seekTribe', {
+                                    helpText: helpText,
+                                })
                             }
+                            openInviteFriendModal()
                         }}
                     >
                         <Text

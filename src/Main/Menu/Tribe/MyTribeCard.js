@@ -112,7 +112,7 @@ class MyTribeCard extends React.Component {
     // Info includes memeber count for now
     renderTribeInfo() {
         const { memberCount } = this.props.item
-        const member = ' Member'
+        const member = memberCount === 1 ? ' Member' : ' Members'
 
         return (
             <View>
@@ -217,7 +217,7 @@ class MyTribeCard extends React.Component {
                 <View
                     style={[
                         styles.containerStyle,
-                        this.props.tribeAction ? { height: 120 } : null,
+                        this.props.tribeAction ? { height: 130 } : null,
                     ]}
                 >
                     {this.renderTribeImage()}

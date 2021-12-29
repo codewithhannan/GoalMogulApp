@@ -75,6 +75,74 @@ export const getUserTribes = () => async (dispatch, getState) => {
         })
 }
 
+export const postHelpTribe = (newPost) => async (dispatch, getState) => {
+    const { token, userId } = getState().user
+    console.log('new post tribe', newPost)
+
+    const onSuccess = async (res) => {
+        // await SecureStore.setItemAsync(
+        //     NOTIFICATION_TOKEN_KEY,
+        //     notificationToken,
+        //     {}
+        // )
+        // await AsyncStorage.setItem(NOTIFICATION_TOKEN_KEY, notificationToken)
+        // console.log('notificationToken', notificationToken)
+        // ReactMoE.passFcmPushToken(notificationToken)
+        // dispatch({
+        //     type: SET_TRIBE_SEEK,
+        //     payload: res.data,
+        // })
+        console.log(
+            `${DEBUG_KEY}: register notification succeed success with res: tribe wali `,
+            res
+        )
+        return Alert.alert('Help posted in tribe!')
+    }
+
+    const onError = (err) => {
+        console.log(
+            `${DEBUG_KEY}: register notification failed with err: `,
+            err
+        )
+    }
+    return API.post(
+        'secure/feed/post',
+        {
+            post: JSON.stringify({
+                owner: newPost.user._id,
+                privacy: 'public',
+                content: { text: newPost.helpText, tags: [] },
+                postType: 'seekHelpFromTribe',
+                belongsToTribe: newPost.tribeDoc._id,
+                goalRef: newPost.goal.goal._id,
+            }),
+        },
+        token
+    )
+        .then((res) => {
+            // All 200 status imply success
+            if (res.status >= 200 && res.status < 300) {
+                return onSuccess(res)
+            }
+            return onError(res)
+        })
+        .catch((err) => {
+            onError(err)
+        })
+
+    // return API.post('secure/tribe', token)
+    //     .then((res) => {
+    //         // All 200 status imply success
+    //         if (res.status >= 200 && res.status < 300) {
+    //             return onSuccess(res)
+    //         }
+    //         return onError(res)
+    //     })
+    //     .catch((err) => {
+    //         onError(err)
+    //     })
+}
+
 // export const cancelCreatingNewTribe = () => (dispatch) => {
 //     Actions.pop()
 //     dispatch({

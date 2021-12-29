@@ -26,6 +26,7 @@ class TribeDiscoverCard extends React.PureComponent {
     state = {
         requested: false,
         joined: false,
+        selected: false,
     }
 
     componentDidMount() {
@@ -55,12 +56,19 @@ class TribeDiscoverCard extends React.PureComponent {
     }
 
     renderButtonText = () => {
-        if (this.state.requested) {
-            return 'Requested'
-        } else if (this.state.joined) {
-            return 'Joined'
+        if (this.props.isSeekTribe) {
+            if (this.state.selected) {
+                return 'Posted'
+            }
+            return 'Select'
         } else {
-            return 'Join'
+            if (this.state.requested) {
+                return 'Requested'
+            } else if (this.state.joined) {
+                return 'Joined'
+            } else {
+                return 'Join'
+            }
         }
     }
 
@@ -94,8 +102,15 @@ class TribeDiscoverCard extends React.PureComponent {
         return (
             <View style={styles.iconContainerStyle}>
                 <DelayedButton
+                    disabled={this.state.selected}
                     activeOpacity={0.6}
-                    onPress={() => this.handleJoinButton(item)}
+                    onPress={() => {
+                        if (this.props.isSeekTribe) {
+                            this.setState({ selected: true })
+                            return this.props.onPress(item)
+                        }
+                        this.handleJoinButton(item)
+                    }}
                     style={{
                         height: 31,
                         width: requested ? 100 : 65,

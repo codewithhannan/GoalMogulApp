@@ -12,7 +12,7 @@ import moment from 'moment'
 // Components
 import ActivityCard from '../Activity/ActivityCard'
 import EmptyResult from '../Common/Text/EmptyResult'
-import InviteFriendModal from '../MeetTab//Modal/InviteFriendModal'
+import InviteFriendModal from '../MeetTab/Modal/InviteFriendModal'
 import HomeFeedToast from './HomeFeedToast'
 
 import { handleRefreshFriend } from '../../redux/modules/meet/MeetActions'

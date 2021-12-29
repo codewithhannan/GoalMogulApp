@@ -329,7 +329,7 @@ class NoGoalPrompt extends Component {
                                     justifyContent: 'center',
 
                                     // position: 'absolute',
-                                    top: 110,
+                                    top: 100,
                                     alignSelf: 'center',
                                 }}
                             >
@@ -375,7 +375,7 @@ class NoGoalPrompt extends Component {
                                         fontFamily: 'SFProDisplay-Semibold',
                                     }}
                                 >
-                                    Comfirm
+                                    Confirm
                                 </Text>
                             </DelayedButton>
                         </View>

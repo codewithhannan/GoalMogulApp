@@ -92,6 +92,18 @@ const EXCLUDE_ACTIVITY_TYPE = [
     'com.apple.mobilenotes.SharingExtension',
 ]
 
+const SEEK_HELP = [
+    `Hey, can you check out one of my goals on GoalMogul? I'd love to get your advice or suggestions! Thanks`,
+    `You've always heard about me wanting to do this, but now I've finally set it as a goal that I intend to achieve! I would love for you to help me with support or advice. Thank u!`,
+    `Hey, I’m tracking my goals with GoalMogul. Do you have any tips on helping me achieve this goal? I’d really appreciate it! Thank u!`,
+    `I could really use some support with this goal I set. I'd love to hear your thoughts! Thanks!`,
+    `Do you have any resources that could help me achieve one of my goals? Any kind of help would be much appreciated! Thanks!`,
+    `I really value your advice and opinion as a friend, so I was wondering if you'd be able to check out this new goal I set? Thanks!`,
+    `I’m trying something new! I wonder if you know any tips or suggestions that would help me with this goal I have? Thanks!`,
+    `Do you have a minute? Can you offer any suggestions or advice for my new goal? Here’s some of my goals from my bucket list on GoalMogul! Thanks!`,
+    `Hey, I just set a new goal on GoalMogul. I’d love to get some advice or suggestions on how I can achieve it! Thank u!`,
+]
+
 class InviteFriendModal extends React.PureComponent {
     shuffleArray = (array) => {
         for (let i = array.length - 1; i > 0; i--) {
@@ -104,6 +116,9 @@ class InviteFriendModal extends React.PureComponent {
         if (this.props.shouldOpenFromComments) {
             this.shuffleArray(DESCRIPTIONS_REMAINING)
             return [this.props.goalTosend, ...DESCRIPTIONS_REMAINING]
+        } else if (this.props.seekHelp) {
+            this.shuffleArray(SEEK_HELP)
+            return [...SEEK_HELP]
         } else {
             this.shuffleArray(DESCRIPTIONS_REMAINING)
             return [...DESCRIPTIONS_TOP3, ...DESCRIPTIONS_REMAINING]

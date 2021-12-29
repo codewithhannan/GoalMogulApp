@@ -30,7 +30,10 @@ import {
     loadMoreTribe,
 } from '../../../redux/modules/tribe/TribeTabActions'
 
-import { getUserTribes } from '../../../redux/modules/SeekHelp/seekHelpAction'
+import {
+    getUserTribes,
+    postHelpTribe,
+} from '../../../redux/modules/SeekHelp/seekHelpAction'
 
 import { SearchBar } from 'react-native-elements'
 import { SearchIcon } from '../../../Utils/Icons'
@@ -94,11 +97,14 @@ class TribeDiscover extends React.Component {
                 <TribeDiscoverCard
                     item={item}
                     onPress={(tribeDoc) => {
-                        if (itemOnPress) {
-                            return itemOnPress(tribeDoc)
-                        }
-                        this.props.tribeDetailOpen(tribeDoc)
+                        this.props.postHelpTribe({
+                            tribeDoc: tribeDoc,
+                            helpText: this.props.helpText,
+                            user: this.props.user,
+                            goal: this.props.lateGoal,
+                        })
                     }}
+                    isSeekTribe={true}
                     canSelect={canSelect}
                 />
             </>
@@ -212,7 +218,7 @@ class TribeDiscover extends React.Component {
 
     render() {
         const tribesToRender = this.getTribesToRender()
-        console.log('THIS IS TRIBE TO RENDER', tribesToRender)
+        console.log('THIS IS TRIBE TO RENDER', this.props.helpText)
         const { tribeSeek } = this.props
 
         return (
@@ -278,9 +284,9 @@ class TribeDiscover extends React.Component {
                         ],
                         { useNativeDriver: false }
                     )}
-                    onRefresh={this.handleRefresh}
+                    // onRefresh={this.handleRefresh}
                     onEndReached={this.handleLoadMore}
-                    refreshing={this.props.refreshing}
+                    // refreshing={this.props.refreshing}
                     data={tribeSeek}
                     renderItem={(item, index) => this.renderItem(item, index)}
                     keyExtractor={this.keyExtractor}
@@ -330,15 +336,20 @@ const styles = {
 }
 
 const mapStateToProps = (state) => {
-    const { data, loading, sortBy, refreshing } = state.tribeTab
+    const { data, loading, sortBy } = state.tribeTab
     const seekHelp = state.seekHelp
     const { tribeSeek } = seekHelp
+    const { user, token } = state.user
+    const lateGoal = state.profile.lateGoal
+
     return {
         data,
-        refreshing,
         loading,
         sortBy,
         tribeSeek,
+        user,
+        token,
+        lateGoal,
     }
 }
 
@@ -348,4 +359,5 @@ export default connect(mapStateToProps, {
     refreshTribe,
     getUserTribes,
     loadMoreTribe,
+    postHelpTribe,
 })(TribeDiscover)

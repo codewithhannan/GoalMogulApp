@@ -499,11 +499,11 @@ export const openCameraRoll = (
     const result = await ImagePickerr.launchImageLibraryAsync(
         disableEditing
             ? {
-                  mediaTypes: 'All',
+                  mediaTypes: 'Images',
                   allowsEditing: true,
                   aspect: [4, 3],
                   quality: 0.2,
-                  videoExportPreset: ImagePickerr.VideoExportPreset.LowQuality,
+                  //   videoExportPreset: ImagePickerr.VideoExportPreset.LowQuality,
               }
             : {
                   allowsEditing: true,

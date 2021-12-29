@@ -204,6 +204,7 @@ export const submitCreatingPost = (
 ) => (dispatch, getState) => {
     const { userId, token, user } = getState().user
     const newPost = newPostAdaptor(values, userId)
+    console.log(`${DEBUG_KEY}: post to submit is: `, values)
     console.log(`${DEBUG_KEY}: post to submit is: `, newPost)
     // console.log(`${DEBUG_KEY}: initializeFromState is: `, initializeFromState);
     dispatch({

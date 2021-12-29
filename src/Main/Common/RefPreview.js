@@ -7,6 +7,7 @@ import React, { Component } from 'react'
 import { Image, Text, View } from 'react-native'
 import { connect } from 'react-redux'
 import goalIcon from '../../asset/header/logo.png'
+import helpIconn from '../../asset/utils/helpIcon.png'
 // Assets
 import badge from '../../asset/utils/badge.png'
 import defaultProfilePic from '../../asset/utils/defaultUserProfile.png'
@@ -30,7 +31,10 @@ class RefPreview extends Component {
 
         // When RefPreview is rendered from ShareModal and it's a share of Goal
         // goalRef will be undefined.
-        if (postType === 'ShareGoal' && goalRef) {
+        if (
+            postType === 'ShareGoal' ||
+            (postType === 'seekHelpFromTribe' && goalRef)
+        ) {
             return this.props.openGoalDetailById(goalRef._id)
         }
 
@@ -76,12 +80,13 @@ class RefPreview extends Component {
 
     // Currently this is a dummy component
     render() {
+        console.log('seek help', this.props)
         const { item, postType, goalRef, disabled } = this.props
         if (!item) return null
 
         // TODO: add a postType ShareStep
         const { title, content, defaultPicture, picture } = switchCaseItem(
-            item,
+            goalRef,
             postType
         )
         const titleToDisplay =
@@ -113,7 +118,11 @@ class RefPreview extends Component {
                 <ProfileImage
                     imageStyle={{ width: 50, height: 50, borderRadius: 5 }}
                     imageContainerStyle={imageContainerstyle}
-                    defaultImageStyle={{ width: 32, height: 34, opacity: 0.6 }}
+                    defaultImageStyle={
+                        postType === 'seekHelpFromTribe'
+                            ? styles.helpImage
+                            : { width: 32, height: 34, opacity: 0.6 }
+                    }
                     defaultImageSource={defaultPicture}
                     imageUrl={picture}
                 />
@@ -135,7 +144,11 @@ class RefPreview extends Component {
                         }}
                     >
                         <Text
-                            style={styles.titleTextStyle}
+                            style={
+                                postType === 'seekHelpFromTribe'
+                                    ? styles.titleSeek
+                                    : styles.titleTextStyle
+                            }
                             numberOfLines={1}
                             ellipsizeMode="tail"
                         >
@@ -151,7 +164,11 @@ class RefPreview extends Component {
                         }}
                     >
                         <Text
-                            style={styles.headingTextStyle}
+                            style={
+                                postType === 'seekHelpFromTribe'
+                                    ? styles.seekHeadingTextStyle
+                                    : styles.headingTextStyle
+                            }
                             numberOfLines={1}
                             ellipsizeMode="tail"
                         >
@@ -265,6 +282,25 @@ const switchCaseItem = (val, type) =>
                 defaultPicture: stepIcon,
             }
         },
+        seekHelpFromTribe: (item) => {
+            // console.log('item seek',item);
+            if (invalidItem(item)) {
+                return {
+                    title: `Help ${item.owner.name}`,
+                    content: 'Content deleted',
+                    defaultPicture: goalIcon,
+                }
+            }
+
+            return {
+                title: item.owner ? `Help ${item.owner.name}!` : 'Help', // We decide to replace title with owner's name
+                // title: 'Goal',
+                // TODO: TAG: convert this to string later on
+                content: item.title,
+                // picture: item.profile ? item.owner.profile.image : undefined,
+                defaultPicture: helpIconn,
+            }
+        },
     })('General')(type)
 
 const invalidItem = (item) =>
@@ -273,7 +309,7 @@ const invalidItem = (item) =>
 const styles = {
     containerStyle: {
         flexDirection: 'row',
-        height: 50,
+        height: 80,
         marginTop: 4,
         marginBottom: 4,
         borderWidth: 1,
@@ -297,6 +333,29 @@ const styles = {
         fontSize: 12,
         flexWrap: 'wrap',
         flex: 1,
+    },
+    helpImage: {
+        height: 12,
+        width: 12,
+        position: 'absolute',
+        top: 10,
+        left: 12,
+        resizeMode: 'contain',
+    },
+    titleSeek: {
+        fontSize: 14,
+        flexWrap: 'wrap',
+        flex: 1,
+        position: 'absolute',
+        top: -2,
+        left: 9,
+    },
+    seekHeadingTextStyle: {
+        fontSize: 14,
+        flexWrap: 'wrap',
+        flex: 1,
+        left: -6,
+        fontWeight: 'bold',
     },
 }
 
