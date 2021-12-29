@@ -345,7 +345,9 @@ class MyTribeInviteFriends extends Component {
                             fontSize: 16,
                         }}
                     >
-                        Share Trible Link
+                        {this.props.accountability
+                            ? 'Invite From Contacts'
+                            : 'Share Trible Link'}
                     </Text>
                 </DelayedButton>
             </View>
@@ -365,8 +367,8 @@ class MyTribeInviteFriends extends Component {
                     tribeCode={this.props.tribe}
                     isVisible={this.state.showInviteFriendModal}
                     closeModal={this.closeInviteFriendModal}
-                    isTribe={true}
-                    tribeDes={`Join me in the ${this.props.tribe.name} Tribe on GoalMogul. You'll find great value and meet like-minded people!`}
+                    isTribe={this.props.accountability ? false : true}
+                    tribeDes={`Join me in the ${this.props.tribe?.name} Tribe on GoalMogul. You'll find great value and meet like-minded people!`}
                 />
                 <View style={styles.containerStyle}>
                     <ModalHeader
@@ -387,7 +389,11 @@ class MyTribeInviteFriends extends Component {
                                 }
                             )
                         }}
-                        title="Invite Friends to Tribe"
+                        title={
+                            this.props.accountability
+                                ? 'Pick Accountability Buddies'
+                                : 'Invite Friends to Tribe'
+                        }
                         cross
                         actionText="Add"
                         actionDisabled={

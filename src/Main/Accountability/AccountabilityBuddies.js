@@ -23,6 +23,9 @@ export default function AccountabilityBuddies() {
                         top: 50,
                         height: 50,
                         backgroundColor: '#45C9F6',
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                        borderRadius: 5,
                     }}
                 >
                     <Text
@@ -38,9 +41,12 @@ export default function AccountabilityBuddies() {
                     onPress={() => Actions.push('holdingAccountable')}
                     style={{
                         width: '100%',
-                        top: 70,
+                        marginTop: 70,
                         height: 50,
                         backgroundColor: '#45C9F6',
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                        borderRadius: 5,
                     }}
                 >
                     <Text
@@ -64,8 +70,15 @@ const styles = {
 
     titleTextStyle: HEADER_STYLES.title,
     titleTextStyles: {
-        top: 15,
-        left: 20,
+        // top: 15,
+        // left: 20,
+        marginTop: 15,
+        marginLeft: 15,
     },
-    titles: { left: 300, bottom: 13, fontSize: 22 },
+    titles: {
+        fontSize: 22,
+
+        marginTop: 12,
+        marginRight: 15,
+    },
 }

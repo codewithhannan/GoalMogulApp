@@ -208,7 +208,7 @@ class Menu extends React.PureComponent {
                     <Text style={styles.titleTextStyle}>
                         Accountability Buddies
                     </Text>
-                    <View style={{ position: 'absolute', right: 0 }}>
+                    <View style={{ position: 'absolute', right: -2 }}>
                         <Svg
                             width={25}
                             height={25}
@@ -653,6 +653,7 @@ const styles = {
         flexDirection: 'row',
         // paddingTop: 40,
         paddingLeft: 15,
+        marginTop: 15,
         paddingRight: 15,
         paddingBottom: 10,
         alignItems: 'center',

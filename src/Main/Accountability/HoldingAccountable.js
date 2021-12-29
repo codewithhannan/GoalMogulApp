@@ -90,7 +90,7 @@ export default function HoldingAccountable() {
         <>
             <View style={styles.headerStyle}>
                 <Text style={styles.titleTextStyle}>
-                    I'am Holding Accounntable
+                    I'm Holding Accounntable
                 </Text>
             </View>
             <View style={{ width: '90%', top: 20, left: 18, height: 70 }}>
@@ -103,7 +103,13 @@ export default function HoldingAccountable() {
                 keyExtractor={(item) => item.id}
                 // renderItem={ListItem}
                 renderItem={({ item }) => (
-                    <Swipeable renderRightActions={rightSwipeActions}>
+                    <Swipeable
+                        // friction={1}
+                        // leftThreshold={80}
+                        // rightThreshold={40}
+                        // onSwipeableOpen={() => this.closeRow(index)}
+                        renderRightActions={rightSwipeActions}
+                    >
                         <View
                             style={{
                                 flexDirection: 'row',
@@ -112,7 +118,7 @@ export default function HoldingAccountable() {
                         >
                             <View>
                                 <Image
-                                    source={item.image}
+                                    source={require('../../asset/utils/defaultUserProfile.png')}
                                     style={{
                                         width: 50,
                                         height: 50,
@@ -131,7 +137,6 @@ export default function HoldingAccountable() {
                             >
                                 <Text
                                     style={{
-                                        fontFamily: 'SF Pro Display',
                                         fontWeight: '400',
                                         // lineHeight: 19.09,
                                         fontSize: 16,
@@ -143,7 +148,7 @@ export default function HoldingAccountable() {
                                 <Text
                                     style={{
                                         fontWeight: '600',
-                                        fontFamily: 'SF Pro Display',
+
                                         // lineHeight: 19.09,
                                         fontSize: 16,
                                         color: '#50505',
@@ -187,13 +192,13 @@ const styles = StyleSheet.create({
         top: 15,
         left: 20,
     },
-    titles: { left: 300, bottom: 13, fontSize: 22 },
+    // titles: { left: 300, bottom: 13, fontSize: 22 },
     // container: {
     //     flex: 1,
     // },
     itemSeparator: {
         flex: 1,
         height: 1,
-        backgroundColor: '#444',
+        backgroundColor: '#DADADA',
     },
 })
