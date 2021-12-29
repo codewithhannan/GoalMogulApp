@@ -52,12 +52,12 @@ class GoalSwiper extends React.Component {
                 },
                 backgroundColor: '#D7F3FF',
             },
-            {
-                id: 2,
-                source: VIDEO,
-                onPress: () => this.openCameraRollBottomSheet(),
-                backgroundColor: '#E5F7FF',
-            },
+            // {
+            //     id: 2,
+            //     source: VIDEO,
+            //     onPress: () => this.openCameraRollBottomSheet(),
+            //     backgroundColor: '#E5F7FF',
+            // },
         ]
     }
 

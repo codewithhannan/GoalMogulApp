@@ -19,11 +19,13 @@ import { updateFriendship, openProfile } from '../../actions'
 import { text, color, default_style } from '../../styles/basic'
 
 import { actionSheet, switchByButtonIndex } from '../Common/ActionSheetFactory'
+import BottomButtonsSheet from '../Common/Modal/BottomButtonsSheet'
 // Components
 import Name from '../Common/Name'
 import ProfileImage from '../Common/ProfileImage'
 import UserTopGoals from '../Common/Card/CardComponent/UserTopGoals'
 import DelayedButton from '../Common/Button/DelayedButton'
+import { getButtonBottomSheetHeight } from '../../styles'
 
 // import { updateFriendship, openProfile, blockUser } from '../../actions'
 
@@ -43,6 +45,96 @@ class MemberListCard extends Component {
             invitedCount: 0,
         }
     }
+
+    closeOptionModal = () => this.bottomSheetRef.close()
+
+    openOptionModal = () => this.bottomSheetRef.open()
+
+    adminUpdateUserStatusOptions = () => {
+        const {
+            onAcceptUser,
+            onRemoveUser,
+            onPromoteUser,
+            onDemoteUser,
+            item,
+            category,
+        } = this.props
+        const { _id } = item
+        let requestOptions
+        if (category === 'Admin') {
+            requestOptions = [
+                {
+                    text: 'Demote Admin',
+                    onPress: () => {
+                        onDemoteUser(_id)
+                        this.closeOptionModal()
+                    },
+                },
+                {
+                    text: 'Cancel',
+                    onPress: () => this.closeOptionModal(),
+                },
+            ]
+        } else if (category === 'Member') {
+            requestOptions = [
+                {
+                    text: 'Remove User',
+                    onPress: () => {
+                        onRemoveUser(_id)
+                        this.closeOptionModal()
+                    },
+                },
+                {
+                    text: 'Promote to Admin',
+                    onPress: () => {
+                        onPromoteUser(_id)
+                        this.closeOptionModal()
+                    },
+                },
+                {
+                    text: 'Cancel',
+                    onPress: () => this.closeOptionModal(),
+                },
+            ]
+        } else if (category === 'Invitee') {
+            requestOptions = [
+                {
+                    text: 'Withdraw Invitation',
+                    onPress: () => {
+                        onRemoveUser(_id)
+                        this.closeOptionModal()
+                    },
+                },
+                {
+                    text: 'Cancel',
+                    onPress: () => this.closeOptionModal(),
+                },
+            ]
+        } else {
+            requestOptions = [
+                {
+                    text: 'Accept Request',
+                    onPress: () => {
+                        onAcceptUser(_id)
+                        this.closeOptionModal()
+                    },
+                },
+                {
+                    text: 'Reject Request',
+                    onPress: () => {
+                        onRemoveUser(_id)
+                        this.closeOptionModal()
+                    },
+                },
+                {
+                    text: 'Cancel',
+                    onPress: () => this.closeOptionModal(),
+                },
+            ]
+        }
+        return requestOptions
+    }
+
     handleAdminUpdateUserStatus() {
         const {
             onAcceptUser,
@@ -287,7 +379,7 @@ class MemberListCard extends Component {
             return (
                 <TouchableOpacity
                     activeOpacity={0.6}
-                    onPress={() => this.handleAdminUpdateUserStatus()}
+                    onPress={() => this.openOptionModal()}
                     style={{ alignSelf: 'center', justifyContent: 'center' }}
                 >
                     <Image
@@ -305,7 +397,8 @@ class MemberListCard extends Component {
         if (!item) return null
 
         const { headline, _id } = item
-
+        const options = this.adminUpdateUserStatusOptions()
+        const sheetHeight = getButtonBottomSheetHeight(options.length)
         console.log('_IDDD', this.props.isFriend)
         return (
             <View style={styles.containerStyle} key={index}>
@@ -348,6 +441,11 @@ class MemberListCard extends Component {
                     </TouchableOpacity> */}
                 </TouchableOpacity>
                 {this.renderSettingIcon()}
+                <BottomButtonsSheet
+                    ref={(r) => (this.bottomSheetRef = r)}
+                    buttons={options}
+                    height={sheetHeight}
+                />
             </View>
         )
     }

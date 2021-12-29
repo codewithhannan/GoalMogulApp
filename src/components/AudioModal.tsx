@@ -628,7 +628,7 @@ class AudioModal extends React.Component<Props, State> {
                                             .containerStyle,
                                         ,
                                         {
-                                            width: 345,
+                                            width: wp('90%'),
                                             height: 50,
                                             alignSelf: 'center',
                                             marginVertical: 20,
@@ -659,7 +659,7 @@ class AudioModal extends React.Component<Props, State> {
                                             .containerStyle,
                                         ,
                                         {
-                                            width: 170,
+                                            width: wp('45%'),
                                             backgroundColor: '#D3F2FF',
                                             borderColor: '#D3F2FF',
                                         },
@@ -732,7 +732,7 @@ class AudioModal extends React.Component<Props, State> {
                                         buttonStyle.GM_BLUE_BG_WHITE_BOLD_TEXT
                                             .containerStyle,
                                         ,
-                                        { width: 170 },
+                                        { width: wp('45%') },
                                     ]}
                                 >
                                     <Text
@@ -753,7 +753,7 @@ class AudioModal extends React.Component<Props, State> {
                                         .containerStyle,
                                     ,
                                     {
-                                        width: 345,
+                                        width: wp('90%'),
                                         height: 50,
                                         alignSelf: 'center',
                                         marginVertical: 20,

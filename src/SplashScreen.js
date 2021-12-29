@@ -2,7 +2,14 @@
 
 import AppLoading from 'expo-app-loading'
 import React, { Component } from 'react'
-import { Dimensions, Image, Text, View } from 'react-native'
+import {
+    Dimensions,
+    Image,
+    Text,
+    View,
+    // SafeAreaView,
+    StatusBar,
+} from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 // Actions
@@ -75,8 +82,15 @@ class SplashScreen extends Component {
         }
 
         return (
+            // <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.containerStyle}>
                 {/* Main content including logo, artwork and slogan */}
+                <StatusBar
+                    animated={true}
+                    backgroundColor="#42C0F5"
+                    // barStyle={statusBarStyle}
+                    // showHideTransition={statusBarTransition}
+                />
                 <View style={styles.bodyContainerStyle}>
                     {/* Top header logo */}
                     <View style={styles.logoContainerStyle}>
@@ -129,6 +143,7 @@ class SplashScreen extends Component {
                     </DelayedButton>
                 </View>
             </View>
+            // </SafeAreaView>
         )
     }
 }

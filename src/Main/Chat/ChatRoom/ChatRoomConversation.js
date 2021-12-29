@@ -791,7 +791,7 @@ class ChatRoomConversation extends React.Component {
                         tintColor:
                             messageMediaRef || messageVideoRef
                                 ? '#42C0F5'
-                                : null,
+                                : 'gray',
                     }}
                     resizeMode="contain"
                 />

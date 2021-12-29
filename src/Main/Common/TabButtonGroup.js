@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { Component } from 'react'
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, Platform } from 'react-native'
 import { walkthroughable, CopilotStep } from 'react-native-copilot-gm'
 
 import TabButton from './Button/TabButton'
@@ -157,7 +157,7 @@ const styles = {
         alignItems: 'center',
         padding: 2 * default_style.uiScale,
         height: 33 * default_style.uiScale,
-        margin: 8,
+        margin: Platform.OS == 'ios' ? 8 : 0,
     },
 }
 
