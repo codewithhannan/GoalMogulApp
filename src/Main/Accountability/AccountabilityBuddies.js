@@ -20,6 +20,7 @@ export default function AccountabilityBuddies() {
                     onPress={() => Actions.push('holding')}
                     style={{
                         width: '100%',
+                        borderRadius: 5,
                         top: 50,
                         height: 50,
                         backgroundColor: '#45C9F6',
@@ -41,6 +42,7 @@ export default function AccountabilityBuddies() {
                         top: 70,
                         height: 50,
                         backgroundColor: '#45C9F6',
+                        borderRadius: 5,
                     }}
                 >
                     <Text
@@ -49,6 +51,26 @@ export default function AccountabilityBuddies() {
                         I'm Holding Accountable
                     </Text>
                     <Text style={[styles.titleTextStyle, styles.titles]}>
+                        {'>'}
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => Actions.push('time')}
+                    style={{
+                        width: '80%',
+                        marginTop: 100,
+                        height: 50,
+                        backgroundColor: '#45C9F6',
+                        borderRadius: 5,
+                        alignSelf: 'center',
+                    }}
+                >
+                    <Text
+                        style={[styles.titleTextStyle, styles.titleTextStyles]}
+                    >
+                        Set Check-In Reminder
+                    </Text>
+                    <Text style={[styles.titleTextStyle, styles.titless]}>
                         {'>'}
                     </Text>
                 </TouchableOpacity>
@@ -68,4 +90,5 @@ const styles = {
         left: 20,
     },
     titles: { left: 300, bottom: 13, fontSize: 22 },
+    titless: { left: 220, bottom: 13, fontSize: 22 },
 }

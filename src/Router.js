@@ -143,6 +143,8 @@ import AccountabilityBuddies from './Main/Accountability/AccountabilityBuddies'
 import HoldingMe from './Main/Accountability/HoldingMe'
 import HoldingAccountable from './Main/Accountability/HoldingAccountable'
 import PatriciaModal from './Main/Accountability/PatriciaModal'
+import TimePickers from './Main/Accountability/TimePickers'
+import CalenderModel from './Main/Accountability/CalenderModel'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -221,7 +223,8 @@ function getCommonScenes(tab) {
         <Scene key="member" component={AccountabilityBuddies} />,
         <Scene key="holding" component={HoldingMe} />,
         <Scene key="holdingAccountable" component={HoldingAccountable} />,
-        <Scene key="pateriaModal" component={PatriciaModal} />,
+        // <Scene key="time" component={TimePickers} />,
+        <Scene key="time" component={CalenderModel} />,
     ]
 }
 
