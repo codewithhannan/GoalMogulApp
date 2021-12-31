@@ -33,7 +33,8 @@ class RefPreview extends Component {
         // goalRef will be undefined.
         if (
             postType === 'ShareGoal' ||
-            (postType === 'seekHelpFromTribe' && goalRef)
+            postType === 'seekHelpFromTribe' ||
+            (postType === 'seekHelpFromFriend' && goalRef)
         ) {
             return this.props.openGoalDetailById(goalRef._id)
         }
@@ -119,7 +120,8 @@ class RefPreview extends Component {
                     imageStyle={{ width: 50, height: 50, borderRadius: 5 }}
                     imageContainerStyle={imageContainerstyle}
                     defaultImageStyle={
-                        postType === 'seekHelpFromTribe'
+                        postType === 'seekHelpFromTribe' ||
+                        postType === 'seekHelpFromFriend'
                             ? styles.helpImage
                             : { width: 32, height: 34, opacity: 0.6 }
                     }
@@ -145,7 +147,8 @@ class RefPreview extends Component {
                     >
                         <Text
                             style={
-                                postType === 'seekHelpFromTribe'
+                                postType === 'seekHelpFromTribe' ||
+                                postType === 'seekHelpFromFriend'
                                     ? styles.titleSeek
                                     : styles.titleTextStyle
                             }
@@ -165,7 +168,8 @@ class RefPreview extends Component {
                     >
                         <Text
                             style={
-                                postType === 'seekHelpFromTribe'
+                                postType === 'seekHelpFromTribe' ||
+                                postType === 'seekHelpFromFriend'
                                     ? styles.seekHeadingTextStyle
                                     : styles.headingTextStyle
                             }
@@ -301,6 +305,25 @@ const switchCaseItem = (val, type) =>
                 defaultPicture: helpIconn,
             }
         },
+        seekHelpFromFriend: (item) => {
+            // console.log('item seek',item);
+            if (invalidItem(item)) {
+                return {
+                    title: `Help ${item.owner.name}`,
+                    content: 'Content deleted',
+                    defaultPicture: goalIcon,
+                }
+            }
+
+            return {
+                title: item.owner ? `Help ${item.owner.name}!` : 'Help', // We decide to replace title with owner's name
+                // title: 'Goal',
+                // TODO: TAG: convert this to string later on
+                content: item.title,
+                // picture: item.profile ? item.owner.profile.image : undefined,
+                defaultPicture: helpIconn,
+            }
+        },
     })('General')(type)
 
 const invalidItem = (item) =>
@@ -335,12 +358,13 @@ const styles = {
         flex: 1,
     },
     helpImage: {
-        height: 12,
-        width: 12,
+        height: 16,
+        width: 16,
         position: 'absolute',
-        top: 10,
-        left: 12,
+        top: 8,
+        left: 10,
         resizeMode: 'contain',
+        borderColor: 'white',
     },
     titleSeek: {
         fontSize: 14,

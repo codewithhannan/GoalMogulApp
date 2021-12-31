@@ -144,7 +144,7 @@ import HoldingMe from './Main/Accountability/HoldingMe'
 import HoldingAccountable from './Main/Accountability/HoldingAccountable'
 import PatriciaModal from './Main/Accountability/PatriciaModal'
 import SeekTribe from './Main/Goal/Common/SeekTribe'
-
+import seekHelpFriendList from './Main/Goal/Common/seekHelpFriendList'
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
     let prefix = `${tab}_`
@@ -896,6 +896,12 @@ class RouterComponent extends Component {
                         path={'/seektribe'}
                         key="seekTribe"
                         component={SeekTribe}
+                        hideNavBar
+                    />
+                    <Scene
+                        path={'/seekHelpFriendList'}
+                        key="seekHelpFriendList"
+                        component={seekHelpFriendList}
                         hideNavBar
                     />
 

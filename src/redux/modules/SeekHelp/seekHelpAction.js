@@ -61,8 +61,11 @@ export const getUserTribes = () => async (dispatch, getState) => {
             err
         )
     }
-
-    return API.get('secure/tribe', token)
+    // https://api.goalmogul.com/api/secure/tribe?filterForMembershipCategory=Member&filterForMembershipCategory=Admin
+    return API.get(
+        'secure/tribe?filterForMembershipCategory=Member&filterForMembershipCategory=Admin',
+        token
+    )
         .then((res) => {
             // All 200 status imply success
             if (res.status >= 200 && res.status < 300) {
@@ -143,6 +146,72 @@ export const postHelpTribe = (newPost) => async (dispatch, getState) => {
     //     })
 }
 
+export const postHelpFriends = (newPost) => async (dispatch, getState) => {
+    const { token, userId } = getState().user
+    console.log('new post tribe', newPost)
+
+    const onSuccess = async (res) => {
+        // await SecureStore.setItemAsync(
+        //     NOTIFICATION_TOKEN_KEY,
+        //     notificationToken,
+        //     {}
+        // )
+        // await AsyncStorage.setItem(NOTIFICATION_TOKEN_KEY, notificationToken)
+        // console.log('notificationToken', notificationToken)
+        // ReactMoE.passFcmPushToken(notificationToken)
+        // dispatch({
+        //     type: SET_TRIBE_SEEK,
+        //     payload: res.data,
+        // })
+        console.log(
+            `${DEBUG_KEY}: register notification succeed success with res: tribe wali `,
+            res
+        )
+        return Alert.alert(`Help posted in Friend's Feed!`)
+    }
+
+    const onError = (err) => {
+        console.log(
+            `${DEBUG_KEY}: register notification failed with err: `,
+            err
+        )
+    }
+    return API.post(
+        'secure/feed/post',
+        {
+            post: JSON.stringify({
+                owner: newPost.user._id,
+                privacy: newPost.privacy,
+                content: { text: newPost.helpText, tags: [] },
+                postType: 'seekHelpFromFriend',
+                goalRef: newPost.goal.goal._id,
+            }),
+        },
+        token
+    )
+        .then((res) => {
+            // All 200 status imply success
+            if (res.status >= 200 && res.status < 300) {
+                return onSuccess(res)
+            }
+            return onError(res)
+        })
+        .catch((err) => {
+            onError(err)
+        })
+
+    // return API.post('secure/tribe', token)
+    //     .then((res) => {
+    //         // All 200 status imply success
+    //         if (res.status >= 200 && res.status < 300) {
+    //             return onSuccess(res)
+    //         }
+    //         return onError(res)
+    //     })
+    //     .catch((err) => {
+    //         onError(err)
+    //     })
+}
 // export const cancelCreatingNewTribe = () => (dispatch) => {
 //     Actions.pop()
 //     dispatch({

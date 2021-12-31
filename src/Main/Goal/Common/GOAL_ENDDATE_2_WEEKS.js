@@ -66,7 +66,7 @@ const GOAL_ENDDATE_2_WEEKS = ({ isVisible, closeModal, week = 2 }) => {
                         <DelayedButton
                             style={[
                                 {
-                                    paddingVertical: 10,
+                                    paddingVertical: 5,
                                     width: 220,
                                     alignItems: 'center',
                                     backgroundColor: GM_BLUE,
@@ -94,7 +94,7 @@ const GOAL_ENDDATE_2_WEEKS = ({ isVisible, closeModal, week = 2 }) => {
                     <DelayedButton
                         style={[
                             {
-                                paddingVertical: 10,
+                                paddingVertical: 5,
                                 width: 220,
                                 alignItems: 'center',
                                 backgroundColor: GM_BLUE,
@@ -119,7 +119,7 @@ const GOAL_ENDDATE_2_WEEKS = ({ isVisible, closeModal, week = 2 }) => {
                     <DelayedButton
                         style={[
                             {
-                                paddingVertical: 10,
+                                paddingVertical: 5,
                                 width: 220,
                                 alignItems: 'center',
                                 backgroundColor: GM_BLUE,
@@ -145,7 +145,7 @@ const GOAL_ENDDATE_2_WEEKS = ({ isVisible, closeModal, week = 2 }) => {
                         <DelayedButton
                             style={[
                                 {
-                                    paddingVertical: 10,
+                                    paddingVertical: 5,
                                     width: 220,
                                     alignItems: 'center',
                                     backgroundColor: 'white',
@@ -175,7 +175,7 @@ const GOAL_ENDDATE_2_WEEKS = ({ isVisible, closeModal, week = 2 }) => {
                     <DelayedButton
                         style={[
                             {
-                                paddingVertical: 10,
+                                paddingVertical: 5,
                                 width: 220,
                                 alignItems: 'center',
                                 backgroundColor: 'white',
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#ffffff',
         alignSelf: 'center',
-        height: week === 0 ? hp(73) : hp(67),
+        height: week === 0 ? hp(83) : hp(78),
         width: wp(90),
         borderRadius: wp(2),
     }),

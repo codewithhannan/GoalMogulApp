@@ -239,6 +239,11 @@ const GOAL_UPDATE_POPUP_B = ({
                                 return Actions.push('seekTribe', {
                                     helpText: helpText,
                                 })
+                            } else if (toggleFriends) {
+                                closeModal()
+                                return Actions.push('seekhelp', {
+                                    helpText: helpText,
+                                })
                             }
                             openInviteFriendModal()
                         }}

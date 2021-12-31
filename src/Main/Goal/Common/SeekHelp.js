@@ -19,6 +19,7 @@ import {
     setSelected,
     clearSelected,
 } from '../../../redux/modules/SeekHelp/seekHelpAction'
+import { postHelpFriends } from '../../../redux/modules/SeekHelp/seekHelpAction'
 
 import Selected from '../../../asset/icons/selected.png'
 import unselected from '../../../asset/icons/unSelected.png'
@@ -28,35 +29,49 @@ const data = [
         title: 'All Friends',
         subTitle: 'Your friends on GoalMogul',
         icon: require('../../../asset/icons/allFriends.png'),
+        key: 'allFriends',
     },
     {
         title: 'Friends Except',
         subTitle: 'Friends; Except:...',
         icon: require('../../../asset/icons/friendsExcept.png'),
+        key: 'friendsExcept',
     },
     {
         title: 'Close Friends',
         subTitle: 'Your close friends on GoalMogul',
         icon: require('../../../asset/icons/closeFriends.png'),
+        key: 'closeFriends',
     },
     {
         title: 'Close Friends Except',
         subTitle: 'Your close friends on GoalMogul',
         icon: require('../../../asset/icons/closeFriendsExcept.png'),
+        key: 'closeFriendsExcept',
     },
     {
         title: 'Specific Friends',
         subTitle: 'Only show to some friends',
         icon: require('../../../asset/icons/specificFriends.png'),
+        key: 'specificFriends',
     },
     {
         title: 'Custom group of friends',
         subTitle: 'Only show to custom group of friends you have created',
         icon: require('../../../asset/icons/customFriends.png'),
+        key: 'customGroupOfFriends',
     },
 ]
 
-const SeekHelp = ({ setSelected, selected, clearSelected }) => {
+const SeekHelp = ({
+    setSelected,
+    selected,
+    clearSelected,
+    postHelpFriends,
+    helpText,
+    user,
+    lateGoal,
+}) => {
     useEffect(() => {
         return () => {
             clearSelected()
@@ -198,7 +213,26 @@ const SeekHelp = ({ setSelected, selected, clearSelected }) => {
                         borderRadius: 2,
                         marginBottom: 30,
                     }}
-                    onPress={() => console.log('dasd')}
+                    onPress={() => {
+                        if (
+                            selected.key === 'friendsExcept' ||
+                            selected.key === 'closeFriendsExcept' ||
+                            selected.key === 'specificFriends'
+                        ) {
+                            return Actions.push('seekHelpFriendList', {
+                                helpText: helpText,
+                            })
+                        } else
+                            return postHelpFriends({
+                                helpText: helpText,
+                                user: user,
+                                goal: lateGoal,
+                                privacy:
+                                    selected.key === 'allFriends'
+                                        ? 'friends'
+                                        : 'close-friends',
+                            })
+                    }}
                 >
                     <Text
                         style={{
@@ -219,14 +253,25 @@ const SeekHelp = ({ setSelected, selected, clearSelected }) => {
 
 const mapStateToProps = (state) => {
     const seekHelp = state.seekHelp
-    const { selected } = seekHelp
+    const { selected, tribeSeek } = seekHelp
+    // const { data, loading, sortBy } = state.tribeTab
+    // const seekHelp = state.seekHelp
+    // const { tribeSeek } = seekHelp
+    const { user, token } = state.user
+    const lateGoal = state.profile.lateGoal
+
     return {
         selected,
+        user,
+        token,
+        lateGoal,
     }
 }
-export default connect(mapStateToProps, { setSelected, clearSelected })(
-    SeekHelp
-)
+export default connect(mapStateToProps, {
+    setSelected,
+    clearSelected,
+    postHelpFriends,
+})(SeekHelp)
 
 const styles = StyleSheet.create({
     backdrop: {
