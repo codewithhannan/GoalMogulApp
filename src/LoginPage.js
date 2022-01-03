@@ -360,7 +360,7 @@ class LoginPage extends Component {
             <View style={[OnboardingStyles.container.page]}>
                 <StatusBar
                     animated={true}
-                    backgroundColor="#42C0F5"
+                    backgroundColor={color.GM_BLUE}
                     // barStyle={statusBarStyle}
                     // showHideTransition={statusBarTransition}
                 />
