@@ -8,6 +8,8 @@ import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { Searchbar } from 'react-native-paper'
 import img from '../../Main/Accountable_images/imagee.jpeg'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import CalenderModel from './CalenderModel'
+import { connect } from 'react-redux'
 
 const todoList = [
     { id: '1', text: 'Amila Brown ', image: img, name: 'Name of Goal' },
@@ -20,83 +22,87 @@ const todoList = [
 ]
 const Separator = () => <View style={styles.itemSeparator} />
 
-const rightSwipeActions = () => {
-    return (
-        <>
-            <View
-                style={{
-                    width: 60,
-                    backgroundColor: 'red',
-                    flexDirection: 'row',
-                }}
-            >
-                <TouchableOpacity style={{ top: 15, left: 10 }}>
-                    <Image
-                        resizeMode="contain"
-                        source={require('../../asset/icons/trash.png')}
-                        style={{
-                            width: 35,
-                            height: 35,
-                        }}
-                    />
-                </TouchableOpacity>
-            </View>
-            <View
-                style={{
-                    width: 60,
-                    backgroundColor: '#45C9F6',
-                    flexDirection: 'row',
-                }}
-            >
-                <TouchableOpacity style={{ top: 15, left: 10 }}>
-                    <Image
-                        resizeMode="contain"
-                        source={require('../Accountable_images/message.png')}
-                        style={{
-                            width: 35,
-                            height: 35,
-                        }}
-                    />
-                </TouchableOpacity>
-            </View>
-            <View
-                style={{
-                    width: 60,
-                    // height: 80,
-                    backgroundColor: '#27AE60',
-                    flexDirection: 'row',
-                }}
-            >
-                <TouchableOpacity
-                    style={{ top: 10, left: 5 }}
-                    onPress={() => Actions.push('pateriaModal')}
-                >
-                    <Image
-                        resizeMode="contain"
-                        source={require('../Accountable_images/reschedule.png')}
-                        style={{
-                            width: 55,
-                            height: 85,
-                        }}
-                    />
-                </TouchableOpacity>
-            </View>
-        </>
-    )
-}
+function HoldingAccountable() {
+    const [isVisible, setisVisible] = useState(false)
 
-export default function HoldingAccountable() {
+    const toggleModal = () => setisVisible(false)
+
+    const rightSwipeActions = () => {
+        return (
+            <>
+                <View
+                    style={{
+                        width: 60,
+                        backgroundColor: 'red',
+                        flexDirection: 'row',
+                    }}
+                >
+                    <TouchableOpacity style={{ top: 15, left: 10 }}>
+                        <Image
+                            resizeMode="contain"
+                            source={require('../../asset/icons/trash.png')}
+                            style={{
+                                width: 35,
+                                height: 35,
+                            }}
+                        />
+                    </TouchableOpacity>
+                </View>
+                <View
+                    style={{
+                        width: 60,
+                        backgroundColor: '#45C9F6',
+                        flexDirection: 'row',
+                    }}
+                >
+                    <TouchableOpacity style={{ top: 15, left: 10 }}>
+                        <Image
+                            resizeMode="contain"
+                            source={require('../Accountable_images/message.png')}
+                            style={{
+                                width: 35,
+                                height: 35,
+                            }}
+                        />
+                    </TouchableOpacity>
+                </View>
+                <View
+                    style={{
+                        width: 60,
+                        // height: 80,
+                        backgroundColor: '#27AE60',
+                        flexDirection: 'row',
+                    }}
+                >
+                    <TouchableOpacity
+                        style={{ top: 10, left: 5 }}
+                        onPress={() => setisVisible(true)}
+                    >
+                        <Image
+                            resizeMode="contain"
+                            source={require('../Accountable_images/reschedule.png')}
+                            style={{
+                                width: 55,
+                                height: 85,
+                            }}
+                        />
+                    </TouchableOpacity>
+                </View>
+            </>
+        )
+    }
     return (
         <>
             <View style={styles.headerStyle}>
                 <Text style={styles.titleTextStyle}>
-                    I'm Holding Accounntable
+                    I'm Holding Accontable
                 </Text>
             </View>
             <View style={{ width: '90%', top: 20, left: 18, height: 70 }}>
                 <Searchbar placeholder="Search" />
             </View>
 
+            <CalenderModel isVisible={isVisible} onClose={toggleModal} />
             <FlatList
                 style={{ marginBottom: 10 }}
                 data={todoList}
@@ -104,9 +110,9 @@ export default function HoldingAccountable() {
                 // renderItem={ListItem}
                 renderItem={({ item }) => (
                     <Swipeable
-                        // friction={1}
-                        // leftThreshold={80}
-                        // rightThreshold={40}
+                        friction={2}
+                        leftThreshold={80}
+                        rightThreshold={40}
                         // onSwipeableOpen={() => this.closeRow(index)}
                         renderRightActions={rightSwipeActions}
                     >
@@ -166,6 +172,12 @@ export default function HoldingAccountable() {
         </>
     )
 }
+
+const mapStateToProps = (state) => {
+    return {}
+}
+
+export default connect(mapStateToProps, {})(HoldingAccountable)
 const styles = StyleSheet.create({
     container: {
         // marginBottom: 10,

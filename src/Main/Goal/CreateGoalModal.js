@@ -58,6 +58,7 @@ import {
     EVENT as E,
     identifyWithTraits,
 } from '../../monitoring/segment'
+import { TouchableWithoutFeedback } from '@ui-kitten/components/devsupport'
 
 const DEBUG_KEY = '[ UI CreateGoalModal ]'
 let pageAb = ''
@@ -578,47 +579,52 @@ class CreateGoalModal extends React.Component {
 
         return (
             <>
-                {/* <SafeAreaView style={{ flex: 0, backgroundColor: '#42C0F5' }} />
+                <SafeAreaView style={{ flex: 0, backgroundColor: '#42C0F5' }} />
 
-                <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}> */}
-                <MenuProvider
-                    customStyles={{ backdrop: styles.backdrop }}
-                    skipInstanceCheck={true}
-                >
-                    <StatusBar
+                <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+                    <MenuProvider
+                        customStyles={{ backdrop: styles.backdrop }}
+                        skipInstanceCheck={true}
+                    >
+                        {/* <StatusBar
                         animated={true}
                         backgroundColor="#42C0F5"
                         // barStyle={statusBarStyle}
                         // showHideTransition={statusBarTransition}
-                    />
-                    <GoalVisibleModal
-                        isVisible={this.state.goalModalVisible}
-                        closeModal={this.closePrivateGoalModal}
-                        handleYes={this.handleModalYes}
-                        handleClose={this.handleModalClose}
-                    />
+                    /> */}
+                        <GoalVisibleModal
+                            isVisible={this.state.goalModalVisible}
+                            closeModal={this.closePrivateGoalModal}
+                            handleYes={this.handleModalYes}
+                            handleClose={this.handleModalClose}
+                        />
 
-                    <View style={{ flex: 1, backgroundColor: 'white' }}>
-                        {this.renderGoalReminderDatePicker()}
+                        <View style={{ flex: 1, backgroundColor: 'white' }}>
+                            {this.renderGoalReminderDatePicker()}
 
-                        <View
-                            style={{
-                                backgroundColor: 'white',
-                                height: 20,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }}
-                        >
                             <View
                                 style={{
-                                    borderWidth: 2.5,
-                                    width: 45,
-                                    borderRadius: 20,
-                                    borderColor: '#828282',
+                                    backgroundColor: 'white',
+                                    height: 20,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
                                 }}
-                            />
+                            >
+                                <TouchableWithoutFeedback
+                                    onLongPress={() => Actions.pop()}
+                                    delayLongPress={200}
+                                >
+                                    <View
+                                        style={{
+                                            borderWidth: 2.5,
+                                            width: 45,
+                                            borderRadius: 20,
+                                            borderColor: '#828282',
+                                        }}
+                                    />
+                                </TouchableWithoutFeedback>
 
-                            {/* <Button
+                                {/* <Button
                                 title="go back"
                                 color="black"
                                 onPress={() => {
@@ -636,9 +642,9 @@ class CreateGoalModal extends React.Component {
                                     Actions.pop()
                                 }}
                             /> */}
-                        </View>
+                            </View>
 
-                        {/* <ModalHeader
+                            {/* <ModalHeader
                         title={titleText}
                         actionText={actionText}
                         back
@@ -669,24 +675,26 @@ class CreateGoalModal extends React.Component {
                         // }}
                     /> */}
 
-                        <NewGoalView
-                            initializeFromState={this.props.initializeFromState}
-                            isImportedGoal={this.props.isImportedGoal}
-                            goal={this.props.goal}
-                            tutorialText={this.props.tutorialText}
-                            // onRef={(r) => {
-                            //     this.newGoalView = r
-                            // }}
-                            createButtonTitle={actionText}
-                            handleCreateButton={this.handleGoalReminder}
-                            actionDisabled={
-                                !this.props.uploading || !hasValidFormVals
-                            }
-                            prefilledTitle={this.props.preffiled}
-                        />
-                    </View>
-                </MenuProvider>
-                {/* </SafeAreaView> */}
+                            <NewGoalView
+                                initializeFromState={
+                                    this.props.initializeFromState
+                                }
+                                isImportedGoal={this.props.isImportedGoal}
+                                goal={this.props.goal}
+                                tutorialText={this.props.tutorialText}
+                                // onRef={(r) => {
+                                //     this.newGoalView = r
+                                // }}
+                                createButtonTitle={actionText}
+                                handleCreateButton={this.handleGoalReminder}
+                                actionDisabled={
+                                    !this.props.uploading || !hasValidFormVals
+                                }
+                                prefilledTitle={this.props.preffiled}
+                            />
+                        </View>
+                    </MenuProvider>
+                </SafeAreaView>
             </>
         )
     }

@@ -44,54 +44,17 @@ export default (props) => {
         const formatedTime = moment(date).format('hh:mm A')
         hideTimePicker()
         onTime(formatedTime)
-    }
-    // const [isPickerShow, setIsPickerShow] = useState(false);
-    // const [time, setTime] = useState(null);
-
-    // useEffect(() => {
-    //   showMode("time");
-    // }, []);
-
-    const onChange = (event, value) => {
-        setDate(value)
-        if (Platform.OS === 'android') {
-            setIsPickerShow(false)
-        }
+        console.log('DATEEE', date)
     }
 
-    const showPicker = () => {
-        setIsPickerShow(true)
-    }
-    const showMode = (currentMode) => {
-        setShow(true)
-        setMode(currentMode)
-    }
-
-    // const onDateChange = (date, type) => {
-    //     if (type === 'END_DATE') {
-    //         setSelectedEndDate(date)
-    //         endDate(moment(date).format('YYYY-MM-DD'))
-    //         // console.log('selected end date', date)
-    //     } else {
-    //         setSelectedEndDate(null)
-    //         setSelectedStartDate(date)
-    //         startDate(moment(date).format('YYYY-MM-DD'))
-    //         // console.log('selected start date', date)
-    //     }
-    // }
     const onDateChange = (date, type) => {
+        console.log('DATATEEE', date)
         if (type === 'END_DATE') {
             setSelectedEndDate(date)
         } else {
             setSelectedEndDate(null)
             setSelectedStartDate(date)
         }
-    }
-
-    const handlePicDate = (type) => {
-        console.log('selected time is:', date)
-        console.log('selected start date', selectedStartDate)
-        console.log('selected end date', selectedEndDate)
     }
 
     const customDatHeaderStylesCallback = ({ dayOfWeek, month, year }) => {
