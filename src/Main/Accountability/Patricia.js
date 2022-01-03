@@ -100,7 +100,7 @@ export default function Patricia() {
                                         // borderWidth: 1,
                                         borderRadius: 5,
                                     }}
-                                    source={require('../assets/checkedd.png')}
+                                    // source={require('../assets/checkedd.png')}
                                 />
                             }
                             uncheckedIcon={
@@ -109,7 +109,7 @@ export default function Patricia() {
                                         width: 30,
                                         height: 30,
                                     }}
-                                    source={require('../assets/unchecked.png')}
+                                    // source={require('../assets/unchecked.png')}
                                 />
                             }
                             color="red"

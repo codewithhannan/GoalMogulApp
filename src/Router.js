@@ -142,9 +142,11 @@ import InviteFriendScreen from './Main/MeetTab/Modal/InviteFriendScreen'
 import AccountabilityBuddies from './Main/Accountability/AccountabilityBuddies'
 import HoldingMe from './Main/Accountability/HoldingMe'
 import HoldingAccountable from './Main/Accountability/HoldingAccountable'
-import PatriciaModal from './Main/Accountability/PatriciaModal'
 import TimePickers from './Main/Accountability/TimePickers'
 import CalenderModel from './Main/Accountability/CalenderModel'
+import EditSteps from './Main/Accountability/EditSteps'
+import Patricia from './Main/Accountability/Patricia'
+import PatriciaTasi from './Main/Accountability/PatriciaTasi'
 
 // tab is one of {'home', 'profileTab', 'notificationTab', 'exploreTab', 'chatTab'}
 function getCommonScenes(tab) {
@@ -222,9 +224,9 @@ function getCommonScenes(tab) {
         <Scene key="myTribeMembers" component={MyTribeMembers} />,
         <Scene key="member" component={AccountabilityBuddies} />,
         <Scene key="holding" component={HoldingMe} />,
-        <Scene key="holdingAccountable" component={HoldingAccountable} />,
-        // <Scene key="time" component={TimePickers} />,
-        <Scene key="time" component={CalenderModel} />,
+        // <Scene key="holdingAccountable" component={Patricia} />,
+
+        <Scene key="time" component={PatriciaTasi} />,
     ]
 }
 
