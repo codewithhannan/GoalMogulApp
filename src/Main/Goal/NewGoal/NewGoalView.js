@@ -1883,6 +1883,7 @@ const styles = {
         paddingTop: 12,
         paddingRight: 12,
         paddingLeft: 12,
+        marginHorizontal: 8,
     },
     caretStyle: {
         ...default_style.smallIcon_1,

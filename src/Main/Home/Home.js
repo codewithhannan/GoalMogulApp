@@ -1885,7 +1885,7 @@ class Home extends Component {
             >
                 <StatusBar
                     animated={true}
-                    backgroundColor="#42C0F5"
+                    backgroundColor={color.GM_BLUE_DEEP}
                     // barStyle={statusBarStyle}
                     // showHideTransition={statusBarTransition}
                 />

@@ -21,6 +21,7 @@ import {
     Text,
     Alert,
     Keyboard,
+    StatusBar,
     TextInput,
     TouchableOpacity,
 } from 'react-native'
@@ -761,6 +762,12 @@ class RegistrationAccount extends React.Component {
                     ]}
                     innerRef={(ref) => (this.scrollView = ref)}
                 >
+                    <StatusBar
+                        animated={true}
+                        backgroundColor={color.GM_BLUE}
+                        // barStyle={statusBarStyle}
+                        // showHideTransition={statusBarTransition}
+                    />
                     <OnboardingHeader />
                     <View style={OnboardingStyles.container.card}>
                         {this.renderInputs()}

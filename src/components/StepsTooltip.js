@@ -7,6 +7,10 @@ import { Icon } from '@ui-kitten/components'
 import { connect } from 'react-redux'
 import { Entypo } from '@expo/vector-icons'
 import { setProgressTooltip } from '../actions'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
 
 class StepsTooltip extends Component {
     constructor(props) {
@@ -27,14 +31,14 @@ class StepsTooltip extends Component {
                             position: 'absolute',
                             zIndex: 1,
                             bottom: 118,
-                            right: 140,
+                            right: 30,
                         }}
                     >
                         <ImageBackground
                             resizeMode="cover"
                             source={require('../asset/image/messageUI.png')}
                             style={{
-                                width: 217,
+                                width: wp('57%'),
                                 height: 95,
                             }}
                         >
@@ -52,8 +56,8 @@ class StepsTooltip extends Component {
                                 >
                                     {/* This horizontal bar shows how much goal
                                     progress has been made. */}
-                                    Tap goal for details; OR swipe left and
-                                    right to reveal more cool ways to interact!
+                                    Tap goal for details; OR swipe left to
+                                    reveal more cool ways to interact!
                                 </Text>
                             </View>
                             <TouchableOpacity
@@ -71,7 +75,13 @@ class StepsTooltip extends Component {
                                 <Entypo name="cross" size={18} color="white" />
                             </TouchableOpacity>
 
-                            <View style={{ flexDirection: 'row', padding: 10 }}>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    padding: 5,
+                                    alignItems: 'center',
+                                }}
+                            >
                                 <TouchableOpacity
                                     onPress={() =>
                                         this.setState({
