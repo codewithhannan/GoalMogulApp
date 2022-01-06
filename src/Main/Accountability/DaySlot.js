@@ -40,6 +40,7 @@ function BookingSlot({
         hideDatePicker()
     }
     const [isPickerShow, setIsPickerShow] = useState(false)
+
     const [selectedDays, setSelectedDays] = useState([])
     const [days, setDays] = useState([
         { letter: 'Mon', word: 'monday' },
