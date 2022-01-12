@@ -22,9 +22,8 @@ import {
 import {
     onFriendsItemSelect,
     onFriendsItemUnselect,
-    addFriends,
     clearFriendsArray,
-} from '../../../redux/modules/tribe/MyTribeActions'
+} from '../../../redux/modules/SeekHelp/seekHelpAction'
 // import EmptyResult from '../../../Common/Text/EmptyResult'
 import { postHelpFriends } from '../../../redux/modules/SeekHelp/seekHelpAction'
 // Selector
@@ -203,6 +202,14 @@ class MyTribeInviteFriends extends Component {
                             helpText: this.props.helpText,
                             user: this.props.user,
                             goal: this.props.lateGoal,
+                            hideFrom: this.props.selectedItemFriend,
+                            privacy:
+                                this.props.selected.key === 'friendsExcept'
+                                    ? 'exclude-friends'
+                                    : this.props.selected.key ===
+                                      'closeFriendsExcept'
+                                    ? 'exclude-close-friends'
+                                    : 'specific-friends',
                         })
                     }
                     activeOpacity={0.6}
@@ -210,11 +217,12 @@ class MyTribeInviteFriends extends Component {
                         alignItems: 'center',
                         opacity: 1,
                         backgroundColor: color.GM_BLUE,
-                        width: 190,
+                        width: '90%',
                         height: 35,
                         borderRadius: 5,
                         justifyContent: 'center',
                         alignItems: 'center',
+                        alignSelf: 'center',
                     }}
                 >
                     <Text
@@ -484,11 +492,11 @@ const mapStateToProps = (state, props) => {
     //  console.log("this is state",state.tribes);
     // Set userId to main user if no userId present in props
     const { friends } = state.meet
-    const { selectedItemFriend } = state.tribes
+    // const { selectedItemFriend } = state.seekHelp
     const { data, refreshing } = friends
     //  console.log("THIS IS DATA",data)
     const seekHelp = state.seekHelp
-    const { selected } = seekHelp
+    const { selected, selectedItemFriend } = seekHelp
     const { user, token } = state.user
     const lateGoal = state.profile.lateGoal
     return {
@@ -511,7 +519,6 @@ export default connect(mapStateToProps, {
     handleRefreshFriend,
     onFriendsItemSelect,
     onFriendsItemUnselect,
-    addFriends,
     clearFriendsArray,
     postHelpFriends,
 })(wrapAnalytics(MyTribeInviteFriends, SCREENS.TRIBE_GOAL_SHARE))

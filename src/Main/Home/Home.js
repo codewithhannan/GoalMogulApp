@@ -1355,7 +1355,7 @@ class Home extends Component {
             shouldRenderBadgeModal: false,
             pickedImage: null,
             shareModal: false,
-            isVisible: true,
+            isVisible: false,
             isVisibleA: this.props.lateGoal.show,
             isVisibleB: false,
             showPopupModal: false,

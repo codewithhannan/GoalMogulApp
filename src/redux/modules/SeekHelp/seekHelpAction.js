@@ -10,6 +10,9 @@ import {
     GET_HELP_FROM,
     CLEAR_SEEKHELP,
     SET_TRIBE_SEEK,
+    SEEKHELP_FRIEND_SELECTED_ITEM,
+    SEEKHELP_FRIEND_UNSELECTED_ITEM,
+    SEEKHELP_FRIEND_CLEAR,
 } from './seekHelpReducers'
 
 const BASE_ROUTE = 'secure/tribe'
@@ -146,6 +149,50 @@ export const postHelpTribe = (newPost) => async (dispatch, getState) => {
     //     })
 }
 
+export const onFriendsItemSelect = (selectedItemFriend, pageId) => (
+    dispatch,
+    getState
+) => {
+    // console.log('suggestion item selected with item: ', selectedItemFriend)
+    const { tab } = getState().navigation
+    dispatch({
+        type: SEEKHELP_FRIEND_SELECTED_ITEM,
+        payload: {
+            selectedItemFriend,
+            tab,
+            pageId,
+        },
+    })
+}
+
+export const onFriendsItemUnselect = (selectedItemFriend, pageId) => (
+    dispatch,
+    getState
+) => {
+    console.log('suggestion item unselected with item: ', selectedItemFriend)
+    const { tab } = getState().navigation
+    dispatch({
+        type: SEEKHELP_FRIEND_UNSELECTED_ITEM,
+        payload: {
+            selectedItemFriend,
+            tab,
+            pageId,
+        },
+    })
+}
+
+export const clearFriendsArray = (pageId) => (dispatch, getState) => {
+    // console.log('suggestion item unselected with item: ', selectedItemFriend)
+    const { tab } = getState().navigation
+    dispatch({
+        type: SEEKHELP_FRIEND_CLEAR,
+        payload: {
+            tab,
+            pageId,
+        },
+    })
+}
+
 export const postHelpFriends = (newPost) => async (dispatch, getState) => {
     const { token, userId } = getState().user
     console.log('new post tribe', newPost)
@@ -176,16 +223,27 @@ export const postHelpFriends = (newPost) => async (dispatch, getState) => {
             err
         )
     }
+
+    const data = {
+        owner: newPost.user._id,
+        privacy: newPost.privacy,
+        content: { text: newPost.helpText, tags: [] },
+        postType: 'seekHelpFromFriend',
+        goalRef: newPost.goal.goal._id,
+    }
+    if (newPost.hideFrom) {
+        if (newPost.privacy === 'exclude-friends') {
+            data['excludedFriends'] = newPost.hideFrom
+        } else if (newPost.privacy === 'exclude-close-friends') {
+            data['excludedCloseFriends'] = newPost.hideFrom
+        } else {
+            data['specificFriends'] = newPost.hideFrom
+        }
+    }
     return API.post(
         'secure/feed/post',
         {
-            post: JSON.stringify({
-                owner: newPost.user._id,
-                privacy: newPost.privacy,
-                content: { text: newPost.helpText, tags: [] },
-                postType: 'seekHelpFromFriend',
-                goalRef: newPost.goal.goal._id,
-            }),
+            post: JSON.stringify(data),
         },
         token
     )

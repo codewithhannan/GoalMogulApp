@@ -153,6 +153,9 @@ export const PRIVACY_FRIENDS = 'friends'
 export const PRIVACY_PUBLIC = 'public'
 export const PRIVACY_PRIVATE = 'self'
 export const PRIVACY_CLOSEFRIENDS = 'close-friends'
+export const PRIVACY_EXCLUDEFRIENDS = 'exclude-friends'
+export const PRIVACY_EXCLUDECLOSEFRIENDS = 'exclude-close-friends'
+export const PRIVACY_SPECIFICFRIENDS = 'specific-friends'
 
 export const PRIVACY_OPTIONS = [
     {
@@ -175,6 +178,21 @@ export const PRIVACY_OPTIONS = [
         text: 'Only Me',
         value: PRIVACY_PRIVATE,
         materialCommunityIconName: 'lock',
+    },
+    {
+        text: 'Friends',
+        value: PRIVACY_EXCLUDEFRIENDS,
+        materialCommunityIconName: 'account-multiple',
+    },
+    {
+        text: 'Close Friends',
+        value: PRIVACY_EXCLUDECLOSEFRIENDS,
+        materialCommunityIconName: 'heart',
+    },
+    {
+        text: 'Specific Friends',
+        value: PRIVACY_SPECIFICFRIENDS,
+        materialCommunityIconName: 'account-multiple',
     },
 ]
 
