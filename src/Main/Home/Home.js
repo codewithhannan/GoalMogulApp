@@ -1209,7 +1209,7 @@ import {
     checkIfNewlyCreated,
     getUserVisitedNumber,
     refreshProfileData,
-    fetchGoalPopup27Day,
+    // fetchGoalPopup27Day,
 } from '../../actions'
 
 import {
@@ -1489,7 +1489,7 @@ class Home extends Component {
         setTimeout(() => {
             this.handlePopup()
         }, 500)
-        this.props.fetchGoalPopup27Day()
+        // this.props.fetchGoalPopup27Day()
         this.props.refreshActivityFeed()
         AppState.addEventListener('change', this.handleAppStateChange)
         this._notificationSubscription = Notifications.addNotificationReceivedListener(
@@ -1897,7 +1897,7 @@ class Home extends Component {
                     // onModal={() => this.setState({ shareModal: true })}
                     onRef={(r) => (this.createPostModal = r)}
                 />
-                <GOAL_ENDDATE_2_WEEKS
+                {/* <GOAL_ENDDATE_2_WEEKS
                     isVisible={this.state.isVisible}
                     closeModal={() => this.setState({ isVisible: false })}
                 />
@@ -1913,7 +1913,7 @@ class Home extends Component {
                     pageId={this.props.pageId}
                     isVisible={this.state.isVisibleB}
                     closeModal={() => this.setState({ isVisibleB: false })}
-                />
+                /> */}
                 <View style={styles.homeContainerStyle}>
                     <SearchBarHeader rightIcon="menu" tutorialOn={tutorialOn} />
 
@@ -2085,7 +2085,7 @@ export default connect(
         refreshGoalFeed,
         refreshActivityFeed,
         fetchProfile,
-        fetchGoalPopup27Day,
+        // fetchGoalPopup27Day,
         checkIfNewlyCreated,
         closeCreateOverlay,
         refreshProfileData,
