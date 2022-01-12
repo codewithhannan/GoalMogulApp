@@ -13,6 +13,7 @@ import {
     Dimensions,
     ImageBackground,
     Modal,
+    Platform,
     FlatList,
 } from 'react-native'
 import { connect } from 'react-redux'
@@ -58,6 +59,7 @@ import {
     tribeToFormAdapter,
     clearTribeError,
 } from '../../redux/modules/tribe/NewTribeActions'
+import { refreshTribeHub } from '../../redux/modules/tribe/TribeHubActions'
 import { openCameraRoll, openCamera } from '../../actions'
 
 // assets
@@ -107,6 +109,7 @@ class CreateTribeModal extends React.Component {
     }
     componentWillUnmount() {
         this.props.clearTribeError()
+        this.props.refreshTribeHub()
     }
     initializeForm() {
         const defaulVals = {
@@ -928,7 +931,7 @@ class CreateTribeModal extends React.Component {
                 skipInstanceCheck={true}
             >
                 <KeyboardAvoidingView
-                    behavior="padding"
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     style={{ flex: 1, backgroundColor: '#E5E5E5' }}
                 >
                     <ModalHeader
@@ -1010,6 +1013,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
     cancelCreatingNewTribe,
+    refreshTribeHub,
     createNewTribe,
     openCameraRoll,
     openCamera,

@@ -59,6 +59,7 @@ import ChatRoomMembersReducers from '../redux/modules/chat/ChatRoomMembersReduce
 import ShareToChatReducers from '../redux/modules/chat/ShareToChatReducers'
 import AccountsReducers from './ExistingAccounts'
 import FeedBackReducers from './FeedbackReducers'
+import AccountabilityReducers from './AccountabilityTimePicker'
 
 //Seek Help
 
@@ -150,6 +151,7 @@ export const reducers = combineReducers({
     feedback: FeedBackReducers,
     goalSwiper: ProfileGoalSwipe,
     seekHelp: SeekHelpReducer,
+    accountabilityTime: AccountabilityReducers,
 })
 
 export default persistReducer(rootPersistConfig, reducers)

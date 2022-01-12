@@ -55,9 +55,7 @@ class MessageToContactsModal extends Component {
             friendsSearchText: '',
             pageSize: 40,
             pageOffset: 0,
-
             currentPagination: [],
-
             friendsFilteredData: [],
         }
     }
@@ -486,8 +484,6 @@ class MessageToContactsModal extends Component {
         )
     }
 }
-
-const styles = StyleSheet.create({})
 
 const mapStateToProps = (state, props) => {
     const { token } = state.auth.user

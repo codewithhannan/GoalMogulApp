@@ -262,8 +262,8 @@ class NoGoalPrompt extends Component {
                                     color: '#333333',
                                 }}
                             >
-                                Ask {name} a question that can inspire him to
-                                set his first goal.
+                                Ask {name} a question that can inspire them to
+                                set their first goal.
                             </Text>
 
                             {/* <NoGoalPromptQuestions
